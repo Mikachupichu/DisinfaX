@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "DisinfaX",
+  "version": "1.0",
+  "default_locale": "en",
+  "permissions": ["storage", "offscreen", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://x.com/*"],
+      "js": ["content.ts"],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
