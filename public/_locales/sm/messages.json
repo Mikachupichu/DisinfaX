@@ -23,6 +23,10 @@
     "message": "Siaki",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Siaki|Su'esu'e|Fa'amamā|Su'e mea moni|Mafaufau|Fa'amalamalama|Eli|Fa'amaonia|Fa'ailoa|Iloa|Fa'ailoa pepelo|Fa'atonutonu|Su'esu'ega|Fa'aaliga|Va'ai loloto|Fa'amaoni|Fa'asa'oina|Su'eina|Fa'ailoaina|Fa'amamāina|Su'esu'e loloto|Fa'ailoa mea moni|Tapenapena|Fa'atulagaina|Fa'amaonia mea moni",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "E matua mafai lava",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Toe fa'avasega tweet uma i lenei vaega",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Toe fa'avasega fa'amatalaga uma i lenei tweet",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Toe su'esu'e le tagi lea",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Siaki",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

@@ -21,6 +21,10 @@
     "message": "சரிபார்ப்பு",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "சரிபார்ப்பு|உண்மை தேடல்|ஆய்வு|தேடல்|விசாரணை|பகுப்பாய்வு|பரிசோதனை|எளிமைப்படுத்தல்|தெளிவுபடுத்தல்|அவிழ்த்தல்|அம்பலப்படுத்தல்|சுத்திகரிப்பு|கிருமி நீக்கம்|சுத்தம் செய்தல்|நச்சு நீக்கம்|சிந்தனை|தியானம்|பகுத்தறிவு|தீர்வு காணல்|ஒளி பாய்ச்சுதல்|தோண்டுதல்|அகழ்வாராய்ச்சி|கண்டுபிடிப்பு|வடிகட்டுதல்|தொகுத்தல்|செயலாக்கம்|உருவாக்கம்|சேகரிப்பு|தணிக்கை|குறுக்கு சரிபார்ப்பு|உறுதிப்படுத்தல்|திரை நீக்கம்",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "மிகவும் சாத்தியம்",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "இந்த தொகுப்பில் உள்ள அனைத்து ட்வீட்களையும் மீண்டும் வகைப்படுத்து",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "இந்த ட்வீட்டின் அனைத்து கூற்றுகளையும் மீண்டும் வகைப்படுத்து",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "இந்த கூற்றை மீண்டும் ஆராய்",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "உண்மை சரிபார்ப்பு",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

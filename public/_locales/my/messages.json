@@ -23,6 +23,10 @@
     "message": "စစ်ဆေးခြင်း",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "စစ်ဆေးခြင်း|သုတေသနပြုခြင်း|သန့်ရှင်းရေး|ဖော်ထုတ်ခြင်း|ရှာဖွေတွေ့ရှိခြင်း|စဉ်းစားခြင်း|အလင်းပြခြင်း|တူးဖော်ခြင်း|စစ်ထုတ်ခြင်း|ဖြတ်စစ်ခြင်း|ခွဲခြမ်းစိတ်ဖြာခြင်း|ဖော်ထုတ်ချေဖျက်ခြင်း|အချက်အလက်စစ်ဆေးခြင်း|အမှန်တရားရှာဖွေခြင်း|ရှင်းလင်းချက်ပေးခြင်း|ဆင်ခြင်တုံတရားသုံးခြင်း|အတည်ပြုခြင်း|စုဆောင်းခြင်း|ဒဏ္ဍာရီချိုးဖျက်ခြင်း|နိဂုံးချုပ်ခြင်း|အနက်ဖွင့်ခြင်း|လေ့လာဆန်းစစ်ခြင်း|စိစစ်ခြင်း|မှန်မှားခွဲခြားခြင်း",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "အလွန်ဖြစ်နိုင်သည်",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ဤ batch အတွင်းရှိ tweet အားလုံးကို ပြန်လည်အမျိုးအစားခွဲပါ",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ဤ tweet ရှိ claim များအားလုံးကို ပြန်လည်အမျိုးအစားခွဲပါ",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "ဤပြောဆိုချက်ကို ပြန်လည်သုတေသနပြုပါ",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "စစ်ဆေးခြင်း",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

@@ -23,6 +23,10 @@
     "message": "Hōʻoia",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Hōʻoia|Noiʻi|Huli|ʻImi|Hoʻomaʻemaʻe|Wehe|Hoʻomālamalama|ʻEli|Kānana|Hōʻike|Hoʻopili|Nānā|Noʻonoʻo|Hoʻohālikelike|Kuhikuhi|Hoʻāʻo|Wehewehe|Loiloi|Hoʻoponopono|Hoʻokolokolo|Ninaninau|Hoʻāhewa|Alakaʻi|Kilokilo|Hoʻomaopopo",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Hiki loa",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hoʻohālikelike hou i nā tweets a pau o kēia pūʻulu",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Hoʻohālikelike hou i nā ʻōlelo a pau o kēia tweet",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Noiʻi hou i kēia ʻōlelo",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Hōʻoia",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

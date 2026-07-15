@@ -23,6 +23,10 @@
     "message": "පරීක්ෂාව",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "පරීක්ෂාව|සෝදිසිය|පිරිසිදු කිරීම|එළියට දැමීම|සොයාගැනීම|කල්පනාව|ආලෝකවත් කිරීම|කැණීම|පෙරීම|විශ්ලේෂණය|සොයාබැලීම|හෙළිදරව් කිරීම|පැහැදිලි කිරීම|පිරික්සීම|සෙවීම|ගැටලු විසඳීම|අභිරහස් හෙළිදරව් කිරීම|නිවැරදි කිරීම|පරිලෝකනය|කේත විසඳීම|විනිශ්චය|කරුණු තහවුරු කිරීම|සසඳා බැලීම|සංශ්ලේෂණය|මෙනෙහි කිරීම|විමර්ශනය|යථාර්ථය සෙවීම|තහවුරු කිරීම|ගවේෂණය|විමසීම",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "ඉතා සම්භාවිතා",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "මෙම කාණ්ඩයේ සියලුම ට්වීට් නැවත වර්ගීකරණය කරන්න",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "මෙම ට්වීට් හි සියලුම ප්‍රකාශ නැවත වර්ග කරන්න",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "මෙම ප්‍රකාශය නැවත පර්යේෂණ කරන්න",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "පරීක්ෂාව",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

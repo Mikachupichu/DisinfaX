@@ -23,6 +23,10 @@
     "message": "ଯାଞ୍ଚ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "ଯାଞ୍ଚ|ସତ୍ୟାନୁସନ୍ଧାନ|ଅନୁସନ୍ଧାନ|ଖୋଜ|ଗବେଷଣା|ବିଶ୍ଳେଷଣ|ସତ୍ୟାପନ|ନିରୀକ୍ଷଣ|ପରୀକ୍ଷା|ସଫା|ଶୁଦ୍ଧିକରଣ|ଜୀବାଣୁନାଶ|ଚିନ୍ତନ|ମନନ|ଧ୍ୟାନ|ଯୁକ୍ତି|ସମାଧାନ|ଆଲୋକିତ କରଣ|ଖୋଳା|ଆବିଷ୍କାର|ଛାଣିବା|ପରିଷ୍କରଣ|ପ୍ରକ୍ରିୟାକରଣ|ସଂଗ୍ରହ|ଅଡିଟ୍|କ୍ରସ୍‌-ଯାଞ୍ଚ|ପ୍ରମାଣୀକରଣ|ପର୍ଦ୍ଦାଫାଶ",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "ଅତ୍ୟନ୍ତ ସମ୍ଭାବ୍ୟ",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ଏହି ବ୍ୟାଚ୍‌ର ସମସ୍ତ ଟ୍ୱିଟ୍‌କୁ ପୁନଃଶ୍ରେଣୀକରଣ କରନ୍ତୁ",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ଏହି ଟ୍ୱିଟ୍‌ର ସମସ୍ତ ଦାବିକୁ ପୁନଃଶ୍ରେଣୀକରଣ କରନ୍ତୁ",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "ଏହି ଦାବିକୁ ପୁନଃଗବେଷଣା କରନ୍ତୁ",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "ଯାଞ୍ଚ",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

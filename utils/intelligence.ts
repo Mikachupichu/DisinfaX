@@ -43,43 +43,65 @@ export function extractTweetUrls(text: string): string[] {
 
 export async function* preClassify(parsedTweets: MainTweet[], locale?: string): AsyncGenerator<Classification> {
     const effectiveLocale = locale ?? getUILanguage();
-    const allClaims: any[] = [];
-    let streamMode: string | null = null;
-    let yieldedAny = false;
+    const maxAttempts = 3;
+    let lastError: any = null;
 
-    const preStream = processWorkerStream({ input: parsedTweets, locale: effectiveLocale }, 'preclassify-tweets');
-    for await (const item of processChunks(preStream)) {
-        if (item && typeof item === 'object' && 'text' in item && 'rewritten' in item) {
-            allClaims.push(item);
-            // Detect mode from the chunk shape. processChunks returns complete snapshot
-            // objects in replace mode and incremental objects in append mode. We can't
-            // read the header here, so we infer: if the same claim text arrives again,
-            // we're in replace mode.
-            if (streamMode === null) {
-                // First claim: assume append until proven otherwise
-                streamMode = 'append';
-            } else if (streamMode === 'append') {
-                // If we see a claim text we already have, the worker is sending snapshots
-                const text = (item as any).text;
-                if (allClaims.slice(0, -1).some((c: any) => c.text === text)) {
-                    streamMode = 'replace';
-                    console.log('[preClassify] detected replace mode from duplicate claim text');
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        if (attempt > 1) {
+            console.log(`[preClassify] transient failure, retrying attempt ${attempt}/${maxAttempts}`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * (attempt - 1)));
+        }
+
+        try {
+            const allClaims: any[] = [];
+            let streamMode: string | null = null;
+            let yieldedAny = false;
+
+            const preStream = processWorkerStream({ input: parsedTweets, locale: effectiveLocale }, 'preclassify-tweets');
+            for await (const item of processChunks(preStream)) {
+                if (item && typeof item === 'object' && 'text' in item && 'rewritten' in item) {
+                    allClaims.push(item);
+                    // Detect mode from the chunk shape. processChunks returns complete snapshot
+                    // objects in replace mode and incremental objects in append mode. We can't
+                    // read the header here, so we infer: if the same claim text arrives again,
+                    // we're in replace mode.
+                    if (streamMode === null) {
+                        // First claim: assume append until proven otherwise
+                        streamMode = 'append';
+                    } else if (streamMode === 'append') {
+                        // If we see a claim text we already have, the worker is sending snapshots
+                        const text = (item as any).text;
+                        if (allClaims.slice(0, -1).some((c: any) => c.text === text)) {
+                            streamMode = 'replace';
+                            console.log('[preClassify] detected replace mode from duplicate claim text');
+                        }
+                    }
+
+                    // In append mode, stream each new claim as it arrives.
+                    if (streamMode === 'append') {
+                        yieldedAny = true;
+                        for (const tweet of parsedTweets) {
+                            yield makePreclassification(tweet, allClaims);
+                        }
+                    }
                 }
             }
 
-            // In append mode, stream each new claim as it arrives.
-            if (streamMode === 'append') {
-                yieldedAny = true;
-                for (const tweet of parsedTweets) {
-                    yield makePreclassification(tweet, allClaims);
-                }
+            // Replace mode (or empty): yield the final classification once.
+            for (const tweet of parsedTweets) {
+                yield makePreclassification(tweet, allClaims);
             }
+            return;
+        } catch (err) {
+            lastError = err;
+            console.error(`[preClassify] attempt ${attempt}/${maxAttempts} failed:`, err);
         }
     }
 
-    // Replace mode (or empty): yield the final classification once.
+    console.error(`[preClassify] all ${maxAttempts} attempts failed, yielding empty classification`, lastError);
+    // Preserve the old contract (always yield at least once) so callers don't need to change.
     for (const tweet of parsedTweets) {
-        yield makePreclassification(tweet, allClaims);
+        yield makePreclassification(tweet, []);
     }
 }
 
@@ -139,10 +161,11 @@ function normalizePreclassifyVerdicts(c: Classification): Classification {
 
 export async function* classify(
     classification: Classification,
-    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string }> = new Map(),
+    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean }> = new Map(),
     locale?: string,
     onBackgroundUpdate?: BackgroundUpdateCallback,
-    tweetUrls?: string[]
+    tweetUrls?: string[],
+    onNoDbMatch?: (claimText: string) => void
 ): AsyncGenerator<Classification> {
     const needsResearch = (claims: Classification["claims"]) =>
         claims?.some(c => c.verdict === "research required" || c.verdict === "unknown" || !c.note) ?? false;
@@ -221,6 +244,26 @@ export async function* classify(
                     // because locale_key may use a different format (e.g. en_US vs en-US).
                     const sourceLocale = claimLocale;
                     const { text: dbReasonText, locale: dbReasonLocale } = extractReasoningObj(equivalent.reasoning, locale ?? getUILanguage());
+
+                    // If the matched DB claim is an unclassified placeholder (empty
+                    // reasoning), do NOT treat it as classified. Put it on hold so the
+                    // user sees a Disinfact button. Keep dbClaimText/locale so a later
+                    // classification UPDATES this existing row (linked via existing_claims)
+                    // rather than inserting a duplicate.
+                    const isPlaceholderMatch = !dbReasonText || dbReasonText.trim() === '';
+                    if (isPlaceholderMatch && onNoDbMatch) {
+                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "", change_propensity: changePropensity, dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
+                        classification.claims = classification.claims?.map(cl =>
+                            cl.text === claimText
+                                ? { ...cl, reclassifyOnHold: true, verdict: "research required" as const, note: null, confidence: undefined, veracity: undefined, dbClaimText, dbClaimLocale: sourceLocale, claimLocale: sourceLocale }
+                                : cl
+                        ) ?? null;
+                        console.log(`[classify] DB match is an unclassified placeholder for "${claimText.slice(0, 40)}..." — holding for user`);
+                        onNoDbMatch(claimText);
+                        signalProgress();
+                        return;
+                    }
+
                     researchCache.set(claimText, { confidence, veracity, reasoning: dbReasonText, reasoningLocale: dbReasonLocale, change_propensity: changePropensity, sources: normalizeSources(equivalent.sources), dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
                     // Associate the preclassified claim with its canonical DB text and
                     // storage locale so background translation callbacks and the upsert
@@ -307,40 +350,74 @@ export async function* classify(
                     // Skip the redundant cache-backed upsert when re-research already ran
                     if (didReResearch) { /* already upserted fresh results above */ }
                 } else {
-                    // No equivalent claim found in DB — stream fresh research
-                    // NOTE: affected claims context removed — fetch-claim no longer returns affected claims.
-                    let researchDone = false;
-                    for await (const update of streamResearch(searchText, [], locale, tweetUrls)) {
-                        if (update.kind === 'partial') {
-                            // Stream partial text directly into the claim note for progressive UI updates.
-                            classification.claims = classification.claims?.map(cl =>
-                                cl.text === claimText
-                                    ? { ...cl, note: update.partialText, confidence: update.confidence ?? cl.confidence, veracity: update.veracity ?? cl.veracity }
-                                    : cl
-                            ) ?? null;
-                            signalProgress();
-                        } else {
-                            researchDone = true;
-                            const mainResult = update.data.mainResult;
-                            const srcCount = mainResult.sources?.length ?? 0;
-                            console.debug(`[classify] streamResearch complete: sources=${srcCount}`, mainResult.sources);
-                            const reason = mainResult.reasoning ?? '';
-                            const reasonSpaced = /\s/.test(reason);
-                            console.log(`[classify] streamResearch complete: reasoning ${reasonSpaced ? 'HAS SPACES' : 'NO SPACES'} for "${claimText.slice(0, 40)}...": "${reason.slice(0, 100)}"`);
-                            researchCache.set(claimText, { confidence: mainResult.confidence, veracity: mainResult.veracity, reasoning: reason, change_propensity: clampPropensity(mainResult.change_propensity), sources: mainResult.sources, embedding: embedding ?? undefined });
-                            signalProgress();
+                    // No equivalent claim found in DB.
+                    if (onNoDbMatch) {
+                        // Pause fresh research behind the Disinfact badge. Notify the
+                        // caller and put the claim into the same reclassifyOnHold state
+                        // used by DB-hit change-propensity reclassifications. The caller
+                        // starts streamResearch when the user clicks the badge.
+                        // Keep the embedding in the cache so the placeholder upsert can
+                        // persist it (the claim will be inserted as an unclassified
+                        // placeholder and updated in place once classified).
+                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "", embedding: embedding ?? undefined });
+                        onNoDbMatch(claimText);
+                        classification.claims = classification.claims?.map(cl =>
+                            cl.text === claimText
+                                ? {
+                                      ...cl,
+                                      reclassifyOnHold: true,
+                                      verdict: "research required" as const,
+                                      note: null,
+                                      confidence: undefined,
+                                      veracity: undefined
+                                  }
+                                : cl
+                        ) ?? null;
+                        signalProgress();
+                    } else {
+                        // No callback: stream fresh research immediately (legacy behavior).
+                        let researchDone = false;
+                        for await (const update of streamResearch(searchText, [], locale, tweetUrls)) {
+                            if (update.kind === 'partial') {
+                                // Stream partial text directly into the claim note for progressive UI updates.
+                                // Only adopt confidence/veracity when BOTH are present in the same partial
+                                // update so the highlight color updates the moment the model has settled on
+                                // a verdict, but never flickers back to grey because of a later text-only chunk.
+                                const hasBoth = update.confidence !== undefined && update.veracity !== undefined;
+                                classification.claims = classification.claims?.map(cl =>
+                                    cl.text === claimText
+                                        ? {
+                                              ...cl,
+                                              note: update.partialText,
+                                              confidence: hasBoth ? update.confidence : cl.confidence,
+                                              veracity: hasBoth ? update.veracity : cl.veracity
+                                          }
+                                        : cl
+                                ) ?? null;
+                                signalProgress();
+                            } else {
+                                researchDone = true;
+                                const mainResult = update.data.mainResult;
+                                const srcCount = mainResult.sources?.length ?? 0;
+                                console.debug(`[classify] streamResearch complete: sources=${srcCount}`, mainResult.sources);
+                                const reason = mainResult.reasoning ?? '';
+                                const reasonSpaced = /\s/.test(reason);
+                                console.log(`[classify] streamResearch complete: reasoning ${reasonSpaced ? 'HAS SPACES' : 'NO SPACES'} for "${claimText.slice(0, 40)}...": "${reason.slice(0, 100)}"`);
+                                researchCache.set(claimText, { confidence: mainResult.confidence, veracity: mainResult.veracity, reasoning: reason, change_propensity: clampPropensity(mainResult.change_propensity), sources: mainResult.sources, embedding: embedding ?? undefined, freshlyResearched: true });
+                                signalProgress();
 
-                            // Do NOT upsert the claim here. upsertProcessedClaims
-                            // (called by processFullBatch after classify() finishes)
-                            // persists the claim via upsertTweetPipeline. Calling
-                            // upsertClaims here races with that and creates a
-                            // duplicate-key error. The research result is already
-                            // in researchCache for applyFindings.
+                                // Do NOT upsert the claim here. upsertProcessedClaims
+                                // (called by processFullBatch after classify() finishes)
+                                // persists the claim via upsertTweetPipeline. Calling
+                                // upsertClaims here races with that and creates a
+                                // duplicate-key error. The research result is already
+                                // in researchCache for applyFindings.
+                            }
                         }
-                    }
-                    if (!researchDone) {
-                        console.warn(`[classify] streamResearch yielded no result for: "${claimText}"`);
-                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "Error" });
+                        if (!researchDone) {
+                            console.warn(`[classify] streamResearch yielded no result for: "${claimText}"`);
+                            researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "Error" });
+                        }
                     }
                 }
             }
@@ -375,7 +452,7 @@ export async function* classify(
 export async function* refreshClaim(
     classification: Classification,
     claimText: string,
-    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string }>,
+    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean }>,
     locale?: string,
     tweetUrls?: string[]
 ): AsyncGenerator<Classification> {
@@ -402,8 +479,11 @@ export async function* refreshClaim(
             const mainResult = update.data.mainResult;
             // Always use the stored DB claim text for upserting — never the model's output,
             // which may be in a different language or rephrased. This prevents creating
-            // duplicate claim entries for the same semantic claim.
-            const actualDbText = mainDbText ?? claimText;
+            // duplicate claim entries for the same semantic claim. For a fresh claim with
+            // no DB match, fall back to the rewritten text (the canonical key the
+            // placeholder row was inserted under) so this UPDATES that row instead of
+            // creating a duplicate under the raw text.
+            const actualDbText = mainDbText ?? claimObj?.rewritten ?? claimText;
 
             // Generate timestamp right before the upsert so it matches DB's last_classification.
             const reclassificationTimestamp = new Date().toISOString();
@@ -446,6 +526,9 @@ function applyFindings(
 ): Classification {
     const apply = (claims: Classification["claims"]): Claim[] | null =>
         claims?.map(cl => {
+            // Claims paused for user approval must keep their on-hold state across
+            // applyFindings calls; otherwise the Disinfact badge would disappear.
+            if (cl.reclassifyOnHold) return cl;
             const r = cache.get(cl.text);
             if (!r || (r.confidence === 0 && r.veracity === 0 && !r.reasoning)) {
                 // During a background refresh, keep the existing badge label and
@@ -865,7 +948,7 @@ export async function backgroundTranslate(
     reasoningText: string,
     sourceLocale: string,
     targetLocale: string,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string }>,
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>,
     classification: Classification,
     onUpdate?: BackgroundUpdateCallback
 ): Promise<void> {
@@ -927,7 +1010,7 @@ export async function backgroundTranslateClaim(
     sourceLocale: string,
     targetLocale: string,
     classification: Classification,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string }>,
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>,
     onUpdate?: BackgroundUpdateCallback
 ): Promise<void> {
     if (sourceLocale === targetLocale || !dbClaimText) return;
@@ -1565,6 +1648,10 @@ async function* processWorkerStream(input: any, worker: string): AsyncGenerator<
         body: JSON.stringify(input),
         headers: { 'Content-Type': 'application/json' }
     });
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Worker ${worker} returned ${response.status}: ${text.slice(0, 200)}`);
+    }
     if (!response.body) { console.log("No response body."); return; }
 
     const streamMode = response.headers.get('X-Stream-Mode') || 'append';

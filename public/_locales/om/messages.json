@@ -23,6 +23,10 @@
     "message": "Mirkaneessa",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Mirkaneessa|Qorannoo|Qulqulleessa|Saaxiluu|Barbaacha|Xiyyeeffannoo|Ifa taasisuu|Boolla qotuu|Calaltii|Xiinxala|Duukaa buʼuu|Ibsa kennuu|Calaqisiisuu|Furmaata barbaacha|Dhugaa baasuu|Sirreeffama|Iskaanii|Fuunfachuu|Koodii banuu|Wal bira qabuu|Cuunfaa|Yaaduu|Xinxaluu|Mirkaneeffannaa|Dhugaa mirkaneessuu",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Baay'ee danda'ama",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Tweets hunda baatchii kana irratti deebisii ramadii",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Waakkota tweet kana keessaa hunda deebisii ramadi",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Waakkata kana deebisii qori",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Mirkaneessa",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

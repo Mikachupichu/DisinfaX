@@ -23,6 +23,10 @@
     "message": "Verificacion",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Verificacion|Recèrca|Netejatge|Desvelament|Descobèrta|Pensada|Illuminacion|Cavament|Filtratge|Verificacion Crosada|Analisi|Desmentida|Verificacion de Fachas|Quista de la Vertat|Clarificacion|Reflexion|Amassament|Destriada|Desmitificacion|Descobrida|Depuracion|Escorcolh|Examèn|Desembolhament|Foïssament",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Fòrça probable",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassificar tots los tweets d'aqueste lot",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Reclassificar totas las afirmacions d'aqueste tweet",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Recercar tornar aquesta afirmacion",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Verificacion",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

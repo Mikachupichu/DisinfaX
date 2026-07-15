@@ -23,6 +23,10 @@
     "message": "Pamariksaan",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Pamariksaan|Panyaringan|Pamaluruhan|Pamikiran|Panerangan|Panggalian|Panganalisaan|Pambukaan bohong|Pangumpulan fakta|Pamriksaan silang|Pangbersihan|Panalungtikan|Pamastian|Panilikan|Pamancakan|Pangbuktian|Pamisahan bebeneran|Pamikiran jero|Panyingkiran hoax|Pamedaran|Panganalisaan data|Panempoan deui|Pamastian fakta|Pangajaran fakta|Pamaluruhan bebeneran",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Kacida Mungkinna",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ngasifikasi deui sakabéh tweet dina angkatan ieu",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Ngasifikasi deui sadaya klaim dina tweet ieu",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Nalungtik deui klaim ieu",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Pariksa",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

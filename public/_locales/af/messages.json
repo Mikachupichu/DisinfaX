@@ -21,6 +21,10 @@
     "message": "Kontrole",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Ontmaskering|Ontbloting|Skoonmaak|Suiwering|Ondersoek|Verifiëring|Naspeuring|Deursoeking|Feitekontrole|Waarheidsoeking|Denkwerk|Oorpeinsing|Uitpluising|Blootlegging|Verligting|Sifting|Kruiskontrole|Bevestiging|Regstelling|Ontrafeling|Grawe|Speurwerk|Klassifisering|Prosessering|Ontleding|Deurspitting|Waarheidsvinding|Ontknoping|Rekonstruksie|Toetsing",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Baie waarskynlik",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Herklassifiseer alle twiets in hierdie groep",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Herklassifiseer al die bewerings in hierdie tweet",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Hernavors hierdie bewering",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Verifieer",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

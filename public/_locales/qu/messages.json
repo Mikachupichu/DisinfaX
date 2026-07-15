@@ -23,6 +23,10 @@
     "message": "Chaninchay",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Chaninchay|Maskhay|Yuyaymanay|K'anchay|Allichay|Qhaway|Sut'inchay|Rikch'ariy|Yachay|Tapuykachay|Rikuchiy|Ñawinchay|Tantay|Akllay|Sayarichiy|Willay|Yuyay|Maskhaykachay|Chaninchaykuy|Amachay|Taripay|Sut'ichay|Rikhurichiy|Qhaqay|Yachaykuy",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Ancha atinqa",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Muskaypi tukuy tweets maskhay",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Kay tweet-pi tukuy willakuykunata kutin chaninchay",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Kay willakuyta maskhapay",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Chaninchay",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

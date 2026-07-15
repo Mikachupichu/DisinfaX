@@ -23,6 +23,10 @@
     "message": "Fanamarinana",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Fanamarinana|Fikarohana|Fanadiovana|Famoahana ny Marina|Fahitana|Fisainana|Fanazavana|Fihadiana|Fisavana|Fanaraha-maso Mifandanja|Famakafakana|Fandavana Lainga|Fitadiavana ny Marina|Fieritreretana|Fanangonan-kevitra|Famahana Mistery|Fanatsoahan-kevitra|Fandinihana|Fanadihadiana|Fitsikarana|Fanentanana ny Marina|Fisafoana|Fikarohana Lalindalina|Fanadiovana Vaovao|Famerenana Marina|Fanovana Lainga ho Marina",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Tena mety",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sokajiana indray ny tweets rehetra ao amin'ity andiany ity",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Sokajiana indray ny filazana rehetra ao amin'ity tweet ity",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Adihadio indray ity filazana ity",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Fanamarinana",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

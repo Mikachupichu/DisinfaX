@@ -23,6 +23,10 @@
     "message": "Kev Tshawb Nrhiav",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Kev Tshawb Nrhiav|Kev Tshuaj Xyuas|Kev Ntxuav|Kev Nthuav Tawm|Kev Tshawb Pom|Kev Xav|Kev Ci Ntsa Iab|Kev Khawb|Kev Nphoo|Kev Lees Paub|Kev Txheeb Xyuas|Kev Sib Piv|Kev Kho|Kev Tshawb Fawb|Kev Txiav Txim|Kev Nug|Kev Nrhiav Qhov Tseeb|Kev Pom Tseeb|Kev Xyuas Kom Meej|Kev Muab Tshuaj Ntsuas|Kev Rho Tawm|Kev Nrhiav Kev Dag|Kev Piav Qhia|Kev Soj Ntsuam|Kev Ua Kom Pom Tseeb",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Yeej yuav tshwm sim",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Rov faib tag nrho cov tweets hauv pawg no",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Rov faib tag nrho cov lus hais hauv tweet no",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Rov tshawb qhov kev thov no",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Tshawb Xyuas",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

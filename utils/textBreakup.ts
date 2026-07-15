@@ -51,14 +51,19 @@ export function findExactMatch(
     const textNormalized = decodedText.replace(/\s+/g, ' ');
     const nIdx = textNormalized.indexOf(normalized);
     if (nIdx !== -1) {
+        // Treat every whitespace char (incl. newlines/tabs) as a single space, to
+        // match the collapse done above — otherwise newlines are mis-aligned and the
+        // mapped range drifts.
         let origIdx = 0;
         let normIdx = 0;
         while (normIdx < nIdx && origIdx < decodedText.length) {
-            if (decodedText[origIdx] === ' ' && textNormalized[normIdx] !== ' ') {
+            const oc = /\s/.test(decodedText[origIdx]) ? ' ' : decodedText[origIdx].toLowerCase();
+            const nc = textNormalized[normIdx];
+            if (oc === ' ' && nc !== ' ') {
                 origIdx++;
                 continue;
             }
-            if (decodedText[origIdx].toLowerCase() === textNormalized[normIdx].toLowerCase()) {
+            if (oc === nc.toLowerCase()) {
                 normIdx++;
             }
             origIdx++;
@@ -67,16 +72,18 @@ export function findExactMatch(
         let end = start;
         let claimNormIdx = 0;
         while (claimNormIdx < normalized.length && end < decodedText.length) {
-            if (decodedText[end] === ' ' && normalized[claimNormIdx] !== ' ') {
+            const oc = /\s/.test(decodedText[end]) ? ' ' : decodedText[end].toLowerCase();
+            const nc = normalized[claimNormIdx];
+            if (oc === ' ' && nc !== ' ') {
                 end++;
                 continue;
             }
-            if (decodedText[end].toLowerCase() === normalized[claimNormIdx].toLowerCase()) {
+            if (oc === nc.toLowerCase()) {
                 claimNormIdx++;
             }
             end++;
         }
-        return { start, end };
+        if (end > start) return { start, end };
     }
 
     // 3. Fuzzy sliding-window: find the best-matching substring when the model
@@ -100,11 +107,16 @@ export function findExactMatch(
 
     // Accept if similarity is above 70%
     if (bestScore >= 0.7 && bestPos >= 0) {
-        // Map normalized position back to original text character position
+        // Map normalized position back to original text character position.
+        // normalizeForMatch collapses ALL whitespace (incl. newlines/tabs) to a
+        // single space, so here we must treat every whitespace char in the original
+        // as ' ' too — otherwise newlines are skipped as punctuation and the mapping
+        // drifts, producing a wrong (often zero-length) range.
         let origIdx = 0;
         let normIdx = 0;
         while (normIdx < bestPos && origIdx < decodedText.length) {
-            const tc = decodedText[origIdx].toLowerCase();
+            const rawTc = decodedText[origIdx];
+            const tc = /\s/.test(rawTc) ? ' ' : rawTc.toLowerCase();
             const nc = normalizedText[normIdx];
             // Skip non-alphanumeric in original
             if (!/[\w]/.test(tc) && tc !== ' ') {
@@ -125,7 +137,8 @@ export function findExactMatch(
         let end = start;
         let claimNormIdx = 0;
         while (claimNormIdx < normalizedClaim.length && end < decodedText.length) {
-            const tc = decodedText[end].toLowerCase();
+            const rawTc = decodedText[end];
+            const tc = /\s/.test(rawTc) ? ' ' : rawTc.toLowerCase();
             const nc = normalizedClaim[claimNormIdx];
             if (!/[\w]/.test(tc) && tc !== ' ') {
                 end++;
@@ -133,6 +146,13 @@ export function findExactMatch(
             }
             if (tc === nc) claimNormIdx++;
             end++;
+        }
+
+        // Reject a degenerate (zero-length) range — a mis-mapped position must not
+        // become a bogus highlight that overrides a good client-side match.
+        if (end <= start) {
+            console.log(`[textBreakup] Fuzzy match produced a degenerate range for "${claimText.slice(0, 50)}...", rejecting`);
+            return null;
         }
 
         console.log(`[textBreakup] Fuzzy match (${(bestScore * 100).toFixed(0)}%): "${claimText.slice(0, 50)}..." at [${start}, ${end})`);

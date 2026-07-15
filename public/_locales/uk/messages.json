@@ -21,6 +21,10 @@
     "message": "Перевірка",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Перевірка|Дослідження|Очищення|Спростування|Викриття|Роздуми|Висвітлення|Копання|Просіювання|Звірка|Розкриття|Збирання|Допит|Аналіз|Розбір|Уточнення|Демаскування|Заглиблення|З'ясування|Освітлення фактів|Пошук істини|Фільтрація|Зіставлення|Розслідування|Перевірка фактів|Розплутування|Верифікація|Спостереження",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Дуже ймовірно",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Перекласифікувати всі твіти в цьому пакеті",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Перекласифікувати всі твердження в цьому твіті",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Передослідити це твердження",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Перевірити",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

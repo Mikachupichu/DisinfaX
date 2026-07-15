@@ -21,6 +21,10 @@
     "message": "যাচাই",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "পরিষ্কার|অনুসন্ধান|পর্দাফাঁস|উদঘাটন|চিন্তাভাবনা|আলোকপাত|খোঁড়াখুঁড়ি|ছাঁকনি|মিলিয়ে দেখা|পরিশোধন|বিশ্লেষণ|সত্যানুসন্ধান|শুদ্ধিকরণ|খোঁজ|তদন্ত|যুক্তি-বিচার|আবিষ্কার|পরিচ্ছন্নকরণ|রহস্যভেদ|মন্থন|যাচাইকরণ|সত্য উন্মোচন|আলো ফেলা|গভীরে অনুসন্ধান|মিথ্যা ভাঙা|পরিশীলন|সংগ্রহ|যাচাই-বাছাই|নিরীক্ষণ|খুঁটিয়ে দেখা",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "অত্যন্ত সম্ভাবনাপূর্ণ",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "এই ব্যাচের সব টুইট পুনঃশ্রেণীবদ্ধ করুন",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "এই টুইটের সব দাবি পুনঃশ্রেণীবদ্ধ করুন",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "এই দাবিটি পুনঃগবেষণা করুন",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "যাচাই করুন",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

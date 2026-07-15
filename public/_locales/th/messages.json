@@ -21,6 +21,10 @@
     "message": "กำลังตรวจสอบ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "กำลังตรวจสอบ|กำลังยืนยัน|กำลังพิสูจน์|กำลังค้นคว้า|กำลังค้นหา|กำลังสืบสวน|กำลังสำรวจ|กำลังตามหาความจริง|กำลังวิเคราะห์|กำลังชำแหละ|กำลังถอดรหัส|กำลังคลี่คลาย|กำลังเปิดโปง|กำลังล้าง|กำลังฆ่าเชื้อ|กำลังชำระล้าง|กำลังล้างพิษ|กำลังไตร่ตรอง|กำลังทำสมาธิ|กำลังครุ่นคิด|กำลังให้เหตุผล|กำลังตีความ|กำลังแก้ปัญหา|กำลังส่องสว่าง|กำลังขุดคุ้ย|กำลังขุดค้น|กำลังคัดกรอง|กำลังกรอง|กำลังกลั่นกรอง|กำลังสังเคราะห์|กำลังประมวลผล|กำลังสร้าง|กำลังรวบรวม|กำลังสืบหาที่มา|กำลังตรวจบัญชี|กำลังเปรียบเทียบ|กำลังไต่สวน|กำลังตรวจทาน|กำลังเปิดเผย|กำลังจัดระเบียบ",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "เป็นไปได้มาก",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "จัดประเภทใหม่ทวีตทั้งหมดในชุดนี้",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "จัดประเภทข้อกล่าวหาทั้งหมดในทวีตนี้ใหม่",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "ค้นคว้าข้อกล่าวหานี้ใหม่",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "ตรวจสอบข้อเท็จจริง",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

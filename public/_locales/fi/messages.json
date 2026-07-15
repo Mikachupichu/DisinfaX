@@ -21,6 +21,10 @@
     "message": "Tarkistus",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Tarkistus|Tutkimus|Puhdistus|Paljastus|Kumoaminen|Pohdinta|Valaiseminen|Kaivaminen|Seulonta|Analysointi|Vahvistus|Vertailu|Selvittäminen|Purkaminen|Löytäminen|Etsintä|Kerääminen|Suodatus|Ristiintarkistus|Todentaminen|Läpivalaisu|Jäljittäminen|Erittely|Harkinta|Todistelu",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Erittäin todennäköinen",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Luokittele uudelleen kaikki tämän erän twiitit",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Luokittele uudelleen kaikki tämän twiitin väitteet",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Tutki tämä väite uudelleen",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Faktantarkistus",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

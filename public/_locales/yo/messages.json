@@ -23,6 +23,10 @@
     "message": "Ṣayẹwo",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Ṣàyẹ̀wò|Ṣèwádìí|Ìwẹ̀nùmọ́|Tú ìtànjẹ jáde|Ṣàwárí|Ṣàrò|Ìtànmọ́lẹ̀|Wàláwàlà|Fiwé wíwo|Ìkójọpọ̀|Ìbéèrè bíbéèrè|Ṣàyẹ̀wò jinlẹ̀|Ṣàlàyé|Wíwá òtítọ́|Yíyọ èérí kúrò|Ìwádìí jíjinlẹ̀|Ìṣípayá|Ìṣàyẹ̀wò-àfiwé|Rírí ìdí ọ̀rọ̀|Ìjẹ́rìí sí i|Wíwo dáadáa|Yíyan àwọn òtítọ́|Ṣíṣí ìkọ̀kọ̀ payá|Ronú jinlẹ̀|Ṣíṣàyẹ̀wò pẹ̀lẹ́pẹ̀lẹ́",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Ó ṣeéṣe gidigidi",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Tún tò gbogbo tweets nínú ẹgbẹ́ yìí",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Tún tò gbogbo àwọn àlàyé nínú tweet yìí",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Tún ṣe iwadii ẹ̀sùn yìí",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Ṣàyẹ̀wò",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

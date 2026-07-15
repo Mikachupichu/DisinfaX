@@ -21,6 +21,10 @@
     "message": "Pemeriksaan",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Pemeriksaan|Penelitian|Pembersihan|Pengungkapan|Penemuan|Perenungan|Pencerahan|Penggalian|Penyaringan|Analisis|Interogasi|Klarifikasi|Perbandingan|Validasi|Audit|Pendeteksian|Pembongkaran|Penyelidikan|Verifikasi|Pemurnian|Pembedahan|Penelusuran|Pengujian|Pemecahan Misteri|Pencarian Fakta|Perincian",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Sangat Mungkin",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Mengklasifikasikan ulang semua tweet dalam kelompok ini",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Mengklasifikasikan ulang semua klaim dalam tweet ini",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Meneliti ulang klaim ini",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Cek Fakta",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

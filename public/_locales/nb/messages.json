@@ -23,6 +23,10 @@
     "message": "Kontroll",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Verifisering|Undersøkelse|Rensing|Avsløring|Oppdagelse|Tenking|Belysning|Graving|Siling|Kryssjekking|Granskning|Analysering|Sjekking|Refleksjon|Grunning|Avkrefting|Opprydding|Destillering|Filtrering|Myteknusing|Bekreftelse|Kartlegging|Utforskning|Sporing|Lyssetting|Renvasking|Avmystifisering|Faktasjekking|Sannhetssøking|Gransking",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Very Likely",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Re-classify all tweets in this batch",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Reklassifiser alle påstandene i denne tweeten",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Re-research this claim",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Kontroll",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

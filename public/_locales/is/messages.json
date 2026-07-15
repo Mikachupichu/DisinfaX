@@ -160,5 +160,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Staðfesta",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

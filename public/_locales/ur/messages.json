@@ -23,6 +23,10 @@
     "message": "جانچ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "جانچ|تحقیق|صفائی|پردہ فاش|انکشاف|غور و فکر|روشنی ڈالنا|کھدائی|چھان بین|موازنہ|تصدیق|جمع آوری|تفتیش|تجزیہ|وضاحت|سچائی کی تلاش|پاکیزگی|کھوج|نقاب کشائی|گہرائی میں جانا|تعین|حقیقت کی روشنی|چھلنی کرنا|تقابل|درجہ بندی",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "بہت ممکن",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "اس بیچ میں موجود تمام ٹویٹس کو دوبارہ درجہ بند کریں",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "اس ٹویٹ میں موجود تمام دعووں کو دوبارہ درجہ بند کریں",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "اس دعوے کی دوبارہ تحقیق کریں",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "تصدیق کریں",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

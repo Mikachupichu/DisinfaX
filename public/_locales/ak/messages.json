@@ -23,6 +23,10 @@
     "message": "Nhwɛso",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Nhwɛso|Nhwehwɛmu|Ahwɛyie|Ntew ho|Nokware hwehwɛ|Nsusuwii|Adwenemu nsusuwii|Nkyerɛkyerɛmu|Mmuae hwehwɛ|Nkontompo kyerɛ|Nokware kyerɛ|Adesua|Nyansa hwehwɛ|Nsɛm hwehwɛ|Nokware pɛ|Nteɛteɛ mu|Nkyerɛmu|Amanneɛ hwehwɛ|Nokwaredi|Nhwɛso foforo|Nkabom hwehwɛ|Nteɛteɛmu|Nsɛnkyerɛnne hwehwɛ|Nyinasoɛ hwehwɛ|Adwuma yɛ",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Ebetumi ayɛ",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sesa tweets nyinaa wo yi batch",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Sesa nsɛm a ɛwɔ tweet yi mu nyinaa",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Hwehwɛ bio saa ka yi",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Hwehwɛ",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

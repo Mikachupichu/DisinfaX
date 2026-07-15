@@ -21,6 +21,10 @@
     "message": "事实核查",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "打假|辟谣|求真|核实|查证|调查|搜索|事实核查|净化|消毒|解密|解析|剖析|拆解|梳理|挖掘|深挖|追踪|溯源|求证|思考|沉思|冥想|推理|论证|破解|照亮|筛选|过滤|提炼|整合|处理|生成|收集|汇总|审计|核对|佐证|验证|揭秘|揭穿|起底|抽丝剥茧|去伪存真|正本清源|顺藤摸瓜",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "非常可能",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "重新分类此批次中的所有推文",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "重新分类此推文中的所有论断",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "重新研究此声明",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "事实核查",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

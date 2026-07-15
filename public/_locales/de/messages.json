@@ -21,6 +21,10 @@
     "message": "Prüfung",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Entschwurbelung|Entlarvung|Überprüfung|Prüfung|Recherche|Suche|Untersuchung|Analyse|Aufklärung|Entschlüsselung|Entwirrung|Zergliederung|Zerlegung|Reinigung|Entgiftung|Desinfektion|Läuterung|Nachdenken|Grübeln|Grübelei|Meditation|Philosophieren|Denken|Ergründung|Lösung|Erleuchtung|Ausgrabung|Entdeckung|Sichtung|Filterung|Destillation|Synthese|Verarbeitung|Erzeugung|Sammlung|Auditierung|Gegenprüfung|Kreuzverhör|Verhör|Enttarnung|Bestätigung|Validierung|Faktencheck|Wahrheitssuche|Lügendetektion|Enthüllung|Durchleuchtung",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Sehr wahrscheinlich",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Alle Tweets in diesem Durchlauf neu klassifizieren",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Alle Behauptungen in diesem Tweet neu klassifizieren",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Diese Behauptung erneut recherchieren",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Zurück",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Faktencheck",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

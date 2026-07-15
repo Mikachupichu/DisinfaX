@@ -21,6 +21,10 @@
     "message": "तपासणी",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "तपासणी|संशोधन|स्वच्छता|उघड करणे|शोध|विचार|प्रकाशयोजना|खोदकाम|गाळणी|क्रॉस-चेकिंग|विश्लेषण|खंडन|तथ्य पडताळणी|सत्यशोध|स्पष्टीकरण|चिंतन|पडताळणी|माहिती संकलन|गैरसमज दूर करणे|निष्कर्ष काढणे|छाननी|खरे शोधणे|उकल|मंथन|पारखणी",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "अत्यंत शक्य",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "या बॅचमधील सर्व ट्वीट्स पुनर्वर्गीकृत करा",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "या ट्विटमधील सर्व दाव्यांचे पुनर्वर्गीकरण करा",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "या दाव्याचे पुन्हा संशोधन करा",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "तपासणी",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

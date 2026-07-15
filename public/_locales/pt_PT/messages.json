@@ -21,6 +21,10 @@
     "message": "Verificando",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Verificando|Investigando|Limpando|Desmascarando|Descobrindo|Refletindo|Iluminando|Escavando|Peneirando|Analisando|Rastreando|Revelando|Esclarecendo|Filtrando|Procurando|Desembaraçando|Desmistificando|Corrigindo|Perscrutando|Explicando|Detetando|Farejando|Descodificando|Desconstruindo|Apurando os factos|Cruzando informações|Sintetizando|Ponderando|Cogitando|Aprofundando",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Muito provável",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassificar todos os tweets neste lote",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Reclassificar todas as alegações deste tweet",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Pesquisar novamente esta alegação",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Verificar",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

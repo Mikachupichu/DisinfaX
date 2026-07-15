@@ -21,6 +21,10 @@
     "message": "Fact-Checking",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Unbullshitting|Disinfacting|Cleaning|Unfakenewsing|Fixing|Washing|Searching|Researching|Fact-Checking|Unbrainwashing|Truthifying|Verifying|Thinking|Uncovering|Discovering|Checking|Exploring|Truth-Seeking|Transparencing|Truthfulling|Unfaking|Shining Light|Classifying|Verdicting|Fetching|Informing|Spinning|Loading|Circling|Revolving|Factualing|Factualizing|Facting|Demystifying|Processing|Unclickbaiting|Digging|Truthing|Defalsing|Unfalsing|Unfalsifying|Defalsifying|Defaking|Generating|Writing|Knowledging|Reflecting|Pondering|Contemplating|Considering|Meditating|Soul-Searching|Adventuring|Cooking|Cheffing|Intuiting|Logicking|Reasoning|Philosophising|Elucidating|Solving|Enlightening|Infering|Collecting|Gathering|Decrapifying|Debunking|Mythbusting|Debiasing|Depropagandizing|Straight-shooting|Sanitizing|Detoxifying|Fact-Squeezing|Auditing|Sifting|Cross-examining|Interrogating|Unmasking|Dissecting|Unraveling|Parsing|Smoking out|Rooting out|Deconstructing|Vetting|Triangulating|Cross-referencing|Corroborating|Validating|Distilling|Synthesizing|Crunching|Deblurring|Unclouding|Piercing the Fog|Filtering|X-Raying|Exposing|Illuminating|Winnowing",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Very Likely",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Re-classify all tweets in this batch",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Re-classify this tweet's claims",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Re-research this claim",
@@ -136,6 +140,10 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Disinfact",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "badgeFiller": {
     "message": "to be",

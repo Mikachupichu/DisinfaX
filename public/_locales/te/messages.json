@@ -21,6 +21,10 @@
     "message": "తనిఖీ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "తనిఖీ|శుభ్రపరచడం|అన్వేషణ|వెలికితీత|ఆలోచన|వెలుగులోకి తేవడం|తవ్వకం|జల్లెడ పట్టడం|విశ్లేషణ|పరిశోధన|నిజనిర్ధారణ|అబద్ధాలను బయటపెట్టడం|పోలిక|మూల్యాంకనం|రహస్యాన్ని ఛేదించడం|డిటెక్టివ్ పని|నిజాలను సేకరించడం|వడపోత|నిర్ధారణ|ఛేదన|స్పష్టీకరణ|పరిశీలన|గుర్తింపు|నిజాన్వేషణ|లోతైన అధ్యయనం",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "చాలా సాధ్యం",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ఈ బ్యాచ్‌లోని అన్ని ట్వీట్‌లను తిరిగి వర్గీకరించు",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ఈ ట్వీట్‌లోని అన్ని వాదనలను తిరిగి వర్గీకరించు",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "ఈ వాదనను తిరిగి పరిశోధించు",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "వాస్తవ తనిఖీ",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

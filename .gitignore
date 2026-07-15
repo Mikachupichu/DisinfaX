@@ -24,3 +24,20 @@ web-ext.config.ts
 *.njsproj
 *.sln
 *.sw?
+
+# ==========================================
+# Custom Project & Claude Ignores
+# ==========================================
+
+# Claude AI configurations
+CLAUDE.md
+.claudeignore
+.claude/
+
+# Local configuration and credentials
+config.yaml
+.env
+.env.local
+
+# Python virtual environment
+venv/

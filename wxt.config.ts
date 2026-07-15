@@ -7,6 +7,12 @@ export default defineConfig({
     name: 'DisinfaX',
     description: "Detects and highlights disinformation in tweets using AI analysis.",
     version: '1.0.0',
-    default_locale: 'en'
+    default_locale: 'en',
+    web_accessible_resources: [
+      {
+        resources: ['_locales/*/messages.json'],
+        matches: ['<all_urls>']
+      }
+    ]
   }
 });

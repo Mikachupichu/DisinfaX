@@ -23,6 +23,10 @@
     "message": "Sinusuri",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Sinusuri|Nililinis|Hinahanap|Sinasaliksik|Inaalam|Iniilawan|Hinuhukay|Sinasala|Sinusuyod|Binubunyag|Nag-iisip|Kinukumpirma|Tinutunton|Inihahayag ang katotohanan|Kinukuwestyon|Sinusuring mabuti|Nagkakalap ng ebidensya|Kinukumpara|Tinatasa|Sinusuring muli|Binubuksan ang katotohanan|Nililiwanag|Sinasagap ang totoo|Inaalis ang kasinungalingan|Ginagawang detective",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "Talagang Malamang",
     "description": "Adjective for high-confidence verdicts."
@@ -112,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Muling uriin ang lahat ng tweet sa batch na ito",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Muling uriin ang lahat ng pahayag sa tweet na ito",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "Muling siyasatin ang pahayag na ito",
@@ -160,5 +164,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Suriin",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

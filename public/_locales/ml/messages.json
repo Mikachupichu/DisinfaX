@@ -21,6 +21,10 @@
     "message": "പരിശോധന",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "പരിശോധന|ഗവേഷണം|ശുദ്ധീകരണം|തുറന്നുകാട്ടൽ|കണ്ടെത്തൽ|ചിന്ത|പ്രകാശനം|കുഴിക്കൽ|അരിപ്പ|ക്രോസ്-ചെക്കിംഗ്|വിശകലനം|ഖണ്ഡനം|വസ്തുത പരിശോധന|സത്യാന്വേഷണം|വിശദീകരണം|ധ്യാനം|സ്ഥിരീകരണം|വിവരശേഖരണം|മിഥ്യ തകർക്കൽ|നിഗമനം|അരിച്ചെടുക്കൽ|ഉരച്ചുനോക്കൽ|ആഴത്തിലുള്ള അന്വേഷണം|തെളിവ് ശേഖരണം|വ്യക്തത വരുത്തൽ",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
   "adjVeryLikely": {
     "message": "വളരെ സാധ്യത",
     "description": "Adjective for high-confidence verdicts."
@@ -110,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ഈ ബാച്ചിലെ എല്ലാ ട്വീറ്റുകളും പുനർവർഗ്ഗീകരിക്കുക",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ഈ ട്വീറ്റിലെ എല്ലാ അവകാശവാദങ്ങളും പുനർവർഗ്ഗീകരിക്കുക",
+    "description": "Tooltip for the button that re-classifies every claim in this tweet."
   },
   "refreshClaimTooltip": {
     "message": "ഈ അവകാശവാദം വീണ്ടും ഗവേഷണം ചെയ്യുക",
@@ -158,5 +162,9 @@
   "goBackFloatingButton": {
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "പരിശോധന",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   }
 }

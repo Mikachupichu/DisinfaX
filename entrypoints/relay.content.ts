@@ -24,21 +24,37 @@ function sendToPort(message: any) {
   }
 }
 
-function batchFingerprint(tweets: MainTweet[]): string {
-  return tweets.map(t => `${t.id}:${t.text.length}:${t.translatedText?.length ?? 0}:${t.sourceLanguage ?? ''}:${t.destinationLanguage ?? ''}`).join('|');
-}
-
 /** Notify the background that a tweet is present in the DOM so it can proceed
  *  with deferred DB fetches for timeline tweets. */
 function reportTweetInDom(tweetId: string) {
   if (reportedToBackground.has(tweetId)) return;
+  if (!currentPort) {
+    pendingDomReports.push(tweetId);
+    return;
+  }
   reportedToBackground.add(tweetId);
   sendToPort({ type: "TWEET_IN_DOM", tweetId });
 }
 
+/** Re-send DOM reports that may have been dropped because the port wasn't ready. */
+function flushPendingDomReports() {
+  const pending = pendingDomReports;
+  pendingDomReports = [];
+  for (const tweetId of pending) {
+    if (!reportedToBackground.has(tweetId)) {
+      reportedToBackground.add(tweetId);
+      sendToPort({ type: "TWEET_IN_DOM", tweetId });
+    }
+  }
+}
+
+/** DOM reports queued before the background port was ready. */
+let pendingDomReports: string[] = [];
+
 /** Report all tweet ids currently rendered in the DOM. */
 function reportVisibleTweets() {
   const links = document.querySelectorAll<HTMLAnchorElement>('a[href*="/status/"]');
+  let reported = 0;
   for (const link of links) {
     const match = link.href.match(/\/status\/(\d+)/);
     if (!match) continue;
@@ -46,10 +62,18 @@ function reportVisibleTweets() {
     if (reportedToBackground.has(tweetId)) continue;
     if (!link.closest('article')) continue;
     reportTweetInDom(tweetId);
+    reported++;
+  }
+  if (reported > 0) {
+    console.log(`[misinfo] relay: reported ${reported} tweet(s) in DOM`);
   }
 }
 
-function connectAndClassify(tweetsToSend?: MainTweet[]) {
+function batchFingerprint(tweets: MainTweet[]): string {
+  return tweets.map(t => `${t.id}:${t.text.length}:${t.translatedText?.length ?? 0}:${t.sourceLanguage ?? ''}:${t.destinationLanguage ?? ''}`).join('|');
+}
+
+function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhrBatchIndex?: number) {
   const useTweets = tweetsToSend ?? capturedTweets;
   console.log(`[misinfo] relay: connectAndClassify called, tweets=${useTweets.length}` + (tweetsToSend ? ' (per-group)' : ''));
   if (useTweets.length === 0) return;
@@ -87,8 +111,10 @@ function connectAndClassify(tweetsToSend?: MainTweet[]) {
       }
     });
 
-    // Report any tweets already in the DOM on this fresh connection.
+    // Report any tweets already in the DOM on this fresh connection,
+    // and flush reports that arrived before the port was ready.
     reportVisibleTweets();
+    flushPendingDomReports();
 
     port.onDisconnect.addListener(() => {
       if (currentPort === port) currentPort = null;
@@ -112,7 +138,14 @@ function connectAndClassify(tweetsToSend?: MainTweet[]) {
     });
   } else {
     currentBatchId = `batch_${Date.now()}`;
-    currentPort.postMessage({ type: "CLASSIFY_TWEETS", data: useTweets, batchId: currentBatchId, locale: localeOverride });
+    currentPort.postMessage({
+      type: "CLASSIFY_TWEETS",
+      data: useTweets,
+      batchId: currentBatchId,
+      locale: localeOverride,
+      xhrBatchId,
+      xhrBatchIndex
+    });
   }
 }
 
@@ -141,6 +174,12 @@ document.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
   console.log(`[misinfo] relay: process-on-hold for ${tweetId}`);
   sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride } });
+}) as EventListener);
+
+document.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
+  const { tweetId } = e.detail;
+  console.log(`[misinfo] relay: fact-check-all for ${tweetId}`);
+  sendToPort({ type: "FACT_CHECK_ALL", data: { tweetId, locale: localeOverride } });
 }) as EventListener);
 
 document.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
@@ -197,24 +236,41 @@ export default defineContentScript({
 
       capturedTweets = tweets;
 
-      // Send the entire XHR batch as one message. The background fetches the
-      // first 5 tweets from DB immediately and defers the rest until they
-      // appear in the DOM.
+      // Each tweet is self-contained (linked tweets are nested as context).
+      // Send each tweet individually as its own batch, but include the original
+      // XHR batch id and index so the background can fetch the first 5 immediately
+      // and defer the rest until they appear in the DOM.
+      const xhrBatchId = `xhr_${Date.now()}`;
       if (tweets.length > 0) {
-        console.log(`[misinfo] relay: sending batch of ${tweets.length} tweet(s)`);
-        connectAndClassify(tweets);
+        // Send first tweet via connectAndClassify (creates port)
+        console.log(`[misinfo] relay: sending ${tweets.length} tweet(s) individually`);
+        connectAndClassify([tweets[0]], xhrBatchId, 0);
+
+        // Send remaining tweets on the same port (each fires its own pipeline)
+        for (let i = 1; i < tweets.length; i++) {
+          const batchId = `batch_${Date.now()}_${i}`;
+          console.log(`[misinfo] relay: sending tweet ${tweets[i].id} as batch ${batchId}`);
+          sendToPort({ type: "CLASSIFY_TWEETS", data: [tweets[i]], batchId, locale: localeOverride, xhrBatchId, xhrBatchIndex: i });
+        }
       }
     });
 
     // Report tweets as they enter the DOM so the background can defer DB fetches
-    // for timeline tweets until they are actually rendered.
-    const domObserver = new MutationObserver(() => {
+    // for timeline tweets until they are actually rendered. Wait for document.body
+    // because this content script runs at document_start.
+    function setupDomObserver() {
+      if (!document.body) {
+        setTimeout(setupDomObserver, 50);
+        return;
+      }
+      const domObserver = new MutationObserver(() => {
+        reportVisibleTweets();
+      });
+      domObserver.observe(document.body, { childList: true, subtree: true });
+      // Run once immediately in case the DOM is already populated.
       reportVisibleTweets();
-    });
-    domObserver.observe(document.body, { childList: true, subtree: true });
-
-    // Run once immediately in case the DOM is already populated.
-    reportVisibleTweets();
+    }
+    setupDomObserver();
 
     // Detect clicks on X's translation/original toggle and notify the background
     // so it can switch highlight locale before X re-renders the text.

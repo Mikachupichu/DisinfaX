@@ -118,6 +118,16 @@ function parseTweet(tweetResults: any, tweetType: TweetType, mainId: string | nu
     const legacy = tweetResults.legacy;
     if (!legacy) return logTweetParsingError(TweetFieldType.Legacy, tweetType);
 
+    // For retweets/reposts in timeline views, classify and inject against the
+    // original tweet rather than the repost wrapper. The DOM status link in a
+    // repost points to the original tweet, so the extension must key the
+    // pipeline on that original ID to find and decorate the reposted tweet.
+    // Detail views are excluded because they render the retweet entry itself.
+    const retweetedResult = legacy.retweeted_status_result?.result;
+    if (retweetedResult && tweetType !== TweetType.Detail && tweetType !== TweetType.MainDetail) {
+        return parseTweet(retweetedResult, tweetType, mainId);
+    }
+
     const id = tweetResults.rest_id ?? legacy.id_str;
     if (!id) return logTweetParsingError(TweetFieldType.ID, tweetType);
 
