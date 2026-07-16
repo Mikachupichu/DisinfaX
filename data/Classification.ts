@@ -18,7 +18,7 @@ export type Claim = {
     /** Locale-keyed character ranges for highlighting in the tweet text.
      *  E.g. {"en": [24, 56], "es": [45, 78]} — keyed by locale, value is [start, end]. */
     highlight?: Record<string, [number, number]>;
-    /** This claim is flagged for reclassification-on-hold (change_propensity trigger).
+    /** This claim is flagged for reclassification-on-hold (reclassify trigger).
      *  Highlight should be neutral grey and badge always visible with "Disinfact". */
     reclassifyOnHold?: boolean;
     /** When true, the claim is being re-researched in the background. The UI shows

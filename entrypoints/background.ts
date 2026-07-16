@@ -18,7 +18,7 @@ export default defineBackground(() => {
 
   type CacheEntry = { classification: Classification; batchIds: Set<string> };
   const classificationCache = new Map<string, CacheEntry>();
-  const researchCache = new Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>();
+  const researchCache = new Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>();
   const batchTweets = new Map<string, MainTweet[]>();
   const activePorts = new Set<any>();
   /** Cache of the latest MainTweet seen for each tweet id, used to detect
@@ -328,14 +328,13 @@ export default defineBackground(() => {
 
       const verdict = Math.abs(v) < 0.2 ? "unknown" : (v > 0 ? "true" : "false");
 
-      // Change-propensity re-check, decided AT BUILD TIME (not asynchronously after
-      // the claim is already shown). A classified claim that is "change-prone"
-      // (random draw below its change_propensity) is presented on hold — a Disinfact
-      // button — from the very first render, so it never flashes its old color and
-      // then flips. The DB classification is cached so clicking restores it while the
+      // Reclassify check, decided AT BUILD TIME (not asynchronously after
+      // the claim is already shown). A DB claim whose reclassify_after has passed
+      // (reclassify === true) is presented on hold — a Disinfact button — from the
+      // very first render, so it never flashes its old color and then flips.
+      // The DB classification is cached so clicking restores it while the
       // fresh re-research streams, and dbClaimText links the update to this same row.
-      const changeProp = Number(dc.change_propensity ?? 0);
-      if (changeProp > 0 && Math.random() < changeProp) {
+      if (dc.reclassify === true) {
         return {
           text: claimText,
           rewritten: claimText,
@@ -473,7 +472,7 @@ export default defineBackground(() => {
     }
   }
 
-  /** Fire re-research for DB-hit claims whose change_propensity exceeds the random threshold.
+  /** Fire re-research for DB-hit claims needing reclassification.
    *  Reuses refreshClaim() which calls streamResearch(). After all done, upserts the tweet pipeline.
    *  Also localizes highlights for the displayed tweet text locale if needed.
    *  Does NOT translate claim text or reasoning — those are gated by user actions. */
@@ -481,7 +480,7 @@ export default defineBackground(() => {
     tweet: MainTweet,
     dbClaims: any[],
     classification: Classification,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>,
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>,
     locale: string
   ): Promise<void> {
     // Helper: list existing locales in a locale-keyed JSONB object.
@@ -493,10 +492,10 @@ export default defineBackground(() => {
       if (typeof obj === 'object') return Object.keys(obj);
       return [];
     };
-    // Change-propensity re-check is now decided at build time in
-    // dbClaimsToClassification (a change-prone claim is shown on hold from the very
-    // first render, so it never flashes its old color then flips). Nothing to do
-    // asynchronously here — an empty list keeps the loop below a no-op.
+    // Reclassify check is already decided at build time in
+    // dbClaimsToClassification (a reclassify=true claim is shown on hold from the
+    // very first render, so it never flashes its old color then flips). Nothing to
+    // do asynchronously here — an empty list keeps the loop below a no-op.
     const propense: any[] = [];
 
     // Pre-populate researchCache so formatVerdict works immediately (use plain string reasoning, not JSONB object)
@@ -510,7 +509,6 @@ export default defineBackground(() => {
           veracity: Number(dc.veracity ?? 0),
           reasoning: reasonStr,
           reasoningLocale: sourceLocale,
-          change_propensity: Number(dc.change_propensity ?? 0),
           sources: normalizeSources(dc.sources),
           dbClaimText: extractClaimText(dc.claim),
           lastClassification: getLastClassification(dc),
@@ -639,7 +637,7 @@ export default defineBackground(() => {
     tweet: MainTweet,
     tweetHash: string,
     classification: Classification,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>,
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>,
     locale: string
   ): Promise<void> {
     // If the user triggered classification early (Fact-Check All, or clicked every
@@ -723,13 +721,13 @@ export default defineBackground(() => {
               embedding: cached?.embedding,
               probability: cached?.confidence ?? c.confidence ?? 0,
               veracity: cached?.veracity ?? c.veracity ?? 0,
-              change_propensity: cached?.change_propensity ?? 0.5,
+              veracity_change_duration: cached?.veracity_change_duration,
               reasoning: cached?.reasoning ? { [locale]: cached.reasoning } : {},
               sources: sourcesToDictionary(cached?.sources ?? []),
             });
           } else {
-            // Unclassified placeholder: no reasoning, veracity 0, confidence 0.5,
-            // change_propensity 0. Keep the embedding so it is matchable by fetch-claim.
+            // Unclassified placeholder: no reasoning, veracity 0, confidence 0.5.
+            // Keep the embedding so it is matchable by fetch-claim.
             // Classification (Disinfact click / Fact-Check All) updates this row later.
             newClaims.push({
               claim: c.rewritten ?? c.text,
@@ -738,7 +736,6 @@ export default defineBackground(() => {
               embedding: cached?.embedding,
               probability: 0.5,
               veracity: 0,
-              change_propensity: 0,
               reasoning: {},
               sources: {},
             });
@@ -975,7 +972,11 @@ export default defineBackground(() => {
     console.log(`[background] releaseFreshResearchClaim: starting fresh research for "${claimText.slice(0, 40)}..."`);
     const researchPromise = (async () => {
       try {
-        for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls)) {
+        // skipClaimUpsert=true: this fresh research is part of the Fact-Check All /
+        // on-hold flow, where upsertProcessedClaims persists tweet + claims in a single
+        // upsert_tweet_pipeline call. Writing the claim here too would double-write it
+        // and trip the duration_between_accesses trigger.
+        for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls, true)) {
           mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId);
         }
       } catch (err: any) {
@@ -1245,7 +1246,6 @@ export default defineBackground(() => {
               veracity: Number(dc.veracity ?? 0),
               reasoning: reasonStr,
               reasoningLocale: claimLocale,
-              change_propensity: Number(dc.change_propensity ?? 0),
               sources: normalizeSources(dc.sources),
               dbClaimText: cacheKey,
               lastClassification: getLastClassification(dc) ?? existing?.lastClassification,
@@ -1790,6 +1790,11 @@ export default defineBackground(() => {
                 }
 
                 if (tweet && hash) {
+                  // upsertProcessedClaims internally awaits any in-flight fresh research
+                  // (Fact-Check All / early Disinfact clicks) via awaitTweetClaimResearch,
+                  // so it persists the tweet + fully classified claims in a SINGLE
+                  // upsert_tweet_pipeline call. The fresh-research path is told to skip
+                  // its own per-claim upsertClaims write so this is the only DB write.
                   upsertProcessedClaims(tweet, hash, latestClassification, researchCache, locale)
                     .catch(e => console.error("[background] PROCESS_ON_HOLD upsert error:", e));
                 }

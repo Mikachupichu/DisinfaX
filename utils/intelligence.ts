@@ -161,7 +161,7 @@ function normalizePreclassifyVerdicts(c: Classification): Classification {
 
 export async function* classify(
     classification: Classification,
-    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean }> = new Map(),
+    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean, veracity_change_duration?: string }> = new Map(),
     locale?: string,
     onBackgroundUpdate?: BackgroundUpdateCallback,
     tweetUrls?: string[],
@@ -234,8 +234,8 @@ export async function* classify(
                          0)
                     );
                     const veracity = Number(equivalent.veracity ?? equivalent.probability);
-                    const changePropensity = Number(equivalent.change_propensity ?? 0);
-                    console.log(`[classify] Equivalent found in DB: confidence=${confidence}, veracity=${veracity}, change_propensity=${changePropensity}`);
+                    const reclassify = equivalent.reclassify === true;
+                    console.log(`[classify] Equivalent found in DB: confidence=${confidence}, veracity=${veracity}, reclassify=${reclassify}`);
                     const dbClaimText = extractCanonicalClaimText(equivalent.claim);
                     const claimLocale = (equivalent.claim && typeof equivalent.claim === 'object' && !Array.isArray(equivalent.claim))
                         ? (Object.keys(equivalent.claim)[0] ?? 'en')
@@ -252,7 +252,7 @@ export async function* classify(
                     // rather than inserting a duplicate.
                     const isPlaceholderMatch = !dbReasonText || dbReasonText.trim() === '';
                     if (isPlaceholderMatch && onNoDbMatch) {
-                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "", change_propensity: changePropensity, dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
+                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "", dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
                         classification.claims = classification.claims?.map(cl =>
                             cl.text === claimText
                                 ? { ...cl, reclassifyOnHold: true, verdict: "research required" as const, note: null, confidence: undefined, veracity: undefined, dbClaimText, dbClaimLocale: sourceLocale, claimLocale: sourceLocale }
@@ -264,7 +264,7 @@ export async function* classify(
                         return;
                     }
 
-                    researchCache.set(claimText, { confidence, veracity, reasoning: dbReasonText, reasoningLocale: dbReasonLocale, change_propensity: changePropensity, sources: normalizeSources(equivalent.sources), dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
+                    researchCache.set(claimText, { confidence, veracity, reasoning: dbReasonText, reasoningLocale: dbReasonLocale, sources: normalizeSources(equivalent.sources), dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
                     // Associate the preclassified claim with its canonical DB text and
                     // storage locale so background translation callbacks and the upsert
                     // pipeline can match the right claim row / JSONB locale key.
@@ -300,9 +300,9 @@ export async function* classify(
                     // Signal DB result progress
                     signalProgress();
 
-                    // Possibly re-research based on change_propensity
+                    // Possibly re-research based on reclassify boolean
                     let didReResearch = false;
-                    if (Math.random() < changePropensity) {
+                    if (reclassify) {
                         console.log(`[classify] Re-researching change-prone claim: "${claimText}"`);
                         // NOTE: affected claims context removed — fetch-claim no longer returns affected claims.
                         for await (const update of streamResearch(searchText, [], locale, tweetUrls)) {
@@ -314,8 +314,8 @@ export async function* classify(
                                     confidence: mainResult.confidence,
                                     veracity: mainResult.veracity,
                                     reasoning: mainResult.reasoning,
-                                    change_propensity: clampPropensity(mainResult.change_propensity, changePropensity),
                                     sources: mainResult.sources,
+                                    veracity_change_duration: mainResult.veracity_change_duration,
                                     dbClaimText: dbClaimText,
                                     embedding: embedding ?? undefined,
                                     lastClassification: reclassificationTimestamp
@@ -328,7 +328,7 @@ export async function* classify(
                                 const storageLocale = Object.keys(equivalent.claim as Record<string, unknown>)[0] ?? 'en';
                                 const uiLocale = locale ?? getUILanguage();
                                 const reUpsertItems: any[] = [
-                                    { claim: dbClaimText, embedding, confidence: Number(mainResult.confidence), probability: Number(mainResult.confidence), veracity: Number(mainResult.veracity), change_propensity: mainResult.change_propensity ?? 0.5, sources: mainResult.sources }
+                                    { claim: dbClaimText, embedding, confidence: Number(mainResult.confidence), probability: Number(mainResult.confidence), veracity: Number(mainResult.veracity), veracity_change_duration: mainResult.veracity_change_duration, sources: mainResult.sources }
                                 ];
                                 upsertClaims(reUpsertItems, storageLocale).catch(e => console.error('[classify] re-research upsert error:', e));
 
@@ -403,7 +403,7 @@ export async function* classify(
                                 const reason = mainResult.reasoning ?? '';
                                 const reasonSpaced = /\s/.test(reason);
                                 console.log(`[classify] streamResearch complete: reasoning ${reasonSpaced ? 'HAS SPACES' : 'NO SPACES'} for "${claimText.slice(0, 40)}...": "${reason.slice(0, 100)}"`);
-                                researchCache.set(claimText, { confidence: mainResult.confidence, veracity: mainResult.veracity, reasoning: reason, change_propensity: clampPropensity(mainResult.change_propensity), sources: mainResult.sources, embedding: embedding ?? undefined, freshlyResearched: true });
+                                researchCache.set(claimText, { confidence: mainResult.confidence, veracity: mainResult.veracity, reasoning: reason, sources: mainResult.sources, veracity_change_duration: mainResult.veracity_change_duration, embedding: embedding ?? undefined, freshlyResearched: true });
                                 signalProgress();
 
                                 // Do NOT upsert the claim here. upsertProcessedClaims
@@ -448,13 +448,19 @@ export async function* classify(
 
 /** Re-research a single claim on demand (triggered by the user clicking the refresh button).
  *  Skips all matching/identification — uses the existing claim text (or dbClaimText) directly.
- *  Always streams fresh research regardless of change_propensity. */
+ *  Always streams fresh research regardless of reclassify. */
 export async function* refreshClaim(
     classification: Classification,
     claimText: string,
-    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean }>,
+    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean, veracity_change_duration?: string }>,
     locale?: string,
-    tweetUrls?: string[]
+    tweetUrls?: string[],
+    /** When true, do NOT write the researched claim via upsertClaims. Used by the
+     *  Fact-Check All fresh-research path, where the on-hold pipeline's
+     *  upsertProcessedClaims persists tweet + claims in a single upsert_tweet_pipeline
+     *  call. Writing here too would double-write the claim and trip the
+     *  duration_between_accesses trigger. */
+    skipClaimUpsert?: boolean
 ): AsyncGenerator<Classification> {
     const claimObj = classification.claims?.find(c => c.text === claimText);
     const searchText = claimObj?.rewritten ?? claimText;
@@ -470,9 +476,9 @@ export async function* refreshClaim(
                 confidence: update.confidence ?? existing?.confidence ?? 0,
                 veracity: update.veracity ?? existing?.veracity ?? 0,
                 reasoning: update.partialText,
-                change_propensity: existing?.change_propensity,
                 sources: existing?.sources,
-                dbClaimText: mainDbText ?? existing?.dbClaimText
+                dbClaimText: mainDbText ?? existing?.dbClaimText,
+                veracity_change_duration: existing?.veracity_change_duration,
             });
             yield applyFindings(classification, researchCache);
         } else {
@@ -491,10 +497,19 @@ export async function* refreshClaim(
                 confidence: mainResult.confidence,
                 veracity: mainResult.veracity,
                 reasoning: mainResult.reasoning,
-                change_propensity: clampPropensity(mainResult.change_propensity),
                 sources: mainResult.sources,
-                dbClaimText: actualDbText,
-                lastClassification: reclassificationTimestamp
+                // Only carry a dbClaimText when there was a REAL DB match (mainDbText).
+                // For a fresh no-match claim this must stay undefined so applyFindings
+                // doesn't tag the claim with a dbClaimText — which would route it to
+                // upsertProcessedClaims' existingClaims path (an UPDATE that matches
+                // nothing, since the claim was never inserted) instead of newClaims.
+                dbClaimText: mainDbText,
+                // Preserve the embedding so upsertProcessedClaims can persist it when it
+                // inserts this fresh claim (the per-claim upsertClaims write is skipped
+                // in the Fact-Check All flow).
+                embedding: embedding ?? undefined,
+                lastClassification: reclassificationTimestamp,
+                veracity_change_duration: mainResult.veracity_change_duration,
             });
 
             // Re-research is performed in the UI/research locale. The model returns
@@ -509,11 +524,13 @@ export async function* refreshClaim(
                 confidence: Number(mainResult.confidence),
                 probability: Number(mainResult.confidence),
                 veracity: Number(mainResult.veracity),
-                change_propensity: clampPropensity(mainResult.change_propensity),
+                veracity_change_duration: mainResult.veracity_change_duration,
                 reasoning: mainResult.reasoning ? { [uiLocale]: mainResult.reasoning } : {},
                 sources: mainResult.sources
             }];
-            upsertClaims(upsertItems, uiLocale).catch(e => console.error('[refreshClaim] upsert error:', e));
+            if (!skipClaimUpsert) {
+                upsertClaims(upsertItems, uiLocale).catch(e => console.error('[refreshClaim] upsert error:', e));
+            }
 
             yield applyFindings(classification, researchCache);
         }
@@ -522,14 +539,16 @@ export async function* refreshClaim(
 
 function applyFindings(
     classification: Classification,
-    cache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, change_propensity?: number, sources?: Source[], dbClaimText?: string, freshlyResearched?: boolean }>
+    cache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, sources?: Source[], dbClaimText?: string, freshlyResearched?: boolean, veracity_change_duration?: string }>
 ): Classification {
     const apply = (claims: Classification["claims"]): Claim[] | null =>
         claims?.map(cl => {
-            // Claims paused for user approval must keep their on-hold state across
-            // applyFindings calls; otherwise the Disinfact badge would disappear.
-            if (cl.reclassifyOnHold) return cl;
             const r = cache.get(cl.text);
+            // If research is complete (has full results), remove the on-hold flag and apply findings.
+            // Otherwise, preserve on-hold state across partial updates.
+            const hasCompleteResearch = r && r.confidence !== undefined && r.veracity !== undefined && r.reasoning;
+            if (cl.reclassifyOnHold && !hasCompleteResearch) return cl;
+
             if (!r || (r.confidence === 0 && r.veracity === 0 && !r.reasoning)) {
                 // During a background refresh, keep the existing badge label and
                 // let the reasoning spinner show because note is null.
@@ -552,13 +571,13 @@ function applyFindings(
                 const hasNewNumbers = newConfidence !== undefined && newVeracity !== undefined;
                 if (hasNewNumbers) {
                     const { verdict, note } = formatVerdict(newConfidence, newVeracity, r.reasoning);
-                    return { ...cl, verdict, note, confidence: newConfidence, veracity: newVeracity, sources: r.sources, dbClaimText: r.dbClaimText ?? cl.dbClaimText, refreshing: false, freshlyResearched: r.freshlyResearched };
+                    return { ...cl, verdict, note, confidence: newConfidence, veracity: newVeracity, sources: r.sources, dbClaimText: r.dbClaimText ?? cl.dbClaimText, refreshing: false, freshlyResearched: r.freshlyResearched, reclassifyOnHold: false };
                 }
                 // Stream reasoning while waiting for new confidence/veracity.
                 return { ...cl, note: r.reasoning || cl.note, sources: r.sources ?? cl.sources, dbClaimText: r.dbClaimText ?? cl.dbClaimText, freshlyResearched: r.freshlyResearched };
             }
             const { verdict, note } = formatVerdict(r.confidence, r.veracity, r.reasoning);
-            return { ...cl, verdict, note, confidence: r.confidence, veracity: r.veracity, sources: r.sources, dbClaimText: r.dbClaimText ?? cl.dbClaimText, freshlyResearched: r.freshlyResearched };
+            return { ...cl, verdict, note, confidence: r.confidence, veracity: r.veracity, sources: r.sources, dbClaimText: r.dbClaimText ?? cl.dbClaimText, freshlyResearched: r.freshlyResearched, reclassifyOnHold: false };
         }) ?? null;
 
     return {
@@ -948,7 +967,7 @@ export async function backgroundTranslate(
     reasoningText: string,
     sourceLocale: string,
     targetLocale: string,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>,
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>,
     classification: Classification,
     onUpdate?: BackgroundUpdateCallback
 ): Promise<void> {
@@ -1010,7 +1029,7 @@ export async function backgroundTranslateClaim(
     sourceLocale: string,
     targetLocale: string,
     classification: Classification,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; change_propensity?: number; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean }>,
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>,
     onUpdate?: BackgroundUpdateCallback
 ): Promise<void> {
     if (sourceLocale === targetLocale || !dbClaimText) return;
@@ -1211,7 +1230,7 @@ export async function backgroundHighlightRange(
 
 type ResearchUpdate =
     | { kind: 'partial', partialText: string, confidence?: number, veracity?: number }
-    | { kind: 'complete', data: { mainResult: { confidence: number, veracity: number, reasoning: string, change_propensity?: number, sources?: Source[] } } };
+    | { kind: 'complete', data: { mainResult: { confidence: number, veracity: number, reasoning: string, veracity_change_duration?: string, sources?: Source[] } } };
 
 /**
  * Try to extract a JSON object from arbitrary text that may have markdown wrapping,
@@ -1256,7 +1275,7 @@ function extractResearchFromRegex(text: string): { mainResult: any, affectedResu
     const confMatch = cleaned.match(/"confidence"\s*:\s*(-?\d+\.?\d*)/);
     const verMatch = cleaned.match(/"veracity"\s*:\s*(-?\d+\.?\d*)/);
     const reasonMatch = cleaned.match(/"reasoning"\s*:\s*"((?:[^"\\]|\\.)*)/);
-    const changePropMatch = cleaned.match(/"change_propensity"\s*:\s*(-?\d+\.?\d*)/);
+    const veracityChangeDurationMatch = cleaned.match(/"veracity_change_duration"\s*:\s*"((?:[^"\\]|\\.)*)"/);
 
     if (!confMatch || !verMatch) return null;
 
@@ -1264,7 +1283,7 @@ function extractResearchFromRegex(text: string): { mainResult: any, affectedResu
     if (confMatch) mainResult.confidence = parseFloat(confMatch[1]);
     if (verMatch) mainResult.veracity = parseFloat(verMatch[1]);
     if (reasonMatch) mainResult.reasoning = reasonMatch[1];
-    if (changePropMatch) mainResult.change_propensity = parseFloat(changePropMatch[1]);
+    if (veracityChangeDurationMatch) mainResult.veracity_change_duration = veracityChangeDurationMatch[1];
 
     // Extract sources: can be "sources": ["url1"], [{"url":"..."}], or {"title":"url"}
     const arraySourcesMatch = cleaned.match(/"sources"\s*:\s*\[([^\]]*)\]/);
@@ -1376,8 +1395,8 @@ type AffectedClaimContext = {
     reasoning: any;
     confidence?: number;
     veracity?: number;
-    change_propensity?: number;
     sources?: Source[];
+    veracity_change_duration?: string;
 };
 
 async function* streamResearch(mainClaim: string, affectedClaims: AffectedClaimContext[], locale?: string, tweetUrls?: string[]): AsyncGenerator<ResearchUpdate> {

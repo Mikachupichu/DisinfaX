@@ -230,6 +230,17 @@ function claimsEqual(a: Claim[] | null | undefined, b: Claim[] | null | undefine
     return true;
 }
 
+/** Check if reclassifyOnHold flag changed without text/content changes. */
+function reclassifyFlagChanged(a: Claim[] | null | undefined, b: Claim[] | null | undefined): boolean {
+    if (!a && !b) return false;
+    if (!a || !b) return false;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i].reclassifyOnHold !== b[i].reclassifyOnHold) return true;
+    }
+    return false;
+}
+
 /**
  * Track which claim highlights have already been animated so we only animate
  * new highlights, not color-only updates of an existing highlight.
@@ -1078,17 +1089,23 @@ export function injectClassifications(classifications: Classification[], tweetTe
                 return oldCl && JSON.stringify(cl.highlight) !== JSON.stringify(oldCl.highlight);
             }) ?? false;
             const localeChanged = c.translatedLocale !== old.translatedLocale || c.textLocale !== old.textLocale;
-            const needsRedo = claimsChanged || highlightsChanged || localeChanged;
+            const flagChanged = reclassifyFlagChanged(c.claims, old.claims);
+            const needsRedo = claimsChanged || highlightsChanged || localeChanged || flagChanged;
             if (needsRedo) {
                 console.log(`[misinfo] injectClassifications: change detected for ${c.id} (claims=${claimsChanged}, highlights=${highlightsChanged}, locale=${localeChanged})`);
             }
 
             if (needsRedo) {
                 textBreakupInProgress.delete(c.id);
-                if (old.segments) {
+                // Only re-derive segments if claims/highlights/locale changed, not if just reclassifyOnHold flag changed
+                const shouldRederiveSegments = claimsChanged || highlightsChanged || localeChanged;
+                if (old.segments && shouldRederiveSegments) {
                     console.log(`[misinfo] injectClassifications: re-deriving segments for ${c.id} (claims=${claimsChanged}, highlights=${highlightsChanged}, locale=${localeChanged})`);
                     c.segments = undefined;
                     removeSegmentWraps(c.id);
+                } else if (!c.segments && old.segments) {
+                    // Preserve segments even if flag changed
+                    c.segments = old.segments;
                 }
             } else if (!c.segments && old.segments) {
                 c.segments = old.segments;
