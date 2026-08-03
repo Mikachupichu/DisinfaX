@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "Saldoa kargatu"
+  },
+  "showMore": {
+    "message": "Erakutsi gehiago"
+  },
+  "showLess": {
+    "message": "Erakutsi gutxiago"
+  },
+  "landingTagline1": {
+    "message": "Egia agerian utzi. Gezurrak aurkitu."
+  },
+  "landingTagline2": {
+    "message": "Desinformaziorik ez gehiago. Egitateak baino ez."
+  },
+  "continueWithX": {
+    "message": "Jarraitu X-ekin"
+  },
+  "continueWithGoogle": {
+    "message": "Jarraitu Google-ekin"
+  },
+  "continueWithApple": {
+    "message": "Jarraitu Apple-ekin"
+  },
+  "lastUsed": {
+    "message": "Azken erabilera"
+  },
+  "cleanupTagline": {
+    "message": "Garbitu zure X jarioa."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Estatu Batuen barruan, Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Mexiko Berria, New York, Ipar Carolina, Ipar Dakota, Oklahoma, Oregon, Pennsylvania, Hego Carolina, Hego Dakota, Tennessee, Texas, Utah, Washington, Wisconsin eta Wyoming estatuetako biztanleek soilik erabil dezakete DisinfaX eta kargatu dezakete beren saldoa; Washington D.C., AEBetako lurralde guztiak eta zerrendatu gabeko edozein estatu kanpoan geratzen dira. Estatu Batuetatik kanpo, Kanadan, Australian, Zeelanda Berrian, Singapurren, Hego Afrikan, Japonian, Taiwanen, Indonesian, Thailandian, Filipinetan, Malaysian, Vietnamen eta Suitzan dago eskuragarri."
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "Egiaztapena",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldoa"
+  },
+  "gifted": {
+    "message": "Opari eginda"
+  },
+  "customTopup": {
+    "message": "Pertsonalizatua"
+  },
+  "customAmountLabel": {
+    "message": "Saldoa kargatzeko zenbateko pertsonalizatua AEBetako dolarretan"
+  },
+  "increase": {
+    "message": "Handitu"
+  },
+  "decrease": {
+    "message": "Txikitu"
+  },
+  "topUpBalance": {
+    "message": "Kargatu saldoa"
+  },
+  "processing": {
+    "message": "Prozesatzen…"
+  },
+  "checkoutError": {
+    "message": "Ezin izan da ordainketa hasi. Saiatu berriro."
+  },
+  "termsOfService": {
+    "message": "Zerbitzu-baldintzak"
+  },
+  "privacyPolicy": {
+    "message": "Pribatutasun-politika"
+  },
+  "disclaimerAgree": {
+    "message": "Saldoa kargatzean, gure %TOS% eta %PRIVACY% onartzen dituzu."
+  },
+  "disclaimerFx": {
+    "message": "Dibisa-truke komisioak aplika daitezke USD ez den moneta batean ordaintzen baduzu."
+  },
+  "signOut": {
+    "message": "Amaitu saioa"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% klikatzeak baieztapenak erakutsiko ditu eta zure saldotik kobratuko da"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ukitzeak baieztapenak erakutsiko ditu eta zure saldotik kobratuko da"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
+  },
+  "factCheckAllButton": {
+    "message": "Egiaztatu guztia"
   }
 }

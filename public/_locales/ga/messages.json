@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "Cuir Airgead Leis"
+  },
+  "showMore": {
+    "message": "Taispeáin níos mó"
+  },
+  "showLess": {
+    "message": "Taispeáin níos lú"
+  },
+  "landingTagline1": {
+    "message": "Nocht an Fhírinne. Aimsigh na Bréaga."
+  },
+  "landingTagline2": {
+    "message": "Deireadh leis an mBréagaisnéis. Fíricí amháin."
+  },
+  "continueWithX": {
+    "message": "Lean ar aghaidh le X"
+  },
+  "continueWithGoogle": {
+    "message": "Lean ar aghaidh le Google"
+  },
+  "continueWithApple": {
+    "message": "Lean ar aghaidh le Apple"
+  },
+  "lastUsed": {
+    "message": "Úsáidte go Deireanach"
+  },
+  "cleanupTagline": {
+    "message": "Glan suas d'Fhotha X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Laistigh de na Stáit Aontaithe, ní féidir ach le cónaitheoirí Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Nua-Eabhrac, Carolina Thuaidh, Dakota Thuaidh, Oklahoma, Oregon, Pennsylvania, Carolina Theas, Dakota Theas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a úsáid agus a n-iarmhéid a mhéadú; tá Washington, D.C., críocha uile na S.A., agus aon stát nach bhfuil liostaithe eisiata. Lasmuigh de na Stáit Aontaithe, tá sé ar fáil i gCeanada, san Astráil, sa Nua-Shéalainn, i Singeapór, san Afraic Theas, sa tSeapáin, san Téaváin, san Indinéis, sa Téalainn, sna hOileáin Fhilipíneacha, sa Mhalaeisia, i Vítneam, agus san Eilvéis."
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "Seiceáil",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Iarmhéid"
+  },
+  "gifted": {
+    "message": "Bronnta"
+  },
+  "customTopup": {
+    "message": "Saincheaptha"
+  },
+  "customAmountLabel": {
+    "message": "Méid athlíonta saincheaptha i ndollair SAM"
+  },
+  "increase": {
+    "message": "Méadaigh"
+  },
+  "decrease": {
+    "message": "Laghdaigh"
+  },
+  "topUpBalance": {
+    "message": "Athlíon an tIarmhéid"
+  },
+  "processing": {
+    "message": "Á phróiseáil…"
+  },
+  "checkoutError": {
+    "message": "Níorbh fhéidir an t-íoc a thosú. Bain triail eile as."
+  },
+  "termsOfService": {
+    "message": "Téarmaí Seirbhíse"
+  },
+  "privacyPolicy": {
+    "message": "Beartas Príobháideachais"
+  },
+  "disclaimerAgree": {
+    "message": "Trí athlíonadh, aontaíonn tú lenár %TOS% agus %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "D’fhéadfadh táillí malairte eachtraí a bheith i bhfeidhm má íocann tú in airgeadra seachas USD."
+  },
+  "signOut": {
+    "message": "Logáil amach"
+  },
+  "onboardDisinfactClick": {
+    "message": "Nuair a chliceálann tú %BTN%, nochtar éilimh agus gearrfar do d'iarmhéid"
+  },
+  "onboardDisinfactTap": {
+    "message": "Nuair a thapálann tú %BTN%, nochtar éilimh agus gearrfar do d'iarmhéid"
+  },
+  "onboardWillCharge": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
+  },
+  "onboardFactcheck": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
+  },
+  "onboardTranslations": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
+  },
+  "onboardRefreshes": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
+  },
+  "factCheckAllButton": {
+    "message": "Seiceáil uile"
   }
 }

@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "ማረጋገጥ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ቀሪ ሂሳብ"
+  },
+  "gifted": {
+    "message": "ስጦታ"
+  },
+  "customTopup": {
+    "message": "ብጁ"
+  },
+  "customAmountLabel": {
+    "message": "በአሜሪካ ዶላር ብጁ የመሙያ መጠን"
+  },
+  "increase": {
+    "message": "ጨምር"
+  },
+  "decrease": {
+    "message": "ቀንስ"
+  },
+  "topUpBalance": {
+    "message": "ሂሳብ ሙላ"
+  },
+  "processing": {
+    "message": "በሂደት ላይ…"
+  },
+  "checkoutError": {
+    "message": "ክፍያ መጀመር አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
+  },
+  "termsOfService": {
+    "message": "የአገልግሎት ውሎች"
+  },
+  "privacyPolicy": {
+    "message": "የግላዊነት ፖሊሲ"
+  },
+  "disclaimerAgree": {
+    "message": "ሂሳብ በመሙላት፣ ከ%TOS% እና %PRIVACY% ጋር ተስማምተዋል።"
+  },
+  "disclaimerFx": {
+    "message": "ከUSD ውጭ በሆነ ገንዘብ ከከፈሉ የውጭ ምንዛሬ ክፍያዎች ሊተገበሩ ይችላሉ።"
+  },
+  "signOut": {
+    "message": "ውጣ"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%ን ጠቅ ማድረግ የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%ን መንካት የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "topUp": {
+    "message": "ሙላ"
+  },
+  "showMore": {
+    "message": "ተጨማሪ አሳይ"
+  },
+  "showLess": {
+    "message": "አነስተኛ አሳይ"
+  },
+  "landingTagline1": {
+    "message": "እውነትን ግለጥ። ውሸቶችን አግኝ።"
+  },
+  "landingTagline2": {
+    "message": "ከእንግዲህ የተሳሳተ መረጃ የለም። እውነታዎች ብቻ።"
+  },
+  "continueWithX": {
+    "message": "በX ቀጥል"
+  },
+  "continueWithGoogle": {
+    "message": "በGoogle ቀጥል"
+  },
+  "continueWithApple": {
+    "message": "በApple ቀጥል"
+  },
+  "lastUsed": {
+    "message": "መጨረሻ የተጠቀሙበት"
+  },
+  "cleanupTagline": {
+    "message": "የX ምግብዎን ያፅዱ።"
+  },
+  "disclaimerJurisdiction": {
+    "message": "በዩናይትድ ስቴትስ ውስጥ፣ የAlabama፣ Arizona፣ California፣ Colorado፣ Connecticut፣ Delaware፣ Florida፣ Idaho፣ Illinois፣ Indiana፣ Iowa፣ Kansas፣ Kentucky፣ Louisiana፣ Maine፣ Massachusetts፣ Mississippi፣ Missouri፣ Montana፣ New Hampshire፣ New Mexico፣ New York፣ North Carolina፣ North Dakota፣ Oklahoma፣ Oregon፣ Pennsylvania፣ South Carolina፣ South Dakota፣ Tennessee፣ Texas፣ Utah፣ Washington፣ Wisconsin እና Wyoming ነዋሪዎች ብቻ DisinfaX መጠቀም እና ሒሳባቸውን መሙላት ይችላሉ፤ Washington, D.C.፣ ሁሉም የአሜሪካ ግዛቶች እና ያልተዘረዘሩ ማናቸውም ግዛቶች አይካተቱም። ከዩናይትድ ስቴትስ ውጭ፣ በካናዳ፣ አውስትራሊያ፣ ኒው ዚላንድ፣ ሲንጋፖር፣ ደቡብ አፍሪካ፣ ጃፓን፣ ታይዋን፣ ኢንዶኔዥያ፣ ታይላንድ፣ ፊሊፒንስ፣ ማሌዥያ፣ ቬትናም እና ስዊዘርላንድ ይገኛል።"
+  },
+  "factCheckAllButton": {
+    "message": "ሁሉንም ማረጋገጥ"
   }
 }

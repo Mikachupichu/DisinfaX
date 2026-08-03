@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verifica",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldu"
+  },
+  "gifted": {
+    "message": "Rigalatu"
+  },
+  "customTopup": {
+    "message": "Persunalizatu"
+  },
+  "customAmountLabel": {
+    "message": "Sguma di ricarica persunalizata in dòllari US"
+  },
+  "increase": {
+    "message": "Aumentà"
+  },
+  "decrease": {
+    "message": "Diminuì"
+  },
+  "topUpBalance": {
+    "message": "Ricarica u saldu"
+  },
+  "processing": {
+    "message": "In corsu…"
+  },
+  "checkoutError": {
+    "message": "Ùn s'hè pussutu principià u pagamentu. Pruvate torna."
+  },
+  "termsOfService": {
+    "message": "Termini di serviziu"
+  },
+  "privacyPolicy": {
+    "message": "Pulìtica di cunfidenzialità"
+  },
+  "disclaimerAgree": {
+    "message": "Ricaricendu, accettate i nostri %TOS% è %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Pòdenu applicàssi tasse di cambiu di valuta s'è pagate in una valuta diversa da l'USD."
+  },
+  "signOut": {
+    "message": "Scunnettitevi"
+  },
+  "onboardDisinfactClick": {
+    "message": "Cliccà nant'à %BTN% mostra l'affirmazioni è caricherà u vostru saldu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Toccà %BTN% mostra l'affirmazioni è caricherà u vostru saldu"
+  },
+  "onboardWillCharge": {
+    "message": "Cliccà nant'à %BTN% caricherà u vostru saldu"
+  },
+  "onboardFactcheck": {
+    "message": "Cliccà nant'à %BTN% caricherà u vostru saldu"
+  },
+  "onboardTranslations": {
+    "message": "Cliccà nant'à %BTN% caricherà u vostru saldu"
+  },
+  "onboardRefreshes": {
+    "message": "Cliccà nant'à %BTN% caricherà u vostru saldu"
+  },
+  "topUp": {
+    "message": "Ricarica"
+  },
+  "showMore": {
+    "message": "Mostra di più"
+  },
+  "showLess": {
+    "message": "Mostra di menu"
+  },
+  "landingTagline1": {
+    "message": "Scòpri a verità. Trova e bucie."
+  },
+  "landingTagline2": {
+    "message": "Basta cù a disinformazione. Solu fatti."
+  },
+  "continueWithX": {
+    "message": "Cuntinueghja cù X"
+  },
+  "continueWithGoogle": {
+    "message": "Cuntinueghja cù Google"
+  },
+  "continueWithApple": {
+    "message": "Cuntinueghja cù Apple"
+  },
+  "lastUsed": {
+    "message": "Ultimu adupratu"
+  },
+  "cleanupTagline": {
+    "message": "Puliscite u vostru feed X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Indò i Stati Uniti, solu i residenti di Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Novu Messicu, New York, Carolina di u Nord, Dakota di u Nord, Oklahoma, Oregon, Pennsylvania, Carolina di u Sud, Dakota di u Sud, Tennessee, Texas, Utah, Washington, Wisconsin è Wyoming pòdenu adoprà DisinfaX è ricarghà u so saldu; Washington, D.C., tutti i territorii americani, è qualsiasi statu ch'un hè listatu sò esclusi. Fora di i Stati Uniti, hè dispunibule in Canada, Australia, Nova Zelanda, Singapore, Sudafrica, Giappone, Taiwan, Indonesia, Tailandia, Filippine, Malesia, Vietnam è Svizzera."
+  },
+  "factCheckAllButton": {
+    "message": "Verifica tuttu"
   }
 }

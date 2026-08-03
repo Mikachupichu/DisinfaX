@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Провери",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Стање"
+  },
+  "gifted": {
+    "message": "Поклоњено"
+  },
+  "customTopup": {
+    "message": "Прилагођено"
+  },
+  "customAmountLabel": {
+    "message": "Прилагођени износ допуне у америчким доларима"
+  },
+  "increase": {
+    "message": "Повећај"
+  },
+  "decrease": {
+    "message": "Смањи"
+  },
+  "topUpBalance": {
+    "message": "Допуни стање"
+  },
+  "processing": {
+    "message": "Обрада…"
+  },
+  "checkoutError": {
+    "message": "Није могуће покренути наплату. Покушајте поново."
+  },
+  "termsOfService": {
+    "message": "Услови коришћења"
+  },
+  "privacyPolicy": {
+    "message": "Политика приватности"
+  },
+  "disclaimerAgree": {
+    "message": "Допуном прихватате наше %TOS% и %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Могу се применити накнаде за девизну конверзију ако плаћате у валути која није USD."
+  },
+  "signOut": {
+    "message": "Одјава"
+  },
+  "onboardDisinfactClick": {
+    "message": "Кликом на %BTN% приказују се тврдње и наплатиће се са вашег салда"
+  },
+  "onboardDisinfactTap": {
+    "message": "Додиром на %BTN% приказују се тврдње и наплатиће се са вашег салда"
+  },
+  "onboardWillCharge": {
+    "message": "Кликом на %BTN% наплатиће се са вашег салда"
+  },
+  "onboardFactcheck": {
+    "message": "Кликом на %BTN% наплатиће се са вашег салда"
+  },
+  "onboardTranslations": {
+    "message": "Кликом на %BTN% наплатиће се са вашег салда"
+  },
+  "onboardRefreshes": {
+    "message": "Кликом на %BTN% наплатиће се са вашег салда"
+  },
+  "topUp": {
+    "message": "Допуни"
+  },
+  "showMore": {
+    "message": "Прикажи више"
+  },
+  "showLess": {
+    "message": "Прикажи мање"
+  },
+  "landingTagline1": {
+    "message": "Откријте истину. Пронађите лажи."
+  },
+  "landingTagline2": {
+    "message": "Нема више дезинформација. Само чињенице."
+  },
+  "continueWithX": {
+    "message": "Настави са X"
+  },
+  "continueWithGoogle": {
+    "message": "Настави са Google"
+  },
+  "continueWithApple": {
+    "message": "Настави са Apple"
+  },
+  "lastUsed": {
+    "message": "Последње коришћено"
+  },
+  "cleanupTagline": {
+    "message": "Очистите свој X фид."
+  },
+  "disclaimerJurisdiction": {
+    "message": "У оквиру Сједињених Држава, само становници Алабаме, Аризоне, Калифорније, Колорада, Конектиката, Делавера, Флориде, Ајдаха, Илиноиса, Индијане, Ајове, Канзаса, Кентакија, Луизијане, Мејна, Масачусетса, Мисисипија, Мисурија, Монтане, Њу Хемпшира, Њу Мексика, Њујорка, Северне Каролине, Северне Дакоте, Оклахоме, Орегона, Пенсилваније, Јужне Каролине, Јужне Дакоте, Тенесија, Тексаса, Јуте, Вашингтона, Висконсина и Вајоминга могу да користе DisinfaX и да допуне свој биланс; Вашингтон, D.C., све територије САД и све државе које нису наведене су искључене. Ван Сједињених Држава, доступно је у Канади, Аустралији, Новом Зеланду, Сингапуру, Јужноафричкој Републици, Јапану, Тајвану, Индонезији, Тајланду, Филипинима, Малезији, Вијетнаму и Швајцарској."
+  },
+  "factCheckAllButton": {
+    "message": "Провери све"
   }
 }

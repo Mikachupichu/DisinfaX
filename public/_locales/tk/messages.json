@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Barlag",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Sowgat"
+  },
+  "customTopup": {
+    "message": "Ýörite"
+  },
+  "customAmountLabel": {
+    "message": "ABŞ dollarynda ýörite doldurma mukdary"
+  },
+  "increase": {
+    "message": "Artdyr"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Balansy dolduryň"
+  },
+  "processing": {
+    "message": "Işlenýär…"
+  },
+  "checkoutError": {
+    "message": "Töleg başlap bolmady. Täzeden synanyşyň."
+  },
+  "termsOfService": {
+    "message": "Hyzmat şertleri"
+  },
+  "privacyPolicy": {
+    "message": "Gizlinlik syýasaty"
+  },
+  "disclaimerAgree": {
+    "message": "Balansy doldurmak bilen, siz biziň %TOS% we %PRIVACY% şertlerimize razy bolýarsyňyz."
+  },
+  "disclaimerFx": {
+    "message": "Eger töleg USD-den başga walýutada amala aşyrylsa, walýuta çalyşmak tölegleri alynyp bilner."
+  },
+  "signOut": {
+    "message": "Çykyş"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% üstüne basmak talaplary görkezer we hasabyňyzdan pul tutular"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ekranyna degmek talaplary görkezer we hasabyňyzdan pul tutular"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+  },
+  "topUp": {
+    "message": "Dolduryň"
+  },
+  "showMore": {
+    "message": "Köpräk görkez"
+  },
+  "showLess": {
+    "message": "Azrak görkez"
+  },
+  "landingTagline1": {
+    "message": "Hakykaty äşgär et. Ýalanlary tap."
+  },
+  "landingTagline2": {
+    "message": "Indi dezinformasiýa ýok. Diňe faktlar."
+  },
+  "continueWithX": {
+    "message": "X bilen dowam et"
+  },
+  "continueWithGoogle": {
+    "message": "Google bilen dowam et"
+  },
+  "continueWithApple": {
+    "message": "Apple bilen dowam et"
+  },
+  "lastUsed": {
+    "message": "Iň soňky ulanylan"
+  },
+  "cleanupTagline": {
+    "message": "X akymyňyzy arassalaň."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerikanyň Birleşen Ştatlarynyň içinde diňe Alabama, Arizona, Kaliforniýa, Kolorado, Konnektikut, Delawer, Florida, Aýdaho, Illinoýs, Indiana, Aýowa, Kanzas, Kentukki, Luiziana, Meýn, Massaçusets, Missisipi, Missuri, Montana, Nýu-Gempşir, Nýu-Meksiko, Nýu-Ýork, Demirgazyk Karolina, Demirgazyk Dakota, Oklahoma, Oregon, Pensilwaniýa, Günorta Karolina, Günorta Dakota, Tennessi, Tehas, Ýuta, Waşington, Wiskonsin we Waýoming ştatlarynyň ýaşaýjylary DisinfaX-i ulanyp we balansyny doldurup bilýär; Waşington, D.C., ähli ABŞ territoriýalary we sanawda görkezilmedik islendik ştatlar muňa girmeýär. Amerikanyň Birleşen Ştatlarynyň daşynda ol Kanada, Awstraliýa, Täze Zelandiýa, Singapur, Günorta Afrika, Ýaponiýa, Taýwan, Indoneziýa, Taýland, Filippinler, Malaýziýa, Wýetnam we Şweýsariýada elýeterlidir."
+  },
+  "factCheckAllButton": {
+    "message": "Ählisini barla"
   }
 }

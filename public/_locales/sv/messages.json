@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Faktakolla",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Gåva"
+  },
+  "customTopup": {
+    "message": "Anpassat"
+  },
+  "customAmountLabel": {
+    "message": "Anpassat påfyllningsbelopp i US-dollar"
+  },
+  "increase": {
+    "message": "Öka"
+  },
+  "decrease": {
+    "message": "Minska"
+  },
+  "topUpBalance": {
+    "message": "Fyll på saldo"
+  },
+  "processing": {
+    "message": "Bearbetar…"
+  },
+  "checkoutError": {
+    "message": "Det gick inte att starta kassan. Försök igen."
+  },
+  "termsOfService": {
+    "message": "Användarvillkor"
+  },
+  "privacyPolicy": {
+    "message": "Integritetspolicy"
+  },
+  "disclaimerAgree": {
+    "message": "Genom att fylla på godkänner du våra %TOS% och %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Växlingsavgifter kan tillkomma om du betalar i en annan valuta än USD."
+  },
+  "signOut": {
+    "message": "Logga ut"
+  },
+  "onboardDisinfactClick": {
+    "message": "Genom att klicka på %BTN% visas påståenden och ditt saldo debiteras"
+  },
+  "onboardDisinfactTap": {
+    "message": "Genom att trycka på %BTN% visas påståenden och ditt saldo debiteras"
+  },
+  "onboardWillCharge": {
+    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+  },
+  "onboardTranslations": {
+    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+  },
+  "topUp": {
+    "message": "Fyll på"
+  },
+  "showMore": {
+    "message": "Visa mer"
+  },
+  "showLess": {
+    "message": "Visa mindre"
+  },
+  "landingTagline1": {
+    "message": "Avslöja sanningen. Hitta lögnerna."
+  },
+  "landingTagline2": {
+    "message": "Ingen mer desinformation. Bara fakta."
+  },
+  "continueWithX": {
+    "message": "Fortsätt med X"
+  },
+  "continueWithGoogle": {
+    "message": "Fortsätt med Google"
+  },
+  "continueWithApple": {
+    "message": "Fortsätt med Apple"
+  },
+  "lastUsed": {
+    "message": "Senast använd"
+  },
+  "cleanupTagline": {
+    "message": "Städa upp ditt X-flöde."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Inom USA kan endast invånare i Alabama, Arizona, Kalifornien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin och Wyoming använda DisinfaX och fylla på sitt saldo; Washington, D.C., alla amerikanska territorier och alla delstater som inte anges är undantagna. Utanför USA är tjänsten tillgänglig i Kanada, Australien, Nya Zeeland, Singapore, Sydafrika, Japan, Taiwan, Indonesien, Thailand, Filippinerna, Malaysia, Vietnam och Schweiz."
+  },
+  "factCheckAllButton": {
+    "message": "Faktakolla allt"
   }
 }

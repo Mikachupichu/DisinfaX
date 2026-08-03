@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "پشکنین",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "باڵانس"
+  },
+  "gifted": {
+    "message": "دیاری"
+  },
+  "customTopup": {
+    "message": "دڵخواز"
+  },
+  "customAmountLabel": {
+    "message": "بڕی پڕکردنەوەی دڵخواز بە دۆلاری ئەمریکی"
+  },
+  "increase": {
+    "message": "زیادکردن"
+  },
+  "decrease": {
+    "message": "کەمکردنەوە"
+  },
+  "topUpBalance": {
+    "message": "پڕکردنەوەی باڵانس"
+  },
+  "processing": {
+    "message": "لە پرۆسەکردندایە…"
+  },
+  "checkoutError": {
+    "message": "نەتوانرا پارەدان دەستپێبکات. تکایە دووبارە هەوڵبدەرەوە."
+  },
+  "termsOfService": {
+    "message": "مەرجەکانی خزمەتگوزاری"
+  },
+  "privacyPolicy": {
+    "message": "سیاسەتی تایبەتمەندی"
+  },
+  "disclaimerAgree": {
+    "message": "بە پڕکردنەوە، تۆ ڕازی دەبیت بە %TOS% و %PRIVACY%ی ئێمە."
+  },
+  "disclaimerFx": {
+    "message": "ئەگەر بە دراوێکی جیاواز لە USD پارە بدەیت، لەوانەیە کرێی گۆڕینی دراو زیاد بکرێت."
+  },
+  "signOut": {
+    "message": "چوونەدەرەوە"
+  },
+  "onboardDisinfactClick": {
+    "message": "کرتەکردن لەسەر %BTN% بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardDisinfactTap": {
+    "message": "پەنجە لێدان لە %BTN% بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardWillCharge": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardFactcheck": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardTranslations": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardRefreshes": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "topUp": {
+    "message": "پڕکردنەوە"
+  },
+  "showMore": {
+    "message": "زیاتر پیشان بدە"
+  },
+  "showLess": {
+    "message": "کەمتر پیشان بدە"
+  },
+  "landingTagline1": {
+    "message": "ڕاستی ئاشکرا بکە. درۆکان بدۆزەرەوە."
+  },
+  "landingTagline2": {
+    "message": "چیتر زانیاری هەڵە نییە. تەنها ڕاستییەکان."
+  },
+  "continueWithX": {
+    "message": "بەردەوامبە بە X"
+  },
+  "continueWithGoogle": {
+    "message": "بەردەوامبە بە Google"
+  },
+  "continueWithApple": {
+    "message": "بەردەوامبە بە Apple"
+  },
+  "lastUsed": {
+    "message": "دواجار بەکارهاتوو"
+  },
+  "cleanupTagline": {
+    "message": "فیدی X خۆت پاک بکەرەوە."
+  },
+  "disclaimerJurisdiction": {
+    "message": "لە ناو ویلایەتە یەکگرتووەکاندا، تەنها دانیشتووانی ئالاباما، ئەریزۆنا، کالیفۆرنیا، کۆلۆرادۆ، کۆنێکتیکەت، دێلاوێر، فلۆریدا، ئایداهۆ، ئیلینۆی، ئیندیانا، ئایۆوا، کانزاس، کێنتەکی، لویزیانا، مەین، ماساچوسێتس، میسیسیپی، میسووری، مۆنتانا، نیو هامپشایەر، نیو مێکسیکۆ، نیویۆرک، کارۆلینای باکوور، داکۆتای باکوور، ئۆکلاهۆما، ئۆریگۆن، پێنسیلڤانیا، کارۆلینای باشوور، داکۆتای باشوور، تێنێسی، تێکساس، یوتا، واشنتۆن، ویسکۆنسن، و وایۆمینگ دەتوانن DisinfaX بەکاربهێنن و باڵانسەکەیان پڕ بکەنەوە؛ واشنتۆن، D.C.، هەموو ناوچەکانی ئەمریکا، و هەر ویلایەتێک کە لە لیستەکەدا نەبێت، دەرخراون. لە دەرەوەی ویلایەتە یەکگرتووەکان، لە کەنەدا، ئوستڕالیا، نیوزیلاند، سینگاپور، ئەفریقای باشوور، ژاپۆن، تایوان، ئەندۆنیزیا، تایلاند، فیلیپین، مالیزیا، ڤیەتنام، و سویسرا بەردەستە."
+  },
+  "factCheckAllButton": {
+    "message": "هەموو پشکنین بکە"
   }
 }

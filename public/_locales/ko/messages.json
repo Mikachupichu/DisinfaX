@@ -162,5 +162,101 @@
   "disinfactButton": {
     "message": "팩트체크",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "잔액"
+  },
+  "gifted": {
+    "message": "증정"
+  },
+  "customTopup": {
+    "message": "직접 입력"
+  },
+  "customAmountLabel": {
+    "message": "미국 달러 기준 사용자 지정 충전 금액"
+  },
+  "increase": {
+    "message": "증가"
+  },
+  "decrease": {
+    "message": "감소"
+  },
+  "topUpBalance": {
+    "message": "잔액 충전"
+  },
+  "processing": {
+    "message": "처리 중…"
+  },
+  "checkoutError": {
+    "message": "결제를 시작할 수 없습니다. 다시 시도해 주세요."
+  },
+  "termsOfService": {
+    "message": "이용약관"
+  },
+  "privacyPolicy": {
+    "message": "개인정보 처리방침"
+  },
+  "disclaimerAgree": {
+    "message": "충전하면 %TOS% 및 %PRIVACY%에 동의하는 것으로 간주됩니다."
+  },
+  "disclaimerFx": {
+    "message": "USD 이외의 통화로 결제하면 환전 수수료가 부과될 수 있습니다."
+  },
+  "signOut": {
+    "message": "로그아웃"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%을(를) 클릭하면 주장이 표시되고 잔액에서 요금이 부과됩니다"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%을(를) 탭하면 주장이 표시되고 잔액에서 요금이 부과됩니다"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "topUp": {
+    "message": "충전"
+  },
+  "showMore": {
+    "message": "더 보기"
+  },
+  "showLess": {
+    "message": "간략히 보기"
+  },
+  "landingTagline1": {
+    "message": "진실을 밝히세요. 거짓을 찾아내세요."
+  },
+  "landingTagline2": {
+    "message": "더 이상의 허위 정보는 없습니다. 오직 사실만."
+  },
+  "continueWithX": {
+    "message": "X로 계속하기"
+  },
+  "continueWithGoogle": {
+    "message": "Google로 계속하기"
+  },
+  "continueWithApple": {
+    "message": "Apple로 계속하기"
+  },
+  "lastUsed": {
+    "message": "최근 사용"
+  },
+  "cleanupTagline": {
+    "message": "당신의 X 피드를 정리하세요."
+  },
+  "disclaimerJurisdiction": {
+    "message": "미국 내에서는 앨라배마주, 애리조나주, 캘리포니아주, 콜로라도주, 코네티컷주, 델라웨어주, 플로리다주, 아이다호주, 일리노이주, 인디애나주, 아이오와주, 캔자스주, 켄터키주, 루이지애나주, 메인주, 매사추세츠주, 미시시피주, 미주리주, 몬태나주, 뉴햄프셔주, 뉴멕시코주, 뉴욕주, 노스캐롤라이나주, 노스다코타주, 오클라호마주, 오리건주, 펜실베이니아주, 사우스캐롤라이나주, 사우스다코타주, 테네시주, 텍사스주, 유타주, 워싱턴주, 위스콘신주, 와이오밍주의 거주자만 DisinfaX를 사용하고 잔액을 충전할 수 있습니다. 워싱턴 D.C., 모든 미국 영토 및 위에 나열되지 않은 주는 제외됩니다. 미국 외에서는 캐나다, 오스트레일리아, 뉴질랜드, 싱가포르, 남아프리카 공화국, 일본, 대만, 인도네시아, 태국, 필리핀, 말레이시아, 베트남, 스위스에서 이용할 수 있습니다."
+  },
+  "factCheckAllButton": {
+    "message": "모두 팩트체크"
   }
 }

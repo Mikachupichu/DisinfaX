@@ -5,6 +5,39 @@
   "appDescription": {
     "message": "AI विश्लेषण के माध्यम से ट्वीट्स में गलत सूचना का पता लगाता है और उसे हाइलाइट करता है।"
   },
+  "topUp": {
+    "message": "टॉप अप करें"
+  },
+  "showMore": {
+    "message": "और दिखाएं"
+  },
+  "showLess": {
+    "message": "कम दिखाएं"
+  },
+  "landingTagline1": {
+    "message": "सच्चाई उजागर करें। झूठ का पता लगाएं।"
+  },
+  "landingTagline2": {
+    "message": "अब कोई गलत सूचना नहीं। केवल तथ्य।"
+  },
+  "continueWithX": {
+    "message": "X के साथ जारी रखें"
+  },
+  "continueWithGoogle": {
+    "message": "Google के साथ जारी रखें"
+  },
+  "continueWithApple": {
+    "message": "Apple के साथ जारी रखें"
+  },
+  "lastUsed": {
+    "message": "अंतिम बार उपयोग किया गया"
+  },
+  "cleanupTagline": {
+    "message": "अपनी X फ़ीड साफ़ करें।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "संयुक्त राज्य अमेरिका के भीतर, केवल अलबामा, एरिज़ोना, कैलिफ़ोर्निया, कोलोराडो, कनेक्टिकट, डेलावेयर, फ़्लोरिडा, आइडाहो, इलिनोइस, इंडियाना, आयोवा, कंसास, केंटकी, लुइज़ियाना, मेन, मैसाचुसेट्स, मिसिसिपी, मिज़ूरी, मोंटाना, न्यू हैम्पशायर, न्यू मैक्सिको, न्यूयॉर्क, नॉर्थ कैरोलिना, नॉर्थ डकोटा, ओक्लाहोमा, ओरेगन, पेंसिल्वेनिया, साउथ कैरोलिना, साउथ डकोटा, टेनेसी, टेक्सास, यूटा, वॉशिंगटन, विस्कॉन्सिन और वायोमिंग के निवासी DisinfaX का उपयोग कर सकते हैं और अपना बैलेंस टॉप अप कर सकते हैं; वॉशिंगटन, D.C., सभी अमेरिकी क्षेत्र, और सूचीबद्ध न किए गए कोई भी राज्य शामिल नहीं हैं। संयुक्त राज्य अमेरिका के बाहर, यह कनाडा, ऑस्ट्रेलिया, न्यूज़ीलैंड, सिंगापुर, दक्षिण अफ़्रीका, जापान, ताइवान, इंडोनेशिया, थाईलैंड, फ़िलीपींस, मलेशिया, वियतनाम और स्विट्ज़रलैंड में उपलब्ध है।"
+  },
   "verdictTrue": {
     "message": "सत्य",
     "description": "Standalone verdict label: the claim is true."
@@ -166,5 +199,68 @@
   "disinfactButton": {
     "message": "जाँच",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "शेष राशि"
+  },
+  "gifted": {
+    "message": "उपहार"
+  },
+  "customTopup": {
+    "message": "कस्टम"
+  },
+  "customAmountLabel": {
+    "message": "अमेरिकी डॉलर में कस्टम टॉप-अप राशि"
+  },
+  "increase": {
+    "message": "बढ़ाएँ"
+  },
+  "decrease": {
+    "message": "घटाएँ"
+  },
+  "topUpBalance": {
+    "message": "बैलेंस टॉप अप करें"
+  },
+  "processing": {
+    "message": "प्रोसेस हो रहा है…"
+  },
+  "checkoutError": {
+    "message": "चेकआउट शुरू नहीं हो सका। कृपया पुनः प्रयास करें।"
+  },
+  "termsOfService": {
+    "message": "सेवा की शर्तें"
+  },
+  "privacyPolicy": {
+    "message": "गोपनीयता नीति"
+  },
+  "disclaimerAgree": {
+    "message": "टॉप अप करके, आप हमारी %TOS% और %PRIVACY% से सहमत होते हैं।"
+  },
+  "disclaimerFx": {
+    "message": "यदि आप USD के अलावा किसी अन्य मुद्रा में भुगतान करते हैं तो विदेशी मुद्रा शुल्क लागू हो सकते हैं।"
+  },
+  "signOut": {
+    "message": "साइन आउट"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% पर क्लिक करने से दावे दिखेंगे और आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% पर टैप करने से दावे दिखेंगे और आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "factCheckAllButton": {
+    "message": "सभी जाँचें"
   }
 }

@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "Ychwanegu credyd"
+  },
+  "showMore": {
+    "message": "Dangos mwy"
+  },
+  "showLess": {
+    "message": "Dangos llai"
+  },
+  "landingTagline1": {
+    "message": "Datgelwch y Gwir. Darganfyddwch y Celwyddau."
+  },
+  "landingTagline2": {
+    "message": "Dim mwy o gamwybodaeth. Ffeithiau yn unig."
+  },
+  "continueWithX": {
+    "message": "Parhau gyda X"
+  },
+  "continueWithGoogle": {
+    "message": "Parhau gyda Google"
+  },
+  "continueWithApple": {
+    "message": "Parhau gyda Apple"
+  },
+  "lastUsed": {
+    "message": "Defnyddiwyd ddiwethaf"
+  },
+  "cleanupTagline": {
+    "message": "Glanhewch eich ffrwd X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "O fewn yr Unol Daleithiau, dim ond trigolion Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Efrog Newydd, Gogledd Carolina, Gogledd Dakota, Oklahoma, Oregon, Pennsylvania, De Carolina, De Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, a Wyoming sy'n cael defnyddio DisinfaX ac ychwanegu at eu balans; mae Washington, D.C., holl diriogaethau'r Unol Daleithiau, ac unrhyw daleithiau nad ydynt wedi'u rhestru wedi'u heithrio. Y tu allan i'r Unol Daleithiau, mae ar gael yng Nghanada, Awstralia, Seland Newydd, Singapore, De Affrica, Japan, Taiwan, Indonesia, Gwlad Thai, Ynysoedd y Philipinau, Malaysia, Fietnam, a'r Swistir."
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "Ffeithwirio",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Rhoddwyd"
+  },
+  "customTopup": {
+    "message": "Personol"
+  },
+  "customAmountLabel": {
+    "message": "Swm ychwanegu personol mewn doleri UDA"
+  },
+  "increase": {
+    "message": "Cynyddu"
+  },
+  "decrease": {
+    "message": "Lleihau"
+  },
+  "topUpBalance": {
+    "message": "Ychwanegu at y Balans"
+  },
+  "processing": {
+    "message": "Yn prosesu…"
+  },
+  "checkoutError": {
+    "message": "Methwyd â dechrau'r taliad. Rhowch gynnig arall arni."
+  },
+  "termsOfService": {
+    "message": "Telerau Gwasanaeth"
+  },
+  "privacyPolicy": {
+    "message": "Polisi Preifatrwydd"
+  },
+  "disclaimerAgree": {
+    "message": "Trwy ychwanegu at eich balans, rydych yn cytuno i'n %TOS% a'n %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Gall ffioedd cyfnewid tramor fod yn berthnasol os talwch mewn arian cyfred heblaw USD."
+  },
+  "signOut": {
+    "message": "Allgofnodi"
+  },
+  "onboardDisinfactClick": {
+    "message": "Bydd clicio %BTN% yn dangos honiadau a bydd yn codi tâl ar eich balans"
+  },
+  "onboardDisinfactTap": {
+    "message": "Bydd tapio %BTN% yn dangos honiadau a bydd yn codi tâl ar eich balans"
+  },
+  "onboardWillCharge": {
+    "message": "Bydd clicio %BTN% yn codi tâl ar eich balans"
+  },
+  "onboardFactcheck": {
+    "message": "Bydd clicio %BTN% yn codi tâl ar eich balans"
+  },
+  "onboardTranslations": {
+    "message": "Bydd clicio %BTN% yn codi tâl ar eich balans"
+  },
+  "onboardRefreshes": {
+    "message": "Bydd clicio %BTN% yn codi tâl ar eich balans"
+  },
+  "factCheckAllButton": {
+    "message": "Ffeithwirio popeth"
   }
 }

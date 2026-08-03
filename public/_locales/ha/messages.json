@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Bincike",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Ma’auni"
+  },
+  "gifted": {
+    "message": "Kyauta"
+  },
+  "customTopup": {
+    "message": "Naka"
+  },
+  "customAmountLabel": {
+    "message": "Adadin cikawa naka a cikin dalar Amurka"
+  },
+  "increase": {
+    "message": "Ƙara"
+  },
+  "decrease": {
+    "message": "Rage"
+  },
+  "topUpBalance": {
+    "message": "Cika Ma’auni"
+  },
+  "processing": {
+    "message": "Ana sarrafawa…"
+  },
+  "checkoutError": {
+    "message": "An kasa fara biyan kuɗi. Da fatan za a sake gwadawa."
+  },
+  "termsOfService": {
+    "message": "Sharuɗɗan Sabis"
+  },
+  "privacyPolicy": {
+    "message": "Manufar Sirri"
+  },
+  "disclaimerAgree": {
+    "message": "Ta hanyar cikawa, kana yarda da %TOS% da %PRIVACY% namu."
+  },
+  "disclaimerFx": {
+    "message": "Ana iya biyan kuɗin canjin kuɗaɗe idan ka biya da kuɗi ban da USD."
+  },
+  "signOut": {
+    "message": "Fita"
+  },
+  "onboardDisinfactClick": {
+    "message": "Danna %BTN% zai bayyana da'awoyi kuma zai cire kudi daga ma'aunin ku"
+  },
+  "onboardDisinfactTap": {
+    "message": "Taɓa %BTN% zai bayyana da'awoyi kuma zai cire kudi daga ma'aunin ku"
+  },
+  "onboardWillCharge": {
+    "message": "Danna %BTN% zai cire kudi daga ma'aunin ku"
+  },
+  "onboardFactcheck": {
+    "message": "Danna %BTN% zai cire kudi daga ma'aunin ku"
+  },
+  "onboardTranslations": {
+    "message": "Danna %BTN% zai cire kudi daga ma'aunin ku"
+  },
+  "onboardRefreshes": {
+    "message": "Danna %BTN% zai cire kudi daga ma'aunin ku"
+  },
+  "topUp": {
+    "message": "Ƙara Kuɗi"
+  },
+  "showMore": {
+    "message": "Nuna ƙari"
+  },
+  "showLess": {
+    "message": "Nuna kaɗan"
+  },
+  "landingTagline1": {
+    "message": "Bayyana Gaskiya. Gano Ƙarya."
+  },
+  "landingTagline2": {
+    "message": "Babu sauran Ƙarya. Gaskiya kawai."
+  },
+  "continueWithX": {
+    "message": "Ci gaba da X"
+  },
+  "continueWithGoogle": {
+    "message": "Ci gaba da Google"
+  },
+  "continueWithApple": {
+    "message": "Ci gaba da Apple"
+  },
+  "lastUsed": {
+    "message": "Wanda Aka Yi Amfani da Shi Ƙarshe"
+  },
+  "cleanupTagline": {
+    "message": "Tsaftace X Feed ɗinka."
+  },
+  "disclaimerJurisdiction": {
+    "message": "A cikin United States, mazauna Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, da Wyoming kaɗai ne za su iya amfani da DisinfaX su kuma ƙara kuɗinsu; Washington, D.C., dukkan yankunan U.S., da kowace jiha da ba a lissafa ba an cire su. A wajen United States, yana samuwa a Canada, Australia, New Zealand, Singapore, Afirka ta Kudu, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, da Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Bincika duka"
   }
 }

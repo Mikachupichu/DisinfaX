@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Ongorora chokwadi",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Bhalansi"
+  },
+  "gifted": {
+    "message": "Chipo"
+  },
+  "customTopup": {
+    "message": "Yakagadziriswa"
+  },
+  "customAmountLabel": {
+    "message": "Mari yakagadziriswa yekuwedzera mumaUS dollars"
+  },
+  "increase": {
+    "message": "Wedzera"
+  },
+  "decrease": {
+    "message": "Deredza"
+  },
+  "topUpBalance": {
+    "message": "Wedzera Bhalansi"
+  },
+  "processing": {
+    "message": "Kugadzirisa…"
+  },
+  "checkoutError": {
+    "message": "Hazvina kukwanisa kutanga kubhadhara. Ndapota edzazve."
+  },
+  "termsOfService": {
+    "message": "Mitemo Yesevhisi"
+  },
+  "privacyPolicy": {
+    "message": "Mutemo Wekuvanzika"
+  },
+  "disclaimerAgree": {
+    "message": "Nekuwedzera, unobvumirana ne%TOS% ne%PRIVACY% yedu."
+  },
+  "disclaimerFx": {
+    "message": "Mari yekuchinjanisa mari dzekunze inogona kushanda kana ukabhadhara nemari isiri USD."
+  },
+  "signOut": {
+    "message": "Buda"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kudzvanya %BTN% kunoratidza zvirevo uye kuchabvisa mari pabhalansi yako"
+  },
+  "onboardDisinfactTap": {
+    "message": "Kubata %BTN% kunoratidza zvirevo uye kuchabvisa mari pabhalansi yako"
+  },
+  "onboardWillCharge": {
+    "message": "Kudzvanya %BTN% kuchabvisa mari pabhalansi yako"
+  },
+  "onboardFactcheck": {
+    "message": "Kudzvanya %BTN% kuchabvisa mari pabhalansi yako"
+  },
+  "onboardTranslations": {
+    "message": "Kudzvanya %BTN% kuchabvisa mari pabhalansi yako"
+  },
+  "onboardRefreshes": {
+    "message": "Kudzvanya %BTN% kuchabvisa mari pabhalansi yako"
+  },
+  "topUp": {
+    "message": "Wedzera Mari"
+  },
+  "showMore": {
+    "message": "Ratidza zvimwe"
+  },
+  "showLess": {
+    "message": "Ratidza zvishoma"
+  },
+  "landingTagline1": {
+    "message": "Buritsa Chokwadi. Wana Nhema."
+  },
+  "landingTagline2": {
+    "message": "Hapachina Nhema. Chokwadi Chega."
+  },
+  "continueWithX": {
+    "message": "Enderera mberi neX"
+  },
+  "continueWithGoogle": {
+    "message": "Enderera mberi neGoogle"
+  },
+  "continueWithApple": {
+    "message": "Enderera mberi neApple"
+  },
+  "lastUsed": {
+    "message": "Yakapedzisira Kushandiswa"
+  },
+  "cleanupTagline": {
+    "message": "Chenesa X Feed yako."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Mukati meUnited States, vanogara chete muAlabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, neWyoming vanogona kushandisa DisinfaX nekuwedzera mari yavo; Washington, D.C., nyika dzose dzeU.S., nemamwe matunhu asina kutaurwa haabvumidzwe. Kunze kweUnited States, iripo muCanada, Australia, New Zealand, Singapore, South Africa, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, neSwitzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Ongorora zvese"
   }
 }

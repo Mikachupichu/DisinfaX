@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Faktokontrolo",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Donacita"
+  },
+  "customTopup": {
+    "message": "Propra"
+  },
+  "customAmountLabel": {
+    "message": "Propra rekargosumo en usonaj dolaroj"
+  },
+  "increase": {
+    "message": "Pligrandigi"
+  },
+  "decrease": {
+    "message": "Malpligrandigi"
+  },
+  "topUpBalance": {
+    "message": "Rekargi saldon"
+  },
+  "processing": {
+    "message": "Traktante…"
+  },
+  "checkoutError": {
+    "message": "Ne eblis komenci pagon. Bonvolu reprovi."
+  },
+  "termsOfService": {
+    "message": "Uzkondiĉoj"
+  },
+  "privacyPolicy": {
+    "message": "Privateca politiko"
+  },
+  "disclaimerAgree": {
+    "message": "Rekargante, vi konsentas al niaj %TOS% kaj %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Valutŝanĝaj kotizoj povas apliki se vi pagas en valuto krom USD."
+  },
+  "signOut": {
+    "message": "Elsaluti"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klako sur %BTN% montras asertojn kaj pagigos vian saldon"
+  },
+  "onboardDisinfactTap": {
+    "message": "Frapeto sur %BTN% montras asertojn kaj pagigos vian saldon"
+  },
+  "onboardWillCharge": {
+    "message": "Klako sur %BTN% pagigos vian saldon"
+  },
+  "onboardFactcheck": {
+    "message": "Klako sur %BTN% pagigos vian saldon"
+  },
+  "onboardTranslations": {
+    "message": "Klako sur %BTN% pagigos vian saldon"
+  },
+  "onboardRefreshes": {
+    "message": "Klako sur %BTN% pagigos vian saldon"
+  },
+  "topUp": {
+    "message": "Rekargi"
+  },
+  "showMore": {
+    "message": "Montri pli"
+  },
+  "showLess": {
+    "message": "Montri malpli"
+  },
+  "landingTagline1": {
+    "message": "Malkaŝu la veron. Trovu la mensogojn."
+  },
+  "landingTagline2": {
+    "message": "Ne plu misinformado. Nur faktoj."
+  },
+  "continueWithX": {
+    "message": "Daŭrigi per X"
+  },
+  "continueWithGoogle": {
+    "message": "Daŭrigi per Google"
+  },
+  "continueWithApple": {
+    "message": "Daŭrigi per Apple"
+  },
+  "lastUsed": {
+    "message": "Laste uzita"
+  },
+  "cleanupTagline": {
+    "message": "Purigu vian X-fluon."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ene de Usono, nur loĝantoj de Alabamo, Arizono, Kalifornio, Kolorado, Konektikuto, Delavaro, Florido, Idaho, Ilinojso, Indianao, Iovao, Kansaso, Kentukio, Luiziano, Majno, Masaĉuseco, Misisipo, Misurio, Montano, Nov-Hampŝiro, Nov-Meksiko, Nov-Jorko, Norda Karolino, Norda Dakoto, Oklahomo, Oregono, Pensilvanio, Suda Karolino, Suda Dakoto, Tenesio, Teksaso, Utaho, Vaŝingtono, Viskonsino kaj Vajomingo povas uzi DisinfaX kaj rekargi sian saldon; Vaŝingtono, D.C., ĉiuj usonaj teritorioj kaj ĉiuj ne listigitaj ŝtatoj estas ekskluditaj. Ekster Usono, ĝi disponeblas en Kanado, Aŭstralio, Nov-Zelando, Singapuro, Sud-Afriko, Japanio, Tajvano, Indonezio, Tajlando, Filipinoj, Malajzio, Vjetnamio kaj Svislando."
+  },
+  "factCheckAllButton": {
+    "message": "Kontroli ĉion"
   }
 }

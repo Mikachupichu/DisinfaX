@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Siaki",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Paleni"
+  },
+  "gifted": {
+    "message": "Meaalofa"
+  },
+  "customTopup": {
+    "message": "Fa'apitoa"
+  },
+  "customAmountLabel": {
+    "message": "Aofa'i fa'apitoa e fa'aopoopo i tala Amerika"
+  },
+  "increase": {
+    "message": "Fa'ateleina"
+  },
+  "decrease": {
+    "message": "Fa'aitiitia"
+  },
+  "topUpBalance": {
+    "message": "Fa'aopoopo le Paleni"
+  },
+  "processing": {
+    "message": "O lo'o fa'agasolo…"
+  },
+  "checkoutError": {
+    "message": "E le'i mafai ona amata le totogi. Fa'amolemole toe taumafai."
+  },
+  "termsOfService": {
+    "message": "Tu'utu'uga o le Auaunaga"
+  },
+  "privacyPolicy": {
+    "message": "Faiga Fa'avae mo le Le Faalauaiteleina"
+  },
+  "disclaimerAgree": {
+    "message": "E ala i le fa'aopoopoina, e te malie i a matou %TOS% ma le %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "E ono fa'aaogaina totogi o fesuia'iga tupe pe a e totogi i se isi tupe e ese mai le USD."
+  },
+  "signOut": {
+    "message": "Saini i fafo"
+  },
+  "onboardDisinfactClick": {
+    "message": "O le kiliki i le %BTN% e faʻaalia ai faʻamatalaga ma o le a totogia ai lau paketi"
+  },
+  "onboardDisinfactTap": {
+    "message": "O le tapa i le %BTN% e faʻaalia ai faʻamatalaga ma o le a totogia ai lau paketi"
+  },
+  "onboardWillCharge": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+  },
+  "onboardFactcheck": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+  },
+  "onboardTranslations": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+  },
+  "onboardRefreshes": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+  },
+  "topUp": {
+    "message": "Faatumu"
+  },
+  "showMore": {
+    "message": "Faʻaali atili"
+  },
+  "showLess": {
+    "message": "Faʻaali itiiti"
+  },
+  "landingTagline1": {
+    "message": "Faʻaali le Mea Moni. Suʻe Pepelo."
+  },
+  "landingTagline2": {
+    "message": "Leai se Faʻamatalaga Sese. Naʻo Mea Moni."
+  },
+  "continueWithX": {
+    "message": "Faʻaauau ma X"
+  },
+  "continueWithGoogle": {
+    "message": "Faʻaauau ma Google"
+  },
+  "continueWithApple": {
+    "message": "Faʻaauau ma Apple"
+  },
+  "lastUsed": {
+    "message": "Faʻaaogaina mulimuli"
+  },
+  "cleanupTagline": {
+    "message": "Faʻamamā lau X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "I totonu o le Iunaite Setete, naʻo tagata nofoia o Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ma Wyoming e mafai ona faʻaaogaina DisinfaX ma faatumu a latou paleni; o Washington, D.C., o teritori uma a le US, ma soo se setete e leʻi lisiina e le aofia ai. I fafo atu o le Iunaite Setete, e maua i Kanata, Ausetalia, Niu Sila, Singapore, Aferika i Saute, Iapani, Taiuana, Initonesia, Taielani, Filipaina, Meleisia, Vietename, ma Suiselani."
+  },
+  "factCheckAllButton": {
+    "message": "Siaki uma"
   }
 }

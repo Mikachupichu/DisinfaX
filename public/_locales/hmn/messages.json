@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Tshawb Xyuas",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Nyiaj seem"
+  },
+  "gifted": {
+    "message": "Pub"
+  },
+  "customTopup": {
+    "message": "Kho"
+  },
+  "customAmountLabel": {
+    "message": "Tus nqi ntxiv nyiaj kho raws siab hauv US nyiaj daus las"
+  },
+  "increase": {
+    "message": "Nce"
+  },
+  "decrease": {
+    "message": "Txo"
+  },
+  "topUpBalance": {
+    "message": "Ntxiv Nyiaj Seem"
+  },
+  "processing": {
+    "message": "Tab tom ua…"
+  },
+  "checkoutError": {
+    "message": "Tsis tuaj yeem pib them nyiaj. Thov sim dua."
+  },
+  "termsOfService": {
+    "message": "Cov Ntsiab Lus Kev Pabcuam"
+  },
+  "privacyPolicy": {
+    "message": "Txoj Cai Tswjfwm Ntiag Tug"
+  },
+  "disclaimerAgree": {
+    "message": "Los ntawm kev ntxiv nyiaj, koj pom zoo rau peb cov %TOS% thiab %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Tej zaum yuav muaj cov nqi hloov nyiaj txiag yog tias koj them nrog cov nyiaj txiag uas tsis yog USD."
+  },
+  "signOut": {
+    "message": "Tawm"
+  },
+  "onboardDisinfactClick": {
+    "message": "Nyem %BTN% yuav qhia cov lus thov thiab yuav them nyiaj ntawm koj tus account"
+  },
+  "onboardDisinfactTap": {
+    "message": "Kov %BTN% yuav qhia cov lus thov thiab yuav them nyiaj ntawm koj tus account"
+  },
+  "onboardWillCharge": {
+    "message": "Nyem %BTN% yuav them nyiaj ntawm koj tus account"
+  },
+  "onboardFactcheck": {
+    "message": "Nyem %BTN% yuav them nyiaj ntawm koj tus account"
+  },
+  "onboardTranslations": {
+    "message": "Nyem %BTN% yuav them nyiaj ntawm koj tus account"
+  },
+  "onboardRefreshes": {
+    "message": "Nyem %BTN% yuav them nyiaj ntawm koj tus account"
+  },
+  "topUp": {
+    "message": "Ntxiv Nyiaj"
+  },
+  "showMore": {
+    "message": "Qhia ntxiv"
+  },
+  "showLess": {
+    "message": "Qhia tsawg"
+  },
+  "landingTagline1": {
+    "message": "Qhia Qhov Tseeb. Nrhiav Cov Dag."
+  },
+  "landingTagline2": {
+    "message": "Tsis Muaj Xov Cuav Ntxiv Lawm. Tsuas Yog Qhov Tseeb Xwb."
+  },
+  "continueWithX": {
+    "message": "Txuas ntxiv nrog X"
+  },
+  "continueWithGoogle": {
+    "message": "Txuas ntxiv nrog Google"
+  },
+  "continueWithApple": {
+    "message": "Txuas ntxiv nrog Apple"
+  },
+  "lastUsed": {
+    "message": "Siv Zaum Kawg"
+  },
+  "cleanupTagline": {
+    "message": "Ntxuav koj lub X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Nyob rau hauv Teb Chaws Meskas, tsuas yog cov neeg nyob hauv Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, thiab Wyoming thiaj li siv tau DisinfaX thiab ntxiv tau lawv cov nyiaj seem; Washington, D.C., tag nrho cov cheeb tsam Meskas, thiab cov xeev uas tsis muaj npe raug txwv. Sab nraum Teb Chaws Meskas, nws muaj nyob rau hauv Kws Nas Das (Canada), Australia, New Zealand, Singapore, South Africa, Nyij Pooj (Japan), Taiwan, Indonesia, Thaib Teb (Thailand), Philippines, Malaysia, Nyab Laj (Vietnam), thiab Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Tshawb Xyuas Tag Nrho"
   }
 }

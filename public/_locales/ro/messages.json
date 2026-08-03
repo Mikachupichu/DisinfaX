@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Verifică",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Sold"
+  },
+  "gifted": {
+    "message": "Cadou"
+  },
+  "customTopup": {
+    "message": "Personalizat"
+  },
+  "customAmountLabel": {
+    "message": "Sumă de realimentare personalizată în dolari americani"
+  },
+  "increase": {
+    "message": "Crește"
+  },
+  "decrease": {
+    "message": "Scade"
+  },
+  "topUpBalance": {
+    "message": "Alimentează soldul"
+  },
+  "processing": {
+    "message": "Se procesează…"
+  },
+  "checkoutError": {
+    "message": "Nu s-a putut începe plata. Încearcă din nou."
+  },
+  "termsOfService": {
+    "message": "Termeni și condiții"
+  },
+  "privacyPolicy": {
+    "message": "Politica de confidențialitate"
+  },
+  "disclaimerAgree": {
+    "message": "Prin alimentare, ești de acord cu %TOS% și %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Se pot aplica comisioane de schimb valutar dacă plătești într-o altă monedă decât USD."
+  },
+  "signOut": {
+    "message": "Deconectare"
+  },
+  "onboardDisinfactClick": {
+    "message": "Apăsarea pe %BTN% dezvăluie afirmațiile și va debita soldul tău"
+  },
+  "onboardDisinfactTap": {
+    "message": "Atingerea %BTN% dezvăluie afirmațiile și va debita soldul tău"
+  },
+  "onboardWillCharge": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "onboardFactcheck": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "onboardTranslations": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "onboardRefreshes": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "topUp": {
+    "message": "Adaugă fonduri"
+  },
+  "showMore": {
+    "message": "Arată mai mult"
+  },
+  "showLess": {
+    "message": "Arată mai puțin"
+  },
+  "landingTagline1": {
+    "message": "Dezvăluie adevărul. Găsește minciunile."
+  },
+  "landingTagline2": {
+    "message": "Gata cu dezinformarea. Doar fapte."
+  },
+  "continueWithX": {
+    "message": "Continuă cu X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuă cu Google"
+  },
+  "continueWithApple": {
+    "message": "Continuă cu Apple"
+  },
+  "lastUsed": {
+    "message": "Ultima utilizare"
+  },
+  "cleanupTagline": {
+    "message": "Curăță-ți fluxul X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "În Statele Unite, doar rezidenții din Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina de Nord, Dakota de Nord, Oklahoma, Oregon, Pennsylvania, Carolina de Sud, Dakota de Sud, Tennessee, Texas, Utah, Washington, Wisconsin și Wyoming pot folosi DisinfaX și își pot alimenta soldul; Washington, D.C., toate teritoriile SUA și orice state care nu sunt enumerate sunt excluse. În afara Statelor Unite, este disponibil în Canada, Australia, Noua Zeelandă, Singapore, Africa de Sud, Japonia, Taiwan, Indonezia, Thailanda, Filipine, Malaezia, Vietnam și Elveția."
+  },
+  "factCheckAllButton": {
+    "message": "Verifică tot"
   }
 }

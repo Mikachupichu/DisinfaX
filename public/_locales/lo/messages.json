@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "ກວດສອບ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ຍອດເງິນ"
+  },
+  "gifted": {
+    "message": "ຂອງຂວັນ"
+  },
+  "customTopup": {
+    "message": "ກຳນົດເອງ"
+  },
+  "customAmountLabel": {
+    "message": "ຈຳນວນເຕີມເງິນທີ່ກຳນົດເອງເປັນໂດລາສະຫະລັດ"
+  },
+  "increase": {
+    "message": "ເພີ່ມ"
+  },
+  "decrease": {
+    "message": "ຫຼຸດ"
+  },
+  "topUpBalance": {
+    "message": "ເຕີມຍອດເງິນ"
+  },
+  "processing": {
+    "message": "ກຳລັງດຳເນີນການ…"
+  },
+  "checkoutError": {
+    "message": "ບໍ່ສາມາດເລີ່ມການຊຳລະໄດ້. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ."
+  },
+  "termsOfService": {
+    "message": "ຂໍ້ກຳນົດການບໍລິການ"
+  },
+  "privacyPolicy": {
+    "message": "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ"
+  },
+  "disclaimerAgree": {
+    "message": "ໂດຍການເຕີມເງິນ, ທ່ານຍອມຮັບ %TOS% ແລະ %PRIVACY% ຂອງພວກເຮົາ."
+  },
+  "disclaimerFx": {
+    "message": "ອາດມີຄ່າທຳນຽມແລກປ່ຽນເງິນຕາຕ່າງປະເທດ ຖ້າທ່ານຊຳລະເປັນສະກຸນເງິນອື່ນທີ່ບໍ່ແມ່ນ USD."
+  },
+  "signOut": {
+    "message": "ອອກຈາກລະບົບ"
+  },
+  "onboardDisinfactClick": {
+    "message": "ການຄລິກ %BTN% ຈະເປີດເຜີຍຄໍາກ່າວອ້າງ ແລະ ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "onboardDisinfactTap": {
+    "message": "ການແຕະ %BTN% ຈະເປີດເຜີຍຄໍາກ່າວອ້າງ ແລະ ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "onboardWillCharge": {
+    "message": "ການຄລິກ %BTN% ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "onboardFactcheck": {
+    "message": "ການຄລິກ %BTN% ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "onboardTranslations": {
+    "message": "ການຄລິກ %BTN% ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "onboardRefreshes": {
+    "message": "ການຄລິກ %BTN% ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "topUp": {
+    "message": "ຕື່ມເງິນ"
+  },
+  "showMore": {
+    "message": "ສະແດງເພີ່ມເຕີມ"
+  },
+  "showLess": {
+    "message": "ສະແດງໜ້ອຍລົງ"
+  },
+  "landingTagline1": {
+    "message": "ເປີດເຜີຍຄວາມຈິງ. ຄົ້ນພົບຄຳຕົວະ."
+  },
+  "landingTagline2": {
+    "message": "ບໍ່ມີຂໍ້ມູນບິດເບືອນອີກຕໍ່ໄປ. ມີແຕ່ຄວາມຈິງ."
+  },
+  "continueWithX": {
+    "message": "ດຳເນີນຕໍ່ດ້ວຍ X"
+  },
+  "continueWithGoogle": {
+    "message": "ດຳເນີນຕໍ່ດ້ວຍ Google"
+  },
+  "continueWithApple": {
+    "message": "ດຳເນີນຕໍ່ດ້ວຍ Apple"
+  },
+  "lastUsed": {
+    "message": "ໃຊ້ຫຼ້າສຸດ"
+  },
+  "cleanupTagline": {
+    "message": "ຈັດລະບຽບຟີດ X ຂອງທ່ານ."
+  },
+  "disclaimerJurisdiction": {
+    "message": "ພາຍໃນສະຫະລັດອາເມຣິກາ, ມີແຕ່ຜູ້ທີ່ອາໄສຢູ່ໃນລັດ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ແລະ Wyoming ເທົ່ານັ້ນທີ່ສາມາດໃຊ້ DisinfaX ແລະຕື່ມເງິນເຂົ້າຍອດເງິນຂອງຕົນໄດ້; Washington, D.C., ດິນແດນທັງໝົດຂອງສະຫະລັດ, ແລະລັດໃດໆທີ່ບໍ່ໄດ້ລະບຸໄວ້ແມ່ນຖືກຍົກເວັ້ນ. ພາຍນອກສະຫະລັດອາເມຣິກາ, ສາມາດໃຊ້ໄດ້ໃນ Canada, Australia, New Zealand, Singapore, ອາຟຣິກາໃຕ້, ຍີ່ປຸ່ນ, ໄຕ້ຫວັນ, ອິນໂດເນເຊຍ, ໄທ, ຟິລິບປິນ, ມາເລເຊຍ, ຫວຽດນາມ ແລະ ສະວິດເຊີແລນ."
+  },
+  "factCheckAllButton": {
+    "message": "ກວດສອບທັງໝົດ"
   }
 }

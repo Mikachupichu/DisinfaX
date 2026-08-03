@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Tekshirish",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Sovg'a"
+  },
+  "customTopup": {
+    "message": "Boshqa"
+  },
+  "customAmountLabel": {
+    "message": "AQSh dollarida ixtiyoriy to'ldirish miqdori"
+  },
+  "increase": {
+    "message": "Oshirish"
+  },
+  "decrease": {
+    "message": "Kamaytirish"
+  },
+  "topUpBalance": {
+    "message": "Balansni to'ldirish"
+  },
+  "processing": {
+    "message": "Amalga oshirilmoqda…"
+  },
+  "checkoutError": {
+    "message": "To'lovni boshlab bo'lmadi. Iltimos, qayta urinib ko'ring."
+  },
+  "termsOfService": {
+    "message": "Xizmat shartlari"
+  },
+  "privacyPolicy": {
+    "message": "Maxfiylik siyosati"
+  },
+  "disclaimerAgree": {
+    "message": "Balansni to'ldirish orqali siz bizning %TOS% va %PRIVACY% hujjatlarimizga rozilik bildirasiz."
+  },
+  "disclaimerFx": {
+    "message": "Agar siz USD dan boshqa valyutada to'lasangiz, valyuta ayirboshlash to'lovlari qo'llanilishi mumkin."
+  },
+  "signOut": {
+    "message": "Chiqish"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% tugmasini bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% tugmasiga bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "topUp": {
+    "message": "To'ldirish"
+  },
+  "showMore": {
+    "message": "Ko'proq ko'rsatish"
+  },
+  "showLess": {
+    "message": "Kamroq ko'rsatish"
+  },
+  "landingTagline1": {
+    "message": "Haqiqatni oching. Yolg'onlarni toping."
+  },
+  "landingTagline2": {
+    "message": "Boshqa dezinformatsiya yo'q. Faqat faktlar."
+  },
+  "continueWithX": {
+    "message": "X bilan davom etish"
+  },
+  "continueWithGoogle": {
+    "message": "Google bilan davom etish"
+  },
+  "continueWithApple": {
+    "message": "Apple bilan davom etish"
+  },
+  "lastUsed": {
+    "message": "Oxirgi ishlatilgan"
+  },
+  "cleanupTagline": {
+    "message": "X tasmangizni tozalang."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Qo'shma Shtatlari ichida DisinfaX'dan foydalanish va balansni to'ldirish faqat Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaxo, Illinoys, Indiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massachusets, Missisipi, Missuri, Montana, Nyu-Gempshir, Nyu-Meksiko, Nyu-York, Shimoliy Karolina, Shimoliy Dakota, Oklaxoma, Oregon, Pensilvaniya, Janubiy Karolina, Janubiy Dakota, Tennessi, Texas, Yuta, Vashington, Viskonsin va Vayoming aholisi uchun mumkin; Vashington, D.C., barcha AQSh hududlari va ro'yxatda ko'rsatilmagan har qanday shtatlar bundan mustasno. Amerika Qo'shma Shtatlaridan tashqarida u Kanada, Avstraliya, Yangi Zelandiya, Singapur, Janubiy Afrika, Yaponiya, Tayvan, Indoneziya, Tailand, Filippin, Malayziya, Vyetnam va Shveytsariyada mavjud."
+  },
+  "factCheckAllButton": {
+    "message": "Barchasini tekshirish"
   }
 }

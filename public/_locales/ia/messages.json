@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verificar",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balancia"
+  },
+  "gifted": {
+    "message": "Donate"
+  },
+  "customTopup": {
+    "message": "Personalisate"
+  },
+  "customAmountLabel": {
+    "message": "Amonta de recarga personalisate in dollares statounitese"
+  },
+  "increase": {
+    "message": "Augmentar"
+  },
+  "decrease": {
+    "message": "Reducer"
+  },
+  "topUpBalance": {
+    "message": "Recargar balancia"
+  },
+  "processing": {
+    "message": "Processante…"
+  },
+  "checkoutError": {
+    "message": "Non poteva initiar le pagamento. Per favor, tenta de novo."
+  },
+  "termsOfService": {
+    "message": "Terminos de servicio"
+  },
+  "privacyPolicy": {
+    "message": "Politica de privacitate"
+  },
+  "disclaimerAgree": {
+    "message": "Recargante, tu accepta nostre %TOS% e %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Costos de cambio de moneta pote applicar se si tu paga in un moneta differente del USD."
+  },
+  "signOut": {
+    "message": "Clauder session"
+  },
+  "onboardDisinfactClick": {
+    "message": "Cliccar %BTN% revelara le allegationes e chargiara tu saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tappar %BTN% revelara le allegationes e chargiara tu saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Cliccar %BTN% chargiara tu saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Cliccar %BTN% chargiara tu saldo"
+  },
+  "onboardTranslations": {
+    "message": "Cliccar %BTN% chargiara tu saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Cliccar %BTN% chargiara tu saldo"
+  },
+  "topUp": {
+    "message": "Recargar le balancia"
+  },
+  "showMore": {
+    "message": "Monstrar plus"
+  },
+  "showLess": {
+    "message": "Monstrar minus"
+  },
+  "landingTagline1": {
+    "message": "Revela le veritate. Trova le mentitas."
+  },
+  "landingTagline2": {
+    "message": "Nulle disinformation plus. Solmente factos."
+  },
+  "continueWithX": {
+    "message": "Continuar con X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuar con Google"
+  },
+  "continueWithApple": {
+    "message": "Continuar con Apple"
+  },
+  "lastUsed": {
+    "message": "Ultime usate"
+  },
+  "cleanupTagline": {
+    "message": "Netta tu feed de X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Intra le Statos Unite, solmente le residentes de Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nove Hampshire, Nove Mexico, Nove York, Carolina del Nord, Dakota del Nord, Oklahoma, Oregon, Pennsylvania, Carolina del Sud, Dakota del Sud, Tennessee, Texas, Utah, Washington, Wisconsin e Wyoming pote usar DisinfaX e recargar lor balancia; Washington, D.C., tote le territorios statounitese e omne stato non listate es excludite. Foras del Statos Unite, illo es disponibile in Canada, Australia, Nove Zelanda, Singapur, Africa del Sud, Japon, Taiwan, Indonesia, Thailandia, le Philippinas, Malaysia, Vietnam e Suissa."
+  },
+  "factCheckAllButton": {
+    "message": "Verificar toto"
   }
 }

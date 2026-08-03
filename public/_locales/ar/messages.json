@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "تحقق",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "الرصيد"
+  },
+  "gifted": {
+    "message": "هدية"
+  },
+  "customTopup": {
+    "message": "مخصص"
+  },
+  "customAmountLabel": {
+    "message": "مبلغ شحن مخصص بالدولار الأمريكي"
+  },
+  "increase": {
+    "message": "زيادة"
+  },
+  "decrease": {
+    "message": "إنقاص"
+  },
+  "topUpBalance": {
+    "message": "شحن الرصيد"
+  },
+  "processing": {
+    "message": "جارٍ المعالجة…"
+  },
+  "checkoutError": {
+    "message": "تعذّر بدء الدفع. يُرجى المحاولة مرة أخرى."
+  },
+  "termsOfService": {
+    "message": "شروط الخدمة"
+  },
+  "privacyPolicy": {
+    "message": "سياسة الخصوصية"
+  },
+  "disclaimerAgree": {
+    "message": "بشحن رصيدك، فإنك توافق على %TOS% و%PRIVACY% الخاصة بنا."
+  },
+  "disclaimerFx": {
+    "message": "قد تُطبَّق رسوم صرف العملات إذا دفعت بعملة غير الدولار الأمريكي."
+  },
+  "signOut": {
+    "message": "تسجيل الخروج"
+  },
+  "onboardDisinfactClick": {
+    "message": "النقر على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardDisinfactTap": {
+    "message": "الضغط على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardWillCharge": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardFactcheck": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardTranslations": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardRefreshes": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "topUp": {
+    "message": "شحن"
+  },
+  "showMore": {
+    "message": "عرض المزيد"
+  },
+  "showLess": {
+    "message": "عرض أقل"
+  },
+  "landingTagline1": {
+    "message": "اكشف الحقيقة. اعثر على الأكاذيب."
+  },
+  "landingTagline2": {
+    "message": "لا مزيد من التضليل. حقائق فقط."
+  },
+  "continueWithX": {
+    "message": "المتابعة باستخدام X"
+  },
+  "continueWithGoogle": {
+    "message": "المتابعة باستخدام Google"
+  },
+  "continueWithApple": {
+    "message": "المتابعة باستخدام Apple"
+  },
+  "lastUsed": {
+    "message": "آخر استخدام"
+  },
+  "cleanupTagline": {
+    "message": "نظّف خلاصتك على X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "داخل الولايات المتحدة، يمكن فقط لسكان ألاباما وأريزونا وكاليفورنيا وكولورادو وكونيتيكت وديلاوير وفلوريدا وأيداهو وإلينوي وإنديانا وآيوا وكانساس وكنتاكي ولويزيانا ومين وماساتشوستس وميسيسيبي وميزوري ومونتانا ونيوهامبشير ونيومكسيكو ونيويورك وكارولينا الشمالية وداكوتا الشمالية وأوكلاهوما وأوريغون وبنسلفانيا وكارولينا الجنوبية وداكوتا الجنوبية وتينيسي وتكساس ويوتا وواشنطن وويسكونسن ووايومنغ استخدام DisinfaX وشحن رصيدهم؛ وتُستثنى واشنطن D.C. وجميع الأقاليم الأمريكية وأي ولايات غير مدرجة. خارج الولايات المتحدة، يتوفر في كندا وأستراليا ونيوزيلندا وسنغافورة وجنوب أفريقيا واليابان وتايوان وإندونيسيا وتايلاند والفلبين وماليزيا وفيتنام وسويسرا."
+  },
+  "factCheckAllButton": {
+    "message": "تحقق من الكل"
   }
 }

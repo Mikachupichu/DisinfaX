@@ -1,4 +1,88 @@
 {
+  "balanceLabel": {
+    "message": "Balance",
+    "description": "Small caption above the large balance amount on the dashboard."
+  },
+  "gifted": {
+    "message": "Gifted",
+    "description": "Word in the top-up bonus badge, e.g. '+3% Gifted'."
+  },
+  "customTopup": {
+    "message": "Custom",
+    "description": "Label for the custom top-up amount button."
+  },
+  "customAmountLabel": {
+    "message": "Custom top-up amount in US dollars",
+    "description": "Accessibility label for the custom top-up input field."
+  },
+  "increase": {
+    "message": "Increase",
+    "description": "Accessibility label for the up-arrow that increases the custom amount."
+  },
+  "decrease": {
+    "message": "Decrease",
+    "description": "Accessibility label for the down-arrow that decreases the custom amount."
+  },
+  "topUpBalance": {
+    "message": "Top Up Balance",
+    "description": "Green button that starts a Stripe checkout to add funds."
+  },
+  "processing": {
+    "message": "Processing…",
+    "description": "Shown on the Top Up button while the checkout session is being created."
+  },
+  "checkoutError": {
+    "message": "Could not start checkout. Please try again.",
+    "description": "Generic error shown when starting a top-up checkout fails."
+  },
+  "termsOfService": {
+    "message": "Terms of Service",
+    "description": "Link text for the terms of service in the top-up disclaimer."
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy",
+    "description": "Link text for the privacy policy in the top-up disclaimer."
+  },
+  "disclaimerAgree": {
+    "message": "By topping up, you agree to our %TOS% and %PRIVACY%.",
+    "description": "Top-up disclaimer. Keep the %TOS% and %PRIVACY% markers exactly — they are replaced with the Terms of Service and Privacy Policy links."
+  },
+  "disclaimerFx": {
+    "message": "Foreign exchange fees may apply if you pay in a currency other than USD.",
+    "description": "Top-up disclaimer about currency conversion costs."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Within the United States, only residents of Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, and Wyoming can use DisinfaX and top up their balance; Washington, D.C., all U.S. territories, and any states not listed are excluded. Outside the United States, it is available in Canada, Australia, New Zealand, Singapore, South Africa, Japan, Taiwan, Indonesia, Thailand, the Philippines, Malaysia, Vietnam, and Switzerland.",
+    "description": "Top-up disclaimer listing supported jurisdictions."
+  },
+  "signOut": {
+    "message": "Sign out",
+    "description": "Button to sign the user out of the extension."
+  },
+  "onboardDisinfactClick": {
+    "message": "Clicking %BTN% reveals claims and will charge your balance",
+    "description": "Onboarding popover next to the Disinfact button (pointer devices). %BTN% is replaced with the button's name."
+  },
+  "onboardDisinfactTap": {
+    "message": "Tapping %BTN% reveals claims and will charge your balance",
+    "description": "Onboarding popover next to the Disinfact button (touch devices). %BTN% is replaced with the button's name."
+  },
+  "onboardWillCharge": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for the Fact-Check All and tweet-level Translate buttons. %BTN% is replaced with the button's name."
+  },
+  "onboardFactcheck": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for a claim's Fact-Check button. %BTN% is replaced with the button's name."
+  },
+  "onboardTranslations": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for the translation button inside the popover. %BTN% is replaced with the button's icon."
+  },
+  "onboardRefreshes": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for the refresh button inside the popover. %BTN% is replaced with the button's icon."
+  },
   "appName": {
     "message": "DisinfaX"
   },
@@ -166,5 +250,39 @@
         "example": "Very Likely"
       }
     }
+  },
+  "topUp": {
+    "message": "Top Up"
+  },
+  "showMore": {
+    "message": "Show more"
+  },
+  "showLess": {
+    "message": "Show less"
+  },
+  "landingTagline1": {
+    "message": "Reveal the Truth. Find the Lies."
+  },
+  "landingTagline2": {
+    "message": "No more Disinformation. Only Facts."
+  },
+  "continueWithX": {
+    "message": "Continue with X"
+  },
+  "continueWithGoogle": {
+    "message": "Continue with Google"
+  },
+  "continueWithApple": {
+    "message": "Continue with Apple"
+  },
+  "lastUsed": {
+    "message": "Last Used"
+  },
+  "cleanupTagline": {
+    "message": "Clean up your X Feed."
+  },
+  "factCheckAllButton": {
+    "message": "Fact-Check All",
+    "description": "Button that fact-checks every claim in the tweet at once (batch action, distinct from the singular per-claim Fact-Check button)."
   }
 }

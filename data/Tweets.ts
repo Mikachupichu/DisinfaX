@@ -1,6 +1,11 @@
 export interface Tweet {
     id: string;
     text: string;
+    /** The raw original-language tweet body from legacy.full_text. This is the exact
+     *  string used to compute the tweet hash (see computeTweetHash), so it must match
+     *  byte-for-byte what any backend worker hashes. Unlike `text`, it never uses the
+     *  note_tweet (long-tweet) expansion — it is always legacy.full_text verbatim. */
+    fullText: string;
     username: string;
     usertype: Usertype;
     conversationId?: string;
@@ -10,7 +15,12 @@ export type QuotedTweet = Tweet
 
 export interface References {
     quoting: QuotedTweet | null,
-    replyingTo: string | null
+    /** The tweet this one is replying to, as a fully-parsed nested tweet (original
+     *  source-language text, same as `quoting`) — NOT a bare status ID. Populated by
+     *  hydrateReplyChains() when the parent is present in the same batch/thread; null
+     *  otherwise. Part of the tweet hash, so the preclassify agent and the hash both
+     *  see real reply-thread context. */
+    replyingTo: MainTweet | null
 }
 
 export type MainTweet = Tweet & References & {

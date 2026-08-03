@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verifiko",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Bilanci"
+  },
+  "gifted": {
+    "message": "Dhuratë"
+  },
+  "customTopup": {
+    "message": "I personalizuar"
+  },
+  "customAmountLabel": {
+    "message": "Shuma e personalizuar e rimbushjes në dollarë amerikanë"
+  },
+  "increase": {
+    "message": "Rrit"
+  },
+  "decrease": {
+    "message": "Ul"
+  },
+  "topUpBalance": {
+    "message": "Rimbush bilancin"
+  },
+  "processing": {
+    "message": "Duke përpunuar…"
+  },
+  "checkoutError": {
+    "message": "Nuk mund të fillohej arka. Ju lutemi provoni përsëri."
+  },
+  "termsOfService": {
+    "message": "Kushtet e shërbimit"
+  },
+  "privacyPolicy": {
+    "message": "Politika e privatësisë"
+  },
+  "disclaimerAgree": {
+    "message": "Duke rimbushur, ju pranoni %TOS% dhe %PRIVACY% tona."
+  },
+  "disclaimerFx": {
+    "message": "Mund të zbatohen tarifa këmbimi valutor nëse paguani në një monedhë tjetër përveç USD."
+  },
+  "signOut": {
+    "message": "Dilni"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikimi mbi %BTN% shfaq pretendimet dhe do të ngarkojë bilancin tuaj"
+  },
+  "onboardDisinfactTap": {
+    "message": "Prekja e %BTN% shfaq pretendimet dhe do të ngarkojë bilancin tuaj"
+  },
+  "onboardWillCharge": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tuaj"
+  },
+  "onboardFactcheck": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tuaj"
+  },
+  "onboardTranslations": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tuaj"
+  },
+  "onboardRefreshes": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tuaj"
+  },
+  "topUp": {
+    "message": "Rimbush"
+  },
+  "showMore": {
+    "message": "Shfaq më shumë"
+  },
+  "showLess": {
+    "message": "Shfaq më pak"
+  },
+  "landingTagline1": {
+    "message": "Zbulo të vërtetën. Gjej gënjeshtrat."
+  },
+  "landingTagline2": {
+    "message": "Jo më dezinformim. Vetëm fakte."
+  },
+  "continueWithX": {
+    "message": "Vazhdo me X"
+  },
+  "continueWithGoogle": {
+    "message": "Vazhdo me Google"
+  },
+  "continueWithApple": {
+    "message": "Vazhdo me Apple"
+  },
+  "lastUsed": {
+    "message": "Përdorur së fundmi"
+  },
+  "cleanupTagline": {
+    "message": "Pastro feed-in tënd në X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Brenda Shteteve të Bashkuara, vetëm banorët e Alabamës, Arizonës, Kalifornisë, Kolorados, Konektikatit, Delaware, Floridës, Ajdahos, Ilinoisit, Indianës, Ajovës, Kanzasit, Kentakit, Luizianës, Mejnit, Masaçusetsit, Misisipit, Misurit, Montanës, Nju Hempshërit, Nju Meksikos, Nju Jorkut, Karolinës së Veriut, Dakotës së Veriut, Oklahomës, Oregonit, Pensilvanisë, Karolinës së Jugut, Dakotës së Jugut, Tenesit, Teksasit, Jutës, Uashingtonit, Uiskonsinit dhe Uajomingut mund të përdorin DisinfaX dhe të rimbushin bilancin e tyre; Uashington, D.C., të gjitha territoret amerikane dhe çdo shtet i palistuar përjashtohen. Jashtë Shteteve të Bashkuara, ai është i disponueshëm në Kanada, Australi, Zelandën e Re, Singapor, Afrikën e Jugut, Japoni, Tajvan, Indonezi, Tajlandë, Filipine, Malajzi, Vietnam dhe Zvicër."
+  },
+  "factCheckAllButton": {
+    "message": "Verifiko gjithçka"
   }
 }

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "تصديق",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "بيلنس"
+  },
+  "gifted": {
+    "message": "تحفي طور ڏنل"
+  },
+  "customTopup": {
+    "message": "ڪسٽم"
+  },
+  "customAmountLabel": {
+    "message": "آمريڪي ڊالرن ۾ ڪسٽم ٽاپ-اپ رقم"
+  },
+  "increase": {
+    "message": "وڌايو"
+  },
+  "decrease": {
+    "message": "گھٽايو"
+  },
+  "topUpBalance": {
+    "message": "بيلنس ٽاپ اپ ڪريو"
+  },
+  "processing": {
+    "message": "پروسيسنگ ٿي رهي آهي…"
+  },
+  "checkoutError": {
+    "message": "چيڪ آئوٽ شروع نه ٿي سگهيو. مهرباني ڪري ٻيهر ڪوشش ڪريو."
+  },
+  "termsOfService": {
+    "message": "خدمت جون شرطون"
+  },
+  "privacyPolicy": {
+    "message": "رازداري پاليسي"
+  },
+  "disclaimerAgree": {
+    "message": "ٽاپ اپ ڪرڻ سان، توهان اسان جي %TOS% ۽ %PRIVACY% سان متفق ٿيو ٿا."
+  },
+  "disclaimerFx": {
+    "message": "جيڪڏهن توهان USD کان سواءِ ڪنهن ٻي ڪرنسي ۾ ادائيگي ڪريو ٿا ته پرڏيهي مٽاسٽا جي فيس لاڳو ٿي سگهي ٿي."
+  },
+  "signOut": {
+    "message": "سائن آئوٽ"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% تي ڪلڪ ڪرڻ سان دعوائون ظاهر ٿينديون ۽ توهان جي بيلنس مان چارج ٿيندو"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% تي ٽيپ ڪرڻ سان دعوائون ظاهر ٿينديون ۽ توهان جي بيلنس مان چارج ٿيندو"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% تي ڪلڪ ڪرڻ سان توهان جي بيلنس مان چارج ٿيندو"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% تي ڪلڪ ڪرڻ سان توهان جي بيلنس مان چارج ٿيندو"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% تي ڪلڪ ڪرڻ سان توهان جي بيلنس مان چارج ٿيندو"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% تي ڪلڪ ڪرڻ سان توهان جي بيلنس مان چارج ٿيندو"
+  },
+  "topUp": {
+    "message": "ٽاپ اپ"
+  },
+  "showMore": {
+    "message": "وڌيڪ ڏيکاريو"
+  },
+  "showLess": {
+    "message": "گھٽ ڏيکاريو"
+  },
+  "landingTagline1": {
+    "message": "سچ پڌرو ڪريو. ڪوڙ ڳوليو."
+  },
+  "landingTagline2": {
+    "message": "وڌيڪ غلط ڄاڻ ناهي. رڳو حقيقتون."
+  },
+  "continueWithX": {
+    "message": "X سان جاري رکو"
+  },
+  "continueWithGoogle": {
+    "message": "Google سان جاري رکو"
+  },
+  "continueWithApple": {
+    "message": "Apple سان جاري رکو"
+  },
+  "lastUsed": {
+    "message": "آخري استعمال ٿيل"
+  },
+  "cleanupTagline": {
+    "message": "پنهنجي X فيڊ صاف ڪريو."
+  },
+  "disclaimerJurisdiction": {
+    "message": "آمريڪا اندر، رڳو الاباما، آريزونا، ڪيليفورنيا، ڪولوراڊو، ڪنيڪٽيڪٽ، ڊيلاويئر، فلوريڊا، آئداهو، اِلينوائي، انڊيانا، آئيووا، ڪينساس، ڪينٽڪي، لوزيانا، مين، ميساچوسٽس، مسيسپي، مسوري، مونٽانا، نيو هيمپشائر، نيو ميڪسيڪو، نيو يارڪ، اتر ڪيرولينا، اتر ڊاڪوٽا، اوڪلاهوما، اوريگن، پينسلوانيا، ڏکڻ ڪيرولينا، ڏکڻ ڊاڪوٽا، ٽينيسي، ٽيڪساس، يوٽا، واشنگٽن، وسڪونسن، ۽ وايومنگ جا رهواسي DisinfaX استعمال ڪري سگهن ٿا ۽ پنهنجو بيلنس ٽاپ اپ ڪري سگهن ٿا؛ واشنگٽن، D.C.، سڀ آمريڪي علائقا، ۽ ڪابه غير فهرست ٿيل رياست خارج آهن. آمريڪا کان ٻاهر، اهو ڪينيڊا، آسٽريليا، نيوزيلينڊ، سنگاپور، ڏکڻ آفريڪا، جاپان، تائيوان، انڊونيشيا، ٿائيلينڊ، فلپائن، ملائيشيا، ويٽنام، ۽ سوئٽزرلينڊ ۾ موجود آهي."
+  },
+  "factCheckAllButton": {
+    "message": "سڀ تصديق ڪريو"
   }
 }

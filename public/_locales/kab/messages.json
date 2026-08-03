@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Senqed",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Amuḍin"
+  },
+  "gifted": {
+    "message": "D tikci"
+  },
+  "customTopup": {
+    "message": "Udmawan"
+  },
+  "customAmountLabel": {
+    "message": "Azal n uɛemmer udmawan s idularen imarikaniyen"
+  },
+  "increase": {
+    "message": "Simɣur"
+  },
+  "decrease": {
+    "message": "Senqes"
+  },
+  "topUpBalance": {
+    "message": "Ɛemmer amuḍin"
+  },
+  "processing": {
+    "message": "Iteddu…"
+  },
+  "checkoutError": {
+    "message": "Ur nezmir ara ad nebdu lexlaṣ. Ttxil-k ɛreḍ tikkelt-nniḍen."
+  },
+  "termsOfService": {
+    "message": "Tiwtilin n useqdec"
+  },
+  "privacyPolicy": {
+    "message": "Tasertit n tbaḍnit"
+  },
+  "disclaimerAgree": {
+    "message": "S uɛemmer, tqebleḍ %TOS% akked %PRIVACY% nneɣ."
+  },
+  "disclaimerFx": {
+    "message": "Zemren ad d-ilin lexlaṣat n ubeddel n tedrimt ma yella txelṣeḍ s tedrimt ur nelli ara d USD."
+  },
+  "signOut": {
+    "message": "Ffeɣ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Asiti ɣef %BTN% ad d-issken tignisin yerna ad iqecc lḥsab-ik"
+  },
+  "onboardDisinfactTap": {
+    "message": "Anadam ɣef %BTN% ad d-issken tignisin yerna ad iqecc lḥsab-ik"
+  },
+  "onboardWillCharge": {
+    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+  },
+  "onboardFactcheck": {
+    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+  },
+  "onboardTranslations": {
+    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+  },
+  "onboardRefreshes": {
+    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+  },
+  "topUp": {
+    "message": "Ɛemmer"
+  },
+  "showMore": {
+    "message": "Ssken-d ugar"
+  },
+  "showLess": {
+    "message": "Ssken-d drus"
+  },
+  "landingTagline1": {
+    "message": "Kken-d tidet. Af-d tikerkas."
+  },
+  "landingTagline2": {
+    "message": "Ulac tanguri tuffirt. Ala tidyanin."
+  },
+  "continueWithX": {
+    "message": "Kemmel s X"
+  },
+  "continueWithGoogle": {
+    "message": "Kemmel s Google"
+  },
+  "continueWithApple": {
+    "message": "Kemmel s Apple"
+  },
+  "lastUsed": {
+    "message": "Aseqdec aneggaru"
+  },
+  "cleanupTagline": {
+    "message": "Zdig asuddem-ik n X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Deg Iwunak Yedduklen, d imezdaɣ n Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina Ugafa, Dakota Ugafa, Oklahoma, Oregon, Pennsylvania, Karolina Unẓul, Dakota Unẓul, Tennessee, Texas, Utah, Washington, Wisconsin, akked Wyoming kan i izemren ad sqedcen DisinfaX yerna ad ɛemmren taɣda-nsen; Washington, D.C., akk tamnaḍin n Marikan, akked yal awank ur d-nettwabder ttwakksen. Beṛṛa n Iwunak Yedduklen, yella deg Kanada, Ustralya, Ziland Tamaynut, Singabur, Tafriqt n Wadda, Japun, Taywan, Indunizya, Tayland, Filipin, Malizya, Vyetnam, akked Swis."
+  },
+  "factCheckAllButton": {
+    "message": "Senqed kullec"
   }
 }

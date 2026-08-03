@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Tirotiro",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Toenga"
+  },
+  "gifted": {
+    "message": "Koha"
+  },
+  "customTopup": {
+    "message": "Ritenga"
+  },
+  "customAmountLabel": {
+    "message": "Te nui o te whakakī ritenga ki te tāra US"
+  },
+  "increase": {
+    "message": "Whakapiki"
+  },
+  "decrease": {
+    "message": "Whakaheke"
+  },
+  "topUpBalance": {
+    "message": "Whakakī Toenga"
+  },
+  "processing": {
+    "message": "E tukatuka ana…"
+  },
+  "checkoutError": {
+    "message": "Kāore i taea te tīmata i te utu. Tēnā, ngana anō."
+  },
+  "termsOfService": {
+    "message": "Ngā Tikanga Ratonga"
+  },
+  "privacyPolicy": {
+    "message": "Kaupapahere Tūmataiti"
+  },
+  "disclaimerAgree": {
+    "message": "Mā te whakakī, ka whakaae koe ki ā mātou %TOS% me %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ka pā pea ngā utu whakawhiti moni tāwāhi ki te utu koe ki tētahi moni i tua atu i te USD."
+  },
+  "signOut": {
+    "message": "Takiputa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ko te pāwhiri i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō putea"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ko te pā i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō putea"
+  },
+  "onboardWillCharge": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+  },
+  "onboardFactcheck": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+  },
+  "onboardTranslations": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+  },
+  "onboardRefreshes": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+  },
+  "topUp": {
+    "message": "Whakakī"
+  },
+  "showMore": {
+    "message": "Whakaatu atu anō"
+  },
+  "showLess": {
+    "message": "Whakaatu iti iho"
+  },
+  "landingTagline1": {
+    "message": "Whakaatuhia te Pono. Kimihia ngā Teka."
+  },
+  "landingTagline2": {
+    "message": "Kāore he Kōrero Tinihanga anō. Ko ngā Meka anake."
+  },
+  "continueWithX": {
+    "message": "Haere tonu me X"
+  },
+  "continueWithGoogle": {
+    "message": "Haere tonu me Google"
+  },
+  "continueWithApple": {
+    "message": "Haere tonu me Apple"
+  },
+  "lastUsed": {
+    "message": "Whakamahia whakamutunga"
+  },
+  "cleanupTagline": {
+    "message": "Whakapaia tō whāngai X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "I roto i te United States, ko ngā kainoho o Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, me Wyoming anake ka taea te whakamahi i a DisinfaX me te whakakī i ō rātou toenga; ko Washington, D.C., ngā rohe katoa o te US, me ngā whenua kāore i whakarārangihia ka whakakorehia. I waho o te United States, kei te wātea i Kanata, Ahitereiria, Aotearoa Hou, Singapore, Awherika ki te Tonga, Hapani, Taiwan, Initonīhia, Tairana, Piripini, Mareia, Whitināmu, me Huitorerangi."
+  },
+  "factCheckAllButton": {
+    "message": "Tirohia katoatia"
   }
 }

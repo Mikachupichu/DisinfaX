@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Kiểm Chứng",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Số dư"
+  },
+  "gifted": {
+    "message": "tặng thêm"
+  },
+  "customTopup": {
+    "message": "Tùy chỉnh"
+  },
+  "customAmountLabel": {
+    "message": "Số tiền nạp tùy chỉnh bằng đô la Mỹ"
+  },
+  "increase": {
+    "message": "Tăng"
+  },
+  "decrease": {
+    "message": "Giảm"
+  },
+  "topUpBalance": {
+    "message": "Nạp số dư"
+  },
+  "processing": {
+    "message": "Đang xử lý…"
+  },
+  "checkoutError": {
+    "message": "Không thể bắt đầu thanh toán. Vui lòng thử lại."
+  },
+  "termsOfService": {
+    "message": "Điều khoản dịch vụ"
+  },
+  "privacyPolicy": {
+    "message": "Chính sách quyền riêng tư"
+  },
+  "disclaimerAgree": {
+    "message": "Bằng cách nạp tiền, bạn đồng ý với %TOS% và %PRIVACY% của chúng tôi."
+  },
+  "disclaimerFx": {
+    "message": "Phí chuyển đổi ngoại tệ có thể được áp dụng nếu bạn thanh toán bằng đơn vị tiền tệ khác USD."
+  },
+  "signOut": {
+    "message": "Đăng xuất"
+  },
+  "onboardDisinfactClick": {
+    "message": "Nhấp vào %BTN% sẽ hiển thị các tuyên bố và trừ tiền vào số dư của bạn"
+  },
+  "onboardDisinfactTap": {
+    "message": "Chạm vào %BTN% sẽ hiển thị các tuyên bố và trừ tiền vào số dư của bạn"
+  },
+  "onboardWillCharge": {
+    "message": "Nhấp vào %BTN% sẽ trừ tiền vào số dư của bạn"
+  },
+  "onboardFactcheck": {
+    "message": "Nhấp vào %BTN% sẽ trừ tiền vào số dư của bạn"
+  },
+  "onboardTranslations": {
+    "message": "Nhấp vào %BTN% sẽ trừ tiền vào số dư của bạn"
+  },
+  "onboardRefreshes": {
+    "message": "Nhấp vào %BTN% sẽ trừ tiền vào số dư của bạn"
+  },
+  "topUp": {
+    "message": "Nạp tiền"
+  },
+  "showMore": {
+    "message": "Xem thêm"
+  },
+  "showLess": {
+    "message": "Thu gọn"
+  },
+  "landingTagline1": {
+    "message": "Vén màn sự thật. Vạch trần lời dối trá."
+  },
+  "landingTagline2": {
+    "message": "Không còn thông tin sai lệch. Chỉ có sự thật."
+  },
+  "continueWithX": {
+    "message": "Tiếp tục với X"
+  },
+  "continueWithGoogle": {
+    "message": "Tiếp tục với Google"
+  },
+  "continueWithApple": {
+    "message": "Tiếp tục với Apple"
+  },
+  "lastUsed": {
+    "message": "Dùng gần nhất"
+  },
+  "cleanupTagline": {
+    "message": "Dọn dẹp bảng tin X của bạn."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Trong phạm vi Hoa Kỳ, chỉ cư dân của các bang Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Bắc Carolina, Bắc Dakota, Oklahoma, Oregon, Pennsylvania, Nam Carolina, Nam Dakota, Tennessee, Texas, Utah, Washington, Wisconsin và Wyoming mới có thể sử dụng DisinfaX và nạp tiền vào số dư; Washington, D.C., tất cả các vùng lãnh thổ của Hoa Kỳ và bất kỳ bang nào không được liệt kê đều bị loại trừ. Bên ngoài Hoa Kỳ, dịch vụ có sẵn tại Canada, Úc, New Zealand, Singapore, Nam Phi, Nhật Bản, Đài Loan, Indonesia, Thái Lan, Philippines, Malaysia, Việt Nam và Thụy Sĩ."
+  },
+  "factCheckAllButton": {
+    "message": "Kiểm Chứng Tất Cả"
   }
 }

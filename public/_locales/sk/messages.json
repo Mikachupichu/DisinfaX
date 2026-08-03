@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Overiť",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Zostatok"
+  },
+  "gifted": {
+    "message": "Darované"
+  },
+  "customTopup": {
+    "message": "Vlastné"
+  },
+  "customAmountLabel": {
+    "message": "Vlastná suma dobitia v amerických dolároch"
+  },
+  "increase": {
+    "message": "Zvýšiť"
+  },
+  "decrease": {
+    "message": "Znížiť"
+  },
+  "topUpBalance": {
+    "message": "Dobiť zostatok"
+  },
+  "processing": {
+    "message": "Spracúva sa…"
+  },
+  "checkoutError": {
+    "message": "Pokladnicu sa nepodarilo spustiť. Skúste to znova."
+  },
+  "termsOfService": {
+    "message": "Podmienky používania"
+  },
+  "privacyPolicy": {
+    "message": "Zásady ochrany osobných údajov"
+  },
+  "disclaimerAgree": {
+    "message": "Dobitím súhlasíte s našimi %TOS% a %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ak platíte v inej mene než USD, môžu sa účtovať poplatky za výmenu meny."
+  },
+  "signOut": {
+    "message": "Odhlásiť sa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kliknutím na %BTN% zobrazíte tvrdenia a z vášho zostatku bude strhnutý poplatok"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ťuknutím na %BTN% zobrazíte tvrdenia a z vášho zostatku bude strhnutý poplatok"
+  },
+  "onboardWillCharge": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "onboardFactcheck": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "onboardTranslations": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "onboardRefreshes": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "topUp": {
+    "message": "Dobiť"
+  },
+  "showMore": {
+    "message": "Zobraziť viac"
+  },
+  "showLess": {
+    "message": "Zobraziť menej"
+  },
+  "landingTagline1": {
+    "message": "Odhaľte pravdu. Nájdite lži."
+  },
+  "landingTagline2": {
+    "message": "Koniec dezinformáciám. Len fakty."
+  },
+  "continueWithX": {
+    "message": "Pokračovať s X"
+  },
+  "continueWithGoogle": {
+    "message": "Pokračovať s Google"
+  },
+  "continueWithApple": {
+    "message": "Pokračovať s Apple"
+  },
+  "lastUsed": {
+    "message": "Naposledy použité"
+  },
+  "cleanupTagline": {
+    "message": "Upracte si svoj kanál na X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "V Spojených štátoch môžu DisinfaX používať a dobíjať si zostatok iba obyvatelia štátov Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nové Mexiko, New York, Severná Karolína, Severná Dakota, Oklahoma, Oregon, Pensylvánia, Južná Karolína, Južná Dakota, Tennessee, Texas, Utah, Washington, Wisconsin a Wyoming; Washington, D.C., všetky územia USA a akékoľvek neuvedené štáty sú vylúčené. Mimo Spojených štátov je služba dostupná v Kanade, Austrálii, na Novom Zélande, v Singapure, Juhoafrickej republike, Japonsku, na Taiwane, v Indonézii, Thajsku, na Filipínach, v Malajzii, Vietname a Švajčiarsku."
+  },
+  "factCheckAllButton": {
+    "message": "Overiť všetko"
   }
 }

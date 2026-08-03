@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "ត្រួតពិនិត្យ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "សមតុល្យ"
+  },
+  "gifted": {
+    "message": "បានផ្តល់ជាអំណោយ"
+  },
+  "customTopup": {
+    "message": "ផ្ទាល់ខ្លួន"
+  },
+  "customAmountLabel": {
+    "message": "ចំនួនបញ្ចូលទឹកប្រាក់ផ្ទាល់ខ្លួនជាដុល្លារអាមេរិក"
+  },
+  "increase": {
+    "message": "បង្កើន"
+  },
+  "decrease": {
+    "message": "បន្ថយ"
+  },
+  "topUpBalance": {
+    "message": "បញ្ចូលទឹកប្រាក់"
+  },
+  "processing": {
+    "message": "កំពុងដំណើរការ…"
+  },
+  "checkoutError": {
+    "message": "មិនអាចចាប់ផ្តើមការទូទាត់បានទេ។ សូមព្យាយាមម្តងទៀត។"
+  },
+  "termsOfService": {
+    "message": "លក្ខខណ្ឌនៃសេវាកម្ម"
+  },
+  "privacyPolicy": {
+    "message": "គោលការណ៍ឯកជនភាព"
+  },
+  "disclaimerAgree": {
+    "message": "ដោយបញ្ចូលទឹកប្រាក់ អ្នកយល់ព្រមតាម %TOS% និង %PRIVACY% របស់យើង។"
+  },
+  "disclaimerFx": {
+    "message": "ថ្លៃប្តូរប្រាក់បរទេសអាចត្រូវបានអនុវត្ត ប្រសិនបើអ្នកបង់ជារូបិយប័ណ្ណផ្សេងក្រៅពី USD។"
+  },
+  "signOut": {
+    "message": "ចាកចេញ"
+  },
+  "onboardDisinfactClick": {
+    "message": "ការចុច %BTN% នឹងបង្ហាញការអះអាង ហើយនឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
+  },
+  "onboardDisinfactTap": {
+    "message": "ការប៉ះ %BTN% នឹងបង្ហាញការអះអាង ហើយនឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
+  },
+  "onboardWillCharge": {
+    "message": "ការចុច %BTN% នឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
+  },
+  "onboardFactcheck": {
+    "message": "ការចុច %BTN% នឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
+  },
+  "onboardTranslations": {
+    "message": "ការចុច %BTN% នឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
+  },
+  "onboardRefreshes": {
+    "message": "ការចុច %BTN% នឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
+  },
+  "topUp": {
+    "message": "បញ្ចូលទឹកប្រាក់"
+  },
+  "showMore": {
+    "message": "បង្ហាញបន្ថែម"
+  },
+  "showLess": {
+    "message": "បង្ហាញតិច"
+  },
+  "landingTagline1": {
+    "message": "បង្ហាញការពិត។ ស្វែងរកការភូតកុហក។"
+  },
+  "landingTagline2": {
+    "message": "លែងមានព័ត៌មានក្លែងក្លាយ។ មានតែការពិត។"
+  },
+  "continueWithX": {
+    "message": "បន្តជាមួយ X"
+  },
+  "continueWithGoogle": {
+    "message": "បន្តជាមួយ Google"
+  },
+  "continueWithApple": {
+    "message": "បន្តជាមួយ Apple"
+  },
+  "lastUsed": {
+    "message": "ប្រើចុងក្រោយ"
+  },
+  "cleanupTagline": {
+    "message": "សម្អាតព័ត៌មាន X របស់អ្នក។"
+  },
+  "disclaimerJurisdiction": {
+    "message": "នៅក្នុងសហរដ្ឋអាមេរិក មានតែអ្នករស់នៅក្នុងរដ្ឋ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin និង Wyoming ប៉ុណ្ណោះដែលអាចប្រើ DisinfaX និងបញ្ចូលទឹកប្រាក់ក្នុងសមតុល្យរបស់ខ្លួនបាន។ Washington, D.C., ដែនដីទាំងអស់របស់សហរដ្ឋអាមេរិក និងរដ្ឋណាមួយដែលមិនបានរាយបញ្ជីត្រូវបានដកចេញ។ នៅក្រៅសហរដ្ឋអាមេរិក វាមានផ្តល់ជូននៅ Canada, Australia, New Zealand, Singapore, អាហ្វ្រិកខាងត្បូង, ជប៉ុន, តៃវ៉ាន់, ឥណ្ឌូនេស៊ី, ថៃ, ហ្វីលីពីន, ម៉ាឡេស៊ី, វៀតណាម និង ស្វីស។"
+  },
+  "factCheckAllButton": {
+    "message": "ត្រួតពិនិត្យទាំងអស់"
   }
 }

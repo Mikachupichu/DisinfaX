@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Provjeri",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Stanje"
+  },
+  "gifted": {
+    "message": "Poklonjeno"
+  },
+  "customTopup": {
+    "message": "Prilagođeno"
+  },
+  "customAmountLabel": {
+    "message": "Prilagođeni iznos nadoplate u američkim dolarima"
+  },
+  "increase": {
+    "message": "Povećaj"
+  },
+  "decrease": {
+    "message": "Smanji"
+  },
+  "topUpBalance": {
+    "message": "Nadoplati stanje"
+  },
+  "processing": {
+    "message": "Obrada…"
+  },
+  "checkoutError": {
+    "message": "Nije moguće započeti plaćanje. Pokušajte ponovno."
+  },
+  "termsOfService": {
+    "message": "Uvjeti pružanja usluge"
+  },
+  "privacyPolicy": {
+    "message": "Pravila o privatnosti"
+  },
+  "disclaimerAgree": {
+    "message": "Nadoplatom prihvaćate naše %TOS% i %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ako plaćate u valuti koja nije USD, mogu se primijeniti naknade za konverziju valute."
+  },
+  "signOut": {
+    "message": "Odjava"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikom na %BTN% prikazuju se tvrdnje i naplaćuje se s vašeg salda"
+  },
+  "onboardDisinfactTap": {
+    "message": "Dodirom na %BTN% prikazuju se tvrdnje i naplaćuje se s vašeg salda"
+  },
+  "onboardWillCharge": {
+    "message": "Klikom na %BTN% naplaćuje se s vašeg salda"
+  },
+  "onboardFactcheck": {
+    "message": "Klikom na %BTN% naplaćuje se s vašeg salda"
+  },
+  "onboardTranslations": {
+    "message": "Klikom na %BTN% naplaćuje se s vašeg salda"
+  },
+  "onboardRefreshes": {
+    "message": "Klikom na %BTN% naplaćuje se s vašeg salda"
+  },
+  "topUp": {
+    "message": "Nadoplati"
+  },
+  "showMore": {
+    "message": "Prikaži više"
+  },
+  "showLess": {
+    "message": "Prikaži manje"
+  },
+  "landingTagline1": {
+    "message": "Otkrijte istinu. Pronađite laži."
+  },
+  "landingTagline2": {
+    "message": "Nema više dezinformacija. Samo činjenice."
+  },
+  "continueWithX": {
+    "message": "Nastavi s X"
+  },
+  "continueWithGoogle": {
+    "message": "Nastavi s Google"
+  },
+  "continueWithApple": {
+    "message": "Nastavi s Apple"
+  },
+  "lastUsed": {
+    "message": "Zadnji put korišteno"
+  },
+  "cleanupTagline": {
+    "message": "Očistite svoj X feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Unutar Sjedinjenih Američkih Država DisinfaX mogu koristiti i nadopunjavati saldo samo stanovnici saveznih država Alabama, Arizona, Kalifornija, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Novi Meksiko, New York, Sjeverna Karolina, Sjeverna Dakota, Oklahoma, Oregon, Pennsylvania, Južna Karolina, Južna Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin i Wyoming; Washington, D.C., svi teritoriji SAD-a i sve savezne države koje nisu navedene isključene su. Izvan Sjedinjenih Američkih Država usluga je dostupna u Kanadi, Australiji, Novom Zelandu, Singapuru, Južnoafričkoj Republici, Japanu, na Tajvanu, u Indoneziji, na Tajlandu, Filipinima, u Maleziji, Vijetnamu i Švicarskoj."
+  },
+  "factCheckAllButton": {
+    "message": "Provjeri sve"
   }
 }

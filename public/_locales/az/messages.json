@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Yoxla",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Hədiyyə"
+  },
+  "customTopup": {
+    "message": "Fərdi"
+  },
+  "customAmountLabel": {
+    "message": "ABŞ dolları ilə fərdi artırma məbləği"
+  },
+  "increase": {
+    "message": "Artır"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Balansı Artır"
+  },
+  "processing": {
+    "message": "Emal edilir…"
+  },
+  "checkoutError": {
+    "message": "Ödəniş başladıla bilmədi. Zəhmət olmasa yenidən cəhd edin."
+  },
+  "termsOfService": {
+    "message": "Xidmət Şərtləri"
+  },
+  "privacyPolicy": {
+    "message": "Məxfilik Siyasəti"
+  },
+  "disclaimerAgree": {
+    "message": "Balansı artırmaqla siz %TOS% və %PRIVACY% ilə razılaşırsınız."
+  },
+  "disclaimerFx": {
+    "message": "USD-dən fərqli valyutada ödəniş etsəniz, valyuta dəyişdirmə haqları tətbiq oluna bilər."
+  },
+  "signOut": {
+    "message": "Çıxış"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% düyməsini klikləmək iddiaları göstərəcək və balansınızdan pul tutulacaq"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% düyməsinə toxunmaq iddiaları göstərəcək və balansınızdan pul tutulacaq"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
+  },
+  "topUp": {
+    "message": "Artır"
+  },
+  "showMore": {
+    "message": "Daha çox göstər"
+  },
+  "showLess": {
+    "message": "Daha az göstər"
+  },
+  "landingTagline1": {
+    "message": "Həqiqəti Aç. Yalanları Tap."
+  },
+  "landingTagline2": {
+    "message": "Artıq Dezinformasiya Yoxdur. Yalnız Faktlar."
+  },
+  "continueWithX": {
+    "message": "X ilə davam et"
+  },
+  "continueWithGoogle": {
+    "message": "Google ilə davam et"
+  },
+  "continueWithApple": {
+    "message": "Apple ilə davam et"
+  },
+  "lastUsed": {
+    "message": "Son İstifadə"
+  },
+  "cleanupTagline": {
+    "message": "X Lentinizi təmizləyin."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Birləşmiş Ştatları daxilində yalnız Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaho, İllinoys, İndiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massaçusets, Missisipi, Missuri, Montana, Nyu-Hempşir, Nyu-Meksiko, Nyu-York, Şimali Karolina, Şimali Dakota, Oklahoma, Oreqon, Pensilvaniya, Cənubi Karolina, Cənubi Dakota, Tennessi, Texas, Yuta, Vaşinqton, Viskonsin və Vayominq sakinləri DisinfaX-dan istifadə edə və balanslarını artıra bilər; Vaşinqton, D.C., bütün ABŞ əraziləri və sadalanmayan hər hansı ştatlar istisnadır. Amerika Birləşmiş Ştatlarından kənarda Kanada, Avstraliya, Yeni Zelandiya, Sinqapur, Cənubi Afrika, Yaponiya, Tayvan, İndoneziya, Tailand, Filippin, Malayziya, Vyetnam və İsveçrədə mövcuddur."
+  },
+  "factCheckAllButton": {
+    "message": "Hamısını yoxla"
   }
 }

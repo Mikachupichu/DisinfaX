@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Sivi",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Toenga paʻanga"
+  },
+  "gifted": {
+    "message": "Meʻaʻofa"
+  },
+  "customTopup": {
+    "message": "Fili"
+  },
+  "customAmountLabel": {
+    "message": "Lahi ʻo e fakakakato ʻoku ke fili ʻi he paʻanga fakaʻamelika"
+  },
+  "increase": {
+    "message": "Fakalahi"
+  },
+  "decrease": {
+    "message": "Fakasiʻisiʻi"
+  },
+  "topUpBalance": {
+    "message": "Fakakakato e toenga paʻanga"
+  },
+  "processing": {
+    "message": "ʻOku fakahoko…"
+  },
+  "checkoutError": {
+    "message": "Naʻe ʻikai lava ʻo kamata e totongi. Kātaki ʻo toe ʻahiʻahi."
+  },
+  "termsOfService": {
+    "message": "Ngaahi Tuʻutuʻuni ʻo e Ngāue"
+  },
+  "privacyPolicy": {
+    "message": "Tuʻutuʻuni Fakapulipuli"
+  },
+  "disclaimerAgree": {
+    "message": "ʻI hoʻo fakakakato, ʻoku ke loto-tatau ki heʻemau %TOS% mo e %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "ʻE lava ke hoko ha totongi liliu paʻanga kapau ʻoku ke totongi ʻi ha paʻanga kehe mei he USD."
+  },
+  "signOut": {
+    "message": "Hū kituʻa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai ho pate"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ko hono tuki ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai ho pate"
+  },
+  "onboardWillCharge": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+  },
+  "onboardFactcheck": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+  },
+  "onboardTranslations": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+  },
+  "onboardRefreshes": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+  },
+  "topUp": {
+    "message": "Fakakakato Paʻanga"
+  },
+  "showMore": {
+    "message": "Fakahā lahi ange"
+  },
+  "showLess": {
+    "message": "Fakahā siʻi ange"
+  },
+  "landingTagline1": {
+    "message": "Fakahaaʻi ʻa e Moʻoni. Kumi ʻa e Ngaahi Loi."
+  },
+  "landingTagline2": {
+    "message": "ʻIkai toe Fakamatala Hala. Ko e Ngaahi Moʻoni pē."
+  },
+  "continueWithX": {
+    "message": "Hoko atu ʻaki ʻa X"
+  },
+  "continueWithGoogle": {
+    "message": "Hoko atu ʻaki ʻa Google"
+  },
+  "continueWithApple": {
+    "message": "Hoko atu ʻaki ʻa Apple"
+  },
+  "lastUsed": {
+    "message": "Ngāueʻaki Fakaʻosi"
+  },
+  "cleanupTagline": {
+    "message": "Fakamaʻa hoʻo X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "ʻI loto ʻi he Puleʻanga Fakatahataha ʻAmelika, ko e kau nofoʻanga pē ʻo Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, mo Wyoming ʻe lava ke ngāueʻaki ʻa DisinfaX pea fakakakato ʻenau toenga paʻanga; ʻoku ʻikai kau ai ʻa Washington, D.C., mo e ngaahi feituʻu kotoa ʻo ʻAmelika, mo ha ngaahi siteiti ʻoku ʻikai lisi. ʻI tuʻa mei he Puleʻanga Fakatahataha ʻAmelika, ʻoku maʻu ia ʻi Kānata, ʻAositelēlia, Nuʻusila, Singapoa, ʻAfilika Tonga, Siapani, Taiuani, ʻInitonēsia, Tailani, Filipaine, Malēsia, Vietinami, mo Suisilani."
+  },
+  "factCheckAllButton": {
+    "message": "Sivi kotoa"
   }
 }

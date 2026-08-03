@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "ચકાસણી",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "બેલેન્સ"
+  },
+  "gifted": {
+    "message": "ભેટ"
+  },
+  "customTopup": {
+    "message": "કસ્ટમ"
+  },
+  "customAmountLabel": {
+    "message": "યુએસ ડોલરમાં કસ્ટમ ટોપ-અપ રકમ"
+  },
+  "increase": {
+    "message": "વધારો"
+  },
+  "decrease": {
+    "message": "ઘટાડો"
+  },
+  "topUpBalance": {
+    "message": "બેલેન્સ ટોપ અપ કરો"
+  },
+  "processing": {
+    "message": "પ્રક્રિયા ચાલુ છે…"
+  },
+  "checkoutError": {
+    "message": "ચેકઆઉટ શરૂ કરી શકાયું નથી. કૃપા કરીને ફરી પ્રયાસ કરો."
+  },
+  "termsOfService": {
+    "message": "સેવાની શરતો"
+  },
+  "privacyPolicy": {
+    "message": "ગોપનીયતા નીતિ"
+  },
+  "disclaimerAgree": {
+    "message": "ટોપ અપ કરીને, તમે અમારી %TOS% અને %PRIVACY% સાથે સંમત થાઓ છો."
+  },
+  "disclaimerFx": {
+    "message": "જો તમે USD સિવાયના ચલણમાં ચૂકવણી કરો તો વિદેશી વિનિમય ફી લાગુ થઈ શકે છે."
+  },
+  "signOut": {
+    "message": "સાઇન આઉટ કરો"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% પર ક્લિક કરવાથી દાવાઓ દેખાશે અને તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% પર ટેપ કરવાથી દાવાઓ દેખાશે અને તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% પર ક્લિક કરવાથી તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% પર ક્લિક કરવાથી તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% પર ક્લિક કરવાથી તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% પર ક્લિક કરવાથી તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
+  },
+  "topUp": {
+    "message": "ટોપ અપ"
+  },
+  "showMore": {
+    "message": "વધુ બતાવો"
+  },
+  "showLess": {
+    "message": "ઓછું બતાવો"
+  },
+  "landingTagline1": {
+    "message": "સત્ય ઉજાગર કરો. જૂઠ શોધો."
+  },
+  "landingTagline2": {
+    "message": "હવે ખોટી માહિતી નહીં. ફક્ત તથ્યો."
+  },
+  "continueWithX": {
+    "message": "X સાથે ચાલુ રાખો"
+  },
+  "continueWithGoogle": {
+    "message": "Google સાથે ચાલુ રાખો"
+  },
+  "continueWithApple": {
+    "message": "Apple સાથે ચાલુ રાખો"
+  },
+  "lastUsed": {
+    "message": "છેલ્લે વપરાયેલ"
+  },
+  "cleanupTagline": {
+    "message": "તમારા X ફીડને સાફ કરો."
+  },
+  "disclaimerJurisdiction": {
+    "message": "યુનાઇટેડ સ્ટેટ્સની અંદર, ફક્ત અલાબામા, એરિઝોના, કેલિફોર્નિયા, કોલોરાડો, કનેક્ટિકટ, ડેલાવેર, ફ્લોરિડા, આઇડાહો, ઇલિનોઇ, ઇન્ડિયાના, આયોવા, કેન્સાસ, કેન્ટકી, લુઇઝિયાના, મેઇન, મેસેચ્યુસેટ્સ, મિસિસિપી, મિઝોરી, મોન્ટાના, ન્યૂ હેમ્પશાયર, ન્યૂ મેક્સિકો, ન્યૂ યોર્ક, નોર્થ કેરોલિના, નોર્થ ડાકોટા, ઓક્લાહોમા, ઓરેગોન, પેન્સિલવેનિયા, સાઉથ કેરોલિના, સાઉથ ડાકોટા, ટેનેસી, ટેક્સાસ, યુટા, વોશિંગ્ટન, વિસ્કોન્સિન અને વ્યોમિંગના રહેવાસીઓ DisinfaX નો ઉપયોગ કરી શકે છે અને તેમનું બેલેન્સ ટોપ અપ કરી શકે છે; Washington, D.C., તમામ યુ.એસ. પ્રદેશો અને સૂચિબદ્ધ ન હોય તેવા કોઈપણ રાજ્યો બાકાત છે. યુનાઇટેડ સ્ટેટ્સની બહાર, તે કેનેડા, ઓસ્ટ્રેલિયા, ન્યૂઝીલેન્ડ, સિંગાપોર, દક્ષિણ આફ્રિકા, જાપાન, તાઇવાન, ઇન્ડોનેશિયા, થાઇલેન્ડ, ફિલિપાઇન્સ, મલેશિયા, વિયેતનામ અને સ્વિટ્ઝર્લેન્ડમાં ઉપલબ્ધ છે."
+  },
+  "factCheckAllButton": {
+    "message": "બધું ચકાસો"
   }
 }

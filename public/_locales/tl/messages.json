@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Suriin",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balanse"
+  },
+  "gifted": {
+    "message": "Regalo"
+  },
+  "customTopup": {
+    "message": "Pasadya"
+  },
+  "customAmountLabel": {
+    "message": "Pasadyang halaga ng top-up sa US dollars"
+  },
+  "increase": {
+    "message": "Dagdagan"
+  },
+  "decrease": {
+    "message": "Bawasan"
+  },
+  "topUpBalance": {
+    "message": "Mag-top Up ng Balanse"
+  },
+  "processing": {
+    "message": "Pinoproseso…"
+  },
+  "checkoutError": {
+    "message": "Hindi masimulan ang checkout. Pakisubukang muli."
+  },
+  "termsOfService": {
+    "message": "Mga Tuntunin ng Serbisyo"
+  },
+  "privacyPolicy": {
+    "message": "Patakaran sa Privacy"
+  },
+  "disclaimerAgree": {
+    "message": "Sa pag-top up, sumasang-ayon ka sa aming %TOS% at %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Maaaring may mga bayarin sa palitan ng dayuhang pera kung magbabayad ka sa ibang currency maliban sa USD."
+  },
+  "signOut": {
+    "message": "Mag-sign out"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ang pag-click sa %BTN% ay magpapakita ng mga claim at magbabawas ito sa iyong balanse"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ang pag-tap sa %BTN% ay magpapakita ng mga claim at magbabawas ito sa iyong balanse"
+  },
+  "onboardWillCharge": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "onboardFactcheck": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "onboardTranslations": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "onboardRefreshes": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "topUp": {
+    "message": "Mag-top Up"
+  },
+  "showMore": {
+    "message": "Magpakita pa"
+  },
+  "showLess": {
+    "message": "Magpakita ng mas kaunti"
+  },
+  "landingTagline1": {
+    "message": "Ibunyag ang Katotohanan. Tuklasin ang mga Kasinungalingan."
+  },
+  "landingTagline2": {
+    "message": "Wala nang Disimpormasyon. Puro Katotohanan lang."
+  },
+  "continueWithX": {
+    "message": "Magpatuloy gamit ang X"
+  },
+  "continueWithGoogle": {
+    "message": "Magpatuloy gamit ang Google"
+  },
+  "continueWithApple": {
+    "message": "Magpatuloy gamit ang Apple"
+  },
+  "lastUsed": {
+    "message": "Huling Ginamit"
+  },
+  "cleanupTagline": {
+    "message": "Linisin ang iyong X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Sa loob ng Estados Unidos, ang mga residente lamang ng Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Hilagang Carolina, Hilagang Dakota, Oklahoma, Oregon, Pennsylvania, Timog Carolina, Timog Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, at Wyoming ang maaaring gumamit ng DisinfaX at mag-top up ng kanilang balanse; ang Washington, D.C., lahat ng mga teritoryo ng U.S., at anumang estado na hindi nakalista ay hindi kasama. Sa labas ng Estados Unidos, available ito sa Canada, Australia, New Zealand, Singapore, Timog Aprika, Hapon, Taiwan, Indonesia, Thailand, Pilipinas, Malaysia, Vietnam, at Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Suriin Lahat"
   }
 }

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verificaziun",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Bilantscha"
+  },
+  "gifted": {
+    "message": "Regal"
+  },
+  "customTopup": {
+    "message": "Persunalisà"
+  },
+  "customAmountLabel": {
+    "message": "Import da recarga persunalisà en dollars americans"
+  },
+  "increase": {
+    "message": "Augmentar"
+  },
+  "decrease": {
+    "message": "Reducir"
+  },
+  "topUpBalance": {
+    "message": "Recartgar la bilantscha"
+  },
+  "processing": {
+    "message": "Elavurar…"
+  },
+  "checkoutError": {
+    "message": "Impussibel da cumenzar il pajament. Empruvai per plaschair anc ina giada."
+  },
+  "termsOfService": {
+    "message": "Cundiziuns d'utilisaziun"
+  },
+  "privacyPolicy": {
+    "message": "Directiva da protecziun da datas"
+  },
+  "disclaimerAgree": {
+    "message": "Cun recartgar acceptais Vus noss %TOS% e %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Taxas da barat da valuta pon vegnir applitgadas sche Vus pajais en in'autra valuta che USD."
+  },
+  "signOut": {
+    "message": "Sortir"
+  },
+  "onboardDisinfactClick": {
+    "message": "Cliccar sin %BTN% mussa las affirmaziuns e chargia il conto"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tuccar %BTN% mussa las affirmaziuns e chargia il conto"
+  },
+  "onboardWillCharge": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "onboardFactcheck": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "onboardTranslations": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "onboardRefreshes": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "topUp": {
+    "message": "Augmentar la bilantscha"
+  },
+  "showMore": {
+    "message": "Mussar dapli"
+  },
+  "showLess": {
+    "message": "Mussar main"
+  },
+  "landingTagline1": {
+    "message": "Revelai la vardad. Chattai las manzegnas."
+  },
+  "landingTagline2": {
+    "message": "Nagina disinfurmaziun pli. Mo fatgs."
+  },
+  "continueWithX": {
+    "message": "Cuntinuar cun X"
+  },
+  "continueWithGoogle": {
+    "message": "Cuntinuar cun Google"
+  },
+  "continueWithApple": {
+    "message": "Cuntinuar cun Apple"
+  },
+  "lastUsed": {
+    "message": "Ultima utilisaziun"
+  },
+  "cleanupTagline": {
+    "message": "Nettegiai Voss feed da X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Entaifer ils Stadis Unids pon mo abitants da Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina dal Nord, Dakota dal Nord, Oklahoma, Oregon, Pennsylvania, Carolina dal Sid, Dakota dal Sid, Tennessee, Texas, Utah, Washington, Wisconsin e Wyoming utilisar DisinfaX ed augmentar lur bilantscha; Washington, D.C., tut ils territoris dals Stadis Unids e mintga stadi betg numnà èn exclus. Ordaifer ils Stadis Unids è el disponibel en Canada, Australia, Nova Zelanda, Singapur, Africa dal Sid, Giapun, Taiwan, Indonesia, Tailanda, ils Filippins, Malaisia, Vietnam e Svizra."
+  },
+  "factCheckAllButton": {
+    "message": "Verifitgar tut"
   }
 }

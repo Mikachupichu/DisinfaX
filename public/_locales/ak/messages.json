@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Hwehwɛ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Sika a aka"
+  },
+  "gifted": {
+    "message": "Akyɛde"
+  },
+  "customTopup": {
+    "message": "Wʼankasa"
+  },
+  "customAmountLabel": {
+    "message": "Wʼankasa top-up dodow wɔ US dɔla mu"
+  },
+  "increase": {
+    "message": "Ma ɛnkɔ soro"
+  },
+  "decrease": {
+    "message": "Tew so"
+  },
+  "topUpBalance": {
+    "message": "Fa Sika Gu Mu"
+  },
+  "processing": {
+    "message": "Ɛreyɛ adwuma…"
+  },
+  "checkoutError": {
+    "message": "Yɛantumi anfi checkout ase. Yɛsrɛ wo sɔ hwɛ bio."
+  },
+  "termsOfService": {
+    "message": "Nsɛm a Wɔde Som"
+  },
+  "privacyPolicy": {
+    "message": "Kokoamsɛm Ho Nhyehyɛe"
+  },
+  "disclaimerAgree": {
+    "message": "Sɛ wode sika gu mu a, wopene yɛn %TOS% ne %PRIVACY% so."
+  },
+  "disclaimerFx": {
+    "message": "Sɛ wutua ka wɔ sika foforo bi a ɛnyɛ USD mu a, sika sesa ho ka bɛtumi aba."
+  },
+  "signOut": {
+    "message": "Fi mu"
+  },
+  "onboardDisinfactClick": {
+    "message": "Sɛ wode wo nsa ka %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo kyɛfa mu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Sɛ wode wo nsa bɔ %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo kyɛfa mu"
+  },
+  "onboardWillCharge": {
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+  },
+  "onboardFactcheck": {
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+  },
+  "onboardTranslations": {
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+  },
+  "onboardRefreshes": {
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+  },
+  "topUp": {
+    "message": "Fa Sika Gu Mu"
+  },
+  "showMore": {
+    "message": "Kyerɛ pii"
+  },
+  "showLess": {
+    "message": "Kyerɛ kakra"
+  },
+  "landingTagline1": {
+    "message": "Da Nokware Adi. Hwehwɛ Atorɔ No."
+  },
+  "landingTagline2": {
+    "message": "Atosɛm Nni Hɔ Bio. Nokwasɛm Nko Ara."
+  },
+  "continueWithX": {
+    "message": "Kɔ so wɔ X so"
+  },
+  "continueWithGoogle": {
+    "message": "Kɔ so wɔ Google so"
+  },
+  "continueWithApple": {
+    "message": "Kɔ so wɔ Apple so"
+  },
+  "lastUsed": {
+    "message": "Deɛ Wode Dii Dwuma Akyire"
+  },
+  "cleanupTagline": {
+    "message": "Siesie wo X Feed no."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Wɔ Amerika Nkabom Aman no mu no, Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne Wyoming amanfoɔ nko ara na wɔbɛtumi de DisinfaX adi dwuma na wɔde sika agu wɔn balance mu; Washington, D.C., Amerika nsase nyinaa, ne aman biara a wɔanka ho asɛm no nni mu. Wɔ Amerika Nkabom Aman no akyi no, ɛwɔ hɔ wɔ Kanada, Australia, New Zealand, Singapore, Anafoɔ Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Hwehwɛ nyinaa"
   }
 }

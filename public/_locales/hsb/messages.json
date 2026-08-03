@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Pruwowanje",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Staw konta"
+  },
+  "gifted": {
+    "message": "Darjene"
+  },
+  "customTopup": {
+    "message": "Swójske"
+  },
+  "customAmountLabel": {
+    "message": "Swójska suma dobića w US-dolarach"
+  },
+  "increase": {
+    "message": "Zwyšić"
+  },
+  "decrease": {
+    "message": "Znižić"
+  },
+  "topUpBalance": {
+    "message": "Konto dobić"
+  },
+  "processing": {
+    "message": "Předźěłuje so…"
+  },
+  "checkoutError": {
+    "message": "Płaćenje njeda so startować. Prošu spytajće hišće raz."
+  },
+  "termsOfService": {
+    "message": "Wuměnjenja słužby"
+  },
+  "privacyPolicy": {
+    "message": "Prawidła priwatnosće"
+  },
+  "disclaimerAgree": {
+    "message": "Z dobićom přizwolujeće našim %TOS% a %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Płaćiće-li w druhej měnje hač USD, móža so popłatki za wuměnu měny nałožować."
+  },
+  "signOut": {
+    "message": "Wotzjewić so"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kliknjenje na %BTN% pokazuje twjerdźenja a wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardDisinfactTap": {
+    "message": "Dótkńenje %BTN% pokazuje twjerdźenja a wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardWillCharge": {
+    "message": "Kliknjenje na %BTN% wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardFactcheck": {
+    "message": "Kliknjenje na %BTN% wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardTranslations": {
+    "message": "Kliknjenje na %BTN% wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardRefreshes": {
+    "message": "Kliknjenje na %BTN% wotćehnje pjenjezy z wašeho konta"
+  },
+  "topUp": {
+    "message": "Připołnić"
+  },
+  "showMore": {
+    "message": "Wjace pokazać"
+  },
+  "showLess": {
+    "message": "Mjenje pokazać"
+  },
+  "landingTagline1": {
+    "message": "Wotkryj prawdu. Namakaj łži."
+  },
+  "landingTagline2": {
+    "message": "Nětko žana dezinformacija. Jenož fakty."
+  },
+  "continueWithX": {
+    "message": "Pokročować z X"
+  },
+  "continueWithGoogle": {
+    "message": "Pokročować z Google"
+  },
+  "continueWithApple": {
+    "message": "Pokročować z Apple"
+  },
+  "lastUsed": {
+    "message": "Poslednje wužite"
+  },
+  "cleanupTagline": {
+    "message": "Rjedź swój kanal X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "W Zjednoćenych statach smědźa jenož wobydlerjo statow Alabama, Arizona, Kalifornija, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nowe Mexiko, New York, Sewjerna Karolina, Sewjerna Dakota, Oklahoma, Oregon, Pennsylvania, Južna Karolina, Južna Dakota, Tennessee, Texas, Utah, Washington, Wisconsin a Wyoming DisinfaX wužiwać a swój zbytk připołnić; Washington, D.C., wšě teritorije USA a wšě njenaličene staty su wuzamknjene. Zwonka Zjednoćenych statow je k dispoziciji w Kanadźe, Awstralskej, Nowoseelandskej, Singapurje, Južnoafriskej republice, Japanskej, na Taiwanje, w Indoneskej, Thailandskej, na Filipinach, w Malajziji, Vietnamje a Šwicarskej."
+  },
+  "factCheckAllButton": {
+    "message": "Wšo pruwować"
   }
 }

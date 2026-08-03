@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Faktencheck",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Guthaben"
+  },
+  "gifted": {
+    "message": "geschenkt"
+  },
+  "customTopup": {
+    "message": "Benutzerdefiniert"
+  },
+  "customAmountLabel": {
+    "message": "Individueller Aufladebetrag in US-Dollar"
+  },
+  "increase": {
+    "message": "Erhöhen"
+  },
+  "decrease": {
+    "message": "Verringern"
+  },
+  "topUpBalance": {
+    "message": "Guthaben aufladen"
+  },
+  "processing": {
+    "message": "Wird verarbeitet…"
+  },
+  "checkoutError": {
+    "message": "Zahlung konnte nicht gestartet werden. Bitte erneut versuchen."
+  },
+  "termsOfService": {
+    "message": "Nutzungsbedingungen"
+  },
+  "privacyPolicy": {
+    "message": "Datenschutzerklärung"
+  },
+  "disclaimerAgree": {
+    "message": "Mit dem Aufladen stimmst du unseren %TOS% und unserer %PRIVACY% zu."
+  },
+  "disclaimerFx": {
+    "message": "Bei Zahlung in einer anderen Währung als USD können Wechselkursgebühren anfallen."
+  },
+  "signOut": {
+    "message": "Abmelden"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ein Klick auf %BTN% zeigt Behauptungen an und belastet dein Guthaben"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ein Tippen auf %BTN% zeigt Behauptungen an und belastet dein Guthaben"
+  },
+  "onboardWillCharge": {
+    "message": "Ein Klick auf %BTN% belastet dein Guthaben"
+  },
+  "onboardFactcheck": {
+    "message": "Ein Klick auf %BTN% belastet dein Guthaben"
+  },
+  "onboardTranslations": {
+    "message": "Ein Klick auf %BTN% belastet dein Guthaben"
+  },
+  "onboardRefreshes": {
+    "message": "Ein Klick auf %BTN% belastet dein Guthaben"
+  },
+  "topUp": {
+    "message": "Aufladen"
+  },
+  "showMore": {
+    "message": "Mehr anzeigen"
+  },
+  "showLess": {
+    "message": "Weniger anzeigen"
+  },
+  "landingTagline1": {
+    "message": "Enthülle die Wahrheit. Finde die Lügen."
+  },
+  "landingTagline2": {
+    "message": "Keine Desinformation mehr. Nur Fakten."
+  },
+  "continueWithX": {
+    "message": "Weiter mit X"
+  },
+  "continueWithGoogle": {
+    "message": "Weiter mit Google"
+  },
+  "continueWithApple": {
+    "message": "Weiter mit Apple"
+  },
+  "lastUsed": {
+    "message": "Zuletzt verwendet"
+  },
+  "cleanupTagline": {
+    "message": "Räume deinen X-Feed auf."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Innerhalb der Vereinigten Staaten können nur Einwohner von Alabama, Arizona, Kalifornien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin und Wyoming DisinfaX nutzen und ihr Guthaben aufladen; Washington, D.C., alle US-Territorien und alle nicht aufgeführten Bundesstaaten sind ausgeschlossen. Außerhalb der Vereinigten Staaten ist es in Kanada, Australien, Neuseeland, Singapur, Südafrika, Japan, Taiwan, Indonesien, Thailand, den Philippinen, Malaysia, Vietnam und der Schweiz verfügbar."
+  },
+  "factCheckAllButton": {
+    "message": "Alles überprüfen"
   }
 }

@@ -12,9 +12,17 @@ export type Claim = {
     veracity?: number;
     sources?: Source[];
     /** Canonical claim text from the DB table entry this claim is linked to.
-     *  Set when a DB match is found (via embedding match via fetch-claim worker).
-     *  Used by the refresh button to re-research without re-matching. */
+     *  Set when a DB match is found. Used by the refresh button to re-research
+     *  without re-matching. */
     dbClaimText?: string;
+    /** claims.id (uuid) of the DB row this claim is linked to, once known (from a
+     *  fetch_tweet_and_touch_network / get_full_claim pull or a Realtime payload).
+     *  Preferred dedup key and the handle for get_full_claim / subscribe. */
+    dbClaimId?: string;
+    /** True when another user's classification for this claim is currently in flight
+     *  (DB is_classifying). The UI shows the existing values with a spinner and
+     *  auto-replaces them when the fresh classification arrives — no click needed. */
+    isClassifying?: boolean;
     /** Locale-keyed character ranges for highlighting in the tweet text.
      *  E.g. {"en": [24, 56], "es": [45, 78]} — keyed by locale, value is [start, end]. */
     highlight?: Record<string, [number, number]>;
@@ -70,6 +78,10 @@ export type Classification = {
     /** When true, the user clicked "Translate Fact-Checks" and highlight
      *  localization is still running. Hide fallback boxes until it completes. */
     localizingHighlights?: boolean;
+    /** When true, a forced re-preclassification ("Re-classify this tweet's claims") is
+     *  running. Shows a spinner in the Disinfact button's slot at the top of the tweet,
+     *  since that flow has no on-hold button of its own to spin. */
+    preclassifying?: boolean;
     /** When set, the tweet text should be replaced with Grok's auto-translated
      *  text in this locale. Highlights on claims use this locale key. */
     translatedLocale?: string;

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verifye",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Kado"
+  },
+  "customTopup": {
+    "message": "Pèsonalize"
+  },
+  "customAmountLabel": {
+    "message": "Montan rechaj pèsonalize an dola ameriken"
+  },
+  "increase": {
+    "message": "Ogmante"
+  },
+  "decrease": {
+    "message": "Diminye"
+  },
+  "topUpBalance": {
+    "message": "Rechaje balans"
+  },
+  "processing": {
+    "message": "N ap trete…"
+  },
+  "checkoutError": {
+    "message": "Nou pa t kapab kòmanse peman an. Tanpri eseye ankò."
+  },
+  "termsOfService": {
+    "message": "Kondisyon Sèvis"
+  },
+  "privacyPolicy": {
+    "message": "Politik Konfidansyalite"
+  },
+  "disclaimerAgree": {
+    "message": "Lè ou rechaje, ou dakò ak %TOS% ak %PRIVACY% nou yo."
+  },
+  "disclaimerFx": {
+    "message": "Frè chanj lajan ka aplike si ou peye nan yon lòt lajan ki pa USD."
+  },
+  "signOut": {
+    "message": "Dekonekte"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klike sou %BTN% ap devwale reklamasyon yo epi l ap chaje balans ou"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tape sou %BTN% ap devwale reklamasyon yo epi l ap chaje balans ou"
+  },
+  "onboardWillCharge": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "onboardFactcheck": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "onboardTranslations": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "onboardRefreshes": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "topUp": {
+    "message": "Mete lajan"
+  },
+  "showMore": {
+    "message": "Montre plis"
+  },
+  "showLess": {
+    "message": "Montre mwens"
+  },
+  "landingTagline1": {
+    "message": "Revele verite a. Jwenn manti yo."
+  },
+  "landingTagline2": {
+    "message": "Pa gen dezenfòmasyon ankò. Se sèlman reyalite."
+  },
+  "continueWithX": {
+    "message": "Kontinye ak X"
+  },
+  "continueWithGoogle": {
+    "message": "Kontinye ak Google"
+  },
+  "continueWithApple": {
+    "message": "Kontinye ak Apple"
+  },
+  "lastUsed": {
+    "message": "Dènye itilize"
+  },
+  "cleanupTagline": {
+    "message": "Netwaye fil X ou a."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Nan peyi Etazini, se sèlman rezidan Alabama, Arizona, Kalifòni, Kolorado, Connecticut, Delaware, Florid, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Lwizyàn, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nouvo Meksik, New York, Kawolin di Nò, Dakota di Nò, Oklahoma, Oregon, Pennsilvani, Kawolin di Sid, Dakota di Sid, Tennessee, Texas, Utah, Washington, Wisconsin, ak Wyoming ki ka itilize DisinfaX epi mete lajan nan balans yo ; Washington, D.C., tout teritwa Etazini yo, ak nenpòt eta ki pa nan lis la eskli. Andeyò Etazini, li disponib nan Kanada, Ostrali, Nouvèl Zeland, Singapou, Afrik di Sid, Japon, Taywan, Endonezi, Tayland, Filipin yo, Malezi, Vyetnam, ak Swis."
+  },
+  "factCheckAllButton": {
+    "message": "Verifye tout"
   }
 }

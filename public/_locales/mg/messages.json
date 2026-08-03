@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Fanamarinana",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Vola sisa"
+  },
+  "gifted": {
+    "message": "Natolotra"
+  },
+  "customTopup": {
+    "message": "Manokana"
+  },
+  "customAmountLabel": {
+    "message": "Vola fanampiana manokana amin'ny dolara amerikana"
+  },
+  "increase": {
+    "message": "Ampitomboy"
+  },
+  "decrease": {
+    "message": "Ahenoy"
+  },
+  "topUpBalance": {
+    "message": "Ampiana vola"
+  },
+  "processing": {
+    "message": "Eo am-panodinana…"
+  },
+  "checkoutError": {
+    "message": "Tsy afaka nanomboka ny fandoavam-bola. Andramo indray azafady."
+  },
+  "termsOfService": {
+    "message": "Fepetran'ny serivisy"
+  },
+  "privacyPolicy": {
+    "message": "Politikan'ny fiainana manokana"
+  },
+  "disclaimerAgree": {
+    "message": "Amin'ny fampiana vola, dia manaiky ny %TOS% sy %PRIVACY% anay ianao."
+  },
+  "disclaimerFx": {
+    "message": "Mety hampiharina ny saran'ny fanakalozam-bola vahiny raha mandoa amin'ny vola hafa ankoatra ny USD ianao."
+  },
+  "signOut": {
+    "message": "Hiala"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ny fanindriana ny %BTN% dia hampiseho ny fanambarana ary hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ny fikapohana ny %BTN% dia hampiseho ny fanambarana ary hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardWillCharge": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardFactcheck": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardTranslations": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardRefreshes": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "topUp": {
+    "message": "Fenoy"
+  },
+  "showMore": {
+    "message": "Asehoy bebe kokoa"
+  },
+  "showLess": {
+    "message": "Asehoy kely kokoa"
+  },
+  "landingTagline1": {
+    "message": "Ampisehoy ny Marina. Tadiavo ny Lainga."
+  },
+  "landingTagline2": {
+    "message": "Tsy misy fampitam-baovao diso intsony. Zava-misy ihany."
+  },
+  "continueWithX": {
+    "message": "Tohizo amin'ny X"
+  },
+  "continueWithGoogle": {
+    "message": "Tohizo amin'ny Google"
+  },
+  "continueWithApple": {
+    "message": "Tohizo amin'ny Apple"
+  },
+  "lastUsed": {
+    "message": "Nampiasaina farany"
+  },
+  "cleanupTagline": {
+    "message": "Diovy ny fandraisam-baovao X anao."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ao anatin'i Etazonia, ny mponin'i Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ary Wyoming ihany no afaka mampiasa DisinfaX sy mameno ny volany; Washington, D.C., ny faritany amerikana rehetra, ary ny fanjakana rehetra tsy voatanisa dia tsy tafiditra. Any ivelan'i Etazonia, dia misy any Kanada, Aostralia, Nouvelle-Zélande, Singapore, Afrika Atsimo, Japon, Taiwan, Indonezia, Thailandy, Filipina, Malezia, Vietnam, ary Soisa."
+  },
+  "factCheckAllButton": {
+    "message": "Manamarina daholo"
   }
 }

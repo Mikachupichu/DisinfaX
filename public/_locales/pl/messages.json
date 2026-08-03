@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Weryfikacja",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Gratis"
+  },
+  "customTopup": {
+    "message": "Własna"
+  },
+  "customAmountLabel": {
+    "message": "Własna kwota doładowania w dolarach amerykańskich"
+  },
+  "increase": {
+    "message": "Zwiększ"
+  },
+  "decrease": {
+    "message": "Zmniejsz"
+  },
+  "topUpBalance": {
+    "message": "Doładuj saldo"
+  },
+  "processing": {
+    "message": "Przetwarzanie…"
+  },
+  "checkoutError": {
+    "message": "Nie udało się rozpocząć płatności. Spróbuj ponownie."
+  },
+  "termsOfService": {
+    "message": "Warunki korzystania z usługi"
+  },
+  "privacyPolicy": {
+    "message": "Polityka prywatności"
+  },
+  "disclaimerAgree": {
+    "message": "Doładowując, akceptujesz nasze %TOS% i %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Mogą obowiązywać opłaty za wymianę walut, jeśli płacisz w walucie innej niż USD."
+  },
+  "signOut": {
+    "message": "Wyloguj się"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kliknięcie %BTN% ujawnia twierdzenia i spowoduje obciążenie twojego salda"
+  },
+  "onboardDisinfactTap": {
+    "message": "Dotknięcie %BTN% ujawnia twierdzenia i spowoduje obciążenie twojego salda"
+  },
+  "onboardWillCharge": {
+    "message": "Kliknięcie %BTN% spowoduje obciążenie twojego salda"
+  },
+  "onboardFactcheck": {
+    "message": "Kliknięcie %BTN% spowoduje obciążenie twojego salda"
+  },
+  "onboardTranslations": {
+    "message": "Kliknięcie %BTN% spowoduje obciążenie twojego salda"
+  },
+  "onboardRefreshes": {
+    "message": "Kliknięcie %BTN% spowoduje obciążenie twojego salda"
+  },
+  "topUp": {
+    "message": "Doładuj"
+  },
+  "showMore": {
+    "message": "Pokaż więcej"
+  },
+  "showLess": {
+    "message": "Pokaż mniej"
+  },
+  "landingTagline1": {
+    "message": "Odkryj prawdę. Znajdź kłamstwa."
+  },
+  "landingTagline2": {
+    "message": "Koniec z dezinformacją. Tylko fakty."
+  },
+  "continueWithX": {
+    "message": "Kontynuuj z X"
+  },
+  "continueWithGoogle": {
+    "message": "Kontynuuj z Google"
+  },
+  "continueWithApple": {
+    "message": "Kontynuuj z Apple"
+  },
+  "lastUsed": {
+    "message": "Ostatnio użyte"
+  },
+  "cleanupTagline": {
+    "message": "Uporządkuj swój kanał X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "W Stanach Zjednoczonych z DisinfaX mogą korzystać i doładowywać saldo wyłącznie mieszkańcy stanów Alabama, Arizona, Kalifornia, Kolorado, Connecticut, Delaware, Floryda, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Luizjana, Maine, Massachusetts, Missisipi, Missouri, Montana, New Hampshire, Nowy Meksyk, Nowy Jork, Karolina Północna, Dakota Północna, Oklahoma, Oregon, Pensylwania, Karolina Południowa, Dakota Południowa, Tennessee, Teksas, Utah, Waszyngton, Wisconsin oraz Wyoming; Waszyngton D.C., wszystkie terytoria USA oraz stany niewymienione powyżej są wykluczone. Poza Stanami Zjednoczonymi usługa jest dostępna w Kanadzie, Australii, Nowej Zelandii, Singapurze, Republice Południowej Afryki, Japonii, na Tajwanie, w Indonezji, Tajlandii, na Filipinach, w Malezji, Wietnamie i Szwajcarii."
+  },
+  "factCheckAllButton": {
+    "message": "Zweryfikuj wszystko"
   }
 }

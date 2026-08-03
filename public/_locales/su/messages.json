@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Pariksa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Hadiah"
+  },
+  "customTopup": {
+    "message": "Khusus"
+  },
+  "customAmountLabel": {
+    "message": "Jumlah top-up khusus dina dolar AS"
+  },
+  "increase": {
+    "message": "Tambihan"
+  },
+  "decrease": {
+    "message": "Kurangan"
+  },
+  "topUpBalance": {
+    "message": "Eusian Saldo"
+  },
+  "processing": {
+    "message": "Ngolah…"
+  },
+  "checkoutError": {
+    "message": "Teu tiasa ngamimitian pamayaran. Mangga cobian deui."
+  },
+  "termsOfService": {
+    "message": "Katangtuan Layanan"
+  },
+  "privacyPolicy": {
+    "message": "Kawijakan Privasi"
+  },
+  "disclaimerAgree": {
+    "message": "Ku ngeusian saldo, anjeun satuju kana %TOS% sareng %PRIVACY% kami."
+  },
+  "disclaimerFx": {
+    "message": "Waragad tukeur mata uang asing tiasa dilarapkeun upami anjeun mayar dina mata uang salian ti USD."
+  },
+  "signOut": {
+    "message": "Kaluar"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klik %BTN% nembongkeun klaim sarta bakal ngabeban saldo anjeun"
+  },
+  "onboardDisinfactTap": {
+    "message": "Toél %BTN% nembongkeun klaim sarta bakal ngabeban saldo anjeun"
+  },
+  "onboardWillCharge": {
+    "message": "Klik %BTN% bakal ngabeban saldo anjeun"
+  },
+  "onboardFactcheck": {
+    "message": "Klik %BTN% bakal ngabeban saldo anjeun"
+  },
+  "onboardTranslations": {
+    "message": "Klik %BTN% bakal ngabeban saldo anjeun"
+  },
+  "onboardRefreshes": {
+    "message": "Klik %BTN% bakal ngabeban saldo anjeun"
+  },
+  "topUp": {
+    "message": "Eusian Ulang"
+  },
+  "showMore": {
+    "message": "Témbongkeun leuwih loba"
+  },
+  "showLess": {
+    "message": "Témbongkeun leuwih saeutik"
+  },
+  "landingTagline1": {
+    "message": "Ungkabkeun Bebeneran. Panggihan Bohong."
+  },
+  "landingTagline2": {
+    "message": "Teu aya deui Disinformasi. Ngan Fakta."
+  },
+  "continueWithX": {
+    "message": "Teruskeun ku X"
+  },
+  "continueWithGoogle": {
+    "message": "Teruskeun ku Google"
+  },
+  "continueWithApple": {
+    "message": "Teruskeun ku Apple"
+  },
+  "lastUsed": {
+    "message": "Panungtung Dipaké"
+  },
+  "cleanupTagline": {
+    "message": "Beresihan Feed X anjeun."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Di jero Amérika Sarikat, ngan warga nagara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kalér, Dakota Kalér, Oklahoma, Oregon, Pennsylvania, Carolina Kidul, Dakota Kidul, Tennessee, Texas, Utah, Washington, Wisconsin, jeung Wyoming anu tiasa nganggo DisinfaX sareng ngeusian ulang saldona; Washington, D.C., sadaya wilayah A.S., sareng nagara bagian mana waé anu henteu kadaptar teu kaasup. Di luar Amérika Sarikat, sayogi di Kanada, Australia, Selandia Baru, Singapura, Afrika Kidul, Jepang, Taiwan, Indonésia, Thailand, Filipina, Malaysia, Vietnam, sareng Swiss."
+  },
+  "factCheckAllButton": {
+    "message": "Pariksa Sadayana"
   }
 }

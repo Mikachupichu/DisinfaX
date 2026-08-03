@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verificar",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldu"
+  },
+  "gifted": {
+    "message": "Regaláu"
+  },
+  "customTopup": {
+    "message": "Personalizáu"
+  },
+  "customAmountLabel": {
+    "message": "Cantidá de recarga personalizada en dólares estadounidenses"
+  },
+  "increase": {
+    "message": "Aumentar"
+  },
+  "decrease": {
+    "message": "Amenorgar"
+  },
+  "topUpBalance": {
+    "message": "Recargar saldu"
+  },
+  "processing": {
+    "message": "Procesando…"
+  },
+  "checkoutError": {
+    "message": "Nun pudo aniciase'l pagu. Vuelvi tentalo."
+  },
+  "termsOfService": {
+    "message": "Términos del serviciu"
+  },
+  "privacyPolicy": {
+    "message": "Política de privacidá"
+  },
+  "disclaimerAgree": {
+    "message": "Al recargar, aceutes los nuesos %TOS% y %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Puen aplicase comisiones de cambéu de divisa si pagues nuna moneda distinta del USD."
+  },
+  "signOut": {
+    "message": "Zarrar sesión"
+  },
+  "onboardDisinfactClick": {
+    "message": "Faer clic en %BTN% amuesa les afirmaciones y cobrará del to saldu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tocar %BTN% amuesa les afirmaciones y cobrará del to saldu"
+  },
+  "onboardWillCharge": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "onboardFactcheck": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "onboardTranslations": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "onboardRefreshes": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "topUp": {
+    "message": "Recargar"
+  },
+  "showMore": {
+    "message": "Amosar más"
+  },
+  "showLess": {
+    "message": "Amosar menos"
+  },
+  "landingTagline1": {
+    "message": "Desvela la verdá. Atopa les mentires."
+  },
+  "landingTagline2": {
+    "message": "Nun más desinformación. Namás fechos."
+  },
+  "continueWithX": {
+    "message": "Continuar con X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuar con Google"
+  },
+  "continueWithApple": {
+    "message": "Continuar con Apple"
+  },
+  "lastUsed": {
+    "message": "Usáu la última vez"
+  },
+  "cleanupTagline": {
+    "message": "Llimpia'l to feed d'X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Dientro de los Estaos Xuníos, namás los residentes d'Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Luisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nueva Hampshire, Nuevu Méxicu, Nueva York, Carolina del Norte, Dakota del Norte, Oklahoma, Oregón, Pensilvania, Carolina del Sur, Dakota del Sur, Tennessee, Texas, Utah, Washington, Wisconsin y Wyoming puen usar DisinfaX y recargar el so saldu; Washington, D.C., tolos territorios de los EE.XX. y cualquier estáu non llistáu tán escluíos. Fuera de los Estaos Xuníos, ta disponible en Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Xapón, Taiwán, Indonesia, Tailandia, Filipines, Malasia, Vietnam y Suiza."
+  },
+  "factCheckAllButton": {
+    "message": "Verificar too"
   }
 }

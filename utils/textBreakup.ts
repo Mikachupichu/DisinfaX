@@ -198,6 +198,34 @@ function resolveOverlaps(matches: ClaimMatch[]): ClaimMatch[] {
 }
 
 /**
+ * Resolve a claim's highlight [start,end] range for a requested locale, tolerating a
+ * region-SUBTAG mismatch on the key (same primary language, different region — or none).
+ * This matters because the same range is labelled with different locale strings on the
+ * two paths: the preclassify worker keys it by the UI locale (`effectiveLocale`, e.g.
+ * "en-US" from browser.i18n.getUILanguage()), while injection looks it up by the
+ * displayed-text locale (source/dest language, e.g. "en" from X). Same language, same
+ * text — only a "-US" subtag difference — so the exact-key lookup misses.
+ *
+ * Resolution is intentionally limited to exact key → base language. It NEVER bridges
+ * different primary languages (that would risk applying one language's offsets to
+ * another's text); those cases stay handled by the translate-fact-checks flow.
+ */
+export function resolveHighlightRange(
+  highlight: Record<string, [number, number]> | undefined,
+  locale: string
+): [number, number] | undefined {
+  if (!highlight) return undefined;
+  if (locale && highlight[locale]) return highlight[locale];
+  if (locale) {
+    const baseLang = locale.split('-')[0];
+    for (const [key, val] of Object.entries(highlight)) {
+      if (key === baseLang || key.startsWith(baseLang + '-')) return val;
+    }
+  }
+  return undefined;
+}
+
+/**
  * Build segments directly from stored character ranges in the highlight field.
  * This is used when highlights are available from the DB (tweet_claims.highlight).
  * Skips fuzzy matching entirely — uses exact character positions.
@@ -215,17 +243,7 @@ export function breakupWithHighlights(
     const highlight = claims[i].highlight;
     if (!highlight) continue;
 
-    // Try exact locale, then base language, then any entry
-    let range = highlight[locale];
-    if (!range) {
-      const baseLang = locale.split('-')[0];
-      for (const [key, val] of Object.entries(highlight)) {
-        if (key === baseLang || key.startsWith(baseLang + '-')) {
-          range = val;
-          break;
-        }
-      }
-    }
+    const range = resolveHighlightRange(highlight, locale);
     if (!range) continue;
 
     const [start, end] = range;
@@ -244,10 +262,16 @@ export function breakupWithHighlights(
   let cursor = 0;
 
   for (const m of matches) {
-    if (m.start > cursor) {
-      segments.push({ text: tweetText.slice(cursor, m.start), claimIndex: null });
+    // Overlap guard: never re-emit text the cursor has already passed. Two claims
+    // sharing (or overlapping) a range would otherwise slice the same text out twice,
+    // duplicating the tweet text on screen. Clamp the start to the cursor; if the whole
+    // match is already consumed by a prior claim, skip it (it's a duplicate).
+    const start = Math.max(m.start, cursor);
+    if (start >= m.end) continue;
+    if (start > cursor) {
+      segments.push({ text: tweetText.slice(cursor, start), claimIndex: null });
     }
-    segments.push({ text: tweetText.slice(m.start, m.end), claimIndex: m.claimIndex });
+    segments.push({ text: tweetText.slice(start, m.end), claimIndex: m.claimIndex });
     cursor = m.end;
   }
 
@@ -265,6 +289,16 @@ export function breakupTweetText(tweetText: string, claims: Claim[]): TextSegmen
     const unmatched: string[] = [];
 
     for (let i = 0; i < claims.length; i++) {
+        // Skip claims with no highlight range: the worker returned [-1,-1] (couldn't
+        // locate the text in the tweet). Text-matching them here would drop a stray
+        // inline highlight onto a fragment; unlocatable claims belong ONLY in the
+        // fallback box. (Located claims — incl. locale-mismatched ones re-matched here —
+        // still carry a highlight under some locale key, so they're unaffected.)
+        const hl = claims[i].highlight;
+        if (!hl || Object.keys(hl).length === 0) {
+            unmatched.push(`#${i + 1}: "${claims[i].text}" (no highlight range)`);
+            continue;
+        }
         const pos = findExactMatch(tweetText, claims[i].text);
         if (pos) {
             matches.push({ claimIndex: i, start: pos.start, end: pos.end });

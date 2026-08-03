@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Pamatud-i",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balanse"
+  },
+  "gifted": {
+    "message": "Gigasa"
+  },
+  "customTopup": {
+    "message": "Custom"
+  },
+  "customAmountLabel": {
+    "message": "Custom nga kantidad sa top-up sa US dollars"
+  },
+  "increase": {
+    "message": "Dugangi"
+  },
+  "decrease": {
+    "message": "Ibhan"
+  },
+  "topUpBalance": {
+    "message": "I-top Up ang Balanse"
+  },
+  "processing": {
+    "message": "Giproseso…"
+  },
+  "checkoutError": {
+    "message": "Dili masugdan ang checkout. Palihug sulayi pag-usab."
+  },
+  "termsOfService": {
+    "message": "Mga Termino sa Serbisyo"
+  },
+  "privacyPolicy": {
+    "message": "Palisiya sa Pagkapribado"
+  },
+  "disclaimerAgree": {
+    "message": "Pinaagi sa pag-top up, miuyon ka sa among %TOS% ug %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Mahimong magamit ang mga bayad sa pagbaylo sa salapi kung mobayad ka sa kwarta nga dili USD."
+  },
+  "signOut": {
+    "message": "Sign out"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ang pag-klik sa %BTN% magpakita sa mga pahayag ug mokutlo sa imong balanse"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ang pag-tap sa %BTN% magpakita sa mga pahayag ug mokutlo sa imong balanse"
+  },
+  "onboardWillCharge": {
+    "message": "Ang pag-klik sa %BTN% mokutlo sa imong balanse"
+  },
+  "onboardFactcheck": {
+    "message": "Ang pag-klik sa %BTN% mokutlo sa imong balanse"
+  },
+  "onboardTranslations": {
+    "message": "Ang pag-klik sa %BTN% mokutlo sa imong balanse"
+  },
+  "onboardRefreshes": {
+    "message": "Ang pag-klik sa %BTN% mokutlo sa imong balanse"
+  },
+  "topUp": {
+    "message": "Mag-top Up"
+  },
+  "showMore": {
+    "message": "Ipakita pa"
+  },
+  "showLess": {
+    "message": "Ipakita ang mas gamay"
+  },
+  "landingTagline1": {
+    "message": "Ibutyag ang Kamatuoran. Pangitaa ang mga Bakak."
+  },
+  "landingTagline2": {
+    "message": "Wala nay Disimpormasyon. Kamatuoran lang."
+  },
+  "continueWithX": {
+    "message": "Padayon gamit ang X"
+  },
+  "continueWithGoogle": {
+    "message": "Padayon gamit ang Google"
+  },
+  "continueWithApple": {
+    "message": "Padayon gamit ang Apple"
+  },
+  "lastUsed": {
+    "message": "Kataposang Gigamit"
+  },
+  "cleanupTagline": {
+    "message": "Limpyohi ang imong X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Sulod sa Estados Unidos, ang mga residente lamang sa Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Amihanang Carolina, Amihanang Dakota, Oklahoma, Oregon, Pennsylvania, Habagatang Carolina, Habagatang Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ug Wyoming ang mahimong mogamit sa DisinfaX ug mag-top up sa ilang balanse; ang Washington, D.C., tanang mga teritoryo sa U.S., ug bisan unsang estado nga wala malista dili apil. Sa gawas sa Estados Unidos, magamit kini sa Canada, Australia, New Zealand, Singapore, Habagatang Aprika, Hapon, Taiwan, Indonesia, Thailand, Pilipinas, Malaysia, Vietnam, ug Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Pamatud-i tanan"
   }
 }

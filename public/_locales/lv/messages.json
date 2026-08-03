@@ -162,5 +162,101 @@
   "disinfactButton": {
     "message": "Pārbaudīt",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Atlikums"
+  },
+  "gifted": {
+    "message": "Dāvināts"
+  },
+  "customTopup": {
+    "message": "Pielāgots"
+  },
+  "customAmountLabel": {
+    "message": "Pielāgota papildināšanas summa ASV dolāros"
+  },
+  "increase": {
+    "message": "Palielināt"
+  },
+  "decrease": {
+    "message": "Samazināt"
+  },
+  "topUpBalance": {
+    "message": "Papildināt atlikumu"
+  },
+  "processing": {
+    "message": "Notiek apstrāde…"
+  },
+  "checkoutError": {
+    "message": "Neizdevās sākt maksājumu. Lūdzu, mēģiniet vēlreiz."
+  },
+  "termsOfService": {
+    "message": "Pakalpojumu noteikumi"
+  },
+  "privacyPolicy": {
+    "message": "Privātuma politika"
+  },
+  "disclaimerAgree": {
+    "message": "Papildinot, jūs piekrītat mūsu %TOS% un %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ja maksājat citā valūtā, nevis USD, var tikt piemērota valūtas maiņas maksa."
+  },
+  "signOut": {
+    "message": "Izrakstīties"
+  },
+  "onboardDisinfactClick": {
+    "message": "Noklikšķinot uz %BTN% tiks atklāti apgalvojumi un no jūsu bilances tiks noņemta maksa"
+  },
+  "onboardDisinfactTap": {
+    "message": "Pieskaroties %BTN% tiks atklāti apgalvojumi un no jūsu bilances tiks noņemta maksa"
+  },
+  "onboardWillCharge": {
+    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+  },
+  "onboardFactcheck": {
+    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+  },
+  "onboardTranslations": {
+    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+  },
+  "onboardRefreshes": {
+    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+  },
+  "topUp": {
+    "message": "Papildināt"
+  },
+  "showMore": {
+    "message": "Rādīt vairāk"
+  },
+  "showLess": {
+    "message": "Rādīt mazāk"
+  },
+  "landingTagline1": {
+    "message": "Atklāj patiesību. Atrodi melus."
+  },
+  "landingTagline2": {
+    "message": "Nekādas dezinformācijas. Tikai fakti."
+  },
+  "continueWithX": {
+    "message": "Turpināt ar X"
+  },
+  "continueWithGoogle": {
+    "message": "Turpināt ar Google"
+  },
+  "continueWithApple": {
+    "message": "Turpināt ar Apple"
+  },
+  "lastUsed": {
+    "message": "Pēdējoreiz izmantots"
+  },
+  "cleanupTagline": {
+    "message": "Sakārto savu X plūsmu."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerikas Savienotajās Valstīs DisinfaX izmantot un papildināt savu bilanci var tikai šo štatu iedzīvotāji: Alabama, Arizona, Kalifornija, Kolorado, Konektikuta, Delavēra, Florida, Aidaho, Ilinoisa, Indiana, Aiova, Kanzasa, Kentuki, Luiziāna, Meina, Masačūsetsa, Misisipi, Misūri, Montana, Ņūhempšīra, Ņūmeksika, Ņujorka, Ziemeļkarolīna, Ziemeļdakota, Oklahoma, Oregona, Pensilvānija, Dienvidkarolīna, Dienviddakota, Tenesī, Teksasa, Jūta, Vašingtona, Viskonsina un Vaiominga; Vašingtona, D.C., visas ASV teritorijas un jebkuri neuzskaitītie štati ir izslēgti. Ārpus Amerikas Savienotajām Valstīm tas ir pieejams Kanādā, Austrālijā, Jaunzēlandē, Singapūrā, Dienvidāfrikā, Japānā, Taivānā, Indonēzijā, Taizemē, Filipīnās, Malaizijā, Vjetnamā un Šveicē."
+  },
+  "factCheckAllButton": {
+    "message": "Pārbaudīt visu"
   }
 }

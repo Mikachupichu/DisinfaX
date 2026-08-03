@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Kanna",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Í gávu"
+  },
+  "customTopup": {
+    "message": "Serskikkað"
+  },
+  "customAmountLabel": {
+    "message": "Serskikkað ábótarupphædd í US dollarum"
+  },
+  "increase": {
+    "message": "Øk"
+  },
+  "decrease": {
+    "message": "Minka"
+  },
+  "topUpBalance": {
+    "message": "Fyll upp saldo"
+  },
+  "processing": {
+    "message": "Viðgerð…"
+  },
+  "checkoutError": {
+    "message": "Kundi ikki byrja rindan. Vinarliga royn aftur."
+  },
+  "termsOfService": {
+    "message": "Tænastutreytir"
+  },
+  "privacyPolicy": {
+    "message": "Privatlívspolitikkur"
+  },
+  "disclaimerAgree": {
+    "message": "Við at fylla upp, samtykkir tú okkara %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Gjøld fyri gjaldoyraskifti kunnu galda, um tú rindar í øðrum gjaldoyra enn USD."
+  },
+  "signOut": {
+    "message": "Rita út"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikk á %BTN% vísir ásagnir og fer at taka gjald av kontoinnstøðu tíni"
+  },
+  "onboardDisinfactTap": {
+    "message": "Trýst á %BTN% vísir ásagnir og fer at taka gjald av kontoinnstøðu tíni"
+  },
+  "onboardWillCharge": {
+    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
+  },
+  "onboardFactcheck": {
+    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
+  },
+  "onboardTranslations": {
+    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
+  },
+  "onboardRefreshes": {
+    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
+  },
+  "topUp": {
+    "message": "Fyll upp"
+  },
+  "showMore": {
+    "message": "Vís meira"
+  },
+  "showLess": {
+    "message": "Vís minni"
+  },
+  "landingTagline1": {
+    "message": "Avdúka sannleikan. Finn lygnirnar."
+  },
+  "landingTagline2": {
+    "message": "Ikki meira misupplýsing. Bara staðreyndir."
+  },
+  "continueWithX": {
+    "message": "Halt fram við X"
+  },
+  "continueWithGoogle": {
+    "message": "Halt fram við Google"
+  },
+  "continueWithApple": {
+    "message": "Halt fram við Apple"
+  },
+  "lastUsed": {
+    "message": "Seinast brúkt"
+  },
+  "cleanupTagline": {
+    "message": "Reinsa tína X-rás."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Innan fyri Sambandsríki Amerika kunnu bert íbúgvar í Alabama, Arizona, Kaliforniu, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Norður-Karolina, Norður-Dakota, Oklahoma, Oregon, Pennsylvania, Suður-Karolina, Suður-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming brúka DisinfaX og fylla upp síni innistandandi; Washington, D.C., øll amerikonsk øki og allir statir, sum ikki eru nevndir, eru undantiknir. Uttan fyri Sambandsríki Amerika er tað tøkt í Kanada, Avstralia, Nýsælandi, Singapor, Suðurafrika, Japan, Taivan, Indonesia, Tailandi, Filipsoyggjum, Malaisia, Vjetnam og Sveis."
+  },
+  "factCheckAllButton": {
+    "message": "Kanna alt"
   }
 }

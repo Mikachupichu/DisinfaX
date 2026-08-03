@@ -1,4 +1,5 @@
-import { injectClassifications } from '../utils/injecting';
+import { injectClassifications, showNotification, setExtensionFrozen } from '../utils/injecting';
+import { mfBus } from '../utils/mfBus';
 import { MainTweet } from "../data/Tweets";
 
 const tweetTextCache = new Map<string, string>();
@@ -8,6 +9,9 @@ let currentBatchId: string | null = null;
 let pendingBatchRefresh: string | null = null;
 let localeOverride: string | null = null;
 let currentPort: any = null;
+/** True while the user is logged out: the extension is frozen (injections torn
+ *  down, nothing re-injected) until the background reports a sign-in. */
+let frozen = false;
 /** Tweet ids already reported to the background as present in the DOM. */
 const reportedToBackground = new Set<string>();
 
@@ -108,6 +112,32 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
       if (message.type === "CLASSIFICATION") {
         console.log(`[misinfo] relay: received CLASSIFICATION for ${message.data.id}, onHold=${message.data.onHold}, translateFC=${message.data.translateFactChecksOnHold}, claims=${message.data.claims?.length ?? 0}`);
         injectClassifications([message.data], tweetTextCache, translatedTextCache);
+      } else if (message.type === "MF_NOTIFICATION" && message.data) {
+        showNotification(message.data.kind, { amount: message.data.amount, text: message.data.text });
+      } else if (message.type === "MF_AUTH") {
+        if (message.signedIn) {
+          // Only act on a real freeze→resume transition, so a redundant
+          // "signed in" (e.g. on reconnect) doesn't re-classify needlessly.
+          if (frozen) {
+            frozen = false;
+            setExtensionFrozen(false);
+            // Re-classify captured tweets so highlights torn down while frozen come back.
+            if (capturedTweets.length > 0) {
+              lastBatchFingerprint = '';
+              // The background fetches the first few tweets immediately and DEFERS the
+              // rest until TWEET_IN_DOM. Those DOM reports already fired (and got deduped)
+              // while signed out, so clear the dedup and re-announce every visible tweet —
+              // otherwise the deferred tweets never inject until a scroll/reload.
+              reportedToBackground.clear();
+              classifyCapturedTweetsIndividually();
+              reportVisibleTweets();
+            }
+          }
+        } else if (!frozen) {
+          // Logged out: strip every injection and freeze until re-login.
+          frozen = true;
+          setExtensionFrozen(true);
+        }
       }
     });
 
@@ -149,52 +179,68 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
   }
 }
 
+/** Send every currently-captured tweet to the background as its own batch.
+ *  Used on initial capture and again when the user logs back in (to restore
+ *  highlights that were torn down while frozen). */
+function classifyCapturedTweetsIndividually() {
+  const tweets = capturedTweets;
+  if (tweets.length === 0) return;
+  const xhrBatchId = `xhr_${Date.now()}`;
+  console.log(`[misinfo] relay: sending ${tweets.length} tweet(s) individually`);
+  connectAndClassify([tweets[0]], xhrBatchId, 0);
+  for (let i = 1; i < tweets.length; i++) {
+    const batchId = `batch_${Date.now()}_${i}`;
+    console.log(`[misinfo] relay: sending tweet ${tweets[i].id} as batch ${batchId}`);
+    sendToPort({ type: "CLASSIFY_TWEETS", data: [tweets[i]], batchId, locale: localeOverride, xhrBatchId, xhrBatchIndex: i });
+  }
+}
+
 // ---- Event listeners (set up once, always use currentPort) ----
 
-document.addEventListener('mf-refresh-claim', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-refresh-claim', ((e: CustomEvent) => {
   const { classificationId, claimText, dbClaimText } = e.detail;
   console.log(`[misinfo] relay: refresh-claim for ${classificationId} "${claimText.slice(0, 40)}..."`);
   sendToPort({ type: "REFRESH_CLAIM", data: { classificationId, claimText, dbClaimText, locale: localeOverride } });
 }) as EventListener);
 
-document.addEventListener('mf-set-displayed-locale', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-set-displayed-locale', ((e: CustomEvent) => {
   const { tweetId, textLocale } = e.detail;
   console.log(`[misinfo] relay: set-displayed-locale for ${tweetId} -> ${textLocale}`);
   sendToPort({ type: "SET_DISPLAYED_LOCALE", data: { tweetId, textLocale } });
 }) as EventListener);
 
-document.addEventListener('mf-refresh-batch', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-refresh-batch', ((e: CustomEvent) => {
   const { batchId } = e.detail;
   console.log(`[misinfo] relay: refresh-batch for ${batchId}, forcing reconnection`);
   pendingBatchRefresh = batchId;
   connectAndClassify();
 }) as EventListener);
 
-document.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
   console.log(`[misinfo] relay: process-on-hold for ${tweetId}`);
   sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride } });
 }) as EventListener);
 
-document.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
   console.log(`[misinfo] relay: fact-check-all for ${tweetId}`);
   sendToPort({ type: "FACT_CHECK_ALL", data: { tweetId, locale: localeOverride } });
 }) as EventListener);
 
-document.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
   const { classificationId, claimText } = e.detail;
   console.log(`[misinfo] relay: reclassify-on-hold-click for ${classificationId} "${claimText?.slice(0, 40)}..."`);
   sendToPort({ type: "RECLASSIFY_ON_HOLD_CLICK", data: { classificationId, claimText, locale: localeOverride } });
 }) as EventListener);
 
-document.addEventListener('mf-translate-fact-checks', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-translate-fact-checks', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
   console.log(`[misinfo] relay: translate-fact-checks for ${tweetId}`);
   sendToPort({ type: "TRANSLATE_FACT_CHECKS", data: { tweetId, locale: localeOverride } });
 }) as EventListener);
 
-document.addEventListener('mf-translate-claim', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-translate-claim', ((e: CustomEvent) => {
   const { classificationId, claimText, translateWhat } = e.detail;
   console.log(`[misinfo] relay: translate-claim for ${classificationId} "${claimText?.slice(0, 40)}..." (${translateWhat})`);
   sendToPort({ type: "TRANSLATE_CLAIM", data: { classificationId, claimText, translateWhat, locale: localeOverride } });
@@ -207,10 +253,26 @@ export default defineContentScript({
   runAt: 'document_start',
   main() {
     console.log('[misinfo] relay content script loaded, localeOverride=', localeOverride);
-    // Read locale override from localStorage (set via console)
-    try { localeOverride = localStorage?.getItem?.('mfLocale') ?? null; } catch {}
+    // Debug-only display-locale override for testing. Read from EXTENSION storage
+    // (chrome.storage.local), NOT page localStorage — the host page (X) can write
+    // page localStorage and could otherwise force the extension's output into a
+    // bogus locale (and cause cache-miss churn). Extension storage is unreachable
+    // from the page. Set it while testing from the extension side, e.g. the
+    // background console: chrome.storage.local.set({ mfLocale: 'fr' }).
+    try {
+      browser.storage.local.get('mfLocale').then((r) => { localeOverride = (r?.mfLocale as string) ?? null; }).catch(() => {});
+      browser.storage.onChanged.addListener((changes, area) => {
+        if (area === 'local' && 'mfLocale' in changes) localeOverride = (changes.mfLocale.newValue as string) ?? null;
+      });
+    } catch {}
 
     window.addEventListener('message', (event) => {
+      // Trust ONLY our own main-world interceptor (capture.main.content.ts), which
+      // posts from this same window on the page's own origin. Reject anything from
+      // an iframe/ad or a cross-origin frame — the host platform (or any script it
+      // loads) must not be able to spoof captured tweets into the pipeline and spend
+      // the signed-in user's balance on attacker-chosen content.
+      if (event.source !== window || event.origin !== location.origin) return;
       if (event.data?.type !== 'X_DATA_CAPTURED') return;
 
       // Cache full tweet texts from captured data (not truncated like DOM text)
@@ -240,19 +302,7 @@ export default defineContentScript({
       // Send each tweet individually as its own batch, but include the original
       // XHR batch id and index so the background can fetch the first 5 immediately
       // and defer the rest until they appear in the DOM.
-      const xhrBatchId = `xhr_${Date.now()}`;
-      if (tweets.length > 0) {
-        // Send first tweet via connectAndClassify (creates port)
-        console.log(`[misinfo] relay: sending ${tweets.length} tweet(s) individually`);
-        connectAndClassify([tweets[0]], xhrBatchId, 0);
-
-        // Send remaining tweets on the same port (each fires its own pipeline)
-        for (let i = 1; i < tweets.length; i++) {
-          const batchId = `batch_${Date.now()}_${i}`;
-          console.log(`[misinfo] relay: sending tweet ${tweets[i].id} as batch ${batchId}`);
-          sendToPort({ type: "CLASSIFY_TWEETS", data: [tweets[i]], batchId, locale: localeOverride, xhrBatchId, xhrBatchIndex: i });
-        }
-      }
+      classifyCapturedTweetsIndividually();
     });
 
     // Report tweets as they enter the DOM so the background can defer DB fetches
@@ -303,7 +353,7 @@ export default defineContentScript({
       if (!tweet.sourceLanguage || !tweet.destinationLanguage) return;
 
       // Tear down injected elements immediately so X can swap the text unimpeded.
-      document.dispatchEvent(new CustomEvent('mf-prepare-locale-switch', {
+      mfBus.dispatchEvent(new CustomEvent('mf-prepare-locale-switch', {
         detail: { tweetId }
       }));
 

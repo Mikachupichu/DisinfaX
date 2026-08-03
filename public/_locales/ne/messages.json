@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "टप अप गर्नुहोस्"
+  },
+  "showMore": {
+    "message": "थप देखाउनुहोस्"
+  },
+  "showLess": {
+    "message": "कम देखाउनुहोस्"
+  },
+  "landingTagline1": {
+    "message": "सत्य प्रकट गर्नुहोस्। झूट पत्ता लगाउनुहोस्।"
+  },
+  "landingTagline2": {
+    "message": "अब कुनै गलत जानकारी छैन। केवल तथ्यहरू।"
+  },
+  "continueWithX": {
+    "message": "X मार्फत जारी राख्नुहोस्"
+  },
+  "continueWithGoogle": {
+    "message": "Google मार्फत जारी राख्नुहोस्"
+  },
+  "continueWithApple": {
+    "message": "Apple मार्फत जारी राख्नुहोस्"
+  },
+  "lastUsed": {
+    "message": "पछिल्लो पटक प्रयोग गरिएको"
+  },
+  "cleanupTagline": {
+    "message": "आफ्नो X फिड सफा गर्नुहोस्।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "संयुक्त राज्य अमेरिका भित्र, केवल अलाबामा, एरिजोना, क्यालिफोर्निया, कोलोराडो, कनेक्टिकट, डेलावेयर, फ्लोरिडा, आइडाहो, इलिनोइस, इन्डियाना, आयोवा, क्यान्सस, केन्टकी, लुइजियाना, मेन, म्यासाचुसेट्स, मिसिसिपी, मिसौरी, मोन्टाना, न्यु ह्याम्पशायर, न्यु मेक्सिको, न्यु योर्क, नर्थ क्यारोलिना, नर्थ डकोटा, ओक्लाहोमा, ओरेगन, पेन्सिलभेनिया, साउथ क्यारोलिना, साउथ डकोटा, टेनेसी, टेक्सास, युटा, वाशिंगटन, विस्कन्सिन, र वायोमिङका बासिन्दाहरूले DisinfaX प्रयोग गर्न र आफ्नो ब्यालेन्स टप अप गर्न सक्छन्; वाशिंगटन, D.C., सबै अमेरिकी क्षेत्रहरू, र सूचीमा नभएका कुनै पनि राज्यहरू बहिष्कृत छन्। संयुक्त राज्य अमेरिका बाहिर, यो क्यानडा, अस्ट्रेलिया, न्युजिल्यान्ड, सिङ्गापुर, दक्षिण अफ्रिका, जापान, ताइवान, इन्डोनेसिया, थाइल्यान्ड, फिलिपिन्स, मलेसिया, भियतनाम, र स्विजरल्यान्डमा उपलब्ध छ।"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "जाँच",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ब्यालेन्स"
+  },
+  "gifted": {
+    "message": "उपहार"
+  },
+  "customTopup": {
+    "message": "अनुकूलित"
+  },
+  "customAmountLabel": {
+    "message": "अमेरिकी डलरमा अनुकूलित टप-अप रकम"
+  },
+  "increase": {
+    "message": "बढाउनुहोस्"
+  },
+  "decrease": {
+    "message": "घटाउनुहोस्"
+  },
+  "topUpBalance": {
+    "message": "ब्यालेन्स टप अप गर्नुहोस्"
+  },
+  "processing": {
+    "message": "प्रशोधन गर्दै…"
+  },
+  "checkoutError": {
+    "message": "चेकआउट सुरु गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।"
+  },
+  "termsOfService": {
+    "message": "सेवाका सर्तहरू"
+  },
+  "privacyPolicy": {
+    "message": "गोपनीयता नीति"
+  },
+  "disclaimerAgree": {
+    "message": "टप अप गरेर, तपाईं हाम्रो %TOS% र %PRIVACY% मा सहमत हुनुहुन्छ।"
+  },
+  "disclaimerFx": {
+    "message": "तपाईंले USD बाहेक अन्य मुद्रामा भुक्तानी गर्नुभयो भने विदेशी मुद्रा सटही शुल्क लाग्न सक्छ।"
+  },
+  "signOut": {
+    "message": "साइन आउट"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% क्लिक गर्दा दाबीहरू देखिनेछन् र तपाईंको ब्यालेन्सबाट शुल्क लिइनेछ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ट्याप गर्दा दाबीहरू देखिनेछन् र तपाईंको ब्यालेन्सबाट शुल्क लिइनेछ"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% क्लिक गर्दा तपाईंको ब्यालेन्सबाट शुल्क लिइनेछ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% क्लिक गर्दा तपाईंको ब्यालेन्सबाट शुल्क लिइनेछ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% क्लिक गर्दा तपाईंको ब्यालेन्सबाट शुल्क लिइनेछ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% क्लिक गर्दा तपाईंको ब्यालेन्सबाट शुल्क लिइनेछ"
+  },
+  "factCheckAllButton": {
+    "message": "सबै जाँच गर्नुहोस्"
   }
 }

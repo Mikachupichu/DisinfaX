@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Kontroll",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Gåve"
+  },
+  "customTopup": {
+    "message": "Eigendefinert"
+  },
+  "customAmountLabel": {
+    "message": "Eigendefinert påfyllingsbeløp i amerikanske dollar"
+  },
+  "increase": {
+    "message": "Auk"
+  },
+  "decrease": {
+    "message": "Reduser"
+  },
+  "topUpBalance": {
+    "message": "Fyll på saldo"
+  },
+  "processing": {
+    "message": "Handsamar…"
+  },
+  "checkoutError": {
+    "message": "Kunne ikkje starte betalinga. Prøv igjen."
+  },
+  "termsOfService": {
+    "message": "Vilkår for bruk"
+  },
+  "privacyPolicy": {
+    "message": "Personvernerklæring"
+  },
+  "disclaimerAgree": {
+    "message": "Ved å fylle på godtek du våre %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Valutavekslingsgebyr kan påløpe dersom du betaler i ei anna valuta enn USD."
+  },
+  "signOut": {
+    "message": "Logg ut"
+  },
+  "onboardDisinfactClick": {
+    "message": "Å klikke på %BTN% viser påstandar og trekk frå saldoen din"
+  },
+  "onboardDisinfactTap": {
+    "message": "Å trykke på %BTN% viser påstandar og trekk frå saldoen din"
+  },
+  "onboardWillCharge": {
+    "message": "Å klikke på %BTN% trekk frå saldoen din"
+  },
+  "onboardFactcheck": {
+    "message": "Å klikke på %BTN% trekk frå saldoen din"
+  },
+  "onboardTranslations": {
+    "message": "Å klikke på %BTN% trekk frå saldoen din"
+  },
+  "onboardRefreshes": {
+    "message": "Å klikke på %BTN% trekk frå saldoen din"
+  },
+  "topUp": {
+    "message": "Fyll på"
+  },
+  "showMore": {
+    "message": "Vis meir"
+  },
+  "showLess": {
+    "message": "Vis mindre"
+  },
+  "landingTagline1": {
+    "message": "Avslør sanninga. Finn løgnene."
+  },
+  "landingTagline2": {
+    "message": "Ikkje meir desinformasjon. Berre fakta."
+  },
+  "continueWithX": {
+    "message": "Hald fram med X"
+  },
+  "continueWithGoogle": {
+    "message": "Hald fram med Google"
+  },
+  "continueWithApple": {
+    "message": "Hald fram med Apple"
+  },
+  "lastUsed": {
+    "message": "Sist brukt"
+  },
+  "cleanupTagline": {
+    "message": "Rydd opp i X-straumen din."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Innanfor USA kan berre innbyggjarar i Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Nord-Carolina, Nord-Dakota, Oklahoma, Oregon, Pennsylvania, Sør-Carolina, Sør-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming bruke DisinfaX og fylle på saldoen sin; Washington, D.C., alle amerikanske territorium og alle statar som ikkje er nemnde, er utelatne. Utanfor USA er tenesta tilgjengeleg i Canada, Australia, New Zealand, Singapore, Sør-Afrika, Japan, Taiwan, Indonesia, Thailand, Filippinane, Malaysia, Vietnam og Sveits."
+  },
+  "factCheckAllButton": {
+    "message": "Kontroller alt"
   }
 }

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Chaninchay",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Suñasqa"
+  },
+  "customTopup": {
+    "message": "Kikin"
+  },
+  "customAmountLabel": {
+    "message": "Kikin churana qullqi US dólarpi"
+  },
+  "increase": {
+    "message": "Yapay"
+  },
+  "decrease": {
+    "message": "Pisiyachiy"
+  },
+  "topUpBalance": {
+    "message": "Saldota Huntachiy"
+  },
+  "processing": {
+    "message": "Ruwachkan…"
+  },
+  "checkoutError": {
+    "message": "Manam qallariyta atirqachu. Ama hina kaspa yapamanta ruway."
+  },
+  "termsOfService": {
+    "message": "Servicio Kamachikuykuna"
+  },
+  "privacyPolicy": {
+    "message": "Pakay Kamachikuy"
+  },
+  "disclaimerAgree": {
+    "message": "Huntachispaqa, %TOS% chaymanta %PRIVACY% nisqaykuwan huñinakunki."
+  },
+  "disclaimerFx": {
+    "message": "USD manataq huk qullqiwan qullqita quptiykiqa, hukmanta hukman qullqi tikray pagokuna churakunmanmi."
+  },
+  "signOut": {
+    "message": "Lluqsiy"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% nisqapi ñitʼiy nisqasta rikuchin, qullqiykimantapas hurquy kanqa"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% nisqapi tuqyachiy nisqasta rikuchin, qullqiykimantapas hurquy kanqa"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% nisqapi ñitʼiy qullqiykimanta hurquy kanqa"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% nisqapi ñitʼiy qullqiykimanta hurquy kanqa"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% nisqapi ñitʼiy qullqiykimanta hurquy kanqa"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% nisqapi ñitʼiy qullqiykimanta hurquy kanqa"
+  },
+  "topUp": {
+    "message": "Qullqi Yapay"
+  },
+  "showMore": {
+    "message": "Astawan rikuchiy"
+  },
+  "showLess": {
+    "message": "Pisilla rikuchiy"
+  },
+  "landingTagline1": {
+    "message": "Cheqaqta Rikuchiy. Llullakunata Tariy."
+  },
+  "landingTagline2": {
+    "message": "Manaña Pantachiy Willakuy. Cheqaqllami."
+  },
+  "continueWithX": {
+    "message": "X-wan qatiy"
+  },
+  "continueWithGoogle": {
+    "message": "Google-wan qatiy"
+  },
+  "continueWithApple": {
+    "message": "Apple-wan qatiy"
+  },
+  "lastUsed": {
+    "message": "Qhipa Kaq Servisqa"
+  },
+  "cleanupTagline": {
+    "message": "X Feed-niykita pichay."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Estados Unidos ukhupi, Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, Wyoming suyukunapi tiyaqkunallam DisinfaX-ta servichkanku saldonkutapas yapaspa; Washington, D.C., llapa Estados Unidos territoriokuna, mana listasqa suyukunapas mana atinkuchu. Estados Unidos hawanpi, kaykunapim kachkan: Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Japón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam, Suiza."
+  },
+  "factCheckAllButton": {
+    "message": "Llapanta chaninchay"
   }
 }

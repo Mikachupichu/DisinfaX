@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Hōʻoia",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Koena"
+  },
+  "gifted": {
+    "message": "Makana"
+  },
+  "customTopup": {
+    "message": "Ponoʻī"
+  },
+  "customAmountLabel": {
+    "message": "Ka nui hoʻopiha ponoʻī ma nā kālā ʻAmelika"
+  },
+  "increase": {
+    "message": "Hoʻonui"
+  },
+  "decrease": {
+    "message": "Hoʻēmi"
+  },
+  "topUpBalance": {
+    "message": "Hoʻopiha i ke koena"
+  },
+  "processing": {
+    "message": "Ke hana nei…"
+  },
+  "checkoutError": {
+    "message": "ʻAʻole hiki ke hoʻomaka i ka uku. E ʻoluʻolu e hoʻāʻo hou."
+  },
+  "termsOfService": {
+    "message": "Nā Kūlana Lawelawe"
+  },
+  "privacyPolicy": {
+    "message": "Kulekele Pilikino"
+  },
+  "disclaimerAgree": {
+    "message": "Ma ka hoʻopiha ʻana, ʻae ʻoe i kā mākou %TOS% a me %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Hiki ke pili nā uku hoʻololi kālā inā uku ʻoe ma ke kālā ʻē aʻe ma mua o ka USD."
+  },
+  "signOut": {
+    "message": "Puka aku"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ke kaomi ʻia ʻo %BTN%, e ʻike ʻia nā koi a e uku ʻia kāu kālā"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ke pā ʻia ʻo %BTN%, e ʻike ʻia nā koi a e uku ʻia kāu kālā"
+  },
+  "onboardWillCharge": {
+    "message": "Ke kaomi ʻia ʻo %BTN%, e uku ʻia kāu kālā"
+  },
+  "onboardFactcheck": {
+    "message": "Ke kaomi ʻia ʻo %BTN%, e uku ʻia kāu kālā"
+  },
+  "onboardTranslations": {
+    "message": "Ke kaomi ʻia ʻo %BTN%, e uku ʻia kāu kālā"
+  },
+  "onboardRefreshes": {
+    "message": "Ke kaomi ʻia ʻo %BTN%, e uku ʻia kāu kālā"
+  },
+  "topUp": {
+    "message": "Hoʻopiha"
+  },
+  "showMore": {
+    "message": "Hōʻike hou aku"
+  },
+  "showLess": {
+    "message": "Hōʻike liʻiliʻi"
+  },
+  "landingTagline1": {
+    "message": "E hōʻike i ka ʻoiaʻiʻo. E ʻimi i nā wahaheʻe."
+  },
+  "landingTagline2": {
+    "message": "ʻAʻohe ʻike hoʻopunipuni hou aku. Nā ʻoiaʻiʻo wale nō."
+  },
+  "continueWithX": {
+    "message": "E hoʻomau me X"
+  },
+  "continueWithGoogle": {
+    "message": "E hoʻomau me Google"
+  },
+  "continueWithApple": {
+    "message": "E hoʻomau me Apple"
+  },
+  "lastUsed": {
+    "message": "Hoʻohana hope loa"
+  },
+  "cleanupTagline": {
+    "message": "E hoʻomaʻemaʻe i kāu hānai X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ma loko o ʻAmelika Hui Pū ʻIa, ʻo nā kamaʻāina wale nō o Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, a me Wyoming e hiki ke hoʻohana iā DisinfaX a hoʻopiha i kā lākou koena; ua hoʻokaʻawale ʻia ʻo Washington, D.C., nā ʻāina apau o ʻAmelika, a me nā mokuʻāina i helu ʻole ʻia. Ma waho o ʻAmelika Hui Pū ʻIa, loaʻa ia ma Kanada, Australia, Aotearoa, Singapore, ʻApelika Hema, Iapana, Taiwan, Inedonesia, Thailana, Pilipina, Malaysia, Wietanama, a me Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Hōʻoia i nā mea āpau"
   }
 }

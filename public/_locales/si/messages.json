@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "ශේෂය පිරවීම"
+  },
+  "showMore": {
+    "message": "තව පෙන්වන්න"
+  },
+  "showLess": {
+    "message": "අඩුවෙන් පෙන්වන්න"
+  },
+  "landingTagline1": {
+    "message": "සත්‍යය හෙළිදරව් කරන්න. බොරු සොයාගන්න."
+  },
+  "landingTagline2": {
+    "message": "තවදුරටත් වැරදි තොරතුරු නැත. සත්‍ය පමණයි."
+  },
+  "continueWithX": {
+    "message": "X සමඟ ඉදිරියට යන්න"
+  },
+  "continueWithGoogle": {
+    "message": "Google සමඟ ඉදිරියට යන්න"
+  },
+  "continueWithApple": {
+    "message": "Apple සමඟ ඉදිරියට යන්න"
+  },
+  "lastUsed": {
+    "message": "අවසන් වරට භාවිත කළේ"
+  },
+  "cleanupTagline": {
+    "message": "ඔබගේ X සංග්‍රහය පිරිසිදු කරන්න."
+  },
+  "disclaimerJurisdiction": {
+    "message": "එක්සත් ජනපදය තුළ, ඇලබාමා, ඇරිසෝනා, කැලිෆෝනියා, කොලරාඩෝ, කනෙක්ටිකට්, ඩෙලවෙයාර්, ෆ්ලොරිඩා, අයිඩහෝ, ඉලිනොයිස්, ඉන්ඩියානා, අයෝවා, කැන්සාස්, කෙන්ටකි, ලුයිසියානා, මේන්, මැසචුසෙට්ස්, මිසිසිපි, මිසූරි, මොන්ටානා, නිව් හැම්ප්ෂයර්, නිව් මෙක්සිකෝ, නිව් යෝර්ක්, උතුරු කැරොලිනා, උතුරු ඩැකෝටා, ඔක්ලහෝමා, ඔරිගන්, පෙන්සිල්වේනියා, දකුණු කැරොලිනා, දකුණු ඩැකෝටා, ටෙනසි, ටෙක්සාස්, යූටා, වොෂිංටන්, විස්කොන්සින්, සහ වයෝමිං හි පදිංචිකරුවන්ට පමණක් DisinfaX භාවිත කර ඔවුන්ගේ ශේෂය පිරවිය හැකිය; වොෂිංටන්, D.C., සියලුම එක්සත් ජනපද භූමි ප්‍රදේශ, සහ ලැයිස්තුගත නොකළ ඕනෑම ප්‍රාන්තයක් බැහැර කර ඇත. එක්සත් ජනපදයෙන් පිටත, එය කැනඩාව, ඕස්ට්‍රේලියාව, නවසීලන්තය, සිංගප්පූරුව, දකුණු අප්‍රිකාව, ජපානය, තායිවානය, ඉන්දුනීසියාව, තායිලන්තය, පිලිපීනය, මැලේසියාව, වියට්නාමය, සහ ස්විට්සර්ලන්තයේ ලබා ගත හැකිය."
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "පරීක්ෂාව",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ශේෂය"
+  },
+  "gifted": {
+    "message": "තෑගි කළ"
+  },
+  "customTopup": {
+    "message": "අභිරුචි"
+  },
+  "customAmountLabel": {
+    "message": "එක්සත් ජනපද ඩොලර්වලින් අභිරුචි ප්‍රතිපූරණ මුදල"
+  },
+  "increase": {
+    "message": "වැඩි කරන්න"
+  },
+  "decrease": {
+    "message": "අඩු කරන්න"
+  },
+  "topUpBalance": {
+    "message": "ශේෂය ප්‍රතිපූරණය කරන්න"
+  },
+  "processing": {
+    "message": "සකසමින්…"
+  },
+  "checkoutError": {
+    "message": "ගෙවීම ආරම්භ කළ නොහැකි විය. කරුණාකර නැවත උත්සාහ කරන්න."
+  },
+  "termsOfService": {
+    "message": "සේවා නියමයන්"
+  },
+  "privacyPolicy": {
+    "message": "පෞද්ගලිකත්ව ප්‍රතිපත්තිය"
+  },
+  "disclaimerAgree": {
+    "message": "ප්‍රතිපූරණය කිරීමෙන්, ඔබ අපගේ %TOS% සහ %PRIVACY% වෙත එකඟ වේ."
+  },
+  "disclaimerFx": {
+    "message": "ඔබ USD හැර වෙනත් මුදල් ඒකකයකින් ගෙවන්නේ නම් විදේශ විනිමය ගාස්තු අදාළ විය හැක."
+  },
+  "signOut": {
+    "message": "ඉවත් වන්න"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් ප්‍රකාශයන් හෙළි වන අතර ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% තට්ටු කිරීමෙන් ප්‍රකාශයන් හෙළි වන අතර ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "factCheckAllButton": {
+    "message": "සියල්ල පරීක්ෂා කරන්න"
   }
 }

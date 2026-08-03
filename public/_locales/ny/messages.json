@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Kuwunika",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Ndalama zotsala"
+  },
+  "gifted": {
+    "message": "Mphatso"
+  },
+  "customTopup": {
+    "message": "Zosankha"
+  },
+  "customAmountLabel": {
+    "message": "Kuchuluka kwa ndalama zowonjezera mwakufuna kwanu mu madola aku US"
+  },
+  "increase": {
+    "message": "Onjezani"
+  },
+  "decrease": {
+    "message": "Chepetsani"
+  },
+  "topUpBalance": {
+    "message": "Onjezani Ndalama"
+  },
+  "processing": {
+    "message": "Ikukonzedwa…"
+  },
+  "checkoutError": {
+    "message": "Sitinathe kuyamba kulipira. Chonde yesaninso."
+  },
+  "termsOfService": {
+    "message": "Malamulo a Ntchito"
+  },
+  "privacyPolicy": {
+    "message": "Ndondomeko ya Zachinsinsi"
+  },
+  "disclaimerAgree": {
+    "message": "Powonjezera ndalama, mukuvomereza %TOS% ndi %PRIVACY% zathu."
+  },
+  "disclaimerFx": {
+    "message": "Ndalama zosinthira ndalama zakunja zingagwiritsidwe ntchito ngati mukulipira mu ndalama ina osati USD."
+  },
+  "signOut": {
+    "message": "Tulukani"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kudina %BTN% kumasonyeza zonena ndipo kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Kukhudza %BTN% kumasonyeza zonena ndipo kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardWillCharge": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardFactcheck": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardTranslations": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardRefreshes": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "topUp": {
+    "message": "Onjezani ndalama"
+  },
+  "showMore": {
+    "message": "Onetsani zambiri"
+  },
+  "showLess": {
+    "message": "Onetsani zochepa"
+  },
+  "landingTagline1": {
+    "message": "Vumbulutsani choonadi. Pezani mabodza."
+  },
+  "landingTagline2": {
+    "message": "Palibenso mfundo zabodza. Zoona zokha."
+  },
+  "continueWithX": {
+    "message": "Pitirizani ndi X"
+  },
+  "continueWithGoogle": {
+    "message": "Pitirizani ndi Google"
+  },
+  "continueWithApple": {
+    "message": "Pitirizani ndi Apple"
+  },
+  "lastUsed": {
+    "message": "Zinagwiritsidwa ntchito posachedwa"
+  },
+  "cleanupTagline": {
+    "message": "Yeretsani feed yanu ya X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Mkati mwa United States, ndi okhawo okhala ku Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kumpoto, Dakota Kumpoto, Oklahoma, Oregon, Pennsylvania, Carolina Kumwera, Dakota Kumwera, Tennessee, Texas, Utah, Washington, Wisconsin, ndi Wyoming amene angagwiritse ntchito DisinfaX ndikuonjeza ndalama zawo; Washington, D.C., madera onse a United States, ndi dziko lililonse losatchulidwa saloledwa. Kunja kwa United States, ipezeka ku Canada, Australia, New Zealand, Singapore, Afirika Kumwera, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ndi Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Wunikani zonse"
   }
 }

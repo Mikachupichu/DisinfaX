@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Jehechakuaa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Ojeme’ẽva’ekue"
+  },
+  "customTopup": {
+    "message": "Nemba’etee"
+  },
+  "customAmountLabel": {
+    "message": "Nerecarga repykue tee dólar estadounidense-pe"
+  },
+  "increase": {
+    "message": "Mbotuichave"
+  },
+  "decrease": {
+    "message": "Mbomichĩ"
+  },
+  "topUpBalance": {
+    "message": "Emyenyhẽ ne saldo"
+  },
+  "processing": {
+    "message": "Ojejapo hína…"
+  },
+  "checkoutError": {
+    "message": "Ndaikatúi oñepyrũ pago. Eha’ã jey."
+  },
+  "termsOfService": {
+    "message": "Servicio Rembiapoukapy"
+  },
+  "privacyPolicy": {
+    "message": "Ñemigua Política"
+  },
+  "disclaimerAgree": {
+    "message": "Emyenyhẽvo, eñe’ẽme’ẽ ore %TOS% ha %PRIVACY% rehe."
+  },
+  "disclaimerFx": {
+    "message": "Ikatu ojeporu costo cambio de moneda USD’ỹ moneda-pe reipagase."
+  },
+  "signOut": {
+    "message": "Ejesẽ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Eikutu ramo %BTN%, ojehechauka umi mba'ekuaa ha ojejapata ne saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Eikutu mbeguekatu ramo %BTN%, ojehechauka umi mba'ekuaa ha ojejapata ne saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "onboardTranslations": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "topUp": {
+    "message": "Myanyhẽ"
+  },
+  "showMore": {
+    "message": "Ehechauka hetave"
+  },
+  "showLess": {
+    "message": "Ehechauka sa'ive"
+  },
+  "landingTagline1": {
+    "message": "Ehechauka añetegua. Ejuhu japu."
+  },
+  "landingTagline2": {
+    "message": "Ndaipóri vema japu. Añetegua añónte."
+  },
+  "continueWithX": {
+    "message": "Eku'e X ndive"
+  },
+  "continueWithGoogle": {
+    "message": "Eku'e Google ndive"
+  },
+  "continueWithApple": {
+    "message": "Eku'e Apple ndive"
+  },
+  "lastUsed": {
+    "message": "Ojeporu paha"
+  },
+  "cleanupTagline": {
+    "message": "Emopotĩ ne feed X-pe."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Estados Unidos ryepýpe, umi oikóva Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina del Norte, Dakota del Norte, Oklahoma, Oregon, Pennsylvania, Carolina del Sur, Dakota del Sur, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming-pe añoite ikatu oiporu DisinfaX ha omyanyhẽ ipirapire; Washington, D.C., opa umi tetã'i Estados Unidos mba'éva, ha opa estado ndojeheróiva oñemboyke. Estados Unidos okápe, oĩ Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Japón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam, ha Suiza-pe."
+  },
+  "factCheckAllButton": {
+    "message": "Ejehechakuaa opavavéva"
   }
 }

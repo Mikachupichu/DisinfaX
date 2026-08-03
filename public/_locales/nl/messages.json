@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Controleren",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "cadeau"
+  },
+  "customTopup": {
+    "message": "Aangepast"
+  },
+  "customAmountLabel": {
+    "message": "Aangepast opwaardeerbedrag in Amerikaanse dollars"
+  },
+  "increase": {
+    "message": "Verhogen"
+  },
+  "decrease": {
+    "message": "Verlagen"
+  },
+  "topUpBalance": {
+    "message": "Saldo opwaarderen"
+  },
+  "processing": {
+    "message": "Bezig…"
+  },
+  "checkoutError": {
+    "message": "Kan het afrekenen niet starten. Probeer het opnieuw."
+  },
+  "termsOfService": {
+    "message": "Servicevoorwaarden"
+  },
+  "privacyPolicy": {
+    "message": "Privacybeleid"
+  },
+  "disclaimerAgree": {
+    "message": "Door op te waarderen ga je akkoord met onze %TOS% en ons %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Er kunnen wisselkoerskosten in rekening worden gebracht als je in een andere valuta dan USD betaalt."
+  },
+  "signOut": {
+    "message": "Afmelden"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikken op %BTN% toont beweringen en brengt kosten in rekening op je saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tikken op %BTN% toont beweringen en brengt kosten in rekening op je saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Klikken op %BTN% brengt kosten in rekening op je saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Klikken op %BTN% brengt kosten in rekening op je saldo"
+  },
+  "onboardTranslations": {
+    "message": "Klikken op %BTN% brengt kosten in rekening op je saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Klikken op %BTN% brengt kosten in rekening op je saldo"
+  },
+  "topUp": {
+    "message": "Opwaarderen"
+  },
+  "showMore": {
+    "message": "Meer tonen"
+  },
+  "showLess": {
+    "message": "Minder tonen"
+  },
+  "landingTagline1": {
+    "message": "Onthul de waarheid. Vind de leugens."
+  },
+  "landingTagline2": {
+    "message": "Geen desinformatie meer. Alleen feiten."
+  },
+  "continueWithX": {
+    "message": "Doorgaan met X"
+  },
+  "continueWithGoogle": {
+    "message": "Doorgaan met Google"
+  },
+  "continueWithApple": {
+    "message": "Doorgaan met Apple"
+  },
+  "lastUsed": {
+    "message": "Laatst gebruikt"
+  },
+  "cleanupTagline": {
+    "message": "Ruim je X-feed op."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Binnen de Verenigde Staten kunnen alleen inwoners van Alabama, Arizona, Californië, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Noord-Carolina, Noord-Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin en Wyoming DisinfaX gebruiken en hun saldo opwaarderen; Washington, D.C., alle Amerikaanse territoria en alle niet-vermelde staten zijn uitgesloten. Buiten de Verenigde Staten is het beschikbaar in Canada, Australië, Nieuw-Zeeland, Singapore, Zuid-Afrika, Japan, Taiwan, Indonesië, Thailand, de Filipijnen, Maleisië, Vietnam en Zwitserland."
+  },
+  "factCheckAllButton": {
+    "message": "Alles controleren"
   }
 }

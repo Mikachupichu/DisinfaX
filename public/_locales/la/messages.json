@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Recognitio",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Reliquum"
+  },
+  "gifted": {
+    "message": "Donatum"
+  },
+  "customTopup": {
+    "message": "Proprium"
+  },
+  "customAmountLabel": {
+    "message": "Summa repletionis propria in dollariis Americanis"
+  },
+  "increase": {
+    "message": "Augere"
+  },
+  "decrease": {
+    "message": "Minuere"
+  },
+  "topUpBalance": {
+    "message": "Reliquum supplere"
+  },
+  "processing": {
+    "message": "Tractatur…"
+  },
+  "checkoutError": {
+    "message": "Solutio incipi non potuit. Quaeso iterum conare."
+  },
+  "termsOfService": {
+    "message": "Condiciones servitii"
+  },
+  "privacyPolicy": {
+    "message": "Ratio privatae vitae"
+  },
+  "disclaimerAgree": {
+    "message": "Supplendo, %TOS% et %PRIVACY% nostris consentis."
+  },
+  "disclaimerFx": {
+    "message": "Mercedes permutationis monetae applicari possunt si moneta alia quam USD solvis."
+  },
+  "signOut": {
+    "message": "Exire"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% premendo assertiones revelabuntur et saldum tuum onerabitur"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% tangendo assertiones revelabuntur et saldum tuum onerabitur"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "topUp": {
+    "message": "Reple rationem tuam"
+  },
+  "showMore": {
+    "message": "Plura monstrare"
+  },
+  "showLess": {
+    "message": "Pauciora monstrare"
+  },
+  "landingTagline1": {
+    "message": "Verum revela. Mendacia inveni."
+  },
+  "landingTagline2": {
+    "message": "Nulla amplius disinformatio. Sola facta."
+  },
+  "continueWithX": {
+    "message": "Pergere cum X"
+  },
+  "continueWithGoogle": {
+    "message": "Pergere cum Google"
+  },
+  "continueWithApple": {
+    "message": "Pergere cum Apple"
+  },
+  "lastUsed": {
+    "message": "Ultimo adhibitum"
+  },
+  "cleanupTagline": {
+    "message": "Purga tuum X feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Intra Civitates Foederatas, soli incolae Alabamae, Arizonae, Californiae, Coloradi, Connecticutae, Delavariae, Floridae, Idahonis, Illinoesiae, Indianae, Iowae, Kansae, Kentukiae, Ludovicianae, Mainae, Massachusettae, Mississippiae, Missuriae, Montanae, Novae Hantoniae, Novi Mexici, Novi Eboraci, Carolinae Septentrionalis, Dacotae Septentrionalis, Oklahomae, Oregoniae, Pennsylvaniae, Carolinae Meridionalis, Dacotae Meridionalis, Tennesiae, Texiae, Utahi, Vasingtoniae, Visconsiniae et Viomingiae DisinfaX uti et pecuniam suam augere possunt; Vasingtonia, D.C., omnia Civitatum Foederatarum territoria et quaevis civitas non enumerata excluduntur. Extra Civitates Foederatas, in Canada, Australia, Nova Zelandia, Singapura, Africa Australi, Iaponia, Taivania, Indonesia, Thailandia, Philippinis, Malaesia, Vietnamia et Helvetia praesto est."
+  },
+  "factCheckAllButton": {
+    "message": "Omnia Recognosce"
   }
 }

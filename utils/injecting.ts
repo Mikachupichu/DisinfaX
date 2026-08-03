@@ -1,6 +1,7 @@
 import { Classification, QuotedClassification, Claim, TextSegment, Source, sameLanguage } from "../data/Classification";
 import { normalizeSources } from "./intelligence";
-import { breakupTweetText, breakupWithHighlights } from "./textBreakup";
+import { breakupTweetText, breakupWithHighlights, resolveHighlightRange } from "./textBreakup";
+import { mfBus } from "./mfBus";
 
 /**
  * Detects whether the user is interacting via touch (finger) or a pointing device
@@ -55,8 +56,17 @@ class InputModeManager {
 
 const allClassifications: Classification[] = [];
 const processingOnHoldIds = new Set<string>();
+// Safety net for the (rare) case where a Disinfact/Translate-Fact-Checks backend call fails:
+// its button becomes a spinner and, with no result to re-render it away, would stay stuck. If
+// after this long the button is STILL connected AND still marked processing (i.e. no success
+// re-render removed it), revert it to its clickable state so the user can retry. Generous so a
+// slow-but-successful call never trips it; a success detaches the node first, making it a no-op.
+const CHARGE_REVERT_TIMEOUT_MS = 30000;
 const requestedQuotedDbFetchIds = new Set<string>();
 let observerSetup = false;
+/** When true (user logged out), the extension is frozen: no injection, no
+ *  notifications, no onboarding. Existing injections are torn down on freeze. */
+let extensionFrozen = false;
 
 // Tracks tweet IDs for which the user clicked "Fact-Check All".
 // These approvals persist for the session so late-arriving no-DB-match claims
@@ -91,25 +101,45 @@ pathname : '';
 let navigationListenerSetup = false;
 
 /**
- * Testing: set `window.__mfLocale` or `localStorage.mfLocale` in the console, then refresh.
+ * Testing: from the background service worker console (chrome://extensions →
+ * click "service worker" under DisinfaX), run:
+ *   browser.storage.local.set({ mfLocale: 'fr' })
+ *   browser.storage.local.remove('mfLocale')
+ *
+ * Read from EXTENSION storage (chrome.storage.local), NOT page localStorage — the
+ * host page (X) can write page localStorage and could otherwise spoof the
+ * extension's displayed locale (or RTL layout / number formatting) into a bogus
+ * value. Extension storage is unreachable from the page. This mirrors the same
+ * `mfLocale` key relay.content.ts already reads for the translate/reclassify
+ * locale, so one setting controls both.
  *   any locale code present under `public/_locales/`  →  fetch that locale's messages.json
  *   'auto'                                            →  detect from navigator.language
  *   undefined / 'en'                                  →  use chrome.i18n (browser's built-in locale)
  *
- * localStorage persists across page refreshes; window.__mfLocale needs to be set
- * each time before the page loads (harder to use). Prefer localStorage:
- *   localStorage.mfLocale = 'fr'; location.reload()
- *   delete localStorage.mfLocale; location.reload()
+ * Accepts either separator ('zh_TW' or 'zh-TW') — normalized to a hyphen so it's
+ * also valid to hand straight to Intl.NumberFormat/Intl RTL checks, which reject
+ * underscores.
  */
 let localeOverride: string | null = null;
+
+function normalizeLocaleOverride(raw: string | null | undefined): string | null {
+    if (!raw) return null;
+    if (raw === 'auto') return (navigator.language || 'en').split('-')[0];
+    return raw.replace(/_/g, '-');
+}
+
 try {
-    const raw = (window as any).__mfLocale ?? localStorage?.getItem?.('mfLocale') ?? null;
-    localeOverride = raw === 'auto'
-        ? (navigator.language || 'en').split('-')[0]
-        : (raw ?? null);
+    browser.storage.local.get('mfLocale').then((r: any) => {
+        localeOverride = normalizeLocaleOverride(r?.mfLocale ?? null);
+    }).catch(() => {});
+    browser.storage.onChanged.addListener((changes: Record<string, any>, area: string) => {
+        if (area === 'local' && 'mfLocale' in changes) {
+            localeOverride = normalizeLocaleOverride(changes.mfLocale?.newValue ?? null);
+        }
+    });
 } catch {}
 
-/** Effective UI locale: respect the localStorage test override first, then
+/** Effective UI locale: respect the extension-storage test override first, then
  *  chrome.i18n.getUILanguage(), then navigator.language. */
 function getEffectiveUILocale(): string {
     try {
@@ -139,10 +169,14 @@ const localeMessageCache = new Map<string, Record<string, RawMessageEntry>>();
 const localeMessageLoadPromises = new Map<string, Promise<void>>();
 
 /** Kick off (once) an async fetch of `_locales/<locale>/messages.json` and cache it.
- *  Used for the localStorage test-locale override and as the ultimate fallback when
- *  the chrome/browser i18n API is unavailable — both are edge paths, so the fetch
+ *  Used for the mfLocale test override and as the ultimate fallback when the
+ *  chrome/browser i18n API is unavailable — both are edge paths, so the fetch
  *  being async (results only available on the *next* call to `t`) is an acceptable
- *  trade-off for not duplicating any translated copy inside this file. */
+ *  trade-off for not duplicating any translated copy inside this file.
+ *
+ *  `locale` may be a hyphenated BCP-47 tag (e.g. "zh-TW"); the `_locales/` folders
+ *  are named with underscores, so candidates try the underscore form first, then
+ *  the bare base language, caching the result under the original hyphenated key. */
 function ensureLocaleMessagesLoading(locale: string): void {
     if (localeMessageCache.has(locale) || localeMessageLoadPromises.has(locale)) return;
     const promise = (async () => {
@@ -152,12 +186,16 @@ function ensureLocaleMessagesLoading(locale: string): void {
                 : (typeof browser !== 'undefined' && (browser as any).runtime)
                     ? (browser as any).runtime
                     : null;
-            const url = runtime?.getURL?.(`_locales/${locale}/messages.json`);
-            if (!url) return;
-            const res = await fetch(url);
-            if (!res.ok) return;
-            const json = await res.json();
-            localeMessageCache.set(locale, json);
+            const candidates = [locale.replace(/-/g, '_'), locale.split('-')[0]];
+            for (const c of candidates) {
+                const url = runtime?.getURL?.(`_locales/${c}/messages.json`);
+                if (!url) continue;
+                const res = await fetch(url);
+                if (!res.ok) continue;
+                const json = await res.json();
+                localeMessageCache.set(locale, json);
+                return;
+            }
         } catch {
         } finally {
             localeMessageLoadPromises.delete(locale);
@@ -246,6 +284,97 @@ function reclassifyFlagChanged(a: Claim[] | null | undefined, b: Claim[] | null 
  * new highlights, not color-only updates of an existing highlight.
  */
 const animatedHighlights = new WeakSet<HTMLElement>();
+// Stable per-claim animation memory (keyed "tweetId:claimIndex"), so the wipe only
+// plays the FIRST time a claim's highlight appears — not every time the segment spans
+// are rebuilt (which happens whenever a new claim arrives and the text re-splits).
+const animatedHighlightKeys = new Set<string>();
+
+/** True when the host page is in a dark theme, so highlight tints use white rather
+ *  than black. Read from the body's background luminance (works across X's themes). */
+function isDarkMode(): boolean {
+    try {
+        const m = getComputedStyle(document.body).backgroundColor.match(/\d+/g);
+        if (m && m.length >= 3) {
+            const [r, g, b] = m.map(Number);
+            return (0.2126 * r + 0.7152 * g + 0.0722 * b) < 128;
+        }
+    } catch { /* ignore */ }
+    return true;
+}
+
+/** Highlight tint for a claim. On-hold ("Fact-Check", actionable) = a prominent
+ *  black/white tint; researching ("Fact-Checking", in progress) or no verdict = gray;
+ *  otherwise the verdict color. `hover` returns the stronger hover variant. */
+function highlightBgColor(claim: Claim, hover: boolean): string {
+    const hasVerdictColor = claim.confidence !== undefined && claim.confidence !== null
+        && claim.veracity !== undefined && claim.veracity !== null && claim.confidence >= 0.2;
+    if (claim.reclassifyOnHold) {
+        return isDarkMode()
+            ? (hover ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.28)')
+            : (hover ? 'rgba(0,0,0,0.34)' : 'rgba(0,0,0,0.22)');
+    }
+    if (!hasVerdictColor) return hover ? 'rgba(128,128,128,0.35)' : 'rgba(128,128,128,0.25)';
+    return confidenceRgba(claim.confidence, hover ? 0.5 : 0.25, claim.veracity);
+}
+
+// Last known mouse-pointer position (viewport coords). Tracked so a highlight whose
+// state changes UNDER a stationary cursor — e.g. clicking "Fact-Check" flips it to
+// "Fact-Checking" and then to a verdict, all without the mouse ever moving — can
+// re-evaluate its own hover state instead of only reacting once the user physically
+// moves the pointer out and back in. Touch pointers never fire mousemove, so this
+// stays inert on touch (the values remain -1).
+let mfPointerX = -1, mfPointerY = -1;
+
+/** The span most recently handed a SYNTHETIC mouseenter by resyncHoverAtPointer.
+ *
+ *  A synthetic enter has no browser-guaranteed matching mouseleave — the pointer never
+ *  really entered, so the browser will never announce it leaving. When the cached
+ *  coordinates are stale (the pointer flicked across the highlight and kept going, or
+ *  left the window entirely so no fresher mousemove was recorded), the resync lands on a
+ *  span the cursor is no longer over and its hover state — tinted background, inline
+ *  badge, and the article-level preview-popover timer — sticks until the node is
+ *  re-rendered (which is why scrolling away and back clears it).
+ *
+ *  So: remember that span, and on the next REAL mouse move, if the pointer isn't inside
+ *  it, hand it the mouseleave the browser owes it. Dispatching the real event (rather
+ *  than resetting styles here) keeps every existing guard intact — the span's own
+ *  handler still honours _mfPopoverOpen / _mfBadgePermanent, and the article's
+ *  capture-phase listener still cancels the preview — exactly mirroring how the
+ *  synthetic enter reaches both layers. */
+let mfSyntheticHoverSpan: HTMLElement | null = null;
+
+if (typeof window !== "undefined") {
+    window.addEventListener("mousemove", (e) => {
+        mfPointerX = e.clientX; mfPointerY = e.clientY;
+        const stuck = mfSyntheticHoverSpan;
+        if (!stuck) return;
+        // Node re-rendered away: its stuck state went with it, just drop the reference.
+        if (!stuck.isConnected) { mfSyntheticHoverSpan = null; return; }
+        const atPoint = document.elementFromPoint(e.clientX, e.clientY);
+        if (atPoint === stuck || stuck.contains(atPoint)) return; // genuinely still hovered
+        mfSyntheticHoverSpan = null;
+        stuck.dispatchEvent(new MouseEvent("mouseleave", { bubbles: false, clientX: e.clientX, clientY: e.clientY }));
+    }, true);
+}
+
+/** If the pointer is currently sitting inside `span`, re-fire a synthetic mouseenter
+ *  so both hover layers (the span's own inline-badge listener AND the article-level
+ *  preview-popover trigger) react as if the user had just entered it. This replicates
+ *  the manual "move the mouse out and back in" the user otherwise has to do after an
+ *  in-place transition the browser doesn't treat as a hover change (the cursor never
+ *  moved). Because it just replays a real mouseenter, every existing guard (on-hold,
+ *  permanent badge, already-open popover) is honoured unchanged. No-op if the pointer
+ *  isn't over the span (or on touch, where the coords stay -1). */
+function resyncHoverAtPointer(span: HTMLElement) {
+    if (mfPointerX < 0 || mfPointerY < 0) return;
+    const atPoint = document.elementFromPoint(mfPointerX, mfPointerY);
+    if (!atPoint) return;
+    if (atPoint === span || span.contains(atPoint)) {
+        span.dispatchEvent(new MouseEvent("mouseenter", { bubbles: false, clientX: mfPointerX, clientY: mfPointerY }));
+        // Track it so the next real mouse move can undo this if the coords were stale.
+        mfSyntheticHoverSpan = span;
+    }
+}
 
 /** Animate a claim highlight background wiping in. LTR wipes left-to-right;
  *  RTL wipes right-to-left. After the animation finishes the span reverts to a
@@ -266,8 +395,12 @@ function animateHighlightReveal(span: HTMLElement, bgColor: string) {
     const prevTimeout = (span as any)._mfRevealTimeout as ReturnType<typeof setTimeout> | undefined;
     if (prevTimeout) { clearTimeout(prevTimeout); (span as any)._mfRevealTimeout = null; }
 
-    const alreadyHighlighted = animatedHighlights.has(span);
-    animatedHighlights.add(span);
+    // Prefer the stable per-claim key so a rebuilt span for a claim that already
+    // animated doesn't replay the wipe (fixes the blink + "all re-animate on each new
+    // highlight"). Fall back to the span object if no key was assigned.
+    const animKey = span.dataset.mfAnimKey;
+    const alreadyHighlighted = animKey ? animatedHighlightKeys.has(animKey) : animatedHighlights.has(span);
+    if (animKey) animatedHighlightKeys.add(animKey); else animatedHighlights.add(span);
 
     if (alreadyHighlighted) {
         // Color-only change: skip the wipe animation entirely.
@@ -296,11 +429,19 @@ function animateHighlightReveal(span: HTMLElement, bgColor: string) {
 
     const onEnd = () => {
         span.classList.remove('mf-highlight-reveal');
+        // Swap the finished gradient for the solid resting color INSTANTLY. Without
+        // killing the transition here, background-color fades transparent→bgColor over
+        // 0.15s while the gradient is already gone — a ~150ms near-invisible flash (the
+        // "blink"). Force it with transition:none, then restore next frame for hover.
+        span.style.transition = 'none';
         span.style.backgroundImage = '';
         span.style.backgroundSize = '';
         span.style.backgroundPosition = '';
         span.style.backgroundRepeat = '';
         span.style.backgroundColor = bgColor;
+        // eslint-disable-next-line no-unused-expressions
+        span.offsetHeight; // force reflow so the instant swap commits before transition is restored
+        span.style.transition = '';
         span.removeEventListener('transitionend', onEnd);
         if ((span as any)._mfRevealOnEnd === onEnd) (span as any)._mfRevealOnEnd = null;
         if ((span as any)._mfRevealTimeout) { clearTimeout((span as any)._mfRevealTimeout); (span as any)._mfRevealTimeout = null; }
@@ -343,6 +484,61 @@ function removeInjectedElements(tweetId: string) {
     }
     processingOnHoldIds.delete(tweetId);
     processingTranslateFactChecksIds.delete(tweetId);
+}
+
+/** Neutralize a segment wrap so the tweet text stays visible but carries no
+ *  highlights, badges, or interactivity. The rendered text (and its links) is
+ *  kept exactly as-is; only the extension styling is stripped, and all event
+ *  listeners are dropped by replacing the node with a clone. The wrap is also
+ *  un-classed so a later re-login re-renders segments from scratch. */
+function freezeSegmentWrap(wrap: HTMLElement) {
+    for (const badge of Array.from(wrap.querySelectorAll('.mf-inline-badge'))) badge.remove();
+    for (const span of Array.from(wrap.querySelectorAll<HTMLElement>('.mf-segment-claim'))) {
+        span.classList.remove('mf-segment-claim', 'mf-highlight-reveal');
+        span.style.backgroundColor = '';
+        span.style.backgroundImage = '';
+        span.style.backgroundSize = '';
+        span.style.cursor = '';
+        span.removeAttribute('classification-id');
+    }
+    wrap.classList.remove('mf-segment-wrap');
+    // Drop every attached listener (hover/click popover triggers) by cloning.
+    wrap.replaceWith(wrap.cloneNode(true));
+}
+
+/** Tear down every injection on the page. Tweet text is preserved (highlights
+ *  stripped in place); all standalone UI (buttons, popovers, notifications,
+ *  onboarding) is removed, and internal state is reset so a subsequent
+ *  re-login re-injects from scratch. */
+export function removeAllInjections() {
+    for (const wrap of Array.from(document.querySelectorAll<HTMLElement>('.mf-segment-wrap'))) {
+        freezeSegmentWrap(wrap);
+    }
+    const standalone = document.querySelectorAll(
+        '[classification-id],[mf-unmatched],[translate-fc-id],[mf-on-hold-id],.mf-popover,.mf-onboard,.mf-onboard-attached,.mf-notif-container,.mf-floating-scroll-btn'
+    );
+    for (const el of Array.from(standalone)) el.remove();
+
+    for (const path of Array.from(floatingButtonRegistry.keys())) clearFloatingButtonForPath(path, true);
+    previewPopoverState = null;
+    allClassifications.length = 0;
+    processingOnHoldIds.clear();
+    processingTranslateFactChecksIds.clear();
+    requestedQuotedDbFetchIds.clear();
+    factCheckAllClickedIds.clear();
+    individuallyClickedOnHoldClaims.clear();
+    onHoldScrollStates.clear();
+    textBreakupInProgress.clear();
+}
+
+/** Freeze or resume the extension. Freezing (user logged out) tears down all
+ *  injections and blocks any further injection/notification/onboarding until
+ *  resumed. Resuming (logged back in) simply lifts the block; re-injection is
+ *  driven by the relay re-sending captured tweets. */
+export function setExtensionFrozen(frozen: boolean) {
+    if (frozen === extensionFrozen) return;
+    extensionFrozen = frozen;
+    if (frozen) removeAllInjections();
 }
 
 /** Returns true if any representation of the tweet (main article or quoted tweet card) is within the viewport. */
@@ -1022,7 +1218,7 @@ function requestQuotedDbFetch(quotedTweetId: string, parentTweetId: string) {
 
     requestedQuotedDbFetchIds.add(quotedTweetId);
     console.log(`[misinfo] Requesting DB fetch for quoted tweet ${quotedTweetId} (parent ${parentTweetId})`);
-    document.dispatchEvent(new CustomEvent('mf-fetch-quoted-db', {
+    mfBus.dispatchEvent(new CustomEvent('mf-fetch-quoted-db', {
         detail: { tweetId: quotedTweetId, parentTweetId }
     }));
 }
@@ -1072,6 +1268,7 @@ let debounceTimeout: NodeJS.Timeout | null = null;
 let stylesInjected = false;
 
 export function injectClassifications(classifications: Classification[], tweetTextCache?: Map<string, string>, translatedTextCache?: Map<string, string>) {
+    if (extensionFrozen) return;
     setupNavigationListener();
     console.log(`[misinfo] injectClassifications: received ${classifications.length} classifications`, classifications.map(c => ({ id: c.id, claims: c.claims?.length, hasSegments: !!c.segments, cacheHas: tweetTextCache?.has(c.id), translatedHas: translatedTextCache?.has(c.id) })));
 
@@ -1141,7 +1338,7 @@ export function injectClassifications(classifications: Classification[], tweetTe
             if (quotedText) {
                 const qTextLocale = c.textLocale ?? c.translatedLocale;
                 let qSegments: TextSegment[] | null = null;
-                if (qTextLocale && c.quoting.claims.some(cl => cl.highlight?.[qTextLocale])) {
+                if (qTextLocale && c.quoting.claims.some(cl => !!resolveHighlightRange(cl.highlight, qTextLocale))) {
                     qSegments = breakupWithHighlights(quotedText, c.quoting.claims, qTextLocale);
                 }
                 if (!qSegments) {
@@ -1161,13 +1358,24 @@ export function injectClassifications(classifications: Classification[], tweetTe
         updateOnHoldScrollTracking(c);
     }
 
+    refreshOnboarding();
+
     if (!observerSetup) {
         observerSetup = true;
-        const observer = new MutationObserver(() => {
+        const observer = new MutationObserver((mutations) => {
             checkPathChange();
+            // Only re-inject when the HOST page actually changed (a tweet mounted /
+            // re-rendered). Ignore mutations that are purely our OWN injected elements —
+            // otherwise our injections (segments, popover text updates, onboarding
+            // popovers on document.body) re-trigger this observer, which re-injects, which
+            // mutates again: an infinite inject→observe→inject loop that thrashes the main
+            // thread and detaches open popovers (the "click a highlight, badge sticks,
+            // popover never opens, highlight frozen" bug).
+            if (!mutations.some(hasNonExtensionChange)) return;
             if (debounceTimeout) clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => {
                 classificationInjections(allClassifications);
+                refreshOnboarding();
             }, 300);
         });
         observer.observe(document.body, {
@@ -1175,6 +1383,26 @@ export function injectClassifications(classifications: Classification[], tweetTe
             subtree: true,
         });
     }
+}
+
+/** Selector matching every element the extension injects, so the timeline
+ *  MutationObserver can distinguish host-page (real tweet) changes from our own. */
+const MF_OWN_SELECTOR = '.mf-segment-wrap, .mf-popover, .mf-onboard, .mf-notif-container, .mf-floating-scroll-btn, [mf-on-hold-id], [classification-id], [mf-unmatched], [translate-fc-id]';
+
+/** True if a mutated node is (or lives inside) one of our injected elements. */
+function isOwnMutationNode(n: Node): boolean {
+    const el: Element | null = n.nodeType === 1 ? (n as Element) : n.parentElement;
+    if (!el) return false;
+    if (typeof el.className === 'string' && el.className.startsWith('mf-')) return true;
+    return el.matches?.(MF_OWN_SELECTOR) || el.closest?.(MF_OWN_SELECTOR) != null;
+}
+
+/** True only when a mutation adds/removes at least one node that ISN'T ours — i.e. a
+ *  genuine host-page change worth re-injecting for. Extension-only mutations return false. */
+function hasNonExtensionChange(m: MutationRecord): boolean {
+    const nodes = [...Array.from(m.addedNodes), ...Array.from(m.removedNodes)];
+    if (nodes.length === 0) return false;
+    return nodes.some(n => !isOwnMutationNode(n));
 }
 
 function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map<string, string>, translatedTextCache?: Map<string, string>) {
@@ -1219,7 +1447,10 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
 
     if (hasTextLocale) {
         const hlKey = textLocale!;
-        const hasHl = claims.some(c => c.highlight && c.highlight[hlKey]);
+        // Resolve tolerantly: the range's stored key (worker keys by UI locale) can
+        // differ from hlKey (displayed-text locale), so an exact-key check would wrongly
+        // skip breakupWithHighlights and drop every claim to the unmatched fallback.
+        const hasHl = claims.some(c => !!resolveHighlightRange(c.highlight, hlKey));
         console.log(`[misinfo] Text breakup for ${classification.id}: trying highlight key ${hlKey}, has=${hasHl}`);
         if (hasHl) {
             mainSegments = breakupWithHighlights(tweetText, claims, hlKey);
@@ -1252,7 +1483,7 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
         if (quotedText) {
             let quotedSegments: TextSegment[] | null = null;
             if (hasTextLocale) {
-                const hasQuotedHl = classification.quoting.claims.some(c => c.highlight && c.highlight[textLocale!]);
+                const hasQuotedHl = classification.quoting.claims.some(c => !!resolveHighlightRange(c.highlight, textLocale!));
                 if (hasQuotedHl) {
                     quotedSegments = breakupWithHighlights(quotedText, classification.quoting.claims, textLocale!);
                     console.log(`[misinfo] Text breakup for ${classification.id}: quoted breakupWithHighlights result=${quotedSegments ? quotedSegments.length + ' segments' : 'null'}`);
@@ -1325,6 +1556,7 @@ function getArticleMainStatusId(article: Element): string | null {
 }
 
 function classificationInjections(classifications: Classification[]) {
+    if (extensionFrozen) return;
     syncQuotingClassifications();
     for (const classification of classifications) {
         const times = document.querySelectorAll(`a[href*="/status/${classification.id}"]`);
@@ -1486,17 +1718,11 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
             const isOnHold = claim.reclassifyOnHold;
             const label = isOnHold ? "Fact-Check" : verdictLabel(claim.confidence, claim.veracity, `${c.id}:${claim.text}`);
             const reasoning = isOnHold
-                ? (claim.cachedNote ?? "Click to re-check this claim")
+                ? (claim.cachedNote ?? tapify("Click to re-check this claim"))
                 : extractReasoning(claim.note, claim.confidence, claim.veracity);
-            const cls = c as Classification;
-            const hlKey = cls.translatedLocale ?? cls.textLocale ?? Object.keys(claim.highlight ?? {})[0];
-            const hlValue = hlKey ? claim.highlight?.[hlKey] : undefined;
-            const hlDebug = hlKey && hlValue ? JSON.stringify({ [hlKey]: hlValue }) : 'null';
             return `
             <div style="margin-bottom: 8px; line-height: 1.4;">
-                ${claim.text !== (claim.rewritten ?? claim.text) ? `<div style="font-size: 10px; color: inherit; opacity: 0.35; margin-bottom: 1px;">${claim.text}</div>` : ''}
-                <div style="font-size: 12px; color: inherit; opacity: 0.55; margin-bottom: 3px;">${claim.rewritten ?? claim.text}</div>
-                <div style="font-size: 9px; color: inherit; opacity: 0.25; font-family: monospace; margin-bottom: 2px;">${hlDebug}</div>
+                <div style="font-size: 13px; color: inherit; margin-bottom: 3px;">${claim.rewritten ?? claim.text}</div>
                 <div>
                     <span style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${isOnHold ? '' : ((claim.confidence === undefined || claim.refreshing) ? '<span class="mf-fc-spinner"></span>' : '')}${label}</span>
                     <span style="font-size: 13px; color: inherit;"> ${reasoning}</span>
@@ -1710,6 +1936,72 @@ function getInlineStyles(): string {
     top: 8px;
     right: 12px;
 }
+
+/* ── Balance notifications ──
+   Top-right on wide screens, top-centered on narrow (mobile) ones. z-index sits
+   above popovers (z:1) but below the Fact-Checked / Go-Back buttons (z:9999). */
+.mf-notif-container {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    z-index: 9998;
+    pointer-events: none;
+    max-width: min(360px, 90vw);
+}
+@media (max-width: 600px) {
+    .mf-notif-container {
+        left: 12px;
+        right: 12px;
+        align-items: center;
+        max-width: none;
+    }
+}
+.mf-notif {
+    pointer-events: auto;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    opacity: 0;
+    transform: translateY(-6px);
+}
+.mf-notif.mf-notif-visible { opacity: 1; transform: translateY(0); }
+
+/* ── Onboarding "charge-balance" popovers ──
+   Reuse the popover look but sit above claim popovers (z:1) and below notifications
+   (z:9998). Always fully opaque and persistent (unless mirroring a preview popover). */
+.mf-onboard {
+    z-index: 9997;
+    opacity: 1;
+    min-width: 0;
+    max-width: 210px;
+    /* Compact: tight padding, just enough room on the right for the × close. */
+    padding: 5px 22px 5px 8px;
+    font-size: 11.5px;
+    line-height: 1.3;
+    border-radius: 8px;
+}
+.mf-onboard .mf-popover-reasoning { font-size: 11.5px; padding-right: 0; }
+/* Inline button icon embedded in the onboarding text (refresh / translate). */
+.mf-onboard-btn-icon { display: inline-flex; vertical-align: -2px; margin: 0 1px; }
+.mf-onboard-btn-icon svg { width: 13px; height: 13px; }
+.mf-onboard-btn-label { font-weight: 700; white-space: nowrap; }
+.mf-onboard .mf-popover-close { top: 3px; right: 6px; }
+/* Attached onboarding popovers (translate / refresh) sit just below a claim popover
+   and share its opacity (mirrored in JS), with a smooth fade. */
+.mf-onboard-attached { transition: opacity 180ms ease; }
 `;
 }
 
@@ -1721,6 +2013,392 @@ function injectStyles() {
     document.head.appendChild(style);
     new InputModeManager();
 }
+
+// ── Balance / error notifications ────────────────────────────────────────────
+
+/** Notification colors, matching the highlight extremes and center: green (most
+ *  true), yellow/orange (center), red (most false) — derived from confidenceRgba. */
+function notifColor(kind: 'increase' | 'decrease' | 'error'): { bg: string; fg: string } {
+    if (kind === 'increase') return { bg: confidenceRgba(1, 0.96, 1), fg: '#000' };
+    if (kind === 'decrease') return { bg: confidenceRgba(1, 0.96, 0), fg: '#000' };
+    return { bg: confidenceRgba(1, 0.96, -1), fg: '#fff' };
+}
+
+function getNotifContainer(): HTMLElement {
+    let c = document.querySelector<HTMLElement>('.mf-notif-container');
+    if (!c) {
+        injectStyles();
+        c = document.createElement('div');
+        c.className = 'mf-notif-container';
+        document.body.appendChild(c);
+    }
+    return c;
+}
+
+/** Format a signed USD delta, e.g. "+US$5" / "-US$0.0013", with the locale separator. */
+/** Returns HTML for a signed USD amount with a small, vertically-centered "US" (mirrors
+ *  the dashboard's Usd component). Values are numeric/controlled — safe for innerHTML. */
+function formatSignedUsd(amount: number, sign: '+' | '-'): string {
+    // Mirror the balance's formatUsdNumber rule exactly (popup/i18n.ts): round to 4dp,
+    // trim trailing zeros, then 0 decimals → integer; exactly 1 → pad to 2; 2+ → as-is.
+    const rounded = Math.round((Math.abs(amount) + Number.EPSILON) * 10000) / 10000;
+    const trimmed = rounded.toFixed(4).replace(/0+$/, '');
+    const dot = trimmed.indexOf('.');
+    const decimals = dot === -1 ? 0 : trimmed.length - dot - 1;
+    const frac = decimals === 0 ? 0 : decimals === 1 ? 2 : decimals;
+    const n = new Intl.NumberFormat(getEffectiveUILocale(), { minimumFractionDigits: frac, maximumFractionDigits: frac }).format(rounded);
+    return `<span style="display:inline-flex;align-items:center;line-height:1;">`
+        + `${sign}`
+        + `<span style="font-size:0.6em;font-weight:600;line-height:1;margin:0 0.5px 0 1px;">US</span>`
+        + `<span style="font-weight:600;line-height:1;">$</span>`
+        + `${n}`
+        + `</span>`;
+}
+
+/** Show a balance-change (green ↑ / orange ↓) or error (red) notification. Auto-dismisses after 5s. */
+export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: { amount?: number; text?: string }) {
+    if (extensionFrozen) return;
+    if (!document.body) return;
+    const container = getNotifContainer();
+    const el = document.createElement('div');
+    el.className = 'mf-notif';
+    const { bg, fg } = notifColor(kind);
+    el.style.backgroundColor = bg;
+    el.style.color = fg;
+    if (kind === 'error') {
+        if (!opts.text) return;
+        el.textContent = opts.text;
+    } else {
+        el.innerHTML = formatSignedUsd(opts.amount ?? 0, kind === 'increase' ? '+' : '-');
+    }
+    container.appendChild(el);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('mf-notif-visible')));
+    setTimeout(() => {
+        el.classList.remove('mf-notif-visible');
+        setTimeout(() => { el.remove(); if (container.childElementCount === 0) container.remove(); }, 300);
+    }, 5000);
+}
+
+// ── Onboarding "charge-balance" popovers ─────────────────────────────────────
+// Persistent popovers next to every charge button whose type the user has never
+// clicked, warning that using it spends balance. An "×" dismisses them all
+// permanently; clicking a charge button marks its type done. z-index sits above
+// claim popovers (z:1) but below notifications (z:9998).
+
+const ONBOARD_DISMISS_KEY = 'mf_onboarding_dismissed';
+const ONBOARD_CLICKED_KEY = 'mf_onboarding_clicked_types';
+/** Types anchored directly next to a single per-tweet button. */
+const STANDALONE_CHARGE_TYPES = new Set(['disinfact', 'factcheckall', 'translate-tweet']);
+let onboardingDismissed = false;
+const onboardingClickedTypes = new Set<string>();
+/** Maps a charge-button anchor to its onboarding popover. */
+const onboardingByAnchor = new WeakMap<HTMLElement, HTMLElement>();
+
+function persistOnboardingClicked() {
+    try { chrome.storage.local.set({ [ONBOARD_CLICKED_KEY]: Array.from(onboardingClickedTypes) }); } catch { /* ignore */ }
+}
+function markOnboardingClicked(type: string) {
+    if (!type || onboardingClickedTypes.has(type)) return;
+    onboardingClickedTypes.add(type);
+    persistOnboardingClicked();
+    refreshOnboarding();
+}
+function dismissAllOnboarding() {
+    onboardingDismissed = true;
+    try { chrome.storage.local.set({ [ONBOARD_DISMISS_KEY]: true }); } catch { /* ignore */ }
+    for (const el of Array.from(document.querySelectorAll('.mf-onboard'))) el.remove();
+}
+function onboardingActive(type: string): boolean {
+    return !onboardingDismissed && !onboardingClickedTypes.has(type);
+}
+/** On touch devices, present click-oriented copy as tap-oriented. Reuses the same
+ *  `is-touch-active` signal that sizes the buttons. English-only best-effort: localized
+ *  strings that don't contain the word "click" pass through unchanged. */
+function tapify(msg: string): string {
+    if (!document.documentElement.classList.contains('is-touch-active')) return msg;
+    return msg
+        .replace(/Clicking/g, 'Tapping').replace(/clicking/g, 'tapping')
+        .replace(/Click/g, 'Tap').replace(/click/g, 'tap');
+}
+
+function onboardingMessage(type: string): string {
+    let msg: string;
+    if (type === 'disinfact') {
+        // Keep the properly-localized Tap variant for this one; tapify() is the fallback
+        // that also covers the other messages, which have no dedicated Tap key.
+        const tap = document.documentElement.classList.contains('is-touch-active');
+        msg = tap ? t('onboardDisinfactTap') : t('onboardDisinfactClick');
+    } else if (type === 'factcheck') msg = t('onboardFactcheck');
+    else if (type === 'translate-inner') msg = t('onboardTranslations');
+    else if (type === 'refresh-inner') msg = t('onboardRefreshes');
+    else msg = t('onboardWillCharge'); // factcheckall, translate-tweet
+    return tapify(msg);
+}
+// Inline icons embedded in the onboarding text for the icon-only buttons.
+const onboardRefreshIconSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`;
+const onboardTranslateIconSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path></svg>`;
+
+/** The button an onboarding popover refers to: a text label (rendered quoted + bold)
+ *  or an inline icon (for the icon-only refresh/translate buttons). Keeps the popover
+ *  text explicit about exactly which control charges the balance. */
+function onboardingButtonRef(type: string): { label?: string; icon?: string } {
+    switch (type) {
+        case 'disinfact': return { label: t('disinfactButton') };
+        case 'factcheckall': return { label: t('factCheckAllButton') };
+        case 'translate-tweet': return { label: t('disinfactButton') };
+        case 'factcheck': return { label: 'Fact-Check' };
+        case 'translate-inner': return { icon: onboardTranslateIconSvg };
+        case 'refresh-inner': return { icon: onboardRefreshIconSvg };
+        default: return { label: 'Fact-Check' };
+    }
+}
+
+function buildOnboardingPopover(type: string): HTMLElement {
+    // Guarantee the .mf-popover / .mf-onboard styles exist: onboarding popovers can show
+    // on an on-hold tweet before any claim renders (upgradeToSegments, the other caller
+    // of injectStyles, hasn't run yet), which would otherwise leave the popover as bare
+    // unstyled text. Idempotent.
+    injectStyles();
+    const el = document.createElement('div');
+    el.className = 'mf-popover mf-onboard';
+    el.dataset.mfOnboard = type;
+    const isRTLP = isRTLLocale(getEffectiveUILocale());
+    if (isRTLP) el.dir = 'rtl';
+    ['click', 'mousedown', 'pointerdown', 'touchstart'].forEach(ev =>
+        el.addEventListener(ev, (e) => e.stopPropagation()));
+    const text = document.createElement('div');
+    text.className = 'mf-popover-reasoning';
+    // Insert the referenced button — a quoted label or an inline icon — where the
+    // message has its %BTN% placeholder, so the popover names exactly what it charges
+    // for. Locales not yet re-translated (no %BTN%) simply show their plain text.
+    const template = onboardingMessage(type);
+    const ref = onboardingButtonRef(type);
+    const parts = template.split('%BTN%');
+    text.appendChild(document.createTextNode(parts[0] ?? ''));
+    if (parts.length > 1) {
+        if (ref.icon) {
+            const ic = document.createElement('span');
+            ic.className = 'mf-onboard-btn-icon';
+            ic.innerHTML = ref.icon;
+            text.appendChild(ic);
+        } else if (ref.label) {
+            const lb = document.createElement('span');
+            lb.className = 'mf-onboard-btn-label';
+            lb.textContent = `“${ref.label}”`;
+            text.appendChild(lb);
+        }
+        text.appendChild(document.createTextNode(parts.slice(1).join('%BTN%')));
+    }
+    el.appendChild(text);
+    const close = document.createElement('span');
+    close.className = 'mf-popover-close';
+    close.textContent = '×';
+    if (isRTLP) { close.style.right = 'auto'; close.style.left = '10px'; }
+    close.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); dismissAllOnboarding(); });
+    el.appendChild(close);
+    return el;
+}
+/** Ensure a standalone onboarding popover is attached next to `anchor` and positioned. */
+function ensureStandaloneOnboarding(anchor: HTMLElement, type: string) {
+    let pop = onboardingByAnchor.get(anchor);
+    if (!pop || !pop.isConnected) {
+        pop = buildOnboardingPopover(type);
+        // Appended to body so position:fixed resolves against the viewport (X's timeline
+        // containers use transforms, which would otherwise capture a fixed element).
+        document.body.appendChild(pop);
+        onboardingByAnchor.set(anchor, pop);
+    }
+    positionOnboardingPopover(pop, anchor);
+}
+/** Re-evaluate all standalone onboarding popovers (called on injection + scroll). */
+function refreshStandaloneOnboarding() {
+    const wanted = new Set<HTMLElement>();
+    for (const anchor of Array.from(document.querySelectorAll<HTMLElement>('[data-mf-charge]'))) {
+        const type = anchor.dataset.mfCharge ?? '';
+        if (!STANDALONE_CHARGE_TYPES.has(type)) continue; // factcheck + in-popover handled separately
+        if (!onboardingActive(type)) continue;
+        if (!anchor.isConnected || anchor.offsetParent === null) continue; // hidden
+        ensureStandaloneOnboarding(anchor, type);
+        const p = onboardingByAnchor.get(anchor);
+        if (p) wanted.add(p);
+    }
+    // Drop standalone popovers whose anchor is gone / type now clicked.
+    for (const pop of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard'))) {
+        const type = pop.dataset.mfOnboard ?? '';
+        if (!STANDALONE_CHARGE_TYPES.has(type)) continue;
+        if (!wanted.has(pop)) pop.remove();
+    }
+}
+
+/** One "Fact-checking a claim will charge your balance" popover per tweet, attached
+ *  to the first claim (DOM order) currently showing a Fact-Check button. Re-anchors
+ *  dynamically as claims stream in and their buttons appear/disappear. */
+const factcheckByArticle = new WeakMap<Element, HTMLElement>();
+function refreshFactcheckOnboarding() {
+    // A claim highlight shows a Fact-Check button when it's on hold (reclassifyOnHold)
+    // or is a pipeline claim with a permanent badge, and hasn't been clicked yet.
+    const firstByArticle = new Map<Element, HTMLElement>();
+    for (const el of Array.from(document.querySelectorAll<HTMLElement>('.mf-segment-claim'))) {
+        const isFactcheck = el.dataset.reclassifyOnHold === 'true' || !!(el as any)._mfBadgePermanent;
+        if (isFactcheck && el.isConnected) {
+            el.dataset.mfCharge = 'factcheck'; // so clicking it marks the type done
+            const article = el.closest('article');
+            if (article && !firstByArticle.has(article)) firstByArticle.set(article, el);
+        } else if (el.dataset.mfCharge === 'factcheck') {
+            delete el.dataset.mfCharge;
+        }
+    }
+
+    if (!onboardingActive('factcheck')) {
+        for (const pop of Array.from(document.querySelectorAll('.mf-onboard[data-mf-onboard="factcheck"]'))) pop.remove();
+        return;
+    }
+
+    const wanted = new Set<HTMLElement>();
+    for (const [article, anchor] of firstByArticle) {
+        let pop = factcheckByArticle.get(article);
+        if (!pop || !pop.isConnected) {
+            pop = buildOnboardingPopover('factcheck');
+            document.body.appendChild(pop);
+            factcheckByArticle.set(article, pop);
+        }
+        positionOnboardingPopover(pop, anchor);
+        wanted.add(pop);
+    }
+    // Remove the fact-check popover from any tweet that no longer has a Fact-Check button.
+    for (const pop of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard[data-mf-onboard="factcheck"]'))) {
+        if (!wanted.has(pop)) pop.remove();
+    }
+}
+
+/** External onboarding popovers attached NEXT TO a claim-reasoning popover (translate /
+ *  refresh). They are separate elements positioned just below the popover, but behave as
+ *  an extension of it: hovering one keeps the preview alive (see the handlers here and
+ *  isHoveringPreviewRelated), their opacity mirrors it (setPreviewPopoverOpacity), and
+ *  they are dismissed together (dismissPreviewPopover / closePopover). */
+function buildAttachedOnboardingPopover(type: string, claimPop: HTMLElement): HTMLElement {
+    const op = buildOnboardingPopover(type);
+    op.classList.add('mf-onboard-attached');
+    (op as any)._mfClaimPop = claimPop;
+    op.addEventListener('mouseenter', () => {
+        if (previewPopoverState && previewPopoverState.popover === claimPop) {
+            setPreviewPopoverOpacity(1);
+            if (previewPopoverState.leaveTimer) { clearTimeout(previewPopoverState.leaveTimer); previewPopoverState.leaveTimer = null; }
+        }
+    });
+    op.addEventListener('mouseleave', () => {
+        if (previewPopoverState && previewPopoverState.popover === claimPop) {
+            setPreviewPopoverOpacity(PREVIEW_BASE_OPACITY);
+            schedulePreviewPopoverDismiss(previewPopoverState.trigger);
+        }
+    });
+    return op;
+}
+
+function refreshInPopoverOnboarding() {
+    // Drop attached popovers whose claim popover is gone.
+    for (const op of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard-attached'))) {
+        const cp = (op as any)._mfClaimPop as HTMLElement | undefined;
+        if (!cp || !cp.isConnected) op.remove();
+    }
+
+    for (const claimPop of Array.from(document.querySelectorAll<HTMLElement>('.mf-popover'))) {
+        if (claimPop.classList.contains('mf-onboard')) continue;
+        // Tag translate buttons so clicking one marks the type done (via the delegated listener).
+        for (const b of Array.from(claimPop.querySelectorAll<HTMLElement>('.mf-translate-btn'))) {
+            if (!b.dataset.mfCharge) b.dataset.mfCharge = 'translate-inner';
+        }
+        const wants: string[] = [];
+        if (claimPop.querySelector('.mf-translate-btn') && onboardingActive('translate-inner')) wants.push('translate-inner');
+        if (claimPop.querySelector('[data-mf-charge="refresh-inner"]') && onboardingActive('refresh-inner')) wants.push('refresh-inner');
+
+        const isPreview = previewPopoverState?.popover === claimPop;
+        const container = claimPop.offsetParent instanceof HTMLElement ? claimPop.offsetParent : getTimelineContainer(claimPop);
+
+        const existing = new Map<string, HTMLElement>();
+        for (const op of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard-attached'))) {
+            if ((op as any)._mfClaimPop === claimPop) existing.set(op.dataset.mfOnboard ?? '', op);
+        }
+        for (const [type, op] of Array.from(existing)) {
+            if (!wants.includes(type)) { op.remove(); existing.delete(type); }
+        }
+        const ordered: HTMLElement[] = [];
+        for (const type of ['translate-inner', 'refresh-inner']) { // translations above refreshes
+            if (!wants.includes(type)) continue;
+            let op = existing.get(type);
+            if (!op) { op = buildAttachedOnboardingPopover(type, claimPop); container.appendChild(op); }
+            ordered.push(op);
+        }
+        // Position stacked directly below the claim popover, matching its width.
+        let top = claimPop.offsetTop + claimPop.offsetHeight + 8;
+        const left = claimPop.offsetLeft;
+        const width = claimPop.offsetWidth;
+        for (const op of ordered) {
+            op.style.left = `${left}px`;
+            op.style.top = `${top}px`;
+            op.style.width = `${width}px`;
+            op.style.maxWidth = `${width}px`;
+            op.style.opacity = isPreview && previewPopoverState?.semiTransparent ? String(PREVIEW_BASE_OPACITY) : '1';
+            top += op.offsetHeight + 8;
+        }
+        if (isPreview && previewPopoverState) previewPopoverState.onboardPopovers = ordered;
+    }
+}
+
+function refreshOnboarding() {
+    if (extensionFrozen) return;
+    if (onboardingDismissed) {
+        for (const pop of Array.from(document.querySelectorAll('.mf-onboard'))) pop.remove();
+        return;
+    }
+    refreshStandaloneOnboarding();
+    refreshFactcheckOnboarding();
+    refreshInPopoverOnboarding();
+}
+
+// Load persisted onboarding state, then evaluate.
+try {
+    chrome.storage.local.get([ONBOARD_DISMISS_KEY, ONBOARD_CLICKED_KEY], (res: any) => {
+        if (!chrome.runtime.lastError && res) {
+            onboardingDismissed = res[ONBOARD_DISMISS_KEY] === true;
+            if (Array.isArray(res[ONBOARD_CLICKED_KEY])) for (const x of res[ONBOARD_CLICKED_KEY]) onboardingClickedTypes.add(String(x));
+        }
+        refreshOnboarding();
+    });
+} catch { /* ignore */ }
+
+// Debug/testing: react live when the onboarding state is reset from the EXTENSION
+// side, so every popover reappears without a page reload — as if no button had ever
+// been clicked or dismissed. Reset from the extension's service-worker console with:
+//   chrome.storage.local.remove(['mf_onboarding_dismissed', 'mf_onboarding_clicked_types'])
+// (Extension storage, so the host page can't touch it — same as the mfLocale hook.)
+try {
+    chrome.storage.onChanged.addListener((changes: any, area: string) => {
+        if (area !== 'local') return;
+        if (!(ONBOARD_DISMISS_KEY in changes) && !(ONBOARD_CLICKED_KEY in changes)) return;
+        if (ONBOARD_DISMISS_KEY in changes) onboardingDismissed = changes[ONBOARD_DISMISS_KEY].newValue === true;
+        if (ONBOARD_CLICKED_KEY in changes) {
+            onboardingClickedTypes.clear();
+            const v = changes[ONBOARD_CLICKED_KEY].newValue;
+            if (Array.isArray(v)) for (const x of v) onboardingClickedTypes.add(String(x));
+        }
+        refreshOnboarding();
+    });
+} catch { /* ignore */ }
+
+// Mark a type done when its button is clicked (capture so it runs before X's handlers).
+document.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement)?.closest?.('[data-mf-charge]') as HTMLElement | null;
+    if (el?.dataset.mfCharge) markOnboardingClicked(el.dataset.mfCharge);
+}, true);
+
+// Reposition on scroll (the popover shares the timeline container so it scrolls with
+// its button, but re-render/layout shifts still need a nudge).
+let onboardScrollRaf = 0;
+window.addEventListener('scroll', () => {
+    if (onboardScrollRaf) return;
+    onboardScrollRaf = requestAnimationFrame(() => { onboardScrollRaf = 0; refreshOnboarding(); });
+}, { capture: true, passive: true });
 
 function findTweetTextElement(article: Element, isQuoted: boolean = false, tweetId?: string): Element | null {
     if (tweetId) {
@@ -1860,20 +2538,21 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
             const reasoning = extractReasoning(claim.note, claim.confidence, claim.veracity);
             const isOnHold = claim.reclassifyOnHold;
             const isResearching = claim.verdict === "research required" || claim.refreshing || claim.confidence === undefined || claim.veracity === undefined || claim.confidence === null || claim.veracity === null || claim.confidence < 0.2;
-            // Highlight color keeps a valid verdict's color even while reclassifying
-            // (refreshing), so a reclassifying claim shows its soon-to-be-replaced
-            // color instead of grey. Grey only when on hold or with no valid verdict.
-            const hasVerdictColor = claim.confidence !== undefined && claim.confidence !== null && claim.veracity !== undefined && claim.veracity !== null && claim.confidence >= 0.2;
-            const bgColor = isOnHold || !hasVerdictColor
-              ? 'rgba(128, 128, 128, 0.25)'
-              : confidenceRgba(claim.confidence, 0.25, claim.veracity);
-            const hoverBgColor = isOnHold || !hasVerdictColor
-              ? 'rgba(128, 128, 128, 0.35)'
-              : confidenceRgba(claim.confidence, 0.5, claim.veracity);
+            // On-hold ("Fact-Check") = black/white tint; researching/no-verdict = gray;
+            // else the verdict color (kept during refresh so it doesn't flash grey).
+            const bgColor = highlightBgColor(claim, false);
+            const hoverBgColor = highlightBgColor(claim, true);
 
             const span = document.createElement("span");
             span.className = "mf-segment-claim";
             span.dataset.claimIndex = String(seg.claimIndex);
+            span.dataset.mfAnimKey = `${classificationId ?? ''}:${seg.claimIndex}`;
+            // Carry the claim's OWN tweet/classification id so claim-level actions
+            // (reclassify, translate) target the right classification instead of
+            // scraping the first /status/ link in the article — which is wrong for
+            // quoted tweets (returns the outer tweet) and detail view (returns an
+            // embedded/thread link), the two cases where the money-path click failed.
+            if (classificationId) span.dataset.mfCid = classificationId;
             span.dataset.claimText = claim.text;
             span.dataset.claimRewritten = claim.rewritten ?? claim.text;
             span.dataset.batchId = batchId;
@@ -2019,14 +2698,10 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 // being reclassified (refreshing) as long as it still carries a valid
                 // verdict — so a reclassifying claim shows its soon-to-be-replaced color
                 // instead of going grey. Grey only when on hold or with no valid verdict.
-                const hasVerdictColor = claim.confidence !== undefined && claim.confidence !== null && claim.veracity !== undefined && claim.veracity !== null && claim.confidence >= 0.2;
-                const bgColor = claim.reclassifyOnHold || !hasVerdictColor
-                  ? 'rgba(128, 128, 128, 0.25)'
-                  : confidenceRgba(claim.confidence, 0.25, claim.veracity);
-                const hoverBgColor = claim.reclassifyOnHold || !hasVerdictColor
-                  ? 'rgba(128, 128, 128, 0.35)'
-                  : confidenceRgba(claim.confidence, 0.5, claim.veracity);
+                const bgColor = highlightBgColor(claim, false);
+                const hoverBgColor = highlightBgColor(claim, true);
                 const el = span as HTMLElement;
+                el.dataset.mfCid = classification.id;
                 const oldRewritten = el.dataset.claimRewritten;
                 const oldVerdict = el.dataset.verdict;
                 const oldReasoning = el.dataset.reasoning;
@@ -2138,6 +2813,12 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         }
                     }
                 }
+
+                // If this span's state changed while the pointer is resting on it (e.g. a
+                // verdict landing right after the user clicked Fact-Check, with the mouse
+                // never moving), replay the hover so the badge/preview appear immediately
+                // instead of waiting for a manual mouse-out/in.
+                if (changed) resyncHoverAtPointer(el);
             }
             console.log(`[misinfo] upgradeToSegments: updated ${updated}/${existingClaimSpans.length} claim spans for ${classification.id}`);
             updateOpenPopover();
@@ -2281,7 +2962,9 @@ function setupArticleHandlers(articleEl: Element) {
           const hasCachedVerdict = !isNaN(cachedProb) && !isNaN(cachedVer) && cachedProb >= 0.2;
           target.style.backgroundColor = hasCachedVerdict ? confidenceRgba(cachedProb, 0.25, cachedVer) : 'rgba(128, 128, 128, 0.25)';
           target.dataset.hoverBg = hasCachedVerdict ? confidenceRgba(cachedProb, 0.5, cachedVer) : 'rgba(128, 128, 128, 0.35)';
-          const claimIdForSeed = (() => {
+          const claimIdForSeed = target.dataset.mfCid || (() => {
+            // Legacy fallback for spans built before mfCid existed. Unreliable for
+            // quoted tweets (outer article link) and detail view; mfCid is preferred.
             const article = target.closest('article');
             if (!article) return null;
             const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
@@ -2313,10 +2996,14 @@ function setupArticleHandlers(articleEl: Element) {
           if (classificationId) {
             const ct = target.dataset.claimText;
             individuallyClickedOnHoldClaims.add(`${classificationId}:${ct}`);
-            document.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
+            mfBus.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
               detail: { classificationId, claimText: ct }
             }));
           }
+          // The pointer is still on the claim (they just clicked it) but the browser
+          // won't re-fire hover for the in-place transition — replay it so the new
+          // state reacts immediately, exactly as a manual mouse-out/in would.
+          resyncHoverAtPointer(target);
           return;
         }
 
@@ -2327,7 +3014,9 @@ function setupArticleHandlers(articleEl: Element) {
           delete (target as any)._mfBadgePermanent;
           target.dataset.refreshing = "true";
           target.dataset.reasoning = "";
-          const claimIdForSeed = (() => {
+          const claimIdForSeed = target.dataset.mfCid || (() => {
+            // Legacy fallback for spans built before mfCid existed. Unreliable for
+            // quoted tweets (outer article link) and detail view; mfCid is preferred.
             const article = target.closest('article');
             if (!article) return null;
             const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
@@ -2362,10 +3051,13 @@ function setupArticleHandlers(articleEl: Element) {
           if (classificationId) {
             const ct = target.dataset.claimText!;
             individuallyClickedOnHoldClaims.add(`${classificationId}:${ct}`);
-            document.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
+            mfBus.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
               detail: { classificationId, claimText: ct }
             }));
           }
+          // Replay the hover under the (still-stationary) pointer so the new
+          // Fact-Checking state reacts at once, as a manual mouse-out/in would.
+          resyncHoverAtPointer(target);
           return;
         }
 
@@ -2452,6 +3144,7 @@ function buildPopoverShell(trigger: HTMLElement, isPreview: boolean): { popover:
         const ver = isNaN(vVal) ? undefined : vVal;
         const isResearching = targetTrigger.dataset.refreshing === "true" || prob === undefined || ver === undefined || prob < 0.2;
         targetTrigger.style.backgroundColor = isResearching ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
+        removeAttachedOnboardingFor(popover);
         popover.remove();
         if (previewPopoverState?.popover === popover) previewPopoverState = null;
     };
@@ -2512,6 +3205,7 @@ function showPopover(
         });
 
         (trigger as any)._mfPopoverOpen = true;
+        refreshInPopoverOnboarding();
     } catch (e) {
         console.error("[misinfo] showPopover failed:", e);
         if (popover && popover.parentElement) popover.remove();
@@ -2535,6 +3229,11 @@ function populatePopoverContent(
     claimText?: string,
 ) {
     const getRefreshClassificationId = (): string | null => {
+        // Prefer the claim span's own tweet id. Scraping the first /status/ link is
+        // wrong for quoted tweets (outer id) and detail view (embedded/thread link).
+        const live = (popover as any)._mfTrigger as HTMLElement | undefined;
+        const cid = (live ?? trigger).dataset.mfCid;
+        if (cid) return cid;
         const article = trigger.closest('article');
         if (!article) return null;
         const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
@@ -2699,7 +3398,7 @@ function populatePopoverContent(
             title: t("refreshBatchTooltip"),
             onClick: () => {
                 closePopover();
-                document.dispatchEvent(new CustomEvent('mf-refresh-batch', {
+                mfBus.dispatchEvent(new CustomEvent('mf-refresh-batch', {
                     detail: { batchId }
                 }));
             }
@@ -2725,17 +3424,15 @@ function populatePopoverContent(
                         }
                     }
                     const liveTrigger = (popover as any)._mfTrigger as HTMLElement | undefined;
-                    const article = (liveTrigger ?? trigger).closest('article');
-                    let classificationId = '';
-                    if (article) {
-                        const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
-                        if (link) {
-                            const match = link.href.match(/\/status\/(\d+)/);
-                            classificationId = match ? match[1] : '';
-                        }
-                    }
                     const targetTrigger = liveTrigger ?? trigger;
-                    document.dispatchEvent(new CustomEvent('mf-translate-claim', {
+                    let classificationId = targetTrigger.dataset.mfCid ?? '';
+                    if (!classificationId) {
+                        const article = targetTrigger.closest('article');
+                        const link = article?.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
+                        const match = link?.href.match(/\/status\/(\d+)/);
+                        classificationId = match ? match[1] : '';
+                    }
+                    mfBus.dispatchEvent(new CustomEvent('mf-translate-claim', {
                         detail: { classificationId, claimText: targetTrigger.dataset.claimText ?? targetTrigger.dataset.dbClaimText, translateWhat: "claim" }
                     }));
                 }
@@ -2750,7 +3447,10 @@ function populatePopoverContent(
         const reasoningLocale = trigger.dataset.reasoningLocale;
         const uiLocale2 = getEffectiveUILocale();
         let reasoningTranslateBtn: { icon: string, title: string, label?: string, onClick: () => void } | undefined;
-        if (hasReasoning && reasoningLocale && uiLocale2 && !sameLanguage(reasoningLocale, uiLocale2)) {
+        // Not while re-researching: a fresh reasoning written directly in the UI locale is
+        // already on its way, so translating the stale one is pointless and would bill the
+        // user for text that's about to be replaced.
+        if (hasReasoning && !isRefreshing && reasoningLocale && uiLocale2 && !sameLanguage(reasoningLocale, uiLocale2)) {
             reasoningTranslateBtn = {
                 icon: translateIconSvg,
                 title: t("translateClaimButton"),
@@ -2767,17 +3467,15 @@ function populatePopoverContent(
                         }
                     }
                     const liveTrigger2 = (popover as any)._mfTrigger as HTMLElement | undefined;
-                    const article = (liveTrigger2 ?? trigger).closest('article');
-                    let cId = '';
-                    if (article) {
-                        const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
-                        if (link) {
-                            const match = link.href.match(/\/status\/(\d+)/);
-                            cId = match ? match[1] : '';
-                        }
-                    }
                     const targetTrigger2 = liveTrigger2 ?? trigger;
-                    document.dispatchEvent(new CustomEvent('mf-translate-claim', {
+                    let cId = targetTrigger2.dataset.mfCid ?? '';
+                    if (!cId) {
+                        const article = targetTrigger2.closest('article');
+                        const link = article?.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
+                        const match = link?.href.match(/\/status\/(\d+)/);
+                        cId = match ? match[1] : '';
+                    }
+                    mfBus.dispatchEvent(new CustomEvent('mf-translate-claim', {
                         detail: { classificationId: cId, claimText: targetTrigger2.dataset.claimText ?? targetTrigger2.dataset.dbClaimText, translateWhat: "reasoning" }
                     }));
                 }
@@ -2811,6 +3509,7 @@ function populatePopoverContent(
 
             const refreshBtn = document.createElement("button");
             refreshBtn.className = "mf-popover-copy-icon";
+            refreshBtn.dataset.mfCharge = "refresh-inner";
             refreshBtn.innerHTML = refreshIconSvg;
             refreshBtn.title = t("refreshClaimTooltip");
             refreshBtn.addEventListener("mousedown", (e) => {
@@ -2825,8 +3524,18 @@ function populatePopoverContent(
                 const ct = trigger.dataset.claimText;
                 const dbCt = trigger.dataset.dbClaimText;
                 trigger.dataset.refreshing = "true";
-                trigger.dataset.reasoning = "";
-                document.dispatchEvent(new CustomEvent('mf-refresh-claim', {
+                // Keep the current reasoning on screen while the re-research runs — blanking
+                // it here is what made the text vanish behind a leading spinner. Instead swap
+                // this button for the spinner that already sits to the RIGHT of the text
+                // (refreshContainer); the update path restores the button when the new
+                // reasoning arrives.
+                const rc = refreshBtn.closest('.mf-refresh-container');
+                const rcSpinner = rc?.querySelector<HTMLElement>('.mf-refresh-spinner');
+                if (rcSpinner) {
+                    refreshBtn.style.display = "none";
+                    rcSpinner.style.display = "";
+                }
+                mfBus.dispatchEvent(new CustomEvent('mf-refresh-claim', {
                     detail: { classificationId: cId, claimText: ct, dbClaimText: dbCt }
                 }));
                 updateOpenPopover();
@@ -3018,6 +3727,50 @@ function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
     }
 }
 
+/** Position an onboarding popover with `position: fixed`, pinned directly to the button's
+ *  live VIEWPORT rect — no container/scrollTop math (which mis-placed them ~scroll-offset
+ *  px offscreen, previously masked only by positionPopover's viewport clamp). It sits to
+ *  the button's right with a 280–360px width when there's room, else below it; it follows
+ *  the button on scroll (refreshOnboarding re-runs on scroll) and goes offscreen with it,
+ *  with no edge pile-up. Popovers are appended to document.body (no transformed ancestor)
+ *  so `fixed` resolves against the viewport. */
+function positionOnboardingPopover(popover: HTMLElement, trigger: HTMLElement) {
+    popover.style.maxHeight = '';
+    popover.style.overflowY = '';
+    popover.style.width = '';
+    popover.style.maxWidth = '';
+    popover.style.position = 'fixed';
+    const viewportWidth = window.innerWidth;
+    const trigRect = getTriggerViewportRect(trigger);
+    const padding = 8;
+    const minPopoverWidth = 280;
+    const maxPopoverWidth = 360;
+    const spaceToRight = viewportWidth - trigRect.right - padding;
+    const rightFits = spaceToRight >= minPopoverWidth;
+
+    let left: number;
+    let top: number;
+    let width: number | undefined;
+    if (rightFits) {
+        width = Math.min(maxPopoverWidth, Math.max(minPopoverWidth, spaceToRight));
+        left = trigRect.right + padding;
+        top = trigRect.top;
+    } else {
+        top = trigRect.bottom + padding;
+        const w = popover.getBoundingClientRect().width || minPopoverWidth;
+        left = Math.max(padding, Math.min(trigRect.left, viewportWidth - w - padding));
+    }
+    popover.style.left = `${left}px`;
+    popover.style.top = `${top}px`;
+    if (width !== undefined) {
+        popover.style.width = `${width}px`;
+        popover.style.maxWidth = `${width}px`;
+    } else {
+        popover.style.width = '';
+        popover.style.maxWidth = '';
+    }
+}
+
 function getTimelineContainer(el: Element): HTMLElement {
     let current = el.parentElement;
     while (current && current !== document.body) {
@@ -3048,6 +3801,9 @@ let previewPopoverState: {
     leaveTimer: ReturnType<typeof setTimeout> | null;
     pinned: boolean;
     semiTransparent: boolean;
+    /** External onboarding "charge-balance" popovers attached to this preview; they
+     *  behave as an extension of it (shared hover, mirrored opacity, dismissed together). */
+    onboardPopovers?: HTMLElement[];
 } | null = null;
 
 const PREVIEW_BASE_OPACITY = 0.75;
@@ -3067,6 +3823,8 @@ function dismissPreviewPopover() {
         t.style.backgroundColor = isResearching ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
     }
     const popover = previewPopoverState.popover;
+    // Remove the attached onboarding popovers along with their preview.
+    for (const op of previewPopoverState.onboardPopovers ?? []) op.remove();
     previewPopoverState = null;
     popover.classList.add("mf-popover-fading");
     popover.classList.remove("mf-popover-visible");
@@ -3088,13 +3846,12 @@ function setPreviewPopoverOpacity(opacity: number) {
     const popover = previewPopoverState.popover;
     popover.classList.remove("mf-popover-fading");
     popover.classList.add("mf-popover-visible");
-    if (opacity >= 1) {
-        popover.classList.add("mf-popover-opaque");
-        popover.style.opacity = "1";
-    } else {
-        popover.classList.remove("mf-popover-opaque");
-        popover.style.opacity = String(PREVIEW_BASE_OPACITY);
-    }
+    const value = opacity >= 1 ? "1" : String(PREVIEW_BASE_OPACITY);
+    if (opacity >= 1) popover.classList.add("mf-popover-opaque");
+    else popover.classList.remove("mf-popover-opaque");
+    popover.style.opacity = value;
+    // Mirror onto the attached onboarding popovers so they share the state.
+    for (const op of previewPopoverState.onboardPopovers ?? []) op.style.opacity = value;
 }
 
 function closePopover(trigger?: HTMLElement) {
@@ -3114,10 +3871,18 @@ function closePopover(trigger?: HTMLElement) {
             const isResearching = t.dataset.refreshing === "true" || prob === undefined || ver === undefined || prob < 0.2;
             t.style.backgroundColor = isResearching ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
         }
+        removeAttachedOnboardingFor(p as HTMLElement);
         p.remove();
     }
     if (previewPopoverState && (!trigger || previewPopoverState.trigger === trigger)) {
         dismissPreviewPopover();
+    }
+}
+
+/** Remove the external onboarding popovers attached to a given claim popover. */
+function removeAttachedOnboardingFor(claimPop: HTMLElement) {
+    for (const op of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard-attached'))) {
+        if ((op as any)._mfClaimPop === claimPop) op.remove();
     }
 }
 
@@ -3172,6 +3937,8 @@ function showPreviewPopover(trigger: HTMLElement) {
         setPreviewPopoverOpacity(PREVIEW_BASE_OPACITY);
         schedulePreviewPopoverDismiss(trigger);
     });
+
+    refreshInPopoverOnboarding();
 }
 
 /** True when the pointer is currently over either the trigger element, its anchor element, or the
@@ -3186,6 +3953,10 @@ function isHoveringPreviewRelated(trigger: HTMLElement): boolean {
     if (anchorEl && (anchorEl.contains(hoveredEl) || hoveredEl === anchorEl)) return true;
     const popover = previewPopoverState.popover;
     if (popover.contains(hoveredEl) || hoveredEl === popover) return true;
+    // Attached onboarding popovers count as part of the preview for hover purposes.
+    for (const op of previewPopoverState.onboardPopovers ?? []) {
+        if (op.contains(hoveredEl) || hoveredEl === op) return true;
+    }
     return false;
 }
 
@@ -3516,7 +4287,12 @@ function updateOpenPopover() {
                     reasoningRow?.insertBefore(spinner, reasoningRow.firstChild);
                 }
             }
-            if (trigger.dataset.reasoningLocale && sameLanguage(trigger.dataset.reasoningLocale, uiLocale)) {
+            // Drop the reasoning translate button as soon as translating becomes pointless:
+            // either the reasoning is already in the UI language, or a re-research is in
+            // flight that will replace it with a fresh one written directly in that language.
+            // (The button is built before the refresh starts, so this streaming-update path —
+            // which keeps the existing row rather than rebuilding it — has to remove it.)
+            if (isRefreshingNow || (trigger.dataset.reasoningLocale && sameLanguage(trigger.dataset.reasoningLocale, uiLocale))) {
                 const btn = popover.querySelector(".mf-popover-reasoning-text .mf-translate-btn");
                 if (btn) btn.remove();
             }
@@ -3600,6 +4376,7 @@ function updateOpenPopover() {
 
             const refreshBtn = document.createElement("button");
             refreshBtn.className = "mf-popover-copy-icon";
+            refreshBtn.dataset.mfCharge = "refresh-inner";
             refreshBtn.innerHTML = refreshIconSvg;
             refreshBtn.title = t("refreshClaimTooltip");
             refreshBtn.addEventListener("mousedown", (e) => {
@@ -3609,18 +4386,29 @@ function updateOpenPopover() {
             refreshBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                const article = trigger.closest('article');
-                if (!article) return;
-                const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
-                if (!link) return;
-                const match = link.href.match(/\/status\/(\d+)/);
-                const cId = match ? match[1] : null;
+                let cId: string | null = trigger.dataset.mfCid ?? null;
+                if (!cId) {
+                    const article = trigger.closest('article');
+                    const link = article?.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
+                    const match = link?.href.match(/\/status\/(\d+)/);
+                    cId = match ? match[1] : null;
+                }
                 if (!cId) return;
                 const ct = trigger.dataset.claimText;
                 const dbCt = trigger.dataset.dbClaimText;
                 trigger.dataset.refreshing = "true";
-                trigger.dataset.reasoning = "";
-                document.dispatchEvent(new CustomEvent('mf-refresh-claim', {
+                // Keep the current reasoning on screen while the re-research runs — blanking
+                // it here is what made the text vanish behind a leading spinner. Instead swap
+                // this button for the spinner that already sits to the RIGHT of the text
+                // (refreshContainer); the update path restores the button when the new
+                // reasoning arrives.
+                const rc = refreshBtn.closest('.mf-refresh-container');
+                const rcSpinner = rc?.querySelector<HTMLElement>('.mf-refresh-spinner');
+                if (rcSpinner) {
+                    refreshBtn.style.display = "none";
+                    rcSpinner.style.display = "";
+                }
+                mfBus.dispatchEvent(new CustomEvent('mf-refresh-claim', {
                     detail: { classificationId: cId, claimText: ct, dbClaimText: dbCt }
                 }));
                 updateOpenPopover();
@@ -3752,6 +4540,28 @@ function shouldRemoveOnHoldButton(classification: Classification): boolean {
 }
 
 /** Render a "Disinfact" button for tweets awaiting user action. */
+/** Insert a button container into the action row (before Grok), else the Grok row,
+ *  else right after the timestamp. Applies a single symmetric gap: margin-RIGHT when the
+ *  button sits to the LEFT of the Grok/action content, margin-LEFT when it sits to the
+ *  RIGHT of the timestamp — so the same visual gap separates it from its neighbor either
+ *  way (previously the fixed margin-right left it cramped against the timestamp). */
+const MF_BTN_GAP = '10px';
+function placeButtonContainer(container: HTMLElement, article: Element, time: Element, grokData: { row: HTMLElement } | null) {
+    const actionRow = findActionRow(article);
+    if (actionRow) {
+        container.style.marginRight = MF_BTN_GAP;
+        actionRow.insertBefore(container, actionRow.firstChild);
+    } else if (grokData) {
+        container.style.marginRight = MF_BTN_GAP;
+        grokData.row.insertBefore(container, grokData.row.firstChild);
+    } else {
+        // After the timestamp: neighbor is on the LEFT, so the gap goes on the left.
+        container.style.marginLeft = MF_BTN_GAP;
+        container.style.marginRight = '0';
+        time.insertAdjacentElement("afterend", container);
+    }
+}
+
 function injectOnHoldButton(
     time: Element,
     classification: Classification,
@@ -3770,7 +4580,6 @@ function injectOnHoldButton(
     container.style.cssText = `
         display: inline-flex;
         align-items: center;
-        margin-right: 12px;
         min-width: 0;
         flex-shrink: 0;
     `;
@@ -3798,7 +4607,7 @@ function injectOnHoldButton(
         spinnerWrap.appendChild(spinner);
 
         const factCheckAllBtn = document.createElement("button");
-        factCheckAllBtn.textContent = "Fact-Check All";
+        factCheckAllBtn.textContent = t('factCheckAllButton');
         factCheckAllBtn.setAttribute("role", "button");
         factCheckAllBtn.setAttribute("type", "button");
         factCheckAllBtn.className = refClass;
@@ -3814,7 +4623,7 @@ function injectOnHoldButton(
         factCheckAllText.style.fontSize = "13px";
         factCheckAllText.style.fontWeight = "700";
         factCheckAllText.style.minWidth = "0";
-        factCheckAllText.textContent = "Fact-Check All";
+        factCheckAllText.textContent = t('factCheckAllButton');
         factCheckAllBtn.innerHTML = "";
         factCheckAllBtn.appendChild(factCheckAllText);
         factCheckAllBtn.addEventListener("click", (e) => {
@@ -3823,10 +4632,11 @@ function injectOnHoldButton(
             factCheckAllBtn.style.opacity = "0.6";
             factCheckAllBtn.style.cursor = "default";
             factCheckAllClickedIds.add(classification.id);
-            document.dispatchEvent(new CustomEvent('mf-fact-check-all', {
+            mfBus.dispatchEvent(new CustomEvent('mf-fact-check-all', {
                 detail: { tweetId: classification.id }
             }));
         });
+        factCheckAllBtn.dataset.mfCharge = "factcheckall";
         spinnerWrap.appendChild(factCheckAllBtn);
 
         const placeholder = document.createElement("button");
@@ -3838,14 +4648,12 @@ function injectOnHoldButton(
         placeholder.appendChild(spinnerWrap);
 
         container.appendChild(placeholder);
-        const actionRow = findActionRow(article);
-        if (actionRow) actionRow.insertBefore(container, actionRow.firstChild);
-        else if (grokData) grokData.row.insertBefore(container, grokData.row.firstChild);
-        else time.insertAdjacentElement("afterend", container);
+        placeButtonContainer(container, article, time, grokData);
         return;
     }
 
     const button = document.createElement("button");
+    button.dataset.mfCharge = "disinfact";
     button.textContent = t("disinfactButton");
     button.setAttribute("role", "button");
     button.setAttribute("type", "button");
@@ -3888,7 +4696,7 @@ function injectOnHoldButton(
         loadingWrap.appendChild(spinner);
 
         const factCheckAllBtn = document.createElement("button");
-        factCheckAllBtn.textContent = "Fact-Check All";
+        factCheckAllBtn.textContent = t('factCheckAllButton');
         factCheckAllBtn.setAttribute("role", "button");
         factCheckAllBtn.setAttribute("type", "button");
         factCheckAllBtn.className = refClass;
@@ -3901,7 +4709,7 @@ function injectOnHoldButton(
         factCheckAllText.style.fontSize = "13px";
         factCheckAllText.style.fontWeight = "700";
         factCheckAllText.style.minWidth = "0";
-        factCheckAllText.textContent = "Fact-Check All";
+        factCheckAllText.textContent = t('factCheckAllButton');
         factCheckAllBtn.innerHTML = "";
         factCheckAllBtn.appendChild(factCheckAllText);
         factCheckAllBtn.addEventListener("click", (e) => {
@@ -3910,32 +4718,51 @@ function injectOnHoldButton(
             factCheckAllBtn.style.opacity = "0.6";
             factCheckAllBtn.style.cursor = "default";
             factCheckAllClickedIds.add(classification.id);
-            document.dispatchEvent(new CustomEvent('mf-fact-check-all', {
+            mfBus.dispatchEvent(new CustomEvent('mf-fact-check-all', {
                 detail: { tweetId: classification.id }
             }));
         });
+        factCheckAllBtn.dataset.mfCharge = "factcheckall";
         loadingWrap.appendChild(factCheckAllBtn);
 
         button.innerHTML = "";
         button.style.cursor = "default";
+        // The outer button is no longer a Disinfact button — it now hosts the processing
+        // spinner + Fact-Check All. Drop its disinfact charge marker so the onboarding
+        // system doesn't re-create a (now pointless) Disinfact popover on it after a
+        // reset, which would overlap and hide the Fact-Check All popover.
+        delete button.dataset.mfCharge;
         button.appendChild(loadingWrap);
 
-        document.dispatchEvent(new CustomEvent('mf-process-on-hold', {
+        mfBus.dispatchEvent(new CustomEvent('mf-process-on-hold', {
             detail: { tweetId: classification.id }
         }));
+
+        // Safety net: if the backend call fails, no classification comes back to remove the
+        // spinner, so revert to the clickable "Disinfact" button. On success the spinner is
+        // removed (or the node re-rendered), so `spinner.isConnected` is false → this no-ops.
+        setTimeout(() => {
+            if (!spinner.isConnected || !processingOnHoldIds.has(classification.id)) return;
+            processingOnHoldIds.delete(classification.id);
+            onHoldScrollStates.delete(classification.id);
+            button.innerHTML = "";
+            button.style.cursor = "pointer";
+            button.dataset.mfCharge = "disinfact";
+            button.appendChild(textWrap);
+        }, CHARGE_REVERT_TIMEOUT_MS);
     });
 
     container.appendChild(button);
-    const actionRow = findActionRow(article);
-    if (actionRow) actionRow.insertBefore(container, actionRow.firstChild);
-    else if (grokData) grokData.row.insertBefore(container, grokData.row.firstChild);
-    else time.insertAdjacentElement("afterend", container);
+    placeButtonContainer(container, article, time, grokData);
 }
 
 const processingTranslateFactChecksIds = new Set<string>();
 
-/** Render a "Translate Fact-Checks" button for tweets whose highlights need
- *  localization but are paused behind user consent. Same style as injectOnHoldButton. */
+/** Render a "Disinfact"-labeled button for a DB-hit tweet whose highlights aren't
+ *  localized for the currently-displayed locale yet — visually and behaviorally as
+ *  if there were no DB hit at all. Clicking it relocalizes highlights + re-researches
+ *  (TRANSLATE_FACT_CHECKS) rather than a full preclassification. Same style as
+ *  injectOnHoldButton, but a separate charge type ("translate-tweet"). */
 function injectTranslateFactChecksButton(
     time: Element,
     classification: Classification,
@@ -3954,7 +4781,6 @@ function injectTranslateFactChecksButton(
     container.style.cssText = `
         display: inline-flex;
         align-items: center;
-        margin-right: 12px;
         min-width: 0;
         flex-shrink: 0;
     `;
@@ -3985,10 +4811,7 @@ function injectTranslateFactChecksButton(
         placeholder.style.pointerEvents = "none";
         placeholder.appendChild(spinnerWrap);
         container.appendChild(placeholder);
-        const actionRow2 = findActionRow(article);
-        if (actionRow2) actionRow2.insertBefore(container, actionRow2.firstChild);
-        else if (grokData) grokData.row.insertBefore(container, grokData.row.firstChild);
-        else time.insertAdjacentElement("afterend", container);
+        placeButtonContainer(container, article, time, grokData);
         return;
     }
 
@@ -4004,10 +4827,16 @@ function injectTranslateFactChecksButton(
     textWrap.style.fontSize = "13px";
     textWrap.style.fontWeight = "700";
     textWrap.style.minWidth = "0";
-    textWrap.textContent = t("translateFactChecks");
+    // Displayed as the "Disinfact" button (per design: a DB hit whose highlights
+    // don't yet exist for the currently-displayed locale should look exactly like
+    // no hit at all). dataset.mfCharge stays "translate-tweet" — a separate charge
+    // type from "disinfact" — since the click below only relocalizes highlights +
+    // re-researches (TRANSLATE_FACT_CHECKS), not a full preclassification.
+    textWrap.textContent = t("disinfactButton");
 
     button.innerHTML = "";
     button.style.cursor = "pointer";
+    button.dataset.mfCharge = "translate-tweet";
     button.appendChild(textWrap);
 
     button.addEventListener("click", () => {
@@ -4025,16 +4854,24 @@ function injectTranslateFactChecksButton(
         button.innerHTML = "";
         button.style.cursor = "default";
         button.appendChild(loadingWrap);
-        document.dispatchEvent(new CustomEvent('mf-translate-fact-checks', {
+        mfBus.dispatchEvent(new CustomEvent('mf-translate-fact-checks', {
             detail: { tweetId: classification.id }
         }));
+
+        // Safety net: if the backend call fails, no localized result comes back to remove this
+        // button, so revert to the clickable "Disinfact" state. On success the
+        // [translate-fc-id] container is removed, so `button.isConnected` is false → this no-ops.
+        setTimeout(() => {
+            if (!button.isConnected || !processingTranslateFactChecksIds.has(classification.id)) return;
+            processingTranslateFactChecksIds.delete(classification.id);
+            button.innerHTML = "";
+            button.style.cursor = "pointer";
+            button.appendChild(textWrap);
+        }, CHARGE_REVERT_TIMEOUT_MS);
     });
 
     container.appendChild(button);
-    const actionRow2 = findActionRow(article);
-    if (actionRow2) actionRow2.insertBefore(container, actionRow2.firstChild);
-    else if (grokData) grokData.row.insertBefore(container, grokData.row.firstChild);
-    else time.insertAdjacentElement("afterend", container);
+    placeButtonContainer(container, article, time, grokData);
 }
 
 // ---- Main injection (two-phase) ----
@@ -4047,6 +4884,20 @@ function injectClassification(
 ) {
     const segments = classification.segments;
     const claims = classification.claims;
+
+    // Feature-detection + graceful-degradation guard (launch resilience against the
+    // host platform changing its markup). Each injection KEEPS its existing fallback
+    // chain — we only fully no-op a tweet when even the fallbacks are exhausted. The
+    // one hard requirement is the tweet text element: findTweetTextElement already
+    // tries several fallback selectors, so a null result means there's genuinely no
+    // readable tweet text to highlight or fact-check → inject nothing (no highlights,
+    // no button, no fallback box) rather than decorate a tweet we can't read. The
+    // button keeps its own actionRow → Grok-row → after-timestamp fallback chain
+    // below, so a missing Grok bar still places the button (just lower), not a no-op.
+    if (!findTweetTextElement(article, isQuoted, classification.id)) {
+        console.log(`[misinfo] injectClassification: tweet text anchor missing for ${classification.id} (isQuoted=${isQuoted}) — skipping all injection`);
+        return;
+    }
 
     if (!isQuoted) {
         const domQuotedId = (classification as Classification).quoting?.id ?? findQuotedTweetIdInArticle(article, classification.id);
@@ -4078,6 +4929,15 @@ function injectClassification(
             article.querySelector(`[mf-on-hold-id="${classification.id}"]`)?.remove();
             article.querySelector(`[mf-unmatched="${classification.id}"]`)?.remove();
             injectTranslateFactChecksButton(time, classification as Classification, article, isQuoted);
+            return;
+        }
+
+        // A forced re-preclassification is running. Reuse the on-hold container so the
+        // spinner appears exactly where the Disinfact button sits: processingOnHoldIds is
+        // what makes injectOnHoldButton render the spinner state rather than the button.
+        if ((classification as Classification).preclassifying) {
+            processingOnHoldIds.add(classification.id);
+            injectOnHoldButton(time, classification as Classification, article, isQuoted);
             return;
         }
 
@@ -4217,7 +5077,7 @@ function injectClassification(
     }
 }
 
-document.addEventListener('mf-prepare-locale-switch', ((e: CustomEvent) => {
+mfBus.addEventListener('mf-prepare-locale-switch', ((e: CustomEvent) => {
     const { tweetId } = e.detail;
     console.log(`[misinfo] preparing locale switch for ${tweetId}: removing injected elements`);
     removeInjectedElements(tweetId);

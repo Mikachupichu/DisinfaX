@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "ምርምር",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ቀሪ ሒሳብ"
+  },
+  "gifted": {
+    "message": "ብህያብ ዝተዋህበ"
+  },
+  "customTopup": {
+    "message": "ብሕታዊ"
+  },
+  "customAmountLabel": {
+    "message": "ብሕታዊ መጠን መሙላእታ ብ US ዶላር"
+  },
+  "increase": {
+    "message": "ወስኽ"
+  },
+  "decrease": {
+    "message": "ኣጉድል"
+  },
+  "topUpBalance": {
+    "message": "ቀሪ ሒሳብ ምላእ"
+  },
+  "processing": {
+    "message": "ይሰላሰል ኣሎ…"
+  },
+  "checkoutError": {
+    "message": "ክፍሊት ክጅምር ኣይከኣለን። በጃኹም እንደገና ፈትኑ።"
+  },
+  "termsOfService": {
+    "message": "ውዕላት ኣገልግሎት"
+  },
+  "privacyPolicy": {
+    "message": "ፖሊሲ ውልቃውነት"
+  },
+  "disclaimerAgree": {
+    "message": "ብምምላእ፡ ንዓና %TOS% ከምኡውን %PRIVACY% ትሰማማዕ ኢኻ።"
+  },
+  "disclaimerFx": {
+    "message": "ብዘይ USD ብኻልእ ባጤራ እንተኸፊልካ ናይ ወጻኢ ምልውዋጥ ክፍሊት ክውሰኽ ይኽእል እዩ።"
+  },
+  "signOut": {
+    "message": "ውጻእ"
+  },
+  "onboardDisinfactClick": {
+    "message": "ኣብ %BTN% ምጥዋቕ ነቲ ጥርዓናት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardDisinfactTap": {
+    "message": "ኣብ %BTN% ምንካይ ነቲ ጥርዓናት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardWillCharge": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardFactcheck": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardTranslations": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardRefreshes": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "topUp": {
+    "message": "ምላእ"
+  },
+  "showMore": {
+    "message": "ተወሳኺ ኣርኢ"
+  },
+  "showLess": {
+    "message": "ውሑድ ኣርኢ"
+  },
+  "landingTagline1": {
+    "message": "ሓቂ ግለጽ። ሓሶታት ርኸብ።"
+  },
+  "landingTagline2": {
+    "message": "ደጊም ጌጋ ሓበሬታ የለን። ሓቅታት ጥራይ።"
+  },
+  "continueWithX": {
+    "message": "ብX ቀጽል"
+  },
+  "continueWithGoogle": {
+    "message": "ብGoogle ቀጽል"
+  },
+  "continueWithApple": {
+    "message": "ብApple ቀጽል"
+  },
+  "lastUsed": {
+    "message": "ናይ መወዳእታ እተጠቐምካሉ"
+  },
+  "cleanupTagline": {
+    "message": "ናይ X ፊድካ ኣጽርይ።"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ኣብ ውሽጢ እቲ ሕቡራት መንግስታት፡ ነበርቲ Alabama፡ Arizona፡ California፡ Colorado፡ Connecticut፡ Delaware፡ Florida፡ Idaho፡ Illinois፡ Indiana፡ Iowa፡ Kansas፡ Kentucky፡ Louisiana፡ Maine፡ Massachusetts፡ Mississippi፡ Missouri፡ Montana፡ New Hampshire፡ New Mexico፡ New York፡ North Carolina፡ North Dakota፡ Oklahoma፡ Oregon፡ Pennsylvania፡ South Carolina፡ South Dakota፡ Tennessee፡ Texas፡ Utah፡ Washington፡ Wisconsin፡ ከምኡውን Wyoming ጥራይ እዮም DisinfaX ክጥቀሙን ቀሪ ሒሳቦም ክመልኡን ዝኽእሉ፤ Washington, D.C.፡ ኩሎም ግዝኣታት ኣመሪካ፡ ከምኡውን ዘይተዘርዘሩ ዝኾኑ ግዝኣታት ኣይካተቱን። ኣብ ወጻኢ እቲ ሕቡራት መንግስታት፡ ኣብ ካናዳ፡ ኣውስትራልያ፡ ኒው ዚላንድ፡ ሲንጋፖር፡ ደቡብ ኣፍሪቃ፡ ጃፓን፡ ታይዋን፡ ኢንዶነዥያ፡ ታይላንድ፡ ፊሊፒንስ፡ ማለዥያ፡ ቬትናም፡ ከምኡውን ስዊዘርላንድ ይርከብ።"
+  },
+  "factCheckAllButton": {
+    "message": "ኩሉ ምርምር"
   }
 }

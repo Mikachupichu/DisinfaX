@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Verifieer",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "present"
+  },
+  "customTopup": {
+    "message": "Pasgemaak"
+  },
+  "customAmountLabel": {
+    "message": "Pasgemaakte aanvulbedrag in Amerikaanse dollar"
+  },
+  "increase": {
+    "message": "Vermeerder"
+  },
+  "decrease": {
+    "message": "Verminder"
+  },
+  "topUpBalance": {
+    "message": "Vul saldo aan"
+  },
+  "processing": {
+    "message": "Verwerk tans…"
+  },
+  "checkoutError": {
+    "message": "Kon nie betaling begin nie. Probeer asseblief weer."
+  },
+  "termsOfService": {
+    "message": "Diensvoorwaardes"
+  },
+  "privacyPolicy": {
+    "message": "Privaatheidsbeleid"
+  },
+  "disclaimerAgree": {
+    "message": "Deur aan te vul, stem jy in tot ons %TOS% en %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Wisselkoersfooie kan geld as jy in ’n ander geldeenheid as USD betaal."
+  },
+  "signOut": {
+    "message": "Teken uit"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klik op %BTN% wys eise en trek geld van jou saldo af"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tik op %BTN% wys eise en trek geld van jou saldo af"
+  },
+  "onboardWillCharge": {
+    "message": "Klik op %BTN% trek geld van jou saldo af"
+  },
+  "onboardFactcheck": {
+    "message": "Klik op %BTN% trek geld van jou saldo af"
+  },
+  "onboardTranslations": {
+    "message": "Klik op %BTN% trek geld van jou saldo af"
+  },
+  "onboardRefreshes": {
+    "message": "Klik op %BTN% trek geld van jou saldo af"
+  },
+  "topUp": {
+    "message": "Laai op"
+  },
+  "showMore": {
+    "message": "Wys meer"
+  },
+  "showLess": {
+    "message": "Wys minder"
+  },
+  "landingTagline1": {
+    "message": "Onthul die waarheid. Vind die leuens."
+  },
+  "landingTagline2": {
+    "message": "Geen wanligging meer nie. Slegs feite."
+  },
+  "continueWithX": {
+    "message": "Gaan voort met X"
+  },
+  "continueWithGoogle": {
+    "message": "Gaan voort met Google"
+  },
+  "continueWithApple": {
+    "message": "Gaan voort met Apple"
+  },
+  "lastUsed": {
+    "message": "Laas gebruik"
+  },
+  "cleanupTagline": {
+    "message": "Maak jou X-voer skoon."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Binne die Verenigde State kan slegs inwoners van Alabama, Arizona, Kalifornië, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nieu-Meksiko, New York, Noord-Carolina, Noord-Dakota, Oklahoma, Oregon, Pennsylvania, Suid-Carolina, Suid-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin en Wyoming DisinfaX gebruik en hul saldo oplaai; Washington, D.C., alle Amerikaanse gebiede en enige state wat nie gelys is nie, word uitgesluit. Buite die Verenigde State is dit beskikbaar in Kanada, Australië, Nieu-Seeland, Singapoer, Suid-Afrika, Japan, Taiwan, Indonesië, Thailand, die Filippyne, Maleisië, Viëtnam en Switserland."
+  },
+  "factCheckAllButton": {
+    "message": "Verifieer alles"
   }
 }

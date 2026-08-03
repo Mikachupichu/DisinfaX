@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Iwwerpréifung",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Guthaben"
+  },
+  "gifted": {
+    "message": "Geschenkt"
+  },
+  "customTopup": {
+    "message": "Personaliséiert"
+  },
+  "customAmountLabel": {
+    "message": "Personaliséierten Openluede-Betrag an US-Dollar"
+  },
+  "increase": {
+    "message": "Erhéijen"
+  },
+  "decrease": {
+    "message": "Reduzéieren"
+  },
+  "topUpBalance": {
+    "message": "Guthaben oplueden"
+  },
+  "processing": {
+    "message": "Gëtt veraarbecht…"
+  },
+  "checkoutError": {
+    "message": "D'Bezuelung konnt net gestart ginn. Probéiert w.e.g. nach eng Kéier."
+  },
+  "termsOfService": {
+    "message": "Notzungsbedéngungen"
+  },
+  "privacyPolicy": {
+    "message": "Dateschutzrichtlinn"
+  },
+  "disclaimerAgree": {
+    "message": "Duerch d'Oplueden akzeptéiert Dir eis %TOS% an %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Devisegebühren kënnen ufalen, wann Dir an enger anerer Währung wéi USD bezuelt."
+  },
+  "signOut": {
+    "message": "Ofmellen"
+  },
+  "onboardDisinfactClick": {
+    "message": "Wann Dir op %BTN% klickt, ginn d'Behaaptungen ugewisen a vun Ärem Saldo ofgezunn"
+  },
+  "onboardDisinfactTap": {
+    "message": "Wann Dir op %BTN% tippt, ginn d'Behaaptungen ugewisen a vun Ärem Saldo ofgezunn"
+  },
+  "onboardWillCharge": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "onboardFactcheck": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "onboardTranslations": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "onboardRefreshes": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "topUp": {
+    "message": "Oplueden"
+  },
+  "showMore": {
+    "message": "Méi weisen"
+  },
+  "showLess": {
+    "message": "Manner weisen"
+  },
+  "landingTagline1": {
+    "message": "Weis d'Wourecht op. Fann d'Ligen."
+  },
+  "landingTagline2": {
+    "message": "Keng Desinformatioun méi. Nëmme Fakten."
+  },
+  "continueWithX": {
+    "message": "Weider mat X"
+  },
+  "continueWithGoogle": {
+    "message": "Weider mat Google"
+  },
+  "continueWithApple": {
+    "message": "Weider mat Apple"
+  },
+  "lastUsed": {
+    "message": "Fir d'lescht benotzt"
+  },
+  "cleanupTagline": {
+    "message": "Raum däi X-Feed op."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Bannent den USA kënnen nëmmen Awunner vun Alabama, Arizona, Kalifornien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Nordkarolina, Norddakota, Oklahoma, Oregon, Pennsylvania, Südkarolina, Süddakota, Tennessee, Texas, Utah, Washington, Wisconsin a Wyoming DisinfaX benotzen an hire Solde oplueden; Washington, D.C., all US-Territoirë an all net opgezielte Staaten sinn ausgeschloss. Ausserhalb vun den USA ass et verfügbar zu Kanada, Australien, Neiséiland, Singapur, Südafrika, Japan, Taiwan, Indonesien, Thailand, de Philippinen, Malaysia, Vietnam an der Schwäiz."
+  },
+  "factCheckAllButton": {
+    "message": "Alles iwwerpréiwen"
   }
 }

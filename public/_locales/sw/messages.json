@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Hakiki",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Salio"
+  },
+  "gifted": {
+    "message": "Zawadi"
+  },
+  "customTopup": {
+    "message": "Maalum"
+  },
+  "customAmountLabel": {
+    "message": "Kiasi maalum cha kuongeza kwa dola za Marekani"
+  },
+  "increase": {
+    "message": "Ongeza"
+  },
+  "decrease": {
+    "message": "Punguza"
+  },
+  "topUpBalance": {
+    "message": "Ongeza Salio"
+  },
+  "processing": {
+    "message": "Inachakata…"
+  },
+  "checkoutError": {
+    "message": "Imeshindwa kuanzisha malipo. Tafadhali jaribu tena."
+  },
+  "termsOfService": {
+    "message": "Masharti ya Huduma"
+  },
+  "privacyPolicy": {
+    "message": "Sera ya Faragha"
+  },
+  "disclaimerAgree": {
+    "message": "Kwa kuongeza salio, unakubali %TOS% na %PRIVACY% zetu."
+  },
+  "disclaimerFx": {
+    "message": "Ada za ubadilishaji fedha zinaweza kutozwa ukilipa kwa sarafu isiyo USD."
+  },
+  "signOut": {
+    "message": "Ondoka"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kubofya %BTN% kunaonyesha madai na kutatoza salio lako"
+  },
+  "onboardDisinfactTap": {
+    "message": "Kugusa %BTN% kunaonyesha madai na kutatoza salio lako"
+  },
+  "onboardWillCharge": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "onboardFactcheck": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "onboardTranslations": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "onboardRefreshes": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "topUp": {
+    "message": "Ongeza salio"
+  },
+  "showMore": {
+    "message": "Onyesha zaidi"
+  },
+  "showLess": {
+    "message": "Onyesha kidogo"
+  },
+  "landingTagline1": {
+    "message": "Fichua ukweli. Gundua uongo."
+  },
+  "landingTagline2": {
+    "message": "Hakuna tena upotoshaji. Ukweli pekee."
+  },
+  "continueWithX": {
+    "message": "Endelea na X"
+  },
+  "continueWithGoogle": {
+    "message": "Endelea na Google"
+  },
+  "continueWithApple": {
+    "message": "Endelea na Apple"
+  },
+  "lastUsed": {
+    "message": "Ilitumika mwisho"
+  },
+  "cleanupTagline": {
+    "message": "Safisha mpasho wako wa X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ndani ya Marekani, ni wakazi wa Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kaskazini, Dakota Kaskazini, Oklahoma, Oregon, Pennsylvania, Carolina Kusini, Dakota Kusini, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming pekee wanaoweza kutumia DisinfaX na kuongeza salio lao; Washington, D.C., maeneo yote ya Marekani, na jimbo lolote ambalo halijaorodheshwa hayajumuishwi. Nje ya Marekani, inapatikana nchini Kanada, Australia, New Zealand, Singapore, Afrika Kusini, Japani, Taiwan, Indonesia, Thailand, Ufilipino, Malaysia, Vietnam, na Uswisi."
+  },
+  "factCheckAllButton": {
+    "message": "Hakiki yote"
   }
 }

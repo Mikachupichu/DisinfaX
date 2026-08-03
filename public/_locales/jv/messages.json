@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Priksa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Hadiah"
+  },
+  "customTopup": {
+    "message": "Ngatur dhewe"
+  },
+  "customAmountLabel": {
+    "message": "Jumlah isi ulang khusus ing dolar AS"
+  },
+  "increase": {
+    "message": "Tambah"
+  },
+  "decrease": {
+    "message": "Suda"
+  },
+  "topUpBalance": {
+    "message": "Isi Ulang Saldo"
+  },
+  "processing": {
+    "message": "Ngolah…"
+  },
+  "checkoutError": {
+    "message": "Ora bisa miwiti pambayaran. Coba maneh."
+  },
+  "termsOfService": {
+    "message": "Katentuan Layanan"
+  },
+  "privacyPolicy": {
+    "message": "Kabijakan Privasi"
+  },
+  "disclaimerAgree": {
+    "message": "Kanthi ngisi ulang, sampeyan setuju karo %TOS% lan %PRIVACY% kita."
+  },
+  "disclaimerFx": {
+    "message": "Biaya ijol-ijolan mata uang bisa ditrapake yen sampeyan mbayar nganggo mata uang liya saka USD."
+  },
+  "signOut": {
+    "message": "Metu"
+  },
+  "onboardDisinfactClick": {
+    "message": "Nyeklik %BTN% bakal nampilake klaim lan bakal ngisi biaya saka saldomu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Nyentuh %BTN% bakal nampilake klaim lan bakal ngisi biaya saka saldomu"
+  },
+  "onboardWillCharge": {
+    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+  },
+  "onboardFactcheck": {
+    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+  },
+  "onboardTranslations": {
+    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+  },
+  "onboardRefreshes": {
+    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+  },
+  "topUp": {
+    "message": "Isi Ulang"
+  },
+  "showMore": {
+    "message": "Tampilake luwih akeh"
+  },
+  "showLess": {
+    "message": "Tampilake luwih sithik"
+  },
+  "landingTagline1": {
+    "message": "Ungkapna Bebener. Temokna Ngapusi."
+  },
+  "landingTagline2": {
+    "message": "Ora ana Disinformasi maneh. Mung Fakta."
+  },
+  "continueWithX": {
+    "message": "Terusake nganggo X"
+  },
+  "continueWithGoogle": {
+    "message": "Terusake nganggo Google"
+  },
+  "continueWithApple": {
+    "message": "Terusake nganggo Apple"
+  },
+  "lastUsed": {
+    "message": "Pungkasan Digunakake"
+  },
+  "cleanupTagline": {
+    "message": "Resiki Feed X sampeyan."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ing sajrone Amerika Serikat, mung warga negara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Lor, Dakota Lor, Oklahoma, Oregon, Pennsylvania, Carolina Kidul, Dakota Kidul, Tennessee, Texas, Utah, Washington, Wisconsin, lan Wyoming sing bisa nganggo DisinfaX lan ngisi ulang saldone; Washington, D.C., kabeh wilayah A.S., lan negara bagian apa wae sing ora kadhaptar ora kalebu. Ing njaba Amerika Serikat, kasedhiya ing Kanada, Australia, Selandia Baru, Singapura, Afrika Kidul, Jepang, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, lan Swiss."
+  },
+  "factCheckAllButton": {
+    "message": "Priksa Kabeh"
   }
 }

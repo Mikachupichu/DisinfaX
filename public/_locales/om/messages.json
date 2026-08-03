@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Mirkaneessa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Baalaansii"
+  },
+  "gifted": {
+    "message": "Kennaa"
+  },
+  "customTopup": {
+    "message": "Kan filatame"
+  },
+  "customAmountLabel": {
+    "message": "Baay'ina itti dabalii doolaara Ameerikaatiin kan of danda'e"
+  },
+  "increase": {
+    "message": "Dabaluu"
+  },
+  "decrease": {
+    "message": "Hir'isuu"
+  },
+  "topUpBalance": {
+    "message": "Baalaansii itti dabaluu"
+  },
+  "processing": {
+    "message": "Adeemsisaa jira…"
+  },
+  "checkoutError": {
+    "message": "Kaffaltii jalqabuu hin dandeenye. Maaloo irra deebi'ii yaali."
+  },
+  "termsOfService": {
+    "message": "Haala Tajaajilaa"
+  },
+  "privacyPolicy": {
+    "message": "Imaammata Iccitii"
+  },
+  "disclaimerAgree": {
+    "message": "Itti dabaluudhaan, %TOS% fi %PRIVACY% keenya ni fudhatta."
+  },
+  "disclaimerFx": {
+    "message": "Yoo maallaqa USD hin taane biraan kaffalte, kaffaltiin jijjiirraa maallaqa alaa raawwatamuu danda’a."
+  },
+  "signOut": {
+    "message": "Ba'i"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% cuqaasuun himannoo ni mul'isa, herrega keessaniis ni kaffalchiisa"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% tuquun himannoo ni mul'isa, herrega keessaniis ni kaffalchiisa"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "topUp": {
+    "message": "Guuti"
+  },
+  "showMore": {
+    "message": "Dabalata agarsiisi"
+  },
+  "showLess": {
+    "message": "Xiqqeessii agarsiisi"
+  },
+  "landingTagline1": {
+    "message": "Dhugaa saaxili. Sobawwan argi."
+  },
+  "landingTagline2": {
+    "message": "Odeeffannoo sobaa hin jiru. Dhugaa qofa."
+  },
+  "continueWithX": {
+    "message": "X waliin itti fufi"
+  },
+  "continueWithGoogle": {
+    "message": "Google waliin itti fufi"
+  },
+  "continueWithApple": {
+    "message": "Apple waliin itti fufi"
+  },
+  "lastUsed": {
+    "message": "Dhumarratti fayyadame"
+  },
+  "cleanupTagline": {
+    "message": "Feedii X kee qulqulleessi."
+  },
+  "disclaimerJurisdiction": {
+    "message": " Meeshaalee Tokkoomanii keessatti, jiraattonni Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, fi Wyoming qofatu DisinfaX fayyadamuu fi baalaansii isaanii guutuu danda'a; Washington, D.C., naannolee U.S. hunda, fi kutaawwan hin tarreeffamin kamiyyuu hin dabalatan. Ala Meeshaalee Tokkoomanii, Canada, Australia, New Zealand, Singapore, Afrikaa Kibbaa, Jaappaan, Taayiwaan, Indoneshiyaa, Taayilaand, Filippiins, Maleeshiyaa, Vietnaam, fi Iswiizerlaand keessatti argama."
+  },
+  "factCheckAllButton": {
+    "message": "Hunda mirkaneessi"
   }
 }

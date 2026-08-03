@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "टॉप अप"
+  },
+  "showMore": {
+    "message": "अधिक दाखवा"
+  },
+  "showLess": {
+    "message": "कमी दाखवा"
+  },
+  "landingTagline1": {
+    "message": "सत्य उघड करा. खोटे शोधा."
+  },
+  "landingTagline2": {
+    "message": "आणखी चुकीची माहिती नाही. फक्त तथ्ये."
+  },
+  "continueWithX": {
+    "message": "X सह पुढे जा"
+  },
+  "continueWithGoogle": {
+    "message": "Google सह पुढे जा"
+  },
+  "continueWithApple": {
+    "message": "Apple सह पुढे जा"
+  },
+  "lastUsed": {
+    "message": "शेवटचे वापरलेले"
+  },
+  "cleanupTagline": {
+    "message": "तुमचे X फीड स्वच्छ करा."
+  },
+  "disclaimerJurisdiction": {
+    "message": "युनायटेड स्टेट्समध्ये, फक्त अलाबामा, ॲरिझोना, कॅलिफोर्निया, कोलोरॅडो, कनेक्टिकट, डेलावेअर, फ्लोरिडा, आयडाहो, इलिनॉय, इंडियाना, आयोवा, कॅन्सस, केंटकी, लुइझियाना, मेन, मॅसॅच्युसेट्स, मिसिसिपी, मिसूरी, मोंटाना, न्यू हॅम्पशायर, न्यू मेक्सिको, न्यूयॉर्क, नॉर्थ कॅरोलिना, नॉर्थ डकोटा, ओक्लाहोमा, ओरेगॉन, पेनसिल्व्हेनिया, साउथ कॅरोलिना, साउथ डकोटा, टेनेसी, टेक्सास, युटा, वॉशिंग्टन, विस्कॉन्सिन आणि वायोमिंग येथील रहिवासीच DisinfaX वापरू शकतात आणि त्यांची शिल्लक टॉप अप करू शकतात; वॉशिंग्टन, D.C., सर्व यू.एस. प्रदेश आणि यादीत नसलेली कोणतीही राज्ये वगळण्यात आली आहेत. युनायटेड स्टेट्सबाहेर, हे कॅनडा, ऑस्ट्रेलिया, न्यूझीलंड, सिंगापूर, दक्षिण आफ्रिका, जपान, तैवान, इंडोनेशिया, थायलंड, फिलिपाइन्स, मलेशिया, व्हिएतनाम आणि स्वित्झर्लंड येथे उपलब्ध आहे."
+  },
   "appName": {
     "message": "DisinfaX"
   },
@@ -166,5 +199,68 @@
   "disinfactButton": {
     "message": "तपासणी",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "शिल्लक"
+  },
+  "gifted": {
+    "message": "भेट"
+  },
+  "customTopup": {
+    "message": "सानुकूल"
+  },
+  "customAmountLabel": {
+    "message": "यूएस डॉलरमध्ये सानुकूल टॉप-अप रक्कम"
+  },
+  "increase": {
+    "message": "वाढवा"
+  },
+  "decrease": {
+    "message": "कमी करा"
+  },
+  "topUpBalance": {
+    "message": "शिल्लक टॉप अप करा"
+  },
+  "processing": {
+    "message": "प्रक्रिया करत आहे…"
+  },
+  "checkoutError": {
+    "message": "चेकआउट सुरू करता आले नाही. कृपया पुन्हा प्रयत्न करा."
+  },
+  "termsOfService": {
+    "message": "सेवा अटी"
+  },
+  "privacyPolicy": {
+    "message": "गोपनीयता धोरण"
+  },
+  "disclaimerAgree": {
+    "message": "टॉप अप करून, तुम्ही आमच्या %TOS% आणि %PRIVACY% ला सहमती देता."
+  },
+  "disclaimerFx": {
+    "message": "तुम्ही USD व्यतिरिक्त इतर चलनात पैसे दिल्यास परकीय चलन शुल्क लागू शकते."
+  },
+  "signOut": {
+    "message": "साइन आउट"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% क्लिक केल्याने दावे उघड होतील आणि तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% टॅप केल्याने दावे उघड होतील आणि तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% क्लिक केल्याने तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% क्लिक केल्याने तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% क्लिक केल्याने तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% क्लिक केल्याने तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "factCheckAllButton": {
+    "message": "सर्व तपासा"
   }
 }

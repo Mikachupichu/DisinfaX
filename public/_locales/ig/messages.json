@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Nyochaa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Ego fọdụrụ"
+  },
+  "gifted": {
+    "message": "Onyinye"
+  },
+  "customTopup": {
+    "message": "Ahaziri onwe"
+  },
+  "customAmountLabel": {
+    "message": "Ọnụọgụ ntinye ego ahaziri onwe na dollar US"
+  },
+  "increase": {
+    "message": "Mụba"
+  },
+  "decrease": {
+    "message": "Belata"
+  },
+  "topUpBalance": {
+    "message": "Tinye ego"
+  },
+  "processing": {
+    "message": "Na-ahazi…"
+  },
+  "checkoutError": {
+    "message": "Enweghị ike ịmalite ịkwụ ụgwọ. Biko nwaa ọzọ."
+  },
+  "termsOfService": {
+    "message": "Usoro Ọrụ"
+  },
+  "privacyPolicy": {
+    "message": "Amụma Nzuzo"
+  },
+  "disclaimerAgree": {
+    "message": "Site n'ịtinye ego, ị kwenyere na %TOS% na %PRIVACY% anyị."
+  },
+  "disclaimerFx": {
+    "message": "Ụgwọ mgbanwe ego mba ọzọ nwere ike ịdị ma ọ bụrụ na ị kwụ ụgwọ n'ego na-abụghị USD."
+  },
+  "signOut": {
+    "message": "Pụọ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ịpị %BTN% ga-ekpughe nkwupụta ma gbaa ụgwọ na ngụkọ gị"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ịkwụ aka na %BTN% ga-ekpughe nkwupụta ma gbaa ụgwọ na ngụkọ gị"
+  },
+  "onboardWillCharge": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "onboardFactcheck": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "onboardTranslations": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "onboardRefreshes": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "topUp": {
+    "message": "Tinye Ego"
+  },
+  "showMore": {
+    "message": "Gosi ihe ọzọ"
+  },
+  "showLess": {
+    "message": "Gosi ntakịrị"
+  },
+  "landingTagline1": {
+    "message": "Kpughee Eziokwu. Chọta Ụgha."
+  },
+  "landingTagline2": {
+    "message": "Enweghịzi Ụgha. Naanị Eziokwu."
+  },
+  "continueWithX": {
+    "message": "Gaa n'ihu na X"
+  },
+  "continueWithGoogle": {
+    "message": "Gaa n'ihu na Google"
+  },
+  "continueWithApple": {
+    "message": "Gaa n'ihu na Apple"
+  },
+  "lastUsed": {
+    "message": "Nke Ejiri Ikpeazụ"
+  },
+  "cleanupTagline": {
+    "message": "Hichaa X Feed gị."
+  },
+  "disclaimerJurisdiction": {
+    "message": "N'ime United States, naanị ndị bi na Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming nwere ike iji DisinfaX ma tinye ego ha; Washington, D.C., mpaghara U.S. niile, na steeti ọ bụla a na-edeghị edepụta anaghị agụnye ha. Na mpụga United States, ọ dị na Canada, Australia, New Zealand, Singapore, South Africa, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, na Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Nyochaa Ihe Niile"
   }
 }

@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Faktikontroll",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Kingitud"
+  },
+  "customTopup": {
+    "message": "Kohandatud"
+  },
+  "customAmountLabel": {
+    "message": "Kohandatud täienduse summa USA dollarites"
+  },
+  "increase": {
+    "message": "Suurenda"
+  },
+  "decrease": {
+    "message": "Vähenda"
+  },
+  "topUpBalance": {
+    "message": "Täienda saldot"
+  },
+  "processing": {
+    "message": "Töötlemine…"
+  },
+  "checkoutError": {
+    "message": "Kassat ei õnnestunud avada. Palun proovi uuesti."
+  },
+  "termsOfService": {
+    "message": "Kasutustingimused"
+  },
+  "privacyPolicy": {
+    "message": "Privaatsuspoliitika"
+  },
+  "disclaimerAgree": {
+    "message": "Saldot täiendades nõustud meie tingimustega %TOS% ja %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Valuutavahetustasud võivad kehtida, kui maksad muus valuutas kui USD."
+  },
+  "signOut": {
+    "message": "Logi välja"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% klõpsamine kuvab väited ja debiteerib teie kontojääki"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% puudutamine kuvab väited ja debiteerib teie kontojääki"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+  },
+  "topUp": {
+    "message": "Lae kontot"
+  },
+  "showMore": {
+    "message": "Näita rohkem"
+  },
+  "showLess": {
+    "message": "Näita vähem"
+  },
+  "landingTagline1": {
+    "message": "Paljasta tõde. Leia valed."
+  },
+  "landingTagline2": {
+    "message": "Ei mingit desinformatsiooni. Ainult faktid."
+  },
+  "continueWithX": {
+    "message": "Jätka X-iga"
+  },
+  "continueWithGoogle": {
+    "message": "Jätka Google'iga"
+  },
+  "continueWithApple": {
+    "message": "Jätka Apple'iga"
+  },
+  "lastUsed": {
+    "message": "Viimati kasutatud"
+  },
+  "cleanupTagline": {
+    "message": "Korrasta oma X-i voog."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ameerika Ühendriikides saavad DisinfaX-i kasutada ja oma saldot täiendada ainult järgmiste osariikide elanikud: Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Põhja-Carolina, Põhja-Dakota, Oklahoma, Oregon, Pennsylvania, Lõuna-Carolina, Lõuna-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ja Wyoming; Washington, D.C., kõik USA territooriumid ja kõik loetlemata osariigid on välistatud. Väljaspool Ameerika Ühendriike on see saadaval Kanadas, Austraalias, Uus-Meremaal, Singapuris, Lõuna-Aafrika Vabariigis, Jaapanis, Taiwanis, Indoneesias, Tais, Filipiinidel, Malaisias, Vietnamis ja Šveitsis."
+  },
+  "factCheckAllButton": {
+    "message": "Kontrolli kõike"
   }
 }

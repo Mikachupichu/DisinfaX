@@ -162,5 +162,101 @@
   "disinfactButton": {
     "message": "Tikrinti",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balansas"
+  },
+  "gifted": {
+    "message": "Padovanota"
+  },
+  "customTopup": {
+    "message": "Pasirinktinis"
+  },
+  "customAmountLabel": {
+    "message": "Pasirinktinė papildymo suma JAV doleriais"
+  },
+  "increase": {
+    "message": "Padidinti"
+  },
+  "decrease": {
+    "message": "Sumažinti"
+  },
+  "topUpBalance": {
+    "message": "Papildyti balansą"
+  },
+  "processing": {
+    "message": "Apdorojama…"
+  },
+  "checkoutError": {
+    "message": "Nepavyko pradėti apmokėjimo. Bandykite dar kartą."
+  },
+  "termsOfService": {
+    "message": "Paslaugų teikimo sąlygos"
+  },
+  "privacyPolicy": {
+    "message": "Privatumo politika"
+  },
+  "disclaimerAgree": {
+    "message": "Papildydami sutinkate su mūsų %TOS% ir %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Jei mokate kita valiuta nei USD, gali būti taikomi valiutos keitimo mokesčiai."
+  },
+  "signOut": {
+    "message": "Atsijungti"
+  },
+  "onboardDisinfactClick": {
+    "message": "Spustelėjus %BTN% atskleidžiami teiginiai ir bus nuskaičiuota nuo jūsų balanso"
+  },
+  "onboardDisinfactTap": {
+    "message": "Bakstelėjus %BTN% atskleidžiami teiginiai ir bus nuskaičiuota nuo jūsų balanso"
+  },
+  "onboardWillCharge": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo jūsų balanso"
+  },
+  "onboardFactcheck": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo jūsų balanso"
+  },
+  "onboardTranslations": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo jūsų balanso"
+  },
+  "onboardRefreshes": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo jūsų balanso"
+  },
+  "topUp": {
+    "message": "Papildyti"
+  },
+  "showMore": {
+    "message": "Rodyti daugiau"
+  },
+  "showLess": {
+    "message": "Rodyti mažiau"
+  },
+  "landingTagline1": {
+    "message": "Atskleisk tiesą. Rask melą."
+  },
+  "landingTagline2": {
+    "message": "Jokios dezinformacijos. Tik faktai."
+  },
+  "continueWithX": {
+    "message": "Tęsti su X"
+  },
+  "continueWithGoogle": {
+    "message": "Tęsti su Google"
+  },
+  "continueWithApple": {
+    "message": "Tęsti su Apple"
+  },
+  "lastUsed": {
+    "message": "Paskutinį kartą naudota"
+  },
+  "cleanupTagline": {
+    "message": "Sutvarkyk savo X sklaidos kanalą."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Jungtinėse Valstijose DisinfaX naudotis ir papildyti savo balansą gali tik šių valstijų gyventojai: Alabama, Arizona, Kalifornija, Koloradas, Konektikutas, Delaveras, Florida, Aidahas, Ilinojus, Indiana, Ajova, Kanzasas, Kentukis, Luiziana, Meinas, Masačusetsas, Misisipė, Misūris, Montana, Naujasis Hampšyras, Naujoji Meksika, Niujorkas, Šiaurės Karolina, Šiaurės Dakota, Oklahoma, Oregonas, Pensilvanija, Pietų Karolina, Pietų Dakota, Tenesis, Teksasas, Juta, Vašingtonas, Viskonsinas ir Vajomingas; Vašingtonas, D.C., visos JAV teritorijos ir bet kurios nenurodytos valstijos yra išbrauktos. Už Jungtinių Valstijų ribų jis prieinamas Kanadoje, Australijoje, Naujojoje Zelandijoje, Singapūre, Pietų Afrikoje, Japonijoje, Taivane, Indonezijoje, Tailande, Filipinuose, Malaizijoje, Vietname ir Šveicarijoje."
+  },
+  "factCheckAllButton": {
+    "message": "Patikrinti viską"
   }
 }

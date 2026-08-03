@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Tlhatlhoba",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Madi a a Setseng"
+  },
+  "gifted": {
+    "message": "Mpho"
+  },
+  "customTopup": {
+    "message": "E e Ikgethileng"
+  },
+  "customAmountLabel": {
+    "message": "Selekanyo se se ikgethileng sa go tlatsa ka didolara tsa Amerika"
+  },
+  "increase": {
+    "message": "Oketsa"
+  },
+  "decrease": {
+    "message": "Fokotsa"
+  },
+  "topUpBalance": {
+    "message": "Tlatsa Madi"
+  },
+  "processing": {
+    "message": "E a diragatsa…"
+  },
+  "checkoutError": {
+    "message": "Go paletswe go simolola tuelo. Tsweetswee leka gape."
+  },
+  "termsOfService": {
+    "message": "Melao ya Tirelo"
+  },
+  "privacyPolicy": {
+    "message": "Pholisi ya Sephiri"
+  },
+  "disclaimerAgree": {
+    "message": "Ka go tlatsa, o dumalana le %TOS% le %PRIVACY% tsa rona."
+  },
+  "disclaimerFx": {
+    "message": "Dituelo tsa go ananya madi a boditšhabatšhaba di ka nna tsa dirisiwa fa o duela ka madi a e seng USD."
+  },
+  "signOut": {
+    "message": "Tswa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Go tobetsa %BTN% go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardDisinfactTap": {
+    "message": "Go ama %BTN% go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardWillCharge": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardFactcheck": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardTranslations": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardRefreshes": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "topUp": {
+    "message": "Oketsa Madi"
+  },
+  "showMore": {
+    "message": "Bontsha tse dingwe"
+  },
+  "showLess": {
+    "message": "Bontsha tse potlana"
+  },
+  "landingTagline1": {
+    "message": "Senola Boammaaruri. Bona Maaka."
+  },
+  "landingTagline2": {
+    "message": "Ga go sa na Maaka. Nnete fela."
+  },
+  "continueWithX": {
+    "message": "Tswelela ka X"
+  },
+  "continueWithGoogle": {
+    "message": "Tswelela ka Google"
+  },
+  "continueWithApple": {
+    "message": "Tswelela ka Apple"
+  },
+  "lastUsed": {
+    "message": "E Dirisitswe la Bofelo"
+  },
+  "cleanupTagline": {
+    "message": "Phepafatsa X Feed ya gago."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Mo teng ga United States, ke banni ba Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, le Wyoming fela ba ka dirisang DisinfaX le go oketsa madi a bona; Washington, D.C., dikgaolo tsotlhe tsa U.S., le dinaga dipe tse di sa lokololwang ga di akaretswe. Kwa ntle ga United States, e teng kwa Canada, Australia, New Zealand, Singapore, Aforika Borwa, Japane, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, le Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Tlhatlhoba tsotlhe"
   }
 }

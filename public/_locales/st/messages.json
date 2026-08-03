@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Hlahloba",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Chelete e Setseng"
+  },
+  "gifted": {
+    "message": "Mpho"
+  },
+  "customTopup": {
+    "message": "E ikhethileng"
+  },
+  "customAmountLabel": {
+    "message": "Chelete e ikhethileng ea ho tlatsa ka lidolara tsa Amerika"
+  },
+  "increase": {
+    "message": "Eketsa"
+  },
+  "decrease": {
+    "message": "Fokotsa"
+  },
+  "topUpBalance": {
+    "message": "Tlatsa Chelete"
+  },
+  "processing": {
+    "message": "Ea sebetsa…"
+  },
+  "checkoutError": {
+    "message": "Ho hlolehile ho qala tefo. Ka kopo leka hape."
+  },
+  "termsOfService": {
+    "message": "Melao ea Tšebeletso"
+  },
+  "privacyPolicy": {
+    "message": "Leano la Lekunutu"
+  },
+  "disclaimerAgree": {
+    "message": "Ka ho tlatsa, u lumellana le %TOS% le %PRIVACY% tsa rona."
+  },
+  "disclaimerFx": {
+    "message": "Litefiso tsa phapanyetsano ea chelete ea kantle ho naha li ka sebetsa haeba u lefa ka chelete e seng USD."
+  },
+  "signOut": {
+    "message": "Tsoa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ho tobetsa %BTN% ho bontša liqoso mme ho tla lefisa tjhelete boemong ba hao"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ho ama %BTN% ho bontša liqoso mme ho tla lefisa tjhelete boemong ba hao"
+  },
+  "onboardWillCharge": {
+    "message": "Ho tobetsa %BTN% ho tla lefisa tjhelete boemong ba hao"
+  },
+  "onboardFactcheck": {
+    "message": "Ho tobetsa %BTN% ho tla lefisa tjhelete boemong ba hao"
+  },
+  "onboardTranslations": {
+    "message": "Ho tobetsa %BTN% ho tla lefisa tjhelete boemong ba hao"
+  },
+  "onboardRefreshes": {
+    "message": "Ho tobetsa %BTN% ho tla lefisa tjhelete boemong ba hao"
+  },
+  "topUp": {
+    "message": "Eketsa Chelete"
+  },
+  "showMore": {
+    "message": "Bontsha tse ding"
+  },
+  "showLess": {
+    "message": "Bontsha tse fokolang"
+  },
+  "landingTagline1": {
+    "message": "Senola 'Nete. Fumana Leshano."
+  },
+  "landingTagline2": {
+    "message": "Ha ho sa na Leshano. Linnete feela."
+  },
+  "continueWithX": {
+    "message": "Tswela pele ka X"
+  },
+  "continueWithGoogle": {
+    "message": "Tswela pele ka Google"
+  },
+  "continueWithApple": {
+    "message": "Tswela pele ka Apple"
+  },
+  "lastUsed": {
+    "message": "E Sebedisitsoe ho Qetela"
+  },
+  "cleanupTagline": {
+    "message": "Hloekisa X Feed ya hao."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ka har'a United States, ke baahi ba Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, le Wyoming feela ba ka sebedisang DisinfaX le ho eketsa chelete ya bona; Washington, D.C., libaka tsohle tsa U.S., le linaha life kapa life tse sa thathamisoang ha di kenyeletsoe. Kantle ho United States, e fumaneha Canada, Australia, New Zealand, Singapore, Afrika Boroa, Japane, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, le Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Hlahloba kaofela"
   }
 }

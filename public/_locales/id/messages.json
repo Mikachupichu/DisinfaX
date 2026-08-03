@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Cek Fakta",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "bonus"
+  },
+  "customTopup": {
+    "message": "Kustom"
+  },
+  "customAmountLabel": {
+    "message": "Jumlah isi ulang kustom dalam dolar AS"
+  },
+  "increase": {
+    "message": "Tambah"
+  },
+  "decrease": {
+    "message": "Kurangi"
+  },
+  "topUpBalance": {
+    "message": "Isi Ulang Saldo"
+  },
+  "processing": {
+    "message": "Memproses…"
+  },
+  "checkoutError": {
+    "message": "Tidak dapat memulai pembayaran. Silakan coba lagi."
+  },
+  "termsOfService": {
+    "message": "Ketentuan Layanan"
+  },
+  "privacyPolicy": {
+    "message": "Kebijakan Privasi"
+  },
+  "disclaimerAgree": {
+    "message": "Dengan mengisi ulang, Anda menyetujui %TOS% dan %PRIVACY% kami."
+  },
+  "disclaimerFx": {
+    "message": "Biaya penukaran mata uang mungkin berlaku jika Anda membayar dalam mata uang selain USD."
+  },
+  "signOut": {
+    "message": "Keluar"
+  },
+  "onboardDisinfactClick": {
+    "message": "Mengeklik %BTN% menampilkan klaim dan akan membebankan biaya ke saldo Anda"
+  },
+  "onboardDisinfactTap": {
+    "message": "Mengetuk %BTN% menampilkan klaim dan akan membebankan biaya ke saldo Anda"
+  },
+  "onboardWillCharge": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "onboardFactcheck": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "onboardTranslations": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "onboardRefreshes": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "topUp": {
+    "message": "Isi Ulang"
+  },
+  "showMore": {
+    "message": "Tampilkan lebih banyak"
+  },
+  "showLess": {
+    "message": "Tampilkan lebih sedikit"
+  },
+  "landingTagline1": {
+    "message": "Ungkap Kebenaran. Temukan Kebohongan."
+  },
+  "landingTagline2": {
+    "message": "Tidak ada lagi Disinformasi. Hanya Fakta."
+  },
+  "continueWithX": {
+    "message": "Lanjutkan dengan X"
+  },
+  "continueWithGoogle": {
+    "message": "Lanjutkan dengan Google"
+  },
+  "continueWithApple": {
+    "message": "Lanjutkan dengan Apple"
+  },
+  "lastUsed": {
+    "message": "Terakhir Digunakan"
+  },
+  "cleanupTagline": {
+    "message": "Bersihkan Beranda X Anda."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Di dalam Amerika Serikat, hanya penduduk negara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Utara, Dakota Utara, Oklahoma, Oregon, Pennsylvania, Carolina Selatan, Dakota Selatan, Tennessee, Texas, Utah, Washington, Wisconsin, dan Wyoming yang dapat menggunakan DisinfaX dan mengisi ulang saldo mereka; Washington, D.C., semua teritori A.S., dan negara bagian mana pun yang tidak tercantum tidak termasuk. Di luar Amerika Serikat, tersedia di Kanada, Australia, Selandia Baru, Singapura, Afrika Selatan, Jepang, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, dan Swiss."
+  },
+  "factCheckAllButton": {
+    "message": "Cek Semua Fakta"
   }
 }

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Genzura",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Amafaranga asigaye"
+  },
+  "gifted": {
+    "message": "Impano"
+  },
+  "customTopup": {
+    "message": "Byihariye"
+  },
+  "customAmountLabel": {
+    "message": "Umubare wihariye wo kongera amafaranga muri amadolari y'Amerika"
+  },
+  "increase": {
+    "message": "Kongera"
+  },
+  "decrease": {
+    "message": "Kugabanya"
+  },
+  "topUpBalance": {
+    "message": "Ongera Amafaranga"
+  },
+  "processing": {
+    "message": "Biratunganywa…"
+  },
+  "checkoutError": {
+    "message": "Ntibyashobotse gutangira kwishyura. Nyamuneka ongera ugerageze."
+  },
+  "termsOfService": {
+    "message": "Amabwiriza y'Serivisi"
+  },
+  "privacyPolicy": {
+    "message": "Politiki y'Ibanga"
+  },
+  "disclaimerAgree": {
+    "message": "Mu kongera amafaranga, wemera %TOS% na %PRIVACY% byacu."
+  },
+  "disclaimerFx": {
+    "message": "Amafaranga yo guhindura ifaranga ashobora gukoreshwa niba wishyuye mu ifaranga ritari USD."
+  },
+  "signOut": {
+    "message": "Sohoka"
+  },
+  "onboardDisinfactClick": {
+    "message": "Gukanda kuri %BTN% bigaragaza ibivugwa kandi bizakuramo amafaranga kuri konti yawe"
+  },
+  "onboardDisinfactTap": {
+    "message": "Gukoraho %BTN% bigaragaza ibivugwa kandi bizakuramo amafaranga kuri konti yawe"
+  },
+  "onboardWillCharge": {
+    "message": "Gukanda kuri %BTN% bizakuramo amafaranga kuri konti yawe"
+  },
+  "onboardFactcheck": {
+    "message": "Gukanda kuri %BTN% bizakuramo amafaranga kuri konti yawe"
+  },
+  "onboardTranslations": {
+    "message": "Gukanda kuri %BTN% bizakuramo amafaranga kuri konti yawe"
+  },
+  "onboardRefreshes": {
+    "message": "Gukanda kuri %BTN% bizakuramo amafaranga kuri konti yawe"
+  },
+  "topUp": {
+    "message": "Ongeramo amafaranga"
+  },
+  "showMore": {
+    "message": "Erekana byinshi"
+  },
+  "showLess": {
+    "message": "Erekana bike"
+  },
+  "landingTagline1": {
+    "message": "Hishura ukuri. Menya ibinyoma."
+  },
+  "landingTagline2": {
+    "message": "Nta makuru atari ukuri ukundi. Ukuri gusa."
+  },
+  "continueWithX": {
+    "message": "Komeza na X"
+  },
+  "continueWithGoogle": {
+    "message": "Komeza na Google"
+  },
+  "continueWithApple": {
+    "message": "Komeza na Apple"
+  },
+  "lastUsed": {
+    "message": "Byakoreshejwe vuba"
+  },
+  "cleanupTagline": {
+    "message": "Sukura urubuga rwawe rwa X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Muri Leta Zunze Ubumwe za Amerika, abaturage ba Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina y'Amajyaruguru, Dakota y'Amajyaruguru, Oklahoma, Oregon, Pennsylvania, Carolina y'Amajyepfo, Dakota y'Amajyepfo, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming ni bo bonyine bashobora gukoresha DisinfaX no kongera amafaranga yabo; Washington, D.C., uturere twose twa Amerika, na leta iyo ari yo yose itari ku rutonde ntibyemewe. Hanze ya Leta Zunze Ubumwe za Amerika, iraboneka muri Kanada, Ositaraliya, Nuvelizelande, Singapuru, Afurika y'Epfo, Ubuyapani, Tayiwani, Indoneziya, Tayilande, Filipine, Maleziya, Viyetinamu, na Suwisi."
+  },
+  "factCheckAllButton": {
+    "message": "Genzura byose"
   }
 }

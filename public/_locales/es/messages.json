@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Verificar",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "de regalo"
+  },
+  "customTopup": {
+    "message": "Personalizado"
+  },
+  "customAmountLabel": {
+    "message": "Importe de recarga personalizado en dólares estadounidenses"
+  },
+  "increase": {
+    "message": "Aumentar"
+  },
+  "decrease": {
+    "message": "Disminuir"
+  },
+  "topUpBalance": {
+    "message": "Recargar saldo"
+  },
+  "processing": {
+    "message": "Procesando…"
+  },
+  "checkoutError": {
+    "message": "No se pudo iniciar el pago. Inténtalo de nuevo."
+  },
+  "termsOfService": {
+    "message": "Términos del servicio"
+  },
+  "privacyPolicy": {
+    "message": "Política de privacidad"
+  },
+  "disclaimerAgree": {
+    "message": "Al recargar, aceptas nuestros %TOS% y nuestra %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Pueden aplicarse comisiones de cambio de divisa si pagas en una moneda distinta al USD."
+  },
+  "signOut": {
+    "message": "Cerrar sesión"
+  },
+  "onboardDisinfactClick": {
+    "message": "Al hacer clic en %BTN% se revelan las afirmaciones y se descontará de tu saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Al tocar %BTN% se revelan las afirmaciones y se descontará de tu saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+  },
+  "onboardTranslations": {
+    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+  },
+  "topUp": {
+    "message": "Recargar"
+  },
+  "showMore": {
+    "message": "Mostrar más"
+  },
+  "showLess": {
+    "message": "Mostrar menos"
+  },
+  "landingTagline1": {
+    "message": "Revela la verdad. Descubre las mentiras."
+  },
+  "landingTagline2": {
+    "message": "No más desinformación. Solo hechos."
+  },
+  "continueWithX": {
+    "message": "Continuar con X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuar con Google"
+  },
+  "continueWithApple": {
+    "message": "Continuar con Apple"
+  },
+  "lastUsed": {
+    "message": "Usado por última vez"
+  },
+  "cleanupTagline": {
+    "message": "Limpia tu feed de X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Dentro de los Estados Unidos, solo los residentes de Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Luisiana, Maine, Massachusetts, Misisipi, Misuri, Montana, Nuevo Hampshire, Nuevo México, Nueva York, Carolina del Norte, Dakota del Norte, Oklahoma, Oregón, Pensilvania, Carolina del Sur, Dakota del Sur, Tennessee, Texas, Utah, Washington, Wisconsin y Wyoming pueden usar DisinfaX y recargar su saldo; Washington, D.C., todos los territorios de EE. UU. y cualquier estado no incluido en la lista quedan excluidos. Fuera de los Estados Unidos, está disponible en Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Japón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam y Suiza."
+  },
+  "factCheckAllButton": {
+    "message": "Verificar todo"
   }
 }

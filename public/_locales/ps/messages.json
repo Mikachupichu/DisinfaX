@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "تایید",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "بیلانس"
+  },
+  "gifted": {
+    "message": "ډالۍ"
+  },
+  "customTopup": {
+    "message": "ځانګړی"
+  },
+  "customAmountLabel": {
+    "message": "د امریکا په ډالرو کې ځانګړې د بیلانس د زیاتولو اندازه"
+  },
+  "increase": {
+    "message": "زیاتول"
+  },
+  "decrease": {
+    "message": "کمول"
+  },
+  "topUpBalance": {
+    "message": "بیلانس زیاتول"
+  },
+  "processing": {
+    "message": "پروسس کیږي…"
+  },
+  "checkoutError": {
+    "message": "پیسې نه شوې پیل کیدی. مهرباني وکړئ بیا هڅه وکړئ."
+  },
+  "termsOfService": {
+    "message": "د خدمت شرایط"
+  },
+  "privacyPolicy": {
+    "message": "د محرمیت پالیسي"
+  },
+  "disclaimerAgree": {
+    "message": "د بیلانس په زیاتولو سره، تاسو زموږ له %TOS% او %PRIVACY% سره موافقه کوئ."
+  },
+  "disclaimerFx": {
+    "message": "که تاسو د USD پرته په بله اسعارو کې تادیه وکړئ، د بهرنیو اسعارو د تبادلې فیس ممکن پلي شي."
+  },
+  "signOut": {
+    "message": "وتل"
+  },
+  "onboardDisinfactClick": {
+    "message": "پر %BTN% کلیک کول ادعاوې ښکاره کوي او ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardDisinfactTap": {
+    "message": "پر %BTN% لمس کول ادعاوې ښکاره کوي او ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardWillCharge": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardFactcheck": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardTranslations": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardRefreshes": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "topUp": {
+    "message": "زیاتول"
+  },
+  "showMore": {
+    "message": "نور وښایاست"
+  },
+  "showLess": {
+    "message": "لږ وښایاست"
+  },
+  "landingTagline1": {
+    "message": "حقیقت څرګند کړئ. دروغ ومومئ."
+  },
+  "landingTagline2": {
+    "message": "نور غلط معلومات نشته. یوازې حقایق."
+  },
+  "continueWithX": {
+    "message": "د X سره دوام ورکړئ"
+  },
+  "continueWithGoogle": {
+    "message": "د Google سره دوام ورکړئ"
+  },
+  "continueWithApple": {
+    "message": "د Apple سره دوام ورکړئ"
+  },
+  "lastUsed": {
+    "message": "وروستی کارول شوی"
+  },
+  "cleanupTagline": {
+    "message": "خپل د X فیډ پاک کړئ."
+  },
+  "disclaimerJurisdiction": {
+    "message": "د متحده ایالاتو دننه، یوازې د الاباما، اریزونا، کالیفورنیا، کولوراډو، کنیکټیکټ، ډیلاویر، فلوریډا، آیداهو، ایلینوی، انډیانا، آیووا، کانزاس، کنټکي، لویزیانا، مین، ماساچوسټس، میسیسیپي، میسوري، مونټانا، نیو همپشایر، نیو مکسیکو، نیویارک، شمالي کارولینا، شمالي داکوټا، اوکلاهوما، اوریګون، پنسلوانیا، سویلي کارولینا، سویلي داکوټا، ټینیسي، ټیکساس، یوټا، واشنګټن، ویسکانسن، او وایومینګ اوسیدونکي کولی شي DisinfaX وکاروي او خپل بیلانس زیات کړي؛ واشنګټن، D.C.، ټولې امریکایي سیمې، او هر هغه ایالت چې نوملړ کې نه وي، مستثنی دي. د متحده ایالاتو دباندې، دا په کاناډا، آسټرالیا، نیوزیلنډ، سینګاپور، سویلي افریقا، جاپان، تایوان، اندونیزیا، تایلنډ، فلیپین، مالیزیا، ویتنام، او سویس کې شتون لري."
+  },
+  "factCheckAllButton": {
+    "message": "ټول تایید کړئ"
   }
 }

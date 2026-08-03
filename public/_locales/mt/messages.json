@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verifika",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Bilanċ"
+  },
+  "gifted": {
+    "message": "Rigal"
+  },
+  "customTopup": {
+    "message": "Personalizzat"
+  },
+  "customAmountLabel": {
+    "message": "Ammont ta' żieda personalizzat f'dollari Amerikani"
+  },
+  "increase": {
+    "message": "Żid"
+  },
+  "decrease": {
+    "message": "Naqqas"
+  },
+  "topUpBalance": {
+    "message": "Żid il-Bilanċ"
+  },
+  "processing": {
+    "message": "Qed jipproċessa…"
+  },
+  "checkoutError": {
+    "message": "Ma setax jibda l-ħlas. Jekk jogħġbok erġa' pprova."
+  },
+  "termsOfService": {
+    "message": "Termini tas-Servizz"
+  },
+  "privacyPolicy": {
+    "message": "Politika tal-Privatezza"
+  },
+  "disclaimerAgree": {
+    "message": "Billi żżid il-bilanċ, taqbel mat-%TOS% u l-%PRIVACY% tagħna."
+  },
+  "disclaimerFx": {
+    "message": "Jistgħu japplikaw tariffi tal-kambju jekk tħallas b'munita differenti mid-USD."
+  },
+  "signOut": {
+    "message": "Oħroġ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Tikklikkja %BTN% turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tmiss %BTN% turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardWillCharge": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardFactcheck": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardTranslations": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardRefreshes": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "topUp": {
+    "message": "Iċċarġja"
+  },
+  "showMore": {
+    "message": "Uri aktar"
+  },
+  "showLess": {
+    "message": "Uri inqas"
+  },
+  "landingTagline1": {
+    "message": "Skopri l-verità. Sib il-gideb."
+  },
+  "landingTagline2": {
+    "message": "Le aktar diżinformazzjoni. Fatti biss."
+  },
+  "continueWithX": {
+    "message": "Kompli b'X"
+  },
+  "continueWithGoogle": {
+    "message": "Kompli bi Google"
+  },
+  "continueWithApple": {
+    "message": "Kompli b'Apple"
+  },
+  "lastUsed": {
+    "message": "L-aħħar użat"
+  },
+  "cleanupTagline": {
+    "message": "Naddaf il-feed tiegħek fuq X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Fl-Istati Uniti, huma biss ir-residenti ta' Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, il-Karolina ta' Fuq, id-Dakota ta' Fuq, Oklahoma, Oregon, Pennsylvania, il-Karolina t'Isfel, id-Dakota t'Isfel, Tennessee, Texas, Utah, Washington, Wisconsin, u Wyoming li jistgħu jużaw DisinfaX u jiċċarġjaw il-bilanċ tagħhom; Washington, D.C., it-territorji Amerikani kollha, u kwalunkwe stat mhux elenkat huma esklużi. Barra mill-Istati Uniti, huwa disponibbli fil-Kanada, l-Awstralja, iż-Żelanda l-Ġdida, Singapor, l-Afrika t'Isfel, il-Ġappun, it-Tajwan, l-Indoneżja, it-Tajlandja, il-Filippini, il-Malasja, il-Vjetnam, u l-Iżvizzera."
+  },
+  "factCheckAllButton": {
+    "message": "Ivverifika kollox"
   }
 }

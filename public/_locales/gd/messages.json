@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "Cuir ris"
+  },
+  "showMore": {
+    "message": "Seall barrachd"
+  },
+  "showLess": {
+    "message": "Seall nas lugha"
+  },
+  "landingTagline1": {
+    "message": "Foillsich an Fhìrinn. Lorg na Breugan."
+  },
+  "landingTagline2": {
+    "message": "Gun bharrachd mì-fhiosrachaidh. Dìreach fìrinnean."
+  },
+  "continueWithX": {
+    "message": "Lean air adhart le X"
+  },
+  "continueWithGoogle": {
+    "message": "Lean air adhart le Google"
+  },
+  "continueWithApple": {
+    "message": "Lean air adhart le Apple"
+  },
+  "lastUsed": {
+    "message": "Air a chleachdadh mu dheireadh"
+  },
+  "cleanupTagline": {
+    "message": "Glan suas an inbhir X agad."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Taobh a-staigh nan Stàitean Aonaichte, chan urrainn ach do luchd-còmhnaidh Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina a Tuath, Dakota a Tuath, Oklahoma, Oregon, Pennsylvania, Carolina a Deas, Dakota a Deas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a chleachdadh agus an cothromachd aca a chur ris; tha Washington, D.C., criochan-tìre nan SA gu lèir, agus stàitean sam bith nach eil air an liostadh air an dùnadh a-mach. Taobh a-muigh nan Stàitean Aonaichte, tha e ri fhaotainn ann an Canada, Astràilia, Sealan Nuadh, Singeapòr, Afraga a Deas, Iapan, Taidhbhean, Indonesia, Thàilloandh, Na h-Eileanan Filipineach, Malaisia, Bhietnam, agus An Eilbheis."
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "Sgrùdadh",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Cothromachadh"
+  },
+  "gifted": {
+    "message": "Air a thoirt seachad"
+  },
+  "customTopup": {
+    "message": "Gnàthaichte"
+  },
+  "customAmountLabel": {
+    "message": "Suim ath-lìonaidh ghnàthaichte ann an dolairean nan SA"
+  },
+  "increase": {
+    "message": "Meudaich"
+  },
+  "decrease": {
+    "message": "Lùghdaich"
+  },
+  "topUpBalance": {
+    "message": "Ath-lìon an cothromachadh"
+  },
+  "processing": {
+    "message": "Ga phròiseasadh…"
+  },
+  "checkoutError": {
+    "message": "Cha b’ urrainn am pàigheadh a thòiseachadh. Feuch ris a-rithist."
+  },
+  "termsOfService": {
+    "message": "Teirmichean Seirbheis"
+  },
+  "privacyPolicy": {
+    "message": "Poileasaidh Prìobhaideachd"
+  },
+  "disclaimerAgree": {
+    "message": "Le bhith ag ath-lìonadh, tha thu ag aontachadh ris na %TOS% agus %PRIVACY% againn."
+  },
+  "disclaimerFx": {
+    "message": "Faodaidh cìsean iomlaid airgid a bhith an sàs ma phàigheas tu ann an airgeadra seach USD."
+  },
+  "signOut": {
+    "message": "Clàraich a-mach"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ma nì thu briogadh air %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chunntas"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ma bhogas tu air %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chunntas"
+  },
+  "onboardWillCharge": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
+  },
+  "onboardFactcheck": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
+  },
+  "onboardTranslations": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
+  },
+  "onboardRefreshes": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
+  },
+  "factCheckAllButton": {
+    "message": "Sgrùd na h-uile"
   }
 }

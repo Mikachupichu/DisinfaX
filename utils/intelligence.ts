@@ -1,5 +1,69 @@
 import { MainTweet } from "../data/Tweets";
 import { Classification, Claim, QuotedClassification, Source, formatVerdict, sameLanguage } from "../data/Classification";
+import { supabase, ensureFreshSession } from "./supabase";
+
+/** Build the Authorization header carrying the user's Supabase JWT. Every worker
+ *  except stripe-webhook / messages now requires it (they charge the balance via an
+ *  authenticated RPC). Returns an empty object when there is no session so the caller
+ *  still sends a well-formed request (the worker then rejects with 401).
+ *
+ *  ensureFreshSession() refreshes an expired/near-expiry token first — needed because
+ *  autoRefreshToken's timer doesn't survive an MV3 service-worker restart, and several
+ *  of these calls often fire in parallel off one click (see its doc comment). */
+export async function getAuthHeader(): Promise<Record<string, string>> {
+  try {
+    await ensureFreshSession();
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
+  }
+}
+
+/** Optional sink for surfacing worker/DB failures (e.g. 402 balance-too-low) to the
+ *  UI as error notifications. The background sets this; when unset, errors are only
+ *  logged (unchanged behaviour). */
+let workerErrorHandler: ((message: string) => void) | null = null;
+export function setWorkerErrorHandler(fn: ((message: string) => void) | null): void {
+  workerErrorHandler = fn;
+}
+/** True when a worker/DB error message is specifically the "balance too low" (P0003 /
+ *  402) rejection — as opposed to "Account suspended." (P0004) or any other failure.
+ *  Only these are eligible for the queue-and-retry-once flow. */
+export function isBalanceTooLowMessage(message: string): boolean {
+  return typeof message === 'string' && /balance\s+is\s+too\s+low/i.test(message);
+}
+
+/** Stack of per-action balance-error interceptors. The background pushes one around a
+ *  gated charging action; if a "balance too low" error surfaces while ≥1 is active, it
+ *  is routed to the most-recent one (which decides retry-once vs. abandon) and NOT
+ *  broadcast globally — so it's shown only when the action is actually abandoned. */
+let balanceErrorInterceptors: Array<(message: string) => void> = [];
+export function pushBalanceErrorInterceptor(fn: (message: string) => void): void {
+  balanceErrorInterceptors.push(fn);
+}
+export function popBalanceErrorInterceptor(fn: (message: string) => void): void {
+  const i = balanceErrorInterceptors.lastIndexOf(fn);
+  if (i !== -1) balanceErrorInterceptors.splice(i, 1);
+}
+
+/** Extract a human-readable message from a worker error body ({"error": "..."}, or
+ *  a "prefix: {json}" string, or plain text) and forward it to the error sink. */
+function reportWorkerError(body: string): void {
+  let message = body;
+  const start = body.indexOf('{');
+  const jsonSlice = start !== -1 ? body.slice(start) : body;
+  try { const j = JSON.parse(jsonSlice); if (j && typeof j.error === 'string') message = j.error; } catch { /* plain text */ }
+  // A balance-too-low error during a gated action is handled by that action (retry or
+  // abandon) — suppress the global notification here so it only shows on abandonment.
+  if (isBalanceTooLowMessage(message) && balanceErrorInterceptors.length > 0) {
+    try { balanceErrorInterceptors[balanceErrorInterceptors.length - 1](message); } catch { /* ignore */ }
+    return;
+  }
+  if (!workerErrorHandler) return;
+  try { workerErrorHandler(message); } catch { /* ignore */ }
+}
 
 /** Clamp a value to (0, 1) exclusive — satisfies DB check constraint. */
 function clampPropensity(val: number | undefined | null, fallback = 0.5): number {
@@ -41,7 +105,25 @@ export function extractTweetUrls(text: string): string[] {
   return [...cleaned.matchAll(urlRegex)].map(m => m[0]);
 }
 
-export async function* preClassify(parsedTweets: MainTweet[], locale?: string): AsyncGenerator<Classification> {
+/** Stream a tweet's preclassification from the preclassify-tweets worker.
+ *
+ *  The worker now (a) returns each claim's highlight as a [start, end] character
+ *  range computed server-side against the displayed tweet text, and (b) persists the
+ *  tweet + claims itself (insert_tweet → embed → match/link/insert → complete
+ *  preclassification). The extension only streams claims for immediate injection;
+ *  the authoritative rows (with ids) arrive over the tweet's Realtime subscription.
+ *
+ *  @param displayTweet  the tweet as displayed (translated text when translated) —
+ *                       its `text` is what the worker computes ranges against.
+ *  @param hash          the tweet hash (hex) so the worker can key its DB writes.
+ *  @param displayedLocale  locale of displayTweet.text (the highlight range's key).
+ *  @param locale        UI locale the rewritten claims are written in. */
+export async function* preClassify(
+    displayTweet: MainTweet,
+    hash: string,
+    displayedLocale: string,
+    locale?: string
+): AsyncGenerator<Classification> {
     const effectiveLocale = locale ?? getUILanguage();
     const maxAttempts = 3;
     let lastError: any = null;
@@ -55,42 +137,32 @@ export async function* preClassify(parsedTweets: MainTweet[], locale?: string): 
         try {
             const allClaims: any[] = [];
             let streamMode: string | null = null;
-            let yieldedAny = false;
 
-            const preStream = processWorkerStream({ input: parsedTweets, locale: effectiveLocale }, 'preclassify-tweets');
+            // `locale` (effectiveLocale) = extension locale for rewritten claims;
+            // `displayedLocale` = tweet-text locale the worker must key highlight ranges by.
+            const preStream = processWorkerStream({ input: displayTweet, locale: effectiveLocale, hash, displayedLocale }, 'preclassify-tweets');
             for await (const item of processChunks(preStream)) {
                 if (item && typeof item === 'object' && 'text' in item && 'rewritten' in item) {
                     allClaims.push(item);
-                    // Detect mode from the chunk shape. processChunks returns complete snapshot
-                    // objects in replace mode and incremental objects in append mode. We can't
-                    // read the header here, so we infer: if the same claim text arrives again,
-                    // we're in replace mode.
+                    // Detect mode: append streams incremental claims; replace streams full
+                    // snapshots (so a rewritten we already have arriving again ⇒ replace).
                     if (streamMode === null) {
-                        // First claim: assume append until proven otherwise
                         streamMode = 'append';
                     } else if (streamMode === 'append') {
-                        // If we see a claim text we already have, the worker is sending snapshots
-                        const text = (item as any).text;
-                        if (allClaims.slice(0, -1).some((c: any) => c.text === text)) {
+                        const rw = (item as any).rewritten;
+                        if (allClaims.slice(0, -1).some((c: any) => c.rewritten === rw)) {
                             streamMode = 'replace';
-                            console.log('[preClassify] detected replace mode from duplicate claim text');
+                            console.log('[preClassify] detected replace mode from duplicate claim');
                         }
                     }
-
-                    // In append mode, stream each new claim as it arrives.
                     if (streamMode === 'append') {
-                        yieldedAny = true;
-                        for (const tweet of parsedTweets) {
-                            yield makePreclassification(tweet, allClaims);
-                        }
+                        yield makePreclassification(displayTweet, allClaims, displayedLocale, effectiveLocale);
                     }
                 }
             }
 
             // Replace mode (or empty): yield the final classification once.
-            for (const tweet of parsedTweets) {
-                yield makePreclassification(tweet, allClaims);
-            }
+            yield makePreclassification(displayTweet, allClaims, displayedLocale, effectiveLocale);
             return;
         } catch (err) {
             lastError = err;
@@ -99,27 +171,46 @@ export async function* preClassify(parsedTweets: MainTweet[], locale?: string): 
     }
 
     console.error(`[preClassify] all ${maxAttempts} attempts failed, yielding empty classification`, lastError);
-    // Preserve the old contract (always yield at least once) so callers don't need to change.
-    for (const tweet of parsedTweets) {
-        yield makePreclassification(tweet, []);
-    }
+    if (lastError?.message) reportWorkerError(String(lastError.message));
+    yield makePreclassification(displayTweet, [], displayedLocale, effectiveLocale);
 }
 
-function makePreclassification(tweet: MainTweet, allClaims: any[]): Classification {
+/** Build a Classification from the worker's streamed preclassification claims.
+ *  Each raw claim is `{ text: [start, end], rewritten }` (the worker no longer returns a
+ *  verdict/note); we slice the verbatim substring out of the displayed text and store the
+ *  range under the displayed-text locale so injection highlights it directly. Every claim
+ *  is treated as "research required" (Fact-Check button) with no reasoning. */
+function makePreclassification(tweet: MainTweet, allClaims: any[], displayedLocale: string, uiLocale: string): Classification {
+    const tweetText = tweet.text ?? '';
+    const claims: Claim[] = allClaims.map((raw: any) => {
+        const range = Array.isArray(raw.text) && raw.text.length === 2 ? [Number(raw.text[0]), Number(raw.text[1])] as [number, number] : null;
+        let text: string;
+        let highlight: Record<string, [number, number]> | undefined;
+        if (range && range[0] >= 0 && range[1] > range[0] && range[1] <= tweetText.length) {
+            text = tweetText.slice(range[0], range[1]);
+            highlight = { [displayedLocale]: range };
+        } else {
+            // Worker couldn't locate the substring ([-1,-1]); fall back to the rewritten
+            // text so the claim still renders, just without an inline highlight.
+            text = typeof raw.rewritten === 'string' ? raw.rewritten : '';
+        }
+        return {
+            text,
+            rewritten: typeof raw.rewritten === 'string' ? raw.rewritten : text,
+            // The preclassify worker no longer classifies: every claim is "research
+            // required" (shown with a Fact-Check button) and has no reasoning note.
+            verdict: "research required",
+            note: null,
+            highlight,
+            claimLocale: uiLocale,
+        } as Claim;
+    });
     const classification: Classification = {
         id: tweet.id,
         batchId: '',
-        claims: allClaims.length > 0 ? allClaims : null,
+        claims: claims.length > 0 ? claims : null,
         quoting: null,
     };
-    // DEBUG: check if claim text arrives with spaces from the model
-    for (const cl of classification.claims ?? []) {
-        if (cl.text && !/\s/.test(cl.text)) {
-            console.warn(`[classify] SPACE-LOST in preClassify: "${cl.text.slice(0, 60)}" has NO spaces`);
-        } else if (cl.text) {
-            console.log(`[classify] SPACE-OK in preClassify: "${cl.text.slice(0, 60)}" has spaces`);
-        }
-    }
     return normalizePreclassifyVerdicts(classification);
 }
 
@@ -147,9 +238,13 @@ function normalizePreclassifyVerdicts(c: Classification): Classification {
                 if (verdict === "true") { confidence = 0.95; veracity = 0.95; }
                 else if (verdict === "false") { confidence = 0.95; veracity = -0.95; }
                 else if (verdict === "unknown") { confidence = 0; veracity = 0; }
-                // "research required" stays undefined → purple "Researching..." badge
+                // "research required" stays undefined
             }
-            return { ...cl, verdict, confidence, veracity };
+            // Claims that still need research are presented on hold with a Fact-Check
+            // button — there is no automatic classification after preclassification.
+            // true/false claims (common knowledge / primary source) show directly.
+            const needsResearch = verdict === "research required" || verdict === "unknown";
+            return { ...cl, verdict, confidence, veracity, reclassifyOnHold: needsResearch ? true : cl.reclassifyOnHold };
         }) ?? null;
 
     return {
@@ -159,292 +254,6 @@ function normalizePreclassifyVerdicts(c: Classification): Classification {
     };
 }
 
-export async function* classify(
-    classification: Classification,
-    researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean, veracity_change_duration?: string }> = new Map(),
-    locale?: string,
-    onBackgroundUpdate?: BackgroundUpdateCallback,
-    tweetUrls?: string[],
-    onNoDbMatch?: (claimText: string) => void
-): AsyncGenerator<Classification> {
-    const needsResearch = (claims: Classification["claims"]) =>
-        claims?.some(c => c.verdict === "research required" || c.verdict === "unknown" || !c.note) ?? false;
-
-    if (!needsResearch(classification.claims) && !needsResearch(classification.quoting?.claims ?? null))
-        return;
-
-    const uniqueClaimTexts = new Set<string>();
-    classification.claims?.filter(cl => cl.verdict === "research required" || cl.verdict === "unknown" || !cl.note).forEach(cl => uniqueClaimTexts.add(cl.text));
-    classification.quoting?.claims?.filter(cl => cl.verdict === "research required" || cl.verdict === "unknown" || !cl.note).forEach(cl => uniqueClaimTexts.add(cl.text));
-
-    const uncachedClaims = [...uniqueClaimTexts].filter(t => !researchCache.has(t));
-
-    if (uncachedClaims.length === 0) {
-        yield applyFindings(classification, researchCache);
-        return;
-    }
-
-    // Build a map from raw claim text → rewritten text for better embedding/matching
-    const textToRewritten = new Map<string, string>();
-    const addToMap = (claims: Classification["claims"]) =>
-        claims?.forEach(cl => { if (cl.rewritten) textToRewritten.set(cl.text, cl.rewritten); });
-    addToMap(classification.claims);
-    addToMap(classification.quoting?.claims ?? null);
-
-    // --- Concurrent claim processing ---
-    // Coordination: yield as each claim progresses or completes
-    let completedCount = 0;
-    const total = uncachedClaims.length;
-    let waker: (() => void) | null = null;
-    let yieldCount = 0;
-
-    const signalProgress = () => {
-        yieldCount++;
-        if (waker) { waker(); waker = null; }
-    };
-
-    const processClaim = async (claimText: string) => {
-        // Guard: concurrent classify() calls (from two tweets that share a claim text)
-        // race on researchCache. If we already have an entry (even a placeholder from
-        // another processClaim), skip to avoid duplicate streamResearch calls.
-        if (researchCache.has(claimText)) {
-            completedCount++;
-            signalProgress();
-            return;
-        }
-        const searchText = textToRewritten.get(claimText) ?? claimText;
-        // Reserve a spot immediately so concurrent calls for the same claimText
-        // find the placeholder and bail above, not after a full research pipeline.
-        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "" });
-        try {
-            console.log(`[classify] Starting pipeline for: "${claimText}" (search: "${searchText.slice(0, 60)}")`);
-            const embedding = await createEmbedding(searchText);
-            if (!embedding) console.warn(`[classify] No embedding for: "${claimText}"`);
-            else {
-                console.log(`[classify] Embedding OK for: "${claimText}", fetching claim...`);
-                const result = await fetchClaim(searchText, embedding, locale);
-                console.log(`[classify] Fetch claim result: equivalentIndex=${result.equivalentIndex}, matchedClaim=${result.matchedClaim ? 'FOUND' : 'null'}`);
-
-                if (result.matchedClaim) {
-                    const equivalent = result.matchedClaim;
-                    const confidence = Number(
-                        equivalent.confidence ??
-                        (equivalent.probability != null ? Math.abs(Number(equivalent.probability)) :
-                         equivalent.veracity != null ? Math.abs(Number(equivalent.veracity)) :
-                         0)
-                    );
-                    const veracity = Number(equivalent.veracity ?? equivalent.probability);
-                    const reclassify = equivalent.reclassify === true;
-                    console.log(`[classify] Equivalent found in DB: confidence=${confidence}, veracity=${veracity}, reclassify=${reclassify}`);
-                    const dbClaimText = extractCanonicalClaimText(equivalent.claim);
-                    const claimLocale = (equivalent.claim && typeof equivalent.claim === 'object' && !Array.isArray(equivalent.claim))
-                        ? (Object.keys(equivalent.claim)[0] ?? 'en')
-                        : 'en';
-                    // Use the actual claim JSONB key for DB matching, not equivalent.locale_key,
-                    // because locale_key may use a different format (e.g. en_US vs en-US).
-                    const sourceLocale = claimLocale;
-                    const { text: dbReasonText, locale: dbReasonLocale } = extractReasoningObj(equivalent.reasoning, locale ?? getUILanguage());
-
-                    // If the matched DB claim is an unclassified placeholder (empty
-                    // reasoning), do NOT treat it as classified. Put it on hold so the
-                    // user sees a Disinfact button. Keep dbClaimText/locale so a later
-                    // classification UPDATES this existing row (linked via existing_claims)
-                    // rather than inserting a duplicate.
-                    const isPlaceholderMatch = !dbReasonText || dbReasonText.trim() === '';
-                    if (isPlaceholderMatch && onNoDbMatch) {
-                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "", dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
-                        classification.claims = classification.claims?.map(cl =>
-                            cl.text === claimText
-                                ? { ...cl, reclassifyOnHold: true, verdict: "research required" as const, note: null, confidence: undefined, veracity: undefined, dbClaimText, dbClaimLocale: sourceLocale, claimLocale: sourceLocale }
-                                : cl
-                        ) ?? null;
-                        console.log(`[classify] DB match is an unclassified placeholder for "${claimText.slice(0, 40)}..." — holding for user`);
-                        onNoDbMatch(claimText);
-                        signalProgress();
-                        return;
-                    }
-
-                    researchCache.set(claimText, { confidence, veracity, reasoning: dbReasonText, reasoningLocale: dbReasonLocale, sources: normalizeSources(equivalent.sources), dbClaimText, embedding: embedding ?? undefined, lastClassification: equivalent.last_classification ?? equivalent.last_classified });
-                    // Associate the preclassified claim with its canonical DB text and
-                    // storage locale so background translation callbacks and the upsert
-                    // pipeline can match the right claim row / JSONB locale key.
-                    classification.claims = classification.claims?.map(cl =>
-                        cl.text === claimText ? { ...cl, dbClaimText, dbClaimLocale: sourceLocale, claimLocale: sourceLocale } : cl
-                    ) ?? null;
-                    // If the DB claim/reasoning is not available in the UI language, translate in the background.
-                    // This fires during active classification, e.g. when the user clicked Disinfact and we
-                    // happened to find an equivalent claim already in the DB.
-                    const uiLocale = locale ?? getUILanguage();
-                    const listLocales = (obj: any): string[] => {
-                        if (!obj) return [];
-                        if (typeof obj === 'string') { try { return Object.keys(JSON.parse(obj)); } catch { return []; } }
-                        if (typeof obj === 'object') return Object.keys(obj);
-                        return [];
-                    };
-                    const claimLocales = listLocales(equivalent.claim);
-                    const reasoningLocales = listLocales(equivalent.reasoning);
-
-                    if (!claimLocales.some(l => sameLanguage(l, uiLocale))) {
-                        const claimToTranslate = extractPlainClaimText(equivalent.claim, sourceLocale) || dbClaimText;
-                        backgroundTranslateClaim(dbClaimText, claimToTranslate, sourceLocale, uiLocale, classification, researchCache, onBackgroundUpdate).catch(e =>
-                            console.error('[classify] backgroundTranslateClaim error:', e)
-                        );
-                    }
-
-                    if (dbReasonText && !reasoningLocales.some(l => sameLanguage(l, uiLocale))) {
-                        backgroundTranslate(claimText, dbClaimText, dbReasonText, dbReasonLocale, uiLocale, researchCache, classification, onBackgroundUpdate).catch(e =>
-                            console.error('[classify] backgroundTranslate error:', e)
-                        );
-                    }
-
-                    // Signal DB result progress
-                    signalProgress();
-
-                    // Possibly re-research based on reclassify boolean
-                    let didReResearch = false;
-                    if (reclassify) {
-                        console.log(`[classify] Re-researching change-prone claim: "${claimText}"`);
-                        // NOTE: affected claims context removed — fetch-claim no longer returns affected claims.
-                        for await (const update of streamResearch(searchText, [], locale, tweetUrls)) {
-                            if (update.kind === 'complete') {
-                                const mainResult = update.data.mainResult;
-                                // Generate timestamp right before the upsert so it matches DB's last_classification.
-                                const reclassificationTimestamp = new Date().toISOString();
-                                researchCache.set(claimText, {
-                                    confidence: mainResult.confidence,
-                                    veracity: mainResult.veracity,
-                                    reasoning: mainResult.reasoning,
-                                    sources: mainResult.sources,
-                                    veracity_change_duration: mainResult.veracity_change_duration,
-                                    dbClaimText: dbClaimText,
-                                    embedding: embedding ?? undefined,
-                                    lastClassification: reclassificationTimestamp
-                                });
-                                signalProgress();
-
-                                // Upsert re-research results under the claim's actual storage locale.
-                                // equivalent.claim is already a locale-keyed JSONB object (e.g. {"en-US":"text"}).
-                                // Pass it as-is so upsertClaims doesn't wrap the canonical text under the UI locale.
-                                const storageLocale = Object.keys(equivalent.claim as Record<string, unknown>)[0] ?? 'en';
-                                const uiLocale = locale ?? getUILanguage();
-                                const reUpsertItems: any[] = [
-                                    { claim: dbClaimText, embedding, confidence: Number(mainResult.confidence), probability: Number(mainResult.confidence), veracity: Number(mainResult.veracity), veracity_change_duration: mainResult.veracity_change_duration, sources: mainResult.sources }
-                                ];
-                                upsertClaims(reUpsertItems, storageLocale).catch(e => console.error('[classify] re-research upsert error:', e));
-
-                                // Persist the freshly-researched reasoning under the UI locale (the language
-                                // the research was actually produced in), not the claim's storage locale.
-                                // upsertClaims keys reasoning by its matching locale parameter, so we use the
-                                // dedicated reasoning-locale worker to store under uiLocale while matching
-                                // the claim row by its canonical storage locale.
-                                if (mainResult.reasoning) {
-                                    insertReasoningLocale(dbClaimText, { [uiLocale]: mainResult.reasoning }, reclassificationTimestamp, sourceLocale).catch(e =>
-                                        console.error('[classify] re-research reasoning locale insert error:', e)
-                                    );
-                                }
-                                didReResearch = true;
-                            }
-                        }
-                    }
-
-                    // Skip the redundant cache-backed upsert when re-research already ran
-                    if (didReResearch) { /* already upserted fresh results above */ }
-                } else {
-                    // No equivalent claim found in DB.
-                    if (onNoDbMatch) {
-                        // Pause fresh research behind the Disinfact badge. Notify the
-                        // caller and put the claim into the same reclassifyOnHold state
-                        // used by DB-hit change-propensity reclassifications. The caller
-                        // starts streamResearch when the user clicks the badge.
-                        // Keep the embedding in the cache so the placeholder upsert can
-                        // persist it (the claim will be inserted as an unclassified
-                        // placeholder and updated in place once classified).
-                        researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "", embedding: embedding ?? undefined });
-                        onNoDbMatch(claimText);
-                        classification.claims = classification.claims?.map(cl =>
-                            cl.text === claimText
-                                ? {
-                                      ...cl,
-                                      reclassifyOnHold: true,
-                                      verdict: "research required" as const,
-                                      note: null,
-                                      confidence: undefined,
-                                      veracity: undefined
-                                  }
-                                : cl
-                        ) ?? null;
-                        signalProgress();
-                    } else {
-                        // No callback: stream fresh research immediately (legacy behavior).
-                        let researchDone = false;
-                        for await (const update of streamResearch(searchText, [], locale, tweetUrls)) {
-                            if (update.kind === 'partial') {
-                                // Stream partial text directly into the claim note for progressive UI updates.
-                                // Only adopt confidence/veracity when BOTH are present in the same partial
-                                // update so the highlight color updates the moment the model has settled on
-                                // a verdict, but never flickers back to grey because of a later text-only chunk.
-                                const hasBoth = update.confidence !== undefined && update.veracity !== undefined;
-                                classification.claims = classification.claims?.map(cl =>
-                                    cl.text === claimText
-                                        ? {
-                                              ...cl,
-                                              note: update.partialText,
-                                              confidence: hasBoth ? update.confidence : cl.confidence,
-                                              veracity: hasBoth ? update.veracity : cl.veracity
-                                          }
-                                        : cl
-                                ) ?? null;
-                                signalProgress();
-                            } else {
-                                researchDone = true;
-                                const mainResult = update.data.mainResult;
-                                const srcCount = mainResult.sources?.length ?? 0;
-                                console.debug(`[classify] streamResearch complete: sources=${srcCount}`, mainResult.sources);
-                                const reason = mainResult.reasoning ?? '';
-                                const reasonSpaced = /\s/.test(reason);
-                                console.log(`[classify] streamResearch complete: reasoning ${reasonSpaced ? 'HAS SPACES' : 'NO SPACES'} for "${claimText.slice(0, 40)}...": "${reason.slice(0, 100)}"`);
-                                researchCache.set(claimText, { confidence: mainResult.confidence, veracity: mainResult.veracity, reasoning: reason, sources: mainResult.sources, veracity_change_duration: mainResult.veracity_change_duration, embedding: embedding ?? undefined, freshlyResearched: true });
-                                signalProgress();
-
-                                // Do NOT upsert the claim here. upsertProcessedClaims
-                                // (called by processFullBatch after classify() finishes)
-                                // persists the claim via upsertTweetPipeline. Calling
-                                // upsertClaims here races with that and creates a
-                                // duplicate-key error. The research result is already
-                                // in researchCache for applyFindings.
-                            }
-                        }
-                        if (!researchDone) {
-                            console.warn(`[classify] streamResearch yielded no result for: "${claimText}"`);
-                            researchCache.set(claimText, { confidence: 0, veracity: 0, reasoning: "Error" });
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(`[classify] Error on claim "${claimText}":`, error);
-        } finally {
-            completedCount++;
-            signalProgress();
-        }
-    };
-
-    // Start all claim pipelines concurrently (each catches its own errors)
-    uncachedClaims.forEach(ct => { processClaim(ct); });
-
-    // Yield as each claim makes progress
-    while (completedCount < total) {
-        if (yieldCount > 0) {
-            yieldCount--;
-            yield applyFindings(classification, researchCache);
-        } else {
-            await new Promise<void>(resolve => { waker = resolve; });
-        }
-    }
-
-    // Final yield with all results applied
-    yield applyFindings(classification, researchCache);
-}
 
 /** Re-research a single claim on demand (triggered by the user clicking the refresh button).
  *  Skips all matching/identification — uses the existing claim text (or dbClaimText) directly.
@@ -455,20 +264,23 @@ export async function* refreshClaim(
     researchCache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, sources?: Source[], dbClaimText?: string, embedding?: number[], lastClassification?: string, freshlyResearched?: boolean, veracity_change_duration?: string }>,
     locale?: string,
     tweetUrls?: string[],
-    /** When true, do NOT write the researched claim via upsertClaims. Used by the
-     *  Fact-Check All fresh-research path, where the on-hold pipeline's
-     *  upsertProcessedClaims persists tweet + claims in a single upsert_tweet_pipeline
-     *  call. Writing here too would double-write the claim and trip the
-     *  duration_between_accesses trigger. */
-    skipClaimUpsert?: boolean
+    // Per-call balance-error sink: when the research worker returns "balance too low",
+    // it's reported HERE (bound by the caller to THIS claim's gated action) instead of
+    // the global interceptor — so a 402 during a concurrent burst (Fact-Check All) is
+    // attributed to the exact claim that triggered it.
+    onBalanceError?: () => void
 ): AsyncGenerator<Classification> {
-    const claimObj = classification.claims?.find(c => c.text === claimText);
+    const claimObj = classification.claims?.find(c => c.text === claimText)
+        ?? classification.quoting?.claims?.find(c => c.text === claimText);
     const searchText = claimObj?.rewritten ?? claimText;
+    const mainDbText = researchCache.get(claimText)?.dbClaimText ?? claimObj?.dbClaimText;
+    // Pass the claim id when known so the worker updates the exact DB row; otherwise
+    // it matches by text via start_claim_classification.
+    const claimId = claimObj?.dbClaimId;
 
-    const embedding = await createEmbedding(searchText);
-    const mainDbText = researchCache.get(claimText)?.dbClaimText;
-
-    for await (const update of streamResearch(searchText, [], locale, tweetUrls)) {
+    // The classify-tweets worker now researches, marks the claim is_classifying, and
+    // upserts the result to the DB itself. The extension no longer embeds or upserts.
+    for await (const update of streamResearch(searchText, locale, tweetUrls, claimId, onBalanceError)) {
         if (update.kind === 'partial') {
             // Show partial reasoning progress
             const existing = researchCache.get(claimText);
@@ -483,55 +295,15 @@ export async function* refreshClaim(
             yield applyFindings(classification, researchCache);
         } else {
             const mainResult = update.data.mainResult;
-            // Always use the stored DB claim text for upserting — never the model's output,
-            // which may be in a different language or rephrased. This prevents creating
-            // duplicate claim entries for the same semantic claim. For a fresh claim with
-            // no DB match, fall back to the rewritten text (the canonical key the
-            // placeholder row was inserted under) so this UPDATES that row instead of
-            // creating a duplicate under the raw text.
-            const actualDbText = mainDbText ?? claimObj?.rewritten ?? claimText;
-
-            // Generate timestamp right before the upsert so it matches DB's last_classification.
-            const reclassificationTimestamp = new Date().toISOString();
             researchCache.set(claimText, {
                 confidence: mainResult.confidence,
                 veracity: mainResult.veracity,
                 reasoning: mainResult.reasoning,
                 sources: mainResult.sources,
-                // Only carry a dbClaimText when there was a REAL DB match (mainDbText).
-                // For a fresh no-match claim this must stay undefined so applyFindings
-                // doesn't tag the claim with a dbClaimText — which would route it to
-                // upsertProcessedClaims' existingClaims path (an UPDATE that matches
-                // nothing, since the claim was never inserted) instead of newClaims.
                 dbClaimText: mainDbText,
-                // Preserve the embedding so upsertProcessedClaims can persist it when it
-                // inserts this fresh claim (the per-claim upsertClaims write is skipped
-                // in the Fact-Check All flow).
-                embedding: embedding ?? undefined,
-                lastClassification: reclassificationTimestamp,
+                lastClassification: new Date().toISOString(),
                 veracity_change_duration: mainResult.veracity_change_duration,
             });
-
-            // Re-research is performed in the UI/research locale. The model returns
-            // reasoning in that locale, so we upsert under the research locale. The worker
-            // no longer returns claim text, so use the known actualDbText for upserting.
-            const uiLocale = locale ?? getUILanguage();
-            const refreshedClaimText = actualDbText;
-
-            const upsertItems: any[] = [{
-                claim: refreshedClaimText,
-                embedding,
-                confidence: Number(mainResult.confidence),
-                probability: Number(mainResult.confidence),
-                veracity: Number(mainResult.veracity),
-                veracity_change_duration: mainResult.veracity_change_duration,
-                reasoning: mainResult.reasoning ? { [uiLocale]: mainResult.reasoning } : {},
-                sources: mainResult.sources
-            }];
-            if (!skipClaimUpsert) {
-                upsertClaims(upsertItems, uiLocale).catch(e => console.error('[refreshClaim] upsert error:', e));
-            }
-
             yield applyFindings(classification, researchCache);
         }
     }
@@ -639,91 +411,67 @@ function applyFindings(
 
 // ---- Worker API helpers ----
 
-async function createEmbedding(text: string): Promise<number[] | null> {
-    const res = await fetch('https://create-claim-embeddings.michael-pouget01.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text }] }] })
-    });
-    if (!res.ok) { console.error('Embedding error:', await res.text()); return null; }
-    const data = await res.json();
-    // Embedding endpoint returns raw array: [0.1, 0.2, ...]
-    if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'number') return data;
-    // OpenAI format: { data: [{ embedding: number[] }] }
-    // Also support: { embedding: { values: number[] } } or flat embedding key
-    return data.data?.[0]?.embedding ?? data.embedding?.values ?? data.embedding ?? data.embeddings?.[0]?.values ?? null;
+/** Canonicalize text identically to the backend workers before hashing/embedding:
+ *  NFKC-normalize, strip zero-width/bidi/BOM/control chars (keeping normal
+ *  whitespace/newlines), collapse runs of spaces/tabs, and trim. Idempotent.
+ *  MUST stay byte-identical to the workers' normalizeText so hashes match. */
+export function normalizeText(text: string): string {
+    if (typeof text !== 'string') return '';
+    return text
+        .normalize('NFKC')
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\uFEFF]/g, '')
+        .replace(/[ \t]+/g, ' ')
+        .trim();
 }
 
-async function fetchClaim(claimText: string, embedding: number[], locale?: string): Promise<{ equivalentIndex: number; matchedClaim: any | null; candidates: any[] }> {
-    const res = await fetch('https://fetch-claim.michael-pouget01.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ claimText, embedding, locale: locale ?? getUILanguage() })
-    });
-    if (!res.ok) { console.error('Fetch claim error:', await res.text()); return { equivalentIndex: 0, matchedClaim: null, candidates: [] }; }
-    return await res.json();
+async function sha256Hex(s: string): Promise<string> {
+    const data = new TextEncoder().encode(s);
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-/** SHA-256 hex digest of a tweet ID for DB lookup. */
-export async function computeTweetHash(id: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(id);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-/** Look up a tweet by hash in the DB. Returns null if not found. */
-export async function fetchTweetByHash(hash: string, locale?: string): Promise<any | null> {
-    try {
-        const res = await fetch('https://fetch-tweet-classification.michael-pouget01.workers.dev/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ hash, locale: locale ?? getUILanguage() })
-        });
-        if (!res.ok) { console.error('[fetchTweetByHash] error:', await res.text()); return null; }
-        return await res.json();
-    } catch (err) {
-        console.error('[fetchTweetByHash] fetch error:', err);
-        return null;
+/** Deterministic canonical serialization of a tweet AND its full context (reply
+ *  thread + quotes), using ONLY original-language usernames + `fullText` (so it's
+ *  language-independent). Control-char delimiters can't appear in normalized text,
+ *  so there's no collision. MUST match the preclassify worker's canonicalContext. */
+function canonicalContext(t: any, depth: number = 0): string {
+    // Depth cap (MUST match the preclassify worker's canonicalContext): bounds
+    // recursion so a hostile/deep/cyclic structure can't hang the hash. Real threads
+    // are far shallower, so this never changes a legitimate hash.
+    if (!t || typeof t !== 'object' || depth > 20) return '';
+    let s = normalizeText(String(t.username ?? '')) + '\x1f' + normalizeText(String(t.fullText ?? ''));
+    if (t.quoting && typeof t.quoting === 'object') s += '\x1e' + canonicalContext(t.quoting, depth + 1);
+    if (t.replyingTo != null) {
+        s += '\x1d' + (typeof t.replyingTo === 'object' ? canonicalContext(t.replyingTo, depth + 1) : normalizeText(String(t.replyingTo)));
     }
+    return s;
 }
 
-/** Upsert a tweet (by hash) and link its claims via the upsert-tweet-pipeline worker.
- *  newClaims = full claim objects (include highlight_range: number[] for character ranges).
- *  existingClaims = { claim, highlight_range? } pairs to link. */
-export async function upsertTweetPipeline(tweetHash: string, newClaims: any[], existingClaims: { claim: string; highlight_range?: number[] }[], locale?: string): Promise<void> {
-    try {
-        const targetLocale = locale ?? getUILanguage();
-        const url = new URL('https://upsert-tweet-and-claims.michael-pouget01.workers.dev/');
-        url.searchParams.set('locale', targetLocale);
-        const res = await fetch(url.toString(), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tweet_hash: tweetHash, new_claims: newClaims, existing_claims: existingClaims })
-        });
-        const body = await res.text();
-        if (!res.ok) console.error('[upsertTweetPipeline] error:', body);
-        else console.log(`[upsertTweetPipeline] success: ${body.slice(0, 200)}`);
-    } catch (err) {
-        console.error('[upsertTweetPipeline] fetch error:', err);
-    }
+/** Tweet hash = SHA-256 of the full-context canonical serialization (main tweet +
+ *  thread + quotes; usernames + original text). Any change to ANY part → a
+ *  different hash → a separate tweet row, so fabricated context can't pollute the
+ *  real tweet. The worker re-derives this identically to verify hash matches input. */
+export async function computeTweetHash(tweet: any): Promise<string> {
+    return sha256Hex(canonicalContext(tweet));
 }
-
-// NOTE: identifyRelatedClaims has been replaced by fetchClaim above.
-// The new fetch-claim worker handles matching + identification in a single call.
 
 /** Translate any text to the target locale via the translate worker (handles both reasoning and claim text).
  *  The worker streams SSE. If onPartial is provided, partial accumulated text is emitted
  *  after each chunk for live UI updates. The final translated text is always returned. */
-export async function translateText(text: string, target: string, onPartial?: (partial: string) => void): Promise<string | null> {
+export async function translateText(
+    text: string,
+    target: string,
+    onPartial?: (partial: string) => void,
+    endpoint: string = 'https://translate.michael-pouget01.workers.dev/',
+    extraBody: Record<string, any> = {}
+): Promise<string | null> {
     try {
-        const res = await fetch('https://translate.michael-pouget01.workers.dev/', {
+        const res = await fetch(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ q: text, target })
+            headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
+            body: JSON.stringify({ q: text, target, ...extraBody })
         });
-        if (!res.ok) { console.error('[translateText] error:', await res.text()); return null; }
+        if (!res.ok) { const body = await res.text(); console.error('[translateText] error:', body); reportWorkerError(body); return null; }
         if (!res.body) { console.error('[translateText] no response body'); return null; }
 
         const streamMode = res.headers.get('X-Stream-Mode') || 'append';
@@ -733,10 +481,15 @@ export async function translateText(text: string, target: string, onPartial?: (p
         const decoder = new TextDecoder();
         let buffer = '';
         let translated = '';
+        // Diagnostics: a translation that silently yields nothing is indistinguishable from
+        // one that hangs, unless we can see whether chunks/lines ever arrived.
+        let dbgChunks = 0, dbgBytes = 0, dbgDataLines = 0, dbgContentPieces = 0;
+        let dbgFirstLine = '';
 
         while (true) {
             const { value, done } = await reader.read();
             if (done) break;
+            dbgChunks++; dbgBytes += value?.byteLength ?? 0;
             buffer += decoder.decode(value, { stream: true });
 
             const lines = buffer.split('\n');
@@ -744,7 +497,9 @@ export async function translateText(text: string, target: string, onPartial?: (p
 
             for (const line of lines) {
                 const trimmed = line.trim();
+                if (!dbgFirstLine && trimmed) dbgFirstLine = trimmed.slice(0, 160);
                 if (!trimmed.startsWith('data: ')) continue;
+                dbgDataLines++;
                 const data = trimmed.slice(6);
                 if (data === '[DONE]') continue;
                 // SSE: choices[0].delta.content or candidates[0].content.parts[0].text
@@ -753,6 +508,7 @@ export async function translateText(text: string, target: string, onPartial?: (p
                     const content = json.choices?.[0]?.delta?.content
                         ?? json.candidates?.[0]?.content?.parts?.[0]?.text;
                     if (content) {
+                        dbgContentPieces++;
                         if (streamMode === 'replace') translated = content;
                         else translated += content;
                         if (onPartial) onPartial(translated);
@@ -792,7 +548,9 @@ export async function translateText(text: string, target: string, onPartial?: (p
             }
         }
 
-        return translated.trim() || null;
+        const out = translated.trim() || null;
+        console.log(`[translateText] stream ended: chunks=${dbgChunks} bytes=${dbgBytes} dataLines=${dbgDataLines} contentPieces=${dbgContentPieces} resultLen=${out?.length ?? 0}${out ? '' : ' (NULL — caller will abort silently)'} firstLine=${JSON.stringify(dbgFirstLine)}`);
+        return out;
     } catch (err) {
         console.error('[translateText] fetch error:', err);
         return null;
@@ -996,7 +754,17 @@ export async function backgroundTranslate(
         }
     };
 
-    const translated = await translateText(reasoningText, targetLocale, onPartial);
+    // The translate-reasoning bridge worker performs both the translation (streamed
+    // back for live injection) and the reasoning-locale DB insertion itself. We pass
+    // the canonical DB claim text (to locate the claim row), its source locale, and
+    // the guard timestamp so the worker can insert without a separate client call.
+    const translated = await translateText(
+        reasoningText,
+        targetLocale,
+        onPartial,
+        'https://translate-reasoning.michael-pouget01.workers.dev/',
+        { claim: dbClaimText, source_locale: sourceLocale, timestamp: lastClassification }
+    );
     if (!translated || translated === reasoningText) return;
     finalTranslated = translated;
     console.log(`[backgroundTranslate] Translated OK: "${finalTranslated.slice(0, 80)}"`);
@@ -1007,16 +775,10 @@ export async function backgroundTranslate(
         researchCache.set(claimText, { ...cached, reasoning: finalTranslated, reasoningLocale: targetLocale });
     }
 
-    // Persist final translation to DB and send one final UI update (in case the
-    // last partial didn't match the trimmed final text).
-    console.log(`[backgroundTranslate] Persisting reasoning locale ${targetLocale} for claim "${dbClaimText.slice(0, 40)}..." sourceLocale=${sourceLocale} timestamp=${lastClassification ?? 'none'}`);
-    await Promise.all([
-        insertReasoningLocale(dbClaimText, { [targetLocale]: finalTranslated }, lastClassification, sourceLocale),
-        new Promise<void>(resolve => {
-            onPartial(finalTranslated);
-            resolve();
-        })
-    ]);
+    // Send one final UI update (in case the last partial didn't match the trimmed
+    // final text). Persistence is handled by the worker.
+    console.log(`[backgroundTranslate] Injecting final reasoning locale ${targetLocale} for claim "${dbClaimText.slice(0, 40)}..." sourceLocale=${sourceLocale} timestamp=${lastClassification ?? 'none'}`);
+    onPartial(finalTranslated);
 }
 
 /**
@@ -1055,27 +817,30 @@ export async function backgroundTranslateClaim(
         }
     };
 
-    const translated = await translateText(claimRewritten, targetLocale, onPartial);
-    if (!translated || translated === claimRewritten) return;
+    // The translate-claim bridge worker performs both the translation (streamed back
+    // for live injection) and the claim-locale DB insertion itself. Its `q` doubles
+    // as the DB match key, so we send the canonical DB claim text — the same value
+    // previously passed to the claim-locale inserter for matching.
+    const translated = await translateText(
+        dbClaimText,
+        targetLocale,
+        onPartial,
+        'https://translate-claim.michael-pouget01.workers.dev/',
+        { claim: dbClaimText, source_locale: sourceLocale }
+    );
+    if (!translated || translated === dbClaimText) return;
     finalTranslated = translated;
     console.log(`[backgroundTranslateClaim] Translated OK: "${finalTranslated.slice(0, 80)}"`);
 
-    // Persist final translation to DB and send one final UI update.
-    console.log(`[backgroundTranslateClaim] Persisting claim locale ${targetLocale} for "${dbClaimText.slice(0, 40)}..." sourceLocale=${sourceLocale}`);
-    await Promise.all([
-        addClaimLocalization([
-            { claim: dbClaimText, new_locale: targetLocale, new_claim: finalTranslated }
-        ], sourceLocale),
-        new Promise<void>(resolve => {
-            onPartial(finalTranslated);
-            resolve();
-        })
-    ]);
+    // Send one final UI update. Persistence is handled by the worker.
+    console.log(`[backgroundTranslateClaim] Injecting final claim locale ${targetLocale} for "${dbClaimText.slice(0, 40)}..." sourceLocale=${sourceLocale}`);
+    onPartial(finalTranslated);
 }
 
 /**
- * Fire-and-forget: determine highlight ranges for the translated tweet text,
- * then inject (via callback) and persist (via DB).
+ * Fire-and-forget: ask the highlight-claims worker for the highlight ranges of the
+ * translated tweet text, then inject them (via callback). The worker computes the
+ * ranges and persists them to the DB itself; the extension only injects.
  */
 export async function backgroundHighlightRange(
     tweetHash: string,
@@ -1090,104 +855,82 @@ export async function backgroundHighlightRange(
     console.log(`[backgroundHighlightRange] Finding highlights on translated text for locale ${highlightLocale}, tweetText length=${tweetText.length}`);
     console.log(`[backgroundHighlightRange] Input claims:`, dbClaims.map(dc => ({ claim: dc.claim.slice(0, 50), rewritten: dc.rewritten?.slice(0, 50) })));
 
-    // Collect rewritten claims from DB results
-    const rewrittenClaims = dbClaims.map(dc => dc.rewritten ?? dc.claim);
-    if (rewrittenClaims.length === 0) return;
+    // Build a 1-based index -> rewritten claim dictionary. The highlight-claims
+    // worker now computes the character ranges itself, tags each returned range with
+    // the claim_index it corresponds to, and persists the highlights to the DB. We
+    // keep the same 1-based indexing the worker previously returned so the ranges map
+    // back to the right claim (and thus classification.claims, which is in the same
+    // order as dbClaims — localizeHighlights guarantees this).
+    const rewrittenClaims: Record<string, string> = {};
+    dbClaims.forEach((dc, idx) => {
+        rewrittenClaims[String(idx + 1)] = dc.rewritten ?? dc.claim;
+    });
 
-    // Try the worker up to 2 times and keep the result with the most valid ranges.
-    // LLM alignment can be non-deterministic; a retry often finds ranges the first
-    // attempt missed.
-    let bestPairs: [string, number][] = [];
-    for (let attempt = 0; attempt < 2; attempt++) {
-        let fullResult = '';
-        for await (const chunk of highlightClaims(tweetText, rewrittenClaims)) {
-            fullResult += chunk;
-        }
-        console.log(`[backgroundHighlightRange] attempt ${attempt + 1}: raw worker output (${fullResult.length} chars): ${fullResult.slice(0, 400)}`);
-        const pairs: [string, number][] = parseHighlightClaimsOutput(fullResult);
-        console.log(`[backgroundHighlightRange] attempt ${attempt + 1}: worker returned ${pairs.length} pairs`);
-        if (pairs.length > bestPairs.length) {
-            bestPairs = pairs;
-        }
-        if (bestPairs.length >= dbClaims.length) break;
-    }
-
-    // The highlight-claims worker returns 1-based claim indices, but we use
-    // 0-based arrays everywhere else. Convert them here.
-    const pairs: [string, number][] = bestPairs.map(([substring, claimIndex]) => [substring, claimIndex - 1]);
-    console.log(`[backgroundHighlightRange] Using ${pairs.length} pairs after retries`);
-    for (const [substring, claimIndex] of pairs) {
-        console.log(`[backgroundHighlightRange] pair (0-based): claimIndex=${claimIndex}, substring="${substring.slice(0, 60)}..."`);
-    }
-
-    const highlightItems: { tweet_hash: string; claim: string; highlight_locale: string; highlight_range: number[]; sourceLocale: string }[] = [];
-    // Map by claim INDEX rather than by text. dbClaims and classification.claims
-    // are in the same order (localizeHighlights guarantees this), but the text
-    // keys can differ: for freshly classified tweets dbClaimText is the
-    // preclassification text while allDbClaims uses rewritten/text. Index mapping
-    // avoids missing highlights because of a text-key mismatch.
+    // claimIndex (0-based) -> [start, end]
     const claimHighlightsByIndex = new Map<number, [number, number]>();
 
-    for (const [substring, claimIndex] of pairs) {
-        if (claimIndex < 0 || claimIndex >= dbClaims.length) {
-            console.warn(`[backgroundHighlightRange] Skipping out-of-bounds claimIndex=${claimIndex}, dbClaims.length=${dbClaims.length}`);
-            continue;
+    try {
+        const res = await fetch('https://highlight-claims.michael-pouget01.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
+            body: JSON.stringify({
+                tweet_text: tweetText,
+                rewritten_claims: rewrittenClaims,
+                locale: highlightLocale,
+                source_locale: sourceLocale,
+                tweet_hash: tweetHash
+            })
+        });
+        if (!res.ok || !res.body) {
+            const body = res.ok ? '(no body)' : await res.text();
+            console.error('[backgroundHighlightRange] highlight-claims error:', res.status, body);
+            if (!res.ok) reportWorkerError(body);
+            return;
         }
-        const dbClaim = dbClaims[claimIndex];
 
-        // Find the substring in the translated text with CJK-friendly matching
-        let start = tweetText.indexOf(substring);
-        let matched = substring;
-        if (start === -1) {
-            // Try stripping spaces only
-            const textNS = tweetText.replace(/\s+/g, '');
-            const subNS = substring.replace(/\s+/g, '');
-            const sidx = textNS.indexOf(subNS);
-            if (sidx !== -1) {
-                let ti = 0, si = 0;
-                while (si < sidx) { if (tweetText[ti] !== ' ') si++; ti++; }
-                start = ti;
-                let end = ti, ci = 0;
-                while (ci < subNS.length && end < tweetText.length) {
-                    if (tweetText[end] !== ' ') ci++;
-                    end++;
+        // The worker streams back newline-delimited JSON objects of the form
+        // {"range":[start,end],"claim_index":N}. Parse each line as it arrives.
+        const handleLine = (line: string) => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            try {
+                const obj = JSON.parse(trimmed);
+                const range = obj.range;
+                const claimIndex = obj.claim_index;
+                if (!Array.isArray(range) || range.length !== 2 || typeof claimIndex !== 'number') return;
+                // Convert the 1-based claim_index to the 0-based array index used everywhere else.
+                const idx = claimIndex - 1;
+                if (idx < 0 || idx >= dbClaims.length) {
+                    console.warn(`[backgroundHighlightRange] Skipping out-of-bounds claim_index=${claimIndex}, dbClaims.length=${dbClaims.length}`);
+                    return;
                 }
-                highlightItems.push({ tweet_hash: tweetHash, claim: dbClaim.dbClaimText ?? dbClaim.claim, highlight_locale: highlightLocale, highlight_range: [start, end], sourceLocale: dbClaim.sourceLocale ?? sourceLocale });
-                claimHighlightsByIndex.set(claimIndex, [start, end]);
-                continue;
+                claimHighlightsByIndex.set(idx, [range[0], range[1]]);
+                console.log(`[backgroundHighlightRange] range for claim_index=${claimIndex}: [${range[0]}, ${range[1]}]`);
+            } catch {
+                // Ignore blank / keep-alive / non-JSON lines.
             }
-            // Try stripping punctuation too
-            const punct = /[\s,.\-–—!?;:'"()【】「」『』\[\]（）《》〈〉、，。！？；：""''．]/g;
-            const textP = tweetText.replace(punct, '');
-            const subP = substring.replace(punct, '');
-            const pidx = textP.indexOf(subP);
-            if (pidx !== -1) {
-                let ti = 0, pi = 0;
-                while (pi < pidx && ti < tweetText.length) {
-                    if (!punct.test(tweetText[ti])) pi++;
-                    ti++;
-                }
-                start = ti;
-                let end = ti, ci = 0;
-                while (ci < subP.length && end < tweetText.length) {
-                    if (!punct.test(tweetText[end])) ci++;
-                    end++;
-                }
-                highlightItems.push({ tweet_hash: tweetHash, claim: dbClaim.dbClaimText ?? dbClaim.claim, highlight_locale: highlightLocale, highlight_range: [start, end], sourceLocale: dbClaim.sourceLocale ?? sourceLocale });
-                claimHighlightsByIndex.set(claimIndex, [start, end]);
-                continue;
-            }
-            console.warn(`[backgroundHighlightRange] Could not find substring in text: "${substring.slice(0, 40)}..."`);
-            continue;
+        };
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const line of lines) handleLine(line);
         }
-        highlightItems.push({ tweet_hash: tweetHash, claim: dbClaim.dbClaimText ?? dbClaim.claim, highlight_locale: highlightLocale, highlight_range: [start, start + matched.length], sourceLocale: dbClaim.sourceLocale ?? sourceLocale });
-        claimHighlightsByIndex.set(claimIndex, [start, start + matched.length]);
+        if (buffer.trim()) handleLine(buffer);
+    } catch (err) {
+        console.error('[backgroundHighlightRange] fetch error:', err);
+        return;
     }
 
-    console.log(`[backgroundHighlightRange] ${highlightItems.length} highlight item(s) to persist:`, highlightItems.map(i => ({ claim: i.claim.slice(0, 40), locale: i.highlight_locale, range: i.highlight_range })));
-
-    if (highlightItems.length === 0) {
-        console.warn('[backgroundHighlightRange] No valid highlight ranges found');
+    console.log(`[backgroundHighlightRange] Received ${claimHighlightsByIndex.size} highlight range(s) from worker`);
+    if (claimHighlightsByIndex.size === 0) {
+        console.warn('[backgroundHighlightRange] No highlight ranges returned');
         return;
     }
 
@@ -1200,32 +943,12 @@ export async function backgroundHighlightRange(
         return { ...cl, highlight: { ...existingHl, [highlightLocale]: range } };
     }) ?? null;
 
-    // Inject updated classification (translated text highlights) and persist in parallel.
-    // Group items by their actual claim storage locale because the highlight worker's
-    // RPC matches c.claim @> jsonb_build_object(source_locale, claim_text).
-    const itemsBySourceLocale = new Map<string, typeof highlightItems>();
-    for (const item of highlightItems) {
-      const sl = item.sourceLocale;
-      if (!itemsBySourceLocale.has(sl)) itemsBySourceLocale.set(sl, []);
-      itemsBySourceLocale.get(sl)!.push(item);
+    // Inject the updated classification (translated text highlights). Persistence is
+    // handled by the highlight-claims worker itself.
+    if (onUpdate) {
+        onUpdate({ ...classification, claims: updatedClaims });
     }
-
-    try {
-        await Promise.all([
-            ...Array.from(itemsBySourceLocale.entries()).map(([sl, items]) =>
-                addTweetClaimHighlight(items, sl)
-            ),
-            new Promise<void>(resolve => {
-                if (onUpdate) {
-                    onUpdate({ ...classification, claims: updatedClaims });
-                }
-                resolve();
-            })
-        ]);
-        console.log(`[backgroundHighlightRange] Completed persistence for ${highlightItems.length} highlight(s)`);
-    } catch (e) {
-        console.error('[backgroundHighlightRange] Error during persistence:', e);
-    }
+    console.log(`[backgroundHighlightRange] Injected ${claimHighlightsByIndex.size} highlight(s) for locale ${highlightLocale}`);
 }
 
 type ResearchUpdate =
@@ -1399,17 +1122,35 @@ type AffectedClaimContext = {
     veracity_change_duration?: string;
 };
 
-async function* streamResearch(mainClaim: string, affectedClaims: AffectedClaimContext[], locale?: string, tweetUrls?: string[]): AsyncGenerator<ResearchUpdate> {
+async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: string[], claimId?: string, onBalanceError?: () => void): AsyncGenerator<ResearchUpdate> {
     const effectiveLocale = locale ?? getUILanguage();
-    const payload: any = { mainClaim, affectedClaims, locale: effectiveLocale };
+    // Match how the claim was STORED: the preclassify worker normalized the rewritten
+    // text (normalizeText) before writing it, so we must normalize here too — otherwise
+    // start_claim_classification's exact JSONB match (and the upsert) miss on any claim
+    // containing NFKC-foldable chars, non-breaking hyphens, collapsed spaces, etc.,
+    // yielding "Claim not found" and repeated charges. normalizeText is byte-identical
+    // to the worker's, so normalized text keys the exact same row.
+    mainClaim = normalizeText(mainClaim);
+    // The classify-tweets worker starts the claim classification, researches, and
+    // upserts the result to the DB itself. Pass the claim id when known so it updates
+    // the exact row rather than matching by text.
+    const payload: any = { mainClaim, locale: effectiveLocale };
+    if (claimId) payload.id = claimId;
     if (tweetUrls && tweetUrls.length > 0) payload.sources = tweetUrls;
     const res = await fetch('https://classify-tweets.michael-pouget01.workers.dev/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
         body: JSON.stringify(payload)
     });
     if (!res.ok || !res.body) {
-        console.error('Research error:', res.status, await res.text());
+        const body = res.body || !res.ok ? await res.text() : '';
+        console.error('Research error:', res.status, body);
+        if (!res.ok) {
+            // Attribute a "balance too low" 402 to THIS claim's gated action (if the
+            // caller provided a sink); everything else goes to the global handler.
+            if (onBalanceError && isBalanceTooLowMessage(body)) onBalanceError();
+            else reportWorkerError(body);
+        }
         return;
     }
 
@@ -1613,51 +1354,6 @@ function extractCanonicalClaimText(claim: unknown): string {
     return '';
 }
 
-async function upsertClaims(items: any[], locale?: string): Promise<void> {
-    const effectiveLocale = locale ?? getUILanguage();
-    // The upsert-claims worker keys plain-string claims by the locale query param.
-    // Without it, the worker defaults to "en", causing duplicate rows when
-    // upsertTweetPipeline stores the same text under the UI locale (e.g. "fr").
-    const url = new URL('https://upsert-claims.michael-pouget01.workers.dev/');
-    url.searchParams.set('locale', effectiveLocale);
-
-    // Send each item individually to avoid Supabase "All object keys must match" error
-    // when items have different value shapes (e.g. embedding array vs null)
-    for (const item of items) {
-        const claimText = extractPlainClaimText(item.claim, effectiveLocale) || String(item.claim ?? '');
-
-        // The upsert-claims worker expects a plain-string claim and uses the
-        // ?locale query param to know which JSONB key to store it under.
-
-        // Wrap plain-string reasoning in locale JSONB {"fr": "text"} for the DB
-        const reasoningPayload = typeof item.reasoning === 'string'
-            ? { [effectiveLocale]: item.reasoning }
-            : (item.reasoning ?? { [effectiveLocale]: '' });
-
-        const wrappedItem = { ...item, claim: claimText, reasoning: reasoningPayload };
-        const reasonCheck = item.reasoning ? (/\s/.test(String(item.reasoning)) ? 'HAS_SPACES' : 'NO_SPACES') : 'NO_REASONING';
-        console.log(`[upsertClaims] Sending: "${claimText}" reasoning=${reasonCheck} locale=${effectiveLocale} emb=${item.embedding ? 'yes' : 'no'}`);
-        const res = await fetch(url.toString(), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify([wrappedItem])
-        });
-        const body = await res.text();
-        if (!res.ok) {
-            // 23505 = unique violation. upsertTweetPipeline already inserted this
-            // claim under the same locale key, so this race is expected and harmless.
-            const isDuplicate = body.includes('"23505"') || body.includes('duplicate key value violates unique constraint');
-            if (isDuplicate) {
-                console.log(`[upsertClaims] Claim already exists (upsertTweetPipeline won the race) for "${claimText}"`);
-            } else {
-                console.error(`[upsertClaims] Error for "${claimText}":`, body);
-            }
-        } else {
-            console.log(`[upsertClaims] Success for "${claimText}": status=${res.status}`);
-        }
-    }
-}
-
 // ---- Streaming helpers (preclassify) ----
 
 async function* processWorkerStream(input: any, worker: string): AsyncGenerator<{ text: string; streamMode: string }> {
@@ -1665,7 +1361,7 @@ async function* processWorkerStream(input: any, worker: string): AsyncGenerator<
     const response = await fetch(`https://${worker}.michael-pouget01.workers.dev/`, {
         method: 'POST',
         body: JSON.stringify(input),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) }
     });
     if (!response.ok) {
         const text = await response.text();

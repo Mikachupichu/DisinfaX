@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verifyî",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balance"
+  },
+  "gifted": {
+    "message": "Cadô"
+  },
+  "customTopup": {
+    "message": "Ôte"
+  },
+  "customAmountLabel": {
+    "message": "Montant di ricoirdjaedje da vosse e dolårs amerikins"
+  },
+  "increase": {
+    "message": "Ôgmenter"
+  },
+  "decrease": {
+    "message": "Diminuwer"
+  },
+  "topUpBalance": {
+    "message": "Ritchårdjî l' balance"
+  },
+  "processing": {
+    "message": "Traitmint en cours…"
+  },
+  "checkoutError": {
+    "message": "Dji n' a nén polou ataker l' payemint. Rissayîz s' i vs plait."
+  },
+  "termsOfService": {
+    "message": "Conditions do siervice"
+  },
+  "privacyPolicy": {
+    "message": "Politike di privaceye"
+  },
+  "disclaimerAgree": {
+    "message": "En ricoirdjant, vos acceptez nos %TOS% eyet %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Des frais di candje di manoye si polèt aplitchî si vos payîz dins ene ôte manoye ki l' USD."
+  },
+  "signOut": {
+    "message": "Si disloguer"
+  },
+  "onboardDisinfactClick": {
+    "message": "Cliker so %BTN% mostere les afirmåcions eyet cotêyerè vosse solde"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tuchî so %BTN% mostere les afirmåcions eyet cotêyerè vosse solde"
+  },
+  "onboardWillCharge": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "onboardFactcheck": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "onboardTranslations": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "onboardRefreshes": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "topUp": {
+    "message": "Ristoker li conte"
+  },
+  "showMore": {
+    "message": "Mostrer di pus"
+  },
+  "showLess": {
+    "message": "Mostrer moens"
+  },
+  "landingTagline1": {
+    "message": "Dischovrez l' veur. Trovez les mintes."
+  },
+  "landingTagline2": {
+    "message": "Pupont d' disinformåcion. Rén ki des faits."
+  },
+  "continueWithX": {
+    "message": "Continuwer avou X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuwer avou Google"
+  },
+  "continueWithApple": {
+    "message": "Continuwer avou Apple"
+  },
+  "lastUsed": {
+    "message": "Dièrin eployî"
+  },
+  "cleanupTagline": {
+    "message": "Rnetyîz vosse floû X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ås Estats-Unis, seulmint les cîtoyéns d' l'Alabama, di l'Arizona, di l' Californeye, do Colorado, do Connecticut, do Delaware, di l' Floride, di l'Idaho, di l'Illinois, di l'Indiana, di l'Iowa, do Kansas, do Kentucky, di l' Louisiane, do Maine, do Massachusetts, do Mississippi, do Missouri, do Montana, do New Hampshire, do Nouvea-Mèxike, di New York, di l' Caroline do Nôr, do Dakota do Nôr, di l'Oklahoma, di l'Oregon, di l' Pensilvaneye, di l' Caroline do Sud, do Dakota do Sud, do Tennessee, do Texas, di l'Utah, di Washington, do Wisconsin eyet do Wyoming polèt eployî DisinfaX eyet ristoker leu solde ; Washington, D.C., tos les teritwaires amerikins eyet tos les Estats nén lîstés sont exclus. Foû des Estats-Unis, c' est disponibe å Canada, e l'Australeye, e l' Nouvele-Zelande, a Singapour, e l' Afrike do Sud, å Djapon, a Taiwan, e l'Indonezeye, e l' Tayilande, ås Filipenes, e l' Malèzeye, å Vietnam eyet e l' Suisse."
+  },
+  "factCheckAllButton": {
+    "message": "Verifyî tot"
   }
 }

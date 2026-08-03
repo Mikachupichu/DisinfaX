@@ -1,15 +1,43 @@
-import { classify, preClassify, refreshClaim, computeTweetHash, fetchTweetByHash, upsertTweetPipeline, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, extractTweetUrls, TEST_LOCALE, normalizeSources } from "../utils/intelligence";
-import { findExactMatch } from "../utils/textBreakup";
+import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler } from "../utils/intelligence";
+import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
+import { supabase } from "../utils/supabase";
+import { findExactMatch, resolveHighlightRange } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
-import { MainTweet } from "../data/Tweets";
+import { MainTweet, Tweet } from "../data/Tweets";
 
 let batchIdCounter = 0;
 function nextBatchId(): string {
   return `batch_${++batchIdCounter}_${Date.now()}`;
 }
 
+/** Debug-only display-locale override, mirrored from EXTENSION storage — the SAME
+ *  `mfLocale` key relay.content.ts and utils/injecting.ts read (never page
+ *  localStorage, which the host page could write). Cached in module scope because
+ *  getUiLocale() is synchronous.
+ *
+ *  The background needs it too: the relay only attaches its locale to the messages
+ *  the user's click originates, but claims reached from a DEFERRED path (a
+ *  Fact-Check All that lands mid-preclassify and is replayed later out of
+ *  broadcastClassification → localeFromClassification) fall back to getUiLocale().
+ *  Without the override those two paths disagree — preclassify keys the claim under
+ *  the override ("es") while classification keys it under the browser UI language
+ *  ("en-US"), which inserts a duplicate claim row instead of updating the existing
+ *  one (exactly the "e.g. 'en' vs 'en-US'" split localeFromClassification warns
+ *  about). Kept verbatim, NOT normalized, so it stays byte-identical to what the
+ *  relay sends for the non-deferred paths. */
+let storedLocaleOverride: string | null = null;
+try {
+  browser.storage.local.get('mfLocale').then((r: any) => {
+    storedLocaleOverride = (r?.mfLocale as string) ?? null;
+  }).catch(() => {});
+  browser.storage.onChanged.addListener((changes: Record<string, any>, area: string) => {
+    if (area === 'local' && 'mfLocale' in changes) storedLocaleOverride = (changes.mfLocale.newValue as string) ?? null;
+  });
+} catch {}
+
 function getUiLocale(): string {
   if (TEST_LOCALE) return TEST_LOCALE;
+  if (storedLocaleOverride) return storedLocaleOverride;
   try { return browser?.i18n?.getUILanguage?.() ?? 'en'; } catch { return 'en'; }
 }
 
@@ -35,6 +63,12 @@ export default defineBackground(() => {
   /** Track which claims currently have an ongoing forced reclassification,
    *  keyed by `${classificationId}:${claimText}`. Prevents concurrent re-runs. */
   const ongoingClaimRefreshes = new Set<string>();
+  /** Waiters that resolve when a preclassify-origin claim's DB row is broadcast (it
+   *  gains a `dbClaimId` via `mergeClaimPayload`), keyed by `${tweetId}:${claimText}`.
+   *  A preclassify claim has no DB id until the worker finishes embedding + inserting
+   *  it; classifying before then races that insert and creates an embedding-less row
+   *  via the research save path. Research launches wait on these before classifying. */
+  const claimDbRowWaiters = new Map<string, { promise: Promise<void>; resolve: () => void }>();
   /** Promises that resolve when a claim's in-flight research finishes, keyed by
    *  `${classificationId}:${claimText}`. Lets the placeholder upsert wait for
    *  classifications that were triggered early (Fact-Check All / all Disinfact
@@ -65,6 +99,15 @@ export default defineBackground(() => {
   const seenInDom = new Set<string>();
   /** Deferred DB fetch resolvers for tweets waiting to appear in the DOM. */
   const domFetchResolvers = new Map<string, (() => void)[]>();
+
+  // ── Realtime subscription state ──
+  /** Teardown fallbacks if no DELETE arrives from the DB. */
+  const PRECLASS_TIMEOUT_MS = 10000;
+  const CLASSIFY_TIMEOUT_MS = 25000;
+  /** Open tweet subscriptions keyed by tweet id. */
+  const tweetSubs = new Map<string, SubscriptionHandle>();
+  /** Open per-claim (is_classifying) subscriptions keyed by `${tweetId}:${claimId}`. */
+  const claimSubs = new Map<string, SubscriptionHandle>();
 
   function cacheClassification(classification: Classification, batchId: string) {
     const existing = classificationCache.get(classification.id);
@@ -98,55 +141,6 @@ export default defineBackground(() => {
       }
     }
     batchTweets.delete(batchId);
-  }
-
-  /** Apply a per-claim transformation to the cached classification and broadcast.
-   *  Used by translation merges so each caller only mutates the fields it owns. */
-  function mergeAndBroadcast(
-    classification: Classification,
-    upd: Classification,
-    mergeClaim: (existingCl: Claim, updCl: Claim) => Claim
-  ) {
-    upd.batchId = classification.batchId;
-    const existing = classificationCache.get(classification.id);
-    if (existing && existing.classification.claims && upd.claims) {
-      const mergedClaims = existing.classification.claims.map((existingCl) => {
-        const updCl = upd.claims!.find(
-          ucl => ucl.dbClaimText === existingCl.dbClaimText
-        );
-        if (!updCl) return existingCl;
-        return mergeClaim(existingCl, updCl);
-      });
-      const merged = { ...upd, claims: mergedClaims };
-      cacheClassification(merged, classification.batchId);
-      broadcastClassification(merged);
-    } else {
-      cacheClassification(upd, classification.batchId);
-      broadcastClassification(upd);
-    }
-  }
-
-  function mergeClaimTranslation(classification: Classification, targetDbClaimText: string) {
-    return (upd: Classification) => {
-      mergeAndBroadcast(classification, upd, (existingCl, updCl) => {
-        if (existingCl.dbClaimText !== targetDbClaimText) return existingCl;
-        const newRewritten =
-          updCl.rewritten && updCl.rewritten !== updCl.text && updCl.rewritten !== existingCl.rewritten
-            ? updCl.rewritten
-            : existingCl.rewritten;
-        return { ...existingCl, rewritten: newRewritten, sources: updCl.sources ?? existingCl.sources, claimLocale: updCl.claimLocale ?? existingCl.claimLocale };
-      });
-    };
-  }
-
-  function mergeReasoningTranslation(classification: Classification, targetDbClaimText: string) {
-    return (upd: Classification) => {
-      mergeAndBroadcast(classification, upd, (existingCl, updCl) => {
-        if (existingCl.dbClaimText !== targetDbClaimText) return existingCl;
-        const newNote = updCl.note && updCl.note !== existingCl.note ? updCl.note : existingCl.note;
-        return { ...existingCl, note: newNote, reasoningLocale: updCl.reasoningLocale ?? existingCl.reasoningLocale, sources: updCl.sources ?? existingCl.sources };
-      });
-    };
   }
 
   /** Extract the first available text value from a locale-keyed JSONB claim object.
@@ -246,8 +240,89 @@ export default defineBackground(() => {
     return false;
   }
 
-  /** Convert DB claims from fetchTweetByHash into a Classification for injection.
-   *  Uses the UI locale for claim text and reasoning when available.
+  /** Convert one claim record (a ClaimPayload from fetch_tweet_and_touch_network /
+   *  get_full_claim, or a Realtime build_claim_payload) into a UI Claim. Shared by the
+   *  initial pull and by live subscription merges. Adds dbClaimId (uuid) and handles
+   *  is_classifying (another user is classifying → spinner + auto-replace on arrival). */
+  function payloadToClaim(dc: any, locale: string): Claim {
+    const v = Number(dc.veracity ?? 0);
+    const claimText = extractLocaleText(dc.claim, locale) || extractClaimText(dc.claim);
+    const claimLocale = (() => {
+      if (dc.claim && typeof dc.claim === 'object' && !Array.isArray(dc.claim)) {
+        const match = Object.entries(dc.claim as Record<string, unknown>).find(([_, val]) => val === claimText);
+        if (match) return match[0];
+      }
+      return getClaimLocale(dc.claim);
+    })();
+
+    let highlight: Record<string, [number, number]> | undefined;
+    if (dc.highlight && typeof dc.highlight === 'object') {
+      highlight = {};
+      for (const [key, val] of Object.entries(dc.highlight)) {
+        if (Array.isArray(val) && val.length === 2) highlight[key] = val as [number, number];
+      }
+      if (Object.keys(highlight).length === 0) highlight = undefined;
+    }
+
+    const reasoningEmpty = isReasoningEmpty(dc.reasoning);
+    const noteText = reasoningEmpty ? null : (extractReasoningText(dc.reasoning, locale) || extractReasoningText(dc.reasoning, claimLocale) || null);
+    const reasoningLocale = (() => {
+      if (!noteText || !dc.reasoning) return dc.locale_key ?? getClaimLocale(dc.claim);
+      let reasoningObj: any = dc.reasoning;
+      if (typeof reasoningObj === 'string') {
+        try { reasoningObj = JSON.parse(reasoningObj); } catch { return dc.locale_key ?? getClaimLocale(dc.claim); }
+      }
+      if (reasoningObj && typeof reasoningObj === 'object' && !Array.isArray(reasoningObj)) {
+        const match = Object.entries(reasoningObj as Record<string, unknown>).find(([_, val]) => val === noteText);
+        if (match) return match[0];
+      }
+      return dc.locale_key ?? getClaimLocale(dc.claim);
+    })();
+
+    const base = {
+      text: claimText,
+      rewritten: claimText,
+      dbClaimId: dc.id ? String(dc.id) : undefined,
+      dbClaimText: extractClaimText(dc.claim),
+      dbClaimLocale: getClaimLocale(dc.claim),
+      highlight,
+      claimLocale,
+      reasoningLocale,
+    };
+    const verdict = Math.abs(v) < 0.2 ? "unknown" : (v > 0 ? "true" : "false");
+
+    // Being classified by someone else right now → show existing values (if any)
+    // with a spinner; the fresh result auto-replaces them when the subscription
+    // delivers it (no click needed).
+    if (dc.is_classifying === true) {
+      if (!reasoningEmpty && noteText) {
+        return { ...base, verdict, note: noteText, confidence: Math.abs(v), veracity: v, sources: normalizeSources(dc.sources), refreshing: true, isClassifying: true };
+      }
+      return { ...base, verdict: "research required", note: null, confidence: undefined, veracity: undefined, sources: [], refreshing: true, isClassifying: true };
+    }
+
+    // Unclassified placeholder (empty reasoning): Fact-Check (Disinfact) button.
+    if (reasoningEmpty) {
+      return { ...base, verdict: "research required", note: null, confidence: undefined, veracity: undefined, reclassifyOnHold: true, sources: [] };
+    }
+
+    // Change-prone (reclassify_after passed): present on hold with cached values so
+    // clicking restores them while fresh research streams.
+    if (dc.reclassify === true) {
+      return {
+        ...base,
+        verdict: "research required", note: null, confidence: undefined, veracity: undefined,
+        reclassifyOnHold: true,
+        cachedVerdict: verdict, cachedNote: noteText, cachedConfidence: Math.abs(v), cachedVeracity: v,
+        cachedSources: normalizeSources(dc.sources), sources: normalizeSources(dc.sources),
+      };
+    }
+
+    // Classified.
+    return { ...base, verdict, note: noteText, confidence: Math.abs(v), veracity: v, sources: normalizeSources(dc.sources) };
+  }
+
+  /** Convert a pulled/subscribed tweet's claims into a Classification for injection.
    *  If quotedDbClaims is provided, populates classification.quoting.claims as well. */
   function dbClaimsToClassification(
     tweet: MainTweet,
@@ -261,122 +336,11 @@ export default defineBackground(() => {
     const hasTranslation = !!tweet.translatedText && !!tweet.destinationLanguage;
     const textLocale = hasTranslation ? tweet.destinationLanguage! : tweet.sourceLanguage!;
 
-    function claimFromDb(dc: any): Claim {
-      const v = Number(dc.veracity ?? 0);
-      const claimText = extractLocaleText(dc.claim, locale) || extractClaimText(dc.claim);
-      const claimLocale = (() => {
-        if (dc.claim && typeof dc.claim === 'object' && !Array.isArray(dc.claim)) {
-          const match = Object.entries(dc.claim as Record<string, unknown>).find(([_, val]) => val === claimText);
-          if (match) return match[0];
-        }
-        return getClaimLocale(dc.claim);
-      })();
-
-      // Unclassified placeholder claim (stored with empty reasoning): show a
-      // Disinfact button. Keep dbClaimText/locale so classifying it later UPDATES
-      // this existing DB row (linked via existing_claims), never inserts a duplicate.
-      if (isReasoningEmpty(dc.reasoning)) {
-        let phHighlight: Record<string, [number, number]> | undefined;
-        if (dc.highlight && typeof dc.highlight === 'object') {
-          phHighlight = {};
-          for (const [key, val] of Object.entries(dc.highlight)) {
-            if (Array.isArray(val) && val.length === 2) phHighlight[key] = val as [number, number];
-          }
-          if (Object.keys(phHighlight).length === 0) phHighlight = undefined;
-        }
-        return {
-          text: claimText,
-          rewritten: claimText,
-          verdict: "research required",
-          note: null,
-          confidence: undefined,
-          veracity: undefined,
-          reclassifyOnHold: true,
-          sources: [],
-          dbClaimText: extractClaimText(dc.claim),
-          dbClaimLocale: getClaimLocale(dc.claim),
-          highlight: phHighlight,
-          claimLocale,
-          reasoningLocale: dc.locale_key ?? getClaimLocale(dc.claim),
-        };
-      }
-      const noteText = extractReasoningText(dc.reasoning, locale) || extractReasoningText(dc.reasoning, claimLocale) || null;
-      const reasoningLocale = (() => {
-        if (!noteText || !dc.reasoning) return dc.locale_key ?? getClaimLocale(dc.claim);
-        let reasoningObj: any = dc.reasoning;
-        if (typeof reasoningObj === 'string') {
-          try { reasoningObj = JSON.parse(reasoningObj); } catch { return dc.locale_key ?? getClaimLocale(dc.reasoning); }
-        }
-        if (reasoningObj && typeof reasoningObj === 'object' && !Array.isArray(reasoningObj)) {
-          const match = Object.entries(reasoningObj as Record<string, unknown>).find(([_, val]) => val === noteText);
-          if (match) return match[0];
-        }
-        return dc.locale_key ?? getClaimLocale(dc.reasoning) ?? getClaimLocale(dc.claim);
-      })();
-      console.log(`[dbClaimsToClassification] locale=${locale} claimLocale=${claimLocale} reasoningLocale=${reasoningLocale} textLocale=${textLocale} raw=${JSON.stringify(dc.claim).slice(0, 80)} rewritten=${claimText.slice(0, 50)} note=${noteText ? noteText.slice(0, 50) : 'null'}`);
-      // Extract highlight from locale-filtered DB result (e.g. {"en": [24, 56]})
-      let highlight: Record<string, [number, number]> | undefined;
-      if (dc.highlight && typeof dc.highlight === 'object') {
-        highlight = {};
-        for (const [key, val] of Object.entries(dc.highlight)) {
-          if (Array.isArray(val) && val.length === 2) {
-            highlight[key] = val as [number, number];
-          }
-        }
-        if (Object.keys(highlight).length === 0) highlight = undefined;
-      }
-
-      const verdict = Math.abs(v) < 0.2 ? "unknown" : (v > 0 ? "true" : "false");
-
-      // Reclassify check, decided AT BUILD TIME (not asynchronously after
-      // the claim is already shown). A DB claim whose reclassify_after has passed
-      // (reclassify === true) is presented on hold — a Disinfact button — from the
-      // very first render, so it never flashes its old color and then flips.
-      // The DB classification is cached so clicking restores it while the
-      // fresh re-research streams, and dbClaimText links the update to this same row.
-      if (dc.reclassify === true) {
-        return {
-          text: claimText,
-          rewritten: claimText,
-          verdict: "research required",
-          note: null,
-          confidence: undefined,
-          veracity: undefined,
-          reclassifyOnHold: true,
-          cachedVerdict: verdict,
-          cachedNote: noteText,
-          cachedConfidence: Math.abs(v),
-          cachedVeracity: v,
-          cachedSources: normalizeSources(dc.sources),
-          sources: normalizeSources(dc.sources),
-          dbClaimText: extractClaimText(dc.claim),
-          dbClaimLocale: getClaimLocale(dc.claim),
-          highlight,
-          claimLocale,
-          reasoningLocale,
-        };
-      }
-
-      return {
-        text: claimText,
-        rewritten: claimText,
-        verdict,
-        note: noteText,
-        confidence: Math.abs(v),
-        veracity: v,
-        sources: normalizeSources(dc.sources),
-        dbClaimText: extractClaimText(dc.claim),
-        dbClaimLocale: getClaimLocale(dc.claim),
-        highlight,
-        claimLocale,
-        reasoningLocale,
-      };
-    }
-    const claims = dbClaims.map(claimFromDb);
+    const claims = dbClaims.map(dc => payloadToClaim(dc, locale));
     const quoting = tweet.quoting
       ? {
           id: tweet.quoting.id,
-          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(claimFromDb) : null
+          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(dc => payloadToClaim(dc, locale)) : null
         }
       : null;
     return { id: tweet.id, batchId, claims, quoting, translatedLocale: tweet.destinationLanguage, translatedText: tweet.translatedText, textLocale };
@@ -388,6 +352,7 @@ export default defineBackground(() => {
    *  for this tweet. */
   async function localizeHighlights(
     tweetId: string,
+    tweet: Tweet,
     tweetText: string,
     highlightLocale: string,
     dbClaims: any[],
@@ -405,7 +370,7 @@ export default defineBackground(() => {
       return;
     }
 
-    const tweetHash = await computeTweetHash(tweetId);
+    const tweetHash = await computeTweetHash(tweet);
     // Claims are stored under the UI locale; use that text for cross-lingual highlight alignment.
     // Preserve the canonical DB claim text and its actual storage locale so the
     // highlight persistence worker can match the correct claim row (the RPC matches
@@ -425,11 +390,17 @@ export default defineBackground(() => {
       console.log(`[localizeHighlights] ${tweetId}: no claims to localize`);
       return;
     }
+    // The persistence RPC matches claims by `c.claim @> {[source_locale]: claim_text}` — it
+    // needs the locale the claim text is ACTUALLY stored under (allDbClaims[*].sourceLocale,
+    // e.g. "es"), not uiLocale (e.g. "zh-TW"), which was passed here before and silently made
+    // every match fail (0 rows updated, no error) since claims are never stored under the UI
+    // locale. The RPC takes one locale per batch; claims in a batch share a storage locale.
+    const claimStorageLocale = allDbClaims[0]?.sourceLocale ?? uiLocale;
     await backgroundHighlightRange(
       tweetHash,
       tweetText,
       allDbClaims,
-      uiLocale,
+      claimStorageLocale,
       highlightLocale,
       classification,
       onHighlightUpdate ?? mergeHighlightsFor(classification)
@@ -547,16 +518,11 @@ export default defineBackground(() => {
     // Helper: compare locales by primary language subtag (en-US == en-GB).
     const sameLang = (a: string, b: string) => sameLanguage(a, b);
 
-    // Thread 3: highlight localization for the default displayed locale (destination).
-    // Additional locales are triggered by SET_DISPLAYED_LOCALE messages when the user
-    // toggles X's Show original/Show translation.
-    if (hasTranslation && !sameLang(destLang, sourceLang)) {
-      (async () => {
-        const existingHighlightLocales = new Set<string>(dbClaims.flatMap(dc => existingLocales(dc.highlight)));
-        if (existingHighlightLocales.has(destLang) || Array.from(existingHighlightLocales).some(l => sameLang(l, destLang))) return;
-        await localizeHighlights(tweet.id, tweet.translatedText!, destLang, dbClaims, classification, locale, mergeHighlightsFor(classification));
-      })().catch(e => console.error('[reResearchDbClaims] highlight error:', e));
-    }
+    // Highlight localization is NOT done here: this runs automatically on a DB hit,
+    // before the user has clicked anything, and localizing charges the balance. It is
+    // triggered ONLY when the user explicitly toggles X's translation (handled via the
+    // SET_DISPLAYED_LOCALE path), never on load — even for a tweet X is already showing
+    // translated. A DB hit is injected with whatever highlight locales it already has.
 
     for (const dc of propense) {
       const claimText = extractClaimText(dc.claim);
@@ -629,172 +595,6 @@ export default defineBackground(() => {
     return null;
   }
 
-  /** After a new tweet's classify() pipeline completes, link claims to the tweet.
-   *  Computes character ranges from preclassification raw claims on the original
-   *  tweet text and stores them in tweet_claims.highlight for subsequent loads.
-   *  Falls back to translated text when available (claim may be in English). */
-  async function upsertProcessedClaims(
-    tweet: MainTweet,
-    tweetHash: string,
-    classification: Classification,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>,
-    locale: string
-  ): Promise<void> {
-    // If the user triggered classification early (Fact-Check All, or clicked every
-    // claim's Disinfact button before fetch-claim finished), wait for those
-    // researches to complete so we persist real values instead of placeholders that
-    // would clobber them. When nothing is in flight this resolves immediately.
-    await awaitTweetClaimResearch(tweet.id);
-    // Re-read the freshest cached classification so any values updated while we
-    // waited (or during classification) are reflected in what we upsert.
-    classification = classificationCache.get(tweet.id)?.classification ?? classification;
-
-    const tweetText = tweet.text;
-    const translatedText = tweet.translatedText;
-    const newClaims: any[] = [];
-    const existingClaims: { claim: string; highlight_range?: number[]; highlight_locale?: string; source_locale?: string }[] = [];
-    const seen = new Set<string>();
-    // Locale used to key claim/reasoning in the DB. This is the UI locale because
-    // the claim text we store is the rewritten/UI-locale version.
-    const dbClaimLocale = locale;
-
-    const process = (claims: Claim[] | null | undefined) => {
-      if (!claims) return;
-      for (const c of claims) {
-        const key = c.dbClaimText ?? c.text;
-        if (seen.has(key)) continue;
-        seen.add(key);
-
-        // Always use newClaims — the RPC handles dedup by claim text+locale.
-        // existingClaims doesn't work because the DB stores claims as locale-keyed
-        // JSONB and the RPC can't match raw text against it.
-        // Compute highlight range: try claim.text on the currently-displayed text first,
-        // then fall back to the other available text. The highlight locale must match the
-        // locale of the text the range was found in — never the UI locale.
-        const hasTranslation = !!translatedText && !!tweet.destinationLanguage;
-        const displayedText = classification.textLocale === tweet.destinationLanguage && translatedText
-          ? translatedText
-          : tweetText;
-        const displayedLocale = classification.textLocale ?? (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage) ?? locale;
-        let range = computeHighlightRange(displayedText, c.text);
-        let highlightLocale = displayedLocale;
-        if (!range && translatedText) {
-          // Try the other text (translation if original was searched, or vice versa)
-          const otherText = displayedText === translatedText ? tweetText : translatedText;
-          const otherLocale = displayedText === translatedText ? tweet.sourceLanguage : tweet.destinationLanguage;
-          range = computeHighlightRange(otherText, c.text);
-          highlightLocale = otherLocale ?? displayedLocale;
-        }
-        if (!range && translatedText && c.rewritten && c.rewritten !== c.text) {
-          const otherText = displayedText === translatedText ? tweetText : translatedText;
-          const otherLocale = displayedText === translatedText ? tweet.sourceLanguage : tweet.destinationLanguage;
-          range = computeHighlightRange(otherText, c.rewritten);
-          highlightLocale = otherLocale ?? displayedLocale;
-        }
-        if (!range) {
-          console.warn(`[upsertProcessedClaims] Could not compute highlight range for "${c.text.slice(0, 40)}..."`);
-        }
-        const cached = researchCache.get(c.text);
-        if (c.dbClaimText) {
-          // DB-matched claim: just link to the existing canonical claim. Sending the
-          // preclassified/rewritten text in newClaims would create a duplicate row
-          // because the worker can't match English text against a French canonical claim.
-          // We also pass the claim's storage locale so the worker can match the right
-          // locale-keyed JSONB key (e.g. fr vs en-US).
-          existingClaims.push({
-            claim: c.dbClaimText,
-            highlight_range: range ?? undefined,
-            highlight_locale: highlightLocale,
-            source_locale: c.dbClaimLocale ?? c.claimLocale,
-          });
-        } else {
-          // Fresh claim (not in DB). Store under the rewritten claim text + UI locale —
-          // the canonical key so a later classification UPDATES this row rather than
-          // duplicating it.
-          const isClassified = !c.reclassifyOnHold && !!c.note && c.confidence !== undefined && c.veracity !== undefined;
-          if (isClassified) {
-            // Already classified — persist the real values.
-            newClaims.push({
-              claim: c.rewritten ?? c.text,
-              highlight_range: range,
-              highlight_locale: highlightLocale,
-              embedding: cached?.embedding,
-              probability: cached?.confidence ?? c.confidence ?? 0,
-              veracity: cached?.veracity ?? c.veracity ?? 0,
-              veracity_change_duration: cached?.veracity_change_duration,
-              reasoning: cached?.reasoning ? { [locale]: cached.reasoning } : {},
-              sources: sourcesToDictionary(cached?.sources ?? []),
-            });
-          } else {
-            // Unclassified placeholder: no reasoning, veracity 0, confidence 0.5.
-            // Keep the embedding so it is matchable by fetch-claim.
-            // Classification (Disinfact click / Fact-Check All) updates this row later.
-            newClaims.push({
-              claim: c.rewritten ?? c.text,
-              highlight_range: range,
-              highlight_locale: highlightLocale,
-              embedding: cached?.embedding,
-              probability: 0.5,
-              veracity: 0,
-              reasoning: {},
-              sources: {},
-            });
-          }
-        }
-      }
-    };
-
-    process(classification.claims);
-    // Quoted-tweet claims are handled by the quoted tweet's own pipeline/DB entry.
-    // Matching them against the main tweet text here produces bogus highlight ranges
-    // and stores them under the wrong tweet hash, so skip them.
-
-    // Update the cached classification with the initial highlight ranges so
-    // SET_DISPLAYED_LOCALE can tell which locales are already localized.
-    // Include existing claims as well as fresh ones — both can carry highlight ranges.
-    const claimHighlightMap = new Map<string, { locale: string; range: [number, number] }>();
-    for (const n of newClaims) {
-      if (n.highlight_range && n.highlight_locale) {
-        claimHighlightMap.set(n.claim, { locale: n.highlight_locale, range: n.highlight_range });
-      }
-    }
-    for (const e of existingClaims) {
-      if (e.highlight_range && e.highlight_locale) {
-        claimHighlightMap.set(e.claim, { locale: e.highlight_locale, range: e.highlight_range as [number, number] });
-      }
-    }
-    if (claimHighlightMap.size > 0 && classification.claims) {
-      const updatedClaims = classification.claims.map(cl => {
-        const key = cl.dbClaimText ?? cl.rewritten ?? cl.text;
-        const item = claimHighlightMap.get(key);
-        if (!item) return cl;
-        return { ...cl, highlight: { ...cl.highlight, [item.locale]: item.range } };
-      });
-      const updatedClassification = { ...classification, claims: updatedClaims };
-      cacheClassification(updatedClassification, classification.batchId);
-      broadcastClassification(updatedClassification);
-    }
-
-    // Record the classification timestamp right before the upsert so later reasoning
-    // translations use a timestamp that matches (or immediately precedes) DB's last_classification.
-    const classificationTimestamp = new Date().toISOString();
-    for (const c of classification.claims ?? []) {
-      const cached = researchCache.get(c.text);
-      if (cached) {
-        researchCache.set(c.text, { ...cached, lastClassification: classificationTimestamp });
-      }
-    }
-
-    // Only register the tweet + claim links when there is at least one researched
-    // claim to link. If every claim was skipped (all still on hold / unresearched),
-    // registering an empty tweet would make it a "DB hit with empty claims" next
-    // session, hiding its fact-checks. Leave it unregistered so it re-classifies.
-    if (newClaims.length > 0 || existingClaims.length > 0) {
-      await upsertTweetPipeline(tweetHash, newClaims, existingClaims, dbClaimLocale);
-    } else {
-      console.log(`[upsertProcessedClaims] ${tweet.id}: no researched claims to link, skipping tweet upsert`);
-    }
-  }
 
   function broadcastClassification(classification: Classification) {
     const claimSummary = classification.claims?.map(c => {
@@ -812,11 +612,14 @@ export default defineBackground(() => {
     // auto-release loop still operate on the real (reclassifyOnHold) state.
     let outgoing = classification;
     if (factCheckAllTweetIds.has(classification.id)
-        && classification.claims?.some(cl => cl.reclassifyOnHold)) {
+        && classification.claims?.some(cl => cl.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${cl.text}`))) {
+      // Present WAITLISTED/in-flight on-hold claims as "Fact-Checking", but leave ABANDONED
+      // ones (2 failed tries / 30s timeout / broke) showing their real on-hold button so the
+      // user can retry — that's the visible signal the call didn't go through.
       outgoing = {
         ...classification,
         claims: classification.claims.map(cl =>
-          cl.reclassifyOnHold
+          cl.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${cl.text}`)
             ? { ...cl, reclassifyOnHold: false, refreshing: true, note: null }
             : cl
         ),
@@ -833,10 +636,10 @@ export default defineBackground(() => {
       if (cl.reclassifyOnHold) {
         const key = `${classification.id}:${cl.text}`;
         if (factCheckAllTweetIds.has(classification.id)) {
-          console.log(`[background] auto-releasing fresh research for ${key} (Fact-Check All)`);
           pendingFreshResearchClaims.delete(key);
-          // Trigger the same reclassify flow in the background without requiring a click.
-          releaseFreshResearchClaim(classification.id, cl.text, classification.batchId, localeFromClassification(classification));
+          // Add to the Fact-Check All waitlist (idempotent; skips already-queued/in-flight/
+          // abandoned claims). It is admitted for research only when the balance covers its hold.
+          enqueueFactCheckClaim(classification.id, cl.text, classification.batchId, localeFromClassification(classification));
         } else {
           pendingFreshResearchClaims.add(key);
         }
@@ -914,78 +717,48 @@ export default defineBackground(() => {
     broadcastClassification(merged);
   }
 
-  /** Start fresh research for a single claim that was on hold due to no DB match.
-   *  Mirrors the RECLASSIFY_ON_HOLD_CLICK flow but is driven by Fact-Check All. */
-  function releaseFreshResearchClaim(
-    classificationId: string,
-    claimText: string,
-    batchId: string,
-    locale: string
-  ) {
-    const refreshKey = `${classificationId}:${claimText}`;
-    // Idempotency: never re-run (or re-broadcast) for a claim that is already
-    // being researched. Repeated broadcasts from concurrent generators would
-    // otherwise call this again and again, causing a release cascade.
-    if (ongoingClaimRefreshes.has(refreshKey)) return;
-
-    const hit = classificationCache.get(classificationId);
-    if (!hit) return;
-    const classification = hit.classification;
-
-    // Only release a claim that is genuinely still on hold in the authoritative
-    // cache. A stale snapshot may still show it on hold after it was released.
-    const targetClaim = classification.claims?.find(cl => cl.text === claimText);
-    if (!targetClaim || !targetClaim.reclassifyOnHold) return;
-
-    ongoingClaimRefreshes.add(refreshKey);
-
-    const updatedClaims = classification.claims?.map(cl => {
-      if (cl.text === claimText && cl.reclassifyOnHold) {
-        return {
-          ...cl,
-          reclassifyOnHold: false,
-          refreshing: true,
-          verdict: cl.cachedVerdict ?? cl.verdict,
-          // Keep the cached reasoning visible while re-researching (replaced once the
-          // new reasoning streams); null when there was no prior reasoning.
-          note: cl.cachedNote ?? cl.note,
-          confidence: cl.cachedConfidence ?? cl.confidence,
-          veracity: cl.cachedVeracity ?? cl.veracity,
-          sources: cl.cachedSources ?? cl.sources,
-        };
-      }
-      return cl;
-    }) ?? null;
-
-    const anyOnHold = updatedClaims?.some(cl => cl.reclassifyOnHold) ?? false;
-    const restored: Classification = {
-      ...classification,
-      claims: updatedClaims,
-      reclassifyOnHold: anyOnHold || undefined,
-    };
-    restored.batchId = batchId;
-    cacheClassification(restored, batchId);
-    broadcastClassification(restored);
-
-    const cachedTweet = tweetCache.get(classificationId);
-    const tweetUrls = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
-    console.log(`[background] releaseFreshResearchClaim: starting fresh research for "${claimText.slice(0, 40)}..."`);
-    const researchPromise = (async () => {
-      try {
-        // skipClaimUpsert=true: this fresh research is part of the Fact-Check All /
-        // on-hold flow, where upsertProcessedClaims persists tweet + claims in a single
-        // upsert_tweet_pipeline call. Writing the claim here too would double-write it
-        // and trip the duration_between_accesses trigger.
-        for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls, true)) {
-          mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId);
+  /** Merge a freshly-streamed preclassification snapshot into whatever is already
+   *  cached for the tweet, WITHOUT downgrading a claim that has since become active.
+   *  preClassify yields CUMULATIVE snapshots in which every claim is reset to the
+   *  "research required" placeholder, so caching each one wholesale would reset an
+   *  already-researched or in-flight claim back to a spinner (the reset-to-loading bug).
+   *  Match incoming↔existing by a shared highlight range (any locale key) or by
+   *  rewritten/text; when the existing copy is active (carries a verdict, is refreshing,
+   *  is being classified, or already has a DB id) keep it and only union in new highlight
+   *  ranges. */
+  function mergePreclassIntoCache(incoming: Classification): Classification {
+    const existing = classificationCache.get(incoming.id)?.classification;
+    const claimsMatch = (a: any, b: any): boolean => {
+      if (a.highlight && b.highlight) {
+        for (const k of Object.keys(a.highlight)) {
+          const ar = a.highlight[k], br = b.highlight[k];
+          if (ar && br && ar[0] === br[0] && ar[1] === br[1]) return true;
         }
-      } catch (err: any) {
-        console.error("[background] releaseFreshResearchClaim error:", err);
-      } finally {
-        ongoingClaimRefreshes.delete(refreshKey);
       }
-    })();
-    trackClaimResearch(refreshKey, researchPromise);
+      return (!!a.rewritten && a.rewritten === b.rewritten)
+        || a.text === b.text
+        || (!!a.dbClaimText && a.dbClaimText === b.dbClaimText);
+    };
+    const isActive = (c: any): boolean =>
+      (c.note != null && c.confidence !== undefined) || !!c.refreshing || !!c.isClassifying || !!c.dbClaimId;
+    const mergeList = (incs: any[] | null | undefined, prevs: any[] | null | undefined) => {
+      if (!incs) return incs ?? null;
+      if (!prevs || prevs.length === 0) return incs;
+      return incs.map((inc: any) => {
+        const prev = prevs.find((p: any) => claimsMatch(p, inc));
+        if (!prev) return inc;
+        const mergedHl = { ...(inc.highlight ?? {}), ...(prev.highlight ?? {}) };
+        if (isActive(prev)) return { ...prev, highlight: mergedHl };
+        return { ...inc, highlight: mergedHl, dbClaimId: prev.dbClaimId ?? inc.dbClaimId };
+      });
+    };
+    const claims = mergeList(incoming.claims as any, (existing?.claims as any) ?? null);
+    const quoting = incoming.quoting
+      ? { ...incoming.quoting, claims: mergeList(incoming.quoting.claims as any, (existing?.quoting?.claims as any) ?? null) }
+      : incoming.quoting;
+    const anyOnHold = (claims ?? []).some((c: any) => c.reclassifyOnHold)
+      || (quoting?.claims ?? []).some((c: any) => c.reclassifyOnHold);
+    return { ...incoming, claims, quoting, reclassifyOnHold: anyOnHold || undefined };
   }
 
   function safePostToPort(port: any, msg: any) {
@@ -1106,9 +879,472 @@ export default defineBackground(() => {
     return cls;
   }
 
+  /** Pull a tweet + its linked claims directly from the DB, shaped like the old
+   *  fetch-tweet worker result so the existing DB-hit/miss branching keeps working. */
+  async function fetchDbTweet(hash: string): Promise<{ success: boolean; claims?: ClaimPayload[]; is_preclassifying?: boolean }> {
+    const fetched = await fetchTweetAndTouchNetwork(hash);
+    if (!fetched) return { success: false };
+    return { success: true, claims: fetched.claims, is_preclassifying: fetched.isPreclassifying };
+  }
+
+  /** Merge one incoming claim payload (from the tweet subscription, a claim
+   *  subscription, or a direct pull) into a cached tweet classification and broadcast.
+   *  Matches an existing claim by dbClaimId, then by highlight range in the displayed
+   *  locale, then by rewritten/text; replaces it in place (adopting the DB id and the
+   *  possibly-different rewritten text) or appends it. This is inherently deduped:
+   *  the same claim arriving twice (sub + pull) matches and replaces, never duplicates. */
+  function mergeClaimPayload(tweetId: string, payload: ClaimPayload, locale: string) {
+    let entry = classificationCache.get(tweetId);
+    if (!entry) {
+      // A payload arrived before the initial classification was cached — seed one.
+      const tweet = tweetCache.get(tweetId);
+      const seed: Classification = { id: tweetId, batchId: '', claims: [], quoting: null };
+      if (tweet) attachTranslatedLocale(seed, tweet);
+      cacheClassification(seed, seed.batchId);
+      entry = classificationCache.get(tweetId);
+      if (!entry) return;
+    }
+    const cls = entry.classification;
+    const batchId = cls.batchId || (entry.batchIds.values().next().value ?? '');
+    const incoming = payloadToClaim(payload, locale);
+    const displayedLocale = cls.textLocale;
+    const incomingRange = displayedLocale ? incoming.highlight?.[displayedLocale] : undefined;
+
+    const claims = cls.claims ? [...cls.claims] : [];
+    let idx = -1;
+    if (payload.id) idx = claims.findIndex(c => c.dbClaimId === payload.id);
+    if (idx < 0 && incomingRange && displayedLocale) {
+      idx = claims.findIndex(c => {
+        const r = c.highlight?.[displayedLocale];
+        return !!r && r[0] === incomingRange[0] && r[1] === incomingRange[1];
+      });
+    }
+    // Match by highlight range under ANY shared locale key — not just displayedLocale.
+    // A [start,end] span in a given locale's text uniquely identifies one claim, so an
+    // equal range under the same key is the same claim. This is what lets a DB-delivered
+    // claim (from the subscription) recognize the agent-produced local claim even when
+    // textLocale is unset and the rewritten text drifted (worker stores normalizeText'd
+    // rewritten). Without it the DB copy is appended as a duplicate → fallback box.
+    if (idx < 0 && incoming.highlight) {
+      const incKeys = Object.keys(incoming.highlight);
+      idx = claims.findIndex(c => {
+        if (!c.highlight) return false;
+        for (const k of incKeys) {
+          const ir = incoming.highlight![k];
+          const cr = c.highlight![k];
+          if (ir && cr && ir[0] === cr[0] && ir[1] === cr[1]) return true;
+        }
+        return false;
+      });
+    }
+    if (idx < 0) {
+      idx = claims.findIndex(c =>
+        (!!c.rewritten && c.rewritten === incoming.rewritten) ||
+        c.text === incoming.text ||
+        (!!c.dbClaimText && c.dbClaimText === incoming.dbClaimText));
+    }
+
+    if (idx >= 0) {
+      const prev = claims[idx];
+      const mergedHl = { ...(prev.highlight ?? {}), ...(incoming.highlight ?? {}) };
+      const prevHasVerdict = prev.note != null && prev.confidence !== undefined && !prev.reclassifyOnHold && !prev.refreshing;
+      const incomingPlaceholder = incoming.reclassifyOnHold === true && incoming.confidence === undefined && !incoming.isClassifying;
+
+      if (incoming.isClassifying) {
+        // Being (re)classified elsewhere → spinner. Keep prior values when the payload
+        // has none yet; adopt the DB id + canonical/rewritten text either way.
+        claims[idx] = {
+          ...prev,
+          dbClaimId: incoming.dbClaimId ?? prev.dbClaimId,
+          dbClaimText: incoming.dbClaimText ?? prev.dbClaimText,
+          dbClaimLocale: incoming.dbClaimLocale ?? prev.dbClaimLocale,
+          rewritten: incoming.rewritten ?? prev.rewritten,
+          claimLocale: incoming.claimLocale ?? prev.claimLocale,
+          reasoningLocale: incoming.reasoningLocale ?? prev.reasoningLocale,
+          highlight: mergedHl,
+          refreshing: true,
+          isClassifying: true,
+          reclassifyOnHold: false,
+          note: incoming.note ?? prev.note,
+          verdict: incoming.note != null ? incoming.verdict : prev.verdict,
+          confidence: incoming.confidence ?? prev.confidence,
+          veracity: incoming.veracity ?? prev.veracity,
+          sources: (incoming.sources && incoming.sources.length) ? incoming.sources : prev.sources,
+        };
+      } else if (incomingPlaceholder && (prevHasVerdict || prev.refreshing || prev.isClassifying)) {
+        // A freshly-inserted placeholder row arriving for a claim that is already ACTIVE
+        // — it shows a (preclassify/DB) verdict, or is mid-refresh, or is being classified.
+        // Never let the placeholder downgrade it back to the Fact-Check button (the CLOBBER
+        // that left the button stuck after research). Keep prev's state (verdict/refreshing/
+        // reclassifyOnHold untouched via ...prev); only adopt the DB id + canonical/rewritten
+        // text so the row can be located later.
+        claims[idx] = {
+          ...prev,
+          dbClaimId: incoming.dbClaimId ?? prev.dbClaimId,
+          dbClaimText: incoming.dbClaimText ?? prev.dbClaimText,
+          dbClaimLocale: incoming.dbClaimLocale ?? prev.dbClaimLocale,
+          rewritten: incoming.rewritten ?? prev.rewritten,
+          claimLocale: incoming.claimLocale ?? prev.claimLocale,
+          reasoningLocale: incoming.reasoningLocale ?? prev.reasoningLocale,
+          highlight: mergedHl,
+        };
+      } else {
+        // Diagnostic (error for visibility): a payload with NO verdict (unclassified
+        // placeholder) is about to overwrite a claim that was mid-refresh or already
+        // carried a verdict. This is the suspected clobber — e.g. pullClaimBeforeClassify
+        // pulling the still-placeholder DB row (because the worker couldn't locate/save
+        // it → "Claim not found") and resetting a claim whose research just returned.
+        const incomingNoVerdict = incoming.note == null
+          && (incoming.confidence === undefined || incoming.confidence === null)
+          && !incoming.isClassifying;
+        const prevWasActive = prev.refreshing === true
+          || (prev.confidence !== undefined && prev.confidence !== null && prev.note != null);
+        if (incomingNoVerdict && prevWasActive) {
+          console.error(
+            `[mergeClaimPayload] CLOBBER: unclassified placeholder overwriting an active claim on tweet ${tweetId} ` +
+            `(button will persist despite research). claimText="${(prev.text ?? '').slice(0, 50)}" ` +
+            `prev{refreshing=${!!prev.refreshing}, reclassifyOnHold=${!!prev.reclassifyOnHold}, confidence=${prev.confidence ?? 'none'}, ` +
+            `note=${prev.note != null ? 'set' : 'null'}} incoming{id=${incoming.dbClaimId ?? 'none'}, ` +
+            `reclassifyOnHold=${!!incoming.reclassifyOnHold}, confidence=${incoming.confidence ?? 'none'}, note=${incoming.note != null ? 'set' : 'null'}}`
+          );
+        }
+        // Authoritative DB claim (classified — incl. a replaced rewritten text when the
+        // claim was matched to an existing DB row), or a placeholder with no prior
+        // verdict (→ Fact-Check button). Adopt it wholesale, keeping other-locale ranges.
+        claims[idx] = { ...incoming, highlight: mergedHl };
+      }
+      // The claim now carries (or already carried) its DB id → the embedded row exists.
+      // Release any research launch parked in awaitClaimDbRow for this claim.
+      if (incoming.dbClaimId) claimDbRowSignal(tweetId, prev.text);
+    } else {
+      // Diagnostic (logged as error for visibility): an incoming claim that carries a
+      // real verdict arrived over the subscription but matched NO local claim by id,
+      // highlight-range, or rewritten/text — so its verdict can't replace the local
+      // Fact-Check button and it's appended as a stray instead. This is the seam where
+      // a DB-matched claim silently keeps requiring a click. If this NEVER fires while
+      // the bug is observed, the claim isn't arriving at all (subscribe-side seam).
+      const incomingClassified = incoming.confidence !== undefined && incoming.confidence !== null
+        && incoming.note != null && !incoming.isClassifying && !incoming.reclassifyOnHold;
+      if (incomingClassified) {
+        const fmtRange = (r?: [number, number]) => (r ? `${r[0]}-${r[1]}` : 'none');
+        const hlKeys = (c: { highlight?: Record<string, [number, number]> }) =>
+          c.highlight ? Object.keys(c.highlight).join(',') : 'none';
+        console.error(
+          `[mergeClaimPayload] UNMATCHED classified claim for tweet ${tweetId} — arrived over subscription ` +
+          `but matched no local claim, so its verdict cannot replace the Fact-Check button. ` +
+          `displayedLocale=${displayedLocale ?? 'none'} | incoming{id=${incoming.dbClaimId ?? 'none'}, ` +
+          `hlKeys=${hlKeys(incoming)}, rangeInDisplayedLocale=${fmtRange(incomingRange)}, ` +
+          `rewritten="${(incoming.rewritten ?? '').slice(0, 50)}", dbClaimText="${(incoming.dbClaimText ?? '').slice(0, 50)}", ` +
+          `text="${(incoming.text ?? '').slice(0, 50)}"} | local claims=[` +
+          claims.map(c => `{hlKeys=${hlKeys(c)}, rangeInDisplayedLocale=${fmtRange(displayedLocale ? c.highlight?.[displayedLocale] : undefined)}, ` +
+            `rewritten="${(c.rewritten ?? '').slice(0, 40)}", text="${(c.text ?? '').slice(0, 40)}", ` +
+            `dbClaimText="${(c.dbClaimText ?? '').slice(0, 40)}", onHold=${!!c.reclassifyOnHold}}`).join(', ') + `]`
+        );
+      }
+      claims.push(incoming);
+    }
+
+    const merged: Classification = { ...cls, claims, onHold: false };
+    merged.batchId = batchId;
+    cacheClassification(merged, batchId);
+    broadcastClassification(merged);
+
+    if (payload.is_classifying && payload.id) {
+      watchClassifyingClaim(tweetId, payload.id, locale);
+    }
+  }
+
+  /** Open a per-claim subscription (deduped) and resolve only once it is live
+   *  (channel SUBSCRIBED + `subscribe` RPC sent). Callers await this, then fetch — so
+   *  no broadcast is missed in the gap between fetching and the subscription activating. */
+  async function ensureClaimSubscription(tweetId: string, claimId: string, locale: string): Promise<void> {
+    const key = `${tweetId}:${claimId}`;
+    const existing = claimSubs.get(key);
+    if (existing && !existing.isClosed()) { await existing.ready; return; }
+    let handleRef: SubscriptionHandle | null = null;
+    const handle = await subscribeRow({
+      kind: 'claim', claimId, timeoutMs: CLASSIFY_TIMEOUT_MS,
+      onClaim: (p) => mergeClaimPayload(tweetId, p, locale),
+      onDone: () => { if (claimSubs.get(key) === handleRef) claimSubs.delete(key); },
+    });
+    handleRef = handle;
+    if (handle) { claimSubs.set(key, handle); await handle.ready; }
+  }
+
+  /** When a delivered claim is being (re)classified by someone else, subscribe to it
+   *  (channel → subscribe → then pull) so the fresh classification auto-replaces the
+   *  spinner; the pull covers the race where it finishes before we subscribe. */
+  function watchClassifyingClaim(tweetId: string, claimId: string, locale: string) {
+    const key = `${tweetId}:${claimId}`;
+    if (claimSubs.has(key)) return;
+    (async () => {
+      await ensureClaimSubscription(tweetId, claimId, locale);
+      const pulled = await getFullClaim({ id: claimId, locale });
+      if (pulled && !pulled.is_classifying) mergeClaimPayload(tweetId, pulled, locale);
+    })().catch(e => console.error('[watchClassifyingClaim] error:', e));
+  }
+
+  /** Open (or refresh) a tweet subscription and resolve once it is live (channel →
+   *  subscribe RPC). Callers await this, then fetch. Resets the timer if already open. */
+  async function ensureTweetSubscription(tweetId: string, hash: string, locale: string, timeoutMs: number = PRECLASS_TIMEOUT_MS): Promise<void> {
+    const existing = tweetSubs.get(tweetId);
+    if (existing && !existing.isClosed()) { existing.resetTimeout(timeoutMs); await existing.ready; return; }
+    let handleRef: SubscriptionHandle | null = null;
+    const handle = await subscribeRow({
+      kind: 'tweet', hash, timeoutMs,
+      onClaim: (p) => mergeClaimPayload(tweetId, p, locale),
+      onDone: () => { if (tweetSubs.get(tweetId) === handleRef) tweetSubs.delete(tweetId); },
+    });
+    handleRef = handle;
+    if (handle) { tweetSubs.set(tweetId, handle); await handle.ready; }
+  }
+
+  /** Fire-and-forget tweet subscription (for callers that don't need to await readiness). */
+  function startTweetSubscription(tweetId: string, hash: string, locale: string, timeoutMs: number = PRECLASS_TIMEOUT_MS) {
+    ensureTweetSubscription(tweetId, hash, locale, timeoutMs).catch(e => console.error('[startTweetSubscription] error:', e));
+  }
+
+  /** Kick off is_classifying watchers for any pulled claim already being classified. */
+  function watchClassifyingClaims(tweetId: string, claims: ClaimPayload[] | undefined, locale: string) {
+    for (const p of claims ?? []) {
+      if (p.is_classifying && p.id) watchClassifyingClaim(tweetId, p.id, locale);
+    }
+  }
+
+  /** Fact-Check a single claim: subscribe FIRST (so an in-flight classification by
+   *  another user auto-replaces), then pull; only run classify-tweets if it isn't
+   *  already classified or being classified. Returns true when the caller should NOT
+   *  run its own classification (already handled here). */
+  /** Signal that a claim's DB row has arrived (it now carries a `dbClaimId`), releasing
+   *  any research launch waiting on `awaitClaimDbRow`. Idempotent; a no-op if none waits. */
+  function claimDbRowSignal(tweetId: string, claimText: string) {
+    const key = `${tweetId}:${claimText}`;
+    const w = claimDbRowWaiters.get(key);
+    if (w) { claimDbRowWaiters.delete(key); w.resolve(); }
+  }
+
+  /** Resolve once the claim's DB row has been broadcast (it gained a `dbClaimId`), or after
+   *  `timeoutMs` as a fallback so a missing broadcast never hangs research. Returns
+   *  immediately when the row is already known. Registration is synchronous with respect to
+   *  `mergeClaimPayload` (both run on the single JS thread), so no broadcast can slip the gap
+   *  between the initial check and the waiter being registered. */
+  function awaitClaimDbRow(tweetId: string, claimText: string, timeoutMs: number): Promise<void> {
+    const cls = classificationCache.get(tweetId)?.classification;
+    const claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
+    if (claim?.dbClaimId) return Promise.resolve(); // Row already known — no wait.
+    const key = `${tweetId}:${claimText}`;
+    let waiter = claimDbRowWaiters.get(key);
+    if (!waiter) {
+      let resolve!: () => void;
+      const promise = new Promise<void>(r => { resolve = r; });
+      waiter = { promise, resolve };
+      claimDbRowWaiters.set(key, waiter);
+    }
+    return Promise.race([
+      waiter.promise,
+      new Promise<void>(r => setTimeout(() => { claimDbRowWaiters.delete(key); r(); }, timeoutMs)),
+    ]);
+  }
+
+  /** Resolve the claim's DB row (waiting for it if a preclassify insert is still in flight),
+   *  subscribe to it, and report whether the caller can SKIP classifying because the DB
+   *  already holds a usable result.
+   *
+   *  `force` is for an explicit user-initiated re-research: it still resolves the row id and
+   *  subscribes (so the fresh result targets the right row and streams back), but never
+   *  reports "already handled" and never merges the stored payload. Skipping work that's
+   *  already paid for is right for the Disinfact / Fact-Check buttons, but the entire point
+   *  of the refresh button is to REPLACE the stored result — short-circuiting there made it a
+   *  no-op that re-injected the old reasoning and, because `handled` also suppresses the
+   *  caller's revert, left the spinner running forever. */
+  async function pullClaimBeforeClassify(classificationId: string, claimText: string, locale: string, force = false): Promise<boolean> {
+    let cls = classificationCache.get(classificationId)?.classification;
+    let claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
+    // A preclassify-origin claim has no DB id until the worker finishes embedding + inserting
+    // it and the row is broadcast over the tweet subscription. Classifying before then races
+    // that insert: start_claim_classification can't locate the row, so the claim is (re)created
+    // by the research save path WITHOUT an embedding. Wait (bounded) for the broadcast so the
+    // embedded row exists first, then re-read the claim to pick up its now-known id.
+    if (!claim?.dbClaimId) {
+      await awaitClaimDbRow(classificationId, claimText, PRECLASS_TIMEOUT_MS);
+      cls = classificationCache.get(classificationId)?.classification;
+      claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
+    }
+    const claimId = claim?.dbClaimId;
+    // Subscribe first, then pull (the pull covers the race where it finished first).
+    if (claimId) await ensureClaimSubscription(classificationId, claimId, locale);
+    // Explicit refresh: reclassify unconditionally. Returning before the pull also avoids
+    // merging the stored claim back in, which would flash the old reasoning straight back
+    // over the spinner the user just triggered.
+    if (force) return false;
+    const pulled = claimId
+      ? await getFullClaim({ id: claimId, locale })
+      : await getFullClaim({ text: claim?.rewritten ?? claim?.dbClaimText ?? claimText, locale });
+    if (!pulled) return false; // Not in DB (fresh claim) → caller classifies.
+    mergeClaimPayload(classificationId, pulled, locale);
+    // Already classified, or being classified elsewhere → nothing more for the caller.
+    if (pulled.is_classifying) return true;
+    // Change-prone (reclassify_after passed): the DB row still carries its OLD reasoning
+    // until fresh research overwrites it, so `!isReasoningEmpty` alone can't tell "already
+    // classified" apart from "stale, must reclassify despite having old text" — without this
+    // check, every reclassify-on-hold claim silently short-circuits here and never actually
+    // gets re-researched (the on-hold flip momentarily shows, then just settles back onto
+    // the stale cached values, matching dbClaimsToClassification's own reclassify handling).
+    if (pulled.reclassify) return false;
+    if (!isReasoningEmpty(pulled.reasoning)) return true;
+    return false; // Unclassified placeholder → caller runs classify-tweets.
+  }
+
+  /** Run the preclassify worker for one tweet, streaming its claims into the UI and letting
+   *  the worker persist the tweet + claims itself. Shared by the two paid entry points:
+   *
+   *  - PROCESS_ON_HOLD (the Disinfact button) passes `force = false`: the tweet may have
+   *    landed in the DB between the button appearing and the click, so an existing result is
+   *    reused rather than paid for again.
+   *  - BATCH_REFRESH_FORCE (the "Re-classify this tweet's claims" button) passes
+   *    `force = true`: replacing the stored result IS the request, so the DB pre-check is
+   *    skipped. Checking there made the button a no-op — it just re-injected the same rows.
+   *
+   *  On a no-claims outcome the tweet is returned to `onHoldTweets` so the Disinfact button
+   *  comes back and the user can retry. */
+  function runPreclassification(
+    entry: { tweet: MainTweet; hash: string },
+    locale: string,
+    logTag: string,
+    force: boolean
+  ): void {
+    const { tweet, hash } = entry;
+    const tweetId = tweet.id;
+    const keepAlive = setInterval(() => {}, 20000);
+
+    // Build the display tweet (translated text when translated) — the worker
+    // computes highlight ranges against its `text`.
+    function tweetForDisplay(t: MainTweet): MainTweet {
+      const hasTranslationInner = !!t.translatedText && !!t.destinationLanguage;
+      return {
+        ...t,
+        text: hasTranslationInner ? t.translatedText! : t.text,
+        quoting: t.quoting ? tweetForDisplay(t.quoting as MainTweet) : null,
+        replyingTo: t.replyingTo ? tweetForDisplay(t.replyingTo as MainTweet) : null,
+      } as MainTweet;
+    }
+    const hasTranslation = !!tweet.translatedText && !!tweet.destinationLanguage;
+    const displayedLocale = (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage) ?? locale;
+
+    gatedSpend(async () => {
+      try {
+        const batchId = nextBatchId();
+
+        // A forced re-preclassification has no on-hold button to turn into a spinner (the
+        // tweet is already injected), so flag it and let the content script show one in the
+        // Disinfact slot. Cleared by the first streamed result below, or in `finally`.
+        if (force) {
+          const cur = classificationCache.get(tweetId)?.classification;
+          const spinning: Classification = { ...(cur ?? { id: tweetId, claims: null, quoting: null }), batchId, preclassifying: true };
+          cacheClassification(spinning, batchId);
+          broadcastClassification(spinning);
+        }
+
+        // If a tweet subscription is somehow still open, just extend its timer.
+        const existingSub = tweetSubs.get(tweetId);
+        if (existingSub && !existingSub.isClosed()) existingSub.resetTimeout(PRECLASS_TIMEOUT_MS);
+
+        // Step 1: the tweet may have been added to the DB between the button
+        // appearing and this click — re-pull first. Skipped on a forced refresh.
+        if (!force) {
+          const refetched = await fetchDbTweet(hash);
+          if (refetched.success) {
+            if (refetched.claims && refetched.claims.length > 0) {
+              const cls = dbClaimsToClassification(tweet, refetched.claims, batchId, locale);
+              cacheClassification(cls, batchId);
+              broadcastClassification(cls);
+              watchClassifyingClaims(tweetId, refetched.claims, locale);
+            }
+            // Tweet exists (with or without claims yet) — subscribe for progressive claims.
+            reResearchedTweetIds.add(tweetId);
+            startTweetSubscription(tweetId, hash, locale);
+            clearInterval(keepAlive);
+            return;
+          }
+        }
+
+        // Step 2: still absent — run the preclassify worker. It streams claims with
+        // highlight ranges (shown immediately, research-required ones as Fact-Check
+        // buttons) and persists the tweet + claims itself.
+        let latest: Classification | null = null;
+        // Pass the hash as the same bytea literal (\x…) used by the fetch/subscribe
+        // RPCs so the row the worker inserts matches what we later query.
+        for await (const cls of preClassify(tweetForDisplay(tweet), hashToBytea(hash), displayedLocale, locale)) {
+          cls.batchId = batchId;
+          attachTranslatedLocale(cls, tweet);
+          // Merge (don't overwrite): a later cumulative snapshot must not reset a claim
+          // that already got a verdict or is mid-research back to a Fact-Check spinner.
+          const merged = mergePreclassIntoCache(cls);
+          merged.batchId = batchId;
+          // First streamed claims have landed — the top-of-tweet spinner has done its job.
+          merged.preclassifying = undefined;
+          cacheClassification(merged, batchId);
+          broadcastClassification(merged);
+          latest = merged;
+        }
+
+        if (!latest || !latest.claims || latest.claims.length === 0) {
+          // Preclassification produced no claims (or failed after retries). Broadcast
+          // empty (clears the Fact-Check All button) and leave it retryable.
+          const empty: Classification = latest ?? { id: tweetId, batchId, claims: null, quoting: null };
+          empty.onHold = false;
+          cacheClassification(empty, batchId);
+          broadcastClassification(empty);
+          onHoldTweets.set(tweetId, entry);
+          clearInterval(keepAlive);
+          return;
+        }
+
+        reResearchedTweetIds.add(tweetId);
+
+        // Step 3: the worker inserts the tweet + claims and completes
+        // preclassification. Subscribe to receive the authoritative claims (ids +
+        // any matched-claim rewritten-text replacements) and merge them in.
+        startTweetSubscription(tweetId, hash, locale);
+      } catch (err: any) {
+        console.error(`[background] ${logTag} error:`, err);
+      } finally {
+        clearInterval(keepAlive);
+        // Safety net: never strand the top-of-tweet spinner if the run threw or returned
+        // early without ever streaming a claim.
+        if (force) {
+          const cur = classificationCache.get(tweetId)?.classification;
+          if (cur?.preclassifying) {
+            const cleared: Classification = { ...cur, preclassifying: undefined };
+            cacheClassification(cleared, cur.batchId ?? '');
+            broadcastClassification(cleared);
+          }
+        }
+      }
+    });
+  }
+
+  /** True only when a Supabase session exists. The whole pipeline is gated on this so
+   *  a logged-out user gets no processing, no RPC calls, and no injected buttons. */
+  async function isSignedIn(): Promise<boolean> {
+    try {
+      const { data } = await supabase.auth.getSession();
+      return !!data.session?.access_token;
+    } catch {
+      return false;
+    }
+  }
+
   function processFullBatch(port: any, tweets: MainTweet[], batchId: string, keepAlive: NodeJS.Timeout, localeOverride?: string | null, xhrBatchIndex?: number) {
     (async () => {
       try {
+        // Do nothing unless the extension is active (signed in AND positive balance)
+        // — no DB pulls, no subscriptions, no on-hold buttons. Inert otherwise.
+        if (!(await computeActive())) {
+          clearInterval(keepAlive);
+          safePostToPort(port, { type: "DONE" });
+          return;
+        }
         const locale = localeOverride ?? getUiLocale();
         const firstTweetText = tweets[0]?.text?.slice(0, 80) ?? '(no text)';
         console.log(`[pipeline fires] batch=${batchId} tweets=${tweets.length} ids=[${tweets.map(t => t.id).join(',')}] firstTweet="${firstTweetText}"`);
@@ -1159,22 +1395,27 @@ export default defineBackground(() => {
             if (shouldDeferDom) {
               await waitForDom(tweet.id);
             }
-            const hash = await computeTweetHash(tweet.id);
+            const hash = await computeTweetHash(tweet);
             let dbResult: any;
             if (dbMissHashes.has(hash)) {
               dbResult = { success: false };
             } else {
-              dbResult = await fetchTweetByHash(hash, locale);
+              // Subscribe BEFORE fetching so no claim linked mid-preclassification is
+              // missed in the gap. (If the tweet isn't in the DB the subscribe fails
+              // fast and we fall through to a miss.)
+              await ensureTweetSubscription(tweet.id, hash, locale);
+              dbResult = await fetchDbTweet(hash);
               if (!dbResult?.success) dbMissHashes.add(hash);
             }
             let quotedHash: string | undefined;
             let quotedDbResult: any;
             if (tweet.quoting) {
-              quotedHash = await computeTweetHash(tweet.quoting.id);
+              quotedHash = await computeTweetHash(tweet.quoting);
               if (dbMissHashes.has(quotedHash)) {
                 quotedDbResult = { success: false };
               } else {
-                quotedDbResult = await fetchTweetByHash(quotedHash, locale);
+                await ensureTweetSubscription(tweet.quoting.id, quotedHash, locale);
+                quotedDbResult = await fetchDbTweet(quotedHash);
                 if (!quotedDbResult?.success) dbMissHashes.add(quotedHash);
               }
             }
@@ -1205,6 +1446,14 @@ export default defineBackground(() => {
           // language may have changed (e.g. Chinese -> English), and the default displayed
           // text for this load is determined by dbClaimsToClassification. Only live toggle
           // clicks during this session should change textLocale.
+          // Preserve any claims already seeded by the subscription (linked in the tiny
+          // window after the fetch snapshot) so this authoritative build doesn't clobber them.
+          const seeded = classificationCache.get(hit.tweet.id)?.classification;
+          if (seeded?.claims?.length && classification.claims) {
+            const have = new Set(classification.claims.map(c => c.dbClaimId).filter(Boolean));
+            const extra = seeded.claims.filter(c => c.dbClaimId && !have.has(c.dbClaimId));
+            if (extra.length) classification.claims = [...classification.claims, ...extra];
+          }
           cacheClassification(classification, batchId);
 
           // Cache DB result for TRANSLATE_FACT_CHECKS handler
@@ -1222,7 +1471,10 @@ export default defineBackground(() => {
             ...(classification.claims ?? []),
             ...(classification.quoting?.claims ?? [])
           ];
-          const highlightsMissing = displayedLocale && allClaimsForHighlightCheck.some(cl => !cl.highlight?.[displayedLocale]);
+          // Tolerate same-language subtag differences (en vs en-US): a highlight that
+          // resolves under the base language is NOT missing, so we never localize/
+          // translate across regions of the same language.
+          const highlightsMissing = displayedLocale && allClaimsForHighlightCheck.some(cl => !resolveHighlightRange(cl.highlight, displayedLocale));
           const differentLanguages = hasTranslation && claimStorageLocale && displayedLocale &&
             !sameLanguage(displayedLocale, claimStorageLocale);
 
@@ -1232,6 +1484,15 @@ export default defineBackground(() => {
           }
 
           safePostToPort(port, { type: "CLASSIFICATION", data: classification });
+
+          // Subscribe so any claims still being linked (tweet mid-preclassification) or
+          // reclassified by another user stream in progressively and auto-replace.
+          startTweetSubscription(classification.id, hit.hash, locale);
+          watchClassifyingClaims(classification.id, hit.dbResult.claims, locale);
+          if (classification.quoting && quotedClaims && hit.quotedHash) {
+            startTweetSubscription(classification.quoting.id, hit.quotedHash, locale);
+            watchClassifyingClaims(classification.quoting.id, quotedClaims, locale);
+          }
 
           // Pre-populate researchCache from the DB hit so translation callbacks can find
           // last_classification/reasoningLocale even when re-research is skipped this session.
@@ -1260,27 +1521,10 @@ export default defineBackground(() => {
                 return;
               }
 
-              // If the currently-displayed text locale's highlights are missing (e.g. the user
-              // changed X's UI language to Chinese, so the tweet is now shown in Chinese but the
-              // DB only has English/Spanish highlights), localize them on demand.
-              const displayedLocale = classification.textLocale ?? hit.tweet.sourceLanguage;
-              const needsMainLocalization = displayedLocale && (classification.claims ?? []).some(cl => !cl.highlight?.[displayedLocale]);
-              if (needsMainLocalization) {
-                const tweetText = classification.translatedText ?? hit.tweet.text;
-                console.log(`[background] DB hit ${classification.id}: missing ${displayedLocale} highlights, localizing on load`);
-                await localizeHighlights(classification.id, tweetText, displayedLocale, hit.dbResult.claims, classification, locale, mergeHighlightsFor(classification));
-              }
-
-              // Same for the quoted tweet, if it has DB claims and is missing highlights.
-              const quotedText = hit.tweet.quoting?.text;
-              const quotedClaims = classification.quoting?.claims;
-              if (quotedText && quotedClaims && quotedClaims.length > 0 && displayedLocale) {
-                const needsQuotedLocalization = quotedClaims.some(cl => !cl.highlight?.[displayedLocale]);
-                if (needsQuotedLocalization) {
-                  console.log(`[background] DB hit ${classification.id}: missing ${displayedLocale} highlights for quoted tweet, localizing on load`);
-                  await localizeHighlights(classification.quoting!.id, quotedText, displayedLocale, hit.quotedDbResult.claims, classification, locale, mergeHighlightsFor(classification));
-                }
-              }
+              // NOTE: highlight localization is NEVER done automatically on load — it
+              // would silently charge the user. It is triggered ONLY by the tweet's
+              // translate button (which remaps highlight ranges onto the translated
+              // text). A DB hit is injected with whatever highlights it already has.
 
               // Only re-research once per tweet per session. Repeated timeline responses
               // should not keep translating/re-localizing and writing to the DB.
@@ -1296,17 +1540,17 @@ export default defineBackground(() => {
           })();
         }
 
-        // Step 3b: Process DB hits with empty claims — inject empty classification, upsert tweet hash
+        // Step 3b: Tweet exists in DB but has no linked claims yet. It may still be
+        // preclassifying (claims arrive over the subscription) or genuinely claim-free.
         const dbEmpty = dbMissResults.filter(r => r.dbResult?.success);
         for (const empty of dbEmpty) {
           const classification = { id: empty.tweet.id, batchId, claims: null, quoting: null };
           attachTranslatedLocale(classification, empty.tweet);
           cacheClassification(classification, batchId);
           safePostToPort(port, { type: "CLASSIFICATION", data: classification });
-
-          (async () => {
-            await upsertTweetPipeline(empty.hash, [], [] as { claim: string; highlight_range?: number[] }[]);
-          })();
+          // The tweet row already exists (fetch succeeded), so subscribing is safe and
+          // catches claims still being linked mid-preclassification.
+          startTweetSubscription(classification.id, empty.hash, locale);
         }
 
         // Step 4: Existing cached/uncached split for remaining DB misses
@@ -1352,97 +1596,6 @@ export default defineBackground(() => {
           return;
         }
 
-        // Step 5: Preclassify + classify for DB misses
-        // Each tweet is self-contained (linked tweets are nested as context),
-        // so preclassify each tweet individually.
-        function tweetForDisplay(t: MainTweet): MainTweet {
-          const hasTranslation = !!t.translatedText && !!t.destinationLanguage;
-          const base = {
-            ...t,
-            text: hasTranslation ? t.translatedText! : t.text,
-            quoting: t.quoting ? tweetForDisplay(t.quoting as MainTweet) : null,
-          };
-          return base as MainTweet;
-        }
-
-        for (const uncachedTweet of uncached) {
-          let latestClassification: Classification | null = null;
-          for await (const classification of preClassify([tweetForDisplay(uncachedTweet)], locale)) {
-            classification.batchId = batchId;
-            // Attach translatedLocale/textLocale from the ORIGINAL tweet (not display text)
-            const origTweet = tweetById.get(classification.id);
-            if (origTweet) attachTranslatedLocale(classification, origTweet);
-            cacheClassification(classification, batchId);
-            safePostToPort(port, { type: "CLASSIFICATION", data: classification });
-            latestClassification = classification;
-          }
-
-          if (!latestClassification) continue;
-          const classification = latestClassification;
-          const hashResult = hashResults.find(r => r.tweet.id === classification.id);
-
-          // Immediately broadcast "Researching..." so the UI doesn't show
-          // a misleading preclassification verdict while the pipeline runs.
-          const researchingCls = markClaimsResearching(classification);
-          researchingCls.batchId = batchId;
-          cacheClassification(researchingCls, batchId);
-          broadcastClassification(researchingCls);
-
-          // Extract user-shared URLs from the tweet (and its quoted tweet) for the classify worker
-          let tweetUrls: string[] | undefined;
-          if (hashResult) {
-            tweetUrls = extractTweetUrls(hashResult.tweet.text);
-            if (hashResult.tweet.quoting?.text) {
-              tweetUrls.push(...extractTweetUrls(hashResult.tweet.quoting.text));
-            }
-            if (tweetUrls.length === 0) tweetUrls = undefined;
-          }
-
-          console.log(`[background] starting classification for ${classification.id} after preclassification (${classification.claims?.length ?? 0} claim(s))`);
-
-          (async () => {
-            try {
-              let latestClassification = classification;
-              for await (const updated of classify(classification, researchCache, locale, (upd) => {
-                upd.batchId = batchId;
-                cacheClassification(upd, batchId);
-                broadcastClassification(upd);
-              }, tweetUrls, (claimText) => {
-                pendingFreshResearchClaims.add(`${classification.id}:${claimText}`);
-              })) {
-                updated.batchId = batchId;
-                cacheClassification(updated, batchId);
-                broadcastClassification(updated);
-                latestClassification = updated;
-              }
-
-              // Mark as re-researched so future DB hits don't re-run reResearchDbClaims.
-              // This tweet was just fully classified — double-processing wastes a worker call.
-              reResearchedTweetIds.add(classification.id);
-
-              // Step 6: Upsert tweet + claims in parallel — use latest classify output
-              if (hashResult) {
-                upsertProcessedClaims(hashResult.tweet, hashResult.hash, latestClassification, researchCache, locale);
-              }
-
-              // Set claimLocale/reasoningLocale on cached classification so
-              // SET_DISPLAYED_LOCALE can detect language mismatches without
-              // waiting for a DB re-fetch to populate these fields.
-              const clsAfterUpsert = classificationCache.get(classification.id)?.classification;
-              if (clsAfterUpsert?.claims) {
-                const updatedClaims = clsAfterUpsert.claims.map(cl => ({
-                  ...cl,
-                  claimLocale: cl.claimLocale ?? locale,
-                  reasoningLocale: cl.reasoningLocale ?? locale,
-                }));
-                const clsWithLocales = { ...clsAfterUpsert, claims: updatedClaims };
-                cacheClassification(clsWithLocales, batchId);
-              }
-            } catch (err) {
-              console.error("[background] classify pipeline error:", err);
-            }
-          })();
-        }
 
         safePostToPort(port, { type: "DONE" });
       } catch (err: any) {
@@ -1454,10 +1607,527 @@ export default defineBackground(() => {
     })();
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Funds hub — one funds channel for the whole extension. Relays the balance to
+  // the popup dashboard and balance-delta / error notifications to all X tabs.
+  // ─────────────────────────────────────────────────────────────────────────
+  let fundsSub: FundsSubscription | null = null;
+  let fundsState: Funds | null = null;
+  let lastVisibleTotal: number | null = null;
+  let fundsInitPromise: Promise<void> | null = null;
+
+  /** Broadcast a notification to every connected X content script. */
+  function broadcastNotification(data: { kind: 'increase' | 'decrease' | 'error'; amount?: number; text?: string }) {
+    for (const p of activePorts) {
+      try { p.postMessage({ type: 'MF_NOTIFICATION', data }); } catch { /* ignore */ }
+    }
+  }
+
+  function notifyError(message: string) {
+    if (message) broadcastNotification({ kind: 'error', text: message });
+  }
+
+  /** Push the current visible total (balance + hold) to the popup dashboard, if open. */
+  function relayFundsToPopup(total: number | null) {
+    try {
+      const maybe = (browser.runtime.sendMessage as any)({ type: 'MF_FUNDS_UPDATE', total });
+      if (maybe && typeof maybe.catch === 'function') maybe.catch(() => { /* no popup listening */ });
+    } catch { /* no popup listening */ }
+  }
+
+  function handleFundsChange(funds: Funds) {
+    fundsState = funds;
+    // Balance crossing 0 (spend) or back above (top-up) toggles the freeze.
+    refreshActiveState();
+    // A settle (or top-up) frees room → admit any Fact-Check All claims now within budget.
+    // availableToSpend() is absolute (lag-invariant), so this is safe on every funds change.
+    pumpWaitlist();
+    // Terminal case: balance ≤ 0 with no hold left → no settle can ever revive it, so any
+    // still-WAITING Fact-Check All claim is unaffordable. Purge them (show the error once).
+    purgeWaitlistIfBroke();
+    // Round to the DB's 4-dp precision: balance + hold is exact NUMERIC server-side,
+    // but re-adding the two in JS floats leaves ~1e-15 residue on net-zero hold↔balance
+    // moves (acquire_hold then settle), which would otherwise fire phantom "$0" notifs.
+    const total = Math.round(visibleTotal(funds) * 10000) / 10000;
+    // The dashboard always shows the up-to-date total.
+    relayFundsToPopup(total);
+    if (lastVisibleTotal === null) {
+      // First value this session = baseline; no notification.
+      lastVisibleTotal = total;
+      return;
+    }
+    const delta = total - lastVisibleTotal;
+    // Surface any change that rounds to 0.0001 (the DB's 4-dp precision) or more, so the
+    // notification matches what the up-to-4-dp display can show. `total` is already
+    // 4-dp-rounded above, so this only filters out pure float residue (< 0.00005). Leave
+    // the baseline untouched when we skip, so tiny charges still accumulate until they
+    // cross the threshold.
+    const roundedDelta = Math.round(Math.abs(delta) * 10000) / 10000;
+    if (roundedDelta >= 0.0001) {
+      lastVisibleTotal = total;
+      broadcastNotification({ kind: delta > 0 ? 'increase' : 'decrease', amount: roundedDelta });
+    }
+  }
+
+  /** Open the funds channel FIRST, then fetch once via get_funds, then keep listening.
+   *  Idempotent — a single in-flight init is shared; retried after sign-in. */
+  function initFundsHub(): Promise<void> {
+    if (fundsInitPromise) return fundsInitPromise;
+    fundsInitPromise = (async () => {
+      const sub = await subscribeFunds(handleFundsChange, notifyError);
+      if (!sub) { fundsInitPromise = null; return; } // not signed in
+      fundsSub = sub;
+      const funds = await getFunds();
+      if (funds) handleFundsChange(funds);
+    })().catch(e => { console.error('[background] initFundsHub error:', e); fundsInitPromise = null; });
+    return fundsInitPromise;
+  }
+
+  function teardownFundsHub() {
+    if (fundsSub) { fundsSub.close(); fundsSub = null; }
+    fundsState = null;
+    lastVisibleTotal = null;
+    fundsInitPromise = null;
+  }
+
+  // Surface worker/DB failures (e.g. 402 balance-too-low) as red error notifications.
+  setWorkerErrorHandler(notifyError);
+
+  /** Broadcast the current "active" state to every connected content script so it
+   *  can tear down injections + freeze (inactive) or resume (active). Reuses the
+   *  MF_AUTH message: `signedIn` here means "extension active". */
+  function broadcastActive(active: boolean) {
+    for (const p of activePorts) {
+      try { p.postMessage({ type: 'MF_AUTH', signedIn: active }); } catch { /* ignore */ }
+    }
+  }
+
+  /** Extension stays "active" (injections visible, subscriptions live) while the
+   *  VISIBLE total (balance + hold) is positive — so results don't vanish just because
+   *  spendable balance dipped to 0 with money still held. Unknown funds = OK. */
+  function balanceOk(): boolean {
+    if (!fundsState) return true;
+    return visibleTotal(fundsState) > 0;
+  }
+
+  // ── Charging AI actions ─────────────────────────────────────────────────────
+  // Single AI actions (one Fact-Check/reclassify click, Translate, Disinfact/preclassify) no
+  // longer queue: they fire directly, and on ANY backend failure the error is surfaced and the
+  // claim reverts to its on-hold button (retry affordance). Only Fact-Check All fans many
+  // classifications out at once, so ONLY it uses a client WAITLIST that admits claims within the
+  // balance and the per-claim HOLD the backend reserves — never dispatching one that would 402.
+  const BALANCE_LOW_MSG = "Your balance is too low.";
+
+  /** Fire a single (non-fanning-out) charging AI action directly. No queue: a balance-too-low
+   *  402 surfaces via reportWorkerError → workerErrorHandler (notifyError) since no interceptor
+   *  is pushed. Kept as a wrapper so existing call sites are unchanged. */
+  function gatedSpend(run: () => Promise<void>): Promise<void> {
+    return run().catch(e => { console.error('[spend] action error:', e); });
+  }
+
+  /** Fire a single attributed charging AI action directly; route a balance-too-low 402 straight
+   *  to the error notification (the worker calls this instead of reportWorkerError). */
+  function gatedSpendAttributed(run: (onBalanceError: () => void) => Promise<void>): Promise<void> {
+    return run(() => notifyError(BALANCE_LOW_MSG)).catch(e => { console.error('[spend] action error:', e); });
+  }
+
+  // ── Fact-Check All waitlist ─────────────────────────────────────────────────
+  // Replicates the backend hold formula (classify-tweets:128-139) so the client admits only as
+  // many parallel classifications as the balance covers; the rest wait (tweet order) and are
+  // admitted one at a time as settling holds free the balance. Nothing that would 402 is ever
+  // dispatched, so there are no wasted 402s or get_full_claim pulls.
+  const FACTCHECK_BATCH_TIMEOUT_MS = 30000;
+  const MAX_CLASSIFY_ATTEMPTS = 2; // 1 initial + at most 1 retry after a backend balance-too-low
+  type WaitlistItem = { classificationId: string; claimText: string; batchId: string; locale: string; hold: number; attempts: number };
+  const factCheckWaitlist: WaitlistItem[] = [];
+  // Keys (`${id}:${text}`) currently WAITING — stops the broadcast auto-release from double-
+  // enqueuing. In-flight claims are tracked by ongoingClaimRefreshes.
+  const factCheckWaitlistKeys = new Set<string>();
+  // Keys abandoned this batch (2 failed tries / 30s timeout / broke). The auto-release skips
+  // these (and the on-hold masking shows their button) so a reverted claim isn't re-enqueued.
+  // Cleared for a tweet on a fresh Fact-Check All (deliberate retry) and on reset.
+  const abandonedFactCheckKeys = new Set<string>();
+  // Σ of admitted-but-unsettled holds. available = visibleTotal(funds) − committedHold is
+  // lag-invariant: acquiring a hold moves money balance→hold (visibleTotal unchanged) while
+  // committedHold tracks our commitments; a settle drops visibleTotal by the tiny real cost and
+  // we drop committedHold by the (larger) reserved hold, so available rises by the freed room.
+  let committedHold = 0;
+  let factCheckInFlight = 0;
+  // Absolute batch deadline (ms), set once when the waitlist first fills; NOT reset by a re-queue.
+  let factCheckBatchDeadline = 0;
+  let factCheckBatchTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Token estimate — byte-identical to classify-tweets:606-609 (deliberately over-counts). */
+  function estimateTokens(text: string): number {
+    if (!text) return 0;
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    return Math.ceil(text.length / 3) + words;
+  }
+  /** The max hold classify-tweets reserves per research (classify-tweets:128-139) — dominated by
+   *  the 32000-token output ceiling (≈ $0.49), so ~independent of claim length. If the backend
+   *  formula changes first, the backend simply rejects any over-admit (caught as a rare 402). */
+  function computeClassificationHold(mainClaim: string, sources: string[] | undefined): number {
+    const GEMINI_IN = 1.50, GEMINI_OUT = 7.50, SEARCH_FEE = 0.005, MAX_SEARCHES = 1, OUTPUT_LIMIT = 32000, MARGIN = 2;
+    const srcText = sources && sources.length ? sources.join("\n") : "";
+    const estIn = estimateTokens(mainClaim) + estimateTokens(srcText);
+    return (((estIn * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) + (SEARCH_FEE * MAX_SEARCHES)) * MARGIN;
+  }
+
+  /** Money free to commit now, in lag-invariant terms (unknown funds → optimistic). */
+  function availableToSpend(): number {
+    if (!fundsState) return Infinity;
+    return visibleTotal(fundsState) - committedHold;
+  }
+
+  /** Enqueue an on-hold claim for Fact-Check All (arrival order from preclassify = tweet order).
+   *  Idempotent: a claim already waiting, in flight, or abandoned this batch is ignored. Does not
+   *  flip the claim's UI — admitFactCheckClaim does that when the classification actually starts. */
+  function enqueueFactCheckClaim(classificationId: string, claimText: string, batchId: string, locale: string): void {
+    const key = `${classificationId}:${claimText}`;
+    if (factCheckWaitlistKeys.has(key) || ongoingClaimRefreshes.has(key) || abandonedFactCheckKeys.has(key)) return;
+    const hit = classificationCache.get(classificationId);
+    const claim = hit?.classification.claims?.find(cl => cl.text === claimText);
+    if (!claim || !claim.reclassifyOnHold) return;
+    const cachedTweet = tweetCache.get(classificationId);
+    const sources = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
+    const hold = computeClassificationHold(claim.rewritten ?? claimText, sources);
+    factCheckWaitlist.push({ classificationId, claimText, batchId, locale, hold, attempts: 0 });
+    factCheckWaitlistKeys.add(key);
+    if (factCheckBatchDeadline === 0) { factCheckBatchDeadline = Date.now() + FACTCHECK_BATCH_TIMEOUT_MS; armBatchTimer(); }
+    pumpWaitlist();
+  }
+
+  function armBatchTimer(): void {
+    if (factCheckBatchTimer) clearTimeout(factCheckBatchTimer);
+    factCheckBatchTimer = setTimeout(onBatchTimeout, Math.max(0, factCheckBatchDeadline - Date.now()));
+  }
+
+  /** Batch 30s elapsed: abandon every claim STILL WAITING (in-flight ones keep going). */
+  function onBatchTimeout(): void {
+    factCheckBatchTimer = null;
+    if (factCheckWaitlist.length > 0) {
+      for (const item of factCheckWaitlist.splice(0, factCheckWaitlist.length)) abandonWaitingClaim(item);
+      notifyError(BALANCE_LOW_MSG);
+    }
+    maybeEndBatch();
+  }
+
+  /** Admit as many front claims as the available balance covers their holds; then reconcile batch. */
+  function pumpWaitlist(): void {
+    while (factCheckWaitlist.length > 0 && availableToSpend() >= factCheckWaitlist[0].hold) {
+      admitFactCheckClaim(factCheckWaitlist.shift()!);
+    }
+    maybeEndBatch();
+  }
+
+  /** Drop a waiting claim, mark it abandoned, and revert it to its on-hold button. */
+  function abandonWaitingClaim(item: WaitlistItem): void {
+    const key = `${item.classificationId}:${item.claimText}`;
+    factCheckWaitlistKeys.delete(key);
+    abandonedFactCheckKeys.add(key);
+    revertClaimToOnHold(item.classificationId, item.claimText, item.batchId);
+  }
+
+  /** Broke (balance + hold ≤ 0) → no settle can revive it: purge every WAITING claim (in-flight
+   *  ones settle on their own). Shows the error once. */
+  function purgeWaitlistIfBroke(): void {
+    if (!fundsState) return;
+    if (fundsState.balance > 0 || (Number(fundsState.hold) || 0) > 0) return;
+    if (factCheckWaitlist.length === 0) return;
+    for (const item of factCheckWaitlist.splice(0, factCheckWaitlist.length)) abandonWaitingClaim(item);
+    notifyError(BALANCE_LOW_MSG);
+    maybeEndBatch();
+  }
+
+  /** Tear down the batch timer/deadline once nothing is waiting or in flight. */
+  function maybeEndBatch(): void {
+    if (factCheckWaitlist.length > 0 || factCheckInFlight > 0) return;
+    if (factCheckBatchTimer) { clearTimeout(factCheckBatchTimer); factCheckBatchTimer = null; }
+    factCheckBatchDeadline = 0;
+  }
+
+  /** Flip a claim between on-hold and researching in the cache; returns the updated snapshot. */
+  function flipClaimResearching(classification: Classification, claimText: string, batchId: string, toResearching: boolean): Classification {
+    const updatedClaims = classification.claims?.map(cl => {
+      if (cl.text !== claimText) return cl;
+      if (toResearching) {
+        if (!cl.reclassifyOnHold) return cl;
+        return { ...cl, reclassifyOnHold: false, refreshing: true,
+          verdict: cl.cachedVerdict ?? cl.verdict, note: cl.cachedNote ?? cl.note,
+          confidence: cl.cachedConfidence ?? cl.confidence, veracity: cl.cachedVeracity ?? cl.veracity,
+          sources: cl.cachedSources ?? cl.sources };
+      }
+      return { ...cl, reclassifyOnHold: true, refreshing: false };
+    }) ?? null;
+    const anyOnHold = updatedClaims?.some(cl => cl.reclassifyOnHold) ?? false;
+    const restored: Classification = { ...classification, claims: updatedClaims, reclassifyOnHold: anyOnHold || undefined };
+    restored.batchId = batchId;
+    cacheClassification(restored, batchId);
+    return restored;
+  }
+
+  /** Revert a claim to its on-hold button (any failed backend call) and broadcast it. */
+  function revertClaimToOnHold(classificationId: string, claimText: string, batchId: string): void {
+    const hit = classificationCache.get(classificationId);
+    if (!hit) return;
+    broadcastClassification(flipClaimResearching(hit.classification, claimText, batchId, false));
+  }
+
+  /** Start one admitted Fact-Check-All classification: reserve its hold, flip it to researching,
+   *  run pull-then-classify, and on completion release the hold and either finish or (on a rare
+   *  backend balance-too-low) re-queue once / abandon. Mirrors the old releaseFreshResearchClaim. */
+  function admitFactCheckClaim(item: WaitlistItem): void {
+    const { classificationId, claimText, batchId, locale, hold } = item;
+    const key = `${classificationId}:${claimText}`;
+    factCheckWaitlistKeys.delete(key);
+
+    const hit = classificationCache.get(classificationId);
+    const targetClaim = hit?.classification.claims?.find(cl => cl.text === claimText);
+    if (!hit || !targetClaim || !targetClaim.reclassifyOnHold) { maybeEndBatch(); return; }
+
+    committedHold += hold;
+    factCheckInFlight++;
+    ongoingClaimRefreshes.add(key);
+    const restored = flipClaimResearching(hit.classification, claimText, batchId, true);
+    broadcastClassification(restored);
+
+    const cachedTweet = tweetCache.get(classificationId);
+    const tweetUrls = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
+    let hitBalanceError = false;
+    let gotUpdate = false;
+    let handled = false;
+    const researchPromise = (async () => {
+      try {
+        handled = await pullClaimBeforeClassify(classificationId, claimText, locale);
+        if (!handled) {
+          for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls, () => { hitBalanceError = true; })) {
+            gotUpdate = true;
+            mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId);
+          }
+        }
+      } catch (err: any) {
+        console.error("[background] admitFactCheckClaim error:", err);
+      } finally {
+        committedHold = Math.max(0, committedHold - hold);
+        factCheckInFlight = Math.max(0, factCheckInFlight - 1);
+        ongoingClaimRefreshes.delete(key);
+        if (!(handled || gotUpdate)) {
+          // Any backend failure: revert to the on-hold button (retry affordance).
+          if (hitBalanceError && item.attempts + 1 < MAX_CLASSIFY_ATTEMPTS) {
+            factCheckWaitlistKeys.add(key); // re-queue to END, one more try; deadline NOT reset
+            factCheckWaitlist.push({ ...item, attempts: item.attempts + 1 });
+          } else {
+            abandonedFactCheckKeys.add(key);
+            if (hitBalanceError) notifyError(BALANCE_LOW_MSG); // non-balance failures already notified
+          }
+          revertClaimToOnHold(classificationId, claimText, batchId);
+        }
+        pumpWaitlist();
+      }
+    })();
+    // Track so awaitTweetClaimResearch (placeholder-upsert gate) waits for this classification.
+    trackClaimResearch(key, researchPromise);
+  }
+
+  /** The extension is "active" (does anything on X) only while signed in AND with a
+   *  positive balance. A logged-out user OR a zero/negative balance freezes it. */
+  async function computeActive(): Promise<boolean> {
+    return (await isSignedIn()) && balanceOk();
+  }
+
+  /** Drop every cache, pending fetch, and open subscription so a later re-login
+   *  starts from a clean slate with no stale tweets/claims. */
+  function clearAllPipelineState() {
+    for (const sub of tweetSubs.values()) { try { sub.close(); } catch { /* ignore */ } }
+    tweetSubs.clear();
+    for (const sub of claimSubs.values()) { try { sub.close(); } catch { /* ignore */ } }
+    claimSubs.clear();
+    classificationCache.clear();
+    researchCache.clear();
+    batchTweets.clear();
+    tweetCache.clear();
+    localizedHighlightLocales.clear();
+    reResearchedTweetIds.clear();
+    onHoldTweets.clear();
+    ongoingClaimRefreshes.clear();
+    claimResearchPromises.clear();
+    heldReclassifications.clear();
+    pendingFreshResearchClaims.clear();
+    factCheckAllTweetIds.clear();
+    // Reset the Fact-Check All waitlist so a logout/freeze leaves no stale holds or timer.
+    factCheckWaitlist.length = 0;
+    factCheckWaitlistKeys.clear();
+    abandonedFactCheckKeys.clear();
+    committedHold = 0;
+    factCheckInFlight = 0;
+    factCheckBatchDeadline = 0;
+    if (factCheckBatchTimer) { clearTimeout(factCheckBatchTimer); factCheckBatchTimer = null; }
+    dbHitCache.clear();
+    dbFetchPromises.clear();
+    dbMissHashes.clear();
+    seenInDom.clear();
+    domFetchResolvers.clear();
+  }
+
+  // Keep the whole extension in sync with sign-in AND balance. On a transition to
+  // inactive (signed out, or balance ≤ 0) we clear pipeline state and freeze every
+  // content script; on active we (re)open the funds hub and resume. Serialized +
+  // guarded by `lastActive` so rapid events don't double-fire. When signed out we
+  // also tear the funds hub down; on a mere zero-balance we keep it running so a
+  // later top-up is detected and re-activates the extension.
+  let lastActive: boolean | null = null;
+  let activeEvalChain: Promise<void> = Promise.resolve();
+  function refreshActiveState() {
+    activeEvalChain = activeEvalChain.then(async () => {
+      const signed = await isSignedIn();
+      if (signed) initFundsHub(); // ensure funds hub is up so balance is known
+      const active = signed && balanceOk();
+      if (lastActive === active) return;
+      lastActive = active;
+      if (active) {
+        broadcastActive(true);
+      } else {
+        clearAllPipelineState();
+        if (!signed) teardownFundsHub(); // keep the hub alive on a zero-balance
+        broadcastActive(false);
+      }
+    }).catch(e => console.error('[background] refreshActiveState error:', e));
+  }
+
+  // The supabase session lives in chrome.storage.local; sign-in/out from the popup
+  // updates it there, so watching storage is the reliable cross-context trigger.
+  try {
+    browser.storage.onChanged.addListener((changes: Record<string, any>, area: string) => {
+      if (area !== 'local') return;
+      if (Object.keys(changes).some(k => k.includes('auth-token') || k.startsWith('sb-'))) {
+        refreshActiveState();
+      }
+    });
+  } catch (e) { console.error('[background] storage.onChanged setup error:', e); }
+  // Also react to this client's own auth events (token refresh, etc.).
+  supabase.auth.onAuthStateChange(() => refreshActiveState());
+
+  // Establish the baseline on service-worker startup (inits funds if signed in).
+  refreshActiveState();
+
+  // ── Dashboard messages: fetched on startup + every 24h, cached in storage ──
+  const MESSAGES_URL = 'https://messages.michael-pouget01.workers.dev/';
+  const MESSAGES_ALARM = 'mf_messages_refresh';
+  const MESSAGES_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+  async function fetchAndStoreMessages(): Promise<any[]> {
+    try {
+      const res = await fetch(MESSAGES_URL);
+      if (!res.ok) return [];
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : [];
+      await browser.storage.local.set({ mf_messages: list, mf_messages_at: Date.now() });
+      return list;
+    } catch (e) {
+      console.error('[background] messages fetch error:', e);
+      return [];
+    }
+  }
+
+  async function getMessagesFresh(): Promise<any[]> {
+    const stored = await browser.storage.local.get(['mf_messages', 'mf_messages_at']);
+    const at = typeof stored.mf_messages_at === 'number' ? stored.mf_messages_at : 0;
+    const cached = Array.isArray(stored.mf_messages) ? stored.mf_messages : null;
+    if (cached && Date.now() - at < MESSAGES_MAX_AGE_MS) return cached;
+    return await fetchAndStoreMessages();
+  }
+
+  // Refresh on startup and every 24 hours.
+  fetchAndStoreMessages();
+  try {
+    browser.alarms.create(MESSAGES_ALARM, { periodInMinutes: 24 * 60 });
+    browser.alarms.onAlarm.addListener((alarm: any) => {
+      if (alarm.name === MESSAGES_ALARM) fetchAndStoreMessages();
+    });
+  } catch (e) { console.error('[background] alarms setup error:', e); }
+
+  // After a Stripe checkout returns, the top-up is credited asynchronously by the
+  // webhook — so poll get_funds for a short window and feed it through the normal
+  // funds path. handleFundsChange → refreshActiveState broadcasts "resume" to the X
+  // tabs the moment the balance turns positive, re-injecting the already-captured
+  // tweets with no page reload. Belt-and-suspenders alongside the realtime push
+  // (which can lag or be missed if the MV3 worker idled). balanceOk() still gates, so
+  // this can only ever RESUME on a real positive balance — never bypass the freeze.
+  async function pollFundsAfterCheckout() {
+    for (let i = 0; i < 8; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      try {
+        const f = await getFunds();
+        if (f) {
+          handleFundsChange(f);
+          if (f.balance > 0) return; // credited → tabs resumed; stop polling
+        }
+      } catch (e) { console.error('[background] pollFundsAfterCheckout error:', e); }
+    }
+  }
+
+  // ── Stripe checkout: open the checkout tab and close it on redirect to disinfax.app ──
+  function openCheckoutTab(url: string) {
+    Promise.resolve(browser.tabs.create({ url })).then((tab: any) => {
+      const tabId = tab?.id;
+      if (tabId == null) return;
+      const onUpdated = (updatedTabId: number, changeInfo: any) => {
+        if (updatedTabId !== tabId) return;
+        const u: string | undefined = changeInfo?.url;
+        if (u && /:\/\/(www\.)?disinfax\.app\b/i.test(u)) {
+          cleanup();
+          try { browser.tabs.remove(tabId); } catch { /* already gone */ }
+          pollFundsAfterCheckout();
+        }
+      };
+      const onRemoved = (closedId: number) => { if (closedId === tabId) cleanup(); };
+      const cleanup = () => {
+        try { browser.tabs.onUpdated.removeListener(onUpdated); } catch { /* ignore */ }
+        try { browser.tabs.onRemoved.removeListener(onRemoved); } catch { /* ignore */ }
+      };
+      browser.tabs.onUpdated.addListener(onUpdated);
+      browser.tabs.onRemoved.addListener(onRemoved);
+    }).catch((e: any) => console.error('[background] openCheckoutTab error:', e));
+  }
+
+  // Popup ↔ background messaging (balance, messages, checkout).
+  browser.runtime.onMessage.addListener((message: any, _sender: any, sendResponse: (r: any) => void) => {
+    if (message?.type === 'MF_FUNDS_GET') {
+      (async () => {
+        await initFundsHub();
+        if (!fundsState) {
+          const f = await getFunds();
+          if (f) handleFundsChange(f);
+        }
+        sendResponse({ total: fundsState ? visibleTotal(fundsState) : null });
+      })();
+      return true; // async sendResponse
+    }
+    if (message?.type === 'MF_MESSAGES_GET') {
+      (async () => {
+        const list = await getMessagesFresh();
+        sendResponse({ messages: list });
+      })();
+      return true; // async sendResponse
+    }
+    if (message?.type === 'MF_OPEN_CHECKOUT' && typeof message.url === 'string') {
+      openCheckoutTab(message.url);
+      return undefined; // no response
+    }
+    return undefined;
+  });
+
   browser.runtime.onConnect.addListener(port => {
     if (port.name !== "classify") return;
     activePorts.add(port);
     port.onDisconnect.addListener(() => activePorts.delete(port));
+
+    // Tell the freshly-connected content script the current active state so a relay
+    // that loaded (or reconnected after a service-worker restart) while inactive
+    // (logged out or zero balance) freezes, and a previously-frozen one resumes.
+    computeActive().then(active => {
+      try { port.postMessage({ type: 'MF_AUTH', signedIn: active }); } catch { /* ignore */ }
+    });
 
     port.onMessage.addListener(message => {
       if (message.type === "CLASSIFY_TWEETS") {
@@ -1531,99 +2201,40 @@ export default defineBackground(() => {
         }
 
         const useBatchId = newBatchId ?? nextBatchId();
-        batchTweets.set(useBatchId, tweets);
-
-        const keepAlive = setInterval(() => {}, 20000);
-        const locale = msgLocale ?? getUiLocale();
 
         // Cache incoming tweets so SET_DISPLAYED_LOCALE can look up original/translated text.
         for (const t of tweets) tweetCache.set(t.id, t);
 
-        // Quick lookup from tweet id to tweet
-        const tweetById = new Map<string, MainTweet>();
-        for (const t of tweets) tweetById.set(t.id, t);
+        // Force a fresh reload: drop the per-tweet fetch/session caches and any open
+        // subscriptions so processFullBatch re-pulls + re-subscribes from scratch.
+        dbMissHashes.clear();
+        const forget = (id: string) => {
+          dbFetchPromises.delete(id);
+          reResearchedTweetIds.delete(id);
+          localizedHighlightLocales.delete(id);
+          const sub = tweetSubs.get(id);
+          if (sub) { sub.close(); tweetSubs.delete(id); }
+        };
+        for (const t of tweets) {
+          forget(t.id);
+          if (t.quoting) forget(t.quoting.id);
+        }
 
+        // This IS the click ("Re-classify this tweet's claims"), so run a real
+        // preclassification rather than a reload. It used to call processFullBatch, which
+        // re-fetches from the DB and re-injects the existing rows on a hit — making the
+        // button do visibly nothing for any tweet already stored. `force` skips that
+        // pre-check; everything else (hold/spend gating, streaming, persistence, the
+        // no-claims retry path) is the same shared helper the Disinfact button uses.
+        const refreshLocale = msgLocale ?? getUiLocale();
         (async () => {
-          try {
-            // Helper: use translated text for preclassification when available
-            function tweetForDisplay(t: MainTweet): MainTweet {
-              const hasTranslation = !!t.translatedText && !!t.destinationLanguage;
-              return {
-                ...t,
-                text: hasTranslation ? t.translatedText! : t.text,
-                quoting: t.quoting ? tweetForDisplay(t.quoting as MainTweet) : null,
-              } as MainTweet;
+          for (const t of tweets) {
+            try {
+              const hash = await computeTweetHash(t);
+              runPreclassification({ tweet: t, hash }, refreshLocale, "BATCH_REFRESH_FORCE", true);
+            } catch (err: any) {
+              console.error(`[background] BATCH_REFRESH_FORCE: hash failed for ${t.id}:`, err);
             }
-
-            // Step 1: Preclassify each tweet individually and start classification
-            // as soon as each tweet's preclassification completes.
-            for (const bTweet of tweets) {
-              let latestClassification: Classification | null = null;
-              for await (const classification of preClassify([tweetForDisplay(bTweet)], locale)) {
-                classification.batchId = useBatchId;
-                const origTweet = tweetById.get(classification.id);
-                if (origTweet) attachTranslatedLocale(classification, origTweet);
-                cacheClassification(classification, useBatchId);
-                safePostToPort(port, { type: "CLASSIFICATION", data: classification });
-                latestClassification = classification;
-              }
-
-              if (!latestClassification) continue;
-              const classification = latestClassification;
-
-              const researchingCls = markClaimsResearching(classification);
-              researchingCls.batchId = useBatchId;
-              cacheClassification(researchingCls, useBatchId);
-              broadcastClassification(researchingCls);
-
-              // Extract user-shared URLs from the tweet
-              const tweet = tweetById.get(classification.id);
-              let tweetUrls: string[] | undefined;
-              if (tweet) {
-                tweetUrls = extractTweetUrls(tweet.text);
-                if (tweet.quoting?.text) {
-                  tweetUrls.push(...extractTweetUrls(tweet.quoting.text));
-                }
-                if (tweetUrls.length === 0) tweetUrls = undefined;
-              }
-
-              console.log(`[background] BATCH_REFRESH_FORCE starting classification for ${classification.id} after preclassification (${classification.claims?.length ?? 0} claim(s))`);
-
-              (async () => {
-                try {
-                  let latestClassification = classification;
-                  for await (const updated of classify(classification, researchCache, locale, (upd) => {
-                    upd.batchId = useBatchId;
-                    cacheClassification(upd, useBatchId);
-                    broadcastClassification(upd);
-                  }, tweetUrls, (claimText) => {
-                    pendingFreshResearchClaims.add(`${classification.id}:${claimText}`);
-                  })) {
-                    updated.batchId = useBatchId;
-                    cacheClassification(updated, useBatchId);
-                    broadcastClassification(updated);
-                    latestClassification = updated;
-                  }
-
-                  reResearchedTweetIds.add(classification.id);
-
-                  // Upsert tweet + claims
-                  if (tweet) {
-                    const hash = await computeTweetHash(tweet.id);
-                    upsertProcessedClaims(tweet, hash, latestClassification, researchCache, locale);
-                  }
-                } catch (err) {
-                  console.error("[background] BATCH_REFRESH_FORCE classify error:", err);
-                }
-              })();
-            }
-
-            safePostToPort(port, { type: "DONE" });
-          } catch (err: any) {
-            console.error("[background] BATCH_REFRESH_FORCE error:", err);
-            safePostToPort(port, { type: "ERROR", error: err.message });
-          } finally {
-            clearInterval(keepAlive);
           }
         })();
         return;
@@ -1641,13 +2252,15 @@ export default defineBackground(() => {
         const anyBatchId = hit.batchIds.values().next().value ?? '';
 
         // Broadcast the refreshing state immediately: keep the existing badge label
-        // (verdict/confidence/veracity) so the user still sees "True"/"False", but
-        // clear the reasoning and set the refreshing flag so spinners appear.
+        // (verdict/confidence/veracity) AND the current reasoning so the user keeps reading
+        // it while the re-research runs — only the `refreshing` flag changes, which shows a
+        // spinner beside the text. (Nulling the note here used to blank the reasoning and
+        // replace it with a spinner, leaving the popover empty for the whole call.)
         const fcClassification = {
           ...classification,
           claims: (classification.claims ?? []).map(cl =>
             cl.text === claimText
-              ? { ...cl, note: null, refreshing: true }
+              ? { ...cl, refreshing: true }
               : cl
           ) ?? null,
           quoting: classification.quoting
@@ -1655,7 +2268,7 @@ export default defineBackground(() => {
                 ...classification.quoting,
                 claims: (classification.quoting.claims ?? []).map(cl =>
                   cl.text === claimText
-                    ? { ...cl, note: null, refreshing: true }
+                    ? { ...cl, refreshing: true }
                     : cl
                 ) ?? null,
               }
@@ -1680,17 +2293,37 @@ export default defineBackground(() => {
         const cachedTweet = tweetCache.get(classificationId);
         const tweetUrls = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
 
-        (async () => {
+        gatedSpendAttributed(async (onBalanceError) => {
+          let handled = false, gotUpdate = false;
           try {
-            for await (const updated of refreshClaim(classification, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls)) {
-              mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+            // Explicit "Re-research this claim" click: force a real reclassification rather
+            // than settling for whatever the DB already has. Resolve/subscribe to the row,
+            // but never short-circuit on an existing result — replacing it IS the request.
+            handled = await pullClaimBeforeClassify(classificationId, claimText, msgLocale ?? getUiLocale(), true);
+            if (!handled) {
+              for await (const updated of refreshClaim(classification, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls, onBalanceError)) {
+                gotUpdate = true;
+                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+              }
             }
           } catch (err: any) {
             console.error("[background] REFRESH_CLAIM error:", err);
           } finally {
             ongoingClaimRefreshes.delete(refreshKey);
+            // Any backend failure → clear the spinner and show the claim's previous verdict
+            // again (this is a re-classify of an already-classified claim, so its prior state
+            // is the verdict, not the on-hold button).
+            if (!(handled || gotUpdate)) {
+              const cur = classificationCache.get(classificationId)?.classification;
+              if (cur) {
+                const reverted: Classification = { ...cur, claims: cur.claims?.map(cl => cl.text === claimText ? { ...cl, refreshing: false } : cl) ?? null };
+                reverted.batchId = anyBatchId;
+                cacheClassification(reverted, anyBatchId);
+                broadcastClassification(reverted);
+              }
+            }
           }
-        })();
+        });
       }
 
       if (message.type === "PROCESS_ON_HOLD") {
@@ -1701,130 +2334,10 @@ export default defineBackground(() => {
           return;
         }
         const locale = msgLocale ?? getUiLocale();
-
-        // Process the single on-hold tweet individually.
-        console.log(`[background] PROCESS_ON_HOLD: starting pipeline for tweet ${entry.tweet.id}`);
-
-        // Keep service worker alive during long-running pipeline (like processFullBatch)
-        const keepAlive = setInterval(() => {}, 20000);
-
-        // Mirror of tweetForDisplay from processFullBatch
-        function tweetForDisplay(t: MainTweet): MainTweet {
-          const hasTranslation = !!t.translatedText && !!t.destinationLanguage;
-          return {
-            ...t,
-            text: hasTranslation ? t.translatedText! : t.text,
-            quoting: t.quoting ? tweetForDisplay(t.quoting as MainTweet) : null,
-          } as MainTweet;
-        }
-
-        (async () => {
-          try {
-            // Step 1: Preclassify the single tweet
-            const batchId = nextBatchId();
-            let latestClassification: Classification | null = null;
-
-            for await (const classification of preClassify([tweetForDisplay(entry.tweet)], locale)) {
-              classification.batchId = batchId;
-              attachTranslatedLocale(classification, entry.tweet);
-              cacheClassification(classification, batchId);
-              latestClassification = classification;
-              broadcastClassification(classification);
-            }
-
-            if (!latestClassification) {
-              onHoldTweets.delete(entry.tweet.id);
-              clearInterval(keepAlive);
-              return;
-            }
-
-            // If preclassification ultimately failed (e.g. worker 504 after retries),
-            // the final yield may have zero claims. Broadcast the empty classification
-            // so the UI can remove the Fact-Check All button (condition 1), but leave
-            // the tweet in onHoldTweets so the user can retry by clicking Disinfact again.
-            if (!latestClassification.claims || latestClassification.claims.length === 0) {
-              console.error(`[background] PROCESS_ON_HOLD: preclassification produced no claims for ${entry.tweet.id} after retries; broadcasting empty and leaving on hold`);
-              latestClassification.onHold = false;
-              broadcastClassification(latestClassification);
-              clearInterval(keepAlive);
-              return;
-            }
-
-            const classification = latestClassification;
-
-            // Step 2: Mark as "Researching..." then classify
-            const researchingCls = markClaimsResearching(classification);
-            researchingCls.batchId = batchId;
-            cacheClassification(researchingCls, batchId);
-            broadcastClassification(researchingCls);
-
-            const tweet = entry.tweet;
-            const hash = entry.hash;
-
-            // Extract user-shared URLs from the tweet (and its quoted tweet)
-            let tweetUrls: string[] | undefined;
-            if (tweet) {
-              tweetUrls = extractTweetUrls(tweet.text);
-              if (tweet.quoting?.text) {
-                tweetUrls.push(...extractTweetUrls(tweet.quoting.text));
-              }
-              if (tweetUrls.length === 0) tweetUrls = undefined;
-            }
-
-            console.log(`[background] PROCESS_ON_HOLD starting classification for ${classification.id} after preclassification (${classification.claims?.length ?? 0} claim(s))`);
-
-            (async () => {
-              try {
-                let latestClassification = classification;
-                for await (const updated of classify(classification, researchCache, locale, (upd) => {
-                  upd.batchId = batchId;
-                  cacheClassification(upd, batchId);
-                  broadcastClassification(upd);
-                }, tweetUrls, (claimText) => {
-                  pendingFreshResearchClaims.add(`${classification.id}:${claimText}`);
-                })) {
-                  updated.batchId = batchId;
-                  cacheClassification(updated, batchId);
-                  broadcastClassification(updated);
-                  latestClassification = updated;
-                }
-
-                if (tweet && hash) {
-                  // upsertProcessedClaims internally awaits any in-flight fresh research
-                  // (Fact-Check All / early Disinfact clicks) via awaitTweetClaimResearch,
-                  // so it persists the tweet + fully classified claims in a SINGLE
-                  // upsert_tweet_pipeline call. The fresh-research path is told to skip
-                  // its own per-claim upsertClaims write so this is the only DB write.
-                  upsertProcessedClaims(tweet, hash, latestClassification, researchCache, locale)
-                    .catch(e => console.error("[background] PROCESS_ON_HOLD upsert error:", e));
-                }
-                // Also guard against reResearchDbClaims when this tweet shows up as a DB hit
-                reResearchedTweetIds.add(classification.id);
-
-                // Set claimLocale/reasoningLocale so SET_DISPLAYED_LOCALE
-                // can detect language mismatches without a DB re-fetch.
-                const clsAfter = classificationCache.get(classification.id)?.classification;
-                if (clsAfter?.claims) {
-                  const updatedClaims = clsAfter.claims.map(cl => ({
-                    ...cl,
-                    claimLocale: cl.claimLocale ?? locale,
-                    reasoningLocale: cl.reasoningLocale ?? locale,
-                  }));
-                  cacheClassification({ ...clsAfter, claims: updatedClaims }, batchId);
-                }
-              } catch (err) {
-                console.error("[background] PROCESS_ON_HOLD classify error:", err);
-              }
-            })();
-
-            // Remove processed tweet from onHoldTweets
-            onHoldTweets.delete(entry.tweet.id);
-          } catch (err: any) {
-            console.error("[background] PROCESS_ON_HOLD pipeline error:", err);
-          } finally {
-            clearInterval(keepAlive);
-          }
-        })();
+        // Claim it immediately so a double-click can't start two pipelines.
+        onHoldTweets.delete(tweetId);
+        console.log(`[background] PROCESS_ON_HOLD: ${tweetId}`);
+        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false);
         return;
       }
 
@@ -1832,10 +2345,12 @@ export default defineBackground(() => {
         const { tweetId, locale: msgLocale } = message.data;
         factCheckAllTweetIds.add(tweetId);
         console.log(`[background] FACT_CHECK_ALL for ${tweetId}`);
+        // A fresh Fact-Check All is a deliberate retry: clear any claims abandoned on a prior
+        // batch for this tweet so they can be waitlisted again.
+        for (const k of Array.from(abandonedFactCheckKeys)) if (k.startsWith(`${tweetId}:`)) abandonedFactCheckKeys.delete(k);
 
-        // Release every claim still showing a Disinfact button now — including
-        // change-prone DB claims that carry cached values, not just fresh
-        // no-DB-match ones.
+        // Waitlist every claim still showing a Disinfact button now — including change-prone
+        // DB claims that carry cached values, not just fresh no-DB-match ones.
         const hit = classificationCache.get(tweetId);
         if (hit) {
           const classification = hit.classification;
@@ -1843,7 +2358,7 @@ export default defineBackground(() => {
           const locale = msgLocale ?? getUiLocale();
           for (const cl of classification.claims ?? []) {
             if (cl.reclassifyOnHold) {
-              releaseFreshResearchClaim(tweetId, cl.text, batchId, locale);
+              enqueueFactCheckClaim(tweetId, cl.text, batchId, locale);
             }
           }
         }
@@ -1891,17 +2406,24 @@ export default defineBackground(() => {
           const cachedTweet = tweetCache.get(classificationId);
           const tweetUrls = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
           console.log(`[background] RECLASSIFY_ON_HOLD_CLICK: starting fresh research for pipeline claim "${claimText.slice(0, 40)}..."`);
-          const pipelineResearchPromise = (async () => {
+          const pipelineResearchPromise = gatedSpendAttributed(async (onBalanceError) => {
+            let handled = false, gotUpdate = false;
             try {
-              for await (const updated of refreshClaim(pipelineRestored, claimText, researchCache, locale, tweetUrls)) {
-                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+              handled = await pullClaimBeforeClassify(classificationId, claimText, locale);
+              if (!handled) {
+                for await (const updated of refreshClaim(pipelineRestored, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
+                  gotUpdate = true;
+                  mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+                }
               }
             } catch (err: any) {
               console.error("[background] RECLASSIFY_ON_HOLD_CLICK pipeline refresh error:", err);
             } finally {
               ongoingClaimRefreshes.delete(refreshKey);
+              // Any backend failure → revert to the on-hold button so the user can retry.
+              if (!(handled || gotUpdate)) revertClaimToOnHold(classificationId, claimText, anyBatchId);
             }
-          })();
+          });
           trackClaimResearch(refreshKey, pipelineResearchPromise);
           return;
         }
@@ -1958,17 +2480,24 @@ export default defineBackground(() => {
         const cachedTweet = tweetCache.get(classificationId);
         const tweetUrls = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
         console.log(`[background] RECLASSIFY_ON_HOLD_CLICK: starting refresh for "${claimText.slice(0, 40)}..."`);
-        const reclassifyResearchPromise = (async () => {
+        const reclassifyResearchPromise = gatedSpendAttributed(async (onBalanceError) => {
+          let handled = false, gotUpdate = false;
           try {
-            for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls)) {
-              mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+            handled = await pullClaimBeforeClassify(classificationId, claimText, locale);
+            if (!handled) {
+              for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
+                gotUpdate = true;
+                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+              }
             }
           } catch (err: any) {
             console.error("[background] RECLASSIFY_ON_HOLD_CLICK refresh error:", err);
           } finally {
             ongoingClaimRefreshes.delete(refreshKey);
+            // Any backend failure → revert to the on-hold button so the user can retry.
+            if (!(handled || gotUpdate)) revertClaimToOnHold(classificationId, claimText, anyBatchId);
           }
-        })();
+        });
         trackClaimResearch(refreshKey, reclassifyResearchPromise);
         return;
       }
@@ -2001,52 +2530,24 @@ export default defineBackground(() => {
           const tweetText = unheld.translatedText ?? tweet.translatedText ?? tweet.text;
           if (dbClaims) {
             // DB hit path: use cached claims for highlight localization
-            localizeHighlights(tweetId, tweetText, displayedLocale, dbClaims, unheld, locale, mergeHighlightsFor(unheld))
-              .catch(e => console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e));
+            gatedSpend(() => localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, unheld, locale, mergeHighlightsFor(unheld))
+              .catch(e => console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e)));
           } else {
             // Freshly classified: derive claims from classification for localization
             const clsDbClaims = claimsToDbClaims(unheld);
-            localizeHighlights(tweetId, tweetText, displayedLocale, clsDbClaims, unheld, locale, mergeHighlightsFor(unheld))
-              .catch(e => console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e));
+            gatedSpend(() => localizeHighlights(tweetId, tweet, tweetText, displayedLocale, clsDbClaims, unheld, locale, mergeHighlightsFor(unheld))
+              .catch(e => console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e)));
           }
         }
 
-        // Also fire re-research + translation threads if we have DB claims
+        // Also fire re-research if we have DB claims. Claim/reasoning translation is
+        // NEVER automatic — only each claim's own popover translate button (TRANSLATE_CLAIM)
+        // does that, on an explicit per-claim click. This button only relocalizes
+        // highlights + re-researches for the newly-displayed locale.
         reResearchedTweetIds.add(tweetId);
         if (dbEntry && dbClaims) {
-          // Re-research + highlight localization only; translation is handled explicitly below.
           reResearchDbClaims(dbEntry.tweet, dbClaims, unheld, researchCache, locale)
             .catch(e => console.error('[TRANSLATE_FACT_CHECKS] reResearch error:', e));
-
-          // The top-of-tweet "Translate Fact-Checks" button is the one allowed
-          // auto-translation path: translate claim and/or reasoning if they are not
-          // already in the extension's language.
-          const listLocales = (obj: any): string[] => {
-            if (!obj) return [];
-            if (typeof obj === 'string') {
-              try { return Object.keys(JSON.parse(obj)); } catch { return []; }
-            }
-            if (typeof obj === 'object') return Object.keys(obj);
-            return [];
-          };
-          for (const dc of dbClaims) {
-            const claimText = extractClaimText(dc.claim);
-            const claimLocale = getClaimLocale(dc.claim);
-            const sourceLocale = claimLocale;
-            const claimLocales = listLocales(dc.claim);
-            const reasoningLocales = listLocales(dc.reasoning);
-            const reasonStr = extractReasoningText(dc.reasoning, sourceLocale);
-
-            if (!claimLocales.some((l: string) => sameLanguage(l, locale))) {
-              backgroundTranslateClaim(claimText, claimText, claimLocale, locale, unheld, researchCache, mergeClaimTranslation(unheld, claimText))
-                .catch(e => console.error('[TRANSLATE_FACT_CHECKS] claim translation error:', e));
-            }
-
-            if (reasonStr && !reasoningLocales.some((l: string) => sameLanguage(l, locale)) && !sameLanguage(sourceLocale, locale)) {
-              backgroundTranslate(claimText, claimText, reasonStr, sourceLocale, locale, researchCache, unheld, mergeReasoningTranslation(unheld, claimText))
-                .catch(e => console.error('[TRANSLATE_FACT_CHECKS] reasoning translation error:', e));
-            }
-          }
         }
         return;
       }
@@ -2089,9 +2590,9 @@ export default defineBackground(() => {
               lastClassification,
             });
           }
-          backgroundTranslate(
-            cacheKey, cacheKey, claim.note,
-            claim.reasoningLocale, locale, researchCache, classification,
+          gatedSpend(() => backgroundTranslate(
+            cacheKey, cacheKey, claim.note!,
+            claim.reasoningLocale!, locale, researchCache, classification,
             (upd: Classification) => {
               upd.batchId = classification.batchId;
               const existing = classificationCache.get(classification.id);
@@ -2106,7 +2607,7 @@ export default defineBackground(() => {
                 broadcastClassification(mergedCls);
               }
             }
-          ).catch(e => console.error('[TRANSLATE_CLAIM] reasoning translation error:', e));
+          )).catch(e => console.error('[TRANSLATE_CLAIM] reasoning translation error:', e));
         } else if (translateWhat === "claim" && claim.claimLocale && claim.rewritten) {
           // Ignore the request if the claim is already in the same language as the UI
           if (sameLanguage(claim.claimLocale, locale)) {
@@ -2128,9 +2629,9 @@ export default defineBackground(() => {
               lastClassification,
             });
           }
-          backgroundTranslateClaim(
-            canonicalClaimText, claim.rewritten,
-            claim.claimLocale, locale, classification, researchCache,
+          gatedSpend(() => backgroundTranslateClaim(
+            canonicalClaimText, claim.rewritten!,
+            claim.claimLocale!, locale, classification, researchCache,
             (upd: Classification) => {
               upd.batchId = classification.batchId;
               const existing = classificationCache.get(classification.id);
@@ -2146,7 +2647,7 @@ export default defineBackground(() => {
                 broadcastClassification(mergedCls);
               }
             }
-          ).catch(e => console.error('[TRANSLATE_CLAIM] claim translation error:', e));
+          )).catch(e => console.error('[TRANSLATE_CLAIM] claim translation error:', e));
         }
         return;
       }
@@ -2186,48 +2687,27 @@ export default defineBackground(() => {
           updatedCls.translatedLocale = tweet.destinationLanguage;
         }
         // Clear translateFactChecksOnHold if the new locale already has highlights
-        if (updatedCls.translateFactChecksOnHold && textLocale && updatedCls.claims?.some(cl => cl.highlight?.[textLocale])) {
+        if (updatedCls.translateFactChecksOnHold && textLocale && updatedCls.claims?.some(cl => !!resolveHighlightRange(cl.highlight, textLocale))) {
           updatedCls.translateFactChecksOnHold = undefined;
           console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} clearing translateFactChecksOnHold (highlights exist for ${textLocale})`);
         }
         cacheClassification(updatedCls, hit.batchIds.values().next().value ?? '');
         broadcastClassification(updatedCls);
 
-        // If highlights for this locale are not yet present, decide whether to
-        // auto-localize or show the Translate Fact-Checks button.
-        const needsLocalization = (classification.claims ?? []).some(cl => !cl.highlight?.[textLocale]);
-        console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} needsLocalization=${needsLocalization}, existing highlights=${JSON.stringify(classification.claims?.map(cl => cl.highlight))}`);
+        // If the newly-displayed locale's highlights aren't already cached, NEVER
+        // localize automatically (localizing charges the balance). Instead surface our
+        // Translate Fact-Checks button; localization runs ONLY when the user clicks it
+        // (the TRANSLATE_FACT_CHECKS path). If they ARE cached, the broadcast above
+        // already injected them instantly.
+        // Same-language subtag differences (en vs en-US) resolve via the base language,
+        // so they DON'T count as missing → no spurious paid localization for the same language.
+        const needsLocalization = (classification.claims ?? []).some(cl => !resolveHighlightRange(cl.highlight, textLocale));
+        console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} needsLocalization=${needsLocalization}`);
         if (needsLocalization) {
-          const existingHighlightLocales = new Set(
-            (classification.claims ?? []).flatMap(cl => Object.keys(cl.highlight ?? {}))
-          );
-          const hasMatchingHighlightLocale = textLocale && Array.from(existingHighlightLocales).some(hl => sameLanguage(hl, textLocale));
-          const claimLocaleHint = updatedCls.claims?.[0]?.claimLocale ?? classification.claims?.[0]?.claimLocale;
-
-          // Hold for Translate Fact-Checks when:
-          // 1. We have existing highlights but none in the new text's language, OR
-          // 2. We don't know the claim locale yet, OR
-          // 3. The claim locale is in a different language from the displayed text.
-          const defaultDisplayedLocale = tweet.destinationLanguage ?? tweet.sourceLanguage;
-          const switchingFromDefault = textLocale && defaultDisplayedLocale && !sameLanguage(textLocale, defaultDisplayedLocale);
-          const shouldHoldForTranslation =
-            (existingHighlightLocales.size > 0 && !hasMatchingHighlightLocale) ||
-            switchingFromDefault ||
-            !claimLocaleHint ||
-            (textLocale && !sameLanguage(textLocale, claimLocaleHint));
-
-          if (shouldHoldForTranslation) {
-            console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} holding for Translate Fact-Checks (text=${textLocale}, claim=${claimLocaleHint ?? 'unknown'}, existing=[${Array.from(existingHighlightLocales).join(',')}])`);
-            updatedCls.translateFactChecksOnHold = true;
-            cacheClassification(updatedCls, hit.batchIds.values().next().value ?? '');
-            broadcastClassification(updatedCls);
-          } else {
-            const dbClaims = claimsToDbClaims(classification);
-            const tweetText = updatedCls.translatedText ?? tweet.text;
-            console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} starting localization for ${textLocale} with ${dbClaims.length} claims, uiLocale=${effectiveUiLocale}`);
-            localizeHighlights(tweetId, tweetText, textLocale, dbClaims, updatedCls, effectiveUiLocale, mergeHighlightsFor(updatedCls))
-              .catch(e => console.error('[background] SET_DISPLAYED_LOCALE highlight error:', e));
-          }
+          console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} no cached highlights for ${textLocale} → holding for Translate Fact-Checks button`);
+          updatedCls.translateFactChecksOnHold = true;
+          cacheClassification(updatedCls, hit.batchIds.values().next().value ?? '');
+          broadcastClassification(updatedCls);
         }
       }
     });

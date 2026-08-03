@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Pemeriksaan",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Baki"
+  },
+  "gifted": {
+    "message": "percuma"
+  },
+  "customTopup": {
+    "message": "Tersuai"
+  },
+  "customAmountLabel": {
+    "message": "Jumlah tambah nilai tersuai dalam dolar AS"
+  },
+  "increase": {
+    "message": "Tambah"
+  },
+  "decrease": {
+    "message": "Kurang"
+  },
+  "topUpBalance": {
+    "message": "Tambah Nilai Baki"
+  },
+  "processing": {
+    "message": "Memproses…"
+  },
+  "checkoutError": {
+    "message": "Tidak dapat memulakan pembayaran. Sila cuba lagi."
+  },
+  "termsOfService": {
+    "message": "Terma Perkhidmatan"
+  },
+  "privacyPolicy": {
+    "message": "Dasar Privasi"
+  },
+  "disclaimerAgree": {
+    "message": "Dengan menambah nilai, anda bersetuju dengan %TOS% dan %PRIVACY% kami."
+  },
+  "disclaimerFx": {
+    "message": "Yuran pertukaran mata wang mungkin dikenakan jika anda membayar dalam mata wang selain USD."
+  },
+  "signOut": {
+    "message": "Log keluar"
+  },
+  "onboardDisinfactClick": {
+    "message": "Mengklik %BTN% mendedahkan dakwaan dan akan mengenakan caj pada baki anda"
+  },
+  "onboardDisinfactTap": {
+    "message": "Menyentuh %BTN% mendedahkan dakwaan dan akan mengenakan caj pada baki anda"
+  },
+  "onboardWillCharge": {
+    "message": "Mengklik %BTN% akan mengenakan caj pada baki anda"
+  },
+  "onboardFactcheck": {
+    "message": "Mengklik %BTN% akan mengenakan caj pada baki anda"
+  },
+  "onboardTranslations": {
+    "message": "Mengklik %BTN% akan mengenakan caj pada baki anda"
+  },
+  "onboardRefreshes": {
+    "message": "Mengklik %BTN% akan mengenakan caj pada baki anda"
+  },
+  "topUp": {
+    "message": "Tambah Nilai"
+  },
+  "showMore": {
+    "message": "Tunjuk lagi"
+  },
+  "showLess": {
+    "message": "Tunjuk kurang"
+  },
+  "landingTagline1": {
+    "message": "Dedahkan Kebenaran. Cari Pembohongan."
+  },
+  "landingTagline2": {
+    "message": "Tiada lagi Disinformasi. Hanya Fakta."
+  },
+  "continueWithX": {
+    "message": "Teruskan dengan X"
+  },
+  "continueWithGoogle": {
+    "message": "Teruskan dengan Google"
+  },
+  "continueWithApple": {
+    "message": "Teruskan dengan Apple"
+  },
+  "lastUsed": {
+    "message": "Terakhir Digunakan"
+  },
+  "cleanupTagline": {
+    "message": "Bersihkan Suapan X anda."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Di dalam Amerika Syarikat, hanya penduduk negeri Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Utara, Dakota Utara, Oklahoma, Oregon, Pennsylvania, Carolina Selatan, Dakota Selatan, Tennessee, Texas, Utah, Washington, Wisconsin, dan Wyoming yang boleh menggunakan DisinfaX dan menambah nilai baki mereka; Washington, D.C., semua wilayah A.S., dan mana-mana negeri yang tidak disenaraikan dikecualikan. Di luar Amerika Syarikat, ia tersedia di Kanada, Australia, New Zealand, Singapura, Afrika Selatan, Jepun, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, dan Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Semak Semua Fakta"
   }
 }

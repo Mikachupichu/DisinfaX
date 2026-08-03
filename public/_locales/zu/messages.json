@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Hlola",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Ibhalansi"
+  },
+  "gifted": {
+    "message": "isipho"
+  },
+  "customTopup": {
+    "message": "Ngokwezifiso"
+  },
+  "customAmountLabel": {
+    "message": "Inani lokufaka imali ngokwezifiso ngamadola aseMelika"
+  },
+  "increase": {
+    "message": "Khuphula"
+  },
+  "decrease": {
+    "message": "Nciphisa"
+  },
+  "topUpBalance": {
+    "message": "Faka Ibhalansi"
+  },
+  "processing": {
+    "message": "Iyacutshungulwa…"
+  },
+  "checkoutError": {
+    "message": "Ayikwazanga ukuqala inkokhelo. Sicela uzame futhi."
+  },
+  "termsOfService": {
+    "message": "Imigomo Yesevisi"
+  },
+  "privacyPolicy": {
+    "message": "Inqubomgomo Yobumfihlo"
+  },
+  "disclaimerAgree": {
+    "message": "Ngokufaka imali, uyavuma %TOS% kanye %PRIVACY% yethu."
+  },
+  "disclaimerFx": {
+    "message": "Kungadingeka izindleko zokushintsha imali uma ukhokha ngemali engeyona i-USD."
+  },
+  "signOut": {
+    "message": "Phuma"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ukuchofoza u-%BTN% kubonisa izimangalo futhi kuzokhipha imali kwibhalansi yakho"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ukuthepha u-%BTN% kubonisa izimangalo futhi kuzokhipha imali kwibhalansi yakho"
+  },
+  "onboardWillCharge": {
+    "message": "Ukuchofoza u-%BTN% kuzokhipha imali kwibhalansi yakho"
+  },
+  "onboardFactcheck": {
+    "message": "Ukuchofoza u-%BTN% kuzokhipha imali kwibhalansi yakho"
+  },
+  "onboardTranslations": {
+    "message": "Ukuchofoza u-%BTN% kuzokhipha imali kwibhalansi yakho"
+  },
+  "onboardRefreshes": {
+    "message": "Ukuchofoza u-%BTN% kuzokhipha imali kwibhalansi yakho"
+  },
+  "topUp": {
+    "message": "Faka Imali"
+  },
+  "showMore": {
+    "message": "Bonisa okwengeziwe"
+  },
+  "showLess": {
+    "message": "Bonisa okuncane"
+  },
+  "landingTagline1": {
+    "message": "Dalula Iqiniso. Thola Amanga."
+  },
+  "landingTagline2": {
+    "message": "Awasekho Amanga. Amaqiniso Kuphela."
+  },
+  "continueWithX": {
+    "message": "Qhubeka nge-X"
+  },
+  "continueWithGoogle": {
+    "message": "Qhubeka nge-Google"
+  },
+  "continueWithApple": {
+    "message": "Qhubeka nge-Apple"
+  },
+  "lastUsed": {
+    "message": "Okokugcina Ukusetshenziswa"
+  },
+  "cleanupTagline": {
+    "message": "Hlanza i-X Feed yakho."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ngaphakathi e-United States, izakhamuzi zase-Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne-Wyoming kuphela ezingasebenzisa i-DisinfaX futhi zifake imali yazo; i-Washington, D.C., zonke izindawo zase-U.S., nanoma yiziphi izifundazwe ezingabhaliwe azifakiwe. Ngaphandle kwe-United States, iyatholakala e-Canada, Australia, New Zealand, Singapore, eNingizimu Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne-Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Hlola konke"
   }
 }

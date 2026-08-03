@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Faktantarkistus",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Lahjaksi"
+  },
+  "customTopup": {
+    "message": "Mukautettu"
+  },
+  "customAmountLabel": {
+    "message": "Mukautettu latausmäärä Yhdysvaltain dollareina"
+  },
+  "increase": {
+    "message": "Lisää"
+  },
+  "decrease": {
+    "message": "Vähennä"
+  },
+  "topUpBalance": {
+    "message": "Lataa saldoa"
+  },
+  "processing": {
+    "message": "Käsitellään…"
+  },
+  "checkoutError": {
+    "message": "Kassalle siirtymistä ei voitu aloittaa. Yritä uudelleen."
+  },
+  "termsOfService": {
+    "message": "Käyttöehdot"
+  },
+  "privacyPolicy": {
+    "message": "Tietosuojakäytäntö"
+  },
+  "disclaimerAgree": {
+    "message": "Lataamalla saldoa hyväksyt %TOS% ja %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Valuutanvaihtomaksuja voidaan periä, jos maksat muussa valuutassa kuin USD."
+  },
+  "signOut": {
+    "message": "Kirjaudu ulos"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%-painikkeen napsauttaminen näyttää väitteet ja veloittaa saldoasi"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%-painikkeen napauttaminen näyttää väitteet ja veloittaa saldoasi"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "topUp": {
+    "message": "Lataa saldoa"
+  },
+  "showMore": {
+    "message": "Näytä lisää"
+  },
+  "showLess": {
+    "message": "Näytä vähemmän"
+  },
+  "landingTagline1": {
+    "message": "Paljasta totuus. Löydä valheet."
+  },
+  "landingTagline2": {
+    "message": "Ei enää disinformaatiota. Vain faktoja."
+  },
+  "continueWithX": {
+    "message": "Jatka X:llä"
+  },
+  "continueWithGoogle": {
+    "message": "Jatka Googlella"
+  },
+  "continueWithApple": {
+    "message": "Jatka Applella"
+  },
+  "lastUsed": {
+    "message": "Viimeksi käytetty"
+  },
+  "cleanupTagline": {
+    "message": "Siisti X-syötteesi."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Yhdysvalloissa vain seuraavien osavaltioiden asukkaat voivat käyttää DisinfaX-palvelua ja ladata saldoaan: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Pohjois-Carolina, Pohjois-Dakota, Oklahoma, Oregon, Pennsylvania, Etelä-Carolina, Etelä-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ja Wyoming; Washington, D.C., kaikki Yhdysvaltain alueet ja kaikki luettelemattomat osavaltiot on suljettu pois. Yhdysvaltain ulkopuolella se on saatavilla Kanadassa, Australiassa, Uudessa-Seelannissa, Singaporessa, Etelä-Afrikassa, Japanissa, Taiwanissa, Indonesiassa, Thaimaassa, Filippiineillä, Malesiassa, Vietnamissa ja Sveitsissä."
+  },
+  "factCheckAllButton": {
+    "message": "Tarkista kaikki"
   }
 }

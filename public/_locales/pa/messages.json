@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "ਟੌਪ ਅੱਪ"
+  },
+  "showMore": {
+    "message": "ਹੋਰ ਵੇਖੋ"
+  },
+  "showLess": {
+    "message": "ਘੱਟ ਵੇਖੋ"
+  },
+  "landingTagline1": {
+    "message": "ਸੱਚ ਦਾ ਖੁਲਾਸਾ ਕਰੋ। ਝੂਠ ਲੱਭੋ।"
+  },
+  "landingTagline2": {
+    "message": "ਹੁਣ ਕੋਈ ਗਲਤ ਜਾਣਕਾਰੀ ਨਹੀਂ। ਸਿਰਫ਼ ਤੱਥ।"
+  },
+  "continueWithX": {
+    "message": "X ਨਾਲ ਜਾਰੀ ਰੱਖੋ"
+  },
+  "continueWithGoogle": {
+    "message": "Google ਨਾਲ ਜਾਰੀ ਰੱਖੋ"
+  },
+  "continueWithApple": {
+    "message": "Apple ਨਾਲ ਜਾਰੀ ਰੱਖੋ"
+  },
+  "lastUsed": {
+    "message": "ਆਖਰੀ ਵਾਰ ਵਰਤਿਆ"
+  },
+  "cleanupTagline": {
+    "message": "ਆਪਣੀ X ਫੀਡ ਸਾਫ਼ ਕਰੋ।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ਸੰਯੁਕਤ ਰਾਜ ਅਮਰੀਕਾ ਵਿੱਚ, ਸਿਰਫ਼ ਅਲਾਬਾਮਾ, ਐਰੀਜ਼ੋਨਾ, ਕੈਲੀਫੋਰਨੀਆ, ਕੋਲੋਰਾਡੋ, ਕਨੈਕਟੀਕਟ, ਡੈਲਾਵੇਅਰ, ਫਲੋਰੀਡਾ, ਆਈਡਾਹੋ, ਇਲੀਨੋਇਸ, ਇੰਡੀਆਨਾ, ਆਇਓਵਾ, ਕੈਂਸਸ, ਕੈਂਟਕੀ, ਲੁਈਜ਼ੀਆਨਾ, ਮੇਨ, ਮੈਸਾਚੂਸਟਸ, ਮਿਸੀਸਿਪੀ, ਮਿਸੂਰੀ, ਮੋਂਟਾਨਾ, ਨਿਊ ਹੈਂਪਸ਼ਾਇਰ, ਨਿਊ ਮੈਕਸੀਕੋ, ਨਿਊ ਯਾਰਕ, ਨਾਰਥ ਕੈਰੋਲੀਨਾ, ਨਾਰਥ ਡਕੋਟਾ, ਓਕਲਾਹੋਮਾ, ਓਰੇਗਨ, ਪੈਨਸਿਲਵੇਨੀਆ, ਸਾਊਥ ਕੈਰੋਲੀਨਾ, ਸਾਊਥ ਡਕੋਟਾ, ਟੈਨੇਸੀ, ਟੈਕਸਸ, ਯੂਟਾਹ, ਵਾਸ਼ਿੰਗਟਨ, ਵਿਸਕੌਨਸਿਨ ਅਤੇ ਵਾਇਓਮਿੰਗ ਦੇ ਨਿਵਾਸੀ DisinfaX ਦੀ ਵਰਤੋਂ ਕਰ ਸਕਦੇ ਹਨ ਅਤੇ ਆਪਣਾ ਬੈਲੇਂਸ ਟੌਪ ਅੱਪ ਕਰ ਸਕਦੇ ਹਨ; ਵਾਸ਼ਿੰਗਟਨ, D.C., ਸਾਰੇ ਯੂ.ਐੱਸ. ਪ੍ਰਦੇਸ਼, ਅਤੇ ਕੋਈ ਵੀ ਸੂਚੀ ਵਿੱਚ ਸ਼ਾਮਲ ਨਾ ਕੀਤੇ ਗਏ ਰਾਜ ਬਾਹਰ ਰੱਖੇ ਗਏ ਹਨ। ਸੰਯੁਕਤ ਰਾਜ ਅਮਰੀਕਾ ਤੋਂ ਬਾਹਰ, ਇਹ ਕੈਨੇਡਾ, ਆਸਟ੍ਰੇਲੀਆ, ਨਿਊਜ਼ੀਲੈਂਡ, ਸਿੰਗਾਪੁਰ, ਦੱਖਣੀ ਅਫ਼ਰੀਕਾ, ਜਾਪਾਨ, ਤਾਈਵਾਨ, ਇੰਡੋਨੇਸ਼ੀਆ, ਥਾਈਲੈਂਡ, ਫਿਲੀਪੀਨਜ਼, ਮਲੇਸ਼ੀਆ, ਵੀਅਤਨਾਮ ਅਤੇ ਸਵਿਟਜ਼ਰਲੈਂਡ ਵਿੱਚ ਉਪਲਬਧ ਹੈ।"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "ਤੱਥ ਜਾਂਚ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ਬਕਾਇਆ"
+  },
+  "gifted": {
+    "message": "ਤੋਹਫ਼ਾ"
+  },
+  "customTopup": {
+    "message": "ਕਸਟਮ"
+  },
+  "customAmountLabel": {
+    "message": "ਯੂਐਸ ਡਾਲਰ ਵਿੱਚ ਕਸਟਮ ਟਾਪ-ਅੱਪ ਰਕਮ"
+  },
+  "increase": {
+    "message": "ਵਧਾਓ"
+  },
+  "decrease": {
+    "message": "ਘਟਾਓ"
+  },
+  "topUpBalance": {
+    "message": "ਬਕਾਇਆ ਟਾਪ ਅੱਪ ਕਰੋ"
+  },
+  "processing": {
+    "message": "ਪ੍ਰਕਿਰਿਆ ਹੋ ਰਹੀ ਹੈ…"
+  },
+  "checkoutError": {
+    "message": "ਚੈੱਕਆਊਟ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "termsOfService": {
+    "message": "ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ"
+  },
+  "privacyPolicy": {
+    "message": "ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ"
+  },
+  "disclaimerAgree": {
+    "message": "ਟਾਪ ਅੱਪ ਕਰਕੇ, ਤੁਸੀਂ ਸਾਡੀਆਂ %TOS% ਅਤੇ %PRIVACY% ਨਾਲ ਸਹਿਮਤ ਹੁੰਦੇ ਹੋ।"
+  },
+  "disclaimerFx": {
+    "message": "ਜੇ ਤੁਸੀਂ USD ਤੋਂ ਇਲਾਵਾ ਕਿਸੇ ਹੋਰ ਮੁਦਰਾ ਵਿੱਚ ਭੁਗਤਾਨ ਕਰਦੇ ਹੋ ਤਾਂ ਵਿਦੇਸ਼ੀ ਮੁਦਰਾ ਵਟਾਂਦਰਾ ਫੀਸ ਲਾਗੂ ਹੋ ਸਕਦੀ ਹੈ।"
+  },
+  "signOut": {
+    "message": "ਸਾਈਨ ਆਊਟ"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% ਉੱਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਦਾਅਵੇ ਦਿਖਾਈ ਦੇਣਗੇ ਅਤੇ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ਉੱਤੇ ਟੈਪ ਕਰਨ ਨਾਲ ਦਾਅਵੇ ਦਿਖਾਈ ਦੇਣਗੇ ਅਤੇ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% ਉੱਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% ਉੱਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% ਉੱਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% ਉੱਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ"
+  },
+  "factCheckAllButton": {
+    "message": "ਸਭ ਦੀ ਤੱਥ ਜਾਂਚ ਕਰੋ"
   }
 }

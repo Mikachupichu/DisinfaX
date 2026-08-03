@@ -87,6 +87,7 @@ export function parseTweetDetail(responseText: string): MainTweet[] | void {
         return parsed;
     }).filter(Boolean) as MainTweet[];
 
+    hydrateReplyChains(tweetData);
     return tweetData;
 }
 
@@ -111,6 +112,9 @@ function parseTweets(entries: any | undefined, tweetType: TweetType, isItem: boo
         if (!tweetResults) return logTweetResultsParsingError(tweetType);
         return parseTweet(tweetResults, tweetType);
     });
+    // Resolve any in-batch reply parents to nested tweet objects (rare in timelines,
+    // where the parent usually isn't in the payload → replyingTo stays null).
+    hydrateReplyChains(tweetData);
     return tweetData;
 }
 
@@ -134,6 +138,10 @@ function parseTweet(tweetResults: any, tweetType: TweetType, mainId: string | nu
     const text = tweetResults.note_tweet?.note_tweet_results?.result?.text ?? legacy.full_text;
     if (!text) return logTweetParsingError(TweetFieldType.Text, tweetType);
 
+    // Raw original-language body. This exact string is what gets hashed to key the
+    // tweet in the DB, so keep it verbatim (no note_tweet expansion, no trimming).
+    const fullText = legacy.full_text;
+
     const core = tweetResults.core;
     if (!core) return logTweetParsingError(TweetFieldType.Core, tweetType);
 
@@ -146,7 +154,7 @@ function parseTweet(tweetResults: any, tweetType: TweetType, mainId: string | nu
     const verification = userResults.verification;
     const usertype = verification?.verified_type as Usertype ?? (verification?.verified || userResults.is_blue_verified ? Usertype.Verified : Usertype.Regular);
 
-    const replyingTo = legacy.in_reply_to_status_id_str ?? mainId ?? null;
+    const replyParentId: string | null = legacy.in_reply_to_status_id_str ?? mainId ?? null;
     const conversationId = legacy.conversation_id_str ?? id;
 
     // Extract Grok auto-translation data if available
@@ -166,9 +174,78 @@ function parseTweet(tweetResults: any, tweetType: TweetType, mainId: string | nu
     const quotedStatusResult = tweetResults.quoted_status_result?.result;
     if (quotedStatusResult)
         quoting = parseTweet(quotedStatusResult, tweetType, mainId);
-    else if (!replyingTo) return { id, text, username, quoting: null, replyingTo: null, usertype, conversationId, translatedText, sourceLanguage, destinationLanguage } as MainTweet
 
-    return { id, text, username, quoting, replyingTo, usertype, conversationId, translatedText, sourceLanguage, destinationLanguage } as MainTweet;
+    // `replyingTo` starts null; hydrateReplyChains() later swaps it for the parsed
+    // PARENT TWEET OBJECT using the transient __replyParentId marker below (stripped
+    // before the tweet leaves the parser). We never emit a bare status ID — quoted
+    // tweets and unresolvable parents simply keep replyingTo = null.
+    const tweet = { id, text, fullText, username, quoting, replyingTo: null, usertype, conversationId, translatedText, sourceLanguage, destinationLanguage } as MainTweet;
+    if (replyParentId) (tweet as any).__replyParentId = replyParentId;
+    return tweet;
+}
+
+/** Replace each top-level tweet's parent status-ID (captured as __replyParentId by
+ *  parseTweet) with the actual parsed PARENT TWEET OBJECT when that parent is present
+ *  in this batch/thread; otherwise leave replyingTo = null. The preclassify agent
+ *  expects reply context as a nested tweet (original-language text, exactly like a
+ *  quoted tweet), never a bare ID, and the tweet hash covers it.
+ *
+ *  Hardened against a hostile host platform (X could return malformed thread data):
+ *  linking is acyclic by construction (an edge is skipped if the parent's ancestry
+ *  already contains the child), and chain depth is bounded so a pathologically deep
+ *  thread can't overflow the recursive hash / JSON serialization. All __replyParentId
+ *  markers are stripped afterward so they never reach the hash input, worker, or agent. */
+export function hydrateReplyChains(tweets: (MainTweet | null | void)[]): void {
+    const MAX_THREAD_DEPTH = 20;
+    const list = tweets.filter(Boolean) as MainTweet[];
+    if (list.length === 0) return;
+
+    const byId = new Map<string, MainTweet>();
+    const parentIdOf = new Map<string, string | null>();
+    for (const t of list) {
+        byId.set(t.id, t);
+        parentIdOf.set(t.id, ((t as any).__replyParentId as string | undefined) ?? null);
+    }
+
+    // Would linking child→parent close a cycle? Walk parent IDs (bounded by a seen-set).
+    const linksToCycle = (childId: string, startParentId: string): boolean => {
+        const seen = new Set<string>();
+        let cur: string | null | undefined = startParentId;
+        while (cur) {
+            if (cur === childId || seen.has(cur)) return true;
+            seen.add(cur);
+            cur = parentIdOf.get(cur) ?? null;
+        }
+        return false;
+    };
+
+    for (const t of list) {
+        const parentId = parentIdOf.get(t.id) ?? null;
+        if (parentId && parentId !== t.id && byId.has(parentId) && !linksToCycle(t.id, parentId)) {
+            t.replyingTo = byId.get(parentId)!;
+        }
+    }
+
+    // Bound the linked chain depth (defensive: a malicious platform could craft a
+    // thousands-deep thread that would overflow recursive hashing/serialization).
+    for (const t of list) {
+        let node: MainTweet | null = t;
+        let depth = 0;
+        while (node?.replyingTo) {
+            if (++depth >= MAX_THREAD_DEPTH) { node.replyingTo = null; break; }
+            node = node.replyingTo;
+        }
+    }
+
+    // Strip transient parent-ID markers throughout the nested structure so they never
+    // reach the hash input / worker / agent.
+    const stripMarkers = (t: MainTweet | null, depth: number): void => {
+        if (!t || depth > MAX_THREAD_DEPTH) return;
+        delete (t as any).__replyParentId;
+        stripMarkers(t.quoting as MainTweet | null, depth + 1);
+        stripMarkers(t.replyingTo, depth + 1);
+    };
+    for (const t of list) stripMarkers(t, 0);
 }
 
 const excludedEntryIds = ['promoted', 'stories', 'pinned', 'cursor', 'trends-accounts', 'trend', 'who-to-follow', 'toptabsrpusermodule'];

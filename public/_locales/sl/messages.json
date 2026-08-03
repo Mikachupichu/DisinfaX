@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Preveri",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Stanje"
+  },
+  "gifted": {
+    "message": "Podarjeno"
+  },
+  "customTopup": {
+    "message": "Po meri"
+  },
+  "customAmountLabel": {
+    "message": "Znesek dopolnitve po meri v ameriških dolarjih"
+  },
+  "increase": {
+    "message": "Povečaj"
+  },
+  "decrease": {
+    "message": "Zmanjšaj"
+  },
+  "topUpBalance": {
+    "message": "Dopolni stanje"
+  },
+  "processing": {
+    "message": "Obdelava…"
+  },
+  "checkoutError": {
+    "message": "Blagajne ni bilo mogoče zagnati. Poskusite znova."
+  },
+  "termsOfService": {
+    "message": "Pogoji storitve"
+  },
+  "privacyPolicy": {
+    "message": "Pravilnik o zasebnosti"
+  },
+  "disclaimerAgree": {
+    "message": "Z dopolnitvijo se strinjate z našimi %TOS% in %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Če plačate v valuti, ki ni USD, se lahko zaračunajo stroški menjave valute."
+  },
+  "signOut": {
+    "message": "Odjava"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klik na %BTN% razkrije trditve in bo obremenil vaše dobroimetje"
+  },
+  "onboardDisinfactTap": {
+    "message": "Dotik na %BTN% razkrije trditve in bo obremenil vaše dobroimetje"
+  },
+  "onboardWillCharge": {
+    "message": "Klik na %BTN% bo obremenil vaše dobroimetje"
+  },
+  "onboardFactcheck": {
+    "message": "Klik na %BTN% bo obremenil vaše dobroimetje"
+  },
+  "onboardTranslations": {
+    "message": "Klik na %BTN% bo obremenil vaše dobroimetje"
+  },
+  "onboardRefreshes": {
+    "message": "Klik na %BTN% bo obremenil vaše dobroimetje"
+  },
+  "topUp": {
+    "message": "Napolni"
+  },
+  "showMore": {
+    "message": "Pokaži več"
+  },
+  "showLess": {
+    "message": "Pokaži manj"
+  },
+  "landingTagline1": {
+    "message": "Razkrijte resnico. Poiščite laži."
+  },
+  "landingTagline2": {
+    "message": "Nič več dezinformacij. Samo dejstva."
+  },
+  "continueWithX": {
+    "message": "Nadaljuj z X"
+  },
+  "continueWithGoogle": {
+    "message": "Nadaljuj z Google"
+  },
+  "continueWithApple": {
+    "message": "Nadaljuj z Apple"
+  },
+  "lastUsed": {
+    "message": "Nazadnje uporabljeno"
+  },
+  "cleanupTagline": {
+    "message": "Uredite svoj vir na X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Znotraj Združenih držav lahko DisinfaX uporabljajo in polnijo dobroimetje samo prebivalci držav Alabama, Arizona, Kalifornija, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Misisipi, Misuri, Montana, New Hampshire, Nova Mehika, New York, Severna Karolina, Severna Dakota, Oklahoma, Oregon, Pensilvanija, Južna Karolina, Južna Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin in Wyoming; Washington, D.C., vsa ozemlja ZDA in vse nenavedene države so izključene. Zunaj Združenih držav je storitev na voljo v Kanadi, Avstraliji, na Novi Zelandiji, v Singapurju, Južnoafriški republiki, na Japonskem, Tajvanu, v Indoneziji, na Tajskem, Filipinih, v Maleziji, Vietnamu in Švici."
+  },
+  "factCheckAllButton": {
+    "message": "Preveri vse"
   }
 }

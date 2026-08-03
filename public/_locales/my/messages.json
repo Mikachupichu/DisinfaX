@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "စစ်ဆေးခြင်း",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "လက်ကျန်ငွေ"
+  },
+  "gifted": {
+    "message": "လက်ဆောင်"
+  },
+  "customTopup": {
+    "message": "စိတ်ကြိုက်"
+  },
+  "customAmountLabel": {
+    "message": "အမေရိကန်ဒေါ်လာဖြင့် စိတ်ကြိုက်ငွေဖြည့်ပမာဏ"
+  },
+  "increase": {
+    "message": "တိုးမြှင့်ရန်"
+  },
+  "decrease": {
+    "message": "လျှော့ချရန်"
+  },
+  "topUpBalance": {
+    "message": "လက်ကျန်ငွေဖြည့်ရန်"
+  },
+  "processing": {
+    "message": "လုပ်ဆောင်နေသည်…"
+  },
+  "checkoutError": {
+    "message": "ငွေပေးချေမှုကို စတင်၍မရပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။"
+  },
+  "termsOfService": {
+    "message": "ဝန်ဆောင်မှုစည်းကမ်းချက်များ"
+  },
+  "privacyPolicy": {
+    "message": "ကိုယ်ရေးအချက်အလက်မူဝါဒ"
+  },
+  "disclaimerAgree": {
+    "message": "ငွေဖြည့်ခြင်းဖြင့် သင်သည် ကျွန်ုပ်တို့၏ %TOS% နှင့် %PRIVACY% ကို သဘောတူပါသည်။"
+  },
+  "disclaimerFx": {
+    "message": "USD မဟုတ်သော ငွေကြေးဖြင့် ပေးချေပါက နိုင်ငံခြားငွေလဲလှယ်ခ ကုန်ကျနိုင်ပါသည်။"
+  },
+  "signOut": {
+    "message": "ထွက်ရန်"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% ကို နှိပ်လိုက်ပါက အခိုင်အမာပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ကို တို့လိုက်ပါက အခိုင်အမာပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% ကို နှိပ်လိုက်ပါက သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% ကို နှိပ်လိုက်ပါက သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% ကို နှိပ်လိုက်ပါက သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% ကို နှိပ်လိုက်ပါက သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "topUp": {
+    "message": "ငွေဖြည့်ရန်"
+  },
+  "showMore": {
+    "message": "ပိုမိုပြသရန်"
+  },
+  "showLess": {
+    "message": "လျှော့ပြရန်"
+  },
+  "landingTagline1": {
+    "message": "အမှန်တရားကို ဖော်ထုတ်ပါ။ လိမ်လည်မှုများကို ရှာဖွေပါ။"
+  },
+  "landingTagline2": {
+    "message": "မှားယွင်းသတင်းများ မရှိတော့ပါ။ အချက်အလက်မှန်များသာ။"
+  },
+  "continueWithX": {
+    "message": "X ဖြင့် ဆက်လက်လုပ်ဆောင်ရန်"
+  },
+  "continueWithGoogle": {
+    "message": "Google ဖြင့် ဆက်လက်လုပ်ဆောင်ရန်"
+  },
+  "continueWithApple": {
+    "message": "Apple ဖြင့် ဆက်လက်လုပ်ဆောင်ရန်"
+  },
+  "lastUsed": {
+    "message": "နောက်ဆုံးအသုံးပြုမှု"
+  },
+  "cleanupTagline": {
+    "message": "သင့် X ဖိဒ်ကို ရှင်းလင်းပါ။"
+  },
+  "disclaimerJurisdiction": {
+    "message": "အမေရိကန်ပြည်ထောင်စုအတွင်း၌ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin နှင့် Wyoming ပြည်နယ်များတွင် နေထိုင်သူများသာလျှင် DisinfaX ကိုအသုံးပြု၍ လက်ကျန်ငွေဖြည့်နိုင်သည်။ Washington, D.C.၊ အမေရိကန်ပိုင်နက်များအားလုံးနှင့် ဖော်ပြမထားသော ပြည်နယ်များကို ချန်လှပ်ထားသည်။ အမေရိကန်ပြည်ထောင်စုပြင်ပတွင် Canada, Australia, New Zealand, Singapore, တောင်အာဖရိက, ဂျပန်, ထိုင်ဝမ်, အင်ဒိုနီးရှား, ထိုင်း, ဖိလစ်ပိုင်, မလေးရှား, ဗီယက်နမ် နှင့် ဆွစ်ဇာလန် တို့တွင် ရရှိနိုင်ပါသည်။"
+  },
+  "factCheckAllButton": {
+    "message": "အားလုံးကို စစ်ဆေးပါ"
   }
 }

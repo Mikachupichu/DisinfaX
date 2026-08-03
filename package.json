@@ -17,14 +17,20 @@
   "dependencies": {
     "@google/genai": "^1.48.0",
     "@huggingface/transformers": "^4.0.1",
+    "@supabase/supabase-js": "^2.110.7",
+    "@tailwindcss/vite": "^4.3.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "zod-to-json-schema": "^3.25.2"
   },
   "devDependencies": {
+    "@types/chrome": "^0.2.2",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "@wxt-dev/module-react": "^1.1.5",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.19",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "wxt": "^0.20.18"
   }

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "تصدیق کریں",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "بیلنس"
+  },
+  "gifted": {
+    "message": "تحفہ"
+  },
+  "customTopup": {
+    "message": "حسب ضرورت"
+  },
+  "customAmountLabel": {
+    "message": "امریکی ڈالر میں اپنی مرضی کی ٹاپ اپ رقم"
+  },
+  "increase": {
+    "message": "بڑھائیں"
+  },
+  "decrease": {
+    "message": "کم کریں"
+  },
+  "topUpBalance": {
+    "message": "بیلنس ٹاپ اپ کریں"
+  },
+  "processing": {
+    "message": "کارروائی جاری ہے…"
+  },
+  "checkoutError": {
+    "message": "چیک آؤٹ شروع نہیں ہو سکا۔ براہ کرم دوبارہ کوشش کریں۔"
+  },
+  "termsOfService": {
+    "message": "سروس کی شرائط"
+  },
+  "privacyPolicy": {
+    "message": "رازداری کی پالیسی"
+  },
+  "disclaimerAgree": {
+    "message": "ٹاپ اپ کر کے، آپ ہماری %TOS% اور %PRIVACY% سے اتفاق کرتے ہیں۔"
+  },
+  "disclaimerFx": {
+    "message": "اگر آپ USD کے علاوہ کسی کرنسی میں ادائیگی کرتے ہیں تو زرِ مبادلہ کی فیس لاگو ہو سکتی ہے۔"
+  },
+  "signOut": {
+    "message": "سائن آؤٹ"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% پر کلک کرنے سے دعوے ظاہر ہوں گے اور آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% پر ٹیپ کرنے سے دعوے ظاہر ہوں گے اور آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "topUp": {
+    "message": "ٹاپ اپ"
+  },
+  "showMore": {
+    "message": "مزید دکھائیں"
+  },
+  "showLess": {
+    "message": "کم دکھائیں"
+  },
+  "landingTagline1": {
+    "message": "سچ کو بے نقاب کریں۔ جھوٹ کو تلاش کریں۔"
+  },
+  "landingTagline2": {
+    "message": "اب کوئی غلط معلومات نہیں۔ صرف حقائق۔"
+  },
+  "continueWithX": {
+    "message": "X کے ساتھ جاری رکھیں"
+  },
+  "continueWithGoogle": {
+    "message": "Google کے ساتھ جاری رکھیں"
+  },
+  "continueWithApple": {
+    "message": "Apple کے ساتھ جاری رکھیں"
+  },
+  "lastUsed": {
+    "message": "آخری بار استعمال شدہ"
+  },
+  "cleanupTagline": {
+    "message": "اپنی X فیڈ کو صاف کریں۔"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ریاستہائے متحدہ کے اندر، صرف الاباما، ایریزونا، کیلیفورنیا، کولوراڈو، کنیکٹی کٹ، ڈیلاویئر، فلوریڈا، ایڈاہو، الینوائے، انڈیانا، آئیووا، کنساس، کینٹکی، لوزیانا، مین، میساچوسٹس، مسیسیپی، میسوری، مونٹانا، نیو ہیمپشائر، نیو میکسیکو، نیو یارک، شمالی کیرولائنا، شمالی ڈکوٹا، اوکلاہوما، اوریگون، پنسلوانیا، جنوبی کیرولائنا، جنوبی ڈکوٹا، ٹینیسی، ٹیکساس، یوٹاہ، واشنگٹن، وسکونسن اور وایومنگ کے رہائشی DisinfaX استعمال کر سکتے ہیں اور اپنا بیلنس ٹاپ اپ کر سکتے ہیں؛ واشنگٹن D.C.، تمام امریکی علاقے اور کوئی بھی غیر درج ریاستیں مستثنیٰ ہیں۔ ریاستہائے متحدہ کے باہر، یہ کینیڈا، آسٹریلیا، نیوزی لینڈ، سنگاپور، جنوبی افریقہ، جاپان، تائیوان، انڈونیشیا، تھائی لینڈ، فلپائن، ملائیشیا، ویتنام اور سوئٹزرلینڈ میں دستیاب ہے۔"
+  },
+  "factCheckAllButton": {
+    "message": "سب کی تصدیق کریں"
   }
 }

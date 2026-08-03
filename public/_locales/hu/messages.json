@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Ellenőrzés",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Egyenleg"
+  },
+  "gifted": {
+    "message": "Ajándékba"
+  },
+  "customTopup": {
+    "message": "Egyéni"
+  },
+  "customAmountLabel": {
+    "message": "Egyéni feltöltési összeg amerikai dollárban"
+  },
+  "increase": {
+    "message": "Növelés"
+  },
+  "decrease": {
+    "message": "Csökkentés"
+  },
+  "topUpBalance": {
+    "message": "Egyenleg feltöltése"
+  },
+  "processing": {
+    "message": "Feldolgozás…"
+  },
+  "checkoutError": {
+    "message": "A fizetést nem sikerült elindítani. Kérjük, próbáld újra."
+  },
+  "termsOfService": {
+    "message": "Felhasználási feltételek"
+  },
+  "privacyPolicy": {
+    "message": "Adatvédelmi szabályzat"
+  },
+  "disclaimerAgree": {
+    "message": "A feltöltéssel elfogadod a(z) %TOS% és %PRIVACY% feltételeinket."
+  },
+  "disclaimerFx": {
+    "message": "Ha az USD-től eltérő pénznemben fizetsz, valutaváltási díjak merülhetnek fel."
+  },
+  "signOut": {
+    "message": "Kijelentkezés"
+  },
+  "onboardDisinfactClick": {
+    "message": "A(z) %BTN% gombra kattintva megjelennek az állítások, és ez terheli az egyenlegedet"
+  },
+  "onboardDisinfactTap": {
+    "message": "A(z) %BTN% gombra koppintva megjelennek az állítások, és ez terheli az egyenlegedet"
+  },
+  "onboardWillCharge": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "onboardFactcheck": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "onboardTranslations": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "onboardRefreshes": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "topUp": {
+    "message": "Feltöltés"
+  },
+  "showMore": {
+    "message": "Több megjelenítése"
+  },
+  "showLess": {
+    "message": "Kevesebb megjelenítése"
+  },
+  "landingTagline1": {
+    "message": "Fedd fel az igazságot. Találd meg a hazugságokat."
+  },
+  "landingTagline2": {
+    "message": "Nincs több dezinformáció. Csak tények."
+  },
+  "continueWithX": {
+    "message": "Folytatás X-szel"
+  },
+  "continueWithGoogle": {
+    "message": "Folytatás Google-lel"
+  },
+  "continueWithApple": {
+    "message": "Folytatás Apple-lel"
+  },
+  "lastUsed": {
+    "message": "Utoljára használva"
+  },
+  "cleanupTagline": {
+    "message": "Tedd rendbe az X-hírfolyamod."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Az Egyesült Államokban csak a következő államok lakosai használhatják a DisinfaX-et és tölthetik fel egyenlegüket: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Új-Mexikó, New York, Észak-Karolina, Észak-Dakota, Oklahoma, Oregon, Pennsylvania, Dél-Karolina, Dél-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin és Wyoming; Washington, D.C., az összes amerikai terület és minden fel nem sorolt állam ki van zárva. Az Egyesült Államokon kívül elérhető Kanadában, Ausztráliában, Új-Zélandon, Szingapúrban, Dél-Afrikában, Japánban, Tajvanon, Indonéziában, Thaiföldön, a Fülöp-szigeteken, Malajziában, Vietnamban és Svájcban."
+  },
+  "factCheckAllButton": {
+    "message": "Mindet ellenőrizd"
   }
 }

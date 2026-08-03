@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Ṣàyẹ̀wò",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Ìyókù owó"
+  },
+  "gifted": {
+    "message": "Ẹ̀bùn"
+  },
+  "customTopup": {
+    "message": "Àkànṣe"
+  },
+  "customAmountLabel": {
+    "message": "Iye àfikún àkànṣe ní dọ́là Amẹ́ríkà"
+  },
+  "increase": {
+    "message": "Mú pọ̀ sí"
+  },
+  "decrease": {
+    "message": "Dín kù"
+  },
+  "topUpBalance": {
+    "message": "Fi kún ìyókù owó"
+  },
+  "processing": {
+    "message": "Ń ṣiṣẹ́…"
+  },
+  "checkoutError": {
+    "message": "Kò lè bẹ̀rẹ̀ ìsanwó. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansi."
+  },
+  "termsOfService": {
+    "message": "Àwọn Òfin Iṣẹ́"
+  },
+  "privacyPolicy": {
+    "message": "Ìlànà Àṣírí"
+  },
+  "disclaimerAgree": {
+    "message": "Nípa fífi owó kún un, o gbà pẹ̀lú %TOS% àti %PRIVACY% wa."
+  },
+  "disclaimerFx": {
+    "message": "Owó ìpààrọ̀ owó ilẹ̀ òkèèrè lè wà tí o bá san ní owó mìíràn yàtọ̀ sí USD."
+  },
+  "signOut": {
+    "message": "Jáde"
+  },
+  "onboardDisinfactClick": {
+    "message": "Títẹ %BTN% máa ṣí àwọn ẹ̀tọ́ payá yóò sì gba owó lára ìwọntúnwọ̀nsì rẹ"
+  },
+  "onboardDisinfactTap": {
+    "message": "Fífọwọ́kàn %BTN% máa ṣí àwọn ẹ̀tọ́ payá yóò sì gba owó lára ìwọntúnwọ̀nsì rẹ"
+  },
+  "onboardWillCharge": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+  },
+  "onboardFactcheck": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+  },
+  "onboardTranslations": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+  },
+  "onboardRefreshes": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+  },
+  "topUp": {
+    "message": "Fi Owó Kún"
+  },
+  "showMore": {
+    "message": "Fi síwájú hàn"
+  },
+  "showLess": {
+    "message": "Fi díẹ̀ hàn"
+  },
+  "landingTagline1": {
+    "message": "Ṣàfihàn Òtítọ́. Rí Irọ́."
+  },
+  "landingTagline2": {
+    "message": "Kò sí Irọ́ mọ́. Òtítọ́ nìkan."
+  },
+  "continueWithX": {
+    "message": "Tẹ̀síwájú pẹ̀lú X"
+  },
+  "continueWithGoogle": {
+    "message": "Tẹ̀síwájú pẹ̀lú Google"
+  },
+  "continueWithApple": {
+    "message": "Tẹ̀síwájú pẹ̀lú Apple"
+  },
+  "lastUsed": {
+    "message": "Èyí tí a Lò Kẹ́yìn"
+  },
+  "cleanupTagline": {
+    "message": "Nu X Feed rẹ mọ́."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Nínú United States, àwọn olùgbé Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, àti Wyoming nìkan ni wọ́n lè lo DisinfaX kí wọ́n sì fi owó kún ìwọ̀ntúnwọ̀nsì wọn; Washington, D.C., gbogbo àwọn agbègbè U.S., àti ìpínlẹ̀ èyíkéyìí tí a kò tò sílẹ̀ ni a yọ kúrò. Níta United States, ó wà ní Canada, Australia, New Zealand, Singapore, Gúúsù Áfríkà, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, àti Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Ṣàyẹ̀wò Gbogbo"
   }
 }

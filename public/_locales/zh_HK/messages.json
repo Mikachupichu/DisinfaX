@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "事實查核",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "餘額"
+  },
+  "gifted": {
+    "message": "贈送"
+  },
+  "customTopup": {
+    "message": "自訂"
+  },
+  "customAmountLabel": {
+    "message": "以美元計的自訂儲值金額"
+  },
+  "increase": {
+    "message": "增加"
+  },
+  "decrease": {
+    "message": "減少"
+  },
+  "topUpBalance": {
+    "message": "儲值餘額"
+  },
+  "processing": {
+    "message": "處理中…"
+  },
+  "checkoutError": {
+    "message": "無法開始結帳，請重試。"
+  },
+  "termsOfService": {
+    "message": "服務條款"
+  },
+  "privacyPolicy": {
+    "message": "隱私權政策"
+  },
+  "disclaimerAgree": {
+    "message": "儲值即表示您同意我們的%TOS%和%PRIVACY%。"
+  },
+  "disclaimerFx": {
+    "message": "若您以美元以外的貨幣付款，可能會產生外幣兌換費用。"
+  },
+  "signOut": {
+    "message": "登出"
+  },
+  "onboardDisinfactClick": {
+    "message": "點擊%BTN%可顯示論述，並將從您的餘額中扣款"
+  },
+  "onboardDisinfactTap": {
+    "message": "輕觸%BTN%可顯示論述，並將從您的餘額中扣款"
+  },
+  "onboardWillCharge": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "onboardFactcheck": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "onboardTranslations": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "onboardRefreshes": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "topUp": {
+    "message": "儲值"
+  },
+  "showMore": {
+    "message": "顯示更多"
+  },
+  "showLess": {
+    "message": "顯示較少"
+  },
+  "landingTagline1": {
+    "message": "揭示真相，識破謊言。"
+  },
+  "landingTagline2": {
+    "message": "不再有虛假資訊，只有事實。"
+  },
+  "continueWithX": {
+    "message": "使用 X 繼續"
+  },
+  "continueWithGoogle": {
+    "message": "使用 Google 繼續"
+  },
+  "continueWithApple": {
+    "message": "使用 Apple 繼續"
+  },
+  "lastUsed": {
+    "message": "上次使用"
+  },
+  "cleanupTagline": {
+    "message": "清理你的 X 動態消息。"
+  },
+  "disclaimerJurisdiction": {
+    "message": "在美國境內，僅阿拉巴馬州、亞利桑那州、加利福尼亞州、科羅拉多州、康乃狄克州、德拉瓦州、佛羅里達州、愛達荷州、伊利諾州、印第安納州、愛荷華州、堪薩斯州、肯塔基州、路易斯安那州、緬因州、麻薩諸塞州、密西西比州、密蘇里州、蒙大拿州、新罕布夏州、新墨西哥州、紐約州、北卡羅來納州、北達科他州、奧克拉荷馬州、奧勒岡州、賓夕法尼亞州、南卡羅來納州、南達科他州、田納西州、德克薩斯州、猶他州、華盛頓州、威斯康辛州和懷俄明州的居民可以使用 DisinfaX 並儲值餘額；華盛頓 D.C.、所有美國領地以及未列出的任何州均被排除在外。在美國境外，可在加拿大、澳洲、紐西蘭、新加坡、南非、日本、台灣、印尼、泰國、菲律賓、馬來西亞、越南和瑞士使用。"
+  },
+  "factCheckAllButton": {
+    "message": "全部查核"
   }
 }

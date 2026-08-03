@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Перевірити",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Баланс"
+  },
+  "gifted": {
+    "message": "У подарунок"
+  },
+  "customTopup": {
+    "message": "Інша сума"
+  },
+  "customAmountLabel": {
+    "message": "Довільна сума поповнення в доларах США"
+  },
+  "increase": {
+    "message": "Збільшити"
+  },
+  "decrease": {
+    "message": "Зменшити"
+  },
+  "topUpBalance": {
+    "message": "Поповнити баланс"
+  },
+  "processing": {
+    "message": "Обробка…"
+  },
+  "checkoutError": {
+    "message": "Не вдалося розпочати оплату. Спробуйте ще раз."
+  },
+  "termsOfService": {
+    "message": "Умови надання послуг"
+  },
+  "privacyPolicy": {
+    "message": "Політика конфіденційності"
+  },
+  "disclaimerAgree": {
+    "message": "Поповнюючи баланс, ви погоджуєтеся з нашими %TOS% та %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Якщо ви платите у валюті, відмінній від USD, може стягуватися комісія за конвертацію."
+  },
+  "signOut": {
+    "message": "Вийти"
+  },
+  "onboardDisinfactClick": {
+    "message": "Клік на %BTN% показує твердження та спише кошти з вашого балансу"
+  },
+  "onboardDisinfactTap": {
+    "message": "Дотик до %BTN% показує твердження та спише кошти з вашого балансу"
+  },
+  "onboardWillCharge": {
+    "message": "Клік на %BTN% спише кошти з вашого балансу"
+  },
+  "onboardFactcheck": {
+    "message": "Клік на %BTN% спише кошти з вашого балансу"
+  },
+  "onboardTranslations": {
+    "message": "Клік на %BTN% спише кошти з вашого балансу"
+  },
+  "onboardRefreshes": {
+    "message": "Клік на %BTN% спише кошти з вашого балансу"
+  },
+  "topUp": {
+    "message": "Поповнити"
+  },
+  "showMore": {
+    "message": "Показати більше"
+  },
+  "showLess": {
+    "message": "Показати менше"
+  },
+  "landingTagline1": {
+    "message": "Розкрийте правду. Знайдіть брехню."
+  },
+  "landingTagline2": {
+    "message": "Ніякої дезінформації. Лише факти."
+  },
+  "continueWithX": {
+    "message": "Продовжити з X"
+  },
+  "continueWithGoogle": {
+    "message": "Продовжити з Google"
+  },
+  "continueWithApple": {
+    "message": "Продовжити з Apple"
+  },
+  "lastUsed": {
+    "message": "Востаннє використано"
+  },
+  "cleanupTagline": {
+    "message": "Очистіть свою стрічку X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "На території Сполучених Штатів користуватися DisinfaX і поповнювати баланс можуть лише жителі штатів Алабама, Аризона, Каліфорнія, Колорадо, Коннектикут, Делавер, Флорида, Айдахо, Іллінойс, Індіана, Айова, Канзас, Кентуккі, Луїзіана, Мен, Массачусетс, Міссісіпі, Міссурі, Монтана, Нью-Гемпшир, Нью-Мексико, Нью-Йорк, Північна Кароліна, Північна Дакота, Оклахома, Орегон, Пенсільванія, Південна Кароліна, Південна Дакота, Теннессі, Техас, Юта, Вашингтон, Вісконсин і Вайомінг; Вашингтон, D.C., усі території США та будь-які штати, не зазначені в списку, виключено. За межами Сполучених Штатів сервіс доступний у Канаді, Австралії, Новій Зеландії, Сінгапурі, Південно-Африканській Республіці, Японії, Тайвані, Індонезії, Таїланді, на Філіппінах, у Малайзії, В'єтнамі та Швейцарії."
+  },
+  "factCheckAllButton": {
+    "message": "Перевірити все"
   }
 }

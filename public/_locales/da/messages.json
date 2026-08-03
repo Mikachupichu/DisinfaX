@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Faktatjek",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Foræret"
+  },
+  "customTopup": {
+    "message": "Tilpasset"
+  },
+  "customAmountLabel": {
+    "message": "Tilpasset optankningsbeløb i amerikanske dollars"
+  },
+  "increase": {
+    "message": "Forøg"
+  },
+  "decrease": {
+    "message": "Formindsk"
+  },
+  "topUpBalance": {
+    "message": "Optank saldo"
+  },
+  "processing": {
+    "message": "Behandler…"
+  },
+  "checkoutError": {
+    "message": "Betalingen kunne ikke startes. Prøv venligst igen."
+  },
+  "termsOfService": {
+    "message": "Servicevilkår"
+  },
+  "privacyPolicy": {
+    "message": "Privatlivspolitik"
+  },
+  "disclaimerAgree": {
+    "message": "Ved at tanke op accepterer du vores %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Der kan påløbe valutavekslingsgebyrer, hvis du betaler i en anden valuta end USD."
+  },
+  "signOut": {
+    "message": "Log ud"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klik på %BTN% viser påstande og trækker penge fra din saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tryk på %BTN% viser påstande og trækker penge fra din saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "onboardTranslations": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "topUp": {
+    "message": "Optank"
+  },
+  "showMore": {
+    "message": "Vis mere"
+  },
+  "showLess": {
+    "message": "Vis mindre"
+  },
+  "landingTagline1": {
+    "message": "Afslør sandheden. Find løgnene."
+  },
+  "landingTagline2": {
+    "message": "Ikke mere desinformation. Kun fakta."
+  },
+  "continueWithX": {
+    "message": "Fortsæt med X"
+  },
+  "continueWithGoogle": {
+    "message": "Fortsæt med Google"
+  },
+  "continueWithApple": {
+    "message": "Fortsæt med Apple"
+  },
+  "lastUsed": {
+    "message": "Sidst brugt"
+  },
+  "cleanupTagline": {
+    "message": "Ryd op i dit X-feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Inden for USA kan kun indbyggere i Alabama, Arizona, Californien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming bruge DisinfaX og optanke deres saldo; Washington, D.C., alle amerikanske territorier og alle stater, der ikke er nævnt, er udelukket. Uden for USA er tjenesten tilgængelig i Canada, Australien, New Zealand, Singapore, Sydafrika, Japan, Taiwan, Indonesien, Thailand, Filippinerne, Malaysia, Vietnam og Schweiz."
+  },
+  "factCheckAllButton": {
+    "message": "Faktatjek alt"
   }
 }

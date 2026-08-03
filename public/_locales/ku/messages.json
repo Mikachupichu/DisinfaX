@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Kontrol",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Diyarî"
+  },
+  "customTopup": {
+    "message": "Taybet"
+  },
+  "customAmountLabel": {
+    "message": "Mîqdara bardanê ya taybet bi dolarê Amerîkî"
+  },
+  "increase": {
+    "message": "Zêde bike"
+  },
+  "decrease": {
+    "message": "Kêm bike"
+  },
+  "topUpBalance": {
+    "message": "Balansê bar bike"
+  },
+  "processing": {
+    "message": "Tê pêvajokirin…"
+  },
+  "checkoutError": {
+    "message": "Dayîn nekarî dest pê bike. Ji kerema xwe dîsa biceribîne."
+  },
+  "termsOfService": {
+    "message": "Mercên Karûbarê"
+  },
+  "privacyPolicy": {
+    "message": "Politikaya Nepenîtiyê"
+  },
+  "disclaimerAgree": {
+    "message": "Bi barkirinê, tu bi %TOS% û %PRIVACY% ya me razî dibî."
+  },
+  "disclaimerFx": {
+    "message": "Heke tu bi dirava ji bilî USD bidî, dibe ku heqên guherîna dravê biyanî werin sepandin."
+  },
+  "signOut": {
+    "message": "Derkeve"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klîk kirin li ser %BTN% dê îdiayan nîşan bide û dê ji bakiyeya te bêt kirin"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tikandin li ser %BTN% dê îdiayan nîşan bide û dê ji bakiyeya te bêt kirin"
+  },
+  "onboardWillCharge": {
+    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+  },
+  "onboardFactcheck": {
+    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+  },
+  "onboardTranslations": {
+    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+  },
+  "onboardRefreshes": {
+    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+  },
+  "topUp": {
+    "message": "Bar bike"
+  },
+  "showMore": {
+    "message": "Bêtir nîşan bide"
+  },
+  "showLess": {
+    "message": "Kêmtir nîşan bide"
+  },
+  "landingTagline1": {
+    "message": "Rastiyê aşkere bike. Derewan bibîne."
+  },
+  "landingTagline2": {
+    "message": "Êdî agahiyên şaş tune. Tenê rastî."
+  },
+  "continueWithX": {
+    "message": "Bi X berdewam bike"
+  },
+  "continueWithGoogle": {
+    "message": "Bi Google berdewam bike"
+  },
+  "continueWithApple": {
+    "message": "Bi Apple berdewam bike"
+  },
+  "lastUsed": {
+    "message": "Cara dawî hat bikaranîn"
+  },
+  "cleanupTagline": {
+    "message": "Feeda xwe ya X paqij bike."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Li nav Dewletên Yekbûyî, tenê rûniştevanên Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolînaya Bakur, Dakotaya Bakur, Oklahoma, Oregon, Pennsylvania, Karolînaya Başûr, Dakotaya Başûr, Tennessee, Texas, Utah, Washington, Wisconsin û Wyoming dikarin DisinfaX bikar bînin û balansa xwe bar bikin; Washington, D.C., hemû herêmên Amerîkî, û her dewletên ku nehatine navnîş kirin ne di nav de ne. Li derveyî Dewletên Yekbûyî, ew li Kanada, Awistralya, Zelandaya Nû, Sîngapûr, Afrîkaya Başûr, Japon, Taywan, Endonezya, Tayland, Filîpîn, Malezya, Viyetnam û Swîsre berdest e."
+  },
+  "factCheckAllButton": {
+    "message": "Hemî kontrol bike"
   }
 }

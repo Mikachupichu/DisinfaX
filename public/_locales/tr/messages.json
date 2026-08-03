@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Doğrula",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Bakiye"
+  },
+  "gifted": {
+    "message": "Hediye"
+  },
+  "customTopup": {
+    "message": "Özel"
+  },
+  "customAmountLabel": {
+    "message": "ABD doları cinsinden özel yükleme tutarı"
+  },
+  "increase": {
+    "message": "Artır"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Bakiye Yükle"
+  },
+  "processing": {
+    "message": "İşleniyor…"
+  },
+  "checkoutError": {
+    "message": "Ödeme başlatılamadı. Lütfen tekrar deneyin."
+  },
+  "termsOfService": {
+    "message": "Hizmet Şartları"
+  },
+  "privacyPolicy": {
+    "message": "Gizlilik Politikası"
+  },
+  "disclaimerAgree": {
+    "message": "Bakiye yükleyerek %TOS% ve %PRIVACY% belgelerimizi kabul etmiş olursunuz."
+  },
+  "disclaimerFx": {
+    "message": "USD dışında bir para biriminde ödeme yaparsanız döviz ücretleri uygulanabilir."
+  },
+  "signOut": {
+    "message": "Çıkış yap"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% simgesine tıklamak iddiaları gösterir ve bakiyenizden ücret düşer"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% simgesine dokunmak iddiaları gösterir ve bakiyenizden ücret düşer"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+  },
+  "topUp": {
+    "message": "Yükle"
+  },
+  "showMore": {
+    "message": "Daha fazla göster"
+  },
+  "showLess": {
+    "message": "Daha az göster"
+  },
+  "landingTagline1": {
+    "message": "Gerçeği Ortaya Çıkarın. Yalanları Bulun."
+  },
+  "landingTagline2": {
+    "message": "Artık Dezenformasyon Yok. Sadece Gerçekler."
+  },
+  "continueWithX": {
+    "message": "X ile devam et"
+  },
+  "continueWithGoogle": {
+    "message": "Google ile devam et"
+  },
+  "continueWithApple": {
+    "message": "Apple ile devam et"
+  },
+  "lastUsed": {
+    "message": "Son Kullanılan"
+  },
+  "cleanupTagline": {
+    "message": "X Akışınızı temizleyin."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Birleşik Devletleri'nde yalnızca Alabama, Arizona, Kaliforniya, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Kuzey Karolina, Kuzey Dakota, Oklahoma, Oregon, Pennsylvania, Güney Karolina, Güney Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin ve Wyoming sakinleri DisinfaX'i kullanabilir ve bakiyelerini yükleyebilir; Washington, D.C., tüm ABD toprakları ve listede yer almayan tüm eyaletler hariçtir. Amerika Birleşik Devletleri dışında Kanada, Avustralya, Yeni Zelanda, Singapur, Güney Afrika, Japonya, Tayvan, Endonezya, Tayland, Filipinler, Malezya, Vietnam ve İsviçre'de kullanılabilir."
+  },
+  "factCheckAllButton": {
+    "message": "Tümünü Doğrula"
   }
 }

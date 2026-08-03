@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "Провери",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Баланс"
+  },
+  "gifted": {
+    "message": "Подарък"
+  },
+  "customTopup": {
+    "message": "По избор"
+  },
+  "customAmountLabel": {
+    "message": "Сума за захранване по избор в щатски долари"
+  },
+  "increase": {
+    "message": "Увеличаване"
+  },
+  "decrease": {
+    "message": "Намаляване"
+  },
+  "topUpBalance": {
+    "message": "Захрани баланса"
+  },
+  "processing": {
+    "message": "Обработва се…"
+  },
+  "checkoutError": {
+    "message": "Плащането не можа да започне. Моля, опитайте отново."
+  },
+  "termsOfService": {
+    "message": "Общи условия"
+  },
+  "privacyPolicy": {
+    "message": "Политика за поверителност"
+  },
+  "disclaimerAgree": {
+    "message": "Като захранвате баланса си, вие приемате нашите %TOS% и %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Може да се начислят такси за обмяна на валута, ако плащате във валута, различна от USD."
+  },
+  "signOut": {
+    "message": "Изход"
+  },
+  "onboardDisinfactClick": {
+    "message": "Кликването върху %BTN% показва твърденията и ще таксува баланса ви"
+  },
+  "onboardDisinfactTap": {
+    "message": "Докосването на %BTN% показва твърденията и ще таксува баланса ви"
+  },
+  "onboardWillCharge": {
+    "message": "Кликването върху %BTN% ще таксува баланса ви"
+  },
+  "onboardFactcheck": {
+    "message": "Кликването върху %BTN% ще таксува баланса ви"
+  },
+  "onboardTranslations": {
+    "message": "Кликването върху %BTN% ще таксува баланса ви"
+  },
+  "onboardRefreshes": {
+    "message": "Кликването върху %BTN% ще таксува баланса ви"
+  },
+  "topUp": {
+    "message": "Захрани"
+  },
+  "showMore": {
+    "message": "Покажи повече"
+  },
+  "showLess": {
+    "message": "Покажи по-малко"
+  },
+  "landingTagline1": {
+    "message": "Разкрийте истината. Открийте лъжите."
+  },
+  "landingTagline2": {
+    "message": "Край на дезинформацията. Само факти."
+  },
+  "continueWithX": {
+    "message": "Продължи с X"
+  },
+  "continueWithGoogle": {
+    "message": "Продължи с Google"
+  },
+  "continueWithApple": {
+    "message": "Продължи с Apple"
+  },
+  "lastUsed": {
+    "message": "Последно използвано"
+  },
+  "cleanupTagline": {
+    "message": "Изчистете своя канал в X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "На територията на Съединените щати само жителите на Алабама, Аризона, Калифорния, Колорадо, Кънектикът, Делауеър, Флорида, Айдахо, Илинойс, Индиана, Айова, Канзас, Кентъки, Луизиана, Мейн, Масачузетс, Мисисипи, Мисури, Монтана, Ню Хампшър, Ню Мексико, Ню Йорк, Северна Каролина, Северна Дакота, Оклахома, Орегон, Пенсилвания, Южна Каролина, Южна Дакота, Тенеси, Тексас, Юта, Вашингтон, Уисконсин и Уайоминг могат да използват DisinfaX и да захранват баланса си; Вашингтон, D.C., всички територии на САЩ и всички щати, които не са изброени, са изключени. Извън Съединените щати услугата е достъпна в Канада, Австралия, Нова Зеландия, Сингапур, Южна Африка, Япония, Тайван, Индонезия, Тайланд, Филипините, Малайзия, Виетнам и Швейцария."
+  },
+  "factCheckAllButton": {
+    "message": "Провери всичко"
   }
 }

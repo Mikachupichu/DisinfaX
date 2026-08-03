@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Xaqiijin",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Haraaga"
+  },
+  "gifted": {
+    "message": "Hadyad"
+  },
+  "customTopup": {
+    "message": "Gaar ah"
+  },
+  "customAmountLabel": {
+    "message": "Qadarka buuxinta gaarka ah ee doollarka Maraykanka"
+  },
+  "increase": {
+    "message": "Kordhi"
+  },
+  "decrease": {
+    "message": "Yaree"
+  },
+  "topUpBalance": {
+    "message": "Buuxi Haraaga"
+  },
+  "processing": {
+    "message": "Waa la habeynayaa…"
+  },
+  "checkoutError": {
+    "message": "Lama bilaabi karin bixinta. Fadlan mar kale isku day."
+  },
+  "termsOfService": {
+    "message": "Shuruudaha Adeegga"
+  },
+  "privacyPolicy": {
+    "message": "Siyaasadda Asturnaanta"
+  },
+  "disclaimerAgree": {
+    "message": "Adiga oo buuxinaya, waxaad ogolaanaysaa %TOS% iyo %PRIVACY% keenna."
+  },
+  "disclaimerFx": {
+    "message": "Khidmadaha sarrifka lacagta ayaa laga yaabaa in la dabaqo haddii aad ku bixiso lacag aan ahayn USD."
+  },
+  "signOut": {
+    "message": "Ka bax"
+  },
+  "onboardDisinfactClick": {
+    "message": "Guji %BTN% ayaa muujin doona sheegashooyinka waxaana lagaa jari doonaa hadhaaga"
+  },
+  "onboardDisinfactTap": {
+    "message": "Taabashada %BTN% ayaa muujin doona sheegashooyinka waxaana lagaa jari doonaa hadhaaga"
+  },
+  "onboardWillCharge": {
+    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+  },
+  "onboardFactcheck": {
+    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+  },
+  "onboardTranslations": {
+    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+  },
+  "onboardRefreshes": {
+    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+  },
+  "topUp": {
+    "message": "Buuxi"
+  },
+  "showMore": {
+    "message": "Muuji wax dheeraad ah"
+  },
+  "showLess": {
+    "message": "Muuji wax yar"
+  },
+  "landingTagline1": {
+    "message": "Muuji Runta. Hel Beenta."
+  },
+  "landingTagline2": {
+    "message": "Wax been ah oo dambe ma jiraan. Kaliya Xaqiiqooyin."
+  },
+  "continueWithX": {
+    "message": "Ku sii wad X"
+  },
+  "continueWithGoogle": {
+    "message": "Ku sii wad Google"
+  },
+  "continueWithApple": {
+    "message": "Ku sii wad Apple"
+  },
+  "lastUsed": {
+    "message": "Markii ugu dambeeyay ee la isticmaalay"
+  },
+  "cleanupTagline": {
+    "message": "Nadiifi Feedkaaga X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Gudaha Maraykanka, kaliya deganeyaasha Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, iyo Wyoming ayaa isticmaali kara DisinfaX oo buuxin kara haraagooda; Washington, D.C., dhammaan dhulalka Maraykanka, iyo gobol kasta oo aan la taxin waa laga reebay. Dibadda Maraykanka, waxaa lagu heli karaa Kanada, Australia, New Zealand, Singapore, Koonfur Afrika, Jabaan, Taywaan, Indoneesiya, Taylaand, Filibiin, Maleeshiya, Fiyetnaam, iyo Iswiiserlaand."
+  },
+  "factCheckAllButton": {
+    "message": "Xaqiiji dhammaan"
   }
 }

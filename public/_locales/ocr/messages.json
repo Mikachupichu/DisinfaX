@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Verificacion",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Regal"
+  },
+  "customTopup": {
+    "message": "Personalizat"
+  },
+  "customAmountLabel": {
+    "message": "Montant de recarga personalizat en dolars americans"
+  },
+  "increase": {
+    "message": "Aumentar"
+  },
+  "decrease": {
+    "message": "Reduire"
+  },
+  "topUpBalance": {
+    "message": "Recargar lo saldo"
+  },
+  "processing": {
+    "message": "Tractament…"
+  },
+  "checkoutError": {
+    "message": "Impossible d'aviar lo pagament. Tornatz ensajar."
+  },
+  "termsOfService": {
+    "message": "Condicions d'utilizacion"
+  },
+  "privacyPolicy": {
+    "message": "Politica de confidencialitat"
+  },
+  "disclaimerAgree": {
+    "message": "En recargant, acceptatz nòstras %TOS% e %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "De taxas de cambi pòdon s'aplicar se pagatz dins una moneda diferenta de USD."
+  },
+  "signOut": {
+    "message": "Se desconnectar"
+  },
+  "onboardDisinfactClick": {
+    "message": "Clicking %BTN% reveals claims and will charge your balance"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tapping %BTN% reveals claims and will charge your balance"
+  },
+  "onboardWillCharge": {
+    "message": "Clicking %BTN% will charge your balance"
+  },
+  "onboardFactcheck": {
+    "message": "Clicking %BTN% will charge your balance"
+  },
+  "onboardTranslations": {
+    "message": "Clicking %BTN% will charge your balance"
+  },
+  "onboardRefreshes": {
+    "message": "Clicking %BTN% will charge your balance"
+  },
+  "topUp": {
+    "message": "Recargar lo saldo"
+  },
+  "showMore": {
+    "message": "Mostrar mai"
+  },
+  "showLess": {
+    "message": "Mostrar mens"
+  },
+  "landingTagline1": {
+    "message": "Revèla la vertat. Tròba las messòrgas."
+  },
+  "landingTagline2": {
+    "message": "Pas mai de desinformacion. Pas que de faits."
+  },
+  "continueWithX": {
+    "message": "Contunhar amb X"
+  },
+  "continueWithGoogle": {
+    "message": "Contunhar amb Google"
+  },
+  "continueWithApple": {
+    "message": "Contunhar amb Apple"
+  },
+  "lastUsed": {
+    "message": "Darrièr utilizat"
+  },
+  "cleanupTagline": {
+    "message": "Neteja ton flux X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Als Estats Units, solament los residents d'Alabama, Arizona, Califòrnia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nòu Hampshire, Nòu Mexic, Nòva York, Carolina del Nòrd, Dakota del Nòrd, Oklahoma, Oregon, Pennsilvània, Carolina del Sud, Dakota del Sud, Tennessee, Texas, Utah, Washington, Wisconsin e Wyoming pòdon utilizar DisinfaX e recargar lor saldo; Washington, D.C., totes los territòris dels Estats Units e tot estat pas listat son exclús. Fòra dels Estats Units, es disponible al Canadà, Austràlia, Nòva Zelanda, Singapor, Africa del Sud, Japon, Taiwan, Indonesia, Tailàndia, las Filipinas, Malàisia, Vietnam e Soïssa."
+  },
+  "factCheckAllButton": {
+    "message": "Fact-Check All"
   }
 }

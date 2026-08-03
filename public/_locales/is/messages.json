@@ -164,5 +164,101 @@
   "disinfactButton": {
     "message": "Staðfesta",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Inneign"
+  },
+  "gifted": {
+    "message": "Gefið"
+  },
+  "customTopup": {
+    "message": "Sérsniðið"
+  },
+  "customAmountLabel": {
+    "message": "Sérsniðin inneignarupphæð í Bandaríkjadölum"
+  },
+  "increase": {
+    "message": "Auka"
+  },
+  "decrease": {
+    "message": "Minnka"
+  },
+  "topUpBalance": {
+    "message": "Bæta við inneign"
+  },
+  "processing": {
+    "message": "Vinnur…"
+  },
+  "checkoutError": {
+    "message": "Ekki tókst að hefja greiðslu. Vinsamlegast reyndu aftur."
+  },
+  "termsOfService": {
+    "message": "Þjónustuskilmálar"
+  },
+  "privacyPolicy": {
+    "message": "Persónuverndarstefna"
+  },
+  "disclaimerAgree": {
+    "message": "Með því að bæta við inneign samþykkir þú %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Gjaldeyrisþóknun kann að leggjast á ef þú greiðir í öðrum gjaldmiðli en USD."
+  },
+  "signOut": {
+    "message": "Skrá út"
+  },
+  "onboardDisinfactClick": {
+    "message": "Að smella á %BTN% birtir fullyrðingar og dregur af inneigninni þinni"
+  },
+  "onboardDisinfactTap": {
+    "message": "Að ýta á %BTN% birtir fullyrðingar og dregur af inneigninni þinni"
+  },
+  "onboardWillCharge": {
+    "message": "Að smella á %BTN% dregur af inneigninni þinni"
+  },
+  "onboardFactcheck": {
+    "message": "Að smella á %BTN% dregur af inneigninni þinni"
+  },
+  "onboardTranslations": {
+    "message": "Að smella á %BTN% dregur af inneigninni þinni"
+  },
+  "onboardRefreshes": {
+    "message": "Að smella á %BTN% dregur af inneigninni þinni"
+  },
+  "topUp": {
+    "message": "Fylla á"
+  },
+  "showMore": {
+    "message": "Sýna meira"
+  },
+  "showLess": {
+    "message": "Sýna minna"
+  },
+  "landingTagline1": {
+    "message": "Afhjúpaðu sannleikann. Finndu lygarnar."
+  },
+  "landingTagline2": {
+    "message": "Engin rangfærsla lengur. Aðeins staðreyndir."
+  },
+  "continueWithX": {
+    "message": "Halda áfram með X"
+  },
+  "continueWithGoogle": {
+    "message": "Halda áfram með Google"
+  },
+  "continueWithApple": {
+    "message": "Halda áfram með Apple"
+  },
+  "lastUsed": {
+    "message": "Síðast notað"
+  },
+  "cleanupTagline": {
+    "message": "Hreinsaðu X-strauminn þinn."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Innan Bandaríkjanna geta aðeins íbúar í Alabama, Arizona, Kaliforníu, Colorado, Connecticut, Delaware, Flórída, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nýju-Mexíkó, New York, Norður-Karólínu, Norður-Dakóta, Oklahoma, Oregon, Pennsylvaníu, Suður-Karólínu, Suður-Dakóta, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming notað DisinfaX og fyllt á inneign sína; Washington, D.C., öll bandarísk yfirráðasvæði og öll ríki sem ekki eru talin upp eru undanskilin. Utan Bandaríkjanna er það fáanlegt í Kanada, Ástralíu, Nýja-Sjálandi, Singapúr, Suður-Afríku, Japan, Taívan, Indónesíu, Taílandi, Filippseyjum, Malasíu, Víetnam og Sviss."
+  },
+  "factCheckAllButton": {
+    "message": "Staðfesta allt"
   }
 }

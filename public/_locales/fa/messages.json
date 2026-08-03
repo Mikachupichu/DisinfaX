@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "راستی‌آزمایی",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "موجودی"
+  },
+  "gifted": {
+    "message": "هدیه"
+  },
+  "customTopup": {
+    "message": "دلخواه"
+  },
+  "customAmountLabel": {
+    "message": "مبلغ شارژ دلخواه به دلار آمریکا"
+  },
+  "increase": {
+    "message": "افزایش"
+  },
+  "decrease": {
+    "message": "کاهش"
+  },
+  "topUpBalance": {
+    "message": "شارژ موجودی"
+  },
+  "processing": {
+    "message": "در حال پردازش…"
+  },
+  "checkoutError": {
+    "message": "شروع پرداخت ممکن نشد. لطفاً دوباره تلاش کنید."
+  },
+  "termsOfService": {
+    "message": "شرایط خدمات"
+  },
+  "privacyPolicy": {
+    "message": "سیاست حریم خصوصی"
+  },
+  "disclaimerAgree": {
+    "message": "با شارژ کردن، شما %TOS% و %PRIVACY% ما را می‌پذیرید."
+  },
+  "disclaimerFx": {
+    "message": "در صورت پرداخت با ارزی غیر از USD ممکن است کارمزد تبدیل ارز اعمال شود."
+  },
+  "signOut": {
+    "message": "خروج"
+  },
+  "onboardDisinfactClick": {
+    "message": "کلیک روی %BTN% ادعاها را نمایش می‌دهد و از موجودی شما کسر می‌کند"
+  },
+  "onboardDisinfactTap": {
+    "message": "ضربه زدن روی %BTN% ادعاها را نمایش می‌دهد و از موجودی شما کسر می‌کند"
+  },
+  "onboardWillCharge": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "onboardFactcheck": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "onboardTranslations": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "onboardRefreshes": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "topUp": {
+    "message": "شارژ"
+  },
+  "showMore": {
+    "message": "نمایش بیشتر"
+  },
+  "showLess": {
+    "message": "نمایش کمتر"
+  },
+  "landingTagline1": {
+    "message": "حقیقت را آشکار کن. دروغ‌ها را بیاب."
+  },
+  "landingTagline2": {
+    "message": "دیگر اطلاعات نادرست نه. فقط حقایق."
+  },
+  "continueWithX": {
+    "message": "ادامه با X"
+  },
+  "continueWithGoogle": {
+    "message": "ادامه با Google"
+  },
+  "continueWithApple": {
+    "message": "ادامه با Apple"
+  },
+  "lastUsed": {
+    "message": "آخرین استفاده"
+  },
+  "cleanupTagline": {
+    "message": "خلاصهٔ X خود را پاک‌سازی کنید."
+  },
+  "disclaimerJurisdiction": {
+    "message": "در داخل ایالات متحده، فقط ساکنان آلاباما، آریزونا، کالیفرنیا، کلرادو، کانکتیکت، دلاور، فلوریدا، آیداهو، ایلینوی، ایندیانا، آیووا، کانزاس، کنتاکی، لوئیزیانا، مین، ماساچوست، می‌سی‌سی‌پی، میزوری، مونتانا، نیوهمپشایر، نیومکزیکو، نیویورک، کارولینای شمالی، داکوتای شمالی، اوکلاهما، اورگن، پنسیلوانیا، کارولینای جنوبی، داکوتای جنوبی، تنسی، تگزاس، یوتا، واشنگتن، ویسکانسین و وایومینگ می‌توانند از DisinfaX استفاده کرده و موجودی خود را شارژ کنند؛ واشنگتن D.C.، همهٔ سرزمین‌های ایالات متحده و هر ایالتی که فهرست نشده مستثنا هستند. خارج از ایالات متحده، در کانادا، استرالیا، نیوزیلند، سنگاپور، آفریقای جنوبی، ژاپن، تایوان، اندونزی، تایلند، فیلیپین، مالزی، ویتنام و سوئیس در دسترس است."
+  },
+  "factCheckAllButton": {
+    "message": "همه را راستی‌آزمایی کن"
   }
 }

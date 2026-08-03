@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "בדיקה",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "יתרה"
+  },
+  "gifted": {
+    "message": "מתנה"
+  },
+  "customTopup": {
+    "message": "מותאם אישית"
+  },
+  "customAmountLabel": {
+    "message": "סכום טעינה מותאם אישית בדולרים אמריקאיים"
+  },
+  "increase": {
+    "message": "הגדל"
+  },
+  "decrease": {
+    "message": "הקטן"
+  },
+  "topUpBalance": {
+    "message": "טעינת יתרה"
+  },
+  "processing": {
+    "message": "מעבד…"
+  },
+  "checkoutError": {
+    "message": "לא ניתן להתחיל את התשלום. נסה שוב."
+  },
+  "termsOfService": {
+    "message": "תנאי השירות"
+  },
+  "privacyPolicy": {
+    "message": "מדיניות הפרטיות"
+  },
+  "disclaimerAgree": {
+    "message": "בעת הטעינה, אתה מסכים ל%TOS% ול%PRIVACY% שלנו."
+  },
+  "disclaimerFx": {
+    "message": "ייתכן שיחולו עמלות המרת מטבע אם תשלם במטבע שאינו USD."
+  },
+  "signOut": {
+    "message": "התנתק"
+  },
+  "onboardDisinfactClick": {
+    "message": "לחיצה על %BTN% תחשוף טענות ותחייב את היתרה שלך"
+  },
+  "onboardDisinfactTap": {
+    "message": "הקשה על %BTN% תחשוף טענות ותחייב את היתרה שלך"
+  },
+  "onboardWillCharge": {
+    "message": "לחיצה על %BTN% תחייב את היתרה שלך"
+  },
+  "onboardFactcheck": {
+    "message": "לחיצה על %BTN% תחייב את היתרה שלך"
+  },
+  "onboardTranslations": {
+    "message": "לחיצה על %BTN% תחייב את היתרה שלך"
+  },
+  "onboardRefreshes": {
+    "message": "לחיצה על %BTN% תחייב את היתרה שלך"
+  },
+  "topUp": {
+    "message": "טעינה"
+  },
+  "showMore": {
+    "message": "הצג עוד"
+  },
+  "showLess": {
+    "message": "הצג פחות"
+  },
+  "landingTagline1": {
+    "message": "חשוף את האמת. מצא את השקרים."
+  },
+  "landingTagline2": {
+    "message": "לא עוד דיסאינפורמציה. רק עובדות."
+  },
+  "continueWithX": {
+    "message": "המשך עם X"
+  },
+  "continueWithGoogle": {
+    "message": "המשך עם Google"
+  },
+  "continueWithApple": {
+    "message": "המשך עם Apple"
+  },
+  "lastUsed": {
+    "message": "בשימוש אחרון"
+  },
+  "cleanupTagline": {
+    "message": "נקה את פיד ה-X שלך."
+  },
+  "disclaimerJurisdiction": {
+    "message": "בתוך ארצות הברית, רק תושבי אלבמה, אריזונה, קליפורניה, קולורדו, קונטיקט, דלאוור, פלורידה, איידהו, אילינוי, אינדיאנה, איווה, קנזס, קנטקי, לואיזיאנה, מיין, מסצ׳וסטס, מיסיסיפי, מיזורי, מונטנה, ניו המפשייר, ניו מקסיקו, ניו יורק, צפון קרוליינה, צפון דקוטה, אוקלהומה, אורגון, פנסילבניה, דרום קרוליינה, דרום דקוטה, טנסי, טקסס, יוטה, וושינגטון, ויסקונסין ווייומינג יכולים להשתמש ב-DisinfaX ולטעון את היתרה שלהם; וושינגטון D.C., כל השטחים של ארה״ב וכל מדינה שאינה מופיעה ברשימה אינם כלולים. מחוץ לארצות הברית, השירות זמין בקנדה, אוסטרליה, ניו זילנד, סינגפור, דרום אפריקה, יפן, טייוואן, אינדונזיה, תאילנד, הפיליפינים, מלזיה, וייטנאם ושווייץ."
+  },
+  "factCheckAllButton": {
+    "message": "בדוק הכול"
   }
 }

@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "जाँच करीं",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "बैलेंस"
+  },
+  "gifted": {
+    "message": "उपहार"
+  },
+  "customTopup": {
+    "message": "अपना"
+  },
+  "customAmountLabel": {
+    "message": "अमेरिकी डॉलर में अपना टॉप-अप रकम"
+  },
+  "increase": {
+    "message": "बढ़ावीं"
+  },
+  "decrease": {
+    "message": "घटावीं"
+  },
+  "topUpBalance": {
+    "message": "बैलेंस टॉप अप करीं"
+  },
+  "processing": {
+    "message": "प्रोसेस हो रहल बा…"
+  },
+  "checkoutError": {
+    "message": "चेकआउट शुरू ना हो सकल। फेर से कोसिस करीं।"
+  },
+  "termsOfService": {
+    "message": "सेवा के सर्त"
+  },
+  "privacyPolicy": {
+    "message": "गोपनीयता नीति"
+  },
+  "disclaimerAgree": {
+    "message": "टॉप अप करके, रउआ हमनी के %TOS% आ %PRIVACY% से सहमत बानी।"
+  },
+  "disclaimerFx": {
+    "message": "जदी रउआ USD के अलावा कवनो दोसर मुद्रा में भुगतान करीले त विदेशी मुद्रा विनिमय शुल्क लागू हो सकेला।"
+  },
+  "signOut": {
+    "message": "साइन आउट"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% पर क्लिक कइला से दावा लोग देखाई देई आ रउरा बैलेंस से पइसा कट जाई"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% पर टैप कइला से दावा लोग देखाई देई आ रउरा बैलेंस से पइसा कट जाई"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% पर क्लिक कइला से रउरा बैलेंस से पइसा कट जाई"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% पर क्लिक कइला से रउरा बैलेंस से पइसा कट जाई"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% पर क्लिक कइला से रउरा बैलेंस से पइसा कट जाई"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% पर क्लिक कइला से रउरा बैलेंस से पइसा कट जाई"
+  },
+  "topUp": {
+    "message": "पइसा जोड़ीं"
+  },
+  "showMore": {
+    "message": "अउरी देखावीं"
+  },
+  "showLess": {
+    "message": "कम देखावीं"
+  },
+  "landingTagline1": {
+    "message": "सच के उजागर करीं। झूठ के खोजीं।"
+  },
+  "landingTagline2": {
+    "message": "अब कवनो गलत जानकारी ना। खाली सच।"
+  },
+  "continueWithX": {
+    "message": "X के साथे आगे बढ़ीं"
+  },
+  "continueWithGoogle": {
+    "message": "Google के साथे आगे बढ़ीं"
+  },
+  "continueWithApple": {
+    "message": "Apple के साथे आगे बढ़ीं"
+  },
+  "lastUsed": {
+    "message": "आखिरी बेर इस्तेमाल"
+  },
+  "cleanupTagline": {
+    "message": "आपन X फीड के साफ करीं।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "अमेरिका के भीतर, खाली अलबामा, एरिज़ोना, कैलिफोर्निया, कोलोराडो, कनेक्टिकट, डेलावेयर, फ्लोरिडा, आइडाहो, इलिनोइस, इंडियाना, आयोवा, कन्सास, केंटकी, लुइज़ियाना, मेन, मैसाचुसेट्स, मिसिसिपी, मिसौरी, मोंटाना, न्यू हैम्पशायर, न्यू मैक्सिको, न्यूयॉर्क, नॉर्थ कैरोलिना, नॉर्थ डकोटा, ओक्लाहोमा, ओरेगन, पेंसिल्वेनिया, साउथ कैरोलिना, साउथ डकोटा, टेनेसी, टेक्सास, यूटा, वाशिंगटन, विस्कॉन्सिन, आ वायोमिंग के निवासी लोग DisinfaX के इस्तेमाल कर सकेला आ आपन बैलेंस टॉप अप कर सकेला; Washington, D.C., सभ अमेरिकी क्षेत्र, आ कवनो अनसूचीबद्ध राज्य के छोड़ दिहल गइल बा। अमेरिका के बाहर, ई कनाडा, ऑस्ट्रेलिया, न्यूज़ीलैंड, सिंगापुर, दक्षिण अफ्रीका, जापान, ताइवान, इंडोनेशिया, थाईलैंड, फिलीपींस, मलेशिया, वियतनाम, आ स्विट्जरलैंड में उपलब्ध बा।"
+  },
+  "factCheckAllButton": {
+    "message": "सब जाँच करीं"
   }
 }

@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "ଟପ୍ ଅପ୍"
+  },
+  "showMore": {
+    "message": "ଅଧିକ ଦେଖାନ୍ତୁ"
+  },
+  "showLess": {
+    "message": "କମ୍ ଦେଖାନ୍ତୁ"
+  },
+  "landingTagline1": {
+    "message": "ସତ୍ୟ ପ୍ରକାଶ କରନ୍ତୁ। ମିଥ୍ୟା ଖୋଜନ୍ତୁ।"
+  },
+  "landingTagline2": {
+    "message": "ଆଉ ଭୁଲ ସୂଚନା ନାହିଁ। କେବଳ ତଥ୍ୟ।"
+  },
+  "continueWithX": {
+    "message": "X ସହିତ ଜାରି ରଖନ୍ତୁ"
+  },
+  "continueWithGoogle": {
+    "message": "Google ସହିତ ଜାରି ରଖନ୍ତୁ"
+  },
+  "continueWithApple": {
+    "message": "Apple ସହିତ ଜାରି ରଖନ୍ତୁ"
+  },
+  "lastUsed": {
+    "message": "ଶେଷ ଥର ବ୍ୟବହୃତ"
+  },
+  "cleanupTagline": {
+    "message": "ଆପଣଙ୍କ X ଫିଡ୍ ସଫା କରନ୍ତୁ।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ଯୁକ୍ତରାଷ୍ଟ୍ର ଭିତରେ, କେବଳ ଆଲାବାମା, ଆରିଜୋନା, କାଲିଫର୍ନିଆ, କଲୋରାଡୋ, କନେକ୍ଟିକଟ୍, ଡେଲାୱେୟାର୍, ଫ୍ଲୋରିଡା, ଆଇଡାହୋ, ଇଲିନଏ, ଇଣ୍ଡିଆନା, ଆଇଓୱା, କାନ୍ସାସ୍, କେଣ୍ଟକି, ଲୁଇଜିଆନା, ମେନ୍, ମାସାଚୁସେଟ୍ସ, ମିସିସିପି, ମିସୌରି, ମଣ୍ଟାନା, ନ୍ୟୁ ହ୍ୟାମ୍ପସାୟାର୍, ନ୍ୟୁ ମେକ୍ସିକୋ, ନ୍ୟୁୟର୍କ, ଉତ୍ତର କାରୋଲିନା, ଉତ୍ତର ଡାକୋଟା, ଓକ୍ଲାହୋମା, ଓରେଗନ୍, ପେନସିଲଭାନିଆ, ଦକ୍ଷିଣ କାରୋଲିନା, ଦକ୍ଷିଣ ଡାକୋଟା, ଟେନେସି, ଟେକ୍ସାସ୍, ୟୁଟା, ୱାଶିଂଟନ୍, ୱିସ୍କନ୍ସିନ୍, ଏବଂ ୱାୟୋମିଂର ବାସିନ୍ଦାମାନେ DisinfaX ବ୍ୟବହାର କରିପାରିବେ ଏବଂ ସେମାନଙ୍କ ବାଲାନ୍ସ ଟପ୍ ଅପ୍ କରିପାରିବେ; ୱାଶିଂଟନ୍, D.C., ସମସ୍ତ ଯୁକ୍ତରାଷ୍ଟ୍ର ଅଞ୍ଚଳ, ଏବଂ ତାଲିକାଭୁକ୍ତ ନ ଥିବା କୌଣସି ରାଜ୍ୟ ବାଦ ପଡ଼ିଛି। ଯୁକ୍ତରାଷ୍ଟ୍ର ବାହାରେ, ଏହା କାନାଡା, ଅଷ୍ଟ୍ରେଲିଆ, ନ୍ୟୁଜିଲାଣ୍ଡ, ସିଙ୍ଗାପୁର, ଦକ୍ଷିଣ ଆଫ୍ରିକା, ଜାପାନ, ତାଇୱାନ, ଇଣ୍ଡୋନେସିଆ, ଥାଇଲାଣ୍ଡ, ଫିଲିପାଇନ୍ସ, ମାଲେସିଆ, ଭିଏତନାମ, ଏବଂ ସ୍ୱିଜରଲାଣ୍ଡରେ ଉପଲବ୍ଧ।"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "ଯାଞ୍ଚ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "ବାଲାନ୍ସ"
+  },
+  "gifted": {
+    "message": "ଉପହାର"
+  },
+  "customTopup": {
+    "message": "କଷ୍ଟମ୍"
+  },
+  "customAmountLabel": {
+    "message": "ୟୁଏସ୍ ଡଲାରରେ କଷ୍ଟମ୍ ଟପ୍-ଅପ୍ ପରିମାଣ"
+  },
+  "increase": {
+    "message": "ବଢାନ୍ତୁ"
+  },
+  "decrease": {
+    "message": "କମାନ୍ତୁ"
+  },
+  "topUpBalance": {
+    "message": "ବାଲାନ୍ସ ଟପ୍ ଅପ୍ କରନ୍ତୁ"
+  },
+  "processing": {
+    "message": "ପ୍ରକ୍ରିୟାକରଣ ଚାଲିଛି…"
+  },
+  "checkoutError": {
+    "message": "ଚେକଆଉଟ୍ ଆରମ୍ଭ କରାଯାଇପାରିଲା ନାହିଁ। ଦୟାକରି ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ।"
+  },
+  "termsOfService": {
+    "message": "ସେବା ସର୍ତ୍ତାବଳୀ"
+  },
+  "privacyPolicy": {
+    "message": "ଗୋପନୀୟତା ନୀତି"
+  },
+  "disclaimerAgree": {
+    "message": "ଟପ୍ ଅପ୍ କରି, ଆପଣ ଆମର %TOS% ଏବଂ %PRIVACY% ସହ ସହମତ ହୁଅନ୍ତି।"
+  },
+  "disclaimerFx": {
+    "message": "ଯଦି ଆପଣ USD ବ୍ୟତୀତ ଅନ୍ୟ ମୁଦ୍ରାରେ ଦେୟ ପ୍ରଦାନ କରନ୍ତି ତେବେ ବୈଦେଶିକ ମୁଦ୍ରା ବିନିମୟ ଶୁଳ୍କ ଲାଗୁ ହୋଇପାରେ।"
+  },
+  "signOut": {
+    "message": "ସାଇନ୍ ଆଉଟ୍"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ଦାବିଗୁଡ଼ିକୁ ପ୍ରକାଶ କରିବ ଏବଂ ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ଟାପ୍ କରିବା ଦାବିଗୁଡ଼ିକୁ ପ୍ରକାଶ କରିବ ଏବଂ ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "factCheckAllButton": {
+    "message": "ସମସ୍ତ ଯାଞ୍ଚ କରନ୍ତୁ"
   }
 }

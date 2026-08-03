@@ -168,5 +168,101 @@
   "disinfactButton": {
     "message": "Kontrôle",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Skonken"
+  },
+  "customTopup": {
+    "message": "Oanpast"
+  },
+  "customAmountLabel": {
+    "message": "Oanpast opwurdearringsbedrach yn Amerikaanske dollars"
+  },
+  "increase": {
+    "message": "Ferheegje"
+  },
+  "decrease": {
+    "message": "Ferleegje"
+  },
+  "topUpBalance": {
+    "message": "Saldo opwurdearje"
+  },
+  "processing": {
+    "message": "Ferwurkje…"
+  },
+  "checkoutError": {
+    "message": "Kin ôfrekkenjen net starte. Besykje it nochris."
+  },
+  "termsOfService": {
+    "message": "Tsjinstbetingsten"
+  },
+  "privacyPolicy": {
+    "message": "Privacybelied"
+  },
+  "disclaimerAgree": {
+    "message": "Troch op te wurdearjen gean jo akkoart mei ús %TOS% en %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Wikselkoerskosten kinne jilde as jo yn in oare munt as USD betelje."
+  },
+  "signOut": {
+    "message": "Ofmelde"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikke op %BTN% lit beweringen sjen en sil jo saldo ôfskriuwe"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tikje op %BTN% lit beweringen sjen en sil jo saldo ôfskriuwe"
+  },
+  "onboardWillCharge": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "onboardFactcheck": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "onboardTranslations": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "onboardRefreshes": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "topUp": {
+    "message": "Opwurdearje"
+  },
+  "showMore": {
+    "message": "Mear sjen litte"
+  },
+  "showLess": {
+    "message": "Minder sjen litte"
+  },
+  "landingTagline1": {
+    "message": "Ûnthâld de wierheid. Fyn de leagens."
+  },
+  "landingTagline2": {
+    "message": "Gjin misynformaasje mear. Allinnich feiten."
+  },
+  "continueWithX": {
+    "message": "Trochgean mei X"
+  },
+  "continueWithGoogle": {
+    "message": "Trochgean mei Google"
+  },
+  "continueWithApple": {
+    "message": "Trochgean mei Apple"
+  },
+  "lastUsed": {
+    "message": "Lêst brûkt"
+  },
+  "cleanupTagline": {
+    "message": "Rêd dyn X-feed op."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Binnen de Feriene Steaten kinne allinnich ynwenners fan Alabama, Arizona, Kalifornje, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Noard-Karolina, Noard-Dakota, Oklahoma, Oregon, Súd-Karolina, Súd-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin en Wyoming DisinfaX brûke en har saldo opwurdearje; Washington, D.C., alle Amerikaanske gebieten en alle net-neamde steaten binne útsletten. Bûten de Feriene Steaten is it beskikber yn Kanada, Austraalje, Nij-Seelân, Singapore, Súd-Afrika, Japan, Taiwan, Yndoneezje, Tailân, de Filipinen, Maleizje, Fjetnam en Switserlân."
+  },
+  "factCheckAllButton": {
+    "message": "Alles kontrolearje"
   }
 }

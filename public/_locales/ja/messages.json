@@ -166,5 +166,101 @@
   "disinfactButton": {
     "message": "ファクトチェック",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "残高"
+  },
+  "gifted": {
+    "message": "ボーナス"
+  },
+  "customTopup": {
+    "message": "カスタム"
+  },
+  "customAmountLabel": {
+    "message": "米ドルでのカスタムチャージ金額"
+  },
+  "increase": {
+    "message": "増やす"
+  },
+  "decrease": {
+    "message": "減らす"
+  },
+  "topUpBalance": {
+    "message": "残高をチャージ"
+  },
+  "processing": {
+    "message": "処理中…"
+  },
+  "checkoutError": {
+    "message": "決済を開始できませんでした。もう一度お試しください。"
+  },
+  "termsOfService": {
+    "message": "利用規約"
+  },
+  "privacyPolicy": {
+    "message": "プライバシーポリシー"
+  },
+  "disclaimerAgree": {
+    "message": "チャージすると、%TOS%および%PRIVACY%に同意したものとみなされます。"
+  },
+  "disclaimerFx": {
+    "message": "米ドル以外の通貨で支払う場合、為替手数料が発生することがあります。"
+  },
+  "signOut": {
+    "message": "ログアウト"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%をクリックすると主張が表示され、残高が課金されます"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%をタップすると主張が表示され、残高が課金されます"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%をクリックすると残高が課金されます"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%をクリックすると残高が課金されます"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%をクリックすると残高が課金されます"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%をクリックすると残高が課金されます"
+  },
+  "topUp": {
+    "message": "チャージ"
+  },
+  "showMore": {
+    "message": "もっと見る"
+  },
+  "showLess": {
+    "message": "表示を減らす"
+  },
+  "landingTagline1": {
+    "message": "真実を明らかに。嘘を見抜く。"
+  },
+  "landingTagline2": {
+    "message": "偽情報はもう不要。事実だけを。"
+  },
+  "continueWithX": {
+    "message": "X で続行"
+  },
+  "continueWithGoogle": {
+    "message": "Google で続行"
+  },
+  "continueWithApple": {
+    "message": "Apple で続行"
+  },
+  "lastUsed": {
+    "message": "前回使用"
+  },
+  "cleanupTagline": {
+    "message": "あなたの X フィードをすっきりと。"
+  },
+  "disclaimerJurisdiction": {
+    "message": "アメリカ合衆国内では、アラバマ州、アリゾナ州、カリフォルニア州、コロラド州、コネチカット州、デラウェア州、フロリダ州、アイダホ州、イリノイ州、インディアナ州、アイオワ州、カンザス州、ケンタッキー州、ルイジアナ州、メイン州、マサチューセッツ州、ミシシッピ州、ミズーリ州、モンタナ州、ニューハンプシャー州、ニューメキシコ州、ニューヨーク州、ノースカロライナ州、ノースダコタ州、オクラホマ州、オレゴン州、ペンシルベニア州、サウスカロライナ州、サウスダコタ州、テネシー州、テキサス州、ユタ州、ワシントン州、ウィスコンシン州、ワイオミング州の住民のみが DisinfaX を利用し、残高をチャージできます。ワシントン D.C.、すべての米国領土、および記載されていない州は除外されます。アメリカ合衆国外では、カナダ、オーストラリア、ニュージーランド、シンガポール、南アフリカ、日本、台湾、インドネシア、タイ、フィリピン、マレーシア、ベトナム、スイスで利用できます。"
+  },
+  "factCheckAllButton": {
+    "message": "すべてファクトチェック"
   }
 }

@@ -1,4 +1,37 @@
 {
+  "topUp": {
+    "message": "Ouzhpennañ arc'hant"
+  },
+  "showMore": {
+    "message": "Diskouez muioc'h"
+  },
+  "showLess": {
+    "message": "Diskouez nebeutoc'h"
+  },
+  "landingTagline1": {
+    "message": "Diskuliañ ar Wirionez. Kavout ar Gevier."
+  },
+  "landingTagline2": {
+    "message": "Disinformadur ebet ken. Nemet Deverioù."
+  },
+  "continueWithX": {
+    "message": "Kenderc'hel gant X"
+  },
+  "continueWithGoogle": {
+    "message": "Kenderc'hel gant Google"
+  },
+  "continueWithApple": {
+    "message": "Kenderc'hel gant Apple"
+  },
+  "lastUsed": {
+    "message": "Implijet da ziwezhañ"
+  },
+  "cleanupTagline": {
+    "message": "Naetaat ho lanv X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "E-barzh ar Stadoù-Unanet, ne c'hall nemet annezidi Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina an Norzh, Dakota an Norzh, Oklahoma, Oregon, Pennsylvania, Karolina ar Su, Dakota ar Su, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming implijout DisinfaX hag ouzhpennañ arc'hant d'o c'hont; ezlakaet eo Washington, D.C., holl dachennoù ar Stadoù-Unanet, hag ar stadoù n'int ket rollet. Er-maez eus ar Stadoù-Unanet, ez eo hegerz e Kanada, Aostralia, Zeland-Nevez, Singapour, Suafrika, Japan, Taiwan, Indonezia, Thailand, ar Filipinez, Malaysia, Vietnam, ha Suis."
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -168,5 +201,68 @@
   "disinfactButton": {
     "message": "Gwiriañ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "balanceLabel": {
+    "message": "Chelead"
+  },
+  "gifted": {
+    "message": "Prof"
+  },
+  "customTopup": {
+    "message": "Personelaet"
+  },
+  "customAmountLabel": {
+    "message": "Sammad karg personelaet e dollars SU"
+  },
+  "increase": {
+    "message": "Kreskiñ"
+  },
+  "decrease": {
+    "message": "Digreskiñ"
+  },
+  "topUpBalance": {
+    "message": "Kargañ ar chelead"
+  },
+  "processing": {
+    "message": "O treiñ…"
+  },
+  "checkoutError": {
+    "message": "N'eus ket bet gallet kregiñ gant ar paeamant. Klaskit en-dro, mar plij."
+  },
+  "termsOfService": {
+    "message": "Divizoù ar Servij"
+  },
+  "privacyPolicy": {
+    "message": "Reolennoù prevezded"
+  },
+  "disclaimerAgree": {
+    "message": "En ur gargañ, e asantit d'hor %TOS% ha %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Tailhoù eskemm moneiz a c'hall bezañ arloet ma paeit e ur voneiz all eget an USD."
+  },
+  "signOut": {
+    "message": "Digevreañ"
+  },
+  "onboardDisinfactClick": {
+    "message": "O klikañ war %BTN% e teu war-wel ar c'hlemmoù hag e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardDisinfactTap": {
+    "message": "O stekiñ war %BTN% e teu war-wel ar c'hlemmoù hag e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardWillCharge": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardFactcheck": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardTranslations": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardRefreshes": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "factCheckAllButton": {
+    "message": "Gwiriañ pep tra"
   }
 }
