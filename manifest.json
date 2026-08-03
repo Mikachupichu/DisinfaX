@@ -20,9 +20,14 @@
   },
   "action": {
     "default_icon": {
-      "16": "public/icon/16.png",
-      "48": "public/icon/48.png",
-      "128": "public/icon/128.png"
+      "16": "public/icon/16-black.png",
+      "32": "public/icon/32-black.png",
+      "48": "public/icon/48-black.png",
+      "96": "public/icon/96-black.png",
+      "128": "public/icon/128-black.png"
+    },
+    "background": {
+      "service_worker": "background.js"
     },
     "default_title": "DisinfaX",
     "default_popup": "popup.html"
