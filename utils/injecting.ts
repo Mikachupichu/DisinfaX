@@ -24,6 +24,7 @@ import { normalizeSources } from "./intelligence";
 import { breakupTweetText, breakupWithHighlights, resolveHighlightRange } from "./textBreakup";
 import { mfBus } from "./mfBus";
 import { codeToMessageKey } from "./errorCodes";
+import disinfaxMarkRaw from "../public/black.svg?raw";
 
 // ── Input mode (touch vs. pointer) ───────────────────────────────────────────
 
@@ -2143,7 +2144,7 @@ function formatSignedUsd(amount: number, sign: '+' | '-'): string {
     const n = new Intl.NumberFormat(getEffectiveUILocale(), { minimumFractionDigits: frac, maximumFractionDigits: frac }).format(rounded);
     return `<span style="display:inline-flex;align-items:center;line-height:1;">`
         + `${sign}`
-        + `<span style="font-size:0.6em;font-weight:600;line-height:1;margin:0 0.5px 0 1px;">US</span>`
+        + `<span style="font-size:0.6em;font-weight:600;line-height:1;margin:0 0.5px 0 1px;position:relative;top:1px;">US</span>`
         + `<span style="font-weight:600;line-height:1;">$</span>`
         + `${n}`
         + `</span>`;
@@ -4718,6 +4719,16 @@ function shouldRemoveOnHoldButton(classification: Classification): boolean {
     return allResolved;
 }
 
+/** The mark's `<path>` elements, pulled straight from the same public/black.svg the
+ *  toolbar/manifest/popup icons are generated from (imported as raw text at build time —
+ *  no runtime fetch), recolored to `currentColor` so it can be tinted per use site. This
+ *  is the ONLY copy of the path data in the codebase; editing black.svg updates every
+ *  place the mark appears, instead of a hand-maintained duplicate going stale. */
+const DISINFAX_MARK_PATHS = disinfaxMarkRaw
+    .replace(/^[\s\S]*?<svg[^>]*>/, "")
+    .replace(/<\/svg>[\s\S]*$/, "")
+    .replace(/black/g, "currentColor");
+
 /** Builds the DisinfaX logo mark used inline in the Disinfact / Fact-Check All button
  *  text, so every button carrying the brand mark stays pixel-identical. */
 function createDisinfactLogoSvg(): SVGSVGElement {
@@ -4728,48 +4739,8 @@ function createDisinfactLogoSvg(): SVGSVGElement {
     svg.setAttribute("fill", "none");
     svg.style.flexShrink = "0";
     svg.style.marginTop = "-5px";
-    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    rect.setAttribute("x", "0.5");
-    rect.setAttribute("y", "0.5");
-    rect.setAttribute("width", "127");
-    rect.setAttribute("height", "127");
-    rect.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg.appendChild(rect);
-    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path1.setAttribute("d", "M50 80L75 104M50 104C59.7631 94.6274 65.2369 89.3726 75 80");
-    path1.setAttribute("stroke", "rgb(83, 100, 113)");
-    path1.setAttribute("stroke-width", "8");
-    path1.setAttribute("stroke-linecap", "square");
-    svg.appendChild(path1);
-    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path2.setAttribute("d", "M61.0703 38H55H49.0703V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5C66 24 61.5 23.5 66 24V28C66 28 66 28 61.0703 29C61.0703 33 61.0703 34 61.0703 38Z");
-    path2.setAttribute("fill", "rgb(83, 100, 113)");
-    svg.appendChild(path2);
-    const path3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path3.setAttribute("fill-rule", "evenodd");
-    path3.setAttribute("clip-rule", "evenodd");
-    path3.setAttribute("d", "M39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38H61.0703H55H49.0703H45V45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793ZM53.5366 75.9306C93.5366 81.9306 80.5884 110.663 53.5884 109.163C51.5884 109.163 49.5884 108.663 49.5884 106.663L49.5366 79.4306C49.6146 77.438 50.5884 75.6626 53.5366 75.9306Z");
-    path3.setAttribute("fill", "rgb(83, 100, 113)");
-    svg.appendChild(path3);
-    const path4 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path4.setAttribute("d", "M45 45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38M45 45.5C45.0233 45.4511 44.9765 45.549 45 45.5ZM45 45.5V38H49.0703M65.5744 41V38H61.0703M49.0703 38V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5M49.0703 38H55H61.0703M61.5 23.5C61.0703 29 61.5 23.5 61.0703 29C61.0703 33 61.0703 34 61.0703 38M61.0703 29C66 28 66 28 66 28V24C61.5 23.5 66 24 61.5 23.5M53.5884 109.163C80.5884 110.663 93.5366 81.9306 53.5366 75.9306C50.5884 75.6626 49.6146 77.438 49.5366 79.4306L49.5884 106.663C49.5884 108.663 51.5884 109.163 53.5884 109.163Z");
-    path4.setAttribute("stroke", "rgb(83, 100, 113)");
-    path4.setAttribute("stroke-linecap", "round");
-    svg.appendChild(path4);
-    const path5 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path5.setAttribute("d", "M45 44V43.5V43");
-    path5.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg.appendChild(path5);
-    const path6 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path6.setAttribute("d", "M45 45V46");
-    path6.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg.appendChild(path6);
-    const path7 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path7.setAttribute("d", "M91.5 7.5C91.5 9.5 88.4098 12.3719 86.4098 12.3719C88.4098 12.3719 91.4098 15.5 91.4098 17.3719C91.5 15.5 94.5 12.5 96.5 12.5C94.5 12.5 91.5 9.5 91.5 7.5Z");
-    path7.setAttribute("fill", "rgb(83, 100, 113)");
-    path7.setAttribute("stroke", "rgb(83, 100, 113)");
-    path7.setAttribute("stroke-linecap", "round");
-    svg.appendChild(path7);
+    svg.style.color = "rgb(83, 100, 113)";
+    svg.innerHTML = `<rect x="0.5" y="0.5" width="127" height="127" stroke="currentColor"/>${DISINFAX_MARK_PATHS}`;
     return svg;
 }
 
@@ -4908,57 +4879,7 @@ function injectOnHoldButton(
     textWrap.style.alignItems = "center";
     textWrap.style.gap = "0";
 
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "16");
-    svg.setAttribute("height", "16");
-    svg.setAttribute("viewBox", "0 0 128 128");
-    svg.setAttribute("fill", "none");
-    svg.style.flexShrink = "0";
-    svg.style.marginTop = "-5px";
-    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    rect.setAttribute("x", "0.5");
-    rect.setAttribute("y", "0.5");
-    rect.setAttribute("width", "127");
-    rect.setAttribute("height", "127");
-    rect.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg.appendChild(rect);
-    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path1.setAttribute("d", "M50 80L75 104M50 104C59.7631 94.6274 65.2369 89.3726 75 80");
-    path1.setAttribute("stroke", "rgb(83, 100, 113)");
-    path1.setAttribute("stroke-width", "8");
-    path1.setAttribute("stroke-linecap", "square");
-    svg.appendChild(path1);
-    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path2.setAttribute("d", "M61.0703 38H55H49.0703V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5C66 24 61.5 23.5 66 24V28C66 28 66 28 61.0703 29C61.0703 33 61.0703 34 61.0703 38Z");
-    path2.setAttribute("fill", "rgb(83, 100, 113)");
-    svg.appendChild(path2);
-    const path3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path3.setAttribute("fill-rule", "evenodd");
-    path3.setAttribute("clip-rule", "evenodd");
-    path3.setAttribute("d", "M39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38H61.0703H55H49.0703H45V45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793ZM53.5366 75.9306C93.5366 81.9306 80.5884 110.663 53.5884 109.163C51.5884 109.163 49.5884 108.663 49.5884 106.663L49.5366 79.4306C49.6146 77.438 50.5884 75.6626 53.5366 75.9306Z");
-    path3.setAttribute("fill", "rgb(83, 100, 113)");
-    svg.appendChild(path3);
-    const path4 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path4.setAttribute("d", "M45 45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38M45 45.5C45.0233 45.4511 44.9765 45.549 45 45.5ZM45 45.5V38H49.0703M65.5744 41V38H61.0703M49.0703 38V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5M49.0703 38H55H61.0703M61.5 23.5C61.0703 29 61.5 23.5 61.0703 29C61.0703 33 61.0703 34 61.0703 38M61.0703 29C66 28 66 28 66 28V24C61.5 23.5 66 24 61.5 23.5M53.5884 109.163C80.5884 110.663 93.5366 81.9306 53.5366 75.9306C50.5884 75.6626 49.6146 77.438 49.5366 79.4306L49.5884 106.663C49.5884 108.663 51.5884 109.163 53.5884 109.163Z");
-    path4.setAttribute("stroke", "rgb(83, 100, 113)");
-    path4.setAttribute("stroke-linecap", "round");
-    svg.appendChild(path4);
-    const path5 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path5.setAttribute("d", "M45 44V43.5V43");
-    path5.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg.appendChild(path5);
-    const path6 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path6.setAttribute("d", "M45 45V46");
-    path6.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg.appendChild(path6);
-    const path7 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path7.setAttribute("d", "M91.5 7.5C91.5 9.5 88.4098 12.3719 86.4098 12.3719C88.4098 12.3719 91.4098 15.5 91.4098 17.3719C91.5 15.5 94.5 12.5 96.5 12.5C94.5 12.5 91.5 9.5 91.5 7.5Z");
-    path7.setAttribute("fill", "rgb(83, 100, 113)");
-    path7.setAttribute("stroke", "rgb(83, 100, 113)");
-    path7.setAttribute("stroke-linecap", "round");
-    svg.appendChild(path7);
-
-    textWrap.appendChild(svg);
+    textWrap.appendChild(createDisinfactLogoSvg());
     const text = document.createElement("span");
     text.textContent = t("disinfactButton");
     textWrap.appendChild(text);
@@ -5135,56 +5056,7 @@ function injectTranslateFactChecksButton(
     // type from "disinfact" — since the click below only relocalizes highlights +
     // re-researches (TRANSLATE_FACT_CHECKS), not a full preclassification.
 
-    const svg2 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg2.setAttribute("width", "16");
-    svg2.setAttribute("height", "16");
-    svg2.setAttribute("viewBox", "0 0 128 128");
-    svg2.setAttribute("fill", "none");
-    svg2.style.flexShrink = "0";
-    const rect2 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    rect2.setAttribute("x", "0.5");
-    rect2.setAttribute("y", "0.5");
-    rect2.setAttribute("width", "127");
-    rect2.setAttribute("height", "127");
-    rect2.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg2.appendChild(rect2);
-    const path1_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path1_2.setAttribute("d", "M50 80L75 104M50 104C59.7631 94.6274 65.2369 89.3726 75 80");
-    path1_2.setAttribute("stroke", "rgb(83, 100, 113)");
-    path1_2.setAttribute("stroke-width", "8");
-    path1_2.setAttribute("stroke-linecap", "square");
-    svg2.appendChild(path1_2);
-    const path2_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path2_2.setAttribute("d", "M61.0703 38H55H49.0703V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5C66 24 61.5 23.5 66 24V28C66 28 66 28 61.0703 29C61.0703 33 61.0703 34 61.0703 38Z");
-    path2_2.setAttribute("fill", "rgb(83, 100, 113)");
-    svg2.appendChild(path2_2);
-    const path3_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path3_2.setAttribute("fill-rule", "evenodd");
-    path3_2.setAttribute("clip-rule", "evenodd");
-    path3_2.setAttribute("d", "M39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38H61.0703H55H49.0703H45V45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793ZM53.5366 75.9306C93.5366 81.9306 80.5884 110.663 53.5884 109.163C51.5884 109.163 49.5884 108.663 49.5884 106.663L49.5366 79.4306C49.6146 77.438 50.5884 75.6626 53.5366 75.9306Z");
-    path3_2.setAttribute("fill", "rgb(83, 100, 113)");
-    svg2.appendChild(path3_2);
-    const path4_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path4_2.setAttribute("d", "M45 45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38M45 45.5C45.0233 45.4511 44.9765 45.549 45 45.5ZM45 45.5V38H49.0703M65.5744 41V38H61.0703M49.0703 38V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5M49.0703 38H55H61.0703M61.5 23.5C61.0703 29 61.5 23.5 61.0703 29C61.0703 33 61.0703 34 61.0703 38M61.0703 29C66 28 66 28 66 28V24C61.5 23.5 66 24 61.5 23.5M53.5884 109.163C80.5884 110.663 93.5366 81.9306 53.5366 75.9306C50.5884 75.6626 49.6146 77.438 49.5366 79.4306L49.5884 106.663C49.5884 108.663 51.5884 109.163 53.5884 109.163Z");
-    path4_2.setAttribute("stroke", "rgb(83, 100, 113)");
-    path4_2.setAttribute("stroke-linecap", "round");
-    svg2.appendChild(path4_2);
-    const path5_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path5_2.setAttribute("d", "M45 44V43.5V43");
-    path5_2.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg2.appendChild(path5_2);
-    const path6_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path6_2.setAttribute("d", "M45 45V46");
-    path6_2.setAttribute("stroke", "rgb(83, 100, 113)");
-    svg2.appendChild(path6_2);
-    const path7_2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path7_2.setAttribute("d", "M91.5 7.5C91.5 9.5 88.4098 12.3719 86.4098 12.3719C88.4098 12.3719 91.4098 15.5 91.4098 17.3719C91.5 15.5 94.5 12.5 96.5 12.5C94.5 12.5 91.5 9.5 91.5 7.5Z");
-    path7_2.setAttribute("fill", "rgb(83, 100, 113)");
-    path7_2.setAttribute("stroke", "rgb(83, 100, 113)");
-    path7_2.setAttribute("stroke-linecap", "round");
-    svg2.appendChild(path7_2);
-
-    textWrap.appendChild(svg2);
+    textWrap.appendChild(createDisinfactLogoSvg());
     const text2 = document.createElement("span");
     text2.textContent = t("disinfactButton");
     textWrap.appendChild(text2);
