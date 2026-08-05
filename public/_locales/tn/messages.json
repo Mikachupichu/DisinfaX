@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hlophisa gape dintlha tsotlhe tsa tweet eno",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Bontsha gape dintlha tsotlhe tsa tweet eno",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Batlisisa gape kopo e",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Tlhatlhoba tsotlhe"
+  },
+  "errBalanceTooLow": {
+    "message": "Bolanse ya gago e kwa tlase thata. Tsweetswee tlatsa go tswelela pele."
+  },
+  "errAccountSuspended": {
+    "message": "Akhaonto ya gago e emisitswe."
+  },
+  "errNotSignedIn": {
+    "message": "Ga o tsene. Tsweetswee tsena mme o leke gape."
+  },
+  "errInvalidRequest": {
+    "message": "Karolo ya kopo eno ga e itsiwe. Tsweetswee netefatsa gore katlaletso e ntjhafaditswe."
+  },
+  "errServiceUnavailable": {
+    "message": "Phoso e diragetse mo lotlheng lwa rona. Tsweetswee leka gape mo lobakanyaneng."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ga e sa fitlhelelesega mo kgaolong ya gago ka ntlha ya ditlhokego tsa molao."
+  },
+  "errInvalidAmount": {
+    "message": "Madi ao a tlatsa ga a a siamo. Tsweetswee tlhopha madi a sele."
+  },
+  "errNotFound": {
+    "message": "Seo ga se bonwa. Leka gape."
   }
 }

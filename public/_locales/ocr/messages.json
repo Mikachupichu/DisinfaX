@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassificar totas las afirmacions d'aqueste tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Tornar revelar totas las afirmacions d'aqueste tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Recercar tornar aquesta afirmacion",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Fact-Check All"
+  },
+  "errBalanceTooLow": {
+    "message": "Lo vòstre saldat es tròp bas. Mercés de recargar per contunhar."
+  },
+  "errAccountSuspended": {
+    "message": "Lo vòstre compte es estat suspendut."
+  },
+  "errNotSignedIn": {
+    "message": "Sètz pas connectat. Mercés de vos connectar e tornar ensajar."
+  },
+  "errInvalidRequest": {
+    "message": "Una part d'aquesta demanda es pas estada reconeguda. Mercés de verificar que l'extension es actualizada."
+  },
+  "errServiceUnavailable": {
+    "message": "Una error se produsiguèt de nòstre costat. Mercés de tornar ensajar dins un moment."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX es pas encara disponible dins vòstra region en rason d'exigéncias regulatòrias."
+  },
+  "errInvalidAmount": {
+    "message": "Aquela soma de recarga es pas valida. Mercés de causir una autra soma."
+  },
+  "errNotFound": {
+    "message": "Aquò se pòt pas trobar. Tornatz ensajar."
   }
 }

@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Alle beweringen in deze tweet herclassificeren",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Alle beweringen in deze tweet opnieuw onthullen",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Deze bewering opnieuw onderzoeken",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Alles controleren"
+  },
+  "errBalanceTooLow": {
+    "message": "Je saldo is te laag. Voeg tegoed toe om door te gaan."
+  },
+  "errAccountSuspended": {
+    "message": "Je account is opgeschort."
+  },
+  "errNotSignedIn": {
+    "message": "Je bent niet aangemeld. Meld je aan en probeer het opnieuw."
+  },
+  "errInvalidRequest": {
+    "message": "Een deel van dit verzoek werd niet herkend. Zorg dat de extensie up-to-date is."
+  },
+  "errServiceUnavailable": {
+    "message": "Er is iets misgegaan aan onze kant. Probeer het over een moment opnieuw."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX is nog niet beschikbaar in jouw regio vanwege wettelijke vereisten."
+  },
+  "errInvalidAmount": {
+    "message": "Dat oplaadbedrag is niet geldig. Kies een ander bedrag."
+  },
+  "errNotFound": {
+    "message": "Dat kon niet worden gevonden. Probeer het opnieuw."
   }
 }

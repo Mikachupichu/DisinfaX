@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "በዚህ ትዊት ውስጥ ያሉትን ሁሉንም የይገባኛል ጥያቄዎች እንደገና መድብ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "በዚህ ትዊት ውስጥ ያሉትን ሁሉንም የይገባኛል ጥያቄዎች እንደገና አሳይ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ይህን ይገባኛል እንደገና መርምር",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "ሁሉንም ማረጋገጥ"
+  },
+  "errBalanceTooLow": {
+    "message": "ቀሪ ገንዘብዎ በጣም ዝቅተኛ ነው። ለመቀጠል እባክዎ ገንዘብ ይሙሉ።"
+  },
+  "errAccountSuspended": {
+    "message": "መለያዎ ለጊዜው ተይዟል።"
+  },
+  "errNotSignedIn": {
+    "message": "አልገቡም። እባክዎ ይግቡ እና እንደገና ይሞክሩ።"
+  },
+  "errInvalidRequest": {
+    "message": "የዚህ ጥያቄ የተወሰነ ክፍል አልታወቀም። ተጨማሪው ወቅታዊ መሆኑን ያረጋግጡ።"
+  },
+  "errServiceUnavailable": {
+    "message": "በእኛ በኩል ስህተት ተከስቷል። እባክዎ ከትንሽ ጊዜ በኋላ እንደገና ይሞክሩ።"
+  },
+  "errRegionNotSupported": {
+    "message": "በቁጥጥር መስፈርቶች ምክንያት DisinfaX በአካባቢዎ እስካሁን አይገኝም።"
+  },
+  "errInvalidAmount": {
+    "message": "ያ የገንዘብ መጠን ልክ አይደለም። እባክዎ ሌላ መጠን ይምረጡ።"
+  },
+  "errNotFound": {
+    "message": "ያ ማግኘት አልተቻለም። እንደገና ይሞክሩ።"
   }
 }

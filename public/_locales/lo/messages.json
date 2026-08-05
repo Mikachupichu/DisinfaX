@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ຈັດປະເພດທຸກ tweet ໃນ batch ນີ້ໃໝ່",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ສະແດງຄໍາອ້າງອີງທັງໝົດຂອງ tweet ນີ້ຄືນໃໝ່",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ຄົ້ນຄວ້າຂໍ້ກ່າວນີ້ໃໝ່",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "ກວດສອບທັງໝົດ"
+  },
+  "errBalanceTooLow": {
+    "message": "ຍອດເງິນຂອງທ່ານຕໍ່າເກີນໄປ. ກະລຸນາເຕີມເງິນເພື່ອດຳເນີນການຕໍ່."
+  },
+  "errAccountSuspended": {
+    "message": "ບັນຊີຂອງທ່ານຖືກໂຈະໄວ້."
+  },
+  "errNotSignedIn": {
+    "message": "ທ່ານຍັງບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ. ກະລຸນາເຂົ້າສູ່ລະບົບ ແລະ ລອງໃໝ່."
+  },
+  "errInvalidRequest": {
+    "message": "ບາງສ່ວນຂອງຄຳຮ້ອງຂໍນີ້ບໍ່ໄດ້ຖືກຮັບຮູ້. ກະລຸນາກວດສອບວ່າສ່ວນຂະຫຍາຍທັນສະໄໝ."
+  },
+  "errServiceUnavailable": {
+    "message": "ມີຄວາມຜິດພາດເກີດຂຶ້ນຢູ່ຝ່າຍພວກເຮົາ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງໃນອີກບໍ່ຊ້າ."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ຍັງບໍ່ພ້ອມໃຫ້ບໍລິການໃນເຂດຂອງທ່ານເນື່ອງຈາກຂໍ້ກຳນົດດ້ານກົດລະບຽບ."
+  },
+  "errInvalidAmount": {
+    "message": "ຈຳນວນເງິນເຕີມນັ້ນບໍ່ຖືກຕ້ອງ. ກະລຸນາເລືອກຈຳນວນອື່ນ."
+  },
+  "errNotFound": {
+    "message": "ບໍ່ພົບສິ່ງນັ້ນ. ກະລຸນາລອງໃໝ່."
   }
 }

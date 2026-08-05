@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ath-sheòrsaich a h-uile tagradh san tweet seo",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Foillsich a-rithist a h-uile tagradh san tweet seo",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Ath-rannsaich an tagradh seo",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Sgrùd na h-uile"
+  },
+  "errBalanceTooLow": {
+    "message": "Tha am buidheann-airgid agad ro ìseal. Cuir airgead ris gus leantainn air adhart."
+  },
+  "errAccountSuspended": {
+    "message": "Chaidh an cunntas agad a chur na thàmh."
+  },
+  "errNotSignedIn": {
+    "message": "Chan eil thu clàraichte a-steach. Clàraich a-steach agus feuch ris a-rithist."
+  },
+  "errInvalidRequest": {
+    "message": "Cha do chaidh pàirt den iarrtas seo aithneachadh. Dèan cinnteach gu bheil an leudachan ùraichte."
+  },
+  "errServiceUnavailable": {
+    "message": "Thachair mearachd air ar taobh-ne. Feuch ris a-rithist ann an tiotan."
+  },
+  "errRegionNotSupported": {
+    "message": "Chan eil DisinfaX ri fhaotainn fhathast san sgìre agad ri linn riatanasan riaghlaidh."
+  },
+  "errInvalidAmount": {
+    "message": "Chan eil an t-suim sin de bharrachd dligheach. Tagh suim eile."
+  },
+  "errNotFound": {
+    "message": "Cha b' urrainn dhuinn sin a lorg. Feuch ris a-rithist."
   }
 }

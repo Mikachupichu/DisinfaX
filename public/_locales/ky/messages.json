@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Уул топтогу бардык твиттерди кайра классификациялоо",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Ушул твиттеги бардык дооматтарды кайра ачуу",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Бул дооматты кайра изилдөө",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Баарын текшерүү"
+  },
+  "errBalanceTooLow": {
+    "message": "Балансыңыз өтө аз. Улантуу үчүн толуктаңыз."
+  },
+  "errAccountSuspended": {
+    "message": "Аккаунтуңуз тыюу салынды."
+  },
+  "errNotSignedIn": {
+    "message": "Сиз кирбегенсиз. Кирип, кайра аракет кылыңыз."
+  },
+  "errInvalidRequest": {
+    "message": "Бул суроонун бир бөлүгү таанылбады. Кошумчанын жаңыртылганына ынаныңыз."
+  },
+  "errServiceUnavailable": {
+    "message": "Биздин тарапта ката кетти. Бир аздан кийин кайра аракет кылыңыз."
+  },
+  "errRegionNotSupported": {
+    "message": "Жөнгө салуучу талаптарга байланыштуу DisinfaX сиздин аймакта дале жеткиликсиз."
+  },
+  "errInvalidAmount": {
+    "message": "Бул толуктоо суммасы жарамсыз. Башка суммa тандаңыз."
+  },
+  "errNotFound": {
+    "message": "Бул табылбады. Кайра аракет кылыңыз."
   }
 }

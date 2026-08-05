@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ngasifikasi deui sadaya klaim dina tweet ieu",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Nembongkeun deui sadaya klaim dina tweet ieu",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Nalungtik deui klaim ieu",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Pariksa Sadayana"
+  },
+  "errBalanceTooLow": {
+    "message": "Saldo anjeun teu cekap. Mangga eusian deui saldo pikeun neraskeun."
+  },
+  "errAccountSuspended": {
+    "message": "Akun anjeun geus dieureunkeun."
+  },
+  "errNotSignedIn": {
+    "message": "Anjeun tacan lebet. Mangga lebet sareng cobian deui."
+  },
+  "errInvalidRequest": {
+    "message": "Aya bagian tina pamundut ieu anu teu wawuh. Mangga pastikeun éksténsi geus anyar."
+  },
+  "errServiceUnavailable": {
+    "message": "Aya kasalahan ti pihak kami. Mangga cobian deui sakedap."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX teu acan sayogi di wilayah anjeun kusabab pasaratan aturan."
+  },
+  "errInvalidAmount": {
+    "message": "Jumlah eusian éta teu valid. Mangga pilih jumlah nu sanés."
+  },
+  "errNotFound": {
+    "message": "Éta teu kapendak. Cobian deui."
   }
 }

@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Riclassificà tutte l'affermazioni di stu tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Rivelà torna tutte l'affermazioni di stu tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Ritruvà sta affirmazione",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifica tuttu"
+  },
+  "errBalanceTooLow": {
+    "message": "U vostru saldu hè troppu bassu. Ricaricate per continuà, per piacè."
+  },
+  "errAccountSuspended": {
+    "message": "U vostru contu hè statu suspesu."
+  },
+  "errNotSignedIn": {
+    "message": "Ùn site micca cunnessu. Cunnittitevi è pruvate torna, per piacè."
+  },
+  "errInvalidRequest": {
+    "message": "Una parte di sta dumanda ùn hè stata ricunnisciuta. Assicuratevi chì l'estensione hè aghjurnata."
+  },
+  "errServiceUnavailable": {
+    "message": "Un errore hè accadutu dal nostru latu. Pruvate torna in un mumentu, per piacè."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ùn hè ancu dispunibule in la vostra regione per motivi regulatori."
+  },
+  "errInvalidAmount": {
+    "message": "Quellu importu di ricarica ùn hè micca valabile. Sceglite un altru importu, per piacè."
+  },
+  "errNotFound": {
+    "message": "Ùn si pò micca truvà. Pruvate torna."
   }
 }

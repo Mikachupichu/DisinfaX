@@ -1,8 +1,33 @@
+/** Parsers for X's GraphQL timeline responses.
+ *
+ *  Each exported `parse*` function takes one intercepted response body (see
+ *  entrypoints/capture.main.content.ts) and walks the shape X returns for that
+ *  endpoint down to the list of tweet entries, then hands each entry to the shared
+ *  `parseTweet`. The deep optional-chained paths mirror X's own response nesting;
+ *  they are intentionally tolerant, since any shape change upstream should make a
+ *  parser return nothing rather than throw.
+ */
 
 import { MainTweet, TweetType, TweetFieldType, Usertype, QuotedTweet } from '../data/Tweets';
 
+/** Entry-id fragments for timeline rows that are not user tweets (ads, carousels,
+ *  cursors, follow suggestions). Matched as substrings against `entryId`. */
+const excludedEntryIds = ['promoted', 'stories', 'pinned', 'cursor', 'trends-accounts', 'trend', 'who-to-follow', 'toptabsrpusermodule'];
+
+/** X's own assistant account, whose replies are never worth classifying. */
+const ASSISTANT_SCREEN_NAME = "grok";
+
+/** The @handle on a tweet_results result, or undefined if the payload lacks it. */
+function screenNameOf(tweetResult: any): string | undefined {
+    return tweetResult?.core?.user_results?.result?.core?.screen_name;
+}
+
 export function parseHomeTimeline(responseText: string): MainTweet[] | void {
-    return parseTweets(JSON.parse(responseText)?.data?.home?.home_timeline_urt?.instructions?.[0]?.entries, TweetType.HomeTimeline);
+    // Fixed-index instructions[0] misses the "Show N posts" prepend fetch, whose new
+    // entries land in a later instruction (after a cache-clear/pin instruction at
+    // index 0) — iterate all instructions like every other timeline parser instead.
+    const instructions = JSON.parse(responseText)?.data?.home?.home_timeline_urt?.instructions;
+    return parseTweets(collectAllEntries(instructions), TweetType.HomeTimeline);
 }
 
 export function parseTweetDetail(responseText: string): MainTweet[] | void {
@@ -45,34 +70,32 @@ export function parseTweetDetail(responseText: string): MainTweet[] | void {
         const tweetResultFirstItem = hasItems ? items[0]?.item?.itemContent?.tweet_results?.result : null;
         console.log(`[parseTweetDetail] Entry ${entryId}: hasItems=${hasItems}, hasItemContent=${!!itemContent}, hasTweetResultDirect=${!!tweetResultDirect}, hasTweetResultFirstItem=${!!tweetResultFirstItem}`);
 
+        /** Log the accept/skip decision for one candidate and, when it is a keepable
+         *  tweet, add it to tweetResultsList. `label` names the entry shape in the
+         *  accept/skip lines, `logPrefix` is everything preceding `hasResult=` on the
+         *  detail line, and `resultEntryId` is what a kept result is attributed to. */
+        const collect = (tweetResult: any, label: string, resultEntryId: string, logPrefix: string) => {
+            const username = screenNameOf(tweetResult);
+            console.log(`[parseTweetDetail]   ${logPrefix}hasResult=${!!tweetResult}, hasUser=${!!username}, username=${username}, birdwatch=${!!tweetResult?.has_birdwatch_notes}`);
+            if (username === ASSISTANT_SCREEN_NAME) return;
+            if (tweetResult) {
+                tweetResultsList.push({ result: tweetResult, entryId: resultEntryId });
+                console.log(`[parseTweetDetail]   => ACCEPTED ${label}`);
+            } else {
+                console.log(`[parseTweetDetail]   => SKIPPED ${label}: no tweetResult`);
+            }
+        };
+
         if (hasItems) {
             // ConversationThread entry: iterate ALL items (main tweet + replies)
             for (let i = 0; i < items.length; i++) {
-                const tweetResult = items[i]?.item?.itemContent?.tweet_results?.result;
-                const hasUser = !!tweetResult?.core?.user_results?.result?.core?.screen_name;
-                const username = tweetResult?.core?.user_results?.result?.core?.screen_name;
-                console.log(`[parseTweetDetail]   items[${i}]: entryId=${items[i].entryId}, hasResult=${!!tweetResult}, hasUser=${hasUser}, username=${username}, birdwatch=${!!tweetResult?.has_birdwatch_notes}`);
-                if (tweetResult?.core?.user_results?.result?.core?.screen_name === "grok") continue;
-                if (tweetResult) {
-                    tweetResultsList.push({ result: tweetResult, entryId: items[i].entryId ?? entryId });
-                    console.log(`[parseTweetDetail]   => ACCEPTED items[${i}]`);
-                } else {
-                    console.log(`[parseTweetDetail]   => SKIPPED items[${i}]: no tweetResult`);
-                }
+                const item = items[i];
+                const tweetResult = item?.item?.itemContent?.tweet_results?.result;
+                collect(tweetResult, `items[${i}]`, item.entryId ?? entryId, `items[${i}]: entryId=${item.entryId}, `);
             }
         } else {
             // Direct entry (no items array)
-            const tweetResult = entry.content?.itemContent?.tweet_results?.result;
-            const hasUser = !!tweetResult?.core?.user_results?.result?.core?.screen_name;
-            const username = tweetResult?.core?.user_results?.result?.core?.screen_name;
-            console.log(`[parseTweetDetail]   direct: hasResult=${!!tweetResult}, hasUser=${hasUser}, username=${username}, birdwatch=${!!tweetResult?.has_birdwatch_notes}`);
-            if (tweetResult?.core?.user_results?.result?.core?.screen_name === "grok") continue;
-            if (tweetResult) {
-                tweetResultsList.push({ result: tweetResult, entryId });
-                console.log(`[parseTweetDetail]   => ACCEPTED direct`);
-            } else {
-                console.log(`[parseTweetDetail]   => SKIPPED direct: no tweetResult`);
-            }
+            collect(entry.content?.itemContent?.tweet_results?.result, 'direct', entryId, 'direct: ');
         }
     }
 
@@ -103,9 +126,96 @@ export function parseExplorePage(responseText: string): MainTweet[] | void {
     return parseTweets(JSON.parse(responseText)?.data?.explore_page?.body?.initialTimeline?.timeline?.timeline?.instructions?.[1]?.entries?.[8]?.content?.items, TweetType.ExplorePage, true);
 }
 
+export function parseBookmarksTimeline(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    const instructions = parsed?.data?.bookmark_timeline_v2?.timeline?.instructions;
+    if (instructions === undefined) probeUnknownShape('Bookmarks', parsed?.data);
+    return parseTweets(collectAllEntries(instructions), TweetType.Bookmarks);
+}
+
+export function parseListTimeline(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    const instructions = parsed?.data?.list?.tweets_timeline?.timeline?.instructions;
+    if (instructions === undefined) probeUnknownShape('List Timeline', parsed?.data);
+    return parseTweets(collectAllEntries(instructions), TweetType.ListTimeline);
+}
+
+/** Covers every profile-tab query (UserTweets, UserTweetsAndReplies, Likes, UserMedia) —
+ *  they all hang their instructions off the same `user.result.timeline` shape. */
+export function parseUserTimeline(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    const instructions = parsed?.data?.user?.result?.timeline?.timeline?.instructions;
+    if (instructions === undefined) probeUnknownShape('User Timeline', parsed?.data);
+    return parseTweets(collectAllEntries(instructions), TweetType.UserTimeline);
+}
+
+export function parseCommunityRankedTimeline(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    const instructions = parsed?.data?.viewer?.ranked_communities_timeline?.timeline?.instructions;
+    if (instructions === undefined) probeUnknownShape('Community Timeline', parsed?.data);
+    return parseTweets(collectAllEntries(instructions), TweetType.CommunityTimeline);
+}
+
+export function parseCommunityExploreTimeline(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    const instructions = parsed?.data?.viewer?.explore_communities_timeline?.timeline?.instructions;
+    if (instructions === undefined) probeUnknownShape('Community Explore', parsed?.data);
+    return parseTweets(collectAllEntries(instructions), TweetType.CommunityTimeline);
+}
+
+/** Fires once per community card as the Communities page renders (its call count
+ *  matches the number of tweets that show up unclassified in the DOM there), so it's
+ *  the likely real source of those tweets — but its response shape is still completely
+ *  unknown. Probe unconditionally rather than guess a third wrong path. */
+export function parseCommunityFetchOne(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    probeUnknownShape('Community Fetch One', parsed?.data);
+}
+
+/** Logs the key path down through every nested object/array under `data`, so the real
+ *  shape of an endpoint we guessed wrong can be read directly off the console instead
+ *  of guessing a third time. Stops descending once it hits an array (that's almost
+ *  certainly the entries list or something holding it). */
+function probeUnknownShape(label: string, data: any, path: string = 'data', depth: number = 0): void {
+    if (depth > 8 || data == null || typeof data !== 'object') return;
+    if (Array.isArray(data)) {
+        console.log(`[misinfo] shape probe (${label}): ${path} is an array of length ${data.length}, keys of [0]: ${data[0] ? Object.keys(data[0]).join(', ') : 'n/a'}`);
+        return;
+    }
+    for (const key of Object.keys(data)) {
+        const child = data[key];
+        const childPath = `${path}.${key}`;
+        if (Array.isArray(child)) {
+            console.log(`[misinfo] shape probe (${label}): ${childPath} is an array of length ${child.length}, keys of [0]: ${child[0] ? Object.keys(child[0]).join(', ') : 'n/a'}`);
+        } else if (child && typeof child === 'object') {
+            console.log(`[misinfo] shape probe (${label}): ${childPath} -> {${Object.keys(child).join(', ')}}`);
+            probeUnknownShape(label, child, childPath, depth + 1);
+        }
+    }
+}
+
+/** Concatenates entries from every instruction that carries them, instead of assuming
+ *  a fixed index — every timeline endpoint (Home/Following included) interleaves
+ *  entries-bearing instructions with others (TimelineClearCache, TimelineTerminateTimeline,
+ *  pin/prepend instructions, ...) at positions that vary by request, not just by page. */
+function collectAllEntries(instructions: any[] | undefined): any[] | undefined {
+    if (!instructions || !Array.isArray(instructions)) return undefined;
+    let all: any[] = [];
+    for (const instruction of instructions) {
+        if (Array.isArray(instruction?.entries)) all = all.concat(instruction.entries);
+    }
+    return all;
+}
+
+/** Shared timeline-entry path: drop non-tweet and assistant rows, then parse what
+ *  remains. `isItem` selects where the tweet payload hangs off an entry — explore-page
+ *  rows nest it under `item`, every other timeline under `content`. */
 function parseTweets(entries: any | undefined, tweetType: TweetType, isItem: boolean = false): MainTweet[] | void {
     if (entries === undefined) { logTweetParsingError(TweetFieldType.Entries, tweetType); return; }
-    const tweets = entries.filter((entry: any) => !excludedEntryIds.some(id => entry.entryId?.includes(id) || entry.content?.items?.[0]?.entryId?.includes(id)) && entry.content?.itemContent?.tweet_results?.result?.core?.user_results?.result?.core?.screen_name !== "grok");
+    const isExcludedRow = (entry: any) => excludedEntryIds.some(id =>
+        entry.entryId?.includes(id) || entry.content?.items?.[0]?.entryId?.includes(id));
+    const tweets = entries.filter((entry: any) =>
+        !isExcludedRow(entry) && screenNameOf(entry.content?.itemContent?.tweet_results?.result) !== ASSISTANT_SCREEN_NAME);
     if (!tweets) return logTweetBatchParsingError(tweetType);
     const tweetData: MainTweet[] = tweets.map((entry: any) => {
         const tweetResults = (isItem ? entry.item : entry.content)?.itemContent?.tweet_results?.result;
@@ -248,15 +358,22 @@ export function hydrateReplyChains(tweets: (MainTweet | null | void)[]): void {
     for (const t of list) stripMarkers(t, 0);
 }
 
-const excludedEntryIds = ['promoted', 'stories', 'pinned', 'cursor', 'trends-accounts', 'trend', 'who-to-follow', 'toptabsrpusermodule'];
+// ---- Parse-failure logging ----
+// Each helper returns the value its callers propagate, so a failure can be reported
+// and bailed out of in a single `return logX(...)`.
 
+/** No usable tweet entries at all in a response. */
 function logTweetBatchParsingError(tweetType: TweetType): void {
     console.log(`${tweetType.charAt(0) + tweetType.slice(1).toLowerCase()} tweet parsing failed.`);
 }
+
+/** An entry survived filtering but carried no tweet_results payload. */
 function logTweetResultsParsingError(tweetType: TweetType): null {
     console.log(`Tweet extraction failed for a ${tweetType.toLowerCase()} entry.`);
     return null;
 }
+
+/** A specific expected field was missing from an otherwise present tweet payload. */
 function logTweetParsingError(tweetFieldType: TweetFieldType, tweetType: TweetType, isQuoted: boolean = false): null {
     console.log(`${isQuoted ? 'Quoting t' : 'T'}weet ${tweetFieldType} extraction failed for a ${tweetType.toLowerCase()} entry.`);
     return null;

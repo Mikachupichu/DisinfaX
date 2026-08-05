@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassifitgar tuttas las affermaziuns da quest tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Revelar danovamain tuttas las affermaziuns da quest tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tschertgar novamein questa affermaziun",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifitgar tut"
+  },
+  "errBalanceTooLow": {
+    "message": "Tia bilantscha è memia bassa. Per plaschair recarga per cuntinuar."
+  },
+  "errAccountSuspended": {
+    "message": "Tes conto è vegnì suspendì."
+  },
+  "errNotSignedIn": {
+    "message": "Ti n'es betg annunzià. Annunzia tai per plaschair e emprova anc ina giada."
+  },
+  "errInvalidRequest": {
+    "message": "Ina part da questa dumonda n'è betg vegnida renconuschida. Controllescha per plaschair sche l'extensiun è actualisada."
+  },
+  "errServiceUnavailable": {
+    "message": "Sin nossa vart è succedì in error. Emprova per plaschair anc ina giada après in mument."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX n'è anc betg disponibel en tia regiun pervi da pretensiuns regulatoricas."
+  },
+  "errInvalidAmount": {
+    "message": "Quest import da recarghientar n'è betg valid. Tscherna per plaschair in auter import."
+  },
+  "errNotFound": {
+    "message": "Quai n'ha betg pudì vegnir chattà. Emprova anc ina giada."
   }
 }

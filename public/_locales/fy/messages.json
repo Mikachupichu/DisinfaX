@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Op 'e nij klassifisearje alle bewearingen yn dizze tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Op 'e nij ûntdekke alle bewearingen yn dizze tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Op 'e nij ûndersykje dizze bewearing",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Alles kontrolearje"
+  },
+  "errBalanceTooLow": {
+    "message": "Jo saldo is te leech. Fol asjebleart oan om troch te gean."
+  },
+  "errAccountSuspended": {
+    "message": "Jo akkount is opskorst."
+  },
+  "errNotSignedIn": {
+    "message": "Jo binne net oanmeld. Meld jo asjebleart oan en probearje it opnij."
+  },
+  "errInvalidRequest": {
+    "message": "In diel fan dizze oanfraach waard net erkend. Kontrolearje asjebleart oft de taheaksel bywurke is."
+  },
+  "errServiceUnavailable": {
+    "message": "Der barde in flater oan ús kant. Probearje it asjebleart nochris oer in amerij."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX is noch net beskikber yn jo regio troch regeljouwing."
+  },
+  "errInvalidAmount": {
+    "message": "Dat opladebedrach is net jildich. Kies asjebleart in oar bedrach."
+  },
+  "errNotFound": {
+    "message": "Dat koe net fûn wurde. Probearje it opnij."
   }
 }

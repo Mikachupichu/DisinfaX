@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Bu tweetteki tüm iddiaları yeniden sınıflandır",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Bu tweetteki tüm iddiaları yeniden ortaya çıkar",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Bu iddiayı yeniden araştır",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Tümünü Doğrula"
+  },
+  "errBalanceTooLow": {
+    "message": "Bakiyeniz çok düşük. Devam etmek için lütfen bakiye yükleyin."
+  },
+  "errAccountSuspended": {
+    "message": "Hesabınız askıya alındı."
+  },
+  "errNotSignedIn": {
+    "message": "Oturum açmadınız. Lütfen oturum açıp tekrar deneyin."
+  },
+  "errInvalidRequest": {
+    "message": "Bu isteğin bir kısmı tanınamadı. Lütfen uzantının güncel olduğundan emin olun."
+  },
+  "errServiceUnavailable": {
+    "message": "Bizim tarafımızda bir hata oluştu. Lütfen bir süre sonra tekrar deneyin."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX, düzenleyici gereklilikler nedeniyle bölgenizde henüz kullanılamıyor."
+  },
+  "errInvalidAmount": {
+    "message": "Bu bakiye yükleme tutarı geçerli değil. Lütfen farklı bir tutar seçin."
+  },
+  "errNotFound": {
+    "message": "Bu bulunamadı. Lütfen tekrar deneyin."
   }
 }

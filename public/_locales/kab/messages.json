@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ales asisgel n meṛṛa tweets deg ugeṭṭum-agi",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Ales aẓray n meṛṛa iɣewwaṛen n tweet-agi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Ales anadi n wawal-agi",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Senqed kullec"
+  },
+  "errBalanceTooLow": {
+    "message": "Aẓar-ik yedrus aṭas. Ttxil-k sekcem idrimen akken ad tkemmleḍ."
+  },
+  "errAccountSuspended": {
+    "message": "Amiḍan-ik yeḥbes."
+  },
+  "errNotSignedIn": {
+    "message": "Ur teqqneḍ ara. Ttxil-k qqen tɛawdeḍ aɛraḍ."
+  },
+  "errInvalidRequest": {
+    "message": "Yiwen n uḥric n uḏeggar-a ur yettwaf ara. Ttxil-k ssken ma d asseglem yellan d amaynut."
+  },
+  "errServiceUnavailable": {
+    "message": "Yella tuccḍa deg tama-nneɣ. Ttxil-k ɛreḍ tikkelt-nniḍen ḥa kra n wakud."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX urɛad yebda ara di temnaḍt-ik ilmend n tuttriwin n usebḥer."
+  },
+  "errInvalidAmount": {
+    "message": "Asqamu-a n usekcem drimen mačči d aṣeḥḥi. Ttxil-k fren asqamu nniḍen."
+  },
+  "errNotFound": {
+    "message": "Ayen-nni ur d-ittwaf ara. Ɛreḍ tikkelt-nniḍen."
   }
 }

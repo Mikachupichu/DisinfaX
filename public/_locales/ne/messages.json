@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "यस ट्विटका सबै दाबीहरू पुनर्वर्गीकरण गर्नुहोस्",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "यस ट्विटका सबै दाबीहरू फेरि उजागर गर्नुहोस्",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "यस दाबीको पुनः अनुसन्धान गर्नुहोस्",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "सबै जाँच गर्नुहोस्"
+  },
+  "errBalanceTooLow": {
+    "message": "तपाईंको ब्यालेन्स धेरै कम छ। जारी राख्नको लागि टप अप गर्नुहोस्।"
+  },
+  "errAccountSuspended": {
+    "message": "तपाईंको खाता निलम्बन गरिएको छ।"
+  },
+  "errNotSignedIn": {
+    "message": "तपाईं साइन इन गर्नुभएको छैन। कृपया साइन इन गरी फेरि प्रयास गर्नुहोस्।"
+  },
+  "errInvalidRequest": {
+    "message": "यो अनुरोधको केही भाग चिन्न सकिएन। कृपया एक्सटेन्सन अपडेट भएको सुनिश्चित गर्नुहोस्।"
+  },
+  "errServiceUnavailable": {
+    "message": "हाम्रो तर्फबाट त्रुटि भयो। कृपया केही समयपछि फेरि प्रयास गर्नुहोस्।"
+  },
+  "errRegionNotSupported": {
+    "message": "नियामक आवश्यकताहरूका कारण DisinfaX अझै तपाईंको क्षेत्रमा उपलब्ध छैन।"
+  },
+  "errInvalidAmount": {
+    "message": "त्यो टप-अप रकम मान्य छैन। कृपया अर्को रकम छनौट गर्नुहोस्।"
+  },
+  "errNotFound": {
+    "message": "त्यो फेला पार्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।"
   }
 }

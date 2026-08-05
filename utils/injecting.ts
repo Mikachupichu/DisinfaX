@@ -1,7 +1,31 @@
+/** The injected UI — everything the user actually sees on x.com.
+ *
+ *  Given a Classification from the background, this module rewrites the tweet's text into
+ *  highlighted claim spans and attaches the surrounding interface: verdict badges, detail
+ *  popovers, the Disinfact / Fact-Check All buttons, floating scroll affordances,
+ *  balance notifications, and the onboarding walkthrough.
+ *
+ *  Three constraints explain most of the design here:
+ *
+ *  - **The host page is hostile territory.** X owns the DOM and re-renders it constantly
+ *    as the user scrolls, so injected nodes are marked with `mf-*` classes and data
+ *    attributes, re-applied idempotently, and reconciled against what is already there
+ *    rather than blindly rebuilt. Tweets are located by structural fingerprints (status
+ *    links, stable SVG paths) because X ships no stable hooks.
+ *  - **Nothing may be trusted from the page.** User intents travel out over the private
+ *    mfBus (see utils/mfBus.ts), never `document` events, so page scripts cannot forge
+ *    the actions that spend the user's balance.
+ *  - **Results stream in.** A claim can be on hold, queued, researching, or complete, and
+ *    it moves between those states while on screen — so rendering is driven by claim
+ *    state rather than by one-shot construction.
+ */
 import { Classification, QuotedClassification, Claim, TextSegment, Source, sameLanguage } from "../data/Classification";
 import { normalizeSources } from "./intelligence";
 import { breakupTweetText, breakupWithHighlights, resolveHighlightRange } from "./textBreakup";
 import { mfBus } from "./mfBus";
+import { codeToMessageKey } from "./errorCodes";
+
+// ── Input mode (touch vs. pointer) ───────────────────────────────────────────
 
 /**
  * Detects whether the user is interacting via touch (finger) or a pointing device
@@ -52,6 +76,15 @@ class InputModeManager {
             this.setTouchMode(false);
         }, { capture: true, passive: true });
     }
+}
+
+/** True right after a tap, with no real pointer movement since — mobile browsers
+ *  synthesize mouseenter/mouseover for compatibility with hover-only UIs, which would
+ *  otherwise pop open every hover popover (and leave it stuck, since a synthetic enter
+ *  has no finger sitting there to later trigger a matching mouseleave). Every hover
+ *  handler that shows/changes something must bail out when this is true. */
+function isTouchInput(): boolean {
+    return document.documentElement.classList.contains("is-touch-active");
 }
 
 const allClassifications: Classification[] = [];
@@ -506,6 +539,8 @@ function freezeSegmentWrap(wrap: HTMLElement) {
     wrap.replaceWith(wrap.cloneNode(true));
 }
 
+// ── Teardown and freeze ──────────────────────────────────────────────────────
+
 /** Tear down every injection on the page. Tweet text is preserved (highlights
  *  stripped in place); all standalone UI (buttons, popovers, notifications,
  *  onboarding) is removed, and internal state is reset so a subsequent
@@ -673,6 +708,13 @@ function quoteMarksForLocale(locale?: string): { open: string; close: string } {
     }
 }
 
+// ── Floating buttons and SPA navigation ──────────────────────────────────────
+// x.com is a single-page app: it swaps routes without a page load, so injected UI
+// has to be keyed by path and cleaned up on navigation rather than relying on
+// unload. The registry below tracks each path's floating button for that reason.
+
+/** Remove the floating button registered for `path`, unless it is still wanted and
+ *  `force` is not set. */
 function clearFloatingButtonForPath(path: string, force = false) {
     const state = floatingButtonRegistry.get(path);
     if (!state) return;
@@ -877,6 +919,7 @@ function createFloatingButton(
     };
 
     btn.addEventListener("mouseenter", () => {
+        if (isTouchInput()) return;
         state.hovered = true;
         if (state.hoverLeaveTimer) {
             clearTimeout(state.hoverLeaveTimer);
@@ -1005,6 +1048,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
             let badgeHoverTimer: ReturnType<typeof setTimeout> | null = null;
 
             claimEl.addEventListener("mouseenter", () => {
+                if (isTouchInput()) return;
                 if (badgeHoverTimer) clearTimeout(badgeHoverTimer);
                 badgeHoverTimer = setTimeout(() => {
                     const state = floatingButtonRegistry.get(path);
@@ -1069,6 +1113,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     }
 
     btn.addEventListener("mouseenter", () => {
+        if (isTouchInput()) return;
         if (!showingClaims) {
             showPreview();
         }
@@ -1083,6 +1128,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
 
     // Hovering over .mf-fc-btn-preview transitions to claim-badges; hovering back over .mf-fc-btn-main transitions back to the 140-char preview
     btn.addEventListener("mouseover", (e) => {
+        if (isTouchInput()) return;
         const target = e.target as HTMLElement;
         if (target.closest(".mf-fc-btn-preview")) {
             if (!showingClaims) {
@@ -1127,6 +1173,7 @@ function showGoBackFloatingButton(tweetId: string, originalScrollY: number, clas
     btn.innerHTML = `<div style="display:flex;${isRTL ? 'flex-direction:row-reverse;' : 'flex-direction:row;'}align-items:center;gap:8px;font-size:15px;font-weight:700;">${isRTL ? `<span>${safeLabel}</span>${goBackIcon}` : `${goBackIcon}<span>${safeLabel}</span>`}</div>`;
 
     btn.addEventListener("mouseenter", () => {
+        if (isTouchInput()) return;
         btn.style.transform = "translateX(-50%) scale(1.03)";
         btn.style.boxShadow = "0 8px 26px rgba(0,0,0,0.45)";
     });
@@ -1267,6 +1314,17 @@ function syncQuotingClassifications() {
 let debounceTimeout: NodeJS.Timeout | null = null;
 let stylesInjected = false;
 
+/** Main entry point: apply classifications to the page.
+ *
+ *  Called by the relay every time the background broadcasts a result, which means it runs
+ *  many times for the same tweet as research streams in. It therefore merges each incoming
+ *  classification against the copy already held, works out whether anything the user can
+ *  see actually changed, and only then schedules a (debounced) re-render.
+ *
+ *  The two caches carry the full tweet text captured from the XHR payload — the DOM copy
+ *  is truncated for long tweets, so claim offsets would not line up against it.
+ *
+ *  A no-op while the extension is frozen (signed out or out of credit). */
 export function injectClassifications(classifications: Classification[], tweetTextCache?: Map<string, string>, translatedTextCache?: Map<string, string>) {
     if (extensionFrozen) return;
     setupNavigationListener();
@@ -1399,12 +1457,21 @@ function isOwnMutationNode(n: Node): boolean {
 
 /** True only when a mutation adds/removes at least one node that ISN'T ours — i.e. a
  *  genuine host-page change worth re-injecting for. Extension-only mutations return false. */
-function hasNonExtensionChange(m: MutationRecord): boolean {
+export function hasNonExtensionChange(m: MutationRecord): boolean {
     const nodes = [...Array.from(m.addedNodes), ...Array.from(m.removedNodes)];
     if (nodes.length === 0) return false;
     return nodes.some(n => !isOwnMutationNode(n));
 }
 
+/** Split a tweet's text into claim / non-claim segments and store them on the
+ *  classification, which is what promotes it from the fallback box (Phase 1) to inline
+ *  highlights (Phase 2).
+ *
+ *  The text is taken from the captured XHR payload in preference to the DOM, because the
+ *  DOM copy is truncated for long tweets and claim offsets are measured against the full
+ *  body. Translated text wins when the tweet is being shown translated, since highlight
+ *  ranges are stored per locale. Guarded against re-entry: this runs on every broadcast
+ *  for a tweet, and overlapping runs would race to rewrite the same nodes. */
 function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map<string, string>, translatedTextCache?: Map<string, string>) {
     if (textBreakupInProgress.has(classification.id)) {
         console.log(`[misinfo] Text breakup: already in progress for ${classification.id}, skipping`);
@@ -1510,6 +1577,10 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
     textBreakupInProgress.delete(classification.id);
 }
 
+/** Last-resort read of a tweet's text straight from the page, for when the captured XHR
+ *  payload has no entry for it. Prefers X's `tweetText` testid and only then falls back to
+ *  guessing at language/direction wrappers, since that heuristic can pick up neighbouring
+ *  copy. Note the text may be truncated for long tweets. */
 function findTweetTextInDom(tweetId: string): string | null {
     const tryGetText = (article: Element, bestEffort = false): string | null => {
         const tweetTextEl = article.querySelector('[data-testid="tweetText"]');
@@ -1555,6 +1626,11 @@ function getArticleMainStatusId(article: Element): string | null {
     return match ? match[1] : null;
 }
 
+/** Locate every on-screen occurrence of each classification's tweet and inject into it.
+ *
+ *  A tweet can appear more than once on a page (timeline plus a quoted card, say), so this
+ *  walks all status links rather than assuming one match, and derives whether each match is
+ *  the main tweet or a quoted one from its position in the article. */
 function classificationInjections(classifications: Classification[]) {
     if (extensionFrozen) return;
     syncQuotingClassifications();
@@ -1581,10 +1657,14 @@ function classificationInjections(classifications: Classification[]) {
 // (typically `${classificationId}:${claimText}`) so the word doesn't flicker on re-render.
 const researchingWordCache = new Map<string, string>();
 
+/** The localized pool of "being fact-checked" words, supplied as a single
+ *  pipe-delimited message so translators can vary the count per language. */
 function researchingWordsList(): string[] {
-    return t("researchingWords").split("|").map(w => w.trim()).filter(Boolean);
+    return t("researchingWords").split("|").map(word => word.trim()).filter(Boolean);
 }
 
+/** One word from the researching pool, held stable for a given `seed` so a claim
+ *  keeps the same word across re-renders instead of flickering between them. */
 function pickResearchingWord(seed?: string): string {
     const words = researchingWordsList();
     if (words.length === 0) return t("verdictResearching");
@@ -1597,6 +1677,17 @@ function pickResearchingWord(seed?: string): string {
     return word;
 }
 
+/** The badge text for a claim, built from its two scores.
+ *
+ *  Layers up to two adjectives onto "True"/"False": one for how confident the model is
+ *  (Very Likely / Likely / Possibly) and one for the degree of truth (Mostly / Arguably /
+ *  Partially / Equivocally). Either is dropped when the score is emphatic enough (≥0.9)
+ *  that a qualifier would only add noise, so a strong result reads simply as "True".
+ *
+ *  An undefined `probability` means research hasn't produced a verdict yet, which shows a
+ *  researching word instead; `seed` keeps that word stable (see pickResearchingWord).
+ *  Composition order is locale-dependent, hence the badgeAdjVerdict / badgeVerdictAdj
+ *  message keys rather than string concatenation. */
 function verdictLabel(probability: number | undefined, veracity?: number, seed?: string): string {
     if (probability === undefined) return pickResearchingWord(seed);
     if (probability < 0.2) return t("verdictUnknown");
@@ -1631,7 +1722,8 @@ function verdictLabel(probability: number | undefined, veracity?: number, seed?:
     else if (absVer >= 0.2) verKey = "Partially";
     else verKey = "Equivocally";
 
-    const verdict = veracity >= 0 ? trueLabel : falseLabel;
+    // A veracity of exactly 0 reads as "false", matching formatVerdict/payloadToClaim.
+    const verdict = veracity > 0 ? trueLabel : falseLabel;
 
     if (!probKey && !verKey) return verdict;
     if (probKey && !verKey) return t("badgeVerdictAdj", [verdict, t("adj" + probKey)]);
@@ -1641,62 +1733,61 @@ function verdictLabel(probability: number | undefined, veracity?: number, seed?:
         : t("badgeAdjVerdictAdj2", [t("adj" + verKey), verdict, t("adj" + probKey)]);
 }
 
-function factCheckColor(probability: number | undefined, veracity?: number, bgOpacity = 0.15): string {
-    if (probability === undefined || veracity === undefined || probability === null || veracity === null || probability < 0.2)
-        return `background: rgba(128, 128, 128, ${bgOpacity}); color: rgb(128, 128, 128)`;
+/** Colour shown when a claim has no usable scores (not yet researched, or too uncertain). */
+const NEUTRAL_VERDICT_CHANNELS: readonly [number, number, number] = [128, 128, 128];
 
-    const v = Math.max(-1, Math.min(1, veracity));
-    const t = (v + 1) / 2;
-    const s = Math.max(0, Math.min(1, probability));
+/** Map a claim's two scores onto an RGB triple.
+ *
+ *  Veracity picks the hue along red (false) → yellow → green (true). Confidence then acts
+ *  as saturation: the colour is blended toward its own luminance, so a low-confidence
+ *  verdict fades toward grey rather than asserting itself in strong red or green.
+ *
+ *  Falls back to neutral grey when either score is absent or confidence sits below the
+ *  0.2 "unknown" floor. Shared by factCheckColor and confidenceRgba, which differ only
+ *  in the CSS they wrap around these channels. */
+function verdictColorChannels(probability: number | undefined, veracity?: number): readonly [number, number, number] {
+    if (probability === undefined || veracity === undefined || probability === null || veracity === null || probability < 0.2)
+        return NEUTRAL_VERDICT_CHANNELS;
+
+    const clampedVeracity = Math.max(-1, Math.min(1, veracity));
+    /** 0 = fully false, 0.5 = neutral, 1 = fully true. */
+    const truthFraction = (clampedVeracity + 1) / 2;
+    const saturation = Math.max(0, Math.min(1, probability));
 
     let r: number, g: number, b: number;
-    if (t <= 0.5) {
-        const p = t / 0.5;
+    if (truthFraction <= 0.5) {
+        // Red → yellow across the false half.
+        const ramp = truthFraction / 0.5;
         r = 255;
-        g = Math.round(255 * p);
+        g = Math.round(255 * ramp);
         b = 0;
     } else {
-        const p = (t - 0.5) / 0.5;
-        r = Math.round(255 * (1 - p));
+        // Yellow → green across the true half.
+        const ramp = (truthFraction - 0.5) / 0.5;
+        r = Math.round(255 * (1 - ramp));
         g = 255;
         b = 0;
     }
 
-    const lum = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-    const fr = Math.round(lum + (r - lum) * s);
-    const fg = Math.round(lum + (g - lum) * s);
-    const fb = Math.round(lum + (b - lum) * s);
-
-    return `background: rgba(${fr}, ${fg}, ${fb}, ${bgOpacity}); color: rgb(${fr}, ${fg}, ${fb})`;
+    // Rec. 601 luminance, the grey this hue desaturates toward.
+    const luminance = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+    return [
+        Math.round(luminance + (r - luminance) * saturation),
+        Math.round(luminance + (g - luminance) * saturation),
+        Math.round(luminance + (b - luminance) * saturation),
+    ];
 }
 
+/** Inline `background` + `color` declarations for a verdict badge. */
+function factCheckColor(probability: number | undefined, veracity?: number, bgOpacity = 0.15): string {
+    const [r, g, b] = verdictColorChannels(probability, veracity);
+    return `background: rgba(${r}, ${g}, ${b}, ${bgOpacity}); color: rgb(${r}, ${g}, ${b})`;
+}
+
+/** A verdict's colour as a bare `rgba(...)` value, for callers composing their own CSS. */
 function confidenceRgba(probability: number | undefined, opacity: number, veracity?: number): string {
-    if (probability === undefined || veracity === undefined || probability === null || veracity === null || probability < 0.2)
-        return `rgba(128, 128, 128, ${opacity})`;
-
-    const v = Math.max(-1, Math.min(1, veracity));
-    const t = (v + 1) / 2;
-    const s = Math.max(0, Math.min(1, probability));
-
-    let r: number, g: number, b: number;
-    if (t <= 0.5) {
-        const p = t / 0.5;
-        r = 255;
-        g = Math.round(255 * p);
-        b = 0;
-    } else {
-        const p = (t - 0.5) / 0.5;
-        r = Math.round(255 * (1 - p));
-        g = 255;
-        b = 0;
-    }
-
-    const lum = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-    const fr = Math.round(lum + (r - lum) * s);
-    const fg = Math.round(lum + (g - lum) * s);
-    const fb = Math.round(lum + (b - lum) * s);
-
-    return `rgba(${fr}, ${fg}, ${fb}, ${opacity})`;
+    const [r, g, b] = verdictColorChannels(probability, veracity);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
 function extractReasoning(note: string | null | undefined, probability: number | undefined, veracity?: number): string {
@@ -1707,8 +1798,11 @@ function extractReasoning(note: string | null | undefined, probability: number |
     return note;
 }
 
-// ---- Fallback rendering (Phase 1) ----
+// ── Fallback rendering (Phase 1): claims shown in a box below the tweet ──────
 
+/** Build the fallback claim box shown beneath a tweet: one row per claim with its verdict
+ *  badge. Used before segments exist, and permanently for claims whose text could not be
+ *  located in the tweet body (so they still get a verdict the user can read). */
 function renderClaims(c: Classification | QuotedClassification, claimsOverride?: Claim[]): string {
     const claims = claimsOverride ?? c.claims;
     if (!claims)
@@ -1733,7 +1827,7 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
         .join("");
 }
 
-// ---- Inline segment rendering (Phase 2) ----
+// ── Inline segment rendering (Phase 2): claims highlighted in the tweet text ─
 
 function getInlineStyles(): string {
     return `
@@ -2056,7 +2150,7 @@ function formatSignedUsd(amount: number, sign: '+' | '-'): string {
 }
 
 /** Show a balance-change (green ↑ / orange ↓) or error (red) notification. Auto-dismisses after 5s. */
-export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: { amount?: number; text?: string }) {
+export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: { amount?: number; text?: string; code?: number }) {
     if (extensionFrozen) return;
     if (!document.body) return;
     const container = getNotifContainer();
@@ -2066,8 +2160,14 @@ export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: 
     el.style.backgroundColor = bg;
     el.style.color = fg;
     if (kind === 'error') {
-        if (!opts.text) return;
-        el.textContent = opts.text;
+        // A recognized error code (see utils/errorCodes.ts) takes this extension's own
+        // localized text over whatever the backend sent; opts.text is pre-resolved
+        // plain text for everything else (client-detected conditions, or a worker
+        // error the parser couldn't map to a code).
+        const messageKey = opts.code != null ? codeToMessageKey(opts.code) : null;
+        const resolvedText = messageKey ? t(messageKey) : opts.text;
+        if (!resolvedText) return;
+        el.textContent = resolvedText;
     } else {
         el.innerHTML = formatSignedUsd(opts.amount ?? 0, kind === 'increase' ? '+' : '-');
     }
@@ -2081,8 +2181,10 @@ export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: 
 
 // ── Onboarding "charge-balance" popovers ─────────────────────────────────────
 // Persistent popovers next to every charge button whose type the user has never
-// clicked, warning that using it spends balance. An "×" dismisses them all
-// permanently; clicking a charge button marks its type done. z-index sits above
+// clicked, warning that using it spends balance. An "×" permanently dismisses just
+// that popover's type (same effect as clicking its charge button); other types are
+// unaffected, since e.g. Fact-Check and Fact-Check All are separate buttons that
+// happen to share a purpose. z-index sits above
 // claim popovers (z:1) but below notifications (z:9998).
 
 const ONBOARD_DISMISS_KEY = 'mf_onboarding_dismissed';
@@ -2102,11 +2204,6 @@ function markOnboardingClicked(type: string) {
     onboardingClickedTypes.add(type);
     persistOnboardingClicked();
     refreshOnboarding();
-}
-function dismissAllOnboarding() {
-    onboardingDismissed = true;
-    try { chrome.storage.local.set({ [ONBOARD_DISMISS_KEY]: true }); } catch { /* ignore */ }
-    for (const el of Array.from(document.querySelectorAll('.mf-onboard'))) el.remove();
 }
 function onboardingActive(type: string): boolean {
     return !onboardingDismissed && !onboardingClickedTypes.has(type);
@@ -2194,7 +2291,7 @@ function buildOnboardingPopover(type: string): HTMLElement {
     close.className = 'mf-popover-close';
     close.textContent = '×';
     if (isRTLP) { close.style.right = 'auto'; close.style.left = '10px'; }
-    close.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); dismissAllOnboarding(); });
+    close.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); markOnboardingClicked(type); });
     el.appendChild(close);
     return el;
 }
@@ -2281,6 +2378,7 @@ function buildAttachedOnboardingPopover(type: string, claimPop: HTMLElement): HT
     op.classList.add('mf-onboard-attached');
     (op as any)._mfClaimPop = claimPop;
     op.addEventListener('mouseenter', () => {
+        if (isTouchInput()) return;
         if (previewPopoverState && previewPopoverState.popover === claimPop) {
             setPreviewPopoverOpacity(1);
             if (previewPopoverState.leaveTimer) { clearTimeout(previewPopoverState.leaveTimer); previewPopoverState.leaveTimer = null; }
@@ -2400,6 +2498,15 @@ window.addEventListener('scroll', () => {
     onboardScrollRaf = requestAnimationFrame(() => { onboardScrollRaf = 0; refreshOnboarding(); });
 }, { capture: true, passive: true });
 
+// ── Locating tweets in X's DOM ───────────────────────────────────────────────
+// X exposes no stable identifiers for the text of a tweet, so these helpers work
+// from structural landmarks — the status link for a given id, role/testid
+// containers, text direction wrappers. They are the most breakage-prone code in
+// the extension and are written to fail closed (return null) rather than guess.
+
+/** Find the element holding a tweet's body text within `article`, or null when the
+ *  structure doesn't match. `isQuoted` looks inside the nested quoted-tweet card
+ *  instead of the outer tweet. */
 function findTweetTextElement(article: Element, isQuoted: boolean = false, tweetId?: string): Element | null {
     if (tweetId) {
         const link = article.querySelector(`a[href*="/status/${tweetId}"]`);
@@ -2434,6 +2541,12 @@ function findTweetTextElement(article: Element, isQuoted: boolean = false, tweet
     return null;
 }
 
+/** Rebuild a tweet's text element from `segments`, wrapping claim segments in interactive
+ *  highlight spans and leaving the rest as plain text.
+ *
+ *  X renders links with display text that differs from the href (shortened URLs, @mentions),
+ *  so existing anchors are captured first and restored as the text is rewritten — otherwise
+ *  rebuilding the element would turn every link into a raw URL. */
 function renderSegmentedTweet(tweetTextEl: Element, segments: TextSegment[], claims: Claim[], batchId: string, classificationId?: string) {
     const urlDisplayMap = new Map<string, string>();
     const existingLinks = tweetTextEl.querySelectorAll('a');
@@ -2633,7 +2746,14 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 span.appendChild(createInlineBadge(true));
             }
 
+            // Exposed so showPopover can create the same badge on a tap — mouseenter
+            // never fires there (isTouchInput() bails it out), so without this a
+            // touch tap opens the popover with no badge, since it only ever existed
+            // as a hover effect.
+            (span as any)._mfCreateBadge = createInlineBadge;
+
             span.addEventListener("mouseenter", () => {
+                if (isTouchInput()) return;
                 if (span.querySelector(".mf-inline-badge")) return;
                 if (span.dataset.hoverBg) {
                     span.style.backgroundColor = span.dataset.hoverBg;
@@ -2666,6 +2786,9 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
     return wrap;
 }
 
+/** Promote one already-injected tweet from the Phase 1 fallback box to Phase 2 inline
+ *  highlights, once segments are available. Bails out quietly when there is nothing to
+ *  upgrade or the tweet's text element can no longer be found in X's DOM. */
 function upgradeToSegments(article: Element, classification: Classification | QuotedClassification, batchId: string, isQuoted: boolean = false) {
     const segments = classification.segments;
     const claims = classification.claims;
@@ -2707,6 +2830,15 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 const oldReasoning = el.dataset.reasoning;
                 const oldRefreshing = el.dataset.refreshing;
                 const isRefreshing = claim.refreshing;
+                // Whether this span carries the "always show the badge regardless of
+                // hover" flag, checked before any of the mutations below might flip it.
+                // A flip here means mouseenter/mouseleave will start (or stop) treating
+                // this span specially — if the pointer is genuinely resting on it right
+                // now, that's exactly the "state changed under a stationary cursor" case
+                // resyncHoverAtPointer exists for, so it must fire even when `changed`
+                // (below) stays false, or the hover tint/badge can stick until the span
+                // is rebuilt from scratch (e.g. by scrolling away and back).
+                const hadPermanentBadge = !!(el as any)._mfBadgePermanent;
                 const changed =
                     oldVerdict !== label ||
                     oldReasoning !== reasoning ||
@@ -2817,8 +2949,11 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 // If this span's state changed while the pointer is resting on it (e.g. a
                 // verdict landing right after the user clicked Fact-Check, with the mouse
                 // never moving), replay the hover so the badge/preview appear immediately
-                // instead of waiting for a manual mouse-out/in.
-                if (changed) resyncHoverAtPointer(el);
+                // instead of waiting for a manual mouse-out/in. `changed` alone misses a
+                // pure on-hold/pipeline-researching transition (see hadPermanentBadge
+                // above), so a permanent-badge flip forces the same replay.
+                const hasPermanentBadgeNow = !!(el as any)._mfBadgePermanent;
+                if (changed || hadPermanentBadge !== hasPermanentBadgeNow) resyncHoverAtPointer(el);
             }
             console.log(`[misinfo] upgradeToSegments: updated ${updated}/${existingClaimSpans.length} claim spans for ${classification.id}`);
             updateOpenPopover();
@@ -2826,9 +2961,29 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
         }
     }
 
-    console.log(`[misinfo] upgradeToSegments: upgrading ${classification.id} with ${segments.length} segments`);
+    // Diagnostic for the hover-freeze bug: a full rebuild (as opposed to the in-place
+    // update path above, which explicitly calls resyncHoverAtPointer for exactly this
+    // reason) never re-syncs hover state for the freshly created spans. If the pointer
+    // is sitting over this tweet's text right when a rebuild fires — most likely because
+    // the host page's own re-render replaced our injected markup out from under us —
+    // that's a real candidate for the freeze, since the old span's real mouseenter state
+    // dies with the removed node and the new span never gets an equivalent one.
+    const rectAtRebuild = tweetTextEl.getBoundingClientRect();
+    const pointerInsideAtRebuild = mfPointerX >= rectAtRebuild.left && mfPointerX <= rectAtRebuild.right
+        && mfPointerY >= rectAtRebuild.top && mfPointerY <= rectAtRebuild.bottom;
+    console.log(`[misinfo] upgradeToSegments: upgrading ${classification.id} with ${segments.length} segments (full rebuild, pointerInsideTweetText=${pointerInsideAtRebuild})`);
     injectStyles();
     renderSegmentedTweet(tweetTextEl, segments, claims, batchId, classification.id);
+
+    // If the pointer was already resting over this tweet (see the diagnostic above),
+    // the just-destroyed old span's hover state died with it and the freshly built
+    // replacement never got an equivalent mouseenter — resync it now, same as the
+    // in-place update path does for its own state-changed-under-cursor case.
+    if (pointerInsideAtRebuild) {
+        for (const freshSpan of tweetTextEl.querySelectorAll<HTMLElement>(".mf-segment-claim")) {
+            resyncHoverAtPointer(freshSpan);
+        }
+    }
 
     const fallbackDiv = article.querySelector(`[classification-id="${classification.id}"]`);
     if (fallbackDiv) fallbackDiv.remove();
@@ -2920,6 +3075,7 @@ function setupArticleHandlers(articleEl: Element) {
     }
 
     article.addEventListener("mouseenter", (e) => {
+        if (isTouchInput()) return;
         const target = closestEl(e.target as Element, ".mf-segment-claim");
         if (!target) return;
         startHoverPreview(target);
@@ -3134,6 +3290,7 @@ function buildPopoverShell(trigger: HTMLElement, isPreview: boolean): { popover:
         }
         const liveTrigger = (popover as any)._mfTrigger as HTMLElement | undefined;
         const targetTrigger = liveTrigger ?? trigger;
+        console.log(`[misinfo] onClose: targetTrigger connected=${targetTrigger.isConnected}, hadBadge=${!!targetTrigger.querySelector(".mf-inline-badge")}, bgBefore=${targetTrigger.style.backgroundColor}`);
         targetTrigger.style.opacity = "";
         delete (targetTrigger as any)._mfPopoverOpen;
         const badge = targetTrigger.querySelector(".mf-inline-badge");
@@ -3144,6 +3301,7 @@ function buildPopoverShell(trigger: HTMLElement, isPreview: boolean): { popover:
         const ver = isNaN(vVal) ? undefined : vVal;
         const isResearching = targetTrigger.dataset.refreshing === "true" || prob === undefined || ver === undefined || prob < 0.2;
         targetTrigger.style.backgroundColor = isResearching ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
+        console.log(`[misinfo] onClose: bgAfter=${targetTrigger.style.backgroundColor}, stillHasBadge=${!!targetTrigger.querySelector(".mf-inline-badge")}`);
         removeAttachedOnboardingFor(popover);
         popover.remove();
         if (previewPopoverState?.popover === popover) previewPopoverState = null;
@@ -3176,6 +3334,8 @@ function buildPopoverShell(trigger: HTMLElement, isPreview: boolean): { popover:
     return { popover, render };
 }
 
+// ── Popovers (verdict detail and previews) ───────────────────────────────────
+
 function showPopover(
     trigger: HTMLElement,
     reasoning: string,
@@ -3205,6 +3365,12 @@ function showPopover(
         });
 
         (trigger as any)._mfPopoverOpen = true;
+        // Normally the badge is a hover effect (span mouseenter); a tap never hovers, so
+        // without this the popover would open with no badge on a touch device. closePopover
+        // already removes a non-permanent one, so it's safe to (re)create it here.
+        if (!trigger.querySelector(".mf-inline-badge") && (trigger as any)._mfCreateBadge) {
+            trigger.appendChild((trigger as any)._mfCreateBadge(trigger.dataset.reclassifyOnHold === "true"));
+        }
         refreshInPopoverOnboarding();
     } catch (e) {
         console.error("[misinfo] showPopover failed:", e);
@@ -3250,6 +3416,7 @@ function populatePopoverContent(
 
     if (closeBtn && highlightHover) {
         closeBtn.addEventListener("mouseenter", () => {
+            if (isTouchInput()) return;
             closeBtn.style.backgroundColor = highlightHover;
             closeBtn.style.color = "rgba(255,255,255,0.9)";
             closeBtn.style.borderRadius = "3px";
@@ -3307,6 +3474,7 @@ function populatePopoverContent(
                 preBtn.style.borderRadius = "3px";
                 preBtn.style.transition = "filter 0.15s ease, color 0.15s ease";
                 preBtn.addEventListener("mouseenter", () => {
+                    if (isTouchInput()) return;
                     preBtn.style.setProperty("filter", "brightness(1.25)", "important");
                 });
                 preBtn.addEventListener("mouseleave", () => {
@@ -3348,6 +3516,7 @@ function populatePopoverContent(
 
         if (highlightHover) {
             copyBtn.addEventListener("mouseenter", () => {
+                if (isTouchInput()) return;
                 copyBtn.style.backgroundColor = highlightHover;
                 copyBtn.style.color = "rgba(255,255,255,0.9)";
             });
@@ -3376,6 +3545,7 @@ function populatePopoverContent(
                 });
                 if (highlightHover) {
                     button.addEventListener("mouseenter", () => {
+                        if (isTouchInput()) return;
                         button.style.backgroundColor = highlightHover;
                         button.style.color = "rgba(255,255,255,0.9)";
                     });
@@ -3542,6 +3712,7 @@ function populatePopoverContent(
             });
             if (highlightHover) {
                 refreshBtn.addEventListener("mouseenter", () => {
+                    if (isTouchInput()) return;
                     refreshBtn.style.backgroundColor = highlightHover;
                     refreshBtn.style.color = "rgba(255,255,255,0.9)";
                 });
@@ -3597,8 +3768,6 @@ function getFactCheckedButtonRect(): DOMRect | null {
     const btn = document.querySelector<HTMLElement>(".mf-floating-scroll-btn");
     return btn?.getBoundingClientRect() ?? null;
 }
-
-let previewPlacementCounter = 0;
 
 /** Return the bounding rectangle of a popover's trigger, in viewport coordinates,
  *  tolerating virtual triggers created for the Fact-Checked button preview or explicit anchor elements. */
@@ -3927,6 +4096,7 @@ function showPreviewPopover(trigger: HTMLElement) {
     };
 
     popover.addEventListener("mouseenter", () => {
+        if (isTouchInput()) return;
         setPreviewPopoverOpacity(1);
         if (previewPopoverState?.leaveTimer) {
             clearTimeout(previewPopoverState.leaveTimer);
@@ -4137,6 +4307,7 @@ function createSourceLink(src: Source, hoverBg?: string): HTMLAnchorElement {
     img.src = faviconSources[currentSourceIndex];
 
     link.addEventListener("mouseenter", () => {
+        if (isTouchInput()) return;
         link.style.zIndex = "1";
         link.style.background = activeBg;
         link.style.borderRadius = "10px";
@@ -4228,6 +4399,12 @@ function updateOpenPopover() {
                 (popover as any)._mfTrigger = currentTrigger;
                 currentTrigger.style.opacity = "1";
                 (currentTrigger as any)._mfPopoverOpen = true;
+                // The old trigger's badge doesn't carry over to its replacement, and
+                // the replacement never hovers on its own — same as showPopover, ensure
+                // one exists so the badge doesn't vanish out from under an open popover.
+                if (!currentTrigger.querySelector(".mf-inline-badge") && (currentTrigger as any)._mfCreateBadge) {
+                    currentTrigger.appendChild((currentTrigger as any)._mfCreateBadge(currentTrigger.dataset.reclassifyOnHold === "true"));
+                }
                 trigger = currentTrigger;
             }
         }
@@ -4359,6 +4536,7 @@ function updateOpenPopover() {
             const hlHover = (!isNaN(hlProb) && !isNaN(hlVer) && hlProb >= 0.2) ? confidenceRgba(hlProb, 0.3, hlVer) : undefined;
             if (hlHover) {
                 copyBtn.addEventListener("mouseenter", () => {
+                    if (isTouchInput()) return;
                     copyBtn.style.backgroundColor = hlHover;
                     copyBtn.style.color = "rgba(255,255,255,0.9)";
                 });
@@ -4415,6 +4593,7 @@ function updateOpenPopover() {
             });
             if (hlHover) {
                 refreshBtn.addEventListener("mouseenter", () => {
+                    if (isTouchInput()) return;
                     refreshBtn.style.backgroundColor = hlHover;
                     refreshBtn.style.color = "rgba(255,255,255,0.9)";
                 });
@@ -4471,7 +4650,7 @@ function findSubscribeWrapper(article: Element): HTMLElement | null {
     return subscribeBtn?.parentElement?.parentElement as HTMLElement | null;
 }
 
-// ---- On-hold button injection (paused pipeline) ----
+// ── On-hold button injection (pipeline paused, awaiting a user click) ────────
 
 /** Decide whether the top-of-tweet on-hold container (spinner + Fact-Check All)
  *  should be removed for a tweet that is no longer `onHold`.
@@ -4537,6 +4716,61 @@ function shouldRemoveOnHoldButton(classification: Classification): boolean {
 
     console.log(`[misinfo] shouldRemoveOnHoldButton ${classification.id}: ${allResolved ? 'removing' : 'keeping'}, allResolved=${allResolved}`, claims.map(cl => ({ text: cl.text.slice(0, 30), db: !!cl.dbClaimText, onHold: cl.reclassifyOnHold })));
     return allResolved;
+}
+
+/** Builds the DisinfaX logo mark used inline in the Disinfact / Fact-Check All button
+ *  text, so every button carrying the brand mark stays pixel-identical. */
+function createDisinfactLogoSvg(): SVGSVGElement {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "16");
+    svg.setAttribute("height", "16");
+    svg.setAttribute("viewBox", "0 0 128 128");
+    svg.setAttribute("fill", "none");
+    svg.style.flexShrink = "0";
+    svg.style.marginTop = "-5px";
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", "0.5");
+    rect.setAttribute("y", "0.5");
+    rect.setAttribute("width", "127");
+    rect.setAttribute("height", "127");
+    rect.setAttribute("stroke", "rgb(83, 100, 113)");
+    svg.appendChild(rect);
+    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path1.setAttribute("d", "M50 80L75 104M50 104C59.7631 94.6274 65.2369 89.3726 75 80");
+    path1.setAttribute("stroke", "rgb(83, 100, 113)");
+    path1.setAttribute("stroke-width", "8");
+    path1.setAttribute("stroke-linecap", "square");
+    svg.appendChild(path1);
+    const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path2.setAttribute("d", "M61.0703 38H55H49.0703V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5C66 24 61.5 23.5 66 24V28C66 28 66 28 61.0703 29C61.0703 33 61.0703 34 61.0703 38Z");
+    path2.setAttribute("fill", "rgb(83, 100, 113)");
+    svg.appendChild(path2);
+    const path3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path3.setAttribute("fill-rule", "evenodd");
+    path3.setAttribute("clip-rule", "evenodd");
+    path3.setAttribute("d", "M39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38H61.0703H55H49.0703H45V45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793ZM53.5366 75.9306C93.5366 81.9306 80.5884 110.663 53.5884 109.163C51.5884 109.163 49.5884 108.663 49.5884 106.663L49.5366 79.4306C49.6146 77.438 50.5884 75.6626 53.5366 75.9306Z");
+    path3.setAttribute("fill", "rgb(83, 100, 113)");
+    svg.appendChild(path3);
+    const path4 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path4.setAttribute("d", "M45 45.5C38.4138 59.2877 39.6134 67.1243 39.0703 79.2793L39 120.5H79.8507C86.2804 120.5 98.0534 86.6027 76 64C69.901 57.5392 68.4742 53.9878 65.5703 45.3363L65.5744 38M45 45.5C45.0233 45.4511 44.9765 45.549 45 45.5ZM45 45.5V38H49.0703M65.5744 41V38H61.0703M49.0703 38V28.5C49.0703 24 49.0703 23 43.5703 20L46.5703 8H82.5703V17C75.4742 17.5988 61 17 61.5 23.5M49.0703 38H55H61.0703M61.5 23.5C61.0703 29 61.5 23.5 61.0703 29C61.0703 33 61.0703 34 61.0703 38M61.0703 29C66 28 66 28 66 28V24C61.5 23.5 66 24 61.5 23.5M53.5884 109.163C80.5884 110.663 93.5366 81.9306 53.5366 75.9306C50.5884 75.6626 49.6146 77.438 49.5366 79.4306L49.5884 106.663C49.5884 108.663 51.5884 109.163 53.5884 109.163Z");
+    path4.setAttribute("stroke", "rgb(83, 100, 113)");
+    path4.setAttribute("stroke-linecap", "round");
+    svg.appendChild(path4);
+    const path5 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path5.setAttribute("d", "M45 44V43.5V43");
+    path5.setAttribute("stroke", "rgb(83, 100, 113)");
+    svg.appendChild(path5);
+    const path6 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path6.setAttribute("d", "M45 45V46");
+    path6.setAttribute("stroke", "rgb(83, 100, 113)");
+    svg.appendChild(path6);
+    const path7 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path7.setAttribute("d", "M91.5 7.5C91.5 9.5 88.4098 12.3719 86.4098 12.3719C88.4098 12.3719 91.4098 15.5 91.4098 17.3719C91.5 15.5 94.5 12.5 96.5 12.5C94.5 12.5 91.5 9.5 91.5 7.5Z");
+    path7.setAttribute("fill", "rgb(83, 100, 113)");
+    path7.setAttribute("stroke", "rgb(83, 100, 113)");
+    path7.setAttribute("stroke-linecap", "round");
+    svg.appendChild(path7);
+    return svg;
 }
 
 /** Render a "Disinfact" button for tweets awaiting user action. */
@@ -4607,7 +4841,6 @@ function injectOnHoldButton(
         spinnerWrap.appendChild(spinner);
 
         const factCheckAllBtn = document.createElement("button");
-        factCheckAllBtn.textContent = t('factCheckAllButton');
         factCheckAllBtn.setAttribute("role", "button");
         factCheckAllBtn.setAttribute("type", "button");
         factCheckAllBtn.className = refClass;
@@ -4623,8 +4856,13 @@ function injectOnHoldButton(
         factCheckAllText.style.fontSize = "13px";
         factCheckAllText.style.fontWeight = "700";
         factCheckAllText.style.minWidth = "0";
-        factCheckAllText.textContent = t('factCheckAllButton');
-        factCheckAllBtn.innerHTML = "";
+        factCheckAllText.style.display = "flex";
+        factCheckAllText.style.alignItems = "center";
+        factCheckAllText.style.gap = "0";
+        factCheckAllText.appendChild(createDisinfactLogoSvg());
+        const factCheckAllLabel = document.createElement("span");
+        factCheckAllLabel.textContent = t('factCheckAllButton');
+        factCheckAllText.appendChild(factCheckAllLabel);
         factCheckAllBtn.appendChild(factCheckAllText);
         factCheckAllBtn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -4753,7 +4991,6 @@ function injectOnHoldButton(
         loadingWrap.appendChild(spinner);
 
         const factCheckAllBtn = document.createElement("button");
-        factCheckAllBtn.textContent = t('factCheckAllButton');
         factCheckAllBtn.setAttribute("role", "button");
         factCheckAllBtn.setAttribute("type", "button");
         factCheckAllBtn.className = refClass;
@@ -4766,8 +5003,13 @@ function injectOnHoldButton(
         factCheckAllText.style.fontSize = "13px";
         factCheckAllText.style.fontWeight = "700";
         factCheckAllText.style.minWidth = "0";
-        factCheckAllText.textContent = t('factCheckAllButton');
-        factCheckAllBtn.innerHTML = "";
+        factCheckAllText.style.display = "flex";
+        factCheckAllText.style.alignItems = "center";
+        factCheckAllText.style.gap = "0";
+        factCheckAllText.appendChild(createDisinfactLogoSvg());
+        const factCheckAllLabel = document.createElement("span");
+        factCheckAllLabel.textContent = t('factCheckAllButton');
+        factCheckAllText.appendChild(factCheckAllLabel);
         factCheckAllBtn.appendChild(factCheckAllText);
         factCheckAllBtn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -4987,7 +5229,7 @@ function injectTranslateFactChecksButton(
     placeButtonContainer(container, article, time, grokData);
 }
 
-// ---- Main injection (two-phase) ----
+// ── Main injection (drives both phases above) ───────────────────────────────
 
 function injectClassification(
     time: Element,

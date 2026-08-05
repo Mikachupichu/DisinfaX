@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hlulahlula ngokutsha zonke izibango kule tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Bonisa kwakhona zonke izibango kule tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Phanda ngokutsha eli bango",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Qinisekisa konke"
+  },
+  "errBalanceTooLow": {
+    "message": "Ibhalansi yakho iphantsi kakhulu. Nyanzelisa ukuze uqhubeke."
+  },
+  "errAccountSuspended": {
+    "message": "I-akhawunti yakho imisiwe."
+  },
+  "errNotSignedIn": {
+    "message": "Awungenile. Nceda ungene uze uphinde uzame kwakhona."
+  },
+  "errInvalidRequest": {
+    "message": "Inxalenye yesi sicelo ayaqondwa. Qinisekisa ukuba isandiso lihamba nexesha."
+  },
+  "errServiceUnavailable": {
+    "message": "Kwenzeke impazamo ngasecaleni kwethu. Nceda uzame kwakhona kungekudala."
+  },
+  "errRegionNotSupported": {
+    "message": "I-DisinfaX ayikafumaneki kummandla wakho ngenxa yeemfuno zomgaqo-nkqubo."
+  },
+  "errInvalidAmount": {
+    "message": "Loo mali yokugcwalisa ayifanelekile. Nceda ukhethe imali eyahlukileyo."
+  },
+  "errNotFound": {
+    "message": "Loo nto ayifumanekile. Zama kwakhona."
   }
 }

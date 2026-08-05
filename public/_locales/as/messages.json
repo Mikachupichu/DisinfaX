@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "এই টুইটৰ আটাইবোৰ দাবী পুনৰ শ্ৰেণীবদ্ধ কৰক",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "এই টুইটৰ আটাইবোৰ দাবী পুনৰ প্ৰকাশ কৰক",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "এই দাবী পুনৰ গৱেষণা কৰক",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "সকলো পৰীক্ষা কৰক"
+  },
+  "errBalanceTooLow": {
+    "message": "তোমার বেলেঞ্চ বহুত কম। অনুগ্রহ কৰি অব্যাহত ৰাখিবলে টপ আপ কৰক।"
+  },
+  "errAccountSuspended": {
+    "message": "তোমাৰ একাউণ্ট স্থগিত কৰা হৈছে।"
+  },
+  "errNotSignedIn": {
+    "message": "তুমি সাইন ইন কৰা নাই। অনুগ্রহ কৰি সাইন ইন কৰি পুনৰ চেষ্টা কৰক।"
+  },
+  "errInvalidRequest": {
+    "message": "এই অনুৰোধৰ কিছু অংশ চিনাক্ত কৰিব পৰা নগৈছিল। এক্সটেনশনটো আপডেট হৈ আছে নেকি নিশ্চিত কৰক।"
+  },
+  "errServiceUnavailable": {
+    "message": "আমাৰ ফালৰ পৰা এটা ত্রুটি হৈছিল। অনুগ্রহ কৰি অলপ পিছত পুনৰ চেষ্টা কৰক।"
+  },
+  "errRegionNotSupported": {
+    "message": "নিয়ামক প্ৰয়োজনীয়তাৰ বাবে DisinfaX এতিয়াও তোমাৰ অঞ্চলত উপলব্ধ নাই।"
+  },
+  "errInvalidAmount": {
+    "message": "সেই টপ-আপ পৰিমাণ বৈধ নহয়। অনুগ্রহ কৰি অন্য পৰিমাণ বাছনি কৰক।"
+  },
+  "errNotFound": {
+    "message": "সেইটো বিচাৰি পাব পৰা নগৈছিল। পুনৰ চেষ্টা কৰক।"
   }
 }

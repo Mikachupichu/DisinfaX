@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Aicmigh gach éileamh sa tvuít seo arís",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Nocht gach éileamh sa tvuít seo arís",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Taighde arís ar an éileamh seo",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Seiceáil uile"
+  },
+  "errBalanceTooLow": {
+    "message": "Tá d'iarmhéid ró-íseal. Cuir breis chun leanúint ar aghaidh."
+  },
+  "errAccountSuspended": {
+    "message": "Cuireadh do chuntas ar fionraí."
+  },
+  "errNotSignedIn": {
+    "message": "Níl tú logáilte isteach. Logáil isteach agus bain triail eile as."
+  },
+  "errInvalidRequest": {
+    "message": "Níor aithníodh cuid den iarratas seo. Deimhnigh go bhfuil an eisínteacht cothrom le dáta."
+  },
+  "errServiceUnavailable": {
+    "message": "Tharla earráid ar ár dtaobh. Bain triail eile as i gceann tamaillín."
+  },
+  "errRegionNotSupported": {
+    "message": "Níl DisinfaX ar fáil i do réigiún fós mar gheall ar riachtanais rialála."
+  },
+  "errInvalidAmount": {
+    "message": "Níl an méid breise sin bailí. Roghnaigh méid difriúil."
+  },
+  "errNotFound": {
+    "message": "Níorbh fhéidir é sin a aimsiú. Bain triail eile as."
   }
 }

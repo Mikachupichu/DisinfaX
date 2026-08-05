@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ushbu tvitdagi barcha da'volarni qayta turkumlash",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Ushbu tvitdagi barcha da'volarni qayta ochish",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Ushbu da'voni qayta tadqiq qilish",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Barchasini tekshirish"
+  },
+  "errBalanceTooLow": {
+    "message": "Balansingiz juda past. Davom etish uchun hisobni to‘ldiring."
+  },
+  "errAccountSuspended": {
+    "message": "Hisobingiz to‘xtatib qo‘yilgan."
+  },
+  "errNotSignedIn": {
+    "message": "Siz tizimga kirmagansiz. Tizimga kiring va qayta urinib ko‘ring."
+  },
+  "errInvalidRequest": {
+    "message": "Ushbu so‘rovning bir qismi aniqlanmadi. Kengaytmaning yangilanganligiga ishonch hosil qiling."
+  },
+  "errServiceUnavailable": {
+    "message": "Bizning tomonimizda xatolik yuz berdi. Bir oz vaqtdan so‘ng qayta urinib ko‘ring."
+  },
+  "errRegionNotSupported": {
+    "message": "Tartibga solish talablari sababli DisinfaX hozircha mintaqangizda mavjud emas."
+  },
+  "errInvalidAmount": {
+    "message": "Ushbu to‘ldirish summasi yaroqsiz. Boshqa summani tanlang."
+  },
+  "errNotFound": {
+    "message": "Bu topilmadi. Qayta urinib ko‘ring."
   }
 }

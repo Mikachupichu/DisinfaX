@@ -147,8 +147,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Επαναταξινόμηση όλων των ισχυρισμών σε αυτό το tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Αποκάλυψη ξανά όλων των ισχυρισμών σε αυτό το tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Εκ νέου έρευνα αυτού του ισχυρισμού",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Έλεγχος όλων"
+  },
+  "errBalanceTooLow": {
+    "message": "Το υπόλοιπό σας είναι πολύ χαμηλό. Κάντε ανανέωση για να συνεχίσετε."
+  },
+  "errAccountSuspended": {
+    "message": "Ο λογαριασμός σας έχει ανασταλεί."
+  },
+  "errNotSignedIn": {
+    "message": "Δεν έχετε συνδεθεί. Συνδεθείτε και δοκιμάστε ξανά."
+  },
+  "errInvalidRequest": {
+    "message": "Κάποιο μέρος αυτού του αιτήματος δεν αναγνωρίστηκε. Βεβαιωθείτε ότι η επέκταση είναι ενημερωμένη."
+  },
+  "errServiceUnavailable": {
+    "message": "Παρουσιάστηκε σφάλμα από την πλευρά μας. Δοκιμάστε ξανά σε λίγο."
+  },
+  "errRegionNotSupported": {
+    "message": "Το DisinfaX δεν είναι ακόμη διαθέσιμο στην περιοχή σας λόγω κανονιστικών απαιτήσεων."
+  },
+  "errInvalidAmount": {
+    "message": "Αυτό το ποσό ανανέωσης δεν είναι έγκυρο. Επιλέξτε διαφορετικό ποσό."
+  },
+  "errNotFound": {
+    "message": "Δεν ήταν δυνατή η εύρεσή του. Δοκιμάστε ξανά."
   }
 }

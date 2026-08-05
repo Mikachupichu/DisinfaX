@@ -147,8 +147,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ఈ ట్వీట్‌లోని అన్ని వాదనలను తిరిగి వర్గీకరించు",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "ఈ ట్వీట్‌లోని అన్ని వాదనలను తిరిగి వెల్లడించు",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ఈ వాదనను తిరిగి పరిశోధించు",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "అన్నింటినీ తనిఖీ చేయండి"
+  },
+  "errBalanceTooLow": {
+    "message": "మీ బ్యాలెన్స్ చాలా తక్కువగా ఉంది. కొనసాగించడానికి దయచేసి టాప్ అప్ చేయండి."
+  },
+  "errAccountSuspended": {
+    "message": "మీ ఖాతా సస్పెండ్ చేయబడింది."
+  },
+  "errNotSignedIn": {
+    "message": "మీరు సైన్ ఇన్ కాలేదు. దయచేసి సైన్ ఇన్ చేసి మళ్లీ ప్రయత్నించండి."
+  },
+  "errInvalidRequest": {
+    "message": "ఈ రిక్వెస్ట్‌లో కొంత భాగం గుర్తించబడలేదు. ఎక్స్‌టెన్షన్ అప్‌డేట్‌గా ఉందని నిర్ధారించుకోండి."
+  },
+  "errServiceUnavailable": {
+    "message": "మా వైపు నుండి ఒక లోపం సంభవించింది. దయచేసి కొద్దిసేపటి తర్వాత మళ్లీ ప్రయత్నించండి."
+  },
+  "errRegionNotSupported": {
+    "message": "నియంత్రణ అవసరాల కారణంగా DisinfaX ఇంకా మీ ప్రాంతంలో అందుబాటులో లేదు."
+  },
+  "errInvalidAmount": {
+    "message": "ఆ టాప్-అప్ మొత్తం చెల్లదు. దయచేసి వేరే మొత్తాన్ని ఎంచుకోండి."
+  },
+  "errNotFound": {
+    "message": "అది కనుగొనబడలేదు. మళ్లీ ప్రయత్నించండి."
   }
 }

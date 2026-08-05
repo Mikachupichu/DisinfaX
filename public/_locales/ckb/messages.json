@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "هەموو بانگەشەکانی ئەم تویتە دووبارە پۆڵێن بکە",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "هەموو بانگەشەکانی ئەم تویتە دووبارە ئاشکرا بکە",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "دووبارە لێکۆڵینەوە لەم بانگەشەیە",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "هەموو پشکنین بکە"
+  },
+  "errBalanceTooLow": {
+    "message": "باڵانسەکەت زۆر کەمە. تکایە بۆ بەردەوامبوون بارگاوی بکە."
+  },
+  "errAccountSuspended": {
+    "message": "هەژماری تۆ ڕاگیراوە."
+  },
+  "errNotSignedIn": {
+    "message": "تۆ نەچوویتەتە ژوورەوە. تکایە بچۆ ژوورەوە و دووبارە هەوڵبدەرەوە."
+  },
+  "errInvalidRequest": {
+    "message": "بەشێک لەم داواکارییە نەناسرا. تکایە دڵنیابەرەوە کە زیادکراوەکە نوێکراوەتەوە."
+  },
+  "errServiceUnavailable": {
+    "message": "هەڵەیەک لە لایەن ئێمەوە ڕوویدا. تکایە دووبارە هەوڵبدەرەوە دوای کەمێک."
+  },
+  "errRegionNotSupported": {
+    "message": "لەبەر داواکارییەکانی ڕێکخستن، DisinfaX هێشتا لە ناوچەکەتدا بەردەست نییە."
+  },
+  "errInvalidAmount": {
+    "message": "ئەو بڕە بۆ بارگاوی کردن دروست نییە. تکایە بڕێکی تر هەڵبژێرە."
+  },
+  "errNotFound": {
+    "message": "ئەوە نەدۆزرایەوە. دووبارە هەوڵبدەرەوە."
   }
 }

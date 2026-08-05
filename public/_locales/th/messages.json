@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "จัดประเภทข้อกล่าวหาทั้งหมดในทวีตนี้ใหม่",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "เปิดเผยข้อกล่าวหาทั้งหมดในทวีตนี้อีกครั้ง",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ค้นคว้าข้อกล่าวหานี้ใหม่",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "ตรวจสอบข้อเท็จจริงทั้งหมด"
+  },
+  "errBalanceTooLow": {
+    "message": "ยอดเงินของคุณต่ำเกินไป กรุณาเติมเงินเพื่อดำเนินการต่อ"
+  },
+  "errAccountSuspended": {
+    "message": "บัญชีของคุณถูกระงับ"
+  },
+  "errNotSignedIn": {
+    "message": "คุณยังไม่ได้เข้าสู่ระบบ กรุณาเข้าสู่ระบบแล้วลองใหม่"
+  },
+  "errInvalidRequest": {
+    "message": "มีบางอย่างในคำขอนี้ที่ไม่รู้จัก กรุณาตรวจสอบว่าส่วนขยายเป็นเวอร์ชันล่าสุด"
+  },
+  "errServiceUnavailable": {
+    "message": "เกิดข้อผิดพลาดในระบบของเรา กรุณาลองใหม่อีกครั้งในอีกสักครู่"
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ยังไม่พร้อมให้บริการในภูมิภาคของคุณเนื่องจากข้อกำหนดด้านกฎระเบียบ"
+  },
+  "errInvalidAmount": {
+    "message": "จำนวนเงินเติมนั้นไม่ถูกต้อง กรุณาเลือกจำนวนอื่น"
+  },
+  "errNotFound": {
+    "message": "ไม่พบสิ่งนั้น กรุณาลองใหม่อีกครั้ง"
   }
 }

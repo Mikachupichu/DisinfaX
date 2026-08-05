@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "एह ट्वीट के सारा दावा के फेर से वर्गीकृत करीं",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "एह ट्वीट के सारा दावा के फेर से देखाईं",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "एह दावा के फिर से खोजीं",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "सब जाँच करीं"
+  },
+  "errBalanceTooLow": {
+    "message": "रउरा बैलेंस बहुत कम बा। जारी राखे लिए कृपया टॉप अप करीं।"
+  },
+  "errAccountSuspended": {
+    "message": "रउरा खाता सस्पेंड कर दिहल गइल बा।"
+  },
+  "errNotSignedIn": {
+    "message": "रउआ साइन इन नइखीं। कृपया साइन इन करीं आ फेर से कोशिश करीं।"
+  },
+  "errInvalidRequest": {
+    "message": "ई रिक्वेस्ट के कुछ हिस्सा पहचानल नइखे जा सकल। कृपया सुनिश्चित करीं कि एक्सटेंशन अपडेट बा।"
+  },
+  "errServiceUnavailable": {
+    "message": "हमनी के तरफ से एगो गलती भइल। कृपया कुछ समय बाद फेर से कोशिश करीं।"
+  },
+  "errRegionNotSupported": {
+    "message": "नियामक जरूरत के कारण DisinfaX अबहिन तक रउरा क्षेत्र में उपलब्ध नइखे।"
+  },
+  "errInvalidAmount": {
+    "message": "ऊ टॉप-अप रकम मान्य नइखे। कृपया दूसर रकम चुनीं।"
+  },
+  "errNotFound": {
+    "message": "ऊ नइखे मिलल। फेर से कोशिश करीं।"
   }
 }

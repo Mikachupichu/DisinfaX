@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Перекласифікувати всі твердження в цьому твіті",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Знову розкрити всі твердження в цьому твіті",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Передослідити це твердження",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Перевірити все"
+  },
+  "errBalanceTooLow": {
+    "message": "Ваш баланс занадто низький. Поповніть рахунок, щоб продовжити."
+  },
+  "errAccountSuspended": {
+    "message": "Ваш облік призупинено."
+  },
+  "errNotSignedIn": {
+    "message": "Ви не увійшли в систему. Увійдіть і повторіть спробу."
+  },
+  "errInvalidRequest": {
+    "message": "Частину цього запиту не розпізнано. Переконайтеся, що розширення оновлено."
+  },
+  "errServiceUnavailable": {
+    "message": "На нашому боці сталася помилка. Повторіть спробу трохи згодом."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ще не доступний у вашому регіоні через нормативні вимоги."
+  },
+  "errInvalidAmount": {
+    "message": "Ця сума поповнення недійсна. Виберіть іншу суму."
+  },
+  "errNotFound": {
+    "message": "Не вдалося знайти це. Повторіть спробу."
   }
 }

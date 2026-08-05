@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ഈ ട്വീറ്റിലെ എല്ലാ അവകാശവാദങ്ങളും പുനർവർഗ്ഗീകരിക്കുക",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "ഈ ട്വീറ്റിലെ എല്ലാ അവകാശവാദങ്ങളും വീണ്ടും വെളിപ്പെടുത്തുക",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ഈ അവകാശവാദം വീണ്ടും ഗവേഷണം ചെയ്യുക",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "എല്ലാം പരിശോധിക്കുക"
+  },
+  "errBalanceTooLow": {
+    "message": "നിങ്ങളുടെ ബാലൻസ് വളരെ കുറവാണ്. തുടരാൻ ദയവായി ടോപ്പ് അപ്പ് ചെയ്യുക."
+  },
+  "errAccountSuspended": {
+    "message": "നിങ്ങളുടെ അക്കൗണ്ട് സസ്പെൻഡ് ചെയ്തിരിക്കുന്നു."
+  },
+  "errNotSignedIn": {
+    "message": "നിങ്ങൾ സൈൻ ഇൻ ചെയ്തിട്ടില്ല. ദയവായി സൈൻ ഇൻ ചെയ്ത് വീണ്ടും ശ്രമിക്കുക."
+  },
+  "errInvalidRequest": {
+    "message": "ഈ അഭ്യർത്ഥനയുടെ ഒരു ഭാഗം തിരിച്ചറിഞ്ഞില്ല. എക്സ്റ്റൻഷൻ അപ്ഡേറ്റ് ആണെന്ന് ഉറപ്പാക്കുക."
+  },
+  "errServiceUnavailable": {
+    "message": "ഞങ്ങളുടെ ഭാഗത്ത് ഒരു പിശക് സംഭവിച്ചു. അൽപ്പസമയത്തിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."
+  },
+  "errRegionNotSupported": {
+    "message": "നിയന്ത്രണ ആവശ്യകതകൾ കാരണം DisinfaX ഇപ്പോഴും നിങ്ങളുടെ പ്രദേശത്ത് ലഭ്യമല്ല."
+  },
+  "errInvalidAmount": {
+    "message": "ആ ടോപ്പ്-അപ്പ് തുക സാധുവല്ല. ദയവായി മറ്റൊരു തുക തിരഞ്ഞെടുക്കുക."
+  },
+  "errNotFound": {
+    "message": "അത് കണ്ടെത്താനായില്ല. വീണ്ടും ശ്രമിക്കുക."
   }
 }

@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Nglasifikasikake maneh kabeh tweet ing batch iki",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Nampilake maneh kabeh pratelan ing tweet iki",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Nliti maneh pratelan iki",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Priksa Kabeh"
+  },
+  "errBalanceTooLow": {
+    "message": "Saldo sampeyan kasuwen. Mangga ngisi saldo kanggo nglajengake."
+  },
+  "errAccountSuspended": {
+    "message": "Akun sampeyan wis disuspend."
+  },
+  "errNotSignedIn": {
+    "message": "Sampeyan durung mlebu. Mangga mlebu lan coba maneh."
+  },
+  "errInvalidRequest": {
+    "message": "Sebagian saka panyuwunan iki ora dikenali. Mangga priksa yen ekstensi wis anyar."
+  },
+  "errServiceUnavailable": {
+    "message": "Ana kesalahan ing pihak kita. Mangga coba maneh sawetara wektu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX durung kasedhiya ing wilayah sampeyan amarga syarat regulasi."
+  },
+  "errInvalidAmount": {
+    "message": "Jumlah top-up kasebut ora valid. Mangga pilih jumlah liyane."
+  },
+  "errNotFound": {
+    "message": "Iku ora ditemokake. Coba maneh."
   }
 }

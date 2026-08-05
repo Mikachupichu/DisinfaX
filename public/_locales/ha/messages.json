@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sake rarraba dukkan da'awoni a cikin wannan tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Sake bayyana dukkan da'awoni a cikin wannan tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Sake bincika wannan daʼawa",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Bincika duka"
+  },
+  "errBalanceTooLow": {
+    "message": "Ma'aunin ka ya yi ƙasa sosai. Da fatan za a caje don ci gaba."
+  },
+  "errAccountSuspended": {
+    "message": "An dakatar da asusun ka."
+  },
+  "errNotSignedIn": {
+    "message": "Ba ka shiga ba. Da fatan za a shiga sannan a sake gwadawa."
+  },
+  "errInvalidRequest": {
+    "message": "Wani bangare na wannan buƙatar bai gane ba. Tabbatar cewa ƴaƴan shafin yana da sabuntawa."
+  },
+  "errServiceUnavailable": {
+    "message": "An samu matsala a bangaren mu. Da fatan za a sake gwadawa bayan ɗan lokaci."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX bai kasance a shirye a yankinka ba tukuna saboda buƙatun ka'idoji."
+  },
+  "errInvalidAmount": {
+    "message": "Adadin caji ba daidai ba ne. Da fatan za a zaɓi adadi daban."
+  },
+  "errNotFound": {
+    "message": "Ba a samu wannan ba. Sake gwadawa."
   }
 }

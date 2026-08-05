@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Riclasifyî totes les afirmåcions di ç' tweet ci",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Rimostrer co les afirmåcions di ç' tweet ci",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Riricwerdi ciste afirmåcion",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifyî tot"
+  },
+  "errBalanceTooLow": {
+    "message": "Vosse balance est trop basse. S'i vs plait, rimplixhoz po continouwer."
+  },
+  "errAccountSuspended": {
+    "message": "Vosse conte a stî sospindou."
+  },
+  "errNotSignedIn": {
+    "message": "Vos n'estez nén elodjî. S'i vs plait, elodjîz vos et rissayîz."
+  },
+  "errInvalidRequest": {
+    "message": "Ene pårt di ç' dimande ci n' a nén stî riconoxhowe. S' i vs plait, verifyîz ki l' ecinne est mete a djoû."
+  },
+  "errServiceUnavailable": {
+    "message": "Ene aroke a arivé di nosse costé. S' i vs plait, rissayîz on pô pus lon."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX n' est nén co disponibe dins vosse redjon a cåze des egzijances di l' Etat."
+  },
+  "errInvalidAmount": {
+    "message": "Ci monteu la de rimplixhaedje n' est nén valide. S' i vs plait, tchoezixhoz on ôte monteu."
+  },
+  "errNotFound": {
+    "message": "Çoula n' a nén stî trové. Rissayîz."
   }
 }

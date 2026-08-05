@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Dib u kala saar dhammaan sheegashooyinka tweet-kan",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Dib u muuji dhammaan sheegashooyinka tweet-kan",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Dib u baar sheegashadan",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Xaqiiji dhammaan"
+  },
+  "errBalanceTooLow": {
+    "message": "Hadhaaga aad buu u yaryahay. Fadlan buuxi si aad u sii wadato."
+  },
+  "errAccountSuspended": {
+    "message": "Akoonkaaga waa la joojiyay."
+  },
+  "errNotSignedIn": {
+    "message": "Ma soo gelin. Fadlan soo gal oo mar kale isku day."
+  },
+  "errInvalidRequest": {
+    "message": "Qayb ka mid ah codsigan lama aqoonsan. Fadlan hubi in kordhinta cusboonaysiin leedahay."
+  },
+  "errServiceUnavailable": {
+    "message": "Khalad ka dhacay dhinacayaga. Fadlan mar kale isku day wax yar ka dib."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX weli kuma jiro gobolkaaga sababtoo ah shuruudaha sharciga."
+  },
+  "errInvalidAmount": {
+    "message": "Qadarkaas buuxinta ma sax ah. Fadlan dooro qadar kale."
+  },
+  "errNotFound": {
+    "message": "Taas lama helin. Mar kale isku day."
   }
 }

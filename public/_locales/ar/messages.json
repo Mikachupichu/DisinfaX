@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "إعادة تصنيف كل الادعاءات في هذه التغريدة",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "الكشف مجددًا عن كل الادعاءات في هذه التغريدة",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "إعادة بحث هذا الادعاء",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "تحقق من الكل"
+  },
+  "errBalanceTooLow": {
+    "message": "رصيدك منخفض جدًا. يُرجى إعادة الشحن للمتابعة."
+  },
+  "errAccountSuspended": {
+    "message": "تم تعليق حسابك."
+  },
+  "errNotSignedIn": {
+    "message": "لم تُسجّل الدخول. يُرجى تسجيل الدخول والمحاولة مرة أخرى."
+  },
+  "errInvalidRequest": {
+    "message": "لم يتم التعرّف على جزء من هذا الطلب. يُرجى التأكد من أن الإضافة محدّثة."
+  },
+  "errServiceUnavailable": {
+    "message": "حدث خطأ من جانبنا. يُرجى المحاولة مرة أخرى بعد قليل."
+  },
+  "errRegionNotSupported": {
+    "message": "لا تتوفّر خدمة DisinfaX بعد في منطقتك بسبب المتطلبات التنظيمية."
+  },
+  "errInvalidAmount": {
+    "message": "مبلغ الشحن هذا غير صالح. يُرجى اختيار مبلغ آخر."
+  },
+  "errNotFound": {
+    "message": "تعذّر العثور على ذلك. يُرجى المحاولة مرة أخرى."
   }
 }

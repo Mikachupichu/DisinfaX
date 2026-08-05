@@ -11,8 +11,10 @@ function normalizeForMatch(s: string): string {
     return s.toLowerCase().replace(/\s+/g, ' ').replace(/[^\w\s]/g, '').trim();
 }
 
-/** Compute the similarity ratio (0-1) between two strings by counting matching characters
- *  at the same positions after same-length alignment. */
+/** Similarity ratio (0-1) of two strings, as the fraction of positions holding the same
+ *  character. Strictly positional — there is no alignment, so a single inserted or
+ *  deleted character shifts the rest and scores low. Adequate here only because callers
+ *  compare equal-length windows of already-normalized text. */
 function similarity(a: string, b: string): number {
     const len = Math.max(a.length, b.length);
     if (len === 0) return 1;
@@ -211,18 +213,18 @@ function resolveOverlaps(matches: ClaimMatch[]): ClaimMatch[] {
  * another's text); those cases stay handled by the translate-fact-checks flow.
  */
 export function resolveHighlightRange(
-  highlight: Record<string, [number, number]> | undefined,
-  locale: string
+    highlight: Record<string, [number, number]> | undefined,
+    locale: string
 ): [number, number] | undefined {
-  if (!highlight) return undefined;
-  if (locale && highlight[locale]) return highlight[locale];
-  if (locale) {
-    const baseLang = locale.split('-')[0];
-    for (const [key, val] of Object.entries(highlight)) {
-      if (key === baseLang || key.startsWith(baseLang + '-')) return val;
+    if (!highlight) return undefined;
+    if (locale && highlight[locale]) return highlight[locale];
+    if (locale) {
+        const baseLang = locale.split('-')[0];
+        for (const [key, val] of Object.entries(highlight)) {
+            if (key === baseLang || key.startsWith(baseLang + '-')) return val;
+        }
     }
-  }
-  return undefined;
+    return undefined;
 }
 
 /**
@@ -231,61 +233,69 @@ export function resolveHighlightRange(
  * Skips fuzzy matching entirely — uses exact character positions.
  */
 export function breakupWithHighlights(
-  tweetText: string,
-  claims: Claim[],
-  locale: string
+    tweetText: string,
+    claims: Claim[],
+    locale: string
 ): TextSegment[] | null {
-  if (!tweetText || !claims || claims.length === 0) return null;
+    if (!tweetText || !claims || claims.length === 0) return null;
 
-  const matches: { claimIndex: number; start: number; end: number }[] = [];
+    const matches: ClaimMatch[] = [];
 
-  for (let i = 0; i < claims.length; i++) {
-    const highlight = claims[i].highlight;
-    if (!highlight) continue;
+    for (let i = 0; i < claims.length; i++) {
+        const highlight = claims[i].highlight;
+        if (!highlight) continue;
 
-    const range = resolveHighlightRange(highlight, locale);
-    if (!range) continue;
+        const range = resolveHighlightRange(highlight, locale);
+        if (!range) continue;
 
-    const [start, end] = range;
-    // Validate bounds
-    if (start < 0 || end > tweetText.length || start >= end) continue;
-    matches.push({ claimIndex: i, start, end });
-  }
-
-  if (matches.length === 0) return null;
-
-  // Sort by start position
-  matches.sort((a, b) => a.start - b.start);
-
-  // Build segments
-  const segments: TextSegment[] = [];
-  let cursor = 0;
-
-  for (const m of matches) {
-    // Overlap guard: never re-emit text the cursor has already passed. Two claims
-    // sharing (or overlapping) a range would otherwise slice the same text out twice,
-    // duplicating the tweet text on screen. Clamp the start to the cursor; if the whole
-    // match is already consumed by a prior claim, skip it (it's a duplicate).
-    const start = Math.max(m.start, cursor);
-    if (start >= m.end) continue;
-    if (start > cursor) {
-      segments.push({ text: tweetText.slice(cursor, start), claimIndex: null });
+        const [start, end] = range;
+        // Drop ranges that don't address real text: stored offsets come from a worker
+        // and may refer to a different revision of the tweet body.
+        if (start < 0 || end > tweetText.length || start >= end) continue;
+        matches.push({ claimIndex: i, start, end });
     }
-    segments.push({ text: tweetText.slice(start, m.end), claimIndex: m.claimIndex });
-    cursor = m.end;
-  }
 
-  if (cursor < tweetText.length) {
-    segments.push({ text: tweetText.slice(cursor), claimIndex: null });
-  }
+    if (matches.length === 0) return null;
 
-  return segments;
+    matches.sort((a, b) => a.start - b.start);
+
+    // Walk the matches in order, emitting the plain text before each one and then the
+    // match itself, then whatever trails the last match.
+    const segments: TextSegment[] = [];
+    let cursor = 0;
+
+    for (const m of matches) {
+        // Overlap guard: never re-emit text the cursor has already passed. Two claims
+        // sharing (or overlapping) a range would otherwise slice the same text out twice,
+        // duplicating the tweet text on screen. Clamp the start to the cursor; if the whole
+        // match is already consumed by a prior claim, skip it (it's a duplicate).
+        const start = Math.max(m.start, cursor);
+        if (start >= m.end) continue;
+        if (start > cursor) {
+            segments.push({ text: tweetText.slice(cursor, start), claimIndex: null });
+        }
+        segments.push({ text: tweetText.slice(start, m.end), claimIndex: m.claimIndex });
+        cursor = m.end;
+    }
+
+    if (cursor < tweetText.length) {
+        segments.push({ text: tweetText.slice(cursor), claimIndex: null });
+    }
+
+    return segments;
 }
 
+/**
+ * Build segments by locating each claim's text inside the tweet body, for the case where
+ * stored character ranges can't be used directly (see breakupWithHighlights for that
+ * faster path). Falls back through exact, whitespace-normalized, then fuzzy matching via
+ * findExactMatch, and returns null when nothing matched at all.
+ */
 export function breakupTweetText(tweetText: string, claims: Claim[]): TextSegment[] | null {
     if (!tweetText || !claims || claims.length === 0) return null;
 
     const matches: ClaimMatch[] = [];
+    /** Human-readable descriptions of claims that produced no segment, for logging. */
     const unmatched: string[] = [];
 
     for (let i = 0; i < claims.length; i++) {
@@ -294,14 +304,14 @@ export function breakupTweetText(tweetText: string, claims: Claim[]): TextSegmen
         // inline highlight onto a fragment; unlocatable claims belong ONLY in the
         // fallback box. (Located claims — incl. locale-mismatched ones re-matched here —
         // still carry a highlight under some locale key, so they're unaffected.)
-        const hl = claims[i].highlight;
-        if (!hl || Object.keys(hl).length === 0) {
+        const highlightRanges = claims[i].highlight;
+        if (!highlightRanges || Object.keys(highlightRanges).length === 0) {
             unmatched.push(`#${i + 1}: "${claims[i].text}" (no highlight range)`);
             continue;
         }
-        const pos = findExactMatch(tweetText, claims[i].text);
-        if (pos) {
-            matches.push({ claimIndex: i, start: pos.start, end: pos.end });
+        const matchRange = findExactMatch(tweetText, claims[i].text);
+        if (matchRange) {
+            matches.push({ claimIndex: i, start: matchRange.start, end: matchRange.end });
         } else {
             unmatched.push(`#${i + 1}: "${claims[i].text}"`);
         }

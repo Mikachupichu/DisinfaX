@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "I-reclassify ang tanang pangangkon niining tweeta",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Ipakita pag-usab ang tanang pangangkon niining tweeta",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Usisaa pag-usab kini nga pag-angkon",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Pamatud-i tanan"
+  },
+  "errBalanceTooLow": {
+    "message": "Ang imong balanse gamay ra kaayo. Palihug pagdugang aron makasugod."
+  },
+  "errAccountSuspended": {
+    "message": "Ang imong account gi-suspend."
+  },
+  "errNotSignedIn": {
+    "message": "Wala ka naka-sign in. Palihug pag-sign in ug sulayi pag-usab."
+  },
+  "errInvalidRequest": {
+    "message": "Ang usa ka bahin niini nga hangyo wala mailhi. Palihug siguroa nga updated ang extension."
+  },
+  "errServiceUnavailable": {
+    "message": "Adunay sayop sa among bahin. Palihug sulayi pag-usab human sa gamay nga panahon."
+  },
+  "errRegionNotSupported": {
+    "message": "Wala pa magamit ang DisinfaX sa imong rehiyon tungod sa mga rekisitos sa regulasyon."
+  },
+  "errInvalidAmount": {
+    "message": "Dili balido kana nga kantidad sa pagdugang. Palihug pilia ang laing kantidad."
+  },
+  "errNotFound": {
+    "message": "Wala nakit-an kana. Sulayi pag-usab."
   }
 }

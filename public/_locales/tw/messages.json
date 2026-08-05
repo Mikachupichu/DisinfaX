@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Toteɛ nsɛm nyinaa wɔ tweet yi mu",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Yi nsɛm nyinaa a ɛwɔ tweet yi mu adi bio",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Hwehwɛ bio asɛm yi ho",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Nhwɛ nyinaa"
+  },
+  "errBalanceTooLow": {
+    "message": "W'akontaa a aka no sua dodo. Yɛ srɛ wo koto ma ɛnkɔ so."
+  },
+  "errAccountSuspended": {
+    "message": "W'akontaa no atwa."
+  },
+  "errNotSignedIn": {
+    "message": "Wonkɔɔ akontaa mu. Yɛ srɛ wo kɔ akontaa mu na sɔ hwɛ bio."
+  },
+  "errInvalidRequest": {
+    "message": "Saa abisadeɛ yi fa bi ho no wɔnhu. Yɛ srɛ wo hwɛ sɛ mmoa no yɛ foforɔ."
+  },
+  "errServiceUnavailable": {
+    "message": "Mfomsoɔ bi asi wɔ yɛn afa. Yɛ srɛ wo sɔ hwɛ bio wɔ bere tiaa bi mu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nnya nkɔ w'mantam mu esiane mmara ho ahyɛdeɛ."
+  },
+  "errInvalidAmount": {
+    "message": "Saa sika a wode koto no nyɛ deɛ ɛfata. Yɛ srɛ wo paw sika foforɔ."
+  },
+  "errNotFound": {
+    "message": "Wɔanhu no. Sɔ hwɛ bio."
   }
 }

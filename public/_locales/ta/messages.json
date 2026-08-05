@@ -147,8 +147,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "இந்த ட்வீட்டின் அனைத்து கூற்றுகளையும் மீண்டும் வகைப்படுத்து",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "இந்த ட்வீட்டின் அனைத்து கூற்றுகளையும் மீண்டும் வெளிப்படுத்து",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "இந்த கூற்றை மீண்டும் ஆராய்",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "அனைத்தையும் சரிபார்க்கவும்"
+  },
+  "errBalanceTooLow": {
+    "message": "உங்கள் இருப்பு போதுமானதாக இல்லை. தொடர நிரப்பவும்."
+  },
+  "errAccountSuspended": {
+    "message": "உங்கள் கணக்கு நிறுத்தி வைக்கப்பட்டுள்ளது."
+  },
+  "errNotSignedIn": {
+    "message": "நீங்கள் உள்நுழையவில்லை. உள்நுழைந்து மீண்டும் முயற்சிக்கவும்."
+  },
+  "errInvalidRequest": {
+    "message": "இந்தக் கோரிக்கையில் ஏதோ ஒன்று அடையாளம் காணப்படவில்லை. நீட்டிப்பு புதுப்பித்த பதிப்பில் உள்ளதா எனச் சரிபார்க்கவும்."
+  },
+  "errServiceUnavailable": {
+    "message": "எங்கள் பக்கத்தில் ஒரு பிழை ஏற்பட்டது. சிறிது நேரத்தில் மீண்டும் முயற்சிக்கவும்."
+  },
+  "errRegionNotSupported": {
+    "message": "ஒழுங்குமுறை தேவைகள் காரணமாக DisinfaX இன்னும் உங்கள் பகுதியில் கிடைக்கவில்லை."
+  },
+  "errInvalidAmount": {
+    "message": "அந்த நிரப்பு தொகை செல்லுபடியாகாது. வேறு தொகையைத் தேர்ந்தெடுக்கவும்."
+  },
+  "errNotFound": {
+    "message": "அது கண்டுபிடிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
   }
 }

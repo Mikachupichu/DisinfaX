@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Wšě tvjerdźenja w tutym tweeće znowa klasifikować",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Wšě tvjerdźenja w tutym tweeće znowa wotkryć",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tute twjerdźenje znowa přepytać",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Wšo pruwować"
+  },
+  "errBalanceTooLow": {
+    "message": "Twój dobytk je přeco snadny. Prošu dopołń dobytk, zo by dale zaběhał."
+  },
+  "errAccountSuspended": {
+    "message": "Twoje konto bu zablokowane."
+  },
+  "errNotSignedIn": {
+    "message": "Njejsy přizjewjeny. Prošu přizjew so a spytaj hišće raz."
+  },
+  "errInvalidRequest": {
+    "message": "Dźěl tuteje naprošenja njebu spóznaty. Prošu kontrolěruj, hač rozšěrjenje je aktualne."
+  },
+  "errServiceUnavailable": {
+    "message": "Na naším boku je zmylk nastał. Prošu spytaj hišće raz za wokomik."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX hišće njeje w twojim regionje k dispoziciji přeradźenskich naprašowanjow dla."
+  },
+  "errInvalidAmount": {
+    "message": "Ta suma dopołnjenja njeje płaćiwa. Prošu wubjer druhu sumu."
+  },
+  "errNotFound": {
+    "message": "To njebu namakane. Spytaj hišće raz."
   }
 }

@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassificar tote le affirmationes in iste tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Revelar de nove tote le affirmationes in iste tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Recercar iste assertion",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verificar toto"
+  },
+  "errBalanceTooLow": {
+    "message": "Tu saldo es troppo basse. Per favor recarga pro continuar."
+  },
+  "errAccountSuspended": {
+    "message": "Tu conto ha essite suspendite."
+  },
+  "errNotSignedIn": {
+    "message": "Tu non ha aperite session. Per favor aperi session e reproba."
+  },
+  "errInvalidRequest": {
+    "message": "Un parte de iste requesta non ha essite recognoscite. Per favor verifica que le extension es actualisate."
+  },
+  "errServiceUnavailable": {
+    "message": "Un error occurreva de nostre latere. Per favor reproba post un momento."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX non es ancora disponibile in tu region debite a requisitos regulatori."
+  },
+  "errInvalidAmount": {
+    "message": "Ille montante de recarga non es valide. Per favor selige un altere montante."
+  },
+  "errNotFound": {
+    "message": "Illo non poteva esser trovate. Reproba."
   }
 }

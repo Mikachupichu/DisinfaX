@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ainisha upya madai yote katika tweet hii",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Onyesha tena madai yote katika tweet hii",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tafiti upya dai hili",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Hakiki yote"
+  },
+  "errBalanceTooLow": {
+    "message": "Salio lako ni chini sana. Tafadhali ongeza salio ili kuendelea."
+  },
+  "errAccountSuspended": {
+    "message": "Akaunti yako imesimamishwa."
+  },
+  "errNotSignedIn": {
+    "message": "Hujaingia. Tafadhali ingia na ujaribu tena."
+  },
+  "errInvalidRequest": {
+    "message": "Sehemu ya ombi hili haikutambulika. Tafadhali hakikisha kiendelezi kimesasishwa."
+  },
+  "errServiceUnavailable": {
+    "message": "Hitilafu ilitokea kwa upande wetu. Tafadhali jaribu tena baada ya muda mfupi."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX haijapatikana bado katika eneo lako kutokana na mahitaji ya udhibiti."
+  },
+  "errInvalidAmount": {
+    "message": "Kiwango hicho cha kuongeza salio si sahihi. Tafadhali chagua kiwango kingine."
+  },
+  "errNotFound": {
+    "message": "Hilo halikupatikana. Tafadhali jaribu tena."
   }
 }

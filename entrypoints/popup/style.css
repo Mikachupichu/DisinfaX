@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 @import "tailwindcss";
+
+/* Tailwind's preflight stopped setting cursor: pointer on buttons (v3.3+), so every
+   button reverts to the browser's default arrow cursor unless given cursor-pointer
+   individually. Set it once here instead of on every button in the popup. */
+button:not(:disabled) {
+  cursor: pointer;
+}

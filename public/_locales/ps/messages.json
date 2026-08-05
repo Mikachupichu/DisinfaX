@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "د دې ټویټ ټولې ادعاوې بیا طبقه‌بندي کړئ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "د دې ټویټ ټولې ادعاوې بیا افشا کړئ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "دا ادعا بیا څېړل",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "ټول تایید کړئ"
+  },
+  "errBalanceTooLow": {
+    "message": "ستاسو بیلانس ډېر ټیټ دی. د دوام لپاره مهرباني وکړئ چارج کړئ."
+  },
+  "errAccountSuspended": {
+    "message": "ستاسو حساب ځنډول شوی دی."
+  },
+  "errNotSignedIn": {
+    "message": "تاسو نه یاست ننوتلي. مهرباني وکړئ ننوځئ او بیا هڅه وکړئ."
+  },
+  "errInvalidRequest": {
+    "message": "د دې غوښتنې یوه برخه نه پیژندل شوه. ډاډ ترلاسه کړئ چې توسیع تازه ده."
+  },
+  "errServiceUnavailable": {
+    "message": "زموږ په لور کې یوه ستونزه رامنځته شوه. لږ وروسته بیا هڅه وکړئ."
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX د تنظیمي غوښتنو له امله لا هم په ستاسو سیمه کې شتون نلري."
+  },
+  "errInvalidAmount": {
+    "message": "دا د چارج مقدار سم نه دی. مهرباني وکړئ بل مقدار غوره کړئ."
+  },
+  "errNotFound": {
+    "message": "دا ونه موندل شو. بیا هڅه وکړئ."
   }
 }

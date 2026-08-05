@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "重新分類此推文中的所有論斷",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "重新顯示此推文中的所有論斷",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "重新研究此聲明",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "全部查核"
+  },
+  "errBalanceTooLow": {
+    "message": "您的餘額不足，請充值後再繼續。"
+  },
+  "errAccountSuspended": {
+    "message": "您的帳戶已被停用。"
+  },
+  "errNotSignedIn": {
+    "message": "您尚未登入，請登入後再試一次。"
+  },
+  "errInvalidRequest": {
+    "message": "此請求的部分內容無法辨識，請確認擴充功能為最新版本。"
+  },
+  "errServiceUnavailable": {
+    "message": "我們這邊發生了問題，請稍後再試一次。"
+  },
+  "errRegionNotSupported": {
+    "message": "由於法規要求，DisinfaX 目前尚未在您所在地區提供服務。"
+  },
+  "errInvalidAmount": {
+    "message": "儲值金額無效，請選擇其他金額。"
+  },
+  "errNotFound": {
+    "message": "找不到相關內容，請再試一次。"
   }
 }

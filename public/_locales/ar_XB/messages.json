@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "إعادة تصنيف جميع الادعاءات في هذه التغريدة",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "الكشف مجددًا عن جميع الادعاءات في هذه التغريدة",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "إعادة البحث في هذا الادعاء",

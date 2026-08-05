@@ -13,6 +13,10 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
  * teardown signal, backed by a generous timeout.
  */
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Claims & tweets — subscription channels + direct RPC reads
+// ─────────────────────────────────────────────────────────────────────────────
+
 /** Normalized shape of a claim delivered by build_claim_payload (Realtime),
  *  fetch_tweet_and_touch_network, or get_full_claim. Field names differ slightly
  *  across those sources; the parsers below normalize into this. */
@@ -50,6 +54,12 @@ export function hashToBytea(hexHash: string): string {
   return hexHash.startsWith('\\x') ? hexHash : `\\x${hexHash}`;
 }
 
+/** Normalize an RPC result to an array of rows. Depending on the function, Supabase
+ *  hands back a jsonb array, a single row object, or null. */
+function asRows(data: any): any[] {
+  return Array.isArray(data) ? data : (data != null ? [data] : []);
+}
+
 /** Normalize a raw claim record (build_claim_payload / get_full_claim shape) into
  *  a ClaimPayload. `claims_localized_reasoning` (Realtime/tweet fetch) and
  *  `reasoning` (get_full_claim) both map to `reasoning`. */
@@ -79,17 +89,16 @@ export async function fetchTweetAndTouchNetwork(hexHash: string): Promise<TweetF
     console.error('[realtime] fetch_tweet_and_touch_network error:', error.message);
     return null;
   }
-  // RPC returns a jsonb array; [] (or [null]) means the tweet is not in the DB.
-  const arr = Array.isArray(data) ? data : (data != null ? [data] : []);
-  const row = arr[0];
+  // An empty result (or [null]) means the tweet is not in the DB.
+  const row = asRows(data)[0];
   if (!row || !row.id) return null;
 
   const claims: ClaimPayload[] = [];
   const tweetClaims = Array.isArray(row.tweet_claims) ? row.tweet_claims : [];
-  for (const tc of tweetClaims) {
+  for (const tweetClaim of tweetClaims) {
     // Each entry: { highlight, claims: {<claim fields>} }
-    const highlight = (tc?.highlight && typeof tc.highlight === 'object') ? tc.highlight : undefined;
-    const parsed = normalizeClaimRecord(tc?.claims, highlight);
+    const highlight = (tweetClaim?.highlight && typeof tweetClaim.highlight === 'object') ? tweetClaim.highlight : undefined;
+    const parsed = normalizeClaimRecord(tweetClaim?.claims, highlight);
     if (parsed) claims.push(parsed);
   }
   return {
@@ -111,9 +120,8 @@ export async function getFullClaim(opts: { id?: string; text?: string; locale?: 
     console.error('[realtime] get_full_claim error:', error.message);
     return null;
   }
-  // Returns a SETOF row (array). Take the first.
-  const arr = Array.isArray(data) ? data : (data != null ? [data] : []);
-  const row = arr[0];
+  // get_full_claim returns a SETOF; at most one row is relevant.
+  const row = asRows(data)[0];
   return row ? normalizeClaimRecord(row) : null;
 }
 
@@ -128,9 +136,9 @@ export interface Funds {
 
 /** The balance the dashboard/notifications track is balance + hold, so moving money
  *  into a hold never changes the displayed amount. */
-export function visibleTotal(f: Funds | null | undefined): number {
-  if (!f) return 0;
-  return (Number(f.balance) || 0) + (Number(f.hold) || 0);
+export function visibleTotal(funds: Funds | null | undefined): number {
+  if (!funds) return 0;
+  return (Number(funds.balance) || 0) + (Number(funds.hold) || 0);
 }
 
 function parseFundsRow(row: any): Funds | null {
@@ -225,21 +233,76 @@ export interface SubscribeOptions {
   onDone: () => void;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared subscriptions-table channel
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Supabase Realtime manages `postgres_changes` listeners per TABLE on the server
+// side. Opening one channel per logical subscription (each filtered to its own row,
+// `id=eq.<subscriptionId>`) means every one of them registers its own listener on
+// `public.subscriptions` — and unsubscribing ANY one of them was observed to force a
+// server-side renegotiation that drops every OTHER channel still listening on that
+// same table (confirmed via logging: one channel's normal, expected DELETE+unsubscribe
+// was reliably followed by every sibling channel reporting CLOSED, one by one, with
+// the underlying socket itself staying connected throughout — a table-level listener
+// disruption, not a socket-level one). With dozens of tweets watched concurrently on
+// a busy page, this meant nearly every in-flight subscription's channel got silently
+// killed the moment any ONE of them finished, and its awaiting caller would just run
+// out its own independent timeout with nothing ever arriving.
+//
+// The fix: exactly ONE channel for this table, opened once and never removed for the
+// life of the service worker. Every logical "subscription" dispatches through it by
+// row id instead of getting its own channel — so finishing one never touches another.
+const subscriptionDispatch = new Map<string, (msg: any) => void>();
+let sharedSubscriptionsChannelReady: Promise<void> | null = null;
+// [ttft-ext] Monotonic counter stamped on every dispatch invocation, so two genuinely
+// separate deliveries of the "same" event are visibly distinct in the console instead
+// of risking DevTools collapsing identical consecutive lines into one.
+let dispatchCallCounter = 0;
+
+function ensureSharedSubscriptionsChannel(): Promise<void> {
+  if (sharedSubscriptionsChannelReady) return sharedSubscriptionsChannelReady;
+  sharedSubscriptionsChannelReady = new Promise<void>((resolve) => {
+    supabase
+      .channel('sub:shared:subscriptions')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'subscriptions' },
+        (msg: any) => {
+          const id = msg.new?.id ?? msg.old?.id;
+          if (!id) return;
+          const dispatch = subscriptionDispatch.get(id);
+          if (dispatch) {
+            try { dispatch(msg); } catch (e) { console.error('[realtime] shared channel dispatch error:', e); }
+          }
+        }
+      )
+      .subscribe((status: string) => {
+        // [ttft-ext] The one channel's status — if this ever shows CHANNEL_ERROR/
+        // TIMED_OUT/CLOSED after an initial SUBSCRIBED, every pending subscription is
+        // affected at once, unlike the old per-subscription channels.
+        console.log(`[ttft-ext] shared subscriptions channel: status ${status}`);
+        if (status === 'SUBSCRIBED') resolve();
+      });
+  });
+  return sharedSubscriptionsChannelReady;
+}
+
 /**
- * Open a Realtime channel for a freshly generated subscription id, then register
- * the subscription server-side via the `subscribe` RPC. The channel is opened
- * BEFORE the RPC so the initial burst of existing-claim payloads is never missed.
+ * Register a fresh subscription id against the shared subscriptions-table channel,
+ * then register it server-side via the `subscribe` RPC. The dispatch entry is added
+ * BEFORE the RPC call so the initial burst of existing-claim payloads is never missed.
  */
 export async function subscribeRow(opts: SubscribeOptions): Promise<SubscriptionHandle | null> {
   await ensureRealtimeAuth();
+  await ensureSharedSubscriptionsChannel();
 
   const subscriptionId = crypto.randomUUID();
   let closed = false;
   let timer: ReturnType<typeof setTimeout> | null = null;
-  let channel: RealtimeChannel | null = null;
 
-  // Resolves once the subscription is live (SUBSCRIBED + subscribe RPC sent) or has
-  // failed/closed — callers await it before fetching. Resolve-only so it never hangs.
+  // Resolves once the subscription is live (dispatch registered + subscribe RPC sent)
+  // or has failed/closed — callers await it before fetching. Resolve-only so it never hangs.
   let markReady!: () => void;
   const ready = new Promise<void>((resolve) => { markReady = resolve; });
 
@@ -247,10 +310,7 @@ export async function subscribeRow(opts: SubscribeOptions): Promise<Subscription
     if (closed) return;
     closed = true;
     if (timer) { clearTimeout(timer); timer = null; }
-    if (channel) {
-      try { supabase.removeChannel(channel); } catch { /* ignore */ }
-      channel = null;
-    }
+    subscriptionDispatch.delete(subscriptionId);
     markReady();
   };
 
@@ -260,57 +320,53 @@ export async function subscribeRow(opts: SubscribeOptions): Promise<Subscription
     try { opts.onDone(); } catch (e) { console.error('[realtime] onDone error:', e); }
   };
 
-  channel = supabase
-    .channel(`sub:${subscriptionId}`)
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'subscriptions', filter: `id=eq.${subscriptionId}` },
-      (msg: any) => {
-        if (closed) return;
-        if (msg.eventType === 'DELETE') {
-          finish();
-          return;
-        }
-        // INSERT/UPDATE: emit the payload if present.
-        const payload = msg.new?.payload;
-        if (payload) {
-          const parsed = normalizeClaimRecord(payload);
-          if (parsed) {
-            try { opts.onClaim(parsed); } catch (e) { console.error('[realtime] onClaim error:', e); }
-          }
-        }
+  subscriptionDispatch.set(subscriptionId, (msg: any) => {
+    // [ttft-ext] Every event this subscription receives, unconditionally (even once
+    // closed) — distinguishes "nothing ever arrived" from "got the DELETE teardown but
+    // never the earlier UPDATE with the payload". #${dispatchCallCounter} makes each
+    // invocation's log line unique, so two real deliveries can't visually collapse into
+    // what looks like one in the console.
+    const callNum = ++dispatchCallCounter;
+    console.log(`[ttft-ext] subscribeRow ${opts.kind} ${subscriptionId}: event ${msg.eventType} #${callNum}, closed=${closed}, hasPayload=${!!msg.new?.payload}`);
+    if (closed) return;
+    if (msg.eventType === 'DELETE') {
+      finish();
+      return;
+    }
+    // INSERT/UPDATE: emit the payload if present.
+    const payload = msg.new?.payload;
+    if (payload) {
+      const parsed = normalizeClaimRecord(payload);
+      if (parsed) {
+        try { opts.onClaim(parsed); } catch (e) { console.error('[realtime] onClaim error:', e); }
       }
-    )
-    .subscribe(async (status: string) => {
-      if (status !== 'SUBSCRIBED' || closed) return;
-      // Channel is live — now register the subscription server-side.
-      try {
-        const args: Record<string, any> = { p_subscription_id: subscriptionId };
-        if (opts.kind === 'tweet') {
-          args.p_tweet_hash = opts.hash ? hashToBytea(opts.hash) : null;
-        } else if (opts.claimId) {
-          args.p_row_id = opts.claimId;
-          args.p_table = 'claims';
-        } else {
-          args.p_claim_text = opts.claimText ?? null;
-        }
-        const { error } = await supabase.rpc('subscribe', args);
-        if (error) {
-          // "Target row not found" is expected when optimistically subscribing to a
-          // tweet/claim that isn't in the DB yet — don't treat it as a real error.
-          if (!/target row not found|not found/i.test(error.message ?? '')) {
-            console.error('[realtime] subscribe RPC error:', error.message);
-          }
-          finish();
-          return;
-        }
-        // Live and registered — callers may now fetch.
-        markReady();
-      } catch (e: any) {
-        console.error('[realtime] subscribe RPC threw:', e?.message ?? e);
-        finish();
-      }
-    });
+    }
+  });
+
+  // Shared channel is already live at this point — register server-side.
+  const args: Record<string, any> = { p_subscription_id: subscriptionId };
+  if (opts.kind === 'tweet') {
+    args.p_tweet_hash = opts.hash ? hashToBytea(opts.hash) : null;
+  } else if (opts.claimId) {
+    args.p_row_id = opts.claimId;
+    args.p_table = 'claims';
+  } else {
+    args.p_claim_text = opts.claimText ?? null;
+  }
+
+  try {
+    const { error } = await supabase.rpc('subscribe', args);
+    if (error) {
+      console.error('[realtime] subscribe RPC error:', error.message);
+      finish();
+    } else {
+      // Live and registered — callers may now fetch.
+      markReady();
+    }
+  } catch (e: any) {
+    console.error('[realtime] subscribe RPC threw:', e?.message ?? e);
+    finish();
+  }
 
   timer = setTimeout(finish, opts.timeoutMs);
 

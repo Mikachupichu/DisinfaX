@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclasificar toles afirmaciones d'esti tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Revelar otra vegada toles afirmaciones d'esti tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Volver investigar esta afirmación",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verificar too"
+  },
+  "errBalanceTooLow": {
+    "message": "El to saldu ye demasiáu baxu. Recarga pa siguir, por favor."
+  },
+  "errAccountSuspended": {
+    "message": "La to cuenta foi suspendida."
+  },
+  "errNotSignedIn": {
+    "message": "Nun tas coneutáu. Coneuta y torna a intentalo, por favor."
+  },
+  "errInvalidRequest": {
+    "message": "Una parte d'esta solicitú nun se reconoció. Asegúrate de que la estensión ta anovada, por favor."
+  },
+  "errServiceUnavailable": {
+    "message": "Asocedió un fallu pel nuesu llau. Torna a intentalo en poco tiempu, por favor."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX entá nun ta disponible na to rexón por requisitos regulatorios."
+  },
+  "errInvalidAmount": {
+    "message": "Esi importe de recarga nun ye válidu. Escueye otru importe, por favor."
+  },
+  "errNotFound": {
+    "message": "Nun se pudo alcontrar esto. Torna a intentalo."
   }
 }

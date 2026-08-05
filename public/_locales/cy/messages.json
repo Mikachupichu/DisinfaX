@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ail-ddosbarthu pob honiad yn y trydariad hwn",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Datgelu pob honiad eto yn y trydariad hwn",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Ail-ymchwilio'r hawliad hwn",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ffeithwirio popeth"
+  },
+  "errBalanceTooLow": {
+    "message": "Mae dy falans yn rhy isel. Ychwanega arian i barhau."
+  },
+  "errAccountSuspended": {
+    "message": "Mae dy gyfrif wedi'i atal."
+  },
+  "errNotSignedIn": {
+    "message": "Nid wyt wedi mewngofnodi. Mewngofnoda a cheisia eto."
+  },
+  "errInvalidRequest": {
+    "message": "Ni chafodd rhan o'r cais hwn ei chydnabod. Sicrha fod yr estyniad wedi'i ddiweddaru."
+  },
+  "errServiceUnavailable": {
+    "message": "Digwyddodd gwall ar ein rhan ni. Ceisia eto mewn ychydig."
+  },
+  "errRegionNotSupported": {
+    "message": "Nid yw DisinfaX ar gael yn dy ranbarth eto oherwydd gofynion rheoleiddiol."
+  },
+  "errInvalidAmount": {
+    "message": "Nid yw'r swm ychwanegu hwnnw'n ddilys. Dewisa swm gwahanol."
+  },
+  "errNotFound": {
+    "message": "Ni ellid dod o hyd i hynny. Ceisia eto."
   }
 }

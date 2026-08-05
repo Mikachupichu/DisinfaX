@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ñemoambue jey opaite mba'e he'i ko tweet-pe",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Ehechauka jey opaite mba'e he'i ko tweet-pe",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Ehesaʼỹijo jey ko mba'e",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ejehechakuaa opavavéva"
+  },
+  "errBalanceTooLow": {
+    "message": "Ne saldo ipyahu'i eterei. Ikatu emyenyhẽ jey ojoko hag̃ua."
+  },
+  "errAccountSuspended": {
+    "message": "Ne kuenta ojejoko."
+  },
+  "errNotSignedIn": {
+    "message": "Ndeike'ỹi. Ikatu eike ha ejapyhy jey."
+  },
+  "errInvalidRequest": {
+    "message": "Peteĩ hendáicha ko jerure ndojekuaái porãi. Ikatu ehecha kuaa upe extensión oĩ pyahu."
+  },
+  "errServiceUnavailable": {
+    "message": "Oiko peteĩ jejavy ore rembiapópe. Ikatu ejapyhy jey mbovymi aja."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ndaipóri gueteri nde rregión-pe umi léi rembiechauka rupive."
+  },
+  "errInvalidAmount": {
+    "message": "Upe víra jehepyme'ẽ ndoikói porã. Ikatu eiporavo ambue viru."
+  },
+  "errNotFound": {
+    "message": "Ndojejuhúi upéva. Ejapyhy jey."
   }
 }

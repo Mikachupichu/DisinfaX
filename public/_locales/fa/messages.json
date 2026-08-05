@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "طبقه‌بندی مجدد همهٔ ادعاهای این توییت",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "آشکارسازی مجدد همهٔ ادعاهای این توییت",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "تحقیق مجدد این ادعا",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "همه را راستی‌آزمایی کن"
+  },
+  "errBalanceTooLow": {
+    "message": "موجودی شما بسیار کم است. لطفاً برای ادامه شارژ کنید."
+  },
+  "errAccountSuspended": {
+    "message": "حساب شما تعلیق شده است."
+  },
+  "errNotSignedIn": {
+    "message": "شما وارد نشده‌اید. لطفاً وارد شوید و دوباره تلاش کنید."
+  },
+  "errInvalidRequest": {
+    "message": "بخشی از این درخواست شناسایی نشد. لطفاً بررسی کنید که افزونه به‌روز باشد."
+  },
+  "errServiceUnavailable": {
+    "message": "در سمت ما خطایی رخ داد. لطفاً کمی بعد دوباره تلاش کنید."
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX هنوز به دلیل الزامات نظارتی در منطقه شما در دسترس نیست."
+  },
+  "errInvalidAmount": {
+    "message": "مقدار شارژ واردشده معتبر نیست. لطفاً مقدار دیگری انتخاب کنید."
+  },
+  "errNotFound": {
+    "message": "موردی پیدا نشد. لطفاً دوباره تلاش کنید."
   }
 }

@@ -1,6 +1,9 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://pofekzkirnysbuqbxmvp.supabase.co';
+/** Supabase's *publishable* (anon) key. This is designed to ship in client code: it
+ *  grants no privileges by itself, and every table is gated by row-level security
+ *  policies keyed on auth.uid(). It is not a secret. */
 const supabaseAnonKey = 'sb_publishable_4ZX8ljVPNImnvcpLl60Q_g_zgOK77Ua';
 
 /** Custom storage adapter backed by chrome.storage.local so the auth session is
@@ -85,7 +88,6 @@ export function ensureRealtimeAuth(): Promise<void> {
       throw err;
     });
   }
-  // Keep the Realtime auth token in sync with refreshes / sign-in / sign-out.
   return realtimeAuthReady;
 }
 

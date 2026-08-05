@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ਇਸ ਟਵੀਟ ਦੇ ਸਾਰੇ ਦਾਅਵਿਆਂ ਨੂੰ ਮੁੜ-ਸ਼੍ਰੇਣੀਬੱਧ ਕਰੋ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "ਇਸ ਟਵੀਟ ਦੇ ਸਾਰੇ ਦਾਅਵਿਆਂ ਨੂੰ ਮੁੜ-ਪ੍ਰਗਟ ਕਰੋ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ਇਸ ਦਾਅਵੇ ਦੀ ਮੁੜ ਖੋਜ ਕਰੋ",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "ਸਭ ਦੀ ਤੱਥ ਜਾਂਚ ਕਰੋ"
+  },
+  "errBalanceTooLow": {
+    "message": "ਤੁਹਾਡਾ ਬੈਲੇਂਸ ਬਹੁਤ ਘੱਟ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਟਾਪ ਅੱਪ ਕਰੋ।"
+  },
+  "errAccountSuspended": {
+    "message": "ਤੁਹਾਡਾ ਖਾਤਾ ਮੁਅੱਤਲ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।"
+  },
+  "errNotSignedIn": {
+    "message": "ਤੁਸੀਂ ਸਾਈਨ ਇਨ ਨਹੀਂ ਹੋ। ਕਿਰਪਾ ਕਰਕੇ ਸਾਈਨ ਇਨ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "errInvalidRequest": {
+    "message": "ਇਸ ਬੇਨਤੀ ਦਾ ਕੁਝ ਹਿੱਸਾ ਪਛਾਣਿਆ ਨਹੀਂ ਗਿਆ। ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਐਕਸਟੈਂਸ਼ਨ ਅੱਪਡੇਟ ਹੈ।"
+  },
+  "errServiceUnavailable": {
+    "message": "ਸਾਡੇ ਪਾਸੇ ਤੋਂ ਇੱਕ ਗੜਬੜ ਹੋ ਗਈ। ਕਿਰਪਾ ਕਰਕੇ ਥੋੜ੍ਹੀ ਦੇਰ ਬਾਅਦ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "errRegionNotSupported": {
+    "message": "ਰੈਗੂਲੇਟਰੀ ਲੋੜਾਂ ਕਾਰਨ DisinfaX ਹਾਲੇ ਤੁਹਾਡੇ ਖੇਤਰ ਵਿੱਚ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
+  },
+  "errInvalidAmount": {
+    "message": "ਉਹ ਟਾਪ-ਅੱਪ ਰਕਮ ਜਾਇਜ਼ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਹੋਰ ਰਕਮ ਚੁਣੋ।"
+  },
+  "errNotFound": {
+    "message": "ਇਹ ਨਹੀਂ ਲੱਭਿਆ ਜਾ ਸਕਿਆ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
   }
 }

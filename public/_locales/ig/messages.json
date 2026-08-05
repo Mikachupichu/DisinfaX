@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Weghachite nhazi tweet niile na batch a",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Kpughee ọzọ nkwupụta niile nke tweet a",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Nyochaa nzọrọ a ọzọ",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Nyochaa Ihe Niile"
+  },
+  "errBalanceTooLow": {
+    "message": "Ego gị dị ala nke ukwuu. Biko gbakwunye ego iji gaa n'ihu."
+  },
+  "errAccountSuspended": {
+    "message": "Akaụntụ gị ka akwụsịtụrụ."
+  },
+  "errNotSignedIn": {
+    "message": "I banyeghị. Biko banye ma nwaa ọzọ."
+  },
+  "errInvalidRequest": {
+    "message": "Otu akụkụ nke arịrịọ a a nabataghị. Biko gbaa mbọ hụ na ngbakwunye ahụ dị ọhụrụ."
+  },
+  "errServiceUnavailable": {
+    "message": "Njehie mere n'akụkụ anyị. Biko nwaa ọzọ n'oge na-adịghị anya."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX adịghị na mpaghara gị ugbu a n'ihi iwu ndozi."
+  },
+  "errInvalidAmount": {
+    "message": "Ọnụ ahịa ntinye ego ahụ ezighi ezi. Biko họrọ ọnụ ahịa ọzọ."
+  },
+  "errNotFound": {
+    "message": "Achọtaghị nke ahụ. Nwaa ọzọ."
   }
 }

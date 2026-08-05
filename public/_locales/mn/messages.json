@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Энэ твит дэх бүх мэдэгдлийг дахин ангилах",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Энэ твит дэх бүх мэдэгдлийг дахин илчлэх",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Энэ мэдэгдлийг дахин судлах",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Бүгдийг шалгах"
+  },
+  "errBalanceTooLow": {
+    "message": "Таны үлдэгдэл хэтэрхий бага байна. Үргэлжлүүлэхийн тулд цэнэглэнэ үү."
+  },
+  "errAccountSuspended": {
+    "message": "Таны бүртгэл түр хаагдсан байна."
+  },
+  "errNotSignedIn": {
+    "message": "Та нэвтрээгүй байна. Нэвтэрч дахин оролдоно уу."
+  },
+  "errInvalidRequest": {
+    "message": "Энэ хүсэлтийн зарим хэсэг танигдсангүй. Өргөтгөл шинэчлэгдсэн эсэхийг шалгана уу."
+  },
+  "errServiceUnavailable": {
+    "message": "Бидний талд алдаа гарлаа. Хэсэг хугацааны дараа дахин оролдоно уу."
+  },
+  "errRegionNotSupported": {
+    "message": "Зохицуулалтын шаардлагаас шалтгаалан DisinfaX танай бүс нутагт одоогоор боломжгүй байна."
+  },
+  "errInvalidAmount": {
+    "message": "Тухайн цэнэглэлтийн дүн хүчингүй байна. Өөр дүн сонгоно уу."
+  },
+  "errNotFound": {
+    "message": "Үүнийг олох боломжгүй байна. Дахин оролдоно уу."
   }
 }

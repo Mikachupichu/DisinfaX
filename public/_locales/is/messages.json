@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Endurflokka allar færslur í þessum bunka",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Afhjúpa aftur allar fullyrðingar í þessu tvíti",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Endurrannsaka þessa fullyrðingu",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Staðfesta allt"
+  },
+  "errBalanceTooLow": {
+    "message": "Innistæðan þín er of lítil. Vinsamlegast greiddu inn til að halda áfram."
+  },
+  "errAccountSuspended": {
+    "message": "Reikningnum þínum hefur verið lokað tímabundið."
+  },
+  "errNotSignedIn": {
+    "message": "Þú ert ekki skráð/ur inn. Vinsamlegast skráðu þig inn og reyndu aftur."
+  },
+  "errInvalidRequest": {
+    "message": "Hluti þessarar beiðnar var ekki þekktur. Gakktu úr skugga um að viðbótin sé uppfærð."
+  },
+  "errServiceUnavailable": {
+    "message": "Villa kom upp hjá okkur. Reyndu aftur eftir smástund."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX er ekki enn í boði á þínu svæði vegna regluverks."
+  },
+  "errInvalidAmount": {
+    "message": "Þessi greiðsluupphæð er ógild. Vinsamlegast veldu aðra upphæð."
+  },
+  "errNotFound": {
+    "message": "Þetta fannst ekki. Reyndu aftur."
   }
 }

@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sokajiana indray ny filazana rehetra ao amin'ity tweet ity",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Aseho indray ny filazana rehetra ao amin'ity tweet ity",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Adihadio indray ity filazana ity",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Manamarina daholo"
+  },
+  "errBalanceTooLow": {
+    "message": "Latsaka loatra ny volanao. Azafady ampio ny volanao mba hanohizana."
+  },
+  "errAccountSuspended": {
+    "message": "Voahantona ny kaontinao."
+  },
+  "errNotSignedIn": {
+    "message": "Tsy tafiditra ianao. Azafady midira ary andramo indray."
+  },
+  "errInvalidRequest": {
+    "message": "Tsy fantatra ny ampahany amin'ity fangatahana ity. Azafadyamarino fa efa nohavaozina ny fanitarana."
+  },
+  "errServiceUnavailable": {
+    "message": "Nisy hadisoana teo amin'ny lafinay. Azafady andramo indray afaka kelikely."
+  },
+  "errRegionNotSupported": {
+    "message": "Mbola tsy misy amin'ny faritaninao ny DisinfaX noho ny fepetra ara-lalàna."
+  },
+  "errInvalidAmount": {
+    "message": "Tsy manan-kery io vola nampiana io. Azafady safidio vola hafa."
+  },
+  "errNotFound": {
+    "message": "Tsy hita izany. Andramo indray."
   }
 }

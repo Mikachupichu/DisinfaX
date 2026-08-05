@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "بۇ تۋىتتىكى بارلىق دەۋالارنى قايتا تۈرگە ئايرىش",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "بۇ تۋىتتىكى بارلىق دەۋالارنى قايتا ئاشكارىلاش",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "بۇ دەۋانى قايتا تەكشۈرۈش",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "ھەممىنى تەكشۈرۈش"
+  },
+  "errBalanceTooLow": {
+    "message": "قالدۇقىڭىز بەك ئاز. داۋاملاشتۇرۇش ئۈچۈن قايتا تولۇقلاڭ."
+  },
+  "errAccountSuspended": {
+    "message": "ھېساباتىڭىز توختىتىلدى."
+  },
+  "errNotSignedIn": {
+    "message": "سىز كىرمىدىڭىز. كىرىپ قايتا سىناڭ."
+  },
+  "errInvalidRequest": {
+    "message": "بۇ ئىلتىماسنىڭ بىر قىسمى تۇنۇلمىدى. كېڭەيتىلمىنىڭ يېڭىلانغانلىقىنى جەزملەشتۈرۈڭ."
+  },
+  "errServiceUnavailable": {
+    "message": "بىز تەرەپتە بىر خاتالىق يۈز بەردى. ئازراق ۋاقىتتىن كېيىن قايتا سىناڭ."
+  },
+  "errRegionNotSupported": {
+    "message": "تەرتىپ تەلىپى سەبەبىدىن DisinfaX تېخى رايونىڭىزدا ئىشلىتىلمەيدۇ."
+  },
+  "errInvalidAmount": {
+    "message": "بۇ تولۇقلاش سومما ئىناۋەتسىز. باشقا سومما تاللاڭ."
+  },
+  "errNotFound": {
+    "message": "بۇنى تاپالمىدى. قايتا سىناڭ."
   }
 }

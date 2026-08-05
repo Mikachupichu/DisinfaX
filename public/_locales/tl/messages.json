@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Muling uriin ang lahat ng pahayag sa tweet na ito",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Ipakita muli ang lahat ng pahayag sa tweet na ito",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Muling siyasatin ang pahayag na ito",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Suriin Lahat"
+  },
+  "errBalanceTooLow": {
+    "message": "Masyadong mababa ang balanse mo. Mag-top up para magpatuloy."
+  },
+  "errAccountSuspended": {
+    "message": "Na-suspend ang account mo."
+  },
+  "errNotSignedIn": {
+    "message": "Hindi ka naka-sign in. Mag-sign in at subukan ulit."
+  },
+  "errInvalidRequest": {
+    "message": "May bahagi ng request na hindi na-recognize. Paki-siguraduhin na updated ang extension."
+  },
+  "errServiceUnavailable": {
+    "message": "Nagkaroon ng problema sa aming panig. Subukan ulit sandali."
+  },
+  "errRegionNotSupported": {
+    "message": "Hindi pa available ang DisinfaX sa inyong rehiyon dahil sa mga regulatory requirement."
+  },
+  "errInvalidAmount": {
+    "message": "Hindi valid ang top-up amount na iyon. Pumili ng ibang amount."
+  },
+  "errNotFound": {
+    "message": "Hindi mahanap iyon. Subukan ulit."
   }
 }

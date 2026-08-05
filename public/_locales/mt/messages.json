@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ikklassifika mill-ġdid l-affermazzjonijiet kollha f'dan it-tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Uri mill-ġdid l-affermazzjonijiet kollha f'dan it-tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Irriċerka din id-dikjarazzjoni",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ivverifika kollox"
+  },
+  "errBalanceTooLow": {
+    "message": "Il-bilanċ tiegħek huwa baxx wisq. Jekk jogħġbok agħmel top-up biex tkompli."
+  },
+  "errAccountSuspended": {
+    "message": "Il-kont tiegħek ġie sospiż."
+  },
+  "errNotSignedIn": {
+    "message": "Ma inti daħħalx. Jekk jogħġbok idħol u erġa' pprova."
+  },
+  "errInvalidRequest": {
+    "message": "Parti minn din it-talba ma ġietx rikonoxxuta. Iċċekkja li l-estensjoni hija aġġornata."
+  },
+  "errServiceUnavailable": {
+    "message": "Seħħ żball min-naħa tagħna. Jekk jogħġbok erġa' pprova wara ftit."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX għadu mhux disponibbli fir-reġjun tiegħek minħabba rekwiżiti regolatorji."
+  },
+  "errInvalidAmount": {
+    "message": "Dak l-ammont ta' top-up mhux validu. Jekk jogħġbok agħżel ammont ieħor."
+  },
+  "errNotFound": {
+    "message": "Dan ma setax jinstab. Erġa' pprova."
   }
 }

@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Berrasifikatu txio honetako baieztapen guztiak",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Agerian jarri berriro txio honetako baieztapen guztiak",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Berriz ikertu erreklamazio hau",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Egiaztatu guztia"
+  },
+  "errBalanceTooLow": {
+    "message": "Zure saldoa txikiegia da. Kargatu saldoa jarraitzeko."
+  },
+  "errAccountSuspended": {
+    "message": "Zure kontua etenda dago."
+  },
+  "errNotSignedIn": {
+    "message": "Ez zaude saioa hasita. Hasi saioa eta saiatu berriro."
+  },
+  "errInvalidRequest": {
+    "message": "Eskaera honen zati bat ez da ezagutu. Ziurtatu hedapena eguneratuta dagoela."
+  },
+  "errServiceUnavailable": {
+    "message": "Errore bat gertatu da gure aldetik. Saiatu berriro pixka bat geroago."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX oraindik ez dago erregio honetan erabilgarri, araudi eskakizunak direla eta."
+  },
+  "errInvalidAmount": {
+    "message": "Kargatze-zenbateko hori ez da baliozkoa. Aukeratu beste zenbateko bat."
+  },
+  "errNotFound": {
+    "message": "Hori ezin izan da aurkitu. Saiatu berriro."
   }
 }

@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ଏହି ଟ୍ୱିଟ୍‌ର ସମସ୍ତ ଦାବିକୁ ପୁନଃଶ୍ରେଣୀକରଣ କରନ୍ତୁ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "ଏହି ଟ୍ୱିଟ୍‌ର ସମସ୍ତ ଦାବିକୁ ପୁଣି ପ୍ରକାଶ କରନ୍ତୁ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ଏହି ଦାବିକୁ ପୁନଃଗବେଷଣା କରନ୍ତୁ",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "ସମସ୍ତ ଯାଞ୍ଚ କରନ୍ତୁ"
+  },
+  "errBalanceTooLow": {
+    "message": "ତୁମର ବାଲାନ୍ସ ବହୁତ କମ୍। ଜାରି ରହିବାକୁ ଦୟାକରି ଟପ୍ ଅପ୍ କରନ୍ତୁ।"
+  },
+  "errAccountSuspended": {
+    "message": "ତୁମର ଆକାଉଣ୍ଟ ସ୍ଥଗିତ ହୋଇଛି।"
+  },
+  "errNotSignedIn": {
+    "message": "ତୁମେ ସାଇନ୍ ଇନ୍ ହୋଇନାହଁ। ଦୟାକରି ସାଇନ୍ ଇନ୍ କରି ପୁନଃ ଚେଷ୍ଟା କରନ୍ତୁ।"
+  },
+  "errInvalidRequest": {
+    "message": "ଏହି ଅନୁରୋଧର କିଛି ଅଂଶ ଚିହ୍ନଟ ହୋଇନାହିଁ। ଏକ୍ସଟେନ୍ସନ ଅପଡେଟ ଥିବା ନିଶ୍ଚିତ କରନ୍ତୁ।"
+  },
+  "errServiceUnavailable": {
+    "message": "ଆମ ପକ୍ଷରୁ ଏକ ତ୍ରୁଟି ହୋଇଛି। ଦୟାକରି କିଛି ସମୟ ପରେ ପୁନଃ ଚେଷ୍ଟା କରନ୍ତୁ।"
+  },
+  "errRegionNotSupported": {
+    "message": "ନିୟାମକ ଆବଶ୍ୟକତା ହେତୁ DisinfaX ଆପଣଙ୍କ ଅଞ୍ଚଳରେ ଏପର୍ଯ୍ୟନ୍ତ ଉପଲବ୍ଧ ନାହିଁ।"
+  },
+  "errInvalidAmount": {
+    "message": "ସେହି ଟପ୍-ଅପ୍ ପରିମାଣ ବୈଧ ନାହିଁ। ଦୟାକରି ଏକ ଭିନ୍ନ ପରିମାଣ ବାଛନ୍ତୁ।"
+  },
+  "errNotFound": {
+    "message": "ତାହା ମିଳିଲା ନାହିଁ। ପୁନଃ ଚେଷ୍ଟା କରନ୍ତୁ।"
   }
 }

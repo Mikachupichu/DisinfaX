@@ -110,8 +110,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Pārklasificēt visus tvītus šajā partijā",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Vēlreiz atklāt visus šī tvīta apgalvojumus",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Atkārtoti izpētīt šo apgalvojumu",
@@ -258,5 +258,29 @@
   },
   "factCheckAllButton": {
     "message": "Pārbaudīt visu"
+  },
+  "errBalanceTooLow": {
+    "message": "Tava atlikuma summa ir pārāk maza. Papildini kontu, lai turpinātu."
+  },
+  "errAccountSuspended": {
+    "message": "Tavs konts ir apturēts."
+  },
+  "errNotSignedIn": {
+    "message": "Tu neesi pieteicies. Pieteicies un mēģini vēlreiz."
+  },
+  "errInvalidRequest": {
+    "message": "Daļa no šī pieprasījuma netika atpazīta. Pārbaudi, vai pievienojumprogramma ir atjaunināta."
+  },
+  "errServiceUnavailable": {
+    "message": "No mūsu puses radās kļūda. Mēģini vēlreiz pēc brīža."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX pagaidām nav pieejams tavā reģionā normatīvo prasību dēļ."
+  },
+  "errInvalidAmount": {
+    "message": "Šī papildinājuma summa nav derīga. Izvēlies citu summu."
+  },
+  "errNotFound": {
+    "message": "To neizdevās atrast. Mēģini vēlreiz."
   }
 }

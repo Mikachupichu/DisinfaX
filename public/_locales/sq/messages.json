@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Riklasifiko të gjitha pretendimet në këtë tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Zbulo sërish të gjitha pretendimet në këtë tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Rihulumto këtë pretendim",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifiko gjithçka"
+  },
+  "errBalanceTooLow": {
+    "message": "Bilanci yt është shumë i ulët. Bëj rimbushje për të vazhduar."
+  },
+  "errAccountSuspended": {
+    "message": "Llogaria jote është pezulluar."
+  },
+  "errNotSignedIn": {
+    "message": "Nuk je i identifikuar. Identifikohu dhe provo përsëri."
+  },
+  "errInvalidRequest": {
+    "message": "Një pjesë e kësaj kërkese nuk u njoh. Sigurohu që shtesa është e përditësuar."
+  },
+  "errServiceUnavailable": {
+    "message": "Ndodhi një gabim nga ana jonë. Provo përsëri pas pak."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nuk është ende i disponueshëm në rajonin tënd për shkak të kërkesave rregullatore."
+  },
+  "errInvalidAmount": {
+    "message": "Ky shumë rimbushjeje nuk është e vlefshme. Zgjidh një shumë tjetër."
+  },
+  "errNotFound": {
+    "message": "Kjo nuk u gjet. Provo përsëri."
   }
 }

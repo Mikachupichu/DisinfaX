@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ongera ushyire mu byiciro ibirego byose muri iyi tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Ongera ugaragaze ibirego byose muri iyi tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Gushakisha ikindi cy'ikirego",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Genzura byose"
+  },
+  "errBalanceTooLow": {
+    "message": "Amafaranga usigaranye ni make cyane. Nyamuneka wuzuze kugira ngo ukomeze."
+  },
+  "errAccountSuspended": {
+    "message": "Konti yawe yahagaritswe."
+  },
+  "errNotSignedIn": {
+    "message": "Ntabwo winjiye. Nyamuneka injira ugerageze nanone."
+  },
+  "errInvalidRequest": {
+    "message": "Igice cy'iki gusaba ntikizwi. Nyamuneka wemeze ko porogaramu yavuguruwe."
+  },
+  "errServiceUnavailable": {
+    "message": "Habaye ikibazo ku ruhande rwacu. Nyamuneka ongera ugerageze mu kanya gato."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ntiraboneka mu karere kawe kubera ibisabwa n'amategeko."
+  },
+  "errInvalidAmount": {
+    "message": "Iyo amafaranga wongeyeho ntabwo yemewe. Nyamuneka hitamo andi mafaranga."
+  },
+  "errNotFound": {
+    "message": "Ibyo ntibyabonetse. Ongera ugerageze."
   }
 }

@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Kugadzirisa patsva zvirevo zvese mu tweet iyi",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Kuratidza patsva zvirevo zvese mu tweet iyi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Kutsvaga zvakare chirevo ichi",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ongorora zvese"
+  },
+  "errBalanceTooLow": {
+    "message": "Mari yako yakaderera kwazvo. Ndapota isa mari kuti uenderere mberi."
+  },
+  "errAccountSuspended": {
+    "message": "Akaunti yako yamiswa."
+  },
+  "errNotSignedIn": {
+    "message": "Hausiri kupinda. Ndapota pinda uye edza zvakare."
+  },
+  "errInvalidRequest": {
+    "message": "Chikamu chechikumbiro ichi hachina kuzivikanwa. Ndapota ona kuti chiwedzero chava chechinguva chino."
+  },
+  "errServiceUnavailable": {
+    "message": "Chikanganiso chaitika kudivi redu. Ndapota edza zvakare mushure mekanguva."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX haisati yave kushandiswa mudunhu rako nekuda kwezvinodiwa nemitemo."
+  },
+  "errInvalidAmount": {
+    "message": "Mari iyoyo yekuisa haina kunaka. Ndapota sarudza mari yakasiyana."
+  },
+  "errNotFound": {
+    "message": "Izvi hazvina kuwanikwa. Edza zvakare."
   }
 }

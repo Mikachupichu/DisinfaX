@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reklasifiki ĉiujn asertojn de ĉi tiu tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Remalkaŝi ĉiujn asertojn de ĉi tiu tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Reesplori ĉi tiun aserton",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Kontroli ĉion"
+  },
+  "errBalanceTooLow": {
+    "message": "Via saldo estas tro malalta. Bonvolu reŝargi por daŭrigi."
+  },
+  "errAccountSuspended": {
+    "message": "Via konto estis suspendita."
+  },
+  "errNotSignedIn": {
+    "message": "Vi ne estas ensalutinta. Bonvolu ensaluti kaj reprovi."
+  },
+  "errInvalidRequest": {
+    "message": "Parto de ĉi tiu peto ne estis rekonita. Bonvolu certigi, ke la kromprogramo estas ĝisdatigita."
+  },
+  "errServiceUnavailable": {
+    "message": "Eraro okazis ĉe nia flanko. Bonvolu reprovi post momento."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ankoraŭ ne estas disponebla en via regiono pro reguligaj postuloj."
+  },
+  "errInvalidAmount": {
+    "message": "Tiu reŝargsumo ne estas valida. Bonvolu elekti alian sumon."
+  },
+  "errNotFound": {
+    "message": "Tio ne povis esti trovita. Reprovu."
   }
 }

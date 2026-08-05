@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Bu twitdäki ähli beýanlary täzeden klassifikasiýa et",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Bu twitdäki ähli beýanlary täzeden aç",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Bu däwany täzeden gözleg geçir",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ählisini barla"
+  },
+  "errBalanceTooLow": {
+    "message": "Balansyňyz gaty pes. Dowam etmek üçin dolduryň."
+  },
+  "errAccountSuspended": {
+    "message": "Hasabyňyz togtadyldy."
+  },
+  "errNotSignedIn": {
+    "message": "Siz ulgama girmediňiz. Ulgama giriň we gaýtadan synanyşyň."
+  },
+  "errInvalidRequest": {
+    "message": "Bu sorag baradaky bir bölek tanalmady. Giňeltmäniň täzelenendigine göz ýetiriň."
+  },
+  "errServiceUnavailable": {
+    "message": "Biziň tarapymyzdan ýalňyşlyk ýüze çykdy. Az wagtdan soň gaýtadan synanyşyň."
+  },
+  "errRegionNotSupported": {
+    "message": "Kadalaşdyryş talaplary sebäpli DisinfaX heniz sebitiňizde elýeterli däl."
+  },
+  "errInvalidAmount": {
+    "message": "Bu doldurma mukdary nädogry. Başga bir mukdar saýlaň."
+  },
+  "errNotFound": {
+    "message": "Bu tapylmady. Gaýtadan synanyşyň."
   }
 }

@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassifica omnes tweets in hoc grege",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Iterum revela omnes assertiones huius tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Hanc affirmationem denuo investiga",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Omnia Recognosce"
+  },
+  "errBalanceTooLow": {
+    "message": "Ratio tua nimis parva est. Quaeso adde pecuniam ut pergas."
+  },
+  "errAccountSuspended": {
+    "message": "Ratio tua suspensa est."
+  },
+  "errNotSignedIn": {
+    "message": "Non inscriptus es. Quaeso inscribe et itera."
+  },
+  "errInvalidRequest": {
+    "message": "Pars huius postulationis non cognita est. Quaeso confirma additamentum recens esse."
+  },
+  "errServiceUnavailable": {
+    "message": "Error apud nos accidit. Quaeso itera post breve tempus."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nondum in regione tua propter necessitates ordinationis praesto est."
+  },
+  "errInvalidAmount": {
+    "message": "Summa illa additionis non valida est. Quaeso aliam summam selige."
+  },
+  "errNotFound": {
+    "message": "Id inveniri non potuit. Itera."
   }
 }

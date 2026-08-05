@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Klassifitseerige kõik selle säutsu väited ümber",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Paljastage uuesti kõik selle säutsu väited",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Uurige seda väidet uuesti",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Kontrolli kõike"
+  },
+  "errBalanceTooLow": {
+    "message": "Sinu saldo on liiga madal. Lae kontot jätkamiseks."
+  },
+  "errAccountSuspended": {
+    "message": "Sinu konto on peatatud."
+  },
+  "errNotSignedIn": {
+    "message": "Sa ei ole sisse logitud. Logi sisse ja proovi uuesti."
+  },
+  "errInvalidRequest": {
+    "message": "Osa sellest päringust ei tuvastatud. Veendu, et laiendus on ajakohane."
+  },
+  "errServiceUnavailable": {
+    "message": "Meie poolel tekkis viga. Proovi hetke pärast uuesti."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ei ole regulatiivsete nõuete tõttu veel sinu piirkonnas saadaval."
+  },
+  "errInvalidAmount": {
+    "message": "See laadimissumma ei ole kehtiv. Vali muu summa."
+  },
+  "errNotFound": {
+    "message": "Seda ei leitud. Proovi uuesti."
   }
 }

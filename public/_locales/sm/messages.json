@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Toe fa'avasega fa'amatalaga uma i lenei tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Toe fa'aalia fa'amatalaga uma i lenei tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Toe su'esu'e le tagi lea",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Siaki uma"
+  },
+  "errBalanceTooLow": {
+    "message": "E maualalo tele lau paleni. Faamolemole faaopoopo ina ia mafai ai ona faaauau."
+  },
+  "errAccountSuspended": {
+    "message": "Ua faamotu lou tautusi."
+  },
+  "errNotSignedIn": {
+    "message": "Ete lei saini ulufale. Faamolemole saini ulufale ma toe taumafai."
+  },
+  "errInvalidRequest": {
+    "message": "E leʻi iloa se vaega o lenei talosaga. Faamolemole mautinoa ua faafouina le faaopoopoga."
+  },
+  "errServiceUnavailable": {
+    "message": "Sa tupu se mea sese i le mataupu a matou. Faamolemole toe taumafai i se taimi laititi."
+  },
+  "errRegionNotSupported": {
+    "message": "E leʻi avanoa le DisinfaX i lou itulagi ona o manaoga faatonutonu."
+  },
+  "errInvalidAmount": {
+    "message": "E le aoga lena aofaiga o le faaopoopoga. Faamolemole filifili se aofaiga eseese."
+  },
+  "errNotFound": {
+    "message": "E leʻi mafai ona maua lena. Toe taumafai."
   }
 }

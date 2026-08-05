@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ចាត់ថ្នាក់ឡើងវិញនូវ tweet ទាំងអស់ក្នុងក្រុមនេះ",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "បង្ហាញការអះអាងទាំងអស់នៃ tweet នេះឡើងវិញ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ស្រាវជ្រាវឡើងវិញនូវការអះអាងនេះ",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "ត្រួតពិនិត្យទាំងអស់"
+  },
+  "errBalanceTooLow": {
+    "message": "សមតុល្យរបស់អ្នកទាបពេក។ សូមបញ្ចូលទឹកប្រាក់ដើម្បីបន្ត។"
+  },
+  "errAccountSuspended": {
+    "message": "គណនីរបស់អ្នកត្រូវបានផ្អាក។"
+  },
+  "errNotSignedIn": {
+    "message": "អ្នកមិនបានចូលទេ។ សូមចូល និងព្យាយាមម្ដងទៀត។"
+  },
+  "errInvalidRequest": {
+    "message": "ផ្នែកមួយនៃសំណើនេះមិនត្រូវបានទទួលស្គាល់ទេ។ សូមប្រាកដថាកម្មវិធីបន្ថែមទាន់សម័យ។"
+  },
+  "errServiceUnavailable": {
+    "message": "មានកំហុសនៅខាងយើង។ សូមព្យាយាមម្ដងទៀតបន្តិចទៀត។"
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX មិនទាន់អាចប្រើបានក្នុងតំបន់របស់អ្នកនៅឡើយទេ ដោយសារតម្រូវការបញ្ញត្តិ។"
+  },
+  "errInvalidAmount": {
+    "message": "ចំនួនបញ្ចូលទឹកប្រាក់នោះមិនត្រឹមត្រូវទេ។ សូមជ្រើសរើសចំនួនផ្សេង។"
+  },
+  "errNotFound": {
+    "message": "រកមិនឃើញវានោះទេ។ សូមព្យាយាមម្ដងទៀត។"
   }
 }

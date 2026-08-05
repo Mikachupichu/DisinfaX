@@ -145,8 +145,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ყველა ტვიტის ხელახალი კლასიფიკაცია ამ პარტიაში",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ამ ტვიტის ყველა მტკიცების ხელახლა გამოვლენა",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ამ მტკიცების ხელახალი კვლევა",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "ყველას შემოწმება"
+  },
+  "errBalanceTooLow": {
+    "message": "თქვენი ბალანსი ძალიან დაბალია. გასაგრძელებლად შეავსეთ ბალანსი."
+  },
+  "errAccountSuspended": {
+    "message": "თქვენი ანგარიში შეჩერებულია."
+  },
+  "errNotSignedIn": {
+    "message": "თქვენ არ ხართ შესული. გთხოვთ, შედით და კვლავ სცადოთ."
+  },
+  "errInvalidRequest": {
+    "message": "ამ მოთხოვნის ნაწილი არ იქნა ამოცნობილი. დარწმუნდით, რომ გაფართოება განახლებულია."
+  },
+  "errServiceUnavailable": {
+    "message": "ჩვენს მხრიდან წარმოიშვა შეცდომა. მოგვიანებით სცადეთ ხელახლა."
+  },
+  "errRegionNotSupported": {
+    "message": "რეგულატორული მოთხოვნების გამო DisinfaX ჯერ არ არის ხელმისაწვდომი თქვენს რეგიონში."
+  },
+  "errInvalidAmount": {
+    "message": "ეს შევსების თანხა არასწორია. აირჩიეთ სხვა თანხა."
+  },
+  "errNotFound": {
+    "message": "ეს ვერ მოიძებნა. სცადეთ ხელახლა."
   }
 }

@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reklasifye tout deklarasyon nan tweet sa a",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Revele ankò tout deklarasyon nan tweet sa a",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Re-recherch deklarasyon sa a",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifye tout"
+  },
+  "errBalanceTooLow": {
+    "message": "Balans ou tou ba. Tanpri rechaje pou kontinye."
+  },
+  "errAccountSuspended": {
+    "message": "Kont ou sispann."
+  },
+  "errNotSignedIn": {
+    "message": "Ou pa konekte. Tanpri konekte epi eseye ankò."
+  },
+  "errInvalidRequest": {
+    "message": "Yon pati nan demand sa a pa t rekonèt. Tanpri asire w ekstansyon an ajou."
+  },
+  "errServiceUnavailable": {
+    "message": "Gen yon erè ki fèt bò kote nou. Tanpri eseye ankò nan yon ti moman."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX poko disponib nan zòn ou akoz egzijans regilasyon."
+  },
+  "errInvalidAmount": {
+    "message": "Kantite rechaj sa a pa valab. Tanpri chwazi yon lòt kantite."
+  },
+  "errNotFound": {
+    "message": "Nou pa jwenn sa a. Eseye ankò."
   }
 }

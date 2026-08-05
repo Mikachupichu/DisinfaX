@@ -110,8 +110,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "이 배치의 모든 트윗 재분류",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "이 트윗의 주장을 다시 표시",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "이 주장 재연구",
@@ -258,5 +258,29 @@
   },
   "factCheckAllButton": {
     "message": "모두 팩트체크"
+  },
+  "errBalanceTooLow": {
+    "message": "잔액이 부족합니다. 계속하려면 충전해 주세요."
+  },
+  "errAccountSuspended": {
+    "message": "계정이 정지되었습니다."
+  },
+  "errNotSignedIn": {
+    "message": "로그인되어 있지 않습니다. 로그인 후 다시 시도해 주세요."
+  },
+  "errInvalidRequest": {
+    "message": "이 요청의 일부를 인식할 수 없습니다. 확장 프로그램이 최신 버전인지 확인해 주세요."
+  },
+  "errServiceUnavailable": {
+    "message": "저희 쪽에서 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "errRegionNotSupported": {
+    "message": "규제 요건으로 인해 DisinfaX는 아직 해당 지역에서 제공되지 않습니다."
+  },
+  "errInvalidAmount": {
+    "message": "해당 충전 금액이 올바르지 않습니다. 다른 금액을 선택해 주세요."
+  },
+  "errNotFound": {
+    "message": "해당 항목을 찾을 수 없습니다. 다시 시도해 주세요."
   }
 }

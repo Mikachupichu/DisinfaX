@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 
-/** Effective UI locale for the popup: the `mfLocale` test override (localStorage)
- *  first, then the browser UI language, then navigator.language. */
+/** Effective UI locale for the popup: the `mfLocale` test override first, then the
+ *  browser UI language, then navigator.language.
+ *
+ *  Unlike the relay and background — which deliberately avoid localStorage because
+ *  theirs would be the host page's — the popup runs on the extension's own origin, so
+ *  its localStorage is private to the extension and safe to read here. */
 export function getUiLocale(): string {
   try {
     const override = localStorage?.getItem?.('mfLocale');
@@ -22,21 +26,26 @@ type MsgMap = Record<string, RawMessageEntry>;
 function formatRawMessage(entry: RawMessageEntry, subs?: string[]): string {
   let msg = entry.message;
   if (entry.placeholders) {
+    // Named token: look it up, then resolve it to a substitution when the placeholder's
+    // content is itself a positional `$n` reference, or use its literal content.
     msg = msg.replace(/\$([A-Za-z0-9_]+)\$/g, (whole, name: string) => {
-      const ph = entry.placeholders?.[name.toLowerCase()];
-      if (!ph) return whole;
-      const m = /^\$(\d+)$/.exec(ph.content);
-      if (!m) return ph.content;
-      const idx = parseInt(m[1], 10) - 1;
-      return subs?.[idx] !== undefined ? subs[idx] : whole;
+      const placeholder = entry.placeholders?.[name.toLowerCase()];
+      if (!placeholder) return whole;
+      const positional = /^\$(\d+)$/.exec(placeholder.content);
+      if (!positional) return placeholder.content;
+      const index = parseInt(positional[1], 10) - 1;
+      return subs?.[index] !== undefined ? subs[index] : whole;
     });
   }
   if (subs) {
-    msg = msg.replace(/\$(\d+)/g, (whole, num: string) => {
-      const idx = parseInt(num, 10) - 1;
-      return subs[idx] !== undefined ? subs[idx] : whole;
+    // Bare positional token, e.g. `$1`. Left as written when no substitution was given.
+    msg = msg.replace(/\$(\d+)/g, (whole, position: string) => {
+      const index = parseInt(position, 10) - 1;
+      return subs[index] !== undefined ? subs[index] : whole;
     });
   }
+  // `$$` is the escape for a literal dollar sign; unescape last so it can't be
+  // mistaken for a token above.
   return msg.replace(/\$\$/g, '$');
 }
 
@@ -48,20 +57,25 @@ export function useT(): (key: string, subs?: string[]) => string {
   const [override, setOverride] = useState<MsgMap | null>(null);
 
   useEffect(() => {
-    const loc = getUiLocale();
-    let browser = 'en';
-    try { browser = (chrome as any)?.i18n?.getUILanguage?.() || 'en'; } catch { /* ignore */ }
+    const uiLocale = getUiLocale();
+    let browserLocale = 'en';
+    try { browserLocale = (chrome as any)?.i18n?.getUILanguage?.() || 'en'; } catch { /* ignore */ }
     // chrome.i18n already covers the browser locale — only load an override.
-    if (!loc || loc.split('-')[0].toLowerCase() === browser.split('-')[0].toLowerCase()) return;
-    const candidates = [loc.replace(/-/g, '_'), loc.split('-')[0]];
+    if (!uiLocale || uiLocale.split('-')[0].toLowerCase() === browserLocale.split('-')[0].toLowerCase()) return;
+    // Try the full locale first (`pt_BR`), then its base language (`pt`).
+    const candidates = [uiLocale.replace(/-/g, '_'), uiLocale.split('-')[0]];
     let cancelled = false;
     (async () => {
-      for (const c of candidates) {
+      for (const candidate of candidates) {
         try {
-          const url = (chrome as any)?.runtime?.getURL?.(`_locales/${c}/messages.json`);
+          const url = (chrome as any)?.runtime?.getURL?.(`_locales/${candidate}/messages.json`);
           if (!url) continue;
-          const res = await fetch(url);
-          if (res.ok) { const json = await res.json(); if (!cancelled) setOverride(json); return; }
+          const response = await fetch(url);
+          if (response.ok) {
+            const messages = await response.json();
+            if (!cancelled) setOverride(messages);
+            return;
+          }
         } catch { /* try next candidate */ }
       }
     })();
@@ -71,9 +85,10 @@ export function useT(): (key: string, subs?: string[]) => string {
   return (key: string, subs?: string[]): string => {
     if (override && override[key]) return formatRawMessage(override[key], subs);
     try {
-      const m = (chrome as any)?.i18n?.getMessage?.(key, subs);
-      if (m) return m;
+      const translated = (chrome as any)?.i18n?.getMessage?.(key, subs);
+      if (translated) return translated;
     } catch { /* ignore */ }
+    // Surfacing the key beats rendering an empty string when a message is missing.
     return key;
   };
 }
@@ -85,11 +100,14 @@ export function useT(): (key: string, subs?: string[]) => string {
  *   - two or more → shown as-is (e.g. "0.15", "0.1234"). */
 export function formatUsdNumber(amount: number, locale: string = getUiLocale()): string {
   const rounded = Math.round((amount + Number.EPSILON) * 10000) / 10000;
-  const trimmed = rounded.toFixed(4).replace(/0+$/, '');
-  const dot = trimmed.indexOf('.');
-  const decimals = dot === -1 ? 0 : trimmed.length - dot - 1;
-  const frac = decimals === 0 ? 0 : decimals === 1 ? 2 : decimals;
-  return new Intl.NumberFormat(locale, { minimumFractionDigits: frac, maximumFractionDigits: frac }).format(rounded);
+  // Count how many decimals actually carry information by padding to four and stripping
+  // the trailing zeros. The '.' halts the strip, so an integer leaves "23." → 0 decimals.
+  const withoutTrailingZeros = rounded.toFixed(4).replace(/0+$/, '');
+  const decimalPoint = withoutTrailingZeros.indexOf('.');
+  const significantDecimals = decimalPoint === -1 ? 0 : withoutTrailingZeros.length - decimalPoint - 1;
+  // A lone decimal reads as an unfinished price, so pad "0.1" out to "0.10".
+  const fractionDigits = significantDecimals === 0 ? 0 : significantDecimals === 1 ? 2 : significantDecimals;
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }).format(rounded);
 }
 
 /** Format a USD amount as "US$X" (string form; see formatUsdNumber for the rules). */
@@ -106,14 +124,24 @@ export function isRtl(locale: string = getUiLocale()): boolean {
   return RTL_LANGS.has(base);
 }
 
+/** Payment-processing fees deducted from a top-up: a percentage plus a flat charge. */
+const PROCESSING_FEE_RATE = 0.029;
+const PROCESSING_FEE_FLAT_USD = 0.30;
+/** Share of a top-up the service is willing to give up, fees included. Because the flat
+ *  fee weighs more on small amounts, this budget is fully consumed at $5 and only larger
+ *  top-ups have anything left over to gift. */
+const GIVEAWAY_BUDGET_PERCENT = 8.9;
+
 /** Bonus percentage gifted for a top-up amount — mirrors the create-checkout-session
  *  worker exactly. Returns 0 for $5 (and anything ≤ $5). */
 export function giftPercent(amount: number): number {
   if (!amount || amount <= 0) return 0;
-  const feeRatio = ((1 - 0.029) * amount - 0.30) / amount;
-  const feePercent = (1 - feeRatio) * 100;
-  const gainPercent = 8.9 - feePercent;
-  return Math.max(0, gainPercent);
+  // Fraction of the top-up that survives processing fees...
+  const netRatio = ((1 - PROCESSING_FEE_RATE) * amount - PROCESSING_FEE_FLAT_USD) / amount;
+  // ...so this is what the fees cost, as a percentage of the top-up.
+  const feePercent = (1 - netRatio) * 100;
+  // Whatever remains of the budget after fees becomes the user's bonus.
+  return Math.max(0, GIVEAWAY_BUDGET_PERCENT - feePercent);
 }
 
 /** Format a percentage value with up to 2 decimals, trailing zeros trimmed, in the
@@ -127,11 +155,15 @@ export function formatPercent(pct: number, locale: string = getUiLocale()): stri
 export function pickLocalized(dict: Record<string, string>, locale: string = getUiLocale()): string {
   if (!dict || typeof dict !== 'object') return '';
   const base = locale.split('-')[0].toLowerCase();
+  // 1. Exact locale match.
   if (typeof dict[locale] === 'string') return dict[locale];
-  for (const [k, v] of Object.entries(dict)) {
-    if (typeof v === 'string' && (k === base || k.toLowerCase().startsWith(base + '-') || k.toLowerCase() === base)) return v;
+  // 2. Any entry sharing the base language, regardless of region.
+  for (const [key, value] of Object.entries(dict)) {
+    const keyLower = key.toLowerCase();
+    if (typeof value === 'string' && (keyLower === base || keyLower.startsWith(base + '-'))) return value;
   }
+  // 3. English, then whatever is there, so something always renders.
   if (typeof dict.en === 'string') return dict.en;
-  const first = Object.values(dict).find(v => typeof v === 'string');
-  return (first as string) ?? '';
+  const firstAvailable = Object.values(dict).find(value => typeof value === 'string');
+  return (firstAvailable as string) ?? '';
 }

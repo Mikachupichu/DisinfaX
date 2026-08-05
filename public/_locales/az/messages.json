@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Bu tvitdəki bütün iddiaları yenidən təsnif et",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Bu tvitdəki bütün iddiaları yenidən üzə çıxar",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Bu iddianı yeniden araşdır",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Hamısını yoxla"
+  },
+  "errBalanceTooLow": {
+    "message": "Balansınız çox aşağıdır. Davam etmək üçün balansı artırın."
+  },
+  "errAccountSuspended": {
+    "message": "Hesabınız dayandırılıb."
+  },
+  "errNotSignedIn": {
+    "message": "Siz daxil olmamısınız. Zəhmət olmasa daxil olun və yenidən cəhd edin."
+  },
+  "errInvalidRequest": {
+    "message": "Bu sorğunun bir hissəsi tanınmadı. Uzantının yenilənmiş olduğuna əmin olun."
+  },
+  "errServiceUnavailable": {
+    "message": "Bizim tərəfimizdə xəta baş verdi. Bir az sonra yenidən cəhd edin."
+  },
+  "errRegionNotSupported": {
+    "message": "Tənzimləyici tələblər səbəbindən DisinfaX hələ sizin regionda mövcud deyil."
+  },
+  "errInvalidAmount": {
+    "message": "Həmin balans artırma məbləği düzgün deyil. Zəhmət olmasa başqa məbləğ seçin."
+  },
+  "errNotFound": {
+    "message": "Bu tapılmadı. Yenidən cəhd edin."
   }
 }

@@ -1,11 +1,45 @@
+/** Background service worker — the extension's pipeline coordinator.
+ *
+ *  Content scripts never talk to the network or the database. They send captured tweets
+ *  here over a long-lived "classify" port, and this worker decides what each tweet needs:
+ *  a hash lookup against the DB, a preclassification pass to find claims, research on
+ *  individual claims, translation, or highlight re-localization. Results are broadcast
+ *  back to every connected relay, which injects them into the page.
+ *
+ *  Two things shape almost all the complexity below:
+ *
+ *  1. Manifest V3 kills an idle service worker after ~30 seconds. Nothing here can be
+ *     assumed to survive between messages, so anything that must outlive a restart is
+ *     re-derived or read back from storage, and long operations hold a keep-alive.
+ *
+ *  2. Work is deduplicated aggressively. The same tweet arrives repeatedly as the user
+ *     scrolls (every timeline XHR re-sends it), and each redundant classification would
+ *     spend the user's balance. Hence the many caches, in-flight promise maps, and
+ *     "already did this" sets declared at the top of the closure — they are the
+ *     load-bearing guard against double-spending, not incidental memoization.
+ */
 import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
 import { supabase } from "../utils/supabase";
 import { findExactMatch, resolveHighlightRange } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
 import { MainTweet, Tweet } from "../data/Tweets";
+import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon } from "../utils/toolbarIcon";
+import { ERROR_CODES } from "../utils/errorCodes";
+
+// [ttft-ext] Fires once per service worker load — if this appears more than once in a
+// single test session, the service worker restarted mid-session (see the MV3 note at
+// the top of this file), dropping any Realtime channel that was open at the time.
+console.log(`[ttft-ext] background service worker (re)started at ${new Date().toISOString()}`);
+
+// [ttft-ext] Stamped onto every mergeClaimPayload log line so two genuinely separate
+// calls can't visually collapse into what looks like one in the console.
+let mergeClaimPayloadCallCounter = 0;
 
 let batchIdCounter = 0;
+/** Unique id for a batch of work originating in the background (as opposed to the
+ *  relay-supplied ids). The counter disambiguates batches created within the same
+ *  millisecond, which a timestamp alone would collide on. */
 function nextBatchId(): string {
   return `batch_${++batchIdCounter}_${Date.now()}`;
 }
@@ -44,6 +78,13 @@ function getUiLocale(): string {
 export default defineBackground(() => {
   console.log("Background service worker started.");
 
+  // ─────────────────────────────────────────────────────────────────────────
+  //  Pipeline state. All of it is per-service-worker-lifetime and rebuilt from
+  //  scratch after a restart; none of it is a source of truth (the DB is).
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /** A cached classification plus every batch that asked for it, so clearBatch() can
+   *  evict a tweet that several batches happen to share. */
   type CacheEntry = { classification: Classification; batchIds: Set<string> };
   const classificationCache = new Map<string, CacheEntry>();
   const researchCache = new Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>();
@@ -109,6 +150,9 @@ export default defineBackground(() => {
   /** Open per-claim (is_classifying) subscriptions keyed by `${tweetId}:${claimId}`. */
   const claimSubs = new Map<string, SubscriptionHandle>();
 
+  /** Store a classification under its tweet id, recording the batch that requested it.
+   *  A quoted tweet gets its own top-level cache entry too, so a later batch that shows
+   *  the quoted tweet on its own can reuse the claims already computed for it. */
   function cacheClassification(classification: Classification, batchId: string) {
     const existing = classificationCache.get(classification.id);
     if (existing) {
@@ -142,6 +186,13 @@ export default defineBackground(() => {
     }
     batchTweets.delete(batchId);
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // DB payload → UI model. The database stores claim text, reasoning and highlight
+  // ranges as locale-keyed JSONB, and different RPCs spell the same field
+  // differently; these helpers absorb that so the rest of the file sees plain
+  // strings and a single Claim shape.
+  // ─────────────────────────────────────────────────────────────────────────
 
   /** Extract the first available text value from a locale-keyed JSONB claim object.
    *  E.g. {"en": "Japan has..."} → "Japan has..." */
@@ -191,6 +242,9 @@ export default defineBackground(() => {
   }
 
   /** Extract the locale key from a DB claim JSONB object. E.g. {"en": "text"} → "en" */
+  /** The locale a JSONB claim/reasoning object is keyed under, taken as its first key.
+   *  These objects normally hold exactly one locale; 'en' is the fallback when the value
+   *  isn't a keyed object at all. */
   function getClaimLocale(claimObj: any): string {
     if (claimObj && typeof claimObj === 'object') {
       const keys = Object.keys(claimObj);
@@ -201,8 +255,8 @@ export default defineBackground(() => {
 
   /** Read the last_classification timestamp from a DB claim result, tolerating
    *  either last_classification or last_classified field names. */
-  function getLastClassification(dc: any): string | undefined {
-    return dc?.last_classification ?? dc?.last_classified;
+  function getLastClassification(dbClaim: any): string | undefined {
+    return dbClaim?.last_classification ?? dbClaim?.last_classified;
   }
 
   /** Extract reasoning as a plain text string from the DB result.
@@ -230,9 +284,9 @@ export default defineBackground(() => {
   function isReasoningEmpty(reasoning: any): boolean {
     if (reasoning === null || reasoning === undefined) return true;
     if (typeof reasoning === 'string') {
-      const s = reasoning.trim();
-      if (s === '' || s === '{}') return true;
-      try { return isReasoningEmpty(JSON.parse(s)); } catch { return false; }
+      const trimmed = reasoning.trim();
+      if (trimmed === '' || trimmed === '{}') return true;
+      try { return isReasoningEmpty(JSON.parse(trimmed)); } catch { return false; }
     }
     if (typeof reasoning === 'object') {
       return Object.values(reasoning).filter(v => typeof v === 'string' && v.trim() !== '').length === 0;
@@ -244,59 +298,61 @@ export default defineBackground(() => {
    *  get_full_claim, or a Realtime build_claim_payload) into a UI Claim. Shared by the
    *  initial pull and by live subscription merges. Adds dbClaimId (uuid) and handles
    *  is_classifying (another user is classifying → spinner + auto-replace on arrival). */
-  function payloadToClaim(dc: any, locale: string): Claim {
-    const v = Number(dc.veracity ?? 0);
-    const claimText = extractLocaleText(dc.claim, locale) || extractClaimText(dc.claim);
+  function payloadToClaim(dbClaim: any, locale: string): Claim {
+    const veracityScore = Number(dbClaim.veracity ?? 0);
+    const claimText = extractLocaleText(dbClaim.claim, locale) || extractClaimText(dbClaim.claim);
     const claimLocale = (() => {
-      if (dc.claim && typeof dc.claim === 'object' && !Array.isArray(dc.claim)) {
-        const match = Object.entries(dc.claim as Record<string, unknown>).find(([_, val]) => val === claimText);
+      if (dbClaim.claim && typeof dbClaim.claim === 'object' && !Array.isArray(dbClaim.claim)) {
+        const match = Object.entries(dbClaim.claim as Record<string, unknown>).find(([_, val]) => val === claimText);
         if (match) return match[0];
       }
-      return getClaimLocale(dc.claim);
+      return getClaimLocale(dbClaim.claim);
     })();
 
     let highlight: Record<string, [number, number]> | undefined;
-    if (dc.highlight && typeof dc.highlight === 'object') {
+    if (dbClaim.highlight && typeof dbClaim.highlight === 'object') {
       highlight = {};
-      for (const [key, val] of Object.entries(dc.highlight)) {
+      for (const [key, val] of Object.entries(dbClaim.highlight)) {
         if (Array.isArray(val) && val.length === 2) highlight[key] = val as [number, number];
       }
       if (Object.keys(highlight).length === 0) highlight = undefined;
     }
 
-    const reasoningEmpty = isReasoningEmpty(dc.reasoning);
-    const noteText = reasoningEmpty ? null : (extractReasoningText(dc.reasoning, locale) || extractReasoningText(dc.reasoning, claimLocale) || null);
+    const reasoningEmpty = isReasoningEmpty(dbClaim.reasoning);
+    const noteText = reasoningEmpty ? null : (extractReasoningText(dbClaim.reasoning, locale) || extractReasoningText(dbClaim.reasoning, claimLocale) || null);
     const reasoningLocale = (() => {
-      if (!noteText || !dc.reasoning) return dc.locale_key ?? getClaimLocale(dc.claim);
-      let reasoningObj: any = dc.reasoning;
+      if (!noteText || !dbClaim.reasoning) return dbClaim.locale_key ?? getClaimLocale(dbClaim.claim);
+      let reasoningObj: any = dbClaim.reasoning;
       if (typeof reasoningObj === 'string') {
-        try { reasoningObj = JSON.parse(reasoningObj); } catch { return dc.locale_key ?? getClaimLocale(dc.claim); }
+        try { reasoningObj = JSON.parse(reasoningObj); } catch { return dbClaim.locale_key ?? getClaimLocale(dbClaim.claim); }
       }
       if (reasoningObj && typeof reasoningObj === 'object' && !Array.isArray(reasoningObj)) {
         const match = Object.entries(reasoningObj as Record<string, unknown>).find(([_, val]) => val === noteText);
         if (match) return match[0];
       }
-      return dc.locale_key ?? getClaimLocale(dc.claim);
+      return dbClaim.locale_key ?? getClaimLocale(dbClaim.claim);
     })();
 
     const base = {
       text: claimText,
       rewritten: claimText,
-      dbClaimId: dc.id ? String(dc.id) : undefined,
-      dbClaimText: extractClaimText(dc.claim),
-      dbClaimLocale: getClaimLocale(dc.claim),
+      dbClaimId: dbClaim.id ? String(dbClaim.id) : undefined,
+      dbClaimText: extractClaimText(dbClaim.claim),
+      dbClaimLocale: getClaimLocale(dbClaim.claim),
       highlight,
       claimLocale,
       reasoningLocale,
     };
-    const verdict = Math.abs(v) < 0.2 ? "unknown" : (v > 0 ? "true" : "false");
+    // These payloads carry no separate probability, so certainty is taken as the
+    // magnitude of veracity: a score near zero means "no strong reading either way".
+    const verdict = Math.abs(veracityScore) < 0.2 ? "unknown" : (veracityScore > 0 ? "true" : "false");
 
     // Being classified by someone else right now → show existing values (if any)
     // with a spinner; the fresh result auto-replaces them when the subscription
     // delivers it (no click needed).
-    if (dc.is_classifying === true) {
+    if (dbClaim.is_classifying === true) {
       if (!reasoningEmpty && noteText) {
-        return { ...base, verdict, note: noteText, confidence: Math.abs(v), veracity: v, sources: normalizeSources(dc.sources), refreshing: true, isClassifying: true };
+        return { ...base, verdict, note: noteText, confidence: Math.abs(veracityScore), veracity: veracityScore, sources: normalizeSources(dbClaim.sources), refreshing: true, isClassifying: true };
       }
       return { ...base, verdict: "research required", note: null, confidence: undefined, veracity: undefined, sources: [], refreshing: true, isClassifying: true };
     }
@@ -308,18 +364,18 @@ export default defineBackground(() => {
 
     // Change-prone (reclassify_after passed): present on hold with cached values so
     // clicking restores them while fresh research streams.
-    if (dc.reclassify === true) {
+    if (dbClaim.reclassify === true) {
       return {
         ...base,
         verdict: "research required", note: null, confidence: undefined, veracity: undefined,
         reclassifyOnHold: true,
-        cachedVerdict: verdict, cachedNote: noteText, cachedConfidence: Math.abs(v), cachedVeracity: v,
-        cachedSources: normalizeSources(dc.sources), sources: normalizeSources(dc.sources),
+        cachedVerdict: verdict, cachedNote: noteText, cachedConfidence: Math.abs(veracityScore), cachedVeracity: veracityScore,
+        cachedSources: normalizeSources(dbClaim.sources), sources: normalizeSources(dbClaim.sources),
       };
     }
 
     // Classified.
-    return { ...base, verdict, note: noteText, confidence: Math.abs(v), veracity: v, sources: normalizeSources(dc.sources) };
+    return { ...base, verdict, note: noteText, confidence: Math.abs(veracityScore), veracity: veracityScore, sources: normalizeSources(dbClaim.sources) };
   }
 
   /** Convert a pulled/subscribed tweet's claims into a Classification for injection.
@@ -336,11 +392,11 @@ export default defineBackground(() => {
     const hasTranslation = !!tweet.translatedText && !!tweet.destinationLanguage;
     const textLocale = hasTranslation ? tweet.destinationLanguage! : tweet.sourceLanguage!;
 
-    const claims = dbClaims.map(dc => payloadToClaim(dc, locale));
+    const claims = dbClaims.map(dbClaim => payloadToClaim(dbClaim, locale));
     const quoting = tweet.quoting
       ? {
           id: tweet.quoting.id,
-          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(dc => payloadToClaim(dc, locale)) : null
+          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(dbClaim => payloadToClaim(dbClaim, locale)) : null
         }
       : null;
     return { id: tweet.id, batchId, claims, quoting, translatedLocale: tweet.destinationLanguage, translatedText: tweet.translatedText, textLocale };
@@ -448,21 +504,10 @@ export default defineBackground(() => {
    *  Also localizes highlights for the displayed tweet text locale if needed.
    *  Does NOT translate claim text or reasoning — those are gated by user actions. */
   async function reResearchDbClaims(
-    tweet: MainTweet,
     dbClaims: any[],
     classification: Classification,
-    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>,
-    locale: string
+    researchCache: Map<string, { confidence: number; veracity: number; reasoning: string; reasoningLocale?: string; sources?: Source[]; dbClaimText?: string; embedding?: number[]; lastClassification?: string; freshlyResearched?: boolean; veracity_change_duration?: string }>
   ): Promise<void> {
-    // Helper: list existing locales in a locale-keyed JSONB object.
-    const existingLocales = (obj: any): string[] => {
-      if (!obj) return [];
-      if (typeof obj === 'string') {
-        try { return Object.keys(JSON.parse(obj)); } catch { return []; }
-      }
-      if (typeof obj === 'object') return Object.keys(obj);
-      return [];
-    };
     // Reclassify check is already decided at build time in
     // dbClaimsToClassification (a reclassify=true claim is shown on hold from the
     // very first render, so it never flashes its old color then flips). Nothing to
@@ -470,19 +515,19 @@ export default defineBackground(() => {
     const propense: any[] = [];
 
     // Pre-populate researchCache so formatVerdict works immediately (use plain string reasoning, not JSONB object)
-    for (const dc of dbClaims) {
-      const cacheKey = extractClaimText(dc.claim);
+    for (const dbClaim of dbClaims) {
+      const cacheKey = extractClaimText(dbClaim.claim);
       if (!researchCache.has(cacheKey)) {
-        const sourceLocale = dc.locale_key ?? getClaimLocale(dc.claim);
-        const reasonStr = extractReasoningText(dc.reasoning, sourceLocale);
+        const sourceLocale = dbClaim.locale_key ?? getClaimLocale(dbClaim.claim);
+        const reasonStr = extractReasoningText(dbClaim.reasoning, sourceLocale);
         researchCache.set(cacheKey, {
-          confidence: Math.abs(Number(dc.veracity ?? 0)),
-          veracity: Number(dc.veracity ?? 0),
+          confidence: Math.abs(Number(dbClaim.veracity ?? 0)),
+          veracity: Number(dbClaim.veracity ?? 0),
           reasoning: reasonStr,
           reasoningLocale: sourceLocale,
-          sources: normalizeSources(dc.sources),
-          dbClaimText: extractClaimText(dc.claim),
-          lastClassification: getLastClassification(dc),
+          sources: normalizeSources(dbClaim.sources),
+          dbClaimText: extractClaimText(dbClaim.claim),
+          lastClassification: getLastClassification(dbClaim),
         });
       }
     }
@@ -493,9 +538,9 @@ export default defineBackground(() => {
     // locales and are used for Translate buttons).
     const propagateDbClaimLocale = (claims: Claim[] | null | undefined): Claim[] | null => {
       if (!claims) return claims ?? null;
-      for (const dc of dbClaims) {
-        const cacheKey = extractClaimText(dc.claim);
-        const dbClaimLocaleVal = getClaimLocale(dc.claim);
+      for (const dbClaim of dbClaims) {
+        const cacheKey = extractClaimText(dbClaim.claim);
+        const dbClaimLocaleVal = getClaimLocale(dbClaim.claim);
         claims = claims.map(cl => {
           if ((cl.dbClaimText ?? cl.text) === cacheKey) {
             return { ...cl, dbClaimLocale: dbClaimLocaleVal };
@@ -510,22 +555,14 @@ export default defineBackground(() => {
       classification.quoting = { ...classification.quoting, claims: propagateDbClaimLocale(classification.quoting.claims) };
     }
 
-    // Check if tweet has Grok translation data
-    const hasTranslation = tweet.translatedText && tweet.sourceLanguage && tweet.destinationLanguage;
-    const destLang = tweet.destinationLanguage!;
-    const sourceLang = tweet.sourceLanguage!;
-
-    // Helper: compare locales by primary language subtag (en-US == en-GB).
-    const sameLang = (a: string, b: string) => sameLanguage(a, b);
-
     // Highlight localization is NOT done here: this runs automatically on a DB hit,
     // before the user has clicked anything, and localizing charges the balance. It is
     // triggered ONLY when the user explicitly toggles X's translation (handled via the
     // SET_DISPLAYED_LOCALE path), never on load — even for a tweet X is already showing
     // translated. A DB hit is injected with whatever highlight locales it already has.
 
-    for (const dc of propense) {
-      const claimText = extractClaimText(dc.claim);
+    for (const dbClaim of propense) {
+      const claimText = extractClaimText(dbClaim.claim);
       try {
         // Put claim on hold: cache current values, set neutral state, broadcast
         const existing = classificationCache.get(classification.id);
@@ -596,12 +633,18 @@ export default defineBackground(() => {
   }
 
 
+  /** Send a classification to every connected relay and reconcile the on-hold
+   *  bookkeeping for its claims.
+   *
+   *  What goes over the wire is not always exactly what gets cached: under Fact-Check
+   *  All, claims that are queued or in flight are presented as already fact-checking so
+   *  the UI never flashes a button the user has effectively already pressed. */
   function broadcastClassification(classification: Classification) {
-    const claimSummary = classification.claims?.map(c => {
-      const rw = (c.rewritten ?? c.text).slice(0, 20);
-      const noteLang = c.note ? c.note.slice(0, 15) : 'none';
-      const hlKeys = c.highlight ? Object.keys(c.highlight).join(',') : 'none';
-      return `${rw}...=${c.confidence ?? '?'}(note:${noteLang}...,hl:${hlKeys})`;
+    const claimSummary = classification.claims?.map(claim => {
+      const shortLabel = (claim.rewritten ?? claim.text).slice(0, 20);
+      const notePreview = claim.note ? claim.note.slice(0, 15) : 'none';
+      const highlightLocales = claim.highlight ? Object.keys(claim.highlight).join(',') : 'none';
+      return `${shortLabel}...=${claim.confidence ?? '?'}(note:${notePreview}...,hl:${highlightLocales})`;
     }).join(' | ') || 'none';
     console.log(`[background] broadcasting ${classification.id} with ${activePorts.size} active port(s), claims: ${claimSummary}`);
 
@@ -612,34 +655,34 @@ export default defineBackground(() => {
     // auto-release loop still operate on the real (reclassifyOnHold) state.
     let outgoing = classification;
     if (factCheckAllTweetIds.has(classification.id)
-        && classification.claims?.some(cl => cl.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${cl.text}`))) {
+        && classification.claims?.some(claim => claim.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${claim.text}`))) {
       // Present WAITLISTED/in-flight on-hold claims as "Fact-Checking", but leave ABANDONED
       // ones (2 failed tries / 30s timeout / broke) showing their real on-hold button so the
       // user can retry — that's the visible signal the call didn't go through.
       outgoing = {
         ...classification,
-        claims: classification.claims.map(cl =>
-          cl.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${cl.text}`)
-            ? { ...cl, reclassifyOnHold: false, refreshing: true, note: null }
-            : cl
+        claims: classification.claims.map(claim =>
+          claim.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${claim.text}`)
+            ? { ...claim, reclassifyOnHold: false, refreshing: true, note: null }
+            : claim
         ),
       };
     }
-    for (const p of activePorts) {
-      try { p.postMessage({ type: "CLASSIFICATION", data: outgoing }); } catch {}
+    for (const port of activePorts) {
+      try { port.postMessage({ type: "CLASSIFICATION", data: outgoing }); } catch { /* port closed mid-broadcast */ }
     }
     // Track claims still showing a Disinfact button (reclassifyOnHold) — awaiting
     // user action. If the user clicked "Fact-Check All" for this tweet, auto-release
     // EVERY such claim (including change-prone DB claims that carry cached values),
     // not just fresh no-DB-match ones; otherwise just mark them pending.
-    for (const cl of classification.claims ?? []) {
-      if (cl.reclassifyOnHold) {
-        const key = `${classification.id}:${cl.text}`;
+    for (const claim of classification.claims ?? []) {
+      if (claim.reclassifyOnHold) {
+        const key = `${classification.id}:${claim.text}`;
         if (factCheckAllTweetIds.has(classification.id)) {
           pendingFreshResearchClaims.delete(key);
           // Add to the Fact-Check All waitlist (idempotent; skips already-queued/in-flight/
           // abandoned claims). It is admitted for research only when the balance covers its hold.
-          enqueueFactCheckClaim(classification.id, cl.text, classification.batchId, localeFromClassification(classification));
+          enqueueFactCheckClaim(classification.id, claim.text, classification.batchId, localeFromClassification());
         } else {
           pendingFreshResearchClaims.add(key);
         }
@@ -652,7 +695,7 @@ export default defineBackground(() => {
    *  textLocale — so re-research must upsert under the UI locale too, otherwise it
    *  inserts a duplicate row under a different key (e.g. "en" vs "en-US") instead of
    *  updating the existing placeholder/claim row. */
-  function localeFromClassification(_classification: Classification): string {
+  function localeFromClassification(): string {
     return getUiLocale();
   }
 
@@ -681,6 +724,14 @@ export default defineBackground(() => {
       await Promise.allSettled(pending);
     }
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Cache merging. Results arrive from several sources at once — preclassification,
+  // per-claim research, Realtime pushes, translation — each holding its own snapshot
+  // of a classification. These helpers fold an update into the freshest cached copy
+  // rather than overwriting it, which is what stops a slow path from resurrecting
+  // stale claims over a newer result.
+  // ─────────────────────────────────────────────────────────────────────────
 
   /** Merge a single claim's latest state (from a per-claim refreshClaim generator)
    *  into the freshest cached classification, then cache + broadcast the result.
@@ -761,8 +812,10 @@ export default defineBackground(() => {
     return { ...incoming, claims, quoting, reclassifyOnHold: anyOnHold || undefined };
   }
 
+  /** Post to a port, ignoring the throw that follows if the content script has since
+   *  navigated away or been torn down. A dead port is normal, not an error. */
   function safePostToPort(port: any, msg: any) {
-    try { port.postMessage(msg); } catch {}
+    try { port.postMessage(msg); } catch { /* port already closed */ }
   }
 
   /** Set any preclassified claims (verdict but no reasoning note) to "Researching..."
@@ -894,6 +947,13 @@ export default defineBackground(() => {
    *  possibly-different rewritten text) or appends it. This is inherently deduped:
    *  the same claim arriving twice (sub + pull) matches and replaces, never duplicates. */
   function mergeClaimPayload(tweetId: string, payload: ClaimPayload, locale: string) {
+    // [ttft-ext] Every subscription payload for this tweet, whether or not it ends up
+    // matching a local claim — distinguishes "no broadcast arrived" (nothing logged
+    // before an awaitClaimDbRow timeout) from "arrived but didn't match" (logged here,
+    // but no matching "UNMATCHED classified claim" error below means it DID match and
+    // dbClaimId should have been signaled).
+    const mergeCallNum = ++mergeClaimPayloadCallCounter;
+    console.log(`[ttft-ext] mergeClaimPayload ${tweetId}: payload arrived #${mergeCallNum}, id=${payload.id ?? 'none'}, is_classifying=${payload.is_classifying}`);
     let entry = classificationCache.get(tweetId);
     if (!entry) {
       // A payload arrived before the initial classification was cached — seed one.
@@ -914,9 +974,9 @@ export default defineBackground(() => {
     let idx = -1;
     if (payload.id) idx = claims.findIndex(c => c.dbClaimId === payload.id);
     if (idx < 0 && incomingRange && displayedLocale) {
-      idx = claims.findIndex(c => {
-        const r = c.highlight?.[displayedLocale];
-        return !!r && r[0] === incomingRange[0] && r[1] === incomingRange[1];
+      idx = claims.findIndex(claim => {
+        const range = claim.highlight?.[displayedLocale];
+        return !!range && range[0] === incomingRange[0] && range[1] === incomingRange[1];
       });
     }
     // Match by highlight range under ANY shared locale key — not just displayedLocale.
@@ -1054,6 +1114,13 @@ export default defineBackground(() => {
     }
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Realtime subscriptions. Research happens server-side, so results stream back over
+  // Supabase Realtime rather than being returned from a call. Every subscription here
+  // is opened BEFORE the corresponding fetch, so a result that lands between the two
+  // isn't lost; each is deduped by key and torn down on a DB DELETE or a timeout.
+  // ─────────────────────────────────────────────────────────────────────────
+
   /** Open a per-claim subscription (deduped) and resolve only once it is live
    *  (channel SUBSCRIBED + `subscribe` RPC sent). Callers await this, then fetch — so
    *  no broadcast is missed in the gap between fetching and the subscription activating. */
@@ -1064,7 +1131,7 @@ export default defineBackground(() => {
     let handleRef: SubscriptionHandle | null = null;
     const handle = await subscribeRow({
       kind: 'claim', claimId, timeoutMs: CLASSIFY_TIMEOUT_MS,
-      onClaim: (p) => mergeClaimPayload(tweetId, p, locale),
+      onClaim: (payload) => mergeClaimPayload(tweetId, payload, locale),
       onDone: () => { if (claimSubs.get(key) === handleRef) claimSubs.delete(key); },
     });
     handleRef = handle;
@@ -1092,7 +1159,7 @@ export default defineBackground(() => {
     let handleRef: SubscriptionHandle | null = null;
     const handle = await subscribeRow({
       kind: 'tweet', hash, timeoutMs,
-      onClaim: (p) => mergeClaimPayload(tweetId, p, locale),
+      onClaim: (payload) => mergeClaimPayload(tweetId, payload, locale),
       onDone: () => { if (tweetSubs.get(tweetId) === handleRef) tweetSubs.delete(tweetId); },
     });
     handleRef = handle;
@@ -1106,8 +1173,8 @@ export default defineBackground(() => {
 
   /** Kick off is_classifying watchers for any pulled claim already being classified. */
   function watchClassifyingClaims(tweetId: string, claims: ClaimPayload[] | undefined, locale: string) {
-    for (const p of claims ?? []) {
-      if (p.is_classifying && p.id) watchClassifyingClaim(tweetId, p.id, locale);
+    for (const claim of claims ?? []) {
+      if (claim.is_classifying && claim.id) watchClassifyingClaim(tweetId, claim.id, locale);
     }
   }
 
@@ -1119,8 +1186,8 @@ export default defineBackground(() => {
    *  any research launch waiting on `awaitClaimDbRow`. Idempotent; a no-op if none waits. */
   function claimDbRowSignal(tweetId: string, claimText: string) {
     const key = `${tweetId}:${claimText}`;
-    const w = claimDbRowWaiters.get(key);
-    if (w) { claimDbRowWaiters.delete(key); w.resolve(); }
+    const waiter = claimDbRowWaiters.get(key);
+    if (waiter) { claimDbRowWaiters.delete(key); waiter.resolve(); }
   }
 
   /** Resolve once the claim's DB row has been broadcast (it gained a `dbClaimId`), or after
@@ -1132,6 +1199,11 @@ export default defineBackground(() => {
     const cls = classificationCache.get(tweetId)?.classification;
     const claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
     if (claim?.dbClaimId) return Promise.resolve(); // Row already known — no wait.
+    // [ttft-ext] This is the biggest hidden-latency candidate in the research path: if the
+    // preclassify worker's DB insert (embed → match → link/insert) hasn't landed and
+    // broadcast yet, everything downstream blocks here for up to `timeoutMs`.
+    console.log(`[ttft-ext] awaitClaimDbRow ${tweetId}: dbClaimId not yet known, waiting up to ${timeoutMs}ms`);
+    const tWaitStart = performance.now();
     const key = `${tweetId}:${claimText}`;
     let waiter = claimDbRowWaiters.get(key);
     if (!waiter) {
@@ -1141,8 +1213,14 @@ export default defineBackground(() => {
       claimDbRowWaiters.set(key, waiter);
     }
     return Promise.race([
-      waiter.promise,
-      new Promise<void>(r => setTimeout(() => { claimDbRowWaiters.delete(key); r(); }, timeoutMs)),
+      waiter.promise.then(() => {
+        console.log(`[ttft-ext] awaitClaimDbRow ${tweetId}: row broadcast arrived, waited +${(performance.now() - tWaitStart).toFixed(0)}ms`);
+      }),
+      new Promise<void>(r => setTimeout(() => {
+        claimDbRowWaiters.delete(key);
+        console.log(`[ttft-ext] awaitClaimDbRow ${tweetId}: TIMED OUT after +${(performance.now() - tWaitStart).toFixed(0)}ms, proceeding anyway`);
+        r();
+      }, timeoutMs)),
     ]);
   }
 
@@ -1194,6 +1272,12 @@ export default defineBackground(() => {
     if (!isReasoningEmpty(pulled.reasoning)) return true;
     return false; // Unclassified placeholder → caller runs classify-tweets.
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // The pipeline itself: preclassification (finding claims in a tweet) and the
+  // per-batch flow that decides, for each captured tweet, whether it can be served
+  // from the DB or needs paid work.
+  // ─────────────────────────────────────────────────────────────────────────
 
   /** Run the preclassify worker for one tweet, streaming its claims into the UI and letting
    *  the worker persist the tweet + claims itself. Shared by the two paid entry points:
@@ -1335,7 +1419,17 @@ export default defineBackground(() => {
     }
   }
 
+  /** Run the full pipeline for one batch of captured tweets: hash each tweet, look it up
+   *  in the DB, and either inject the stored claims or start preclassification.
+   *
+   *  `keepAlive` is the caller's interval holding the service worker awake; this function
+   *  owns clearing it on every exit path. `xhrBatchIndex` is the tweet's position in the
+   *  originating timeline XHR, used to fetch the first few eagerly and defer the rest
+   *  until the relay reports them visible in the DOM. */
   function processFullBatch(port: any, tweets: MainTweet[], batchId: string, keepAlive: NodeJS.Timeout, localeOverride?: string | null, xhrBatchIndex?: number) {
+    // [ttft-ext] Covers the whole batch: DB hash+lookup, then either a DB-hit
+    // injection or the preclassify/research pipeline for a miss.
+    const tBatchStart = performance.now();
     (async () => {
       try {
         // Do nothing unless the extension is active (signed in AND positive balance)
@@ -1392,6 +1486,7 @@ export default defineBackground(() => {
           }
 
           const promise = (async (): Promise<Omit<HashResult, 'tweet'>> => {
+            const tFetchStart = performance.now();
             if (shouldDeferDom) {
               await waitForDom(tweet.id);
             }
@@ -1407,6 +1502,7 @@ export default defineBackground(() => {
               dbResult = await fetchDbTweet(hash);
               if (!dbResult?.success) dbMissHashes.add(hash);
             }
+            console.log(`[ttft-ext] fetchForTweet ${tweet.id}: main-tweet lookup +${(performance.now() - tFetchStart).toFixed(0)}ms`);
             let quotedHash: string | undefined;
             let quotedDbResult: any;
             if (tweet.quoting) {
@@ -1418,6 +1514,7 @@ export default defineBackground(() => {
                 quotedDbResult = await fetchDbTweet(quotedHash);
                 if (!quotedDbResult?.success) dbMissHashes.add(quotedHash);
               }
+              console.log(`[ttft-ext] fetchForTweet ${tweet.id}: +quoted-tweet lookup +${(performance.now() - tFetchStart).toFixed(0)}ms total`);
             }
             return { hash, dbResult, quotedHash, quotedDbResult };
           })();
@@ -1428,6 +1525,7 @@ export default defineBackground(() => {
         }
 
         const hashResults: HashResult[] = await Promise.all(tweets.map(fetchForTweet));
+        console.log(`[ttft-ext] batch ${batchId}: DB hash+lookup done for ${tweets.length} tweet(s) +${(performance.now() - tBatchStart).toFixed(0)}ms`);
         // Quick lookup from classification id → tweet
         const tweetById = new Map<string, MainTweet>();
         for (const r of hashResults) {
@@ -1497,19 +1595,19 @@ export default defineBackground(() => {
           // Pre-populate researchCache from the DB hit so translation callbacks can find
           // last_classification/reasoningLocale even when re-research is skipped this session.
           const allDbClaimsForCache = [...hit.dbResult.claims, ...(quotedClaims ?? [])];
-          for (const dc of allDbClaimsForCache) {
-            const cacheKey = extractClaimText(dc.claim);
-            const claimLocale = getClaimLocale(dc.claim);
-            const reasonStr = extractReasoningText(dc.reasoning, claimLocale);
+          for (const dbClaim of allDbClaimsForCache) {
+            const cacheKey = extractClaimText(dbClaim.claim);
+            const claimLocale = getClaimLocale(dbClaim.claim);
+            const reasonStr = extractReasoningText(dbClaim.reasoning, claimLocale);
             const existing = researchCache.get(cacheKey);
             researchCache.set(cacheKey, {
-              confidence: Math.abs(Number(dc.veracity ?? 0)),
-              veracity: Number(dc.veracity ?? 0),
+              confidence: Math.abs(Number(dbClaim.veracity ?? 0)),
+              veracity: Number(dbClaim.veracity ?? 0),
               reasoning: reasonStr,
               reasoningLocale: claimLocale,
-              sources: normalizeSources(dc.sources),
+              sources: normalizeSources(dbClaim.sources),
               dbClaimText: cacheKey,
-              lastClassification: getLastClassification(dc) ?? existing?.lastClassification,
+              lastClassification: getLastClassification(dbClaim) ?? existing?.lastClassification,
             });
           }
 
@@ -1530,7 +1628,7 @@ export default defineBackground(() => {
               // should not keep translating/re-localizing and writing to the DB.
               if (!reResearchedTweetIds.has(classification.id)) {
                 reResearchedTweetIds.add(classification.id);
-                await reResearchDbClaims(hit.tweet, hit.dbResult.claims, classification, researchCache, locale);
+                await reResearchDbClaims(hit.dbResult.claims, classification, researchCache);
               } else {
                 console.log(`[background] DB hit ${classification.id}: re-research already done this session, skipping`);
               }
@@ -1580,8 +1678,8 @@ export default defineBackground(() => {
           }
         }
 
-        for (const c of cached)
-          safePostToPort(port, { type: "CLASSIFICATION", data: c });
+        for (const cachedClassification of cached)
+          safePostToPort(port, { type: "CLASSIFICATION", data: cachedClassification });
 
         const allProcessed = dbHits.length + dbEmpty.length;
         if (allProcessed > 0 && uncached.length === 0) {
@@ -1617,14 +1715,19 @@ export default defineBackground(() => {
   let fundsInitPromise: Promise<void> | null = null;
 
   /** Broadcast a notification to every connected X content script. */
-  function broadcastNotification(data: { kind: 'increase' | 'decrease' | 'error'; amount?: number; text?: string }) {
-    for (const p of activePorts) {
-      try { p.postMessage({ type: 'MF_NOTIFICATION', data }); } catch { /* ignore */ }
+  function broadcastNotification(data: { kind: 'increase' | 'decrease' | 'error'; amount?: number; text?: string; code?: number }) {
+    for (const port of activePorts) {
+      try { port.postMessage({ type: 'MF_NOTIFICATION', data }); } catch { /* ignore */ }
     }
   }
 
-  function notifyError(message: string) {
-    if (message) broadcastNotification({ kind: 'error', text: message });
+  /** Surface a failure to the user as a red in-page notification. A number is a
+   *  recognized error code — the relay looks up this extension's own localized text
+   *  for it (see utils/errorCodes.ts) and ignores whatever backend wording exists.
+   *  A string is already-resolved text, shown as-is. */
+  function notifyError(messageOrCode: string | number) {
+    if (typeof messageOrCode === 'number') broadcastNotification({ kind: 'error', code: messageOrCode });
+    else if (messageOrCode) broadcastNotification({ kind: 'error', text: messageOrCode });
   }
 
   /** Push the current visible total (balance + hold) to the popup dashboard, if open. */
@@ -1635,6 +1738,10 @@ export default defineBackground(() => {
     } catch { /* no popup listening */ }
   }
 
+  /** Single entry point for every balance change, wherever it came from (Realtime push,
+   *  a one-off getFunds(), or post-checkout polling). Ordering matters here: the freeze
+   *  state is re-evaluated before the waitlist is pumped, so newly-affordable work is
+   *  only admitted once the extension is known to be active. */
   function handleFundsChange(funds: Funds) {
     fundsState = funds;
     // Balance crossing 0 (spend) or back above (top-up) toggles the freeze.
@@ -1683,6 +1790,8 @@ export default defineBackground(() => {
     return fundsInitPromise;
   }
 
+  /** Close the funds subscription and forget the cached balance, so the next
+   *  initFundsHub() starts clean. Called on sign-out. */
   function teardownFundsHub() {
     if (fundsSub) { fundsSub.close(); fundsSub = null; }
     fundsState = null;
@@ -1691,14 +1800,15 @@ export default defineBackground(() => {
   }
 
   // Surface worker/DB failures (e.g. 402 balance-too-low) as red error notifications.
-  setWorkerErrorHandler(notifyError);
+  // A recognized code takes priority — see notifyError's overload.
+  setWorkerErrorHandler(result => notifyError(result.code ?? result.text ?? ''));
 
   /** Broadcast the current "active" state to every connected content script so it
    *  can tear down injections + freeze (inactive) or resume (active). Reuses the
    *  MF_AUTH message: `signedIn` here means "extension active". */
   function broadcastActive(active: boolean) {
-    for (const p of activePorts) {
-      try { p.postMessage({ type: 'MF_AUTH', signedIn: active }); } catch { /* ignore */ }
+    for (const port of activePorts) {
+      try { port.postMessage({ type: 'MF_AUTH', signedIn: active }); } catch { /* ignore */ }
     }
   }
 
@@ -1716,7 +1826,6 @@ export default defineBackground(() => {
   // claim reverts to its on-hold button (retry affordance). Only Fact-Check All fans many
   // classifications out at once, so ONLY it uses a client WAITLIST that admits claims within the
   // balance and the per-claim HOLD the backend reserves — never dispatching one that would 402.
-  const BALANCE_LOW_MSG = "Your balance is too low.";
 
   /** Fire a single (non-fanning-out) charging AI action directly. No queue: a balance-too-low
    *  402 surfaces via reportWorkerError → workerErrorHandler (notifyError) since no interceptor
@@ -1728,7 +1837,7 @@ export default defineBackground(() => {
   /** Fire a single attributed charging AI action directly; route a balance-too-low 402 straight
    *  to the error notification (the worker calls this instead of reportWorkerError). */
   function gatedSpendAttributed(run: (onBalanceError: () => void) => Promise<void>): Promise<void> {
-    return run(() => notifyError(BALANCE_LOW_MSG)).catch(e => { console.error('[spend] action error:', e); });
+    return run(() => notifyError(ERROR_CODES.BALANCE_TOO_LOW)).catch(e => { console.error('[spend] action error:', e); });
   }
 
   // ── Fact-Check All waitlist ─────────────────────────────────────────────────
@@ -1797,6 +1906,7 @@ export default defineBackground(() => {
     pumpWaitlist();
   }
 
+  /** (Re)start the single timer guarding the Fact-Check All batch deadline. */
   function armBatchTimer(): void {
     if (factCheckBatchTimer) clearTimeout(factCheckBatchTimer);
     factCheckBatchTimer = setTimeout(onBatchTimeout, Math.max(0, factCheckBatchDeadline - Date.now()));
@@ -1807,7 +1917,7 @@ export default defineBackground(() => {
     factCheckBatchTimer = null;
     if (factCheckWaitlist.length > 0) {
       for (const item of factCheckWaitlist.splice(0, factCheckWaitlist.length)) abandonWaitingClaim(item);
-      notifyError(BALANCE_LOW_MSG);
+      notifyError(ERROR_CODES.BALANCE_TOO_LOW);
     }
     maybeEndBatch();
   }
@@ -1835,7 +1945,7 @@ export default defineBackground(() => {
     if (fundsState.balance > 0 || (Number(fundsState.hold) || 0) > 0) return;
     if (factCheckWaitlist.length === 0) return;
     for (const item of factCheckWaitlist.splice(0, factCheckWaitlist.length)) abandonWaitingClaim(item);
-    notifyError(BALANCE_LOW_MSG);
+    notifyError(ERROR_CODES.BALANCE_TOO_LOW);
     maybeEndBatch();
   }
 
@@ -1900,7 +2010,13 @@ export default defineBackground(() => {
       try {
         handled = await pullClaimBeforeClassify(classificationId, claimText, locale);
         if (!handled) {
-          for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls, () => { hitBalanceError = true; })) {
+          // Re-read fresh: pullClaimBeforeClassify may have just merged this claim's
+          // dbClaimId into the cache (via the tweet/claim subscription broadcast), and
+          // `restored` was snapshotted before that happened. Using the stale snapshot
+          // here would send classify-tweets no id, forcing its fuzzy text-match fallback
+          // — which, on a miss, inserts a duplicate claim row instead of updating this one.
+          const freshCls = classificationCache.get(classificationId)?.classification ?? restored;
+          for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, () => { hitBalanceError = true; })) {
             gotUpdate = true;
             mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId);
           }
@@ -1918,7 +2034,7 @@ export default defineBackground(() => {
             factCheckWaitlist.push({ ...item, attempts: item.attempts + 1 });
           } else {
             abandonedFactCheckKeys.add(key);
-            if (hitBalanceError) notifyError(BALANCE_LOW_MSG); // non-balance failures already notified
+            if (hitBalanceError) notifyError(ERROR_CODES.BALANCE_TOO_LOW); // non-balance failures already notified
           }
           revertClaimToOnHold(classificationId, claimText, batchId);
         }
@@ -1977,12 +2093,22 @@ export default defineBackground(() => {
   // later top-up is detected and re-activates the extension.
   let lastActive: boolean | null = null;
   let activeEvalChain: Promise<void> = Promise.resolve();
+  /** Re-evaluate whether the extension should be active (signed in AND in credit) and,
+   *  when that answer flips, either resume the content scripts or tear the pipeline down.
+   *
+   *  Serialized through activeEvalChain because sign-in and balance events can land
+   *  together; running two evaluations concurrently could otherwise interleave and leave
+   *  the relays with the wrong state. */
   function refreshActiveState() {
     activeEvalChain = activeEvalChain.then(async () => {
       const signed = await isSignedIn();
       if (signed) initFundsHub(); // ensure funds hub is up so balance is known
       const active = signed && balanceOk();
       if (lastActive === active) return;
+      // [ttft-ext] Every active/inactive flip, with the inputs that produced it — this is
+      // the ONLY path that calls clearAllPipelineState(), which wipes every open tweet/
+      // claim subscription. If this fires mid-test, that's what's killing them all at once.
+      console.log(`[ttft-ext] refreshActiveState: ${lastActive} -> ${active} (signed=${signed}, fundsState=${fundsState ? JSON.stringify(fundsState) : 'null'})`);
       lastActive = active;
       if (active) {
         broadcastActive(true);
@@ -2015,11 +2141,14 @@ export default defineBackground(() => {
   const MESSAGES_ALARM = 'mf_messages_refresh';
   const MESSAGES_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
+  /** Fetch the remote service-message list and cache it with a timestamp. Returns an
+   *  empty list on any failure — these messages are advisory, so a fetch error must not
+   *  surface to the user. */
   async function fetchAndStoreMessages(): Promise<any[]> {
     try {
-      const res = await fetch(MESSAGES_URL);
-      if (!res.ok) return [];
-      const data = await res.json();
+      const response = await fetch(MESSAGES_URL);
+      if (!response.ok) return [];
+      const data = await response.json();
       const list = Array.isArray(data) ? data : [];
       await browser.storage.local.set({ mf_messages: list, mf_messages_at: Date.now() });
       return list;
@@ -2029,11 +2158,12 @@ export default defineBackground(() => {
     }
   }
 
+  /** Service messages for the popup, from cache when recent enough, otherwise refetched. */
   async function getMessagesFresh(): Promise<any[]> {
     const stored = await browser.storage.local.get(['mf_messages', 'mf_messages_at']);
-    const at = typeof stored.mf_messages_at === 'number' ? stored.mf_messages_at : 0;
+    const fetchedAt = typeof stored.mf_messages_at === 'number' ? stored.mf_messages_at : 0;
     const cached = Array.isArray(stored.mf_messages) ? stored.mf_messages : null;
-    if (cached && Date.now() - at < MESSAGES_MAX_AGE_MS) return cached;
+    if (cached && Date.now() - fetchedAt < MESSAGES_MAX_AGE_MS) return cached;
     return await fetchAndStoreMessages();
   }
 
@@ -2053,28 +2183,34 @@ export default defineBackground(() => {
   // tweets with no page reload. Belt-and-suspenders alongside the realtime push
   // (which can lag or be missed if the MV3 worker idled). balanceOk() still gates, so
   // this can only ever RESUME on a real positive balance — never bypass the freeze.
+  /** After a checkout returns, poll for the credit instead of trusting Realtime alone:
+   *  Stripe's webhook lands asynchronously, and the funds subscription may have been torn
+   *  down while the balance sat at zero. Gives up after ~16s and lets Realtime take over. */
   async function pollFundsAfterCheckout() {
-    for (let i = 0; i < 8; i++) {
-      await new Promise(r => setTimeout(r, 2000));
+    for (let attempt = 0; attempt < 8; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
       try {
-        const f = await getFunds();
-        if (f) {
-          handleFundsChange(f);
-          if (f.balance > 0) return; // credited → tabs resumed; stop polling
+        const funds = await getFunds();
+        if (funds) {
+          handleFundsChange(funds);
+          if (funds.balance > 0) return; // credited → tabs resumed; stop polling
         }
       } catch (e) { console.error('[background] pollFundsAfterCheckout error:', e); }
     }
   }
 
   // ── Stripe checkout: open the checkout tab and close it on redirect to disinfax.app ──
+  /** Open Stripe checkout in a new tab and close it again once it redirects back to
+   *  disinfax.app, then poll for the credit. Watching for the redirect is what lets the
+   *  user land back where they started instead of on a stranded success page. */
   function openCheckoutTab(url: string) {
     Promise.resolve(browser.tabs.create({ url })).then((tab: any) => {
       const tabId = tab?.id;
       if (tabId == null) return;
       const onUpdated = (updatedTabId: number, changeInfo: any) => {
         if (updatedTabId !== tabId) return;
-        const u: string | undefined = changeInfo?.url;
-        if (u && /:\/\/(www\.)?disinfax\.app\b/i.test(u)) {
+        const updatedUrl: string | undefined = changeInfo?.url;
+        if (updatedUrl && /:\/\/(www\.)?disinfax\.app\b/i.test(updatedUrl)) {
           cleanup();
           try { browser.tabs.remove(tabId); } catch { /* already gone */ }
           pollFundsAfterCheckout();
@@ -2090,14 +2226,20 @@ export default defineBackground(() => {
     }).catch((e: any) => console.error('[background] openCheckoutTab error:', e));
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Message entry points. One-off requests (popup) arrive on runtime.onMessage;
+  // the content-script relay instead holds a long-lived "classify" port, because
+  // classification results stream back over time rather than as a single reply.
+  // ─────────────────────────────────────────────────────────────────────────
+
   // Popup ↔ background messaging (balance, messages, checkout).
   browser.runtime.onMessage.addListener((message: any, _sender: any, sendResponse: (r: any) => void) => {
     if (message?.type === 'MF_FUNDS_GET') {
       (async () => {
         await initFundsHub();
         if (!fundsState) {
-          const f = await getFunds();
-          if (f) handleFundsChange(f);
+          const funds = await getFunds();
+          if (funds) handleFundsChange(funds);
         }
         sendResponse({ total: fundsState ? visibleTotal(fundsState) : null });
       })();
@@ -2114,13 +2256,27 @@ export default defineBackground(() => {
       openCheckoutTab(message.url);
       return undefined; // no response
     }
+    // A DOM context (popup or relay) reported the browser's dark/light preference;
+    // the service worker cannot read it itself. See utils/toolbarIcon.ts.
+    if (message?.type === COLOR_SCHEME_MESSAGE && typeof message.prefersDark === 'boolean') {
+      void applyToolbarIcon(message.prefersDark);
+      return undefined; // no response
+    }
     return undefined;
   });
+
+  // Restore the last known toolbar icon variant; until a DOM context reports in,
+  // the neutral gray manifest icon stands in.
+  void restoreToolbarIcon();
 
   browser.runtime.onConnect.addListener(port => {
     if (port.name !== "classify") return;
     activePorts.add(port);
-    port.onDisconnect.addListener(() => activePorts.delete(port));
+    console.log(`[background] port connected, activePorts now ${activePorts.size}`);
+    port.onDisconnect.addListener(() => {
+      activePorts.delete(port);
+      console.log(`[background] port disconnected, activePorts now ${activePorts.size}`);
+    });
 
     // Tell the freshly-connected content script the current active state so a relay
     // that loaded (or reconnected after a service-worker restart) while inactive
@@ -2301,7 +2457,11 @@ export default defineBackground(() => {
             // but never short-circuit on an existing result — replacing it IS the request.
             handled = await pullClaimBeforeClassify(classificationId, claimText, msgLocale ?? getUiLocale(), true);
             if (!handled) {
-              for await (const updated of refreshClaim(classification, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls, onBalanceError)) {
+              // Re-read fresh: see the comment at the admitFactCheckClaim call site —
+              // pullClaimBeforeClassify may have just merged a dbClaimId in that this
+              // stale `classification` snapshot doesn't have yet.
+              const freshCls = classificationCache.get(classificationId)?.classification ?? classification;
+              for await (const updated of refreshClaim(freshCls, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls, onBalanceError)) {
                 gotUpdate = true;
                 mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
               }
@@ -2411,7 +2571,11 @@ export default defineBackground(() => {
             try {
               handled = await pullClaimBeforeClassify(classificationId, claimText, locale);
               if (!handled) {
-                for await (const updated of refreshClaim(pipelineRestored, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
+                // Re-read fresh: see the comment at the admitFactCheckClaim call site —
+                // pullClaimBeforeClassify may have just merged a dbClaimId in that this
+                // stale `pipelineRestored` snapshot doesn't have yet.
+                const freshCls = classificationCache.get(classificationId)?.classification ?? pipelineRestored;
+                for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
                   gotUpdate = true;
                   mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
                 }
@@ -2485,7 +2649,11 @@ export default defineBackground(() => {
           try {
             handled = await pullClaimBeforeClassify(classificationId, claimText, locale);
             if (!handled) {
-              for await (const updated of refreshClaim(restored, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
+              // Re-read fresh: see the comment at the admitFactCheckClaim call site —
+              // pullClaimBeforeClassify may have just merged a dbClaimId in that this
+              // stale `restored` snapshot doesn't have yet.
+              const freshCls = classificationCache.get(classificationId)?.classification ?? restored;
+              for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
                 gotUpdate = true;
                 mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
               }
@@ -2546,7 +2714,7 @@ export default defineBackground(() => {
         // highlights + re-researches for the newly-displayed locale.
         reResearchedTweetIds.add(tweetId);
         if (dbEntry && dbClaims) {
-          reResearchDbClaims(dbEntry.tweet, dbClaims, unheld, researchCache, locale)
+          reResearchDbClaims(dbClaims, unheld, researchCache)
             .catch(e => console.error('[TRANSLATE_FACT_CHECKS] reResearch error:', e));
         }
         return;
@@ -2578,7 +2746,7 @@ export default defineBackground(() => {
           // Pull last_classification from the cached DB hit so the worker can guard
           // against stale translations overwriting freshly-reclassified claims.
           const dbEntry = dbHitCache.get(classificationId);
-          const dbClaim = dbEntry?.dbClaims.find(dc => extractClaimText(dc.claim) === cacheKey);
+          const dbClaim = dbEntry?.dbClaims.find(candidate => extractClaimText(candidate.claim) === cacheKey);
           const lastClassification = getLastClassification(dbClaim);
           if (!researchCache.has(cacheKey)) {
             researchCache.set(cacheKey, {
@@ -2617,7 +2785,7 @@ export default defineBackground(() => {
           const canonicalClaimText = claim.dbClaimText ?? claimText;
           console.log(`[background] TRANSLATE_CLAIM: translating claim for "${claimText.slice(0, 40)}..." from ${claim.claimLocale} to ${locale}, dbClaimText=${claim.dbClaimText}, canonical=${canonicalClaimText.slice(0, 40)}`);
           const dbEntry = dbHitCache.get(classificationId);
-          const dbClaim = dbEntry?.dbClaims.find(dc => extractClaimText(dc.claim) === canonicalClaimText);
+          const dbClaim = dbEntry?.dbClaims.find(candidate => extractClaimText(candidate.claim) === canonicalClaimText);
           const lastClassification = getLastClassification(dbClaim);
           if (!researchCache.has(canonicalClaimText)) {
             researchCache.set(canonicalClaimText, {
@@ -2630,7 +2798,7 @@ export default defineBackground(() => {
             });
           }
           gatedSpend(() => backgroundTranslateClaim(
-            canonicalClaimText, claim.rewritten!,
+            canonicalClaimText,
             claim.claimLocale!, locale, classification, researchCache,
             (upd: Classification) => {
               upd.batchId = classification.batchId;
@@ -2653,8 +2821,7 @@ export default defineBackground(() => {
       }
 
       if (message.type === "SET_DISPLAYED_LOCALE") {
-        const { tweetId, textLocale: requestedLocale, locale: msgLocale } = message.data;
-        const effectiveUiLocale = msgLocale ?? getUiLocale();
+        const { tweetId, textLocale: requestedLocale } = message.data;
         const hit = classificationCache.get(tweetId);
         if (!hit) {
           console.log(`[background] SET_DISPLAYED_LOCALE: no cached classification for ${tweetId}`);

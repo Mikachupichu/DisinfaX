@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Осы топтағы барлық твиттерді қайта жіктеу",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Осы твиттегі барлық мәлімдемелерді қайта ашу",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Бұл мәлімдемені қайта зерттеу",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Барлығын тексеру"
+  },
+  "errBalanceTooLow": {
+    "message": "Балансыңыз тым төмен. Жалғастыру үшін толықтырыңыз."
+  },
+  "errAccountSuspended": {
+    "message": "Есептік жазбаңыз тоқтатылды."
+  },
+  "errNotSignedIn": {
+    "message": "Сіз жүйеге кірмегенсіз. Жүйеге кіріп, қайталап көріңіз."
+  },
+  "errInvalidRequest": {
+    "message": "Осы сұраудың бір бөлігі танылмады. Кеңейтімнің жаңартылғанына көз жеткізіңіз."
+  },
+  "errServiceUnavailable": {
+    "message": "Біздің жағымыздан қате орын алды. Сәлден кейін қайталап көріңіз."
+  },
+  "errRegionNotSupported": {
+    "message": "Реттеуші талаптарға байланысты DisinfaX сіздің аймағыңызда әлі қолжетімсіз."
+  },
+  "errInvalidAmount": {
+    "message": "Бұл толықтыру сомасы жарамсыз. Басқа сома таңдаңыз."
+  },
+  "errNotFound": {
+    "message": "Бұл табылмады. Қайталап көріңіз."
   }
 }

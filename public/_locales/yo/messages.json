@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Tún tò gbogbo àwọn àlàyé nínú tweet yìí",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Tún fi gbogbo àwọn àlàyé nínú tweet yìí hàn",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tún ṣe iwadii ẹ̀sùn yìí",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ṣàyẹ̀wò Gbogbo"
+  },
+  "errBalanceTooLow": {
+    "message": "Iye owó rẹ kéré jù. Jọ̀wọ́ ṣàfikún owó láti tẹ̀ síwájú."
+  },
+  "errAccountSuspended": {
+    "message": "A ti dá àkọọ́lẹ̀ rẹ dúró."
+  },
+  "errNotSignedIn": {
+    "message": "O kò ti wọlé. Jọ̀wọ́ wọlé kí o sì tún gbìyànjú."
+  },
+  "errInvalidRequest": {
+    "message": "Apá kan ìbéèrè yìí kò ní mọ̀. Jọ̀wọ́ rí i dájú pé ìfikún náà ti wà ní ìmúdójúìwọ̀n."
+  },
+  "errServiceUnavailable": {
+    "message": "Àṣìṣe kan ṣẹlẹ̀ ní ẹ̀gbẹ́ wa. Jọ̀wọ́ tún gbìyànjú láìpẹ́."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX kò tí ì wà ní àgbègbè rẹ nítorí àwọn ìlànà òfin."
+  },
+  "errInvalidAmount": {
+    "message": "Iye ìsanwó yẹn kò tọ̀nà. Jọ̀wọ́ yan iye míì."
+  },
+  "errNotFound": {
+    "message": "A kò rí i. Jọ̀wọ́ tún gbìyànjú."
   }
 }

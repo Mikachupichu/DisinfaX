@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclasificar todas as afirmacions d'este tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Tornar a revelar todas as afirmacions d'este tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tornar a investigar esta afirmación",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Verificar tot"
+  },
+  "errBalanceTooLow": {
+    "message": "O tuyo saldo ye masiau baixo. Recargue ta continar."
+  },
+  "errAccountSuspended": {
+    "message": "O tuyo cuenta ha estau suspenduda."
+  },
+  "errNotSignedIn": {
+    "message": "No yes conectau. Conecta-te y intenta-lo de nuebo."
+  },
+  "errInvalidRequest": {
+    "message": "Una part d'ista solicitut no ha estau reconoixida. Asegura-te que l'extensión sía actualizada."
+  },
+  "errServiceUnavailable": {
+    "message": "S'ha produciu una error d'a nuestra part. Intenta-lo de nuebo en un momento."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX no ye encara disponible en a tuya rechión por requisitos regulatorios."
+  },
+  "errInvalidAmount": {
+    "message": "Ixe importe de recarga no ye valido. Trigo un atro importe."
+  },
+  "errNotFound": {
+    "message": "No s'ha puesto trobar ixo. Intenta-lo de nuebo."
   }
 }

@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclasifică toate afirmațiile din acest tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Dezvăluie din nou toate afirmațiile din acest tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Cercetează din nou această afirmație",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifică tot"
+  },
+  "errBalanceTooLow": {
+    "message": "Soldul tău este prea mic. Reîncarcă pentru a continua."
+  },
+  "errAccountSuspended": {
+    "message": "Contul tău a fost suspendat."
+  },
+  "errNotSignedIn": {
+    "message": "Nu ești conectat. Conectează-te și încearcă din nou."
+  },
+  "errInvalidRequest": {
+    "message": "O parte din această cerere nu a fost recunoscută. Asigură-te că extensia este actualizată."
+  },
+  "errServiceUnavailable": {
+    "message": "A apărut o eroare din partea noastră. Încearcă din nou peste puțin timp."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nu este încă disponibil în regiunea ta din cauza cerințelor de reglementare."
+  },
+  "errInvalidAmount": {
+    "message": "Suma de reîncărcare nu este validă. Alege o altă sumă."
+  },
+  "errNotFound": {
+    "message": "Nu s-a putut găsi. Încearcă din nou."
   }
 }

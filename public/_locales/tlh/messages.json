@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "QongDuj Dotlh Hoch tweetvam",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "tweetvam Dotlh Hoch cha'moH",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "QongDujqa' mu'",

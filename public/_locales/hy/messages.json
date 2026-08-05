@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Վերադասակարգել այս թվիթի բոլոր պնդումները",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Կրկին բացահայտել այս թվիթի բոլոր պնդումները",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Վերահետազոտել այս պնդումը",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ստուգել բոլորը"
+  },
+  "errBalanceTooLow": {
+    "message": "Ձեր հաշվեկշիռը շատ ցածր է: Խնդրում ենք համալրել՝ շարունակելու համար:"
+  },
+  "errAccountSuspended": {
+    "message": "Ձեր հաշիվը կասեցվել է:"
+  },
+  "errNotSignedIn": {
+    "message": "Դուք մուտք չեք գործել: Խնդրում ենք մուտք գործել և կրկին փորձել:"
+  },
+  "errInvalidRequest": {
+    "message": "Այս հարցման մի մասը չհասկացվեց: Համոզվեք, որ ընդլայնումը թարմացված է:"
+  },
+  "errServiceUnavailable": {
+    "message": "Մեր կողմից սխալ առաջացավ: Խնդրում ենք մի փոքր ուշ նորից փորձել:"
+  },
+  "errRegionNotSupported": {
+    "message": "Կանոնակարգային պահանջների պատճառով DisinfaX-ը դեռ հասանելի չէ ձեր տարածաշրջանում:"
+  },
+  "errInvalidAmount": {
+    "message": "Այդ համալրման գումարը վավեր չէ: Խնդրում ենք ընտրել այլ գումար:"
+  },
+  "errNotFound": {
+    "message": "Դա հնարավոր չեղավ գտնել: Կրկին փորձեք:"
   }
 }

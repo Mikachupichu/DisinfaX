@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hlophisa bocha dipolelo tsohle ho tweet ena",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Bontša hape dipolelo tsohle ho tweet ena",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Batlisisa bocha kopo ena",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Hlahloba kaofela"
+  },
+  "errBalanceTooLow": {
+    "message": "Bolanse ya hao e tlaase haholo. Ka kopo tlatsa ho tswela pele."
+  },
+  "errAccountSuspended": {
+    "message": "Akhaonto ya hao e emisitswe."
+  },
+  "errNotSignedIn": {
+    "message": "Ha o kene. Ka kopo kena o boetse o leke hape."
+  },
+  "errInvalidRequest": {
+    "message": "Karolo ya kopo ena ha e tsejwe. Netefatsa hore tlatsetso e ntjhafalitswe."
+  },
+  "errServiceUnavailable": {
+    "message": "Phoso e hlahile lehlakoreng la rona. Ka kopo leka hape kamora nakwana."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ha e so fumaneha sebakeng sa hao ka lebaka la ditlhoko tsa taolo."
+  },
+  "errInvalidAmount": {
+    "message": "Chelete eo ya tlatsetso ha e nepahale. Ka kopo kgetha chelete e fapaneng."
+  },
+  "errNotFound": {
+    "message": "Seo se ne se ke se fumanwe. Leka hape."
   }
 }

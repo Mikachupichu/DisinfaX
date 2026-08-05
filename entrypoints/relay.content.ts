@@ -1,6 +1,20 @@
-import { injectClassifications, showNotification, setExtensionFrozen } from '../utils/injecting';
+/** Tweet capture, isolated-world half — the extension's coordinator on x.com.
+ *
+ *  Receives tweets from the MAIN-world interceptor (capture.main.content.ts) over
+ *  window.postMessage, forwards them to the background for classification over a long-
+ *  lived port, and injects the results into the page (utils/injecting.ts). It also
+ *  relays user intents from the injected UI back to the background over the mfBus, and
+ *  watches for X's own translation toggle so highlights follow the displayed text.
+ *
+ *  Running in the isolated world is what makes it safe to hold this role: the host page
+ *  cannot reach this scope, so it can neither forge the intents that spend the user's
+ *  balance nor read extension state. Everything crossing in from the page — only the
+ *  X_DATA_CAPTURED message — is origin-checked before it is trusted.
+ */
+import { injectClassifications, showNotification, setExtensionFrozen, hasNonExtensionChange } from '../utils/injecting';
 import { mfBus } from '../utils/mfBus';
 import { MainTweet } from "../data/Tweets";
+import { reportColorScheme } from '../utils/toolbarIcon';
 
 const tweetTextCache = new Map<string, string>();
 const translatedTextCache = new Map<string, string>();
@@ -14,6 +28,8 @@ let currentPort: any = null;
 let frozen = false;
 /** Tweet ids already reported to the background as present in the DOM. */
 const reportedToBackground = new Set<string>();
+/** DOM reports queued before the background port was ready. */
+let pendingDomReports: string[] = [];
 
 /** Serialized fingerprint of the last batch we sent, so identical captured tweet
  *  batches (e.g. from repeated timeline XHRs) don't reconnect and re-classify. */
@@ -52,9 +68,6 @@ function flushPendingDomReports() {
   }
 }
 
-/** DOM reports queued before the background port was ready. */
-let pendingDomReports: string[] = [];
-
 /** Report all tweet ids currently rendered in the DOM. */
 function reportVisibleTweets() {
   const links = document.querySelectorAll<HTMLAnchorElement>('a[href*="/status/"]');
@@ -77,14 +90,20 @@ function batchFingerprint(tweets: MainTweet[]): string {
   return tweets.map(t => `${t.id}:${t.text.length}:${t.translatedText?.length ?? 0}:${t.sourceLanguage ?? ''}:${t.destinationLanguage ?? ''}`).join('|');
 }
 
+/** Ensure a background port exists and hand it a batch to classify.
+ *
+ *  Called both for the whole captured set (no `tweetsToSend`) and for individual tweets
+ *  during per-tweet sends. `xhrBatchId`/`xhrBatchIndex` carry the originating XHR's
+ *  identity so the background can fetch the first few tweets eagerly and defer the rest
+ *  until they actually appear in the DOM. */
 function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhrBatchIndex?: number) {
-  const useTweets = tweetsToSend ?? capturedTweets;
-  console.log(`[misinfo] relay: connectAndClassify called, tweets=${useTweets.length}` + (tweetsToSend ? ' (per-group)' : ''));
-  if (useTweets.length === 0) return;
+  const tweetsForSend = tweetsToSend ?? capturedTweets;
+  console.log(`[misinfo] relay: connectAndClassify called, tweets=${tweetsForSend.length}` + (tweetsToSend ? ' (per-group)' : ''));
+  if (tweetsForSend.length === 0) return;
 
   // Only fingerprint-check on the full batch path (skip for per-group sends)
   if (!tweetsToSend) {
-    const fingerprint = batchFingerprint(useTweets);
+    const fingerprint = batchFingerprint(tweetsForSend);
     if (!pendingBatchRefresh && fingerprint === lastBatchFingerprint) {
       console.log(`[misinfo] relay: batch unchanged, skipping reconnect`);
       return;
@@ -113,7 +132,7 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
         console.log(`[misinfo] relay: received CLASSIFICATION for ${message.data.id}, onHold=${message.data.onHold}, translateFC=${message.data.translateFactChecksOnHold}, claims=${message.data.claims?.length ?? 0}`);
         injectClassifications([message.data], tweetTextCache, translatedTextCache);
       } else if (message.type === "MF_NOTIFICATION" && message.data) {
-        showNotification(message.data.kind, { amount: message.data.amount, text: message.data.text });
+        showNotification(message.data.kind, { amount: message.data.amount, text: message.data.text, code: message.data.code });
       } else if (message.type === "MF_AUTH") {
         if (message.signedIn) {
           // Only act on a real freeze→resume transition, so a redundant
@@ -152,6 +171,8 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
       if (capturedTweets.length > 0 && !pendingBatchRefresh) {
         console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, reconnecting in 1s...`);
         setTimeout(() => connectAndClassify(), 1000);
+      } else {
+        console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, NOT reconnecting (capturedTweets=${capturedTweets.length}, pendingBatchRefresh=${pendingBatchRefresh})`);
       }
     });
   }
@@ -170,7 +191,7 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
     currentBatchId = `batch_${Date.now()}`;
     currentPort.postMessage({
       type: "CLASSIFY_TWEETS",
-      data: useTweets,
+      data: tweetsForSend,
       batchId: currentBatchId,
       locale: localeOverride,
       xhrBatchId,
@@ -253,6 +274,11 @@ export default defineContentScript({
   runAt: 'document_start',
   main() {
     console.log('[misinfo] relay content script loaded, localeOverride=', localeOverride);
+
+    // The background service worker has no DOM and so cannot read the browser's
+    // dark/light preference itself. Report it from here — this keeps the toolbar
+    // icon correct for users who never open the popup. See utils/toolbarIcon.ts.
+    reportColorScheme();
     // Debug-only display-locale override for testing. Read from EXTENSION storage
     // (chrome.storage.local), NOT page localStorage — the host page (X) can write
     // page localStorage and could otherwise force the extension's output into a
@@ -313,7 +339,14 @@ export default defineContentScript({
         setTimeout(setupDomObserver, 50);
         return;
       }
-      const domObserver = new MutationObserver(() => {
+      const domObserver = new MutationObserver((mutations) => {
+        // Same guard as utils/injecting.ts's own observer: our injected elements
+        // (popover text streaming in, segment/badge updates) mutate the DOM constantly
+        // while a fact-check streams in, and a naive observer here would re-run a
+        // full-document querySelectorAll on every one of those ticks — competing with
+        // the main thread for the click that opens a popover and reproducing the
+        // "highlight frozen, popover won't open" bug from a second, unguarded observer.
+        if (!mutations.some(hasNonExtensionChange)) return;
         reportVisibleTweets();
       });
       domObserver.observe(document.body, { childList: true, subtree: true });
@@ -336,8 +369,8 @@ export default defineContentScript({
       const article = target.closest('article');
       if (!article) return;
 
-      const toggleInfo = getTweetTranslationState(article);
-      if (!toggleInfo || toggleInfo.buttonElement !== target) return;
+      const translationToggle = getTweetTranslationState(article);
+      if (!translationToggle || translationToggle.buttonElement !== target) return;
 
       const statusLink = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
       if (!statusLink) return;
@@ -359,10 +392,10 @@ export default defineContentScript({
 
       // currentState === 'TRANSLATED' means the screen is showing the translation,
       // so the click will switch to the original (source) text.
-      const textLocale = toggleInfo.currentState === 'TRANSLATED'
+      const textLocale = translationToggle.currentState === 'TRANSLATED'
         ? tweet.sourceLanguage!
         : tweet.destinationLanguage!;
-      console.log(`[misinfo] relay: toggle click for ${tweetId} -> ${textLocale} (currentState=${toggleInfo.currentState})`);
+      console.log(`[misinfo] relay: toggle click for ${tweetId} -> ${textLocale} (currentState=${translationToggle.currentState})`);
 
       sendToPort({ type: 'SET_DISPLAYED_LOCALE', data: { tweetId, textLocale, locale: localeOverride } });
     }, true);

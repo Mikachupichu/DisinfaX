@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ኣብዚ ትዊት ዘለዉ ኩሎም መግለጺታት ዳግም ምድብ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "ኣብዚ ትዊት ዘለዉ ኩሎም መግለጺታት ዳግም ግለጽ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ነዚ ይገባኛል እንደገና ምርምር",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "ኩሉ ምርምር"
+  },
+  "errBalanceTooLow": {
+    "message": "ቀሪ ገንዘብካ ትሑት እዩ። ንምቕጻል በጃኻ መልእ።"
+  },
+  "errAccountSuspended": {
+    "message": "ኣካውንትካ ተታሓዙ ኣሎ።"
+  },
+  "errNotSignedIn": {
+    "message": "ኣይኣተውካን። በጃኻ እቶ እሞ ደጊምካ ፈትን።"
+  },
+  "errInvalidRequest": {
+    "message": "ገለ ካብዚ ጠለብ ኣይተፈለጠን። በጃኻ መተካእታ ዘመናዊ ምዃኑ ኣረጋግጽ።"
+  },
+  "errServiceUnavailable": {
+    "message": "ካብ ወገንና ጌጋ ተፈጢሩ። በጃኻ ድሕሪ ሓጺር ግዜ ደጊምካ ፈትን።"
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ብሰንኪ ናይ ቁጽጽር ጠለባት ኣብ ከባቢኻ ገና የለን።"
+  },
+  "errInvalidAmount": {
+    "message": "እቲ ናይ ምምላእ መጠን ግቡእ ኣይኮነን። በጃኻ ካልእ መጠን ምረጽ።"
+  },
+  "errNotFound": {
+    "message": "እዚ ክርከብ ኣይተኻእለን። ደጊምካ ፈትን።"
   }
 }

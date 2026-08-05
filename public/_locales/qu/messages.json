@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Kay tweet-pi tukuy willakuykunata kutin chaninchay",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Kay tweet-pi tukuy willakuykunata kutin rikuchiy",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Kay willakuyta maskhapay",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Llapanta chaninchay"
+  },
+  "errBalanceTooLow": {
+    "message": "Qullqiyki pisi kashan. Ama hina kaspa, hunt'achiy sigiyta."
+  },
+  "errAccountSuspended": {
+    "message": "Cuentayki hark'ana kachkan."
+  },
+  "errNotSignedIn": {
+    "message": "Manam yaykunkichu. Ama hina kaspa, yaykuy hinaspa hukmanta ruway."
+  },
+  "errInvalidRequest": {
+    "message": "Kay mañakuyman huk t'inkin manam riqsisqachu. Ama hina kaspa, extension musuqchasqa kasqanta qhaway."
+  },
+  "errServiceUnavailable": {
+    "message": "Ñuqaykuq ladunchikpi pantay karqan. Ama hina kaspa, hukmanta ruway huk chika tiempo qhipaman."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX manaraqmi kanchu qamkunaq suyunkichikpi kamachiykuna wakichisqa kaqtin."
+  },
+  "errInvalidAmount": {
+    "message": "Chay hunt'achiy qullqi manam allinchu. Ama hina kaspa, huk qullqita akllay."
+  },
+  "errNotFound": {
+    "message": "Chayta manam tarikunchu. Hukmanta ruway."
   }
 }

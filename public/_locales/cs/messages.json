@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Překlasifikovat všechna tvrzení v tomto tweetu",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Znovu odhalit všechna tvrzení v tomto tweetu",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Znovu prozkoumat toto tvrzení",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Ověřit vše"
+  },
+  "errBalanceTooLow": {
+    "message": "Váš zůstatek je příliš nízký. Dobijte kredit a pokračujte."
+  },
+  "errAccountSuspended": {
+    "message": "Váš účet byl pozastaven."
+  },
+  "errNotSignedIn": {
+    "message": "Nejste přihlášeni. Přihlaste se a zkuste to znovu."
+  },
+  "errInvalidRequest": {
+    "message": "Část tohoto požadavku nebyla rozpoznána. Ujistěte se, že máte aktuální verzi rozšíření."
+  },
+  "errServiceUnavailable": {
+    "message": "Na naší straně došlo k chybě. Zkuste to znovu za chvíli."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX zatím není ve vašem regionu k dispozici z důvodu regulačních požadavků."
+  },
+  "errInvalidAmount": {
+    "message": "Tato částka dobití není platná. Vyberte jinou částku."
+  },
+  "errNotFound": {
+    "message": "To se nepodařilo najít. Zkuste to znovu."
   }
 }

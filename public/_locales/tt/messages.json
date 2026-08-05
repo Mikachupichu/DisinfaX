@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Бу твиттагы барлык дәгъвәләрне яңадан классификацияләү",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Бу твиттагы барлык дәгъвәләрне яңадан ачу",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Бу белдерүне яңадан тикшерү",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Барысын тикшерү"
+  },
+  "errBalanceTooLow": {
+    "message": "Балансыгыз бик түбән. Дәвам итү өчен тутырыгыз."
+  },
+  "errAccountSuspended": {
+    "message": "Хисабыгыз туктатылды."
+  },
+  "errNotSignedIn": {
+    "message": "Сез кермәдегез. Керегез һәм тагын бер тапкыр сынап карагыз."
+  },
+  "errInvalidRequest": {
+    "message": "Бу сорауның бер өлеше танылмады. Кушымтаның яңартылганлыгын тикшерегез."
+  },
+  "errServiceUnavailable": {
+    "message": "Безнең тарафта хата килеп чыкты. Бераздан тагын бер тапкыр сынап карагыз."
+  },
+  "errRegionNotSupported": {
+    "message": "Җайга салу таләпләре аркасында DisinfaX сезнең төбәктә әле дә юк."
+  },
+  "errInvalidAmount": {
+    "message": "Ул тутыру суммасы дөрес түгел. Башка сумма сайлагыз."
+  },
+  "errNotFound": {
+    "message": "Ул табылмады. Тагын бер тапкыр сынап карагыз."
   }
 }

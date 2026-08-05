@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Torna a classificar totes les afirmacions d'aquest tuit",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Torna a revelar totes les afirmacions d'aquest tuit",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tornar a investigar aquesta afirmació",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Verifica-ho tot"
+  },
+  "errBalanceTooLow": {
+    "message": "El teu saldo és massa baix. Recarrega per continuar."
+  },
+  "errAccountSuspended": {
+    "message": "El teu compte ha estat suspès."
+  },
+  "errNotSignedIn": {
+    "message": "No has iniciat sessió. Inicia sessió i torna-ho a provar."
+  },
+  "errInvalidRequest": {
+    "message": "Una part d'aquesta sol·licitud no s'ha reconegut. Assegura't que l'extensió estigui actualitzada."
+  },
+  "errServiceUnavailable": {
+    "message": "S'ha produït un error del nostre costat. Torna-ho a provar d'aquí un moment."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX encara no és disponible a la teva regió per requisits normatius."
+  },
+  "errInvalidAmount": {
+    "message": "Aquest import de recàrrega no és vàlid. Tria un altre import."
+  },
+  "errNotFound": {
+    "message": "No s'ha pogut trobar. Torna-ho a provar."
   }
 }

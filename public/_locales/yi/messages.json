@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "רעקלאַסיפֿיצירן אַלע טענות אין דעם טוויט",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "אַנטפּלעקן ווידער אַלע טענות אין דעם טוויט",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ריפֿאָרשן דעם טענה",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "פאַקט־קאָנטראָלירן אַלץ"
+  },
+  "errBalanceTooLow": {
+    "message": "דיין וואָג איז צו נידעריק. ביטע לאָדן אָנצוגיין."
+  },
+  "errAccountSuspended": {
+    "message": "דיין חשבון איז סוספּענדירט געוואָרן."
+  },
+  "errNotSignedIn": {
+    "message": "איר זענט נישט אײַנגעשריבן. ביטע מעלדט זיך אָן און פּרוּווט נאָך אַ מאָל."
+  },
+  "errInvalidRequest": {
+    "message": "א טייל פֿון דעם בקשה איז נישט דערקענט געוואָרן. זיכער מאַכן דאָס אויסשפּרייטונג איז אַקטואַל."
+  },
+  "errServiceUnavailable": {
+    "message": "א טעות איז געשען אויף אונדזער זייט. פּרוּווט נאָך אַ מאָל אין א מינוט."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX איז נאָך נישט צוגענגלעך אין דיין געגנט צוליב רעגולאטאָרישע פֿאָדערונגען."
+  },
+  "errInvalidAmount": {
+    "message": "דער סומע פֿאַר לאָדן איז נישט גילטיק. ביטע קלייבט אַן אַנדער סומע."
+  },
+  "errNotFound": {
+    "message": "דאָס האָט מען נישט געפֿונען. פּרוּווט נאָך אַ מאָל."
   }
 }

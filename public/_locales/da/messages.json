@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Omklassificér alle påstande i dette tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Afslør igen alle påstande i dette tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Genundersøg denne påstand",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Faktatjek alt"
+  },
+  "errBalanceTooLow": {
+    "message": "Din saldo er for lav. Genoplad for at fortsætte."
+  },
+  "errAccountSuspended": {
+    "message": "Din konto er blevet suspenderet."
+  },
+  "errNotSignedIn": {
+    "message": "Du er ikke logget ind. Log ind, og prøv igen."
+  },
+  "errInvalidRequest": {
+    "message": "En del af denne anmodning blev ikke genkendt. Sørg for, at udvidelsen er opdateret."
+  },
+  "errServiceUnavailable": {
+    "message": "Der opstod en fejl i vores ende. Prøv igen om et øjeblik."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX er endnu ikke tilgængelig i din region på grund af lovkrav."
+  },
+  "errInvalidAmount": {
+    "message": "Det optankningsbeløb er ikke gyldigt. Vælg et andet beløb."
+  },
+  "errNotFound": {
+    "message": "Det kunne ikke findes. Prøv igen."
   }
 }

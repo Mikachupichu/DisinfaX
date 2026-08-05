@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hoʻohālikelike hou i nā ʻōlelo a pau o kēia tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Hōʻike hou i nā ʻōlelo a pau o kēia tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Noiʻi hou i kēia ʻōlelo",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Hōʻoia i nā mea āpau"
+  },
+  "errBalanceTooLow": {
+    "message": "Haʻahaʻa loa kou koena. E ʻoluʻolu e hoʻopiha e hoʻomau."
+  },
+  "errAccountSuspended": {
+    "message": "Ua hoʻōki ʻia kou moʻokāki."
+  },
+  "errNotSignedIn": {
+    "message": "ʻAʻole ʻoe i kau inoa i ka pūnaewele. E ʻoluʻolu e kau inoa a hoʻāʻo hou."
+  },
+  "errInvalidRequest": {
+    "message": "ʻAʻole i ʻike ʻia kekahi ʻāpana o kēia noi. E ʻoluʻolu e hōʻoia ua hoʻonui ʻia ka hoʻolako."
+  },
+  "errServiceUnavailable": {
+    "message": "Ua loaʻa kekahi hewa ma kā mākou ʻaoʻao. E ʻoluʻolu e hoʻāʻo hou i kekahi manawa."
+  },
+  "errRegionNotSupported": {
+    "message": "ʻAʻole i loaʻa ʻo DisinfaX ma kou wahi ma muli o nā koina hoʻoponopono."
+  },
+  "errInvalidAmount": {
+    "message": "ʻAʻole kūpono kēlā kālā hoʻopiha. E ʻoluʻolu e koho i kālā ʻē aʻe."
+  },
+  "errNotFound": {
+    "message": "ʻAʻole i loaʻa kēlā. E hoʻāʻo hou."
   }
 }

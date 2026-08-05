@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Umflokka allar ásagnir í hesum tweetinum",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Sýn aftur allar ásagnir í hesum tweetinum",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Kanna hesa ástøði aftur",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Kanna alt"
+  },
+  "errBalanceTooLow": {
+    "message": "Restur tín er ov lágur. Vinarliga áfyll fyri at halda áfram."
+  },
+  "errAccountSuspended": {
+    "message": "Kontan tín er ordin sett úr sambandi."
+  },
+  "errNotSignedIn": {
+    "message": "Tú ert ikki logga inn. Vinarliga log inn og royn aftur."
+  },
+  "errInvalidRequest": {
+    "message": "Ein partur av hesi umbøn varð ikki kend. Vinarliga eftirse um víðkanin er dagført."
+  },
+  "errServiceUnavailable": {
+    "message": "Ein villa hendi á okkara síðu. Vinarliga royn aftur eftir eina løtu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX er ikki longu tøkt á tínum svæði av tí at reglur krevja tað."
+  },
+  "errInvalidAmount": {
+    "message": "Tann áfyllingarupphædd er ikki galdandi. Vinarliga vel eina aðra upphædd."
+  },
+  "errNotFound": {
+    "message": "Hetta kundi ikki finnast. Royn aftur."
   }
 }

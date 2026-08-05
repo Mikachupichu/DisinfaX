@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Whakarōpū anō i ngā kerēme katoa i tēnei tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Whakaatu anō i ngā kerēme katoa i tēnei tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Rangahau anō i tēnei kerēme",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Tirohia katoatia"
+  },
+  "errBalanceTooLow": {
+    "message": "He iti rawa tō nama toenga. Tāuru mai kia taea ai te haere tonu."
+  },
+  "errAccountSuspended": {
+    "message": "Kua aukatia tō pūkete."
+  },
+  "errNotSignedIn": {
+    "message": "Kāore koe i te takiuru. Takiuru mai ka whakamātau anō."
+  },
+  "errInvalidRequest": {
+    "message": "Kāore i mōhiotia tētahi wāhanga o tēnei tono. Whakaūhia kua whakahoutia te extension."
+  },
+  "errServiceUnavailable": {
+    "message": "I puta he hapa i tā mātou taha. Whakamātau anō i muri iho i tētahi wā poto."
+  },
+  "errRegionNotSupported": {
+    "message": "Kāore anō a DisinfaX kia wātea i tō rohe nā te mea he whakaritenga ture."
+  },
+  "errInvalidAmount": {
+    "message": "Ehara i te mea whaimana taua moni tāuru. Kōwhiria tētahi atu moni."
+  },
+  "errNotFound": {
+    "message": "Kāore i kitea tēnā. Whakamātau anō."
   }
 }

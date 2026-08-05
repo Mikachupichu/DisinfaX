@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Luokittele uudelleen kaikki tämän twiitin väitteet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Paljasta uudelleen kaikki tämän twiitin väitteet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Tutki tämä väite uudelleen",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Tarkista kaikki"
+  },
+  "errBalanceTooLow": {
+    "message": "Saldosi on liian pieni. Lataa saldoa jatkaaksesi."
+  },
+  "errAccountSuspended": {
+    "message": "Tilisi on jäädytetty."
+  },
+  "errNotSignedIn": {
+    "message": "Et ole kirjautunut sisään. Kirjaudu sisään ja yritä uudelleen."
+  },
+  "errInvalidRequest": {
+    "message": "Osaa tästä pyynnöstä ei tunnistettu. Varmista, että laajennus on ajan tasalla."
+  },
+  "errServiceUnavailable": {
+    "message": "Tapahtui virhe meidän päässämme. Yritä hetken kuluttua uudelleen."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ei ole vielä käytettävissä alueellasi sääntelyvaatimusten vuoksi."
+  },
+  "errInvalidAmount": {
+    "message": "Tämä latausmäärä ei kelpaa. Valitse toinen määrä."
+  },
+  "errNotFound": {
+    "message": "Sitä ei löytynyt. Yritä uudelleen."
   }
 }

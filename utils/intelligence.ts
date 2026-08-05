@@ -1,6 +1,30 @@
+/** Client for the AI pipeline — the extension's side of the Cloudflare Workers.
+ *
+ *  No model runs in the extension. Each worker (preclassify, classify, translate,
+ *  highlight-claims, …) is called over HTTP with the user's Supabase JWT, charges the
+ *  balance server-side, and streams its answer back as Server-Sent Events. This module
+ *  owns three concerns around that:
+ *
+ *  - **Auth and errors.** Every call carries a freshly-refreshed token, and failures are
+ *    funnelled through reportWorkerError so a "balance too low" rejection can be routed
+ *    to whichever gated action is in flight instead of alarming the user globally.
+ *  - **Streaming.** Responses arrive incrementally, so results are yielded as generators
+ *    and the UI fills in as research lands rather than after it completes.
+ *  - **Shape wrangling.** Model output is only loosely structured, so the parsers here
+ *    are deliberately forgiving — JSON extraction falls back to regex scraping, and
+ *    locale-keyed fields are normalized before they reach the rest of the extension.
+ *
+ *  Tweet hashing also lives here (computeTweetHash), because the hash must match what
+ *  the workers compute byte-for-byte to hit the same cache row.
+ */
 import { MainTweet } from "../data/Tweets";
-import { Classification, Claim, QuotedClassification, Source, formatVerdict, sameLanguage } from "../data/Classification";
+import { Classification, Claim, QuotedClassification, Source, formatVerdict } from "../data/Classification";
 import { supabase, ensureFreshSession } from "./supabase";
+import { ERROR_CODES, parseWorkerErrorMessage, type ParsedWorkerError } from "./errorCodes";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Auth, and routing worker failures to the right place
+// ─────────────────────────────────────────────────────────────────────────────
 
 /** Build the Authorization header carrying the user's Supabase JWT. Every worker
  *  except stripe-webhook / messages now requires it (they charge the balance via an
@@ -23,16 +47,11 @@ export async function getAuthHeader(): Promise<Record<string, string>> {
 
 /** Optional sink for surfacing worker/DB failures (e.g. 402 balance-too-low) to the
  *  UI as error notifications. The background sets this; when unset, errors are only
- *  logged (unchanged behaviour). */
-let workerErrorHandler: ((message: string) => void) | null = null;
-export function setWorkerErrorHandler(fn: ((message: string) => void) | null): void {
+ *  logged (unchanged behaviour). Receives the parsed {code, text} — see
+ *  parseWorkerErrorMessage in ./errorCodes for what each field means. */
+let workerErrorHandler: ((result: ParsedWorkerError) => void) | null = null;
+export function setWorkerErrorHandler(fn: ((result: ParsedWorkerError) => void) | null): void {
   workerErrorHandler = fn;
-}
-/** True when a worker/DB error message is specifically the "balance too low" (P0003 /
- *  402) rejection — as opposed to "Account suspended." (P0004) or any other failure.
- *  Only these are eligible for the queue-and-retry-once flow. */
-export function isBalanceTooLowMessage(message: string): boolean {
-  return typeof message === 'string' && /balance\s+is\s+too\s+low/i.test(message);
 }
 
 /** Stack of per-action balance-error interceptors. The background pushes one around a
@@ -48,27 +67,32 @@ export function popBalanceErrorInterceptor(fn: (message: string) => void): void 
   if (i !== -1) balanceErrorInterceptors.splice(i, 1);
 }
 
-/** Extract a human-readable message from a worker error body ({"error": "..."}, or
- *  a "prefix: {json}" string, or plain text) and forward it to the error sink. */
-function reportWorkerError(body: string): void {
+/** Unwrap a worker's raw HTTP error body ({"error": "..."}, or a "prefix: {json}"
+ *  string, or plain text) down to the message text, then parse that against the
+ *  "N - text" error-code convention (see ./errorCodes). Shared by every call site that
+ *  needs to know what a worker's failure means, not just report it. Returns the
+ *  unwrapped message text alongside the parse, for callers that still want a plain
+ *  string (e.g. the balance-error interceptors, which predate the code scheme). */
+function parseWorkerErrorBody(body: string): { parsed: ParsedWorkerError; message: string } {
   let message = body;
   const start = body.indexOf('{');
   const jsonSlice = start !== -1 ? body.slice(start) : body;
   try { const j = JSON.parse(jsonSlice); if (j && typeof j.error === 'string') message = j.error; } catch { /* plain text */ }
+  return { parsed: parseWorkerErrorMessage(message, getUILanguage()), message };
+}
+
+/** Extract a human-readable message from a worker error body, parse it against the
+ *  error-code convention, and forward the result to the error sink. */
+function reportWorkerError(body: string): void {
+  const { parsed, message } = parseWorkerErrorBody(body);
   // A balance-too-low error during a gated action is handled by that action (retry or
   // abandon) — suppress the global notification here so it only shows on abandonment.
-  if (isBalanceTooLowMessage(message) && balanceErrorInterceptors.length > 0) {
+  if (parsed.code === ERROR_CODES.BALANCE_TOO_LOW && balanceErrorInterceptors.length > 0) {
     try { balanceErrorInterceptors[balanceErrorInterceptors.length - 1](message); } catch { /* ignore */ }
     return;
   }
   if (!workerErrorHandler) return;
-  try { workerErrorHandler(message); } catch { /* ignore */ }
-}
-
-/** Clamp a value to (0, 1) exclusive — satisfies DB check constraint. */
-function clampPropensity(val: number | undefined | null, fallback = 0.5): number {
-  if (val == null || isNaN(val)) return fallback;
-  return Math.min(Math.max(val, 0.01), 0.99);
+  try { workerErrorHandler(parsed); } catch { /* ignore */ }
 }
 
 /** Override for testing — set to a locale string (e.g. "fr") to simulate that browser language. */
@@ -80,16 +104,6 @@ function getUILanguage(): string {
   try {
     return (browser?.i18n?.getUILanguage?.() ?? 'en');
   } catch { return 'en'; }
-}
-
-/** Extract reasoning text and locale from a DB result.
- *  DB returns reasoning as JSONB {"locale": "text"} but streamResearch gives a plain string. */
-function extractReasoningObj(reasoning: any, defaultLocale = 'en'): { text: string; locale: string } {
-  if (!reasoning) return { text: '', locale: defaultLocale };
-  if (typeof reasoning === 'string') return { text: reasoning, locale: defaultLocale };
-  const keys = Object.keys(reasoning);
-  const locale = keys.find(k => typeof reasoning[k] === 'string') ?? defaultLocale;
-  return { text: reasoning[locale] ?? '', locale };
 }
 
 /** Extract user-shared URLs from tweet text, excluding trailing media t.co links
@@ -127,6 +141,9 @@ export async function* preClassify(
     const effectiveLocale = locale ?? getUILanguage();
     const maxAttempts = 3;
     let lastError: any = null;
+    // [ttft-ext] Extension-side timer for this call, spanning every retry attempt.
+    const tStart = performance.now();
+    let firstClaimAt: number | null = null;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         if (attempt > 1) {
@@ -143,6 +160,10 @@ export async function* preClassify(
             const preStream = processWorkerStream({ input: displayTweet, locale: effectiveLocale, hash, displayedLocale }, 'preclassify-tweets');
             for await (const item of processChunks(preStream)) {
                 if (item && typeof item === 'object' && 'text' in item && 'rewritten' in item) {
+                    if (firstClaimAt === null) {
+                        firstClaimAt = performance.now();
+                        console.log(`[ttft-ext] preClassify ${displayTweet.id}: first claim +${(firstClaimAt - tStart).toFixed(0)}ms`);
+                    }
                     allClaims.push(item);
                     // Detect mode: append streams incremental claims; replace streams full
                     // snapshots (so a rewritten we already have arriving again ⇒ replace).
@@ -163,6 +184,7 @@ export async function* preClassify(
 
             // Replace mode (or empty): yield the final classification once.
             yield makePreclassification(displayTweet, allClaims, displayedLocale, effectiveLocale);
+            console.log(`[ttft-ext] preClassify ${displayTweet.id}: done, ${allClaims.length} claim(s), +${(performance.now() - tStart).toFixed(0)}ms total`);
             return;
         } catch (err) {
             lastError = err;
@@ -171,6 +193,7 @@ export async function* preClassify(
     }
 
     console.error(`[preClassify] all ${maxAttempts} attempts failed, yielding empty classification`, lastError);
+    console.log(`[ttft-ext] preClassify ${displayTweet.id}: FAILED, +${(performance.now() - tStart).toFixed(0)}ms total`);
     if (lastError?.message) reportWorkerError(String(lastError.message));
     yield makePreclassification(displayTweet, [], displayedLocale, effectiveLocale);
 }
@@ -309,6 +332,13 @@ export async function* refreshClaim(
     }
 }
 
+/** Fold researched results out of `cache` into a classification's claims, keyed by claim
+ *  text, and return a new Classification.
+ *
+ *  Called repeatedly as research streams in, so most invocations see partial data. The
+ *  rule throughout is that a partial result must never downgrade what the user can
+ *  already see: on-hold and refreshing claims keep their current presentation until a
+ *  complete result (confidence, veracity and reasoning all present) is available. */
 function applyFindings(
     classification: Classification,
     cache: Map<string, { confidence: number, veracity: number, reasoning: string, reasoningLocale?: string, sources?: Source[], dbClaimText?: string, freshlyResearched?: boolean, veracity_change_duration?: string }>
@@ -415,6 +445,20 @@ function applyFindings(
  *  NFKC-normalize, strip zero-width/bidi/BOM/control chars (keeping normal
  *  whitespace/newlines), collapse runs of spaces/tabs, and trim. Idempotent.
  *  MUST stay byte-identical to the workers' normalizeText so hashes match. */
+// ─────────────────────────────────────────────────────────────────────────────
+// Tweet hashing. The hash is the cache key shared with the backend, so every step
+// here — normalization, context serialization, digest — must stay byte-for-byte
+// identical to the workers' implementation or lookups silently miss.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Canonicalize text before hashing: NFKC-fold, strip control characters and invisible
+ *  formatting marks (zero-widths, bidi overrides, BOM, soft hyphen), collapse runs of
+ *  spaces and tabs, trim.
+ *
+ *  Two purposes. It makes the hash stable against invisible differences that don't change
+ *  what the tweet says, and it removes exactly the characters used as delimiters in
+ *  canonicalContext, so a tweet's own text can never forge a field boundary there.
+ *  MUST match the workers' implementation. */
 export function normalizeText(text: string): string {
     if (typeof text !== 'string') return '';
     return text
@@ -424,10 +468,11 @@ export function normalizeText(text: string): string {
         .trim();
 }
 
-async function sha256Hex(s: string): Promise<string> {
-    const data = new TextEncoder().encode(s);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+/** SHA-256 of a UTF-8 string as lowercase hex. */
+async function sha256Hex(input: string): Promise<string> {
+    const data = new TextEncoder().encode(input);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /** Deterministic canonical serialization of a tweet AND its full context (reply
@@ -557,162 +602,6 @@ export async function translateText(
     }
 }
 
-/** Insert a locale-keyed reasoning entry into the DB via the insert-reasoning-locale worker.
- *  inputTimestamp is the claim's last_classification at fetch time — the DB uses it to
- *  guard against stale translations overwriting freshly-reclassified claims.
- *  The claim can be passed as a plain string; when sourceLocale is provided it is wrapped
- *  as {sourceLocale: claim} so the worker can match against the locale-keyed JSONB column. */
-async function insertReasoningLocale(claim: string, reasoning: Record<string, string>, inputTimestamp?: string, sourceLocale?: string): Promise<void> {
-    try {
-        // The updated worker reads source_locale from each item and accepts either a
-        // plain-string claim or a locale-keyed JSONB object.
-        const body = JSON.stringify({ items: [{ claim, reasoning, source_locale: sourceLocale }], timestamp: inputTimestamp });
-        console.log(`[insertReasoningLocale] Sending claim="${claim.slice(0, 40)}..." reasoningKeys=${Object.keys(reasoning).join(',')} sourceLocale=${sourceLocale ?? 'none'} ts=${inputTimestamp ?? 'none'}`);
-        const res = await fetch('https://insert-reasoning-locale.michael-pouget01.workers.dev/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body
-        });
-        const resBody = await res.text();
-        if (!res.ok) console.error('[insertReasoningLocale] error:', res.status, resBody);
-        else console.log('[insertReasoningLocale] success:', resBody.slice(0, 200));
-    } catch (err) {
-        console.error('[insertReasoningLocale] fetch error:', err);
-    }
-}
-
-/** Insert a locale-keyed claim localization into the DB via the insert-claim-locale worker.
- *  source_locale is the locale of the existing claim text in the DB (used for matching);
- *  the items carry new_locale / new_claim for the translation being inserted. */
-export async function addClaimLocalization(items: { claim: string; new_locale: string; new_claim: string }[], source_locale: string): Promise<void> {
-    try {
-        console.log(`[addClaimLocalization] Sending ${items.length} item(s) source_locale=${source_locale}:`, items.map(i => ({ claim: i.claim.slice(0, 40), new_locale: i.new_locale })));
-        const res = await fetch(`https://insert-claim-locale.michael-pouget01.workers.dev/?locale=${encodeURIComponent(source_locale)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(items)
-        });
-        const body = await res.text();
-        if (!res.ok) console.error('[addClaimLocalization] error:', res.status, body);
-        else console.log('[addClaimLocalization] success:', body.slice(0, 200));
-    } catch (err) {
-        console.error('[addClaimLocalization] fetch error:', err);
-    }
-}
-
-/** Insert locale-keyed highlight ranges into tweet_claims via the insert-highlight-locale worker. */
-async function addTweetClaimHighlight(
-    items: { tweet_hash: string; claim: string; highlight_locale: string; highlight_range: number[] }[],
-    source_locale: string
-): Promise<void> {
-    try {
-        console.log(`[addTweetClaimHighlight] Persisting ${items.length} highlight(s) source_locale=${source_locale}:`, items.map(i => `${i.claim.slice(0, 30)}... [${i.highlight_range.join(',')}]`));
-        const res = await fetch(`https://insert-highlight-locale.michael-pouget01.workers.dev/?source_locale=${encodeURIComponent(source_locale)}&_=${Date.now()}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(items)
-        });
-        if (!res.ok) {
-            console.error('[addTweetClaimHighlight] error:', await res.text());
-            return;
-        }
-        const body = await res.json();
-        console.log(`[addTweetClaimHighlight] Persisted ${items.length} highlight(s) OK`, body);
-        if (body.matched_and_updated_rows === 0) {
-            console.warn('[addTweetClaimHighlight] Worker reported 0 updated rows — highlights may not have been persisted. Check that claim text matches the stored claim exactly.');
-        }
-    } catch (err) {
-        console.error('[addTweetClaimHighlight] fetch error:', err);
-    }
-}
-
-/**
- * Call the highlight-claims worker to determine character ranges of rewritten claims
- * within the translated tweet text. Returns [substring, claim_index][] pairs.
- * The caller must map these to [start, end] character ranges via indexOf.
- */
-async function* highlightClaims(
-    tweetText: string,
-    rewrittenClaims: string[]
-): AsyncGenerator<string> {
-    const res = await fetch('https://highlight-claims.michael-pouget01.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tweet_text: tweetText, rewritten_claims: rewrittenClaims })
-    });
-    if (!res.ok || !res.body) {
-        console.error('[highlightClaims] error:', res.status, await res.text());
-        return;
-    }
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let accumulatedText = '';
-
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed.startsWith('data: ')) continue;
-            const data = trimmed.slice(6);
-            if (data === '[DONE]') continue;
-            try {
-                const json = JSON.parse(data);
-                const content = json.choices?.[0]?.delta?.content
-                    ?? json.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (content) accumulatedText += content;
-            } catch {
-                accumulatedText += data;
-            }
-        }
-    }
-
-    // Remaining buffer
-    const remaining = buffer.trim();
-    if (remaining.startsWith('data: ')) {
-        const data = remaining.slice(6);
-        if (data !== '[DONE]') {
-            try {
-                const json = JSON.parse(data);
-                const content = json.choices?.[0]?.delta?.content
-                    ?? json.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (content) accumulatedText += content;
-            } catch {
-                accumulatedText += data;
-            }
-        }
-    }
-
-    if (accumulatedText) {
-        yield accumulatedText;
-    }
-}
-
-/**
- * Parse the highlight-claims worker SSE output into [substring, claimIndex] pairs.
- */
-function parseHighlightClaimsOutput(rawJson: string): [string, number][] {
-    // Strip markdown code fences if present
-    let cleaned = rawJson.replace(/```(?:json)?\s*\n?/gi, '').trim();
-    try {
-        const parsed = JSON.parse(cleaned);
-        if (Array.isArray(parsed)) {
-            return parsed;
-        }
-        return [];
-    } catch {
-        return [];
-    }
-}
-
-
 export type BackgroundUpdateCallback = (classification: Classification) => void;
 
 /**
@@ -787,7 +676,6 @@ export async function backgroundTranslate(
  */
 export async function backgroundTranslateClaim(
     dbClaimText: string,
-    claimRewritten: string,
     sourceLocale: string,
     targetLocale: string,
     classification: Classification,
@@ -960,6 +848,15 @@ type ResearchUpdate =
  * leading/trailing text, or code fences around it.
  * Returns the parsed object or null.
  */
+// ─────────────────────────────────────────────────────────────────────────────
+// Tolerant parsing of model output. These are intentionally defensive: a malformed
+// or truncated response should degrade to a partial result, never throw and lose an
+// answer the user has already paid for.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Pull the outermost JSON object out of a model response, tolerating the markdown code
+ *  fences and surrounding prose models tend to add. Returns null when nothing parses —
+ *  callers then fall back to extractResearchFromRegex. */
 function extractJsonFromText(text: string): any | null {
     // Strip markdown code fences: ```json ... ``` or ``` ... ```
     let cleaned = text.replace(/```(?:json)?\s*\n?/gi, '').trim();
@@ -974,8 +871,8 @@ function extractJsonFromText(text: string): any | null {
     try {
         return JSON.parse(cleaned);
     } catch {
-        // If the reasoning field contains unescaped characters, try to be more lenient
-        // by finding the structure via regex
+        // Typically an unescaped character inside the reasoning field. Give up here; the
+        // caller retries with extractResearchFromRegex, which scrapes fields individually.
         return null;
     }
 }
@@ -1113,16 +1010,11 @@ function deduplicateSources(sources: Source[] | undefined): Source[] {
   });
 }
 
-type AffectedClaimContext = {
-    claim: string;
-    reasoning: any;
-    confidence?: number;
-    veracity?: number;
-    sources?: Source[];
-    veracity_change_duration?: string;
-};
-
 async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: string[], claimId?: string, onBalanceError?: () => void): AsyncGenerator<ResearchUpdate> {
+    // [ttft-ext] Extension-side timer covering the whole call: worker round-trip
+    // (auth header + fetch), then the SSE stream from first byte to full drain.
+    const tStart = performance.now();
+    let firstPartialAt: number | null = null;
     const effectiveLocale = locale ?? getUILanguage();
     // Match how the claim was STORED: the preclassify worker normalized the rewritten
     // text (normalizeText) before writing it, so we must normalize here too — otherwise
@@ -1145,10 +1037,11 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
     if (!res.ok || !res.body) {
         const body = res.body || !res.ok ? await res.text() : '';
         console.error('Research error:', res.status, body);
+        console.log(`[ttft-ext] streamResearch "${mainClaim.slice(0, 40)}...": FAILED (status ${res.status}) +${(performance.now() - tStart).toFixed(0)}ms`);
         if (!res.ok) {
             // Attribute a "balance too low" 402 to THIS claim's gated action (if the
             // caller provided a sink); everything else goes to the global handler.
-            if (onBalanceError && isBalanceTooLowMessage(body)) onBalanceError();
+            if (onBalanceError && parseWorkerErrorBody(body).parsed.code === ERROR_CODES.BALANCE_TOO_LOW) onBalanceError();
             else reportWorkerError(body);
         }
         return;
@@ -1157,6 +1050,7 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
     // Stream mode from worker: "append" (left-to-right tokens) or "replace" (diffusion snapshots).
     const streamMode = res.headers.get('X-Stream-Mode') || 'append';
     console.log(`[streamResearch] streamMode=${streamMode} for "${mainClaim.slice(0, 40)}..."`);
+    console.log(`[ttft-ext] streamResearch "${mainClaim.slice(0, 40)}...": response headers +${(performance.now() - tStart).toFixed(0)}ms`);
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -1218,6 +1112,10 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
             const currentConfidence = confMatch ? parseFloat(confMatch[1]) : undefined;
             const currentVeracity = verMatch ? parseFloat(verMatch[1]) : undefined;
             if ((currentText && currentText !== lastYieldedText) || (currentConfidence !== undefined && currentVeracity !== undefined)) {
+                if (firstPartialAt === null) {
+                    firstPartialAt = performance.now();
+                    console.log(`[ttft-ext] streamResearch "${mainClaim.slice(0, 40)}...": first partial +${(firstPartialAt - tStart).toFixed(0)}ms`);
+                }
                 lastYieldedText = currentText;
                 yield {
                     kind: 'partial',
@@ -1289,6 +1187,7 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
         }
         const modelSources = normalizeSources(parsed.mainResult.sources);
         const mainSources = deduplicateSources(modelSources.length > 0 ? modelSources : sourcesFromGrounding);
+        console.log(`[ttft-ext] streamResearch "${mainClaim.slice(0, 40)}...": done (JSON) +${(performance.now() - tStart).toFixed(0)}ms total`);
         yield {
             kind: 'complete',
             data: {
@@ -1310,6 +1209,7 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
         }
         const regexModelSources = normalizeSources(regexResult.mainResult.sources);
         const regexSources = deduplicateSources(regexModelSources.length > 0 ? regexModelSources : sourcesFromGrounding);
+        console.log(`[ttft-ext] streamResearch "${mainClaim.slice(0, 40)}...": done (regex fallback) +${(performance.now() - tStart).toFixed(0)}ms total`);
         yield {
             kind: 'complete',
             data: {
@@ -1320,38 +1220,7 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
     }
 
     console.warn(`[streamResearch] All extraction methods failed. Text (first 200): "${accumulatedText.slice(0, 200)}"`);
-}
-
-/** Extract a plain claim text string from a locale-keyed JSONB claim object
- *  (e.g. {"en": "text"}) or a plain string. Prefers the requested locale,
- *  then the base language, then any available text. */
-function extractPlainClaimText(claim: unknown, locale: string): string {
-    if (typeof claim === 'string') return claim;
-    if (claim && typeof claim === 'object' && !Array.isArray(claim)) {
-        const obj = claim as Record<string, unknown>;
-        const exact = obj[locale];
-        if (typeof exact === 'string') return exact;
-        const base = locale.split('-')[0];
-        for (const [key, val] of Object.entries(obj)) {
-            if (typeof val === 'string' && (key === base || key.startsWith(base + '-'))) {
-                return val;
-            }
-        }
-        const first = Object.values(obj).find(v => typeof v === 'string');
-        if (first) return first as string;
-    }
-    return '';
-}
-
-/** Extract the canonical (storage-locale) claim text from a locale-keyed JSONB
- *  claim object, or return a plain string as-is. */
-function extractCanonicalClaimText(claim: unknown): string {
-    if (typeof claim === 'string') return claim;
-    if (claim && typeof claim === 'object' && !Array.isArray(claim)) {
-        const first = Object.values(claim as Record<string, unknown>).find(v => typeof v === 'string');
-        if (first) return first as string;
-    }
-    return '';
+    console.log(`[ttft-ext] streamResearch "${mainClaim.slice(0, 40)}...": FAILED (no extraction) +${(performance.now() - tStart).toFixed(0)}ms total`);
 }
 
 // ---- Streaming helpers (preclassify) ----

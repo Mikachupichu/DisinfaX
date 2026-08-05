@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ဤ tweet ရှိ claim များအားလုံးကို ပြန်လည်အမျိုးအစားခွဲပါ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "ဤ tweet ရှိ claim များအားလုံးကို ပြန်လည်ဖော်ပြပါ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ဤပြောဆိုချက်ကို ပြန်လည်သုတေသနပြုပါ",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "အားလုံးကို စစ်ဆေးပါ"
+  },
+  "errBalanceTooLow": {
+    "message": "သင့်ငွေလက်ကျန် နည်းလွန်းနေပါသည်။ ဆက်လက်ရန် ငွေဖြည့်ပါ။"
+  },
+  "errAccountSuspended": {
+    "message": "သင့်အကောင့်ကို ယာယီရပ်ဆိုင်းထားပါသည်။"
+  },
+  "errNotSignedIn": {
+    "message": "သင် ဝင်ထားခြင်း မရှိပါ။ ကျေးဇူးပြု၍ ဝင်ပြီး ထပ်စမ်းကြည့်ပါ။"
+  },
+  "errInvalidRequest": {
+    "message": "ဤတောင်းဆိုမှုမှ အချို့အပိုင်းများကို မသိရှိနိုင်ပါ။ Extension အသစ်ဖြစ်ကြောင်း သေချာပါစေ။"
+  },
+  "errServiceUnavailable": {
+    "message": "ကျွန်ုပ်တို့ဘက်တွင် အမှားတစ်ခု ဖြစ်ခဲ့ပါသည်။ ခဏစောင့်ပြီး ထပ်စမ်းကြည့်ပါ။"
+  },
+  "errRegionNotSupported": {
+    "message": "စည်းမျဉ်းဆိုင်ရာ လိုအပ်ချက်များကြောင့် DisinfaX ကို သင့်ဒေသတွင် မရရှိသေးပါ။"
+  },
+  "errInvalidAmount": {
+    "message": "ထိုငွေဖြည့်ပမာณ မှားနေပါသည်။ အခြားပမာณတစ်ခု ရွေးပါ။"
+  },
+  "errNotFound": {
+    "message": "ရှာမတွေ့ပါ။ ထပ်စမ်းကြည့်ပါ။"
   }
 }

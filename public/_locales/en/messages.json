@@ -198,8 +198,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Re-classify this tweet's claims",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Re-reveal this tweet's claims",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Re-research this claim",
@@ -284,5 +284,37 @@
   "factCheckAllButton": {
     "message": "Fact-Check All",
     "description": "Button that fact-checks every claim in the tweet at once (batch action, distinct from the singular per-claim Fact-Check button)."
+  },
+  "errBalanceTooLow": {
+    "message": "Your balance is too low. Please top up to continue.",
+    "description": "Shown when a worker rejects an action because the account balance can't cover it (error code 1)."
+  },
+  "errAccountSuspended": {
+    "message": "Your account has been suspended.",
+    "description": "Shown when a worker rejects an action because the account is suspended (error code 2)."
+  },
+  "errNotSignedIn": {
+    "message": "You're not signed in. Please sign in and try again.",
+    "description": "Shown when a worker rejects a request because the user isn't authenticated (error code 3)."
+  },
+  "errInvalidRequest": {
+    "message": "Something about this request wasn't recognized. Please make sure the extension is up to date.",
+    "description": "Shown when a worker rejects a malformed or unrecognized request, usually a version mismatch (error code 4)."
+  },
+  "errServiceUnavailable": {
+    "message": "Something went wrong on our end. Please try again in a moment.",
+    "description": "Generic failure shown when a worker or one of its dependencies (database, AI provider) fails unexpectedly (error code 5)."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX is not yet available in your region due to regulatory requirements.",
+    "description": "Shown when a worker rejects an action because the user's region isn't supported (error code 6)."
+  },
+  "errInvalidAmount": {
+    "message": "That top-up amount isn't valid. Please choose a different amount.",
+    "description": "Shown when a worker rejects a top-up because the requested amount is invalid (error code 7)."
+  },
+  "errNotFound": {
+    "message": "That couldn't be found. Please try again.",
+    "description": "Shown when a worker can't find the data it was asked to look up (error code 8)."
   }
 }

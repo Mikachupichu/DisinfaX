@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hlukanisa kabusha zonke izimangalo kule tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Veza kabusha zonke izimangalo kule tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Phenya kabusha lesi simangalo",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Hlola konke"
+  },
+  "errBalanceTooLow": {
+    "message": "Ibhalansi yakho iphansi kakhulu. Sicela ugcwalise ukuqhubeka."
+  },
+  "errAccountSuspended": {
+    "message": "I-akhawunti yakho imisiwe."
+  },
+  "errNotSignedIn": {
+    "message": "Awungenile. Sicela ungene uphinde uzame futhi."
+  },
+  "errInvalidRequest": {
+    "message": "Ingxenye yalesi sicelo ayaziwe. Qinisekisa ukuthi isengezo lisesivinini esisha."
+  },
+  "errServiceUnavailable": {
+    "message": "Iphutha lenzeke ohlangothini lwethu. Sicela uzame futhi ngokushesha."
+  },
+  "errRegionNotSupported": {
+    "message": "I-DisinfaX ayikatholakala kusifunda sakho ngenxa yezimfuneko zomthetho."
+  },
+  "errInvalidAmount": {
+    "message": "Lelo nani lokugcwalisa alilungile. Sicela ukhethe inani elihlukile."
+  },
+  "errNotFound": {
+    "message": "Lokho akutholakele. Zama futhi."
   }
 }

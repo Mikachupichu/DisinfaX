@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "סווג מחדש את כל הטענות בציוץ הזה",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "חשוף מחדש את כל הטענות בציוץ הזה",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "חקור מחדש טענה זו",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "בדוק הכול"
+  },
+  "errBalanceTooLow": {
+    "message": "היתרה שלך נמוכה מדי. יש לטעון כדי להמשיך."
+  },
+  "errAccountSuspended": {
+    "message": "החשבון שלך הושבת."
+  },
+  "errNotSignedIn": {
+    "message": "לא נכנסת לחשבון. היכנס ונסה שוב."
+  },
+  "errInvalidRequest": {
+    "message": "חלק מהבקשה הזו לא זוהה. יש לוודא שההרחבה מעודכנת."
+  },
+  "errServiceUnavailable": {
+    "message": "אירעה שגיאה בצד שלנו. נסה שוב בעוד רגע."
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX עדיין לא זמין באזורך בשל דרישות רגולטוריות."
+  },
+  "errInvalidAmount": {
+    "message": "סכום הטעינה אינו תקין. יש לבחור סכום אחר."
+  },
+  "errNotFound": {
+    "message": "לא ניתן היה למצוא זאת. נסה שוב."
   }
 }

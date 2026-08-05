@@ -143,8 +143,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ಈ ಬ್ಯಾಚ್‌ನ ಎಲ್ಲಾ ಟ್ವೀಟ್‌ಗಳನ್ನು ಮರುವರ್ಗೀಕರಿಸಿ",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "ಈ ಟ್ವೀಟ್‌ನ ಎಲ್ಲಾ ಹೇಳಿಕೆಗಳನ್ನು ಮತ್ತೆ ಬಹಿರಂಗಪಡಿಸಿ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "ಈ ಹಕ್ಕನ್ನು ಮರುಸಂಶೋಧಿಸಿ",
@@ -258,5 +258,29 @@
   },
   "factCheckAllButton": {
     "message": "ಎಲ್ಲವನ್ನೂ ಪರಿಶೀಲಿಸಿ"
+  },
+  "errBalanceTooLow": {
+    "message": "ನಿಮ್ಮ ಬಾಕಿ ಬಹಳ ಕಡಿಮೆಯಾಗಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಟಾಪ್ ಅಪ್ ಮಾಡಿ."
+  },
+  "errAccountSuspended": {
+    "message": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸ್ಥಗಿತಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "errNotSignedIn": {
+    "message": "ನೀವು ಸೈನ್ ಇನ್ ಆಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಸೈನ್ ಇನ್ ಮಾಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "errInvalidRequest": {
+    "message": "ಈ ಮನವಿಯ ಕೆಲ ಭಾಗ ಗುರುತಿಸಲಾಗಲಿಲ್ಲ. ವಿಸ್ತರಣೆ ಅಪ್‌ಡೇಟ್ ಆಗಿದೆಯೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
+  },
+  "errServiceUnavailable": {
+    "message": "ನಮ್ಮ ಕಡೆಯಿಂದ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "errRegionNotSupported": {
+    "message": "ನಿಯಂತ್ರಣ ಅಗತ್ಯತೆಗಳ ಕಾರಣ DisinfaX ಇನ್ನೂ ನಿಮ್ಮ ಪ್ರದೇಶದಲ್ಲಿ ಲಭ್ಯವಿಲ್ಲ."
+  },
+  "errInvalidAmount": {
+    "message": "ಆ ಟಾಪ್-ಅಪ್ ಮೊತ್ತ ಮಾನ್ಯವಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಬೇರೆ ಮೊತ್ತವನ್ನು ಆಯ್ಕೆಮಾಡಿ."
+  },
+  "errNotFound": {
+    "message": "ಅದನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
   }
 }

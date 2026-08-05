@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Klassifizéiert all Tweeten an dësem Batch nei",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Weis nach eng Kéier all Behaaptungen an dësem Tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Dës Behaptung nei recherchéieren",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Alles iwwerpréiwen"
+  },
+  "errBalanceTooLow": {
+    "message": "Däin Kontostand ass ze niddreg. Luef w.e.g. op fir weiderzemaachen."
+  },
+  "errAccountSuspended": {
+    "message": "Däin Kont gouf gespaart."
+  },
+  "errNotSignedIn": {
+    "message": "Du bass net ugemellt. Mell dech w.e.g. un a probéier nach eng Kéier."
+  },
+  "errInvalidRequest": {
+    "message": "En Deel vun dëser Ufro gouf net erkannt. Kontrolléier w.e.g. datt d'Erweiderung aktuell ass."
+  },
+  "errServiceUnavailable": {
+    "message": "Op eiser Säit ass e Feeler opgetrueden. Probéier w.e.g. an engem Moment nach eng Kéier."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ass an denger Regioun nach net verfügbar wéinst regulatoresche Vireschrëften."
+  },
+  "errInvalidAmount": {
+    "message": "Dee Luef-Betrag ass net valabel. Wielt w.e.g. en anere Betrag."
+  },
+  "errNotFound": {
+    "message": "Dat konnt net fonnt ginn. Probéier nach eng Kéier."
   }
 }

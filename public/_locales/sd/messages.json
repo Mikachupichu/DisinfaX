@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "هن ٽوئيٽ ۾ سڀني دعوائن کي ٻيهر درجه بندي ڪريو",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "هن ٽوئيٽ ۾ سڀني دعوائن کي ٻيهر ظاهر ڪريو",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "هن دعوى جي ٻيهر تحقيق ڪريو",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "سڀ تصديق ڪريو"
+  },
+  "errBalanceTooLow": {
+    "message": "توهان جو بيلنس تمام گھٽ آهي. جاري رکڻ لاءِ مهرباني ڪري ٽاپ اپ ڪريو."
+  },
+  "errAccountSuspended": {
+    "message": "توهان جو اڪاؤنٽ معطل ڪيو ويو آهي."
+  },
+  "errNotSignedIn": {
+    "message": "توهان سائن ان نه آهيو. مهرباني ڪري سائن ان ڪريو ۽ ٻيهر ڪوشش ڪريو."
+  },
+  "errInvalidRequest": {
+    "message": "هن گھرج جو ڪجهه حصو سڃاتو نه ويو. يقيني بڻايو ته ايڪسٽينشن اپڊيٽ ٿيل آهي."
+  },
+  "errServiceUnavailable": {
+    "message": "اسان جي پاسي کان هڪ خرابي پيش آئي. ٿوري دير بعد ٻيهر ڪوشش ڪريو."
+  },
+  "errRegionNotSupported": {
+    "message": "ريگيوليٽري گهرجن جي ڪري DisinfaX اڃا تائين توهان جي علائقي ۾ موجود ناهي."
+  },
+  "errInvalidAmount": {
+    "message": "اهو ٽاپ اپ رقم صحيح ناهي. مهرباني ڪري ڪا ٻي رقم چونڊيو."
+  },
+  "errNotFound": {
+    "message": "اهو ڳولي نه سڪيو. ٻيهر ڪوشش ڪريو."
   }
 }

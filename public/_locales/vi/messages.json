@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Phân loại lại tất cả tuyên bố trong tweet này",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Hiển thị lại tất cả tuyên bố trong tweet này",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Nghiên cứu lại tuyên bố này",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Kiểm Chứng Tất Cả"
+  },
+  "errBalanceTooLow": {
+    "message": "Số dư của bạn quá thấp. Vui lòng nạp tiền để tiếp tục."
+  },
+  "errAccountSuspended": {
+    "message": "Tài khoản của bạn đã bị đình chỉ."
+  },
+  "errNotSignedIn": {
+    "message": "Bạn chưa đăng nhập. Vui lòng đăng nhập và thử lại."
+  },
+  "errInvalidRequest": {
+    "message": "Có phần nào đó trong yêu cầu này không được nhận dạng. Vui lòng đảm bảo tiện ích mở rộng đã được cập nhật."
+  },
+  "errServiceUnavailable": {
+    "message": "Đã xảy ra lỗi ở phía chúng tôi. Vui lòng thử lại sau một chút."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX chưa khả dụng tại khu vực của bạn do yêu cầu quy định."
+  },
+  "errInvalidAmount": {
+    "message": "Số tiền nạp đó không hợp lệ. Vui lòng chọn số tiền khác."
+  },
+  "errNotFound": {
+    "message": "Không tìm thấy nội dung đó. Vui lòng thử lại."
   }
 }

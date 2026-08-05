@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Rov faib tag nrho cov lus hais hauv tweet no",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Rov qhia tag nrho cov lus hais hauv tweet no",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Rov tshawb qhov kev thov no",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Tshawb Xyuas Tag Nrho"
+  },
+  "errBalanceTooLow": {
+    "message": "Koj cov nyiaj tshuav tsawg heev. Thov ntxiv nyiaj mus ntxiv."
+  },
+  "errAccountSuspended": {
+    "message": "Koj tus account raug muab txwv lawm."
+  },
+  "errNotSignedIn": {
+    "message": "Koj tsis tau nkag mus. Thov nkag mus thiab sim dua."
+  },
+  "errInvalidRequest": {
+    "message": "Ib feem ntawm qhov kev thov no tsis paub. Thov xyuas kom pom tias qhov txuas ntxiv tau hloov tshiab."
+  },
+  "errServiceUnavailable": {
+    "message": "Muaj kev qaug zog sab peb. Thov sim dua tom qab me ntsis."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX tseem tsis tau muaj nyob rau hauv koj thaj chaw vim yog cov cai kev tswj hwm."
+  },
+  "errInvalidAmount": {
+    "message": "Cov nyiaj ntxiv ntawd tsis raug cai. Thov xaiv lwm cov nyiaj."
+  },
+  "errNotFound": {
+    "message": "Tsis pom qhov ntawd. Sim dua."
   }
 }

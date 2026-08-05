@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Adrenkañ holl frazennoù an tweet-mañ",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Diskouez adarre holl frazennoù an tweet-mañ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Adklask ar ar goulenn-mañ",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Gwiriañ pep tra"
+  },
+  "errBalanceTooLow": {
+    "message": "Re izel eo ho koulzad. Marplij lakait arc'hant evit kenderc'hel."
+  },
+  "errAccountSuspended": {
+    "message": "Suspantet eo bet ho kont."
+  },
+  "errNotSignedIn": {
+    "message": "N'oc'h ket kevreet. Marplij kevreañ hag esae en-dro."
+  },
+  "errInvalidRequest": {
+    "message": "N'eo ket bet anavezet un darn eus ar goulenn-mañ. Marplij gwiriañ ma'z eo hizivaet an astenn."
+  },
+  "errServiceUnavailable": {
+    "message": "Ur fazi zo bet war hor tu. Marplij esae en-dro a-benn ur pennadig."
+  },
+  "errRegionNotSupported": {
+    "message": "N'eo ket dihegerz DisinfaX c'hoazh en ho rannvro abalamour da rekizadurioù reoliadel."
+  },
+  "errInvalidAmount": {
+    "message": "N'eo ket talvoudek ar sammad-se. Marplij dibab ur sammad all."
+  },
+  "errNotFound": {
+    "message": "N'eo ket bet kavet an dra-se. Esae en-dro."
   }
 }

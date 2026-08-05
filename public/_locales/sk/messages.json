@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Preklasifikovať všetky tvrdenia v tomto tweete",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Znova odhaliť všetky tvrdenia v tomto tweete",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Znovu preskúmať toto tvrdenie",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Overiť všetko"
+  },
+  "errBalanceTooLow": {
+    "message": "Váš zostatok je príliš nízky. Dobite si kredit a pokračujte."
+  },
+  "errAccountSuspended": {
+    "message": "Váš účet bol pozastavený."
+  },
+  "errNotSignedIn": {
+    "message": "Nie ste prihlásení. Prihláste sa a skúste to znova."
+  },
+  "errInvalidRequest": {
+    "message": "Časť tejto požiadavky nebola rozpoznaná. Uistite sa, že máte aktuálnu verziu rozšírenia."
+  },
+  "errServiceUnavailable": {
+    "message": "Na našej strane nastala chyba. Skúste to znova za chvíľu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX zatiaľ nie je vo vašom regióne k dispozícii z dôvodu regulačných požiadaviek."
+  },
+  "errInvalidAmount": {
+    "message": "Táto suma dobitia nie je platná. Vyberte inú sumu."
+  },
+  "errNotFound": {
+    "message": "To sa nepodarilo nájsť. Skúste to znova."
   }
 }

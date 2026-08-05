@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "اس ٹویٹ میں موجود تمام دعووں کو دوبارہ درجہ بند کریں",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "اس ٹویٹ میں موجود تمام دعووں کو دوبارہ ظاہر کریں",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "اس دعوے کی دوبارہ تحقیق کریں",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "سب کی تصدیق کریں"
+  },
+  "errBalanceTooLow": {
+    "message": "آپ کا بیلنس بہت کم ہے۔ جاری رکھنے کے لیے ٹاپ اپ کریں۔"
+  },
+  "errAccountSuspended": {
+    "message": "آپ کا اکاؤنٹ معطل کر دیا گیا ہے۔"
+  },
+  "errNotSignedIn": {
+    "message": "آپ سائن ان نہیں ہیں۔ سائن ان کریں اور دوبارہ کوشش کریں۔"
+  },
+  "errInvalidRequest": {
+    "message": "اس درخواست کا کچھ حصہ شناخت نہیں ہو سکا۔ یقینی بنائیں کہ ایکسٹینشن اپ ڈیٹ ہے۔"
+  },
+  "errServiceUnavailable": {
+    "message": "ہماری طرف سے ایک خرابی پیش آئی۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔"
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX ریگولیٹری تقاضوں کی وجہ سے ابھی آپ کے علاقے میں دستیاب نہیں ہے۔"
+  },
+  "errInvalidAmount": {
+    "message": "وہ ٹاپ اپ رقم درست نہیں ہے۔ براہ کرم دوسری رقم منتخب کریں۔"
+  },
+  "errNotFound": {
+    "message": "یہ نہیں ملا۔ دوبارہ کوشش کریں۔"
   }
 }

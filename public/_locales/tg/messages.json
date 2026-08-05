@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Азнавтасниф кардани ҳамаи даъвоҳо дар ин твит",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Аз нав ошкор кардани ҳамаи даъвоҳо дар ин твит",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Азнавтаҳқиқ кардани ин даъво",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Ҳамаро тафтиш кардан"
+  },
+  "errBalanceTooLow": {
+    "message": "Тавозуни шумо хеле паст аст. Барои идома додан, лутфан пур кунед."
+  },
+  "errAccountSuspended": {
+    "message": "Ҳисоби шумо боздошта шудааст."
+  },
+  "errNotSignedIn": {
+    "message": "Шумо ворид нашудаед. Лутфан ворид шавед ва боз кӯшиш кунед."
+  },
+  "errInvalidRequest": {
+    "message": "Қисме аз ин дархост шинохта нашуд. Лутфан мутмаин шавед, ки васеъшавӣ навсозӣ шудааст."
+  },
+  "errServiceUnavailable": {
+    "message": "Дар тарафи мо хатогӣ рух дод. Лутфан пас аз лаҳзае боз кӯшиш кунед."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ҳоло дар минтақаи шумо мавҷуд нест, зеро талаботи танзимкунанда."
+  },
+  "errInvalidAmount": {
+    "message": "Ин миқдори пуркунӣ дуруст нест. Лутфан миқдори дигар интихоб кунед."
+  },
+  "errNotFound": {
+    "message": "Он ёфт нашуд. Лутфан боз кӯшиш кунед."
   }
 }

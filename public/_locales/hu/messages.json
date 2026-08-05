@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "A tweet összes állításának újraosztályozása",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "A tweet összes állításának újra felfedése",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Állítás újrakutatása",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Mindet ellenőrizd"
+  },
+  "errBalanceTooLow": {
+    "message": "Az egyenleged túl alacsony. Töltsd fel a folytatáshoz."
+  },
+  "errAccountSuspended": {
+    "message": "A fiókodat felfüggesztették."
+  },
+  "errNotSignedIn": {
+    "message": "Nincs bejelentkezve. Jelentkezz be, és próbáld újra."
+  },
+  "errInvalidRequest": {
+    "message": "A kérés egy része nem volt felismerhető. Ellenőrizd, hogy a bővítmény naprakész."
+  },
+  "errServiceUnavailable": {
+    "message": "Hiba történt a mi oldalunkon. Próbáld újra egy kis idő múlva."
+  },
+  "errRegionNotSupported": {
+    "message": "A DisinfaX szabályozási okokból még nem elérhető a régiódban."
+  },
+  "errInvalidAmount": {
+    "message": "Az a feltöltési összeg nem érvényes. Válassz másik összeget."
+  },
+  "errNotFound": {
+    "message": "Ez nem található. Próbáld újra."
   }
 }

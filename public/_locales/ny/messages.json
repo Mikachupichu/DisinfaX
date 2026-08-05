@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sinthaninso magulu a ziganizo zonse mu tweet iyi",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Onetsaninso zonena zonse mu tweet iyi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Fufuzaninso pempho ili",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Wunikani zonse"
+  },
+  "errBalanceTooLow": {
+    "message": "Ndalama zanu zatsika kwambiri. Chonde onjezerani kuti mupitirize."
+  },
+  "errAccountSuspended": {
+    "message": "Akaunti yanu yaimitsidwa."
+  },
+  "errNotSignedIn": {
+    "message": "Simulowa. Chonde lowani ndikuyesa kachiwiri."
+  },
+  "errInvalidRequest": {
+    "message": "Gawo la pempho ili silinazindikirike. Chonde onetsetsani kuti chowonjezera chasinthidwa."
+  },
+  "errServiceUnavailable": {
+    "message": "Vuto lachitika kumbali kwathu. Chonde yesani kachiwiri patapita kanthawi."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX sichinapezekebe m'dera lanu chifukwa cha zofunikira zamalamulo."
+  },
+  "errInvalidAmount": {
+    "message": "Ndalama zowonjezerazo si zoyenera. Chonde sankhani ndalama zina."
+  },
+  "errNotFound": {
+    "message": "Izi sizinapezeke. Yesani kachiwiri."
   }
 }

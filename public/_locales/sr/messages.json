@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Поново класификуј све тврдње у овом твиту",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Поново откриј све тврдње у овом твиту",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Поново истражи ову тврдњу",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Провери све"
+  },
+  "errBalanceTooLow": {
+    "message": "Ваш салдо је прениско. Допуните рачун да бисте наставили."
+  },
+  "errAccountSuspended": {
+    "message": "Ваш налог је суспендован."
+  },
+  "errNotSignedIn": {
+    "message": "Нисте пријављени. Пријавите се и покушајте поново."
+  },
+  "errInvalidRequest": {
+    "message": "Део овог захтева није препознат. Проверите да ли је екстензија ажурна."
+  },
+  "errServiceUnavailable": {
+    "message": "Дошло је до грешке са наше стране. Покушајте поново за тренутак."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX још није доступан у вашем региону због регулаторних захтева."
+  },
+  "errInvalidAmount": {
+    "message": "Тај износ допуне није важећи. Изаберите други износ."
+  },
+  "errNotFound": {
+    "message": "То није пронађено. Покушајте поново."
   }
 }

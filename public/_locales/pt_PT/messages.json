@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Reclassificar todas as alegações deste tweet",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Revelar novamente as alegações deste tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Pesquisar novamente esta alegação",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Verificar tudo"
+  },
+  "errBalanceTooLow": {
+    "message": "O seu saldo é muito baixo. Por favor, recarregue para continuar."
+  },
+  "errAccountSuspended": {
+    "message": "A sua conta foi suspensa."
+  },
+  "errNotSignedIn": {
+    "message": "Não está autenticado. Inicie sessão e tente novamente."
+  },
+  "errInvalidRequest": {
+    "message": "Uma parte deste pedido não foi reconhecida. Certifique-se de que a extensão está atualizada."
+  },
+  "errServiceUnavailable": {
+    "message": "Ocorreu um erro do nosso lado. Tente novamente dentro de momentos."
+  },
+  "errRegionNotSupported": {
+    "message": "O DisinfaX ainda não está disponível na sua região devido a requisitos regulatórios."
+  },
+  "errInvalidAmount": {
+    "message": "Esse valor de recarga não é válido. Escolha outro valor."
+  },
+  "errNotFound": {
+    "message": "Não foi possível encontrar isso. Tente novamente."
   }
 }

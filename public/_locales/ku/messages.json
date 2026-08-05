@@ -112,8 +112,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hemî tweetên di vê batchê de ji nû ve tesnîf bike",
-    "description": "Tooltip for the batch re-classification button."
+    "message": "Hemî angaşên vê tweetê ji nû ve derxe holê",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Vê îdîayê ji nû ve lêkolîn bike",
@@ -260,5 +260,29 @@
   },
   "factCheckAllButton": {
     "message": "Hemî kontrol bike"
+  },
+  "errBalanceTooLow": {
+    "message": "Bakiyeya te pir kêm e. Ji kerema xwe dagirtin bike da ku bidomînî."
+  },
+  "errAccountSuspended": {
+    "message": "Hesabê te hatiye rawestandin."
+  },
+  "errNotSignedIn": {
+    "message": "Tu têketî nînî. Ji kerema xwe têkeve û dîsa biceribîne."
+  },
+  "errInvalidRequest": {
+    "message": "Perçeyek ji vê daxwazê nehat naskirin. Ji kerema xwe kontrol bike ku pêvek rojane ye."
+  },
+  "errServiceUnavailable": {
+    "message": "Li aliyê me çewtiyek çêbû. Ji kerema xwe piştî demek kurt dîsa biceribîne."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX bi sedema pêwistiyên rêziknameyê hê li herêma te tune ye."
+  },
+  "errInvalidAmount": {
+    "message": "Ew mîqdara dagirtinê ne derbasdar e. Ji kerema xwe mîqdareke din hilbijêre."
+  },
+  "errNotFound": {
+    "message": "Ev nehat dîtin. Dîsa biceribîne."
   }
 }

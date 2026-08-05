@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Re-classify this tweet's claims",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Re-reveal this tweet's claims",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Re-research this claim",

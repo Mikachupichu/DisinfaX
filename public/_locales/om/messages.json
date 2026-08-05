@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Waakkota tweet kana keessaa hunda deebisii ramadi",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Himannoo tweet kana keessaa hunda deebisii mul'isi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Waakkata kana deebisii qori",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Hunda mirkaneessi"
+  },
+  "errBalanceTooLow": {
+    "message": "Baankiin kee baay'ee gadi bu'aadha. Maaloo itti fufuuf guuti."
+  },
+  "errAccountSuspended": {
+    "message": "Herregni kee dhaabbateera."
+  },
+  "errNotSignedIn": {
+    "message": "Hin seenne. Maaloo seenii deebi'ii yaali."
+  },
+  "errInvalidRequest": {
+    "message": "Kutaa gaaffii kanaa hin beekamne. Maaloo dabalataan haaromsameera taʼuu mirkaneessi."
+  },
+  "errServiceUnavailable": {
+    "message": "Dogoggorri gama keenyaan uumameera. Maaloo yeroo xiqqoo booda deebi'ii yaali."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX sababa qajeelfama seeraatiin naannoo keessatti amma illee hin argamne."
+  },
+  "errInvalidAmount": {
+    "message": "Baay'inni guutuu kun sirrii miti. Maaloo baay'ina biraa filadhu."
+  },
+  "errNotFound": {
+    "message": "Kun hin argamne. Deebi'ii yaali."
   }
 }

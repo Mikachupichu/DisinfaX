@@ -116,8 +116,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Перакласіфікаваць усе сцвярджэнні ў гэтым твіце",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Паказаць зноў усе сцвярджэнні ў гэтым твіце",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Перадаследаваць гэта сцвярджэнне",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "Праверыць усё"
+  },
+  "errBalanceTooLow": {
+    "message": "Ваш баланс занадта нізкі. Папаўніце рахунак, каб працягнуць."
+  },
+  "errAccountSuspended": {
+    "message": "Ваш акаунт быў прыпынены."
+  },
+  "errNotSignedIn": {
+    "message": "Вы не ўвайшлі ў сістэму. Увайдзіце і паспрабуйце зноў."
+  },
+  "errInvalidRequest": {
+    "message": "Частка гэтага запыту не была распазнана. Пераканайцеся, што пашырэнне абноўленае."
+  },
+  "errServiceUnavailable": {
+    "message": "На нашым баку адбылася памылка. Паспрабуйце зноў праз хвіліну."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX пакуль недаступны ў вашым рэгіёне з-за нарматыўных вымог."
+  },
+  "errInvalidAmount": {
+    "message": "Гэтая сума папаўнення несапраўдная. Выберыце іншую суму."
+  },
+  "errNotFound": {
+    "message": "Не ўдалося знайсці гэта. Паспрабуйце зноў."
   }
 }

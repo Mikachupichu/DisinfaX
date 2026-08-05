@@ -149,8 +149,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "මෙම ට්වීට් හි සියලුම ප්‍රකාශ නැවත වර්ග කරන්න",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "මෙම ට්වීට් හි සියලුම ප්‍රකාශ නැවත හෙළි කරන්න",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "මෙම ප්‍රකාශය නැවත පර්යේෂණ කරන්න",
@@ -264,5 +264,29 @@
   },
   "factCheckAllButton": {
     "message": "සියල්ල පරීක්ෂා කරන්න"
+  },
+  "errBalanceTooLow": {
+    "message": "ඔබේ ශේෂය ඉතා අඩුයි. ඉදිරියට යාමට කරුණාකර මුදල් එකතු කරන්න."
+  },
+  "errAccountSuspended": {
+    "message": "ඔබේ ගිණුම අත්හිටුවා ඇත."
+  },
+  "errNotSignedIn": {
+    "message": "ඔබ පුරන ලද නැත. කරුණාකර ලොග් වී නැවත උත්සාහ කරන්න."
+  },
+  "errInvalidRequest": {
+    "message": "මෙම ඉල්ලීමේ කොටසක් හඳුනාගත නොහැකි විය. දිගුව යාවත්කාලීන බව තහවුරු කරන්න."
+  },
+  "errServiceUnavailable": {
+    "message": "අපගේ පැත්තෙන් දෝෂයක් සිදු විය. මොහොතකින් නැවත උත්සාහ කරන්න."
+  },
+  "errRegionNotSupported": {
+    "message": "නියාමන අවශ්‍යතා නිසා DisinfaX තවම ඔබේ කලාපයේ නොමැත."
+  },
+  "errInvalidAmount": {
+    "message": "එම ගාස්තු එකතු කිරීමේ ප්‍රමාණය වැරදිය. කරුණාකර වෙනත් ප්‍රමාණයක් තෝරන්න."
+  },
+  "errNotFound": {
+    "message": "එය සොයාගත නොහැකි විය. නැවත උත්සාහ කරන්න."
   }
 }

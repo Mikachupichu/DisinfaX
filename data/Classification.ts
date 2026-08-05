@@ -1,14 +1,22 @@
+/** A citation backing a claim's verdict. Both fields are optional because the
+ *  researcher may return a bare URL with no title, or vice versa. */
 export type Source = {
     title?: string;
     url?: string;
 };
 
 export type Claim = {
+    /** The claim as it appears in the tweet text, used to locate it for highlighting. */
     text: string;
+    /** The claim restated as a standalone, checkable sentence. Shown in the popover
+     *  in place of `text` when present. */
     rewritten?: string;
     verdict: "false" | "true" | "research required" | "unknown";
+    /** The researcher's prose explanation of the verdict, or null before research. */
     note: null | string;
+    /** How certain the researcher is, 0.0 (uncertain) – 1.0 (certain). */
     confidence?: number;
+    /** Degree of truth, -1.0 (completely false) – 1.0 (completely true). */
     veracity?: number;
     sources?: Source[];
     /** Canonical claim text from the DB table entry this claim is linked to.
@@ -49,11 +57,17 @@ export type Claim = {
     freshlyResearched?: boolean;
 };
 
+/** One run of tweet text, produced by splitting the body around its claims so
+ *  each piece can be rendered either plain or as a highlight. */
 export type TextSegment = {
     text: string;
+    /** 0-based index into the owning classification's `claims`, or null when this
+     *  segment is ordinary text covered by no claim. */
     claimIndex: number | null;
 };
 
+/** The classification of a quoted tweet, nested inside its quoter's. Carries no
+ *  on-hold or translation state of its own — those live on the parent. */
 export type QuotedClassification = {
     id: string;
     claims: null | Claim[];
@@ -61,7 +75,10 @@ export type QuotedClassification = {
 };
 
 export type Classification = {
+    /** The tweet id this classification describes. */
     id: string;
+    /** The batch this classification was requested under, used to match it back to
+     *  the originating CLASSIFY_TWEETS message. */
     batchId: string;
     claims: null | Claim[];
     segments?: TextSegment[] | null;
@@ -94,31 +111,26 @@ export type Classification = {
     textLocale?: string;
 };
 
-export interface ResearchResult {
-    text: string;
-    verdict: "true" | "false" | "unknown";
-    note: string;
-}
-
 /**
- * Format a verdict label from separate probability (confidence) and veracity (degree of truth) scores.
+ * Reduce the researcher's two scores to the coarse verdict stored on a claim.
  *
- * probability: 0.0 (uncertain) – 1.0 (certain)
- * veracity:    -1.0 (completely false) – 1.0 (completely true)
+ * probability: 0.0 (uncertain) – 1.0 (certain) — how confident the model is
+ * veracity:   -1.0 (completely false) – 1.0 (completely true) — degree of truth
  *
- * When probability < 0.2, everything is "unknown".
- * Otherwise:
- *   1. Probability adjective  (Very Likely / Likely / Possibly / none) — how confident the AI is
- *   2. Veracity adjective     (Mostly / Arguably / Partially / Equivocally / none) — degree of truth
- *   3. Truth verdict          (True / False) — based on sign of veracity
+ * Below a probability of 0.2 nothing is claimed and the verdict is "unknown".
+ * Above it, the sign of veracity decides "true" vs "false".
+ *
+ * Only this coarse verdict is derived here. The human-readable label that layers
+ * the probability and veracity adjectives on top ("Very Likely Mostly True") is
+ * built separately at render time by verdictLabel() in utils/injecting.ts.
  */
 export function formatVerdict(probability: number, veracity: number, reasoning: string): Pick<Claim, "verdict" | "note"> {
-    // Low probability → unknown (veracity near 0 with high probability is "Equivocally True/False")
+    // Too uncertain to commit to a direction, whatever the veracity says.
     if (probability < 0.2) {
         return { verdict: "unknown", note: reasoning };
     }
 
-    // true/false based on veracity sign
+    // Sign of veracity picks the direction; a veracity of exactly 0 reads as "false".
     const verdict: Claim["verdict"] = veracity > 0.0 ? "true" : "false";
 
     // Store the reasoning without a verdict prefix. The badge and popover header

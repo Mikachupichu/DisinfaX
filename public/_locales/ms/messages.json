@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Mengklasifikasikan semula semua dakwaan dalam tweet ini",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "Dedahkan semula semua dakwaan dalam tweet ini",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "Menyelidik semula tuntutan ini",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "Semak Semua Fakta"
+  },
+  "errBalanceTooLow": {
+    "message": "Baki anda terlalu rendah. Sila tambah nilai untuk meneruskan."
+  },
+  "errAccountSuspended": {
+    "message": "Akaun anda telah digantung."
+  },
+  "errNotSignedIn": {
+    "message": "Anda belum log masuk. Sila log masuk dan cuba lagi."
+  },
+  "errInvalidRequest": {
+    "message": "Sesuatu tentang permintaan ini tidak dikenali. Sila pastikan sambungan ini versi terkini."
+  },
+  "errServiceUnavailable": {
+    "message": "Sesuatu tidak kena di pihak kami. Sila cuba lagi sebentar lagi."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX masih belum tersedia di wilayah anda disebabkan keperluan kawal selia."
+  },
+  "errInvalidAmount": {
+    "message": "Jumlah tambah nilai itu tidak sah. Sila pilih jumlah lain."
+  },
+  "errNotFound": {
+    "message": "Perkara itu tidak dapat ditemui. Sila cuba lagi."
   }
 }

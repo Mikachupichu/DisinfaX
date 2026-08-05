@@ -114,8 +114,8 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "このツイートの主張をすべて再分類",
-    "description": "Tooltip for the button that re-classifies every claim in this tweet."
+    "message": "このツイートの主張をすべて再表示",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
     "message": "この主張を再調査",
@@ -262,5 +262,29 @@
   },
   "factCheckAllButton": {
     "message": "すべてファクトチェック"
+  },
+  "errBalanceTooLow": {
+    "message": "残高が不足しています。続けるにはチャージしてください。"
+  },
+  "errAccountSuspended": {
+    "message": "アカウントは停止されています。"
+  },
+  "errNotSignedIn": {
+    "message": "サインインしていません。サインインしてもう一度お試しください。"
+  },
+  "errInvalidRequest": {
+    "message": "リクエストの内容が認識されませんでした。拡張機能が最新であることをご確認ください。"
+  },
+  "errServiceUnavailable": {
+    "message": "こちらで問題が発生しました。しばらくしてから再度お試しください。"
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaXは規制上の要件により、お住まいの地域ではまだご利用いただけません。"
+  },
+  "errInvalidAmount": {
+    "message": "チャージ金額が無効です。別の金額を選択してください。"
+  },
+  "errNotFound": {
+    "message": "見つかりませんでした。もう一度お試しください。"
   }
 }
