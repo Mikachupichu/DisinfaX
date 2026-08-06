@@ -82,6 +82,7 @@ function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, numb
 /** Pull a tweet and its already-linked claims directly (also touches last_accessed).
  *  Returns null when the tweet is not in the DB yet. */
 export async function fetchTweetAndTouchNetwork(hexHash: string): Promise<TweetFetchResult | null> {
+  console.log(`[fetches-usage] fetch_tweet_and_touch_network hash=${hexHash}`);
   const { data, error } = await supabase.rpc('fetch_tweet_and_touch_network', {
     input_hash: hashToBytea(hexHash),
   });
@@ -111,6 +112,7 @@ export async function fetchTweetAndTouchNetwork(hexHash: string): Promise<TweetF
 /** Pull a single claim directly (also touches last_accessed). Match by id, or by
  *  (locale, text), or by text across all locales. Returns null if not found. */
 export async function getFullClaim(opts: { id?: string; text?: string; locale?: string }): Promise<ClaimPayload | null> {
+  console.log(`[fetches-usage] get_full_claim id=${opts.id ?? 'none'} text="${(opts.text ?? '').slice(0, 40)}"`);
   const { data, error } = await supabase.rpc('get_full_claim', {
     target_id: opts.id ?? null,
     target_locale: opts.locale ?? null,
@@ -340,6 +342,13 @@ export async function subscribeRow(opts: SubscribeOptions): Promise<Subscription
       if (parsed) {
         try { opts.onClaim(parsed); } catch (e) { console.error('[realtime] onClaim error:', e); }
       }
+      // A CLAIM subscription exists to await exactly one result, and the DB stops
+      // broadcasting to it once that result is delivered — so treat the payload as
+      // terminal and close locally. This keeps isClosed() honest, so a later need for
+      // this claim opens a fresh subscription instead of waiting on a channel that will
+      // never fire again. Tweet subscriptions are left alone: more claims may still come,
+      // and the client can't know when the last one has arrived.
+      if (opts.kind === 'claim') finish();
     }
   });
 
@@ -355,6 +364,7 @@ export async function subscribeRow(opts: SubscribeOptions): Promise<Subscription
   }
 
   try {
+    console.log(`[fetches-usage] subscribe kind=${opts.kind} hash=${opts.hash ?? 'none'} claimId=${opts.claimId ?? 'none'} claimText="${(opts.claimText ?? '').slice(0, 40)}"`);
     const { error } = await supabase.rpc('subscribe', args);
     if (error) {
       console.error('[realtime] subscribe RPC error:', error.message);

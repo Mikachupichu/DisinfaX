@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Ählisini barla"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX ýalňyşyp biler. Maglumaty gaýtadan barlaň.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Balansyňyz gaty pes. Dowam etmek üçin dolduryň."
   },

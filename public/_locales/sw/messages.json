@@ -263,6 +263,10 @@
   "factCheckAllButton": {
     "message": "Hakiki yote"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX inaweza kufanya makosa. Hakiki taarifa mara mbili.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Salio lako ni chini sana. Tafadhali ongeza salio ili kuendelea."
   },

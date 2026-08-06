@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Kontroli ĉion"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX povas fari erarojn. Duoble kontrolu la informojn.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Via saldo estas tro malalta. Bonvolu reŝargi por daŭrigi."
   },

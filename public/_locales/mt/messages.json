@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Ivverifika kollox"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX jista' jagħmel żbalji. Iċċekkja l-informazzjoni darbtejn.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Il-bilanċ tiegħek huwa baxx wisq. Jekk jogħġbok agħmel top-up biex tkompli."
   },

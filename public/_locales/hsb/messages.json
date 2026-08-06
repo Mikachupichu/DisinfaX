@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Wšo pruwować"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX móže zmylki činić. Přepruwaj informacije dwójce.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Twój dobytk je přeco snadny. Prošu dopołń dobytk, zo by dale zaběhał."
   },

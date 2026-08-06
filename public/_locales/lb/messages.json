@@ -261,6 +261,10 @@
   "factCheckAllButton": {
     "message": "Alles iwwerpréiwen"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX kann Feeler maachen. Kontrolléier d'Informatiounen nach eng Kéier.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Däin Kontostand ass ze niddreg. Luef w.e.g. op fir weiderzemaachen."
   },

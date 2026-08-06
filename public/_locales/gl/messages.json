@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Verificar todo"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX pode cometer erros. Comproba a información dúas veces.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "O teu saldo é demasiado baixo. Recarga para continuar."
   },

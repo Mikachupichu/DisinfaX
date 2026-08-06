@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Verificar toto"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX pote facer errores. Verifica le information duo vices.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Tu saldo es troppo basse. Per favor recarga pro continuar."
   },

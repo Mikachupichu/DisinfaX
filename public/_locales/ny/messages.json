@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Wunikani zonse"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX angalakwa zolakwika. Onetsetsani zambiri kachiwiri.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Ndalama zanu zatsika kwambiri. Chonde onjezerani kuti mupitirize."
   },

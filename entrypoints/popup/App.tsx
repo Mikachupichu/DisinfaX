@@ -249,6 +249,7 @@ export default function App() {
       {/* Footer layout compressed cleanly near bottom edge */}
       <div className="text-center space-y-0.5 mt-2 select-none">
         <div className="text-[10px] text-zinc-600">DisinfaX v1.0.0</div>
+        <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>
         {!user && <div className="text-[10px] text-zinc-700">{t('cleanupTagline')}</div>}
       </div>
     </div>

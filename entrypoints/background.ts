@@ -298,8 +298,35 @@ export default defineBackground(() => {
    *  get_full_claim, or a Realtime build_claim_payload) into a UI Claim. Shared by the
    *  initial pull and by live subscription merges. Adds dbClaimId (uuid) and handles
    *  is_classifying (another user is classifying → spinner + auto-replace on arrival). */
+  /** Certainty for a DB claim payload.
+   *
+   *  Uses the stored `probability` column when the payload carries it, falling back to
+   *  |veracity| when it doesn't. That fallback used to be UNCONDITIONAL, because
+   *  build_claim_payload and fetch_tweet_and_touch_network never included `probability` —
+   *  so a claim with (probability 0.4, veracity 0.1) was read as certainty 0.1 and rendered
+   *  "Unknown" (verdictLabel treats < 0.2 as unknown) even though the model was moderately
+   *  confident. Worse, it disagreed with itself: the research stream carries a real
+   *  `confidence`, so the same claim showed a qualified verdict when freshly researched and
+   *  flipped to "Unknown" after a reload.
+   *
+   *  The fallback is retained deliberately so this is safe to ship BEFORE the SQL change —
+   *  payloads without `probability` behave exactly as they do today.
+   *
+   *  Numeric columns arrive as STRINGS over PostgREST ("0.4"), hence Number(). Note
+   *  Number(null) === 0 and Number('') === 0, so null/empty are excluded explicitly rather
+   *  than relying on a falsy/NaN check. */
+  function dbClaimConfidence(dbClaim: any): number {
+    const raw = dbClaim?.probability;
+    if (raw !== null && raw !== undefined && raw !== '') {
+      const parsed = Number(raw);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+    return Math.abs(Number(dbClaim?.veracity ?? 0));
+  }
+
   function payloadToClaim(dbClaim: any, locale: string): Claim {
     const veracityScore = Number(dbClaim.veracity ?? 0);
+    const confidenceScore = dbClaimConfidence(dbClaim);
     const claimText = extractLocaleText(dbClaim.claim, locale) || extractClaimText(dbClaim.claim);
     const claimLocale = (() => {
       if (dbClaim.claim && typeof dbClaim.claim === 'object' && !Array.isArray(dbClaim.claim)) {
@@ -343,16 +370,19 @@ export default defineBackground(() => {
       claimLocale,
       reasoningLocale,
     };
-    // These payloads carry no separate probability, so certainty is taken as the
-    // magnitude of veracity: a score near zero means "no strong reading either way".
-    const verdict = Math.abs(veracityScore) < 0.2 ? "unknown" : (veracityScore > 0 ? "true" : "false");
+    // Mirrors formatVerdict() in data/Classification.ts, which is what the FRESH research
+    // path uses: probability alone decides whether anything is claimed at all (< 0.2 =>
+    // "unknown"), and the sign of veracity only picks the direction. Previously this gated
+    // on |veracity| instead, so a DB-loaded claim could disagree with the very same claim
+    // when freshly researched.
+    const verdict = confidenceScore < 0.2 ? "unknown" : (veracityScore > 0 ? "true" : "false");
 
     // Being classified by someone else right now → show existing values (if any)
     // with a spinner; the fresh result auto-replaces them when the subscription
     // delivers it (no click needed).
     if (dbClaim.is_classifying === true) {
       if (!reasoningEmpty && noteText) {
-        return { ...base, verdict, note: noteText, confidence: Math.abs(veracityScore), veracity: veracityScore, sources: normalizeSources(dbClaim.sources), refreshing: true, isClassifying: true };
+        return { ...base, verdict, note: noteText, confidence: confidenceScore, veracity: veracityScore, sources: normalizeSources(dbClaim.sources), refreshing: true, isClassifying: true };
       }
       return { ...base, verdict: "research required", note: null, confidence: undefined, veracity: undefined, sources: [], refreshing: true, isClassifying: true };
     }
@@ -369,13 +399,13 @@ export default defineBackground(() => {
         ...base,
         verdict: "research required", note: null, confidence: undefined, veracity: undefined,
         reclassifyOnHold: true,
-        cachedVerdict: verdict, cachedNote: noteText, cachedConfidence: Math.abs(veracityScore), cachedVeracity: veracityScore,
+        cachedVerdict: verdict, cachedNote: noteText, cachedConfidence: confidenceScore, cachedVeracity: veracityScore,
         cachedSources: normalizeSources(dbClaim.sources), sources: normalizeSources(dbClaim.sources),
       };
     }
 
     // Classified.
-    return { ...base, verdict, note: noteText, confidence: Math.abs(veracityScore), veracity: veracityScore, sources: normalizeSources(dbClaim.sources) };
+    return { ...base, verdict, note: noteText, confidence: confidenceScore, veracity: veracityScore, sources: normalizeSources(dbClaim.sources) };
   }
 
   /** Convert a pulled/subscribed tweet's claims into a Classification for injection.
@@ -521,7 +551,11 @@ export default defineBackground(() => {
         const sourceLocale = dbClaim.locale_key ?? getClaimLocale(dbClaim.claim);
         const reasonStr = extractReasoningText(dbClaim.reasoning, sourceLocale);
         researchCache.set(cacheKey, {
-          confidence: Math.abs(Number(dbClaim.veracity ?? 0)),
+          // Same certainty rule as payloadToClaim (see dbClaimConfidence): the stored
+          // probability, falling back to |veracity| only when the payload lacks it. This
+          // cache feeds applyFindings, which sets `confidence` on the claim — so leaving it
+          // on the old |veracity| basis would silently undo the fix.
+          confidence: dbClaimConfidence(dbClaim),
           veracity: Number(dbClaim.veracity ?? 0),
           reasoning: reasonStr,
           reasoningLocale: sourceLocale,
@@ -1071,7 +1105,33 @@ export default defineBackground(() => {
         // Authoritative DB claim (classified — incl. a replaced rewritten text when the
         // claim was matched to an existing DB row), or a placeholder with no prior
         // verdict (→ Fact-Check button). Adopt it wholesale, keeping other-locale ranges.
-        claims[idx] = { ...incoming, highlight: mergedHl };
+        //
+        // `text` is DELIBERATELY preserved. It is this claim's stable identity — the whole
+        // codebase keys on it (dataset.claimText, the lookups in refreshClaim /
+        // admitFactCheckClaim / enqueueFactCheckClaim / pullClaimBeforeClassify,
+        // researchCache, the factCheckWaitlist and ongoingClaimRefreshes keys, and the
+        // claimDbRowSignal/awaitClaimDbRow pair below) — and it doubles as the verbatim
+        // anchor breakupTweetText's findExactMatch needs to locate the claim in the tweet.
+        // `rewritten` is the mutable one by design: translateClaim streams partial strings
+        // into it and explicitly re-pins `text: cl.text` to document that contract.
+        //
+        // Overwriting `text` here with the canonical DB wording broke BOTH roles at once,
+        // and it only happens on this branch — the two branches above already keep prev's
+        // text. Three concrete symptoms, all from that one line:
+        //   1. refreshClaim's `find(c => c.text === claimText)` missed, so it fell through
+        //      to researching the RAW SPAN with no claim id. classify-tweets then couldn't
+        //      match any row and INSERTed a duplicate claim with NO EMBEDDING — invisible to
+        //      semantic dedup forever after.
+        //   2. admitFactCheckClaim's identical lookup missed and silently DROPPED the claim
+        //      from the batch, so it was never classified at all.
+        //   3. findExactMatch could no longer locate the claim (the canonical wording isn't
+        //      in the tweet), so highlighting degraded to a ~73% fuzzy guess — a
+        //      plausible-looking highlight in slightly the wrong place — or fell back to the
+        //      fallback box.
+        // Nothing is lost by keeping it: the canonical wording still arrives on `rewritten`
+        // (what renderClaims displays) and on `dbClaimText` (what DB matching uses), and
+        // `dbClaimId` from ...incoming means later merges match by id before text anyway.
+        claims[idx] = { ...incoming, text: prev.text, highlight: mergedHl };
       }
       // The claim now carries (or already carried) its DB id → the embedded row exists.
       // Release any research launch parked in awaitClaimDbRow for this claim.
@@ -1104,7 +1164,12 @@ export default defineBackground(() => {
       claims.push(incoming);
     }
 
-    const merged: Classification = { ...cls, claims, onHold: false };
+    // A claim payload arrived, so this tweet is no longer merely "waiting for a
+    // preclassification to produce claims" — clear the spinner flag. runPreclassification
+    // already does exactly this (`merged.preclassifying = undefined`) for its own streamed
+    // results; this covers the DB-broadcast path, which is the only way claims arrive for a
+    // tweet we found mid-preclassification.
+    const merged: Classification = { ...cls, claims, onHold: false, preclassifying: undefined };
     merged.batchId = batchId;
     cacheClassification(merged, batchId);
     broadcastClassification(merged);
@@ -1249,6 +1314,15 @@ export default defineBackground(() => {
       claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
     }
     const claimId = claim?.dbClaimId;
+    // We already know this claim's DB state from the tweet pull / broadcast that delivered
+    // it. Only when it is being classified ELSEWHERE (isClassifying) do we need to watch the
+    // DB for that result — otherwise we classify it ourselves and the answer streams straight
+    // back from classify-tweets, making the subscribe + pull below pure cost (3 billed
+    // fetches per claim) for information we already hold. Every claim the user can actually
+    // click is `reclassifyOnHold` (empty reasoning, or reclassify_after elapsed), and the
+    // pull below returned `false` for both of those anyway — so this skips no work, it only
+    // skips paying to re-confirm it.
+    if (!claim?.isClassifying) return false;
     // Subscribe first, then pull (the pull covers the race where it finished first).
     if (claimId) await ensureClaimSubscription(classificationId, claimId, locale);
     // Explicit refresh: reclassify unconditionally. Returning before the pull also avoids
@@ -1282,12 +1356,12 @@ export default defineBackground(() => {
   /** Run the preclassify worker for one tweet, streaming its claims into the UI and letting
    *  the worker persist the tweet + claims itself. Shared by the two paid entry points:
    *
-   *  - PROCESS_ON_HOLD (the Disinfact button) passes `force = false`: the tweet may have
-   *    landed in the DB between the button appearing and the click, so an existing result is
-   *    reused rather than paid for again.
-   *  - BATCH_REFRESH_FORCE (the "Re-classify this tweet's claims" button) passes
-   *    `force = true`: replacing the stored result IS the request, so the DB pre-check is
-   *    skipped. Checking there made the button a no-op — it just re-injected the same rows.
+   *  - PROCESS_ON_HOLD (the Disinfact button) passes `force = false`.
+   *  - BATCH_REFRESH_FORCE (the "Re-reveal this tweet's claims" button) passes `force = true`.
+   *
+   *  Neither re-checks the DB first any more (that cost a billed fetch on every click to
+   *  cover a rare race); `force` now only controls whether the top-of-tweet spinner is shown,
+   *  since a forced run has no on-hold button to turn into one.
    *
    *  On a no-claims outcome the tweet is returned to `onHoldTweets` so the Disinfact button
    *  comes back and the user can retry. */
@@ -1295,25 +1369,67 @@ export default defineBackground(() => {
     entry: { tweet: MainTweet; hash: string },
     locale: string,
     logTag: string,
-    force: boolean
+    force: boolean,
+    /** Which side of a translation the user is looking at, read off X's toggle row by the
+     *  content script. `null`/omitted means unknown — callers that cannot observe the DOM
+     *  (e.g. BATCH_REFRESH_FORCE) pass nothing and keep the original inference exactly. */
+    displayedSide?: 'TRANSLATED' | 'ORIGINAL' | null,
+    /** The text X is actually rendering, sent only when `displayedSide` is 'TRANSLATED'.
+     *  Used as a last resort when the captured payload has no `translatedText`. */
+    displayedText?: string | null
   ): void {
     const { tweet, hash } = entry;
     const tweetId = tweet.id;
     const keepAlive = setInterval(() => {}, 20000);
 
+    // Whether the user is demonstrably reading the ORIGINAL text. Only a positive
+    // 'ORIGINAL' changes anything: the presence of a translation in the payload says a
+    // translation is AVAILABLE, never that it is DISPLAYED, so inferring from it alone sent
+    // the translated body to the worker and keyed the resulting highlight ranges under the
+    // destination language while the user was reading the original — ranges that then
+    // address the wrong text and cannot be rendered at all. When the side is unknown the
+    // expressions below reduce to exactly what they computed before.
+    // `sourceLanguage` is required, not incidental: it is the key the ranges get stored
+    // under. X's lazily-fetched translations sometimes arrive with destination_language but
+    // no source_language, and without it `displayedLocale` would fall through to the UI
+    // locale — which for a French-UI user reading an English original would file English
+    // ranges under "fr" and recreate the exact bug this fixes. When we cannot name the
+    // original's language we decline to correct and leave the old inference untouched.
+    const readingOriginal = displayedSide === 'ORIGINAL' && !!tweet.sourceLanguage;
+    if (displayedSide === 'ORIGINAL' && !tweet.sourceLanguage) {
+      console.log(`[background] ${logTag} ${tweetId}: user is on the ORIGINAL side but the payload has no sourceLanguage — cannot name the locale, leaving the inference unchanged`);
+    }
+
+    // The translated body to preclassify. Prefer the captured payload; fall back to what X
+    // is rendering when the toggle says the translation is displayed but the payload never
+    // carried it. X fetches translations lazily, so a tweet can be captured (and put on
+    // hold) before its translation exists — the entry then looks untranslated forever, and
+    // the click preclassifies the ORIGINAL text and files the ranges under the ORIGINAL's
+    // locale while the reader is looking at another language. Those ranges are internally
+    // consistent, so nothing detects them as wrong; they simply never match the displayed
+    // text, the render guard refuses them, and the user is billed for nothing.
+    // The payload is still preferred because the DOM copy is `textContent`, which drops
+    // emoji rendered as <img> and would shift every offset after one.
+    const fallbackTranslation = displayedSide === 'TRANSLATED' ? (displayedText?.trim() || undefined) : undefined;
+    const displayedTranslation = tweet.translatedText || fallbackTranslation;
+
     // Build the display tweet (translated text when translated) — the worker
-    // computes highlight ranges against its `text`.
-    function tweetForDisplay(t: MainTweet): MainTweet {
-      const hasTranslationInner = !!t.translatedText && !!t.destinationLanguage;
+    // computes highlight ranges against its `text`. Only the root tweet can use the DOM
+    // fallback: `displayedText` is the main tweet's element, not a quoted or parent post.
+    function tweetForDisplay(t: MainTweet, isRoot = false): MainTweet {
+      const body = isRoot ? displayedTranslation : t.translatedText;
+      const hasTranslationInner = !!body && !!t.destinationLanguage && !readingOriginal;
       return {
         ...t,
-        text: hasTranslationInner ? t.translatedText! : t.text,
+        text: hasTranslationInner ? body! : t.text,
         quoting: t.quoting ? tweetForDisplay(t.quoting as MainTweet) : null,
         replyingTo: t.replyingTo ? tweetForDisplay(t.replyingTo as MainTweet) : null,
       } as MainTweet;
     }
-    const hasTranslation = !!tweet.translatedText && !!tweet.destinationLanguage;
+    const hasTranslation = !!displayedTranslation && !!tweet.destinationLanguage && !readingOriginal;
     const displayedLocale = (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage) ?? locale;
+    const bodySource = !hasTranslation ? 'original' : (tweet.translatedText ? 'translated (payload)' : 'translated (DOM fallback)');
+    console.log(`[background] ${logTag} ${tweetId}: displayedSide=${displayedSide ?? 'unknown'} -> preclassifying ${bodySource} text, highlights keyed ${displayedLocale}`);
 
     gatedSpend(async () => {
       try {
@@ -1333,32 +1449,19 @@ export default defineBackground(() => {
         const existingSub = tweetSubs.get(tweetId);
         if (existingSub && !existingSub.isClosed()) existingSub.resetTimeout(PRECLASS_TIMEOUT_MS);
 
-        // Step 1: the tweet may have been added to the DB between the button
-        // appearing and this click — re-pull first. Skipped on a forced refresh.
-        if (!force) {
-          const refetched = await fetchDbTweet(hash);
-          if (refetched.success) {
-            if (refetched.claims && refetched.claims.length > 0) {
-              const cls = dbClaimsToClassification(tweet, refetched.claims, batchId, locale);
-              cacheClassification(cls, batchId);
-              broadcastClassification(cls);
-              watchClassifyingClaims(tweetId, refetched.claims, locale);
-            }
-            // Tweet exists (with or without claims yet) — subscribe for progressive claims.
-            reResearchedTweetIds.add(tweetId);
-            startTweetSubscription(tweetId, hash, locale);
-            clearInterval(keepAlive);
-            return;
-          }
-        }
+        // Step 1 (removed): this used to re-pull the tweet from the DB on every Disinfact
+        // click, in case it had landed there between the button rendering and the click.
+        // That cost a fetch on every single click to cover a rare race, so we now assume
+        // nothing changed in that window and go straight to preclassifying. The tweet
+        // subscription opened below still delivers whatever the DB ends up holding.
 
-        // Step 2: still absent — run the preclassify worker. It streams claims with
+        // Step 2: run the preclassify worker. It streams claims with
         // highlight ranges (shown immediately, research-required ones as Fact-Check
         // buttons) and persists the tweet + claims itself.
         let latest: Classification | null = null;
         // Pass the hash as the same bytea literal (\x…) used by the fetch/subscribe
         // RPCs so the row the worker inserts matches what we later query.
-        for await (const cls of preClassify(tweetForDisplay(tweet), hashToBytea(hash), displayedLocale, locale)) {
+        for await (const cls of preClassify(tweetForDisplay(tweet, true), hashToBytea(hash), displayedLocale, locale)) {
           cls.batchId = batchId;
           attachTranslatedLocale(cls, tweet);
           // Merge (don't overwrite): a later cumulative snapshot must not reset a claim
@@ -1495,12 +1598,17 @@ export default defineBackground(() => {
             if (dbMissHashes.has(hash)) {
               dbResult = { success: false };
             } else {
-              // Subscribe BEFORE fetching so no claim linked mid-preclassification is
-              // missed in the gap. (If the tweet isn't in the DB the subscribe fails
-              // fast and we fall through to a miss.)
-              await ensureTweetSubscription(tweet.id, hash, locale);
               dbResult = await fetchDbTweet(hash);
-              if (!dbResult?.success) dbMissHashes.add(hash);
+              if (!dbResult?.success) {
+                dbMissHashes.add(hash);
+              } else if (dbResult.is_preclassifying) {
+                // Subscribe ONLY while the tweet is mid-preclassification — the one case
+                // where more claims are still to come. For a settled tweet, subscribe()
+                // re-emits the claims this pull just returned (one BILLED broadcast per
+                // claim, see subscribe()'s tweets branch) and then deletes itself, so it
+                // costs 1 + N fetches for data we already hold.
+                await ensureTweetSubscription(tweet.id, hash, locale);
+              }
             }
             console.log(`[ttft-ext] fetchForTweet ${tweet.id}: main-tweet lookup +${(performance.now() - tFetchStart).toFixed(0)}ms`);
             let quotedHash: string | undefined;
@@ -1510,9 +1618,13 @@ export default defineBackground(() => {
               if (dbMissHashes.has(quotedHash)) {
                 quotedDbResult = { success: false };
               } else {
-                await ensureTweetSubscription(tweet.quoting.id, quotedHash, locale);
                 quotedDbResult = await fetchDbTweet(quotedHash);
-                if (!quotedDbResult?.success) dbMissHashes.add(quotedHash);
+                if (!quotedDbResult?.success) {
+                  dbMissHashes.add(quotedHash);
+                } else if (quotedDbResult.is_preclassifying) {
+                  // Same rule as the main tweet above.
+                  await ensureTweetSubscription(tweet.quoting.id, quotedHash, locale);
+                }
               }
               console.log(`[ttft-ext] fetchForTweet ${tweet.id}: +quoted-tweet lookup +${(performance.now() - tFetchStart).toFixed(0)}ms total`);
             }
@@ -1583,12 +1695,16 @@ export default defineBackground(() => {
 
           safePostToPort(port, { type: "CLASSIFICATION", data: classification });
 
-          // Subscribe so any claims still being linked (tweet mid-preclassification) or
-          // reclassified by another user stream in progressively and auto-replace.
-          startTweetSubscription(classification.id, hit.hash, locale);
+          // Subscribe only while the tweet is still preclassifying — claims are only ever
+          // linked during that window, and fetchForTweet already opened this subscription
+          // in that case (ensureTweetSubscription is deduped, so this just refreshes its
+          // timer and costs nothing). A settled tweet gets none: its claims are already in
+          // the pull above. watchClassifyingClaims is untouched — it only fires for a claim
+          // someone else is mid-classifying, which is rare and must still resolve.
+          if (hit.dbResult?.is_preclassifying) startTweetSubscription(classification.id, hit.hash, locale);
           watchClassifyingClaims(classification.id, hit.dbResult.claims, locale);
           if (classification.quoting && quotedClaims && hit.quotedHash) {
-            startTweetSubscription(classification.quoting.id, hit.quotedHash, locale);
+            if (hit.quotedDbResult?.is_preclassifying) startTweetSubscription(classification.quoting.id, hit.quotedHash, locale);
             watchClassifyingClaims(classification.quoting.id, quotedClaims, locale);
           }
 
@@ -1601,7 +1717,8 @@ export default defineBackground(() => {
             const reasonStr = extractReasoningText(dbClaim.reasoning, claimLocale);
             const existing = researchCache.get(cacheKey);
             researchCache.set(cacheKey, {
-              confidence: Math.abs(Number(dbClaim.veracity ?? 0)),
+              // Same certainty rule as payloadToClaim — see dbClaimConfidence.
+              confidence: dbClaimConfidence(dbClaim),
               veracity: Number(dbClaim.veracity ?? 0),
               reasoning: reasonStr,
               reasoningLocale: claimLocale,
@@ -1642,13 +1759,21 @@ export default defineBackground(() => {
         // preclassifying (claims arrive over the subscription) or genuinely claim-free.
         const dbEmpty = dbMissResults.filter(r => r.dbResult?.success);
         for (const empty of dbEmpty) {
-          const classification = { id: empty.tweet.id, batchId, claims: null, quoting: null };
+          const isPreclassifying = empty.dbResult?.is_preclassifying === true;
+          const classification: Classification = { id: empty.tweet.id, batchId, claims: null, quoting: null };
+          // Mid-preclassification (someone else is running it): present it exactly like a
+          // forced re-preclassification — spinner + "Fact-Check All" where the Disinfact
+          // button would sit, and no Disinfact button — then wait for the claims to arrive
+          // over the subscription. `preclassifying` is the SAME flag
+          // runPreclassification(force = true) already sets, so this reuses that existing,
+          // tested injection path in injectClassification rather than adding a new state.
+          if (isPreclassifying) classification.preclassifying = true;
           attachTranslatedLocale(classification, empty.tweet);
           cacheClassification(classification, batchId);
           safePostToPort(port, { type: "CLASSIFICATION", data: classification });
-          // The tweet row already exists (fetch succeeded), so subscribing is safe and
-          // catches claims still being linked mid-preclassification.
-          startTweetSubscription(classification.id, empty.hash, locale);
+          // Subscribe only while it IS preclassifying: a settled claim-free tweet has
+          // nothing more coming, and subscribe() would delete itself immediately anyway.
+          if (isPreclassifying) startTweetSubscription(classification.id, empty.hash, locale);
         }
 
         // Step 4: Existing cached/uncached split for remaining DB misses
@@ -2487,7 +2612,7 @@ export default defineBackground(() => {
       }
 
       if (message.type === "PROCESS_ON_HOLD") {
-        const { tweetId, locale: msgLocale } = message.data;
+        const { tweetId, locale: msgLocale, displayedSide, displayedText } = message.data;
         const entry = onHoldTweets.get(tweetId);
         if (!entry) {
           console.log(`[background] PROCESS_ON_HOLD: no on-hold tweet for ${tweetId}`);
@@ -2497,7 +2622,11 @@ export default defineBackground(() => {
         // Claim it immediately so a double-click can't start two pipelines.
         onHoldTweets.delete(tweetId);
         console.log(`[background] PROCESS_ON_HOLD: ${tweetId}`);
-        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false);
+        // `displayedSide` comes from X's toggle row at click time. `entry` is the tweet as
+        // first captured and has no idea the user switched sides since, so without it
+        // runPreclassification would key highlights under the translation's locale for a
+        // user reading the original.
+        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false, displayedSide ?? null, displayedText ?? null);
         return;
       }
 
@@ -2821,7 +2950,7 @@ export default defineBackground(() => {
       }
 
       if (message.type === "SET_DISPLAYED_LOCALE") {
-        const { tweetId, textLocale: requestedLocale } = message.data;
+        const { tweetId, textLocale: requestedLocale, displayedText } = message.data;
         const hit = classificationCache.get(tweetId);
         if (!hit) {
           console.log(`[background] SET_DISPLAYED_LOCALE: no cached classification for ${tweetId}`);
@@ -2852,30 +2981,47 @@ export default defineBackground(() => {
         } else if (textLocale === tweet.destinationLanguage && tweet.translatedText) {
           updatedCls.translatedText = tweet.translatedText;
           updatedCls.translatedLocale = tweet.destinationLanguage;
+        } else if (displayedText) {
+          // Locale resolved from the DOM (watchDisplayedLocaleFromDom): X translated the tweet
+          // lazily, so the captured payload has no destinationLanguage and the cached tweet has
+          // only the ORIGINAL text — neither branch above can match. Trusting the DOM copy is
+          // essential, not cosmetic: without it `translatedText` stayed the ORIGINAL while
+          // textLocale said e.g. "th", so backgroundHighlightRange computed ranges against
+          // English and persisted them under the Thai key (identical en/th ranges in the DB),
+          // and kickOffTextBreakup built English segments the mismatch guard had to reject.
+          //
+          // Caveat: the DOM copy is truncated for long tweets, where the XHR payload is
+          // preferred precisely for that reason — so ranges past the cut-off may be missed.
+          // That only applies to this lazily-translated path, which has no other source.
+          updatedCls.translatedText = displayedText;
+          updatedCls.translatedLocale = textLocale;
         }
-        // Clear translateFactChecksOnHold if the new locale already has highlights
-        if (updatedCls.translateFactChecksOnHold && textLocale && updatedCls.claims?.some(cl => !!resolveHighlightRange(cl.highlight, textLocale))) {
-          updatedCls.translateFactChecksOnHold = undefined;
-          console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} clearing translateFactChecksOnHold (highlights exist for ${textLocale})`);
-        }
-        cacheClassification(updatedCls, hit.batchIds.values().next().value ?? '');
-        broadcastClassification(updatedCls);
-
         // If the newly-displayed locale's highlights aren't already cached, NEVER
         // localize automatically (localizing charges the balance). Instead surface our
         // Translate Fact-Checks button; localization runs ONLY when the user clicks it
-        // (the TRANSLATE_FACT_CHECKS path). If they ARE cached, the broadcast above
-        // already injected them instantly.
+        // (the TRANSLATE_FACT_CHECKS path). If they ARE cached, the broadcast below
+        // injects them instantly.
         // Same-language subtag differences (en vs en-US) resolve via the base language,
         // so they DON'T count as missing → no spurious paid localization for the same language.
+        //
+        // Decided BEFORE broadcasting, and broadcast EXACTLY ONCE. This used to broadcast the
+        // locale change first and only then, in a second broadcast, set
+        // translateFactChecksOnHold — leaving one delivery in between that carried neither the
+        // on-hold flag nor the content script's streaming suppression, which is long enough for
+        // the fallback area to flash before the Disinfact button appears. The final state is
+        // identical either way; the two conditions are complements (some claim missing a
+        // highlight for this locale vs. some claim having one).
         const needsLocalization = (classification.claims ?? []).some(cl => !resolveHighlightRange(cl.highlight, textLocale));
         console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} needsLocalization=${needsLocalization}`);
         if (needsLocalization) {
           console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} no cached highlights for ${textLocale} → holding for Translate Fact-Checks button`);
           updatedCls.translateFactChecksOnHold = true;
-          cacheClassification(updatedCls, hit.batchIds.values().next().value ?? '');
-          broadcastClassification(updatedCls);
+        } else if (updatedCls.translateFactChecksOnHold) {
+          updatedCls.translateFactChecksOnHold = undefined;
+          console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} clearing translateFactChecksOnHold (highlights exist for ${textLocale})`);
         }
+        cacheClassification(updatedCls, hit.batchIds.values().next().value ?? '');
+        broadcastClassification(updatedCls);
       }
     });
   });

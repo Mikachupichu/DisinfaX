@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "အားလုံးကို စစ်ဆေးပါ"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX သည် အမှားများ ပြုလုပ်နိုင်သည်။ အချက်အလက်ကို ထပ်မံစစ်ဆေးပါ။",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "သင့်ငွေလက်ကျန် နည်းလွန်းနေပါသည်။ ဆက်လက်ရန် ငွေဖြည့်ပါ။"
   },

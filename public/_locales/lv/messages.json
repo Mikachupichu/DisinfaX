@@ -259,6 +259,10 @@
   "factCheckAllButton": {
     "message": "Pārbaudīt visu"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX var kļūdīties. Vēlreiz pārbaudiet informāciju.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Tava atlikuma summa ir pārāk maza. Papildini kontu, lai turpinātu."
   },

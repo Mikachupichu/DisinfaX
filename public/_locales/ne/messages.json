@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "सबै जाँच गर्नुहोस्"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX ले गल्ती गर्न सक्छ। जानकारी दुई पटक जाँच गर्नुहोस्।",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "तपाईंको ब्यालेन्स धेरै कम छ। जारी राख्नको लागि टप अप गर्नुहोस्।"
   },

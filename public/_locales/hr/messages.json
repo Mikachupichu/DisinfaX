@@ -263,6 +263,10 @@
   "factCheckAllButton": {
     "message": "Provjeri sve"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX može pogriješiti. Dvaput provjerite informacije.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Vaše stanje je preniska. Nadoplatite kako biste nastavili."
   },

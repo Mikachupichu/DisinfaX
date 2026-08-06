@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Ffeithwirio popeth"
   },
+  "aiDisclaimer": {
+    "message": "Gall DisinfaX wneud camgymeriadau. Gwiriwch y wybodaeth eto.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Mae dy falans yn rhy isel. Ychwanega arian i barhau."
   },

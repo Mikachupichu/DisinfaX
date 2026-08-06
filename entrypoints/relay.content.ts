@@ -44,6 +44,116 @@ function sendToPort(message: any) {
   }
 }
 
+/** In-flight DOM locale watches, keyed by tweet id, so a rapid double-toggle replaces its
+ *  own watch instead of leaving two intervals racing to report different locales. */
+const localeWatchTimers = new Map<string, ReturnType<typeof setInterval>>();
+
+/** Resolve a tweet's displayed locale by watching the `lang` attribute X puts on its text
+ *  element (verified: it reads "da" once the post is translated to Danish).
+ *
+ *  Needed because X fetches translations lazily via
+ *  `POST https://api.x.com/2/grok/translation.json` — a `fetch` through X's own service
+ *  worker, which capture.main.content.ts's XMLHttpRequest patch cannot see. So on the FIRST
+ *  toggle click after a page load there is no captured destinationLanguage, and without one
+ *  we cannot name the locale the text is switching to. Reading the DOM avoids having to
+ *  patch window.fetch in the MAIN world, which would intercept every host-page request.
+ *
+ *  Polls instead of using a MutationObserver because X REPLACES the tweetText element when
+ *  it swaps the text — an observer bound to the original node would simply stop firing.
+ *
+ *  Reports whatever locale the DOM settles on, INCLUDING an unchanged one. That is
+ *  deliberate: the toggle click has already torn our segments down, so reporting the
+ *  unchanged locale is what makes kickOffTextBreakup re-derive them against the text still
+ *  on screen. Without it, a translation that never lands (X's Grok request can fail — seen
+ *  as "Fetch failed loading" on that endpoint) would strand the tweet on its fallback box
+ *  with no way back to inline highlights short of a reload. */
+function watchDisplayedLocaleFromDom(tweetId: string, article: Element) {
+  const readTextEl = () => article.querySelector('[data-testid="tweetText"]');
+  const readLang = () => readTextEl()?.getAttribute('lang') ?? null;
+  const initial = readLang();
+
+  const existing = localeWatchTimers.get(tweetId);
+  if (existing !== undefined) clearInterval(existing);
+
+  const readText = () => readTextEl()?.textContent ?? null;
+
+  const STEP_MS = 150;
+  /** How long to wait for the `lang` attribute to flip at all. */
+  const LANG_TIMEOUT_MS = 6000;
+  /** Consecutive unchanged polls required before the text counts as settled. X STREAMS a
+   *  translation in progressively and flips `lang` when streaming BEGINS, so the attribute
+   *  changing tells us nothing about the text being complete. Snapshotting immediately caught
+   *  25 characters of a 200-character Romanian translation; that snapshot became
+   *  `translatedText`, and upgradeToSegments then wrote those 25 characters over X's
+   *  still-streaming text — visibly truncating the post to its first few words. */
+  const STABLE_POLLS_REQUIRED = 4; // 600ms of no growth
+  /** Overall cap, so a translation that never stops changing still reports something. */
+  const TOTAL_TIMEOUT_MS = 15000;
+
+  let elapsed = 0;
+  let langSettled = false;
+  let resolvedLang: string | null = null;
+  let lastText: string | null = null;
+  let stablePolls = 0;
+
+  const timer = setInterval(() => {
+    elapsed += STEP_MS;
+
+    // Give up if the tweet unmounted (scrolled out / navigation) — nothing to report.
+    if (!article.isConnected) {
+      clearInterval(timer);
+      localeWatchTimers.delete(tweetId);
+      console.log(`[misinfo] relay: locale watch for ${tweetId} aborted — tweet left the DOM`);
+      return;
+    }
+
+    const current = readLang();
+
+    // PHASE 1 — wait for the locale to flip (or give up and keep the current one, which is
+    // what restores highlights when a translation never lands).
+    if (!langSettled) {
+      const changed = current !== null && current !== initial;
+      if (!changed && elapsed < LANG_TIMEOUT_MS) return;
+      langSettled = true;
+      resolvedLang = current ?? initial;
+      lastText = readText();
+      stablePolls = 0;
+      return;
+    }
+
+    // PHASE 2 — wait for the text to stop growing before snapshotting it.
+    if (current !== null && current !== resolvedLang) resolvedLang = current;
+    const text = readText();
+    if (text === lastText) {
+      stablePolls++;
+    } else {
+      stablePolls = 0;
+      lastText = text;
+    }
+    if (stablePolls < STABLE_POLLS_REQUIRED && elapsed < TOTAL_TIMEOUT_MS) return;
+
+    clearInterval(timer);
+    localeWatchTimers.delete(tweetId);
+
+    if (!resolvedLang) {
+      console.log(`[misinfo] relay: locale watch for ${tweetId} found no lang attribute, leaving locale unchanged`);
+      return;
+    }
+    // Send the text X is now showing, not just its locale. Nothing else in the extension has
+    // a copy of it: the translation never passed through our XHR capture, so the background's
+    // cached tweet only has the ORIGINAL text. Without this, SET_DISPLAYED_LOCALE leaves
+    // `translatedText` as the original while `textLocale` says (say) "th", and every consumer
+    // then works on the wrong text — highlight ranges get computed against English and stored
+    // under the Thai key (giving identical en/th ranges in the DB), and kickOffTextBreakup
+    // builds English segments that upgradeToSegments then has to reject.
+    const displayedText = lastText ?? undefined;
+    console.log(`[misinfo] relay: locale watch for ${tweetId} resolved lang=${resolvedLang} (was ${initial ?? 'none'}, settled after ${elapsed}ms, text=${displayedText ? displayedText.length + ' chars' : 'none'})`);
+    sendToPort({ type: 'SET_DISPLAYED_LOCALE', data: { tweetId, textLocale: resolvedLang, locale: localeOverride, displayedText } });
+  }, STEP_MS);
+
+  localeWatchTimers.set(tweetId, timer);
+}
+
 /** Notify the background that a tweet is present in the DOM so it can proceed
  *  with deferred DB fetches for timeline tweets. */
 function reportTweetInDom(tweetId: string) {
@@ -237,10 +347,62 @@ mfBus.addEventListener('mf-refresh-batch', ((e: CustomEvent) => {
   connectAndClassify();
 }) as EventListener);
 
+/** Read X's translate-toggle state for a tweet. Pure: depends only on `tweetElement`
+ *  and the DOM, which is why it can live at module scope and be called from both the
+ *  click handler inside main() and the mf-process-on-hold listener below. */
+function getTweetTranslationState(tweetElement: Element) {
+  const allSVGs = tweetElement.querySelectorAll('svg');
+  for (const svg of allSVGs) {
+    const path = svg.querySelector('path');
+    if (!path) continue;
+    const pathData = path.getAttribute('d') || '';
+    // Stable fingerprint for X's translation icon.
+    if (pathData.startsWith('M12.745 20.54l10.97-8.19')) {
+      const rowWrapper = svg.closest('[dir]');
+      if (!rowWrapper) continue;
+      const toggleButton = rowWrapper.querySelector('button');
+      if (!toggleButton) continue;
+      const prevSibling = toggleButton.previousElementSibling;
+      // A <span> between icon and button means X inserted "Translated from..."
+      // attribution, so the tweet is currently showing the translation.
+      const currentState = prevSibling && prevSibling.tagName.toLowerCase() === 'span'
+        ? 'TRANSLATED'
+        : 'ORIGINAL';
+      return { buttonElement: toggleButton as HTMLButtonElement, currentState };
+    }
+  }
+  return null;
+}
+
 mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
-  console.log(`[misinfo] relay: process-on-hold for ${tweetId}`);
-  sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride } });
+  // Report which side of a translation the user is actually looking at. The background
+  // otherwise infers it as "a translation exists in the payload, therefore the translation
+  // is on screen" (runPreclassification), which keys the highlight ranges under the
+  // destination language even when the user is reading the original — the ranges are then
+  // unusable against the text they can see. The toggle row is the only reliable signal; a
+  // null here (no translate row, or the fingerprint moved) leaves the old inference intact.
+  const idLink = document.querySelector(`a[href*="/status/${tweetId}"]`);
+  const article = idLink?.closest('article') ?? null;
+  const displayedSide = article ? (getTweetTranslationState(article)?.currentState ?? null) : null;
+  // Also ship the text X is rendering, but only when the toggle says a translation is on
+  // screen. X fetches translations lazily, so the payload the background captured can be
+  // missing `translatedText` even though the tweet is visibly translated; the background
+  // then preclassifies the ORIGINAL and keys the ranges under the original's locale, and
+  // the user pays for highlights that can never be drawn over the text in front of them.
+  // The DOM is the one source that always agrees with what is displayed.
+  //
+  // Skipped entirely for a quoted post: an article holds the quoted tweet's text as well as
+  // its own, and this id resolves to the OUTER article either way, so there is no reliable
+  // way to tell which body belongs to `tweetId`. Sending nothing leaves the old inference
+  // untouched — far better than preclassifying a different tweet's words.
+  const inQuotedCard = !!idLink?.closest('div[role="link"]');
+  const displayedText = (displayedSide === 'TRANSLATED' && article && !inQuotedCard)
+    ? (Array.from(article.querySelectorAll('[data-testid="tweetText"]'))
+        .find(el => !el.closest('div[role="link"]'))?.textContent ?? null)
+    : null;
+  console.log(`[misinfo] relay: process-on-hold for ${tweetId} (displayedSide=${displayedSide ?? 'unknown'}, displayedText=${displayedText ? `${displayedText.length} chars` : 'none'})`);
+  sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide, displayedText } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
@@ -383,12 +545,35 @@ export default defineContentScript({
         console.log(`[misinfo] relay: toggle click for ${tweetId} but tweet not in captured cache`);
         return;
       }
-      if (!tweet.sourceLanguage || !tweet.destinationLanguage) return;
-
       // Tear down injected elements immediately so X can swap the text unimpeded.
+      //
+      // This MUST happen before the sourceLanguage/destinationLanguage check below, not
+      // after it. X only includes translation metadata in its GraphQL payload once a
+      // translation has actually been fetched, so on the FIRST toggle click after a fresh
+      // page load destinationLanguage is undefined and that check returns. When the teardown
+      // sat below it, that early return left our injected segments in place: X then replaced
+      // the tweet text, our MutationObserver saw a host-page change and re-injected, and the
+      // stale segments (in the OLD language) were written over the newly translated text.
+      // Tearing down unconditionally is right regardless — the user has asked X to swap this
+      // tweet's text, so our text-derived markup is invalid either way. The handler clears
+      // `segments` and `translatedText` as well as removing the DOM nodes.
       mfBus.dispatchEvent(new CustomEvent('mf-prepare-locale-switch', {
         detail: { tweetId }
       }));
+
+      // Without both languages the captured payload cannot name the locale the text is
+      // switching TO — X fetches translations lazily and our XHR capture never sees that
+      // request (see watchDisplayedLocaleFromDom). Rather than guess, read the locale off the
+      // DOM once X has finished swapping the text. Guessing would be actively harmful here: a
+      // highlight keyed under the wrong locale is worse than none, since it would satisfy
+      // resolveHighlightRange for a language whose ranges we never computed.
+      //
+      // The known-metadata path below is deliberately left exactly as it was.
+      if (!tweet.sourceLanguage || !tweet.destinationLanguage) {
+        console.log(`[misinfo] relay: toggle click for ${tweetId} — tore down injections; translation metadata not captured (source=${tweet.sourceLanguage ?? 'none'}, destination=${tweet.destinationLanguage ?? 'none'}), resolving locale from the DOM instead`);
+        watchDisplayedLocaleFromDom(tweetId, article);
+        return;
+      }
 
       // currentState === 'TRANSLATED' means the screen is showing the translation,
       // so the click will switch to the original (source) text.
@@ -400,32 +585,5 @@ export default defineContentScript({
       sendToPort({ type: 'SET_DISPLAYED_LOCALE', data: { tweetId, textLocale, locale: localeOverride } });
     }, true);
 
-    /** Identify X's translation toggle row by the stable SVG icon path and return
-     *  the button plus the current display state. currentState === 'TRANSLATED'
-     *  means the tweet text is currently the translation; 'ORIGINAL' means it's
-     *  the original. */
-    function getTweetTranslationState(tweetElement: Element) {
-      const allSVGs = tweetElement.querySelectorAll('svg');
-      for (const svg of allSVGs) {
-        const path = svg.querySelector('path');
-        if (!path) continue;
-        const pathData = path.getAttribute('d') || '';
-        // Stable fingerprint for X's translation icon.
-        if (pathData.startsWith('M12.745 20.54l10.97-8.19')) {
-          const rowWrapper = svg.closest('[dir]');
-          if (!rowWrapper) continue;
-          const toggleButton = rowWrapper.querySelector('button');
-          if (!toggleButton) continue;
-          const prevSibling = toggleButton.previousElementSibling;
-          // A <span> between icon and button means X inserted "Translated from..."
-          // attribution, so the tweet is currently showing the translation.
-          const currentState = prevSibling && prevSibling.tagName.toLowerCase() === 'span'
-            ? 'TRANSLATED'
-            : 'ORIGINAL';
-          return { buttonElement: toggleButton as HTMLButtonElement, currentState };
-        }
-      }
-      return null;
-    }
   }
 });

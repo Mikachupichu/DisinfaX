@@ -500,13 +500,40 @@ function removeSegmentWraps(tweetId: string) {
 }
 
 /** Remove all injected extension elements for a tweet so X's native
- *  Show original / Show translation toggle can swap the text unimpeded. */
+ *  Show original / Show translation toggle can swap the text unimpeded.
+ *
+ *  The segment wrap is never simply removed. It is the element renderSegmentedTweet built to
+ *  hold the tweet body, so removing it deletes the text itself, leaving the post visibly empty.
+ *
+ *  Preferred path: put X's original child nodes back. renderSegmentedTweet detached rather than
+ *  destroyed them, so these are the same objects X's renderer still points at — reattaching them
+ *  gives its Show original / Show translation toggle something it can actually patch, and the
+ *  text swaps language as it did before we ever rendered.
+ *
+ *  Fallback, when no originals were captured: freeze the wrap. That strips our highlights, badges
+ *  and listeners while leaving the text and its links in place, so the reader sees the previous
+ *  text rather than a blank tweet — correct content, possibly the pre-switch language.
+ *
+ *  Both paths leave no `.mf-segment-wrap` class behind (restoring drops the node, freezing
+ *  declasses it), which is what upgradeToSegments keys off to choose a full rebuild over an
+ *  in-place update — so the next render after the switch still rebuilds from scratch. */
 function removeInjectedElements(tweetId: string) {
     const links = document.querySelectorAll(`a[href*="/status/${tweetId}"]`);
     for (const link of links) {
         const article = link.closest('article');
         if (!article) continue;
-        for (const wrap of article.querySelectorAll('.mf-segment-wrap')) wrap.remove();
+        for (const wrap of article.querySelectorAll<HTMLElement>('.mf-segment-wrap')) {
+            const host = wrap.parentElement as (HTMLElement & { _mfOriginalNodes?: ChildNode[] }) | null;
+            const originals = host?._mfOriginalNodes;
+            if (host && originals?.length) {
+                host.replaceChildren(...originals);
+                // Cleared so the next render captures the nodes X owns after the switch,
+                // not this now-stale set.
+                delete host._mfOriginalNodes;
+            } else {
+                freezeSegmentWrap(wrap);
+            }
+        }
         const fallback = article.querySelector(`[classification-id="${tweetId}"]`);
         if (fallback) fallback.remove();
         const unmatched = article.querySelector(`[mf-unmatched="${tweetId}"]`);
@@ -1464,6 +1491,42 @@ export function hasNonExtensionChange(m: MutationRecord): boolean {
     return nodes.some(n => !isOwnMutationNode(n));
 }
 
+/** Normalize a tweet body for comparison against another rendering of the same body.
+ *
+ *  Emoji are dropped. X does not render them as characters — it swaps each one for an
+ *  element — and textContent concatenates text nodes only, so a DOM-derived string
+ *  structurally cannot contain an emoji while the XHR payload always does. Left in, every
+ *  tweet opening with one (👉 ⚡ 🇺🇸 ☀️ …) compares as different from itself. Stripping
+ *  rather than trying to read them back out of the markup keeps this independent of how X
+ *  chooses to render them, and costs only a little comparison signal: different languages
+ *  still differ on their letters. */
+function normalizeTweetTextForCompare(s: string): string {
+    return htmlDecode(s)
+        .replace(/[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D]/gu, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+}
+
+/** Whether two renderings of the same tweet body can be the same text.
+ *
+ *  Deliberately permissive, because a mismatch is normal in two benign cases:
+ *    - the DOM copy is TRUNCATED for long tweets (the XHR payload carries the full body)
+ *      → the prefix check covers it
+ *    - X renders a reply's leading @mention outside [data-testid="tweetText"], so the DOM
+ *      text is a substring of the payload → the containment check covers it
+ *  Either passing is enough. Genuinely different languages fail both. Under ~12 comparable
+ *  characters there isn't enough signal to judge, so those are treated as compatible rather
+ *  than risk suppressing a legitimate render. */
+function tweetTextsCompatible(a: string, b: string): boolean {
+    const x = normalizeTweetTextForCompare(a);
+    const y = normalizeTweetTextForCompare(b);
+    const compareLen = Math.min(24, x.length, y.length);
+    if (compareLen < 12) return true;
+    if (x.slice(0, compareLen) === y.slice(0, compareLen)) return true;
+    return x.includes(y) || y.includes(x);
+}
+
 /** Split a tweet's text into claim / non-claim segments and store them on the
  *  classification, which is what promotes it from the fallback box (Phase 1) to inline
  *  highlights (Phase 2).
@@ -1482,10 +1545,56 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
 
     const claims = classification.claims ?? [];
 
-    let tweetText = classification.translatedText
+    const domText = findTweetTextInDom(classification.id);
+
+    // A cached translation can outlive the translated DOM. Reloading the page makes X render
+    // the original text again, but the background keeps serving the classification object it
+    // mutated when the translation was toggled on, so `translatedText`/`textLocale` still
+    // describe the translated body. Those win the || chain below and select that locale's
+    // highlight ranges, so the segments come out in a language the tweet is no longer showing
+    // and upgradeToSegments correctly refuses to render them — the tweet loses its highlights
+    // even though the displayed locale's ranges are cached and ready to use.
+    //
+    // Correct it only when the replacement key is UNAMBIGUOUS: exactly one highlight locale
+    // other than the stale one, compared by base language so en/en-US aren't treated as
+    // rivals. breakupWithHighlights checks only that a range is in BOUNDS, never that it
+    // addresses the right words, and two languages' bodies are usually of similar length —
+    // so picking wrongly between several candidates would highlight an arbitrary span and
+    // attach a verdict to it, which is worse than showing none. Anything ambiguous is left
+    // exactly as it was.
+    const staleLocale = classification.textLocale ?? classification.translatedLocale;
+    const baseLang = (l: string) => l.split('-')[0];
+    let untranslated: { text: string; hlKey: string } | null = null;
+    // Compared against X's own text, never `domText`: after the first render domText IS our
+    // output, so a mismatch would be self-fulfilling — having once picked the untranslated
+    // body we would keep re-picking it even after X switched the tweet back to the
+    // translation, injecting the wrong language over the right one.
+    const xOwnedText = findXOwnedTweetText(classification.id);
+    if (classification.translatedText && xOwnedText
+        && !tweetTextsCompatible(classification.translatedText, xOwnedText)) {
+        // Skip translatedTextCache too: if the cached translation is stale, a translation
+        // sourced from the same toggle is no more trustworthy. The payload text is preferred
+        // over the DOM for the usual reason — the DOM copy is truncated for long tweets.
+        const body = tweetTextCache?.get(classification.id) ?? xOwnedText;
+        const candidates = new Set<string>();
+        for (const cl of claims) {
+            for (const key of Object.keys(cl.highlight ?? {})) {
+                if (!staleLocale || baseLang(key) !== baseLang(staleLocale)) candidates.add(key);
+            }
+        }
+        if (candidates.size === 1) {
+            untranslated = { text: body, hlKey: [...candidates][0] };
+            console.log(`[misinfo] Text breakup for ${classification.id}: cached ${staleLocale ?? 'unknown'} translation no longer matches the DOM — using the untranslated body with highlight key ${untranslated.hlKey}`);
+        } else {
+            console.log(`[misinfo] Text breakup for ${classification.id}: cached ${staleLocale ?? 'unknown'} translation no longer matches the DOM, but ${candidates.size} candidate highlight key(s) — leaving unchanged`);
+        }
+    }
+
+    let tweetText = untranslated?.text
+        || classification.translatedText
         || translatedTextCache?.get(classification.id)
         || tweetTextCache?.get(classification.id)
-        || findTweetTextInDom(classification.id);
+        || domText;
 
     if (!tweetText) {
         console.log(`[misinfo] Text breakup: could not find tweet text for ${classification.id}`);
@@ -1500,13 +1609,15 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
       if (cl.rewritten) cl.rewritten = htmlDecode(cl.rewritten);
     }
 
-    const domText = findTweetTextInDom(classification.id);
     const trailingMatch = tweetText.match(/\s+(https:\/\/t\.co\/\w+)\s*$/);
     if (trailingMatch && (!domText || !domText.includes(trailingMatch[1]))) {
         tweetText = tweetText.slice(0, trailingMatch.index).trim();
     }
 
-    const textLocale = classification.textLocale ?? classification.translatedLocale;
+    // When the stale translation was replaced above, the body is the untranslated one, so
+    // the stale locale must go with it — keeping it would apply that locale's offsets to a
+    // body they were never measured against.
+    const textLocale = untranslated ? untranslated.hlKey : staleLocale;
     const hasTextLocale = !!textLocale;
 
     console.log(`[misinfo] Text breakup for ${classification.id}: textLocale=${textLocale ?? 'none'}, ${claims.length} claims`);
@@ -1617,14 +1728,50 @@ function findTweetTextInDom(tweetId: string): string | null {
     return null;
 }
 
+/** The tweet text X itself is showing, ignoring anything we rendered over it.
+ *
+ *  findTweetTextInDom reads the element's textContent, but once renderSegmentedTweet has run
+ *  that element holds OUR segments — so comparing it against a cached translation compares our
+ *  last decision with itself, and any wrong choice re-confirms itself on every later re-derive.
+ *  renderSegmentedTweet parks X's displaced children in `_mfOriginalNodes`, and X keeps patching
+ *  those nodes while they sit detached, so they remain an accurate record of what it is showing.
+ *  Falls back to the live element whenever we have not rendered, which is the state every caller
+ *  saw before this existed. */
+function findXOwnedTweetText(tweetId: string): string | null {
+    const article = document.querySelector(`a[href*="/status/${tweetId}"]`)?.closest('article');
+    const el = article?.querySelector('[data-testid="tweetText"]') as
+        (Element & { _mfOriginalNodes?: ChildNode[] }) | null | undefined;
+    const originals = el?._mfOriginalNodes;
+    if (originals?.length) {
+        const text = originals.map(n => n.textContent ?? '').join('');
+        if (text) return text;
+    }
+    return findTweetTextInDom(tweetId);
+}
+
 const textBreakupInProgress = new Set<string>();
 
-/** Find the main status ID of an article element. */
+/** Find the main status ID of an article element.
+ *
+ *  Links inside a quoted-tweet card are skipped. On a timeline card the first /status/
+ *  link in DOM order is the timestamp permalink, so taking it outright was fine — but on
+ *  a detail page X renders no permalink to the post you are already viewing, and the first
+ *  link then belongs to the QUOTED card. That made the main tweet compare unequal to its
+ *  own id in classificationInjections, marking it `isQuoted`, which suppressed its
+ *  Disinfact button entirely (injectClassification returns early for quoted + onHold).
+ *
+ *  `div[role="link"]` is the quoted-card wrapper — the same landmark findTweetTextElement
+ *  already keys off — and the containment check keeps the search inside this article. When
+ *  every link sits in a card we return null, which callers already read as "not quoted".
+ */
 function getArticleMainStatusId(article: Element): string | null {
-    const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
-    if (!link) return null;
-    const match = link.href.match(/\/status\/(\d+)/);
-    return match ? match[1] : null;
+    for (const link of article.querySelectorAll<HTMLAnchorElement>('a[href*="/status/"]')) {
+        const quotedCard = link.closest('div[role="link"]');
+        if (quotedCard && article.contains(quotedCard)) continue;
+        const match = link.href.match(/\/status\/(\d+)/);
+        if (match) return match[1];
+    }
+    return null;
 }
 
 /** Locate every on-screen occurrence of each classification's tweet and inject into it.
@@ -2294,6 +2441,7 @@ function buildOnboardingPopover(type: string): HTMLElement {
     if (isRTLP) { close.style.right = 'auto'; close.style.left = '10px'; }
     close.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); markOnboardingClicked(type); });
     el.appendChild(close);
+    makeDraggable(el);
     return el;
 }
 /** Ensure a standalone onboarding popover is attached next to `anchor` and positioned. */
@@ -2306,7 +2454,12 @@ function ensureStandaloneOnboarding(anchor: HTMLElement, type: string) {
         document.body.appendChild(pop);
         onboardingByAnchor.set(anchor, pop);
     }
-    positionOnboardingPopover(pop, anchor);
+    // Disinfact / Fact-Check All specifically prefer opening ABOVE their button when
+    // there's no room to the right, before falling back below — translate-tweet (which
+    // reuses the Disinfact label/slot) keeps the original right-then-below behavior,
+    // matching what was explicitly asked for rather than guessing it in too.
+    const preferAbove = type === 'disinfact' || type === 'factcheckall';
+    positionOnboardingPopover(pop, anchor, preferAbove);
 }
 /** Re-evaluate all standalone onboarding popovers (called on injection + scroll). */
 function refreshStandaloneOnboarding() {
@@ -2559,7 +2712,16 @@ function renderSegmentedTweet(tweetTextEl: Element, segments: TextSegment[], cla
         }
     }
 
+    console.log(`[misinfo] renderSegmentedTweet ${classificationId ?? '?'}: captured ${urlDisplayMap.size} link(s) from X: ${[...urlDisplayMap].map(([h, t]) => `${t} -> ${h}`).join(' | ') || 'none'}`);
+
     const wrap = buildSegmentWrap(segments, claims, batchId, urlDisplayMap, classificationId);
+    // Keep X's own child nodes alive. `innerHTML = ""` detaches them, it does not destroy them,
+    // and X's renderer still holds references to those exact node objects. Handing the same
+    // objects back on teardown is what lets its Show original / Show translation toggle repaint;
+    // clones or re-parsed HTML would be new nodes it has never seen. Captured once — on a
+    // re-render the children are already ours, and overwriting would lose the originals.
+    const host = tweetTextEl as Element & { _mfOriginalNodes?: ChildNode[] };
+    if (!host._mfOriginalNodes) host._mfOriginalNodes = Array.from(tweetTextEl.childNodes);
     tweetTextEl.innerHTML = "";
     tweetTextEl.appendChild(wrap);
 }
@@ -2571,7 +2733,10 @@ function createLinkElement(href: string, displayText: string): HTMLAnchorElement
     a.dir = "ltr";
     a.href = href;
     a.rel = "noopener noreferrer nofollow";
-    a.target = "_blank";
+    // Only external links open a new tab. Mentions and hashtags carry a relative href
+    // ("/TheAthletic") and X navigates those in place; forcing _blank on them would
+    // spawn a tab for something that used to be an in-app route.
+    if (/^https?:\/\//i.test(href)) a.target = "_blank";
     a.role = "link";
     a.style.color = "rgb(29, 155, 240)";
     a.style.textDecoration = "none";
@@ -2599,21 +2764,53 @@ function createLinkElement(href: string, displayText: string): HTMLAnchorElement
     return a;
 }
 
-/** Build a DocumentFragment for a plain text segment, converting URLs to <a> elements. */
+/** Build a DocumentFragment for a plain text segment, converting URLs, @mentions and
+ *  #hashtags back into <a> elements.
+ *
+ *  Mentions and hashtags are not URLs — they appear in the tweet body as bare text, and X
+ *  links them to a relative route ("/TheAthletic"). renderSegmentedTweet already records
+ *  them in urlDisplayMap, but keyed by href with the display text as the value, so a
+ *  by-URL lookup never finds them and the rebuild dropped the link. They are matched by
+ *  display text against a reverse index instead, and a token with no entry there is left
+ *  as plain text: every link written here is one X had, never one we inferred. */
 function buildPlainSegmentContent(text: string, urlDisplayMap: Map<string, string>): DocumentFragment {
     const fragment = document.createDocumentFragment();
-    const urlRegex = /https?:\/\/[^\s<>"'`]+/g;
+    const hrefByDisplayText = new Map<string, string>();
+    for (const [href, display] of urlDisplayMap) hrefByDisplayText.set(display, href);
+    // The URL branch is first so it wins on shared characters; the second branch stops at
+    // punctuation so trailing ":" or "," in "From @TheAthletic:" stays outside the link.
+    const tokenRegex = /https?:\/\/[^\s<>"'`]+|[@#$][^\s<>"'`.,;:!?()[\]{}]+/g;
     let lastIndex = 0;
     let match: RegExpExecArray | null;
 
-    while ((match = urlRegex.exec(text)) !== null) {
+    while ((match = tokenRegex.exec(text)) !== null) {
+        const token = match[0];
+        const isUrl = /^https?:\/\//i.test(token);
+        // Prefer the href X used. When it has none, derive it from X's own URL scheme rather
+        // than dropping the link: a translated tweet body is re-rendered by X from plain
+        // translated text, so the mention that was an <a> in the original may be bare text
+        // in the translation — there is nothing to copy, but "@handle" unambiguously means
+        // x.com/handle. Only these two forms are derived; anything else stays plain text.
+        //
+        // Deriving additionally requires a word boundary before the token, which a copied
+        // href does not: X only treats "@name" as a mention at the start of a word, and
+        // without the check the "@example" inside "contact@example.com" becomes a profile
+        // link. A map hit means X really did render a link at that spot, so it is trusted
+        // as-is.
+        const prevChar = match.index > 0 ? text[match.index - 1] : '';
+        const atWordBoundary = !/[\p{L}\p{N}_]/u.test(prevChar);
+        const href = isUrl
+            ? token
+            : (hrefByDisplayText.get(token)
+                ?? (atWordBoundary && /^@[A-Za-z0-9_]{1,15}$/.test(token) ? `/${token.slice(1)}` : undefined)
+                ?? (atWordBoundary && token.startsWith('#') && token.length > 1 ? `/hashtag/${encodeURIComponent(token.slice(1))}` : undefined));
+        if (!href) continue;
         if (match.index > lastIndex) {
             fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
         }
-        const url = match[0];
-        const displayText = urlDisplayMap.get(url) ?? url;
-        fragment.appendChild(createLinkElement(url, displayText));
-        lastIndex = urlRegex.lastIndex;
+        const displayText = isUrl ? (urlDisplayMap.get(token) ?? token) : token;
+        fragment.appendChild(createLinkElement(href, displayText));
+        lastIndex = tokenRegex.lastIndex;
     }
 
     if (lastIndex < text.length) {
@@ -2969,6 +3166,40 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
     // the host page's own re-render replaced our injected markup out from under us —
     // that's a real candidate for the freeze, since the old span's real mouseenter state
     // dies with the removed node and the new span never gets an equivalent one.
+    // SAFETY: a full rebuild does `tweetTextEl.innerHTML = ""` and writes OUR segment text,
+    // destroying whatever the host page currently has there. That is only ever correct when
+    // our segments were derived from the same text the page is showing. If they weren't, we
+    // would overwrite the tweet with different words — e.g. the user asks X to translate a
+    // post to Dutch, X swaps the text (removing our wrap), our MutationObserver sees a
+    // host-page change and re-injects, and the stale ENGLISH segments get written on top of
+    // the Dutch. For a fact-checking extension, putting words in someone's tweet that they
+    // did not post is the worst failure mode available, so bail out instead.
+    //
+    // See tweetTextsCompatible for the permissiveness rationale and for why emoji are
+    // dropped from both sides. kickOffTextBreakup uses that same predicate to decide whether
+    // a cached translation still describes the displayed body, so the two cannot disagree
+    // about what "the same text" means.
+    const segmentsText = segments.map(s => s.text).join('');
+    const domTextNow = tweetTextEl.textContent ?? '';
+    if (!tweetTextsCompatible(segmentsText, domTextNow)) {
+        console.warn(`[misinfo] upgradeToSegments: SKIPPING full rebuild for ${classification.id} — segments do not match the text currently in the DOM (probably a host-page translation swap). segments="${normalizeTweetTextForCompare(segmentsText).slice(0, 40)}..." dom="${normalizeTweetTextForCompare(domTextNow).slice(0, 40)}..."`);
+        return;
+    }
+
+    // NOTE: there was briefly a second guard here that also skipped the rebuild when the
+    // segments covered materially LESS text than the DOM, meant to stop a partial
+    // mid-translation snapshot from truncating a post. It was WRONG and is deliberately gone:
+    // the DOM element legitimately holds more text than the authoritative XHR payload in
+    // normal layouts (observed 429 chars in the DOM vs 255 in the payload on an ordinary
+    // detail-view tweet), so it suppressed correct, fully-classified highlights — the user
+    // paid for a classification and saw nothing, with the on-hold button stuck on.
+    //
+    // The case it was defending against is already handled at the source: the locale watcher
+    // in relay.content.ts now waits for X's streamed translation to STOP CHANGING before
+    // snapshotting, so a partial snapshot never becomes `translatedText` in the first place.
+    // The prefix/containment check above remains, and is what actually catches a genuine
+    // wrong-language mismatch.
+
     const rectAtRebuild = tweetTextEl.getBoundingClientRect();
     const pointerInsideAtRebuild = mfPointerX >= rectAtRebuild.left && mfPointerX <= rectAtRebuild.right
         && mfPointerY >= rectAtRebuild.top && mfPointerY <= rectAtRebuild.bottom;
@@ -3025,6 +3256,9 @@ function setupGlobalHandlers() {
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closePopover();
     });
+
+    window.addEventListener("beforeprint", enterPrintMode);
+    window.addEventListener("afterprint", exitPrintMode);
 
     window.addEventListener("resize", () => {
         updateOpenPopover();
@@ -3276,6 +3510,11 @@ function buildPopoverShell(trigger: HTMLElement, isPreview: boolean): { popover:
 
     const isRTLP = isRTLLocale(getEffectiveUILocale());
     if (isRTLP) popover.dir = "rtl";
+
+    // Draggable for the real (pinned) popover only — not the transient hover preview,
+    // whose position is tied to hover/pin bookkeeping (leave timers, opacity mirroring)
+    // that dragging would fight with.
+    if (!isPreview) makeDraggable(popover);
 
     const closeBtn = document.createElement("span");
     closeBtn.className = "mf-popover-close";
@@ -3762,6 +4001,25 @@ function populatePopoverContent(
             popover.appendChild(sourcesRow);
         }
     }
+
+    ensurePopoverDisclaimer(popover);
+}
+
+/** Append the AI-accuracy disclaimer, or move it back to the end if it already exists.
+ *
+ *  appendChild() on a node that is already a child MOVES it, which is what keeps this last:
+ *  addSourcesToPopover removes and re-appends the sources row as sources stream in, so a
+ *  disclaimer added once at build time would end up above them. No `text-align` is set so it
+ *  inherits the popover's `dir`, which is set to rtl for RTL locales. */
+function ensurePopoverDisclaimer(popover: HTMLElement) {
+    let el = popover.querySelector<HTMLElement>(".mf-popover-disclaimer");
+    if (!el) {
+        el = document.createElement("div");
+        el.className = "mf-popover-disclaimer";
+        el.style.cssText = "margin-top: 6px; font-size: 9px; line-height: 1.35; opacity: 0.6;";
+        el.textContent = t("aiDisclaimer");
+    }
+    popover.appendChild(el);
 }
 
 /** Get the bounding rectangle of the Fact-Checked floating button if it exists. */
@@ -3794,7 +4052,135 @@ function getTriggerViewportRect(trigger: HTMLElement): DOMRect {
  *      whenever space is available in the viewport.
  *   2. When space to the right is insufficient (e.g. mobile/narrow viewports), fall back to placing
  *      strictly ABOVE or BELOW the trigger with zero overlap. */
+/** Makes a fixed/absolutely-positioned popover draggable by its background — not by
+ *  its text, links, buttons, or the close icon, which keep working exactly as before
+ *  (clicking and text selection are never hijacked). A small movement threshold tells
+ *  an actual drag apart from a click; if a real text selection grows during that
+ *  threshold check, the gesture is treated as a selection instead and the drag is
+ *  abandoned.
+ *
+ *  A drag is recorded two ways, because the two popover families are positioned in different
+ *  coordinate spaces. `_mfManuallyPositioned` makes positionPopover stop repositioning the
+ *  claim popover — safe there, since it is position:absolute inside the timeline container,
+ *  so fixed coordinates still scroll with the content. `_mfDragDx/_mfDragDy` record the same
+ *  drag as an offset, which positionOnboardingPopover re-applies on top of its recomputed
+ *  position — necessary there, since those are position:fixed in viewport coordinates and
+ *  must keep tracking their button on scroll. */
+/** Re-stack a claim popover's attached onboarding popovers (translate / refresh) directly
+ *  below it. Position-only — opacity and create/destroy stay with
+ *  refreshInPopoverOnboarding, which owns them. Used during a drag, where that heavier
+ *  function must not run on every pointermove. */
+function repositionAttachedOnboardingFor(claimPop: HTMLElement) {
+    const attached = Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard-attached'))
+        .filter(op => (op as any)._mfClaimPop === claimPop);
+    if (attached.length === 0) return;
+    // Same stacking order refreshInPopoverOnboarding uses: translations above refreshes.
+    const order = ['translate-inner', 'refresh-inner'];
+    attached.sort((a, b) => order.indexOf(a.dataset.mfOnboard ?? '') - order.indexOf(b.dataset.mfOnboard ?? ''));
+    let top = claimPop.offsetTop + claimPop.offsetHeight + 8;
+    const left = claimPop.offsetLeft;
+    for (const op of attached) {
+        op.style.left = `${left}px`;
+        op.style.top = `${top}px`;
+        top += op.offsetHeight + 8;
+    }
+}
+
+function makeDraggable(el: HTMLElement) {
+    let startX = 0, startY = 0, startLeft = 0, startTop = 0, active = false, moved = false;
+    let pointerId = -1;
+    /** The element whose position the drag actually mutates — see pointerdown. */
+    let anchor: HTMLElement = el;
+    /** Drag offset the anchor already carried when this drag began, so repeated drags
+     *  accumulate rather than reset. See `_mfDragDx/_mfDragDy` below. */
+    let baseDx = 0, baseDy = 0;
+
+    const onMove = (e: PointerEvent) => {
+        if (!active || e.pointerId !== pointerId) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (!moved) {
+            if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+            if (window.getSelection()?.toString()) { endDrag(); return; }
+            moved = true;
+        }
+        e.preventDefault();
+        anchor.style.left = `${startLeft + dx}px`;
+        anchor.style.top = `${startTop + dy}px`;
+        (anchor as any)._mfManuallyPositioned = true;
+        // Also record the drag as a cumulative OFFSET FROM THE ANCHOR'S COMPUTED POSITION.
+        // positionPopover freezes on _mfManuallyPositioned, which is fine for the claim
+        // popover: it is position:absolute inside the timeline container, so frozen
+        // coordinates still scroll with the content. Standalone onboarding popovers are
+        // position:FIXED in viewport coordinates and recomputed from their button's rect on
+        // every scroll — freezing those left them welded to the viewport while the tweet
+        // scrolled away. positionOnboardingPopover therefore keeps recomputing and re-applies
+        // this offset instead, so a dragged popover both keeps the user's placement AND
+        // continues to track its button.
+        (anchor as any)._mfDragDx = baseDx + dx;
+        (anchor as any)._mfDragDy = baseDy + dy;
+        // Attached onboarding popovers are extensions of the claim popover, so the whole
+        // group travels together. They are positioned FROM the anchor, so this covers both
+        // directions: dragging the claim popover carries them along, and dragging one of
+        // them moves the anchor (see pointerdown) which then re-stacks the rest.
+        repositionAttachedOnboardingFor(anchor);
+    };
+
+    /** Idempotent: reached via pointerup, pointercancel, or lostpointercapture. */
+    const endDrag = () => {
+        if (!active) return;
+        active = false;
+        if (pointerId !== -1) {
+            try { if (el.hasPointerCapture(pointerId)) el.releasePointerCapture(pointerId); } catch { /* already gone */ }
+            pointerId = -1;
+        }
+    };
+
+    // Listeners live on `el`, not on document, and the drag uses POINTER CAPTURE.
+    //
+    // Both matter. buildPopoverShell attaches its own listener that calls
+    // e.stopPropagation() for "pointerup" (among others) on the popover, to keep the host
+    // page from reacting to interactions inside it. A document-level pointerup listener
+    // therefore never fires, because the release happens over the popover and is stopped
+    // there — which left the popover glued to the cursor after release. Listening on `el`
+    // itself is immune to that: stopPropagation only blocks ANCESTORS, never other
+    // listeners on the same node (that would need stopImmediatePropagation).
+    //
+    // Pointer capture then guarantees we still get the move/up events when the cursor
+    // outruns the popover mid-drag or leaves the window entirely — without it, those
+    // events would target whatever is under the cursor instead and the drag would hang.
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", endDrag);
+    el.addEventListener("pointercancel", endDrag);
+    el.addEventListener("lostpointercapture", endDrag);
+
+    el.addEventListener("pointerdown", (e) => {
+        // Touch stays a scroll gesture, never a drag — only mouse/pen moves the popover.
+        if (e.pointerType === "touch") return;
+        if (e.button !== 0) return;
+        const target = e.target as HTMLElement;
+        if (target.closest('button, a, input, textarea, [contenteditable], .mf-popover-text, .mf-popover-sources-row, .mf-popover-close')) return;
+        // An attached onboarding popover is an extension of its claim popover, not an
+        // independent window: dragging it moves the CLAIM popover, and the attached ones
+        // re-stack from there. Anything else (the claim popover itself, a standalone
+        // onboarding popover) is its own anchor, so behaviour there is unchanged.
+        const ownerClaimPop = (el as any)._mfClaimPop as HTMLElement | undefined;
+        anchor = (ownerClaimPop && ownerClaimPop.isConnected) ? ownerClaimPop : el;
+        active = true;
+        moved = false;
+        pointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseFloat(getComputedStyle(anchor).left) || 0;
+        startTop = parseFloat(getComputedStyle(anchor).top) || 0;
+        baseDx = Number((anchor as any)._mfDragDx) || 0;
+        baseDy = Number((anchor as any)._mfDragDy) || 0;
+        try { el.setPointerCapture(e.pointerId); } catch { /* capture unsupported — el listeners still cover the common case */ }
+    });
+}
+
 function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
+    if ((popover as any)._mfManuallyPositioned) return;
     popover.style.maxHeight = '';
     popover.style.overflowY = '';
     popover.style.width = '';
@@ -3904,7 +4290,12 @@ function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
  *  the button on scroll (refreshOnboarding re-runs on scroll) and goes offscreen with it,
  *  with no edge pile-up. Popovers are appended to document.body (no transformed ancestor)
  *  so `fixed` resolves against the viewport. */
-function positionOnboardingPopover(popover: HTMLElement, trigger: HTMLElement) {
+function positionOnboardingPopover(popover: HTMLElement, trigger: HTMLElement, preferAboveOnCramped: boolean = false) {
+    // Deliberately does NOT bail out on `_mfManuallyPositioned` (unlike positionPopover).
+    // These are position:fixed in viewport coordinates, so they only stay with their button
+    // because this recomputes them on every scroll. Freezing a dragged one left it welded to
+    // the viewport while the tweet scrolled away. Instead we keep recomputing and re-apply the
+    // user's drag as an offset at the end of this function.
     popover.style.maxHeight = '';
     popover.style.overflowY = '';
     popover.style.width = '';
@@ -3926,10 +4317,22 @@ function positionOnboardingPopover(popover: HTMLElement, trigger: HTMLElement) {
         left = trigRect.right + padding;
         top = trigRect.top;
     } else {
-        top = trigRect.bottom + padding;
         const w = popover.getBoundingClientRect().width || minPopoverWidth;
         left = Math.max(padding, Math.min(trigRect.left, viewportWidth - w - padding));
+        // Disinfact / Fact-Check All only: try ABOVE the button before falling back
+        // below, when there isn't room to the right. Everything else (Fact-Check's own
+        // onboarding, in-popover translate/refresh ones) keeps the original right-then-
+        // below order untouched.
+        const h = popover.getBoundingClientRect().height;
+        const spaceAbove = trigRect.top - padding;
+        const aboveFits = preferAboveOnCramped && h > 0 && spaceAbove >= h;
+        top = aboveFits ? trigRect.top - h - padding : trigRect.bottom + padding;
     }
+    // Re-apply any drag the user performed, as an offset from the freshly-computed anchor
+    // position (see makeDraggable). Keeps their placement while still tracking the button on
+    // scroll, so the popover leaves the screen with its tweet instead of hovering in place.
+    left += Number((popover as any)._mfDragDx) || 0;
+    top += Number((popover as any)._mfDragDy) || 0;
     popover.style.left = `${left}px`;
     popover.style.top = `${top}px`;
     if (width !== undefined) {
@@ -4362,7 +4765,7 @@ function addSourcesToPopover(popover: HTMLElement, trigger: HTMLElement) {
         const parsed = JSON.parse(rawSources ?? "[]");
         srcList = normalizeSources(parsed);
     } catch {}
-    if (srcList.length === 0) return;
+    if (srcList.length === 0) { ensurePopoverDisclaimer(popover); return; }
 
     const p = parseFloat(trigger.dataset.probability ?? "");
     const v = parseFloat(trigger.dataset.veracity ?? "");
@@ -4378,6 +4781,8 @@ function addSourcesToPopover(popover: HTMLElement, trigger: HTMLElement) {
     if (sourcesRow.children.length > 0) {
         popover.appendChild(sourcesRow);
     }
+    // Re-anchor the disclaimer below the sources row we just (re)appended.
+    ensurePopoverDisclaimer(popover);
 }
 
 function updateOpenPopover() {
@@ -4730,7 +5135,10 @@ const DISINFAX_MARK_PATHS = disinfaxMarkRaw
     .replace(/black/g, "currentColor");
 
 /** Builds the DisinfaX logo mark used inline in the Disinfact / Fact-Check All button
- *  text, so every button carrying the brand mark stays pixel-identical. */
+ *  text, so every button carrying the brand mark stays pixel-identical. Deliberately
+ *  sets no color of its own — every call site already colors its wrapping text-wrap div
+ *  to match the label next to it, and `color` inherits down to this SVG, so it always
+ *  matches automatically instead of hardcoding the same value a second time. */
 function createDisinfactLogoSvg(): SVGSVGElement {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", "16");
@@ -4739,8 +5147,7 @@ function createDisinfactLogoSvg(): SVGSVGElement {
     svg.setAttribute("fill", "none");
     svg.style.flexShrink = "0";
     svg.style.marginTop = "-5px";
-    svg.style.color = "rgb(83, 100, 113)";
-    svg.innerHTML = `<rect x="0.5" y="0.5" width="127" height="127" stroke="currentColor"/>${DISINFAX_MARK_PATHS}`;
+    svg.innerHTML = DISINFAX_MARK_PATHS;
     return svg;
 }
 
@@ -4765,6 +5172,104 @@ function placeButtonContainer(container: HTMLElement, article: Element, time: El
         container.style.marginRight = '0';
         time.insertAdjacentElement("afterend", container);
     }
+}
+
+// ── Screenshot mode (print) ───────────────────────────────────────────────────
+// Browsers have no way to detect an OS screenshot tool, but printing (Ctrl/Cmd+P,
+// "Save as PDF", and any page-capture tool that goes through the print pipeline) fires
+// real, reliable beforeprint/afterprint events. While printing, every highlight's badge
+// is forced visible (normally a hover-only effect), and any tweet with at least one
+// classified claim shows "DisinfaX" + the logo where its Disinfact/Fact-Check All button
+// normally sits — replacing the button if one is present, or adding a small label if the
+// tweet is already fully resolved and has no button left. Reverted exactly on afterprint.
+const printBadgesAdded = new Set<HTMLElement>();
+const printContainerOriginalHTML = new Map<HTMLElement, string>();
+const printContainersAdded = new Set<HTMLElement>();
+
+/** The "DisinfaX" mark shown in place of the Disinfact/Fact-Check All button while
+ *  printing — styled to match whatever text element it's replacing (`innerClass` is
+ *  that element's own className) so it looks native rather than pasted-in. */
+function buildPrintLabel(innerClass: string): HTMLElement {
+    const wrap = document.createElement("div");
+    wrap.setAttribute("dir", "ltr");
+    wrap.className = innerClass;
+    wrap.style.color = "rgb(83, 100, 113)";
+    wrap.style.fontSize = "13px";
+    wrap.style.fontWeight = "700";
+    wrap.style.minWidth = "0";
+    wrap.style.display = "flex";
+    wrap.style.alignItems = "center";
+    wrap.style.gap = "0";
+    wrap.appendChild(createDisinfactLogoSvg());
+    const text = document.createElement("span");
+    text.textContent = "DisinfaX";
+    wrap.appendChild(text);
+    return wrap;
+}
+
+function enterPrintMode() {
+    // 1. Force every highlight's badge visible, exactly as hovering it would show it.
+    for (const span of Array.from(document.querySelectorAll<HTMLElement>(".mf-segment-claim"))) {
+        if (span.querySelector(".mf-inline-badge")) continue;
+        const create = (span as any)._mfCreateBadge as ((permanent: boolean) => HTMLElement) | undefined;
+        if (!create) continue;
+        const badge = create(span.dataset.reclassifyOnHold === "true");
+        span.appendChild(badge);
+        printBadgesAdded.add(badge);
+    }
+
+    // 2. Swap the button area for a "DisinfaX" label on every tweet with at least one
+    // classified (not on-hold, not mid-refresh, verdict-bearing) claim.
+    for (const classification of allClassifications) {
+        const hasClassified = classification.claims?.some(
+            cl => !cl.reclassifyOnHold && !cl.refreshing && cl.note != null && cl.confidence !== undefined
+        );
+        if (!hasClassified) continue;
+
+        let time: HTMLElement | null = null;
+        let article: Element | null = null;
+        for (const t of Array.from(document.querySelectorAll<HTMLElement>(`a[href*="/status/${classification.id}"]`))) {
+            const a = t.closest("article");
+            if (a && getArticleMainStatusId(a) === classification.id) { time = t; article = a; break; }
+        }
+        if (!time || !article) continue;
+
+        const existing = article.querySelector<HTMLElement>(`[mf-on-hold-id="${classification.id}"]`);
+        if (existing) {
+            printContainerOriginalHTML.set(existing, existing.innerHTML);
+            const innerClass = existing.querySelector('div[dir="ltr"]')?.className ?? "";
+            existing.innerHTML = "";
+            existing.appendChild(buildPrintLabel(innerClass));
+            continue;
+        }
+
+        const container = document.createElement("div");
+        container.setAttribute("mf-on-hold-id", classification.id);
+        container.style.cssText = `
+            display: inline-flex;
+            align-items: center;
+            min-width: 0;
+            flex-shrink: 0;
+        `;
+        const grokData = findGrokRow(article);
+        const refBtn = grokData?.btn ?? time;
+        const innerDiv = grokData?.btn.querySelector<HTMLElement>('div[dir="ltr"]');
+        const innerClass = innerDiv?.className ?? refBtn.className;
+        container.appendChild(buildPrintLabel(innerClass));
+        placeButtonContainer(container, article, time, grokData);
+        printContainersAdded.add(container);
+    }
+}
+
+function exitPrintMode() {
+    for (const badge of printBadgesAdded) badge.remove();
+    printBadgesAdded.clear();
+
+    for (const [container, html] of printContainerOriginalHTML) container.innerHTML = html;
+    printContainerOriginalHTML.clear();
+
+    for (const container of printContainersAdded) container.remove();
+    printContainersAdded.clear();
 }
 
 function injectOnHoldButton(
@@ -5312,6 +5817,15 @@ mfBus.addEventListener('mf-prepare-locale-switch', ((e: CustomEvent) => {
     if (c) {
         c.segments = undefined;
         c.translatedText = undefined;
+        // Show NOTHING until the switch resolves, rather than dropping to the fallback area.
+        // X streams a translation in over several seconds, and with segments cleared every
+        // observer tick in that window would otherwise render the fallback box — turning a
+        // last-resort UI into a normal, expected step on the way to the Disinfact button.
+        // Reuses the flag TRANSLATE_FACT_CHECKS already sets for the same reason; both
+        // fallback call sites above honour it. It clears itself when the next broadcast
+        // arrives, because injectClassifications replaces this object with the background's
+        // (which never sets it) — so there is no state to unwind if the switch is abandoned.
+        c.localizingHighlights = true;
         textBreakupInProgress.delete(tweetId);
     }
 }) as EventListener);

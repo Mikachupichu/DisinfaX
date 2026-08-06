@@ -263,6 +263,10 @@
   "factCheckAllButton": {
     "message": "Ověřit vše"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX může dělat chyby. Informace si vždy ověřte.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Váš zůstatek je příliš nízký. Dobijte kredit a pokračujte."
   },

@@ -259,6 +259,10 @@
   "factCheckAllButton": {
     "message": "모두 팩트체크"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX는 실수를 할 수 있습니다. 정보를 다시 확인해 주세요.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "잔액이 부족합니다. 계속하려면 충전해 주세요."
   },

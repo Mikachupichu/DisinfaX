@@ -261,6 +261,10 @@
   "factCheckAllButton": {
     "message": "Priksa Kabeh"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX bisa nggawe kesalahan. Priksa maneh informasine.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "Saldo sampeyan kasuwen. Mangga ngisi saldo kanggo nglajengake."
   },

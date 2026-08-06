@@ -58,6 +58,15 @@ export default defineContentScript({
     XMLHttpRequest.prototype.open = function(_method, url) {
         this.addEventListener('load', async function() {
             const link = url.toString();
+
+            // NOTE: this patch only wraps XMLHttpRequest, which is sufficient for every
+            // endpoint in TIMELINE_ENDPOINTS. It deliberately does NOT see X's tweet
+            // translation, which is `fetch('POST https://api.x.com/2/grok/translation.json')`
+            // routed through X's own service worker — confirmed by a temporary XHR probe here
+            // staying completely silent while the network panel showed the request. Observing
+            // it would mean patching window.fetch in the MAIN world, i.e. intercepting every
+            // request the host page makes; see the toggle handler in relay.content.ts for how
+            // the displayed locale is resolved without doing that.
             const endpoint = TIMELINE_ENDPOINTS.find(candidate => link.includes(candidate.marker));
             if (!endpoint) {
                 // Surface GraphQL calls we don't recognize yet, so unhandled pages

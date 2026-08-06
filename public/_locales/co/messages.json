@@ -265,6 +265,10 @@
   "factCheckAllButton": {
     "message": "Verifica tuttu"
   },
+  "aiDisclaimer": {
+    "message": "DisinfaX pò fà erruri. Verificate l'infurmazione duie volte.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
   "errBalanceTooLow": {
     "message": "U vostru saldu hè troppu bassu. Ricaricate per continuà, per piacè."
   },
