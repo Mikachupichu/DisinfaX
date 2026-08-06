@@ -264,7 +264,7 @@
     "message": "ตรวจสอบข้อเท็จจริงทั้งหมด"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX อาจทำผิดพลาดได้ กรุณาตรวจสอบข้อมูลอีกครั้ง",
+    "message": "DisinfaX อาจผิดพลาดได้ กรุณาตรวจสอบข้อมูลสำคัญอีกครั้งเสมอ",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {

@@ -212,7 +212,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
           {messages.map((message, index) => (
             <div key={index} className="flex items-start gap-2 p-2.5 bg-red-950/50 border border-red-900 rounded-xl text-red-300 text-xs leading-relaxed">
               <InfoIcon />
-              <span className="whitespace-pre-wrap break-words">{message}</span>
+              <span className="whitespace-pre-wrap break-words">{renderMessage(message)}</span>
             </div>
           ))}
         </div>
@@ -362,4 +362,71 @@ function pickMessages(list: any[], locale: string): string[] {
     if (typeof text === 'string' && text.trim()) picked.push(text);
   }
   return picked;
+}
+
+/** Inline markdown supported in service messages: `[text](url)`, `**bold**`, `*italic*`,
+ *  `` `code` ``, and bare http(s) URLs. Deliberately inline-only — these render inside a
+ *  small advisory banner, so headings/lists/blockquotes have nowhere sensible to go.
+ *
+ *  Emphasis is asterisk-only. Underscore emphasis is NOT supported on purpose: it would
+ *  turn `snake_case_name` and `__dunder__` into italics, and those appear in real
+ *  operational messages far more often than underscore emphasis does. */
+const MESSAGE_INLINE = /\[([^\]\n]+)\]\(([^)\s]+)\)|\*\*([^*\n]+)\*\*|\*([^*\n]+)\*|`([^`\n]+)`|(https?:\/\/[^\s<>"'`)\]]+)/g;
+
+/** Absolute http/https/mailto URL, or null.
+ *
+ *  These messages arrive from a remote endpoint and render inside the popup, which has
+ *  extension privileges — so a link target is never trusted as written. Anything with
+ *  another scheme (`javascript:`, `data:`, `chrome-extension:` …) or no scheme at all is
+ *  rejected, and the caller falls back to showing the raw markdown as plain text. That
+ *  is also why the message is parsed into React elements rather than set as HTML: there
+ *  is no path here through which remote text can become markup. */
+function safeHref(raw: string): string | null {
+  try {
+    const url = new URL(raw);
+    return (url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'mailto:')
+      ? url.href
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Parse one message into React nodes. Unmatched text — including anything that looks
+ *  like HTML — is emitted as text nodes, which React escapes. */
+function renderMessage(text: string): React.ReactNode[] {
+  const nodes: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  MESSAGE_INLINE.lastIndex = 0;
+
+  const linkClass = 'text-red-100 underline underline-offset-2 decoration-red-400 hover:text-white';
+
+  while ((match = MESSAGE_INLINE.exec(text)) !== null) {
+    const [whole, linkText, linkUrl, bold, italic, code, bareUrl] = match;
+    if (match.index > lastIndex) nodes.push(text.slice(lastIndex, match.index));
+    const key = `${match.index}`;
+
+    if (linkText !== undefined) {
+      const href = safeHref(linkUrl);
+      nodes.push(href
+        ? <a key={key} href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>{linkText}</a>
+        : whole);
+    } else if (bold !== undefined) {
+      nodes.push(<strong key={key} className="font-semibold">{bold}</strong>);
+    } else if (italic !== undefined) {
+      nodes.push(<em key={key}>{italic}</em>);
+    } else if (code !== undefined) {
+      nodes.push(<code key={key} className="px-1 py-0.5 rounded bg-red-900/40 font-mono text-[0.95em]">{code}</code>);
+    } else {
+      const href = safeHref(bareUrl);
+      nodes.push(href
+        ? <a key={key} href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>{bareUrl}</a>
+        : whole);
+    }
+    lastIndex = match.index + whole.length;
+  }
+
+  if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
+  return nodes.length ? nodes : [text];
 }

@@ -264,7 +264,7 @@
     "message": "全部查核"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX 可能會出錯，請再次核實資訊。",
+    "message": "DisinfaX 可能會出錯，請仔細核實相關資訊。",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
