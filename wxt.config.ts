@@ -7,7 +7,7 @@ export default defineConfig({
   vite: () => ({
     plugins: [tailwindcss()],
   }),
-  manifest: {
+  manifest: (env) => ({
     name: 'DisinfaX',
     description: "Identifies and highlights disinformation in tweets using fast and intelligent research.",
     version: '1.0.0',
@@ -40,10 +40,21 @@ export default defineConfig({
       {
         resources: ['_locales/*/messages.json'],
         matches: ['<all_urls>']
+      },
+      {
+        // The MAIN-world XHR interceptor (entrypoints/capture-main-world.ts), loaded via
+        // injectScript() from relay.content.ts. See that file's header comment for why.
+        resources: ['capture-main-world.js'],
+        matches: ['*://x.com/*']
       }
     ],
     permissions: [
-      'identity',
+      ...(env.browser !== 'safari' ? ['identity'] : []),
+      // Safari drives OAuth (ASWebAuthenticationSession) and StoreKit purchases through
+      // the containing app over runtime.sendNativeMessage, which is gated on this
+      // permission. Safari-only: no other target uses native messaging, and declaring it
+      // there would add a store-listing permission warning for nothing.
+      ...(env.browser === 'safari' ? ['nativeMessaging'] : []),
       'storage',
       'alarms'
     ],
@@ -52,5 +63,10 @@ export default defineConfig({
     // broad 'tabs' permission's "read your browsing history" warning — Chrome only
     // populates changeInfo.url for tabs matching a granted host permission.
     host_permissions: ['*://*.disinfax.app/*'],
-  }
+    browser_specific_settings: {
+      gecko: {
+        id: "disinfax@disinfax.app", // Must be unique (email format recommended)
+      },
+    },
+  })
 });

@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { browser } from 'wxt/browser';
 
 const supabaseUrl = 'https://pofekzkirnysbuqbxmvp.supabase.co';
 /** Supabase's *publishable* (anon) key. This is designed to ship in client code: it
@@ -6,19 +7,19 @@ const supabaseUrl = 'https://pofekzkirnysbuqbxmvp.supabase.co';
  *  policies keyed on auth.uid(). It is not a secret. */
 const supabaseAnonKey = 'sb_publishable_4ZX8ljVPNImnvcpLl60Q_g_zgOK77Ua';
 
-/** Custom storage adapter backed by chrome.storage.local so the auth session is
+/** Custom storage adapter backed by browser.storage.local so the auth session is
  *  shared across every extension context (popup, background service worker,
  *  content scripts) and survives service-worker restarts. */
 const chromeStorageAdapter = {
   getItem: async (key: string): Promise<string | null> => {
-    const data = await chrome.storage.local.get(key);
+    const data = await browser.storage.local.get(key);
     return (data[key] as string) || null;
   },
   setItem: async (key: string, value: string): Promise<void> => {
-    await chrome.storage.local.set({ [key]: value });
+    await browser.storage.local.set({ [key]: value });
   },
   removeItem: async (key: string): Promise<void> => {
-    await chrome.storage.local.remove(key);
+    await browser.storage.local.remove(key);
   },
 };
 

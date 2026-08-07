@@ -2345,7 +2345,7 @@ const onboardingClickedTypes = new Set<string>();
 const onboardingByAnchor = new WeakMap<HTMLElement, HTMLElement>();
 
 function persistOnboardingClicked() {
-    try { chrome.storage.local.set({ [ONBOARD_CLICKED_KEY]: Array.from(onboardingClickedTypes) }); } catch { /* ignore */ }
+    try { browser.storage.local.set({ [ONBOARD_CLICKED_KEY]: Array.from(onboardingClickedTypes) }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
 }
 function markOnboardingClicked(type: string) {
     if (!type || onboardingClickedTypes.has(type)) return;
@@ -2610,13 +2610,13 @@ function refreshOnboarding() {
 
 // Load persisted onboarding state, then evaluate.
 try {
-    chrome.storage.local.get([ONBOARD_DISMISS_KEY, ONBOARD_CLICKED_KEY], (res: any) => {
-        if (!chrome.runtime.lastError && res) {
+    browser.storage.local.get([ONBOARD_DISMISS_KEY, ONBOARD_CLICKED_KEY]).then((res: any) => {
+        if (res) {
             onboardingDismissed = res[ONBOARD_DISMISS_KEY] === true;
             if (Array.isArray(res[ONBOARD_CLICKED_KEY])) for (const x of res[ONBOARD_CLICKED_KEY]) onboardingClickedTypes.add(String(x));
         }
         refreshOnboarding();
-    });
+    }).catch(() => { refreshOnboarding(); });
 } catch { /* ignore */ }
 
 // Debug/testing: react live when the onboarding state is reset from the EXTENSION
@@ -2625,7 +2625,7 @@ try {
 //   chrome.storage.local.remove(['mf_onboarding_dismissed', 'mf_onboarding_clicked_types'])
 // (Extension storage, so the host page can't touch it — same as the mfLocale hook.)
 try {
-    chrome.storage.onChanged.addListener((changes: any, area: string) => {
+    browser.storage.onChanged.addListener((changes: any, area: string) => {
         if (area !== 'local') return;
         if (!(ONBOARD_DISMISS_KEY in changes) && !(ONBOARD_CLICKED_KEY in changes)) return;
         if (ONBOARD_DISMISS_KEY in changes) onboardingDismissed = changes[ONBOARD_DISMISS_KEY].newValue === true;

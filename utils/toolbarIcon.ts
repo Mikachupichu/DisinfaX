@@ -31,7 +31,7 @@ const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
 /** Sizes present for every colour variant under `public/icon/`. */
 const ICON_SIZES = [16, 32, 48, 96, 128] as const;
 
-/** Build the size→path map `chrome.action.setIcon` expects. Paths are relative
+/** Build the size→path map `setIcon` expects. Paths are relative
  *  to the extension root, where WXT copies the contents of `public/`. */
 function iconPathsFor(variant: 'black' | 'white'): Record<string, string> {
   const paths: Record<string, string> = {};
@@ -39,12 +39,22 @@ function iconPathsFor(variant: 'black' | 'white'): Record<string, string> {
   return paths;
 }
 
+/** The toolbar-button namespace, which is spelled differently per manifest version:
+ *  `action` on MV3 (Chromium), `browserAction` on MV2 (Firefox and Safari, which WXT
+ *  builds as MV2 — their manifests declare `browser_action`). WXT's `browser` export is
+ *  just `globalThis.browser ?? globalThis.chrome` with no API aliasing, so the fallback
+ *  has to be spelled out here or `setIcon` would throw on those two targets. */
+function toolbarAction(): { setIcon(details: { path: Record<string, string> }): Promise<void> } | null {
+  const api = (browser as any).action ?? (browser as any).browserAction;
+  return api?.setIcon ? api : null;
+}
+
 /** Background-side: point the toolbar icon at the variant that contrasts with
  *  the browser UI, and remember the preference for the next service-worker wake.
  *  A dark UI needs the white logo, a light UI the black one. */
 export async function applyToolbarIcon(prefersDark: boolean): Promise<void> {
   try {
-    await browser.action.setIcon({ path: iconPathsFor(prefersDark ? 'white' : 'black') });
+    await toolbarAction()?.setIcon({ path: iconPathsFor(prefersDark ? 'white' : 'black') });
   } catch (e) {
     console.warn('[toolbarIcon] setIcon failed:', e);
   }

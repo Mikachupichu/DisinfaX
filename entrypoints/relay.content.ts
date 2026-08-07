@@ -435,6 +435,11 @@ export default defineContentScript({
   matches: ['*://x.com/*'],
   runAt: 'document_start',
   main() {
+    // Load the MAIN-world XHR interceptor (entrypoints/capture-main-world.ts). Using
+    // injectScript() instead of a declarative `world: 'main'` content script is what
+    // makes this work on Firefox/Safari too — that declarative form is Chromium/MV3-only.
+    injectScript('/capture-main-world.js', { keepInDom: true });
+
     console.log('[misinfo] relay content script loaded, localeOverride=', localeOverride);
 
     // The background service worker has no DOM and so cannot read the browser's

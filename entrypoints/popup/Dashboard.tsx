@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 import { useT, getUiLocale, formatUsdNumber, giftPercent, formatPercent } from './i18n';
 import { parseWorkerErrorMessage, codeToMessageKey } from '../../utils/errorCodes';
+import { browser } from 'wxt/browser';
 
 /** Render a USD amount with a smaller "US$" symbol vertically centered against the
  *  number (rather than baseline-aligned). Symbol size scales with the surrounding font
@@ -22,12 +23,15 @@ function Usd({ value, locale, hangUs = true }: { value: number; locale: string; 
 }
 
 const CHECKOUT_URL = 'https://create-checkout-session.michael-pouget01.workers.dev/';
+const SAFARI_VERIFY_URL = 'https://verify-apple-topup.michael-pouget01.workers.dev/';
 
 /** Preset top-up amounts (USD). "custom" is a free-entry integer ≥ 5. */
-const PRESETS = [5, 10, 15, 30] as const;
-type Selection = '5' | '10' | '15' | '30' | 'custom';
-const DEFAULT_SELECTION: Selection = '10';
-const DEFAULT_CUSTOM = '23';
+const PRESETS = import.meta.env.SAFARI ? [3, 5, 10, 20] as const: [5, 10, 15, 30] as const;
+type SafariSelection = '3' | '5' | '10' | '20' | 'custom';
+type ChromiumSelection = '5' | '10' | '15' | '30' | 'custom';
+type Selection = SafariSelection | ChromiumSelection;
+const DEFAULT_SELECTION: Selection = import.meta.env.SAFARI ? '5' : '10';
+const DEFAULT_CUSTOM = import.meta.env.SAFARI ? '15' : '23';
 
 /** Narrow an arbitrary stored value to a Selection, so a stale or hand-edited storage
  *  entry can't put the component into a state the UI doesn't render. */
@@ -39,17 +43,18 @@ const STORE_SELECTION = 'mf_topup_selection';
 const STORE_CUSTOM = 'mf_topup_custom_amount';
 
 function storageGet(keys: string[]): Promise<Record<string, any>> {
-  try { return Promise.resolve(chrome.storage.local.get(keys)) as Promise<Record<string, any>>; }
+  try { return browser.storage.local.get(keys) as Promise<Record<string, any>>; }
   catch { return Promise.resolve({}); }
 }
 function storageSet(obj: Record<string, any>): void {
-  try { chrome.storage.local.set(obj); } catch { /* ignore */ }
+  try { browser.storage.local.set(obj).catch(() => { /* ignore */ }); } catch { /* ignore */ }
 }
 
 /** Effective integer amount from the custom field's raw text (min $5). */
 function customToAmount(raw: string): number {
   const n = Math.floor(Number(raw));
-  return Number.isFinite(n) && n >= 5 ? n : 5;
+  const min = import.meta.env.SAFARI ? 1 : 5;
+  return Number.isFinite(n) && n >= min ? n : min;
 }
 
 /** Split a template containing %TOKEN% markers into React nodes, substituting each
@@ -113,19 +118,17 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
 
     // Balance: ask the background hub for the current total, then live-update below.
     try {
-      chrome.runtime.sendMessage({ type: 'MF_FUNDS_GET' }, (response: any) => {
-        if (chrome.runtime.lastError) return;
+      browser.runtime.sendMessage({ type: 'MF_FUNDS_GET' }).then((response: any) => {
         if (response && typeof response.total === 'number') setTotal(response.total);
-      });
+      }).catch(() => { /* ignore */ });
     } catch { /* ignore */ }
 
     // Messages (usually none).
     try {
-      chrome.runtime.sendMessage({ type: 'MF_MESSAGES_GET' }, (response: any) => {
-        if (chrome.runtime.lastError) return;
+      browser.runtime.sendMessage({ type: 'MF_MESSAGES_GET' }).then((response: any) => {
         const list = Array.isArray(response?.messages) ? response.messages : [];
         setMessages(pickMessages(list, locale));
-      });
+      }).catch(() => { /* ignore */ });
     } catch { /* ignore */ }
 
     const listener = (message: any) => {
@@ -133,8 +136,8 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         setTotal(message.total);
       }
     };
-    chrome.runtime.onMessage.addListener(listener);
-    return () => { try { chrome.runtime.onMessage.removeListener(listener); } catch { /* ignore */ } };
+    browser.runtime.onMessage.addListener(listener);
+    return () => { try { browser.runtime.onMessage.removeListener(listener); } catch { /* ignore */ } };
   }, [locale]);
 
   const persistSelection = useCallback((sel: Selection) => { setSelection(sel); storageSet({ [STORE_SELECTION]: sel }); }, []);
@@ -147,7 +150,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   const selectedAmount = selection === 'custom' ? customToAmount(customInput) : Number(selection);
 
   const stepCustom = (delta: number) => {
-    const next = String(Math.max(5, customToAmount(customInput) + delta));
+    const next = String(Math.max(import.meta.env.SAFARI ? 1 : 5, customToAmount(customInput) + delta));
     commitCustom(next);
   };
 
@@ -157,33 +160,88 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
-      const response = await fetch(CHECKOUT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: JSON.stringify({ amount: selectedAmount }),
-      });
-      if (!response.ok) {
-        // The worker reports failures as {"error": "..."} but may also return plain
-        // text, so fall back to the raw body when it isn't JSON.
-        const body = await response.text();
-        let failureMessage = body;
-        try {
-          const parsed = JSON.parse(body);
-          if (parsed?.error) failureMessage = parsed.error;
-        } catch { /* not JSON — keep the raw body */ }
-        // Recognized error codes (see utils/errorCodes.ts) use this extension's own
-        // localized text instead of whatever the worker sent after the dash.
-        const parsedError = parseWorkerErrorMessage(failureMessage, locale);
-        const messageKey = parsedError.code != null ? codeToMessageKey(parsedError.code) : null;
-        const resolvedMessage = messageKey ? t(messageKey) : parsedError.text;
-        throw new Error(resolvedMessage || t('checkoutError'));
+      const userId = data.session?.user?.id;
+
+      if (!token || !userId) {
+        throw new Error(t('signInRequired') || "3 - Sign in required.");
       }
-      const { url } = await response.json();
-      if (!url) throw new Error(t('checkoutError'));
-      // Hand off to the background, which opens the Stripe tab and closes it on the
-      // redirect back to disinfax.app. Then close the popup.
-      try { chrome.runtime.sendMessage({ type: 'MF_OPEN_CHECKOUT', url }); } catch { /* ignore */ }
-      window.close();
+
+      if (import.meta.env.SAFARI) {
+        // -------------------------------------------------------------
+        // SAFARI / APPLE STOREKIT FLOW
+        // -------------------------------------------------------------
+        
+        // 1. Ask the Swift host app to display the StoreKit purchase sheet. Relayed through
+        //    the background: Safari only answers sendNativeMessage from the background
+        //    script, not from a popup. See background.ts.
+        const nativeRes: any = await browser.runtime.sendMessage({
+          type: 'MF_NATIVE_PURCHASE',
+          amount: selectedAmount,
+          userId,
+        });
+
+        if (!nativeRes || nativeRes.error || !nativeRes.signedTransaction) {
+          throw new Error(nativeRes?.error || t('checkoutError'));
+        }
+
+        // 2. Send Apple's signed JWS transaction payload to your Safari Cloudflare Worker
+        const response = await fetch(SAFARI_VERIFY_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            signedTransaction: nativeRes.signedTransaction,
+          }),
+        });
+
+        if (!response.ok) {
+          const body = await response.text();
+          let failureMessage = body;
+          try {
+            const parsed = JSON.parse(body);
+            if (parsed?.error) failureMessage = parsed.error;
+          } catch { /* not JSON — keep raw body */ }
+
+          const parsedError = parseWorkerErrorMessage(failureMessage, locale);
+          const messageKey = parsedError.code != null ? codeToMessageKey(parsedError.code) : null;
+          const resolvedMessage = messageKey ? t(messageKey) : parsedError.text;
+          throw new Error(resolvedMessage || t('checkoutError'));
+        }
+
+        // 3. Refresh user balance in background and close popup
+        try { browser.runtime.sendMessage({ type: 'MF_FUNDS_GET' }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
+        window.close();
+      } else {
+        const response = await fetch(CHECKOUT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          body: JSON.stringify({ amount: selectedAmount }),
+        });
+        if (!response.ok) {
+          // The worker reports failures as {"error": "..."} but may also return plain
+          // text, so fall back to the raw body when it isn't JSON.
+          const body = await response.text();
+          let failureMessage = body;
+          try {
+            const parsed = JSON.parse(body);
+            if (parsed?.error) failureMessage = parsed.error;
+          } catch { /* not JSON — keep the raw body */ }
+          // Recognized error codes (see utils/errorCodes.ts) use this extension's own
+          // localized text instead of whatever the worker sent after the dash.
+          const parsedError = parseWorkerErrorMessage(failureMessage, locale);
+          const messageKey = parsedError.code != null ? codeToMessageKey(parsedError.code) : null;
+          const resolvedMessage = messageKey ? t(messageKey) : parsedError.text;
+          throw new Error(resolvedMessage || t('checkoutError'));
+        }
+        const { url } = await response.json();
+        if (!url) throw new Error(t('checkoutError'));
+        // Hand off to the background, which opens the Stripe tab and closes it on the
+        // redirect back to disinfax.app. Then close the popup.
+        try { browser.runtime.sendMessage({ type: 'MF_OPEN_CHECKOUT', url }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
+        window.close();
+      }
     } catch (err: any) {
       setCheckoutError(err?.message || t('checkoutError'));
     } finally {
@@ -238,7 +296,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
               className={`relative py-2.5 rounded-xl border text-sm font-semibold transition-colors ${isSelected ? 'border-emerald-500 bg-emerald-950/40 text-white' : 'border-zinc-800 bg-zinc-900/50 text-zinc-300 hover:border-zinc-700'}`}
             >
               <Usd value={presetAmount} locale={locale} hangUs={false} />
-              {bonusPercent > 0 && (
+              {!import.meta.env.SAFARI && bonusPercent > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 text-[8px] font-black tracking-wide uppercase bg-emerald-500 text-black px-1.5 py-0.5 rounded-md scale-90 origin-top-right whitespace-nowrap">
                   +{formatPercent(bonusPercent, locale)}% {t('gifted')}
                 </span>
@@ -250,7 +308,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         {/* Custom: a button that becomes a stepper field when selected. */}
         {selection === 'custom' ? (
           <div className="relative col-span-2">
-            {giftPercent(customToAmount(customInput)) > 0 && (
+            {!import.meta.env.SAFARI && giftPercent(customToAmount(customInput)) > 0 && (
               <span className="absolute -top-2 left-2 z-10 text-[8px] font-black tracking-wide uppercase bg-emerald-500 text-black px-1.5 py-0.5 rounded-md whitespace-nowrap">
                 +{formatPercent(giftPercent(customToAmount(customInput)), locale)}% {t('gifted')}
               </span>
@@ -275,7 +333,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
                 <button
                   onClick={() => stepCustom(-1)}
                   aria-label={t('decrease')}
-                  disabled={customToAmount(customInput) <= 5}
+                  disabled={customToAmount(customInput) <= (import.meta.env.SAFARI ? 1 : 5)}
                   className="flex-1 px-2 text-zinc-300 hover:text-white hover:bg-emerald-900/40 border-t border-emerald-500/40 disabled:text-zinc-600 disabled:hover:bg-transparent disabled:hover:text-zinc-600 disabled:cursor-not-allowed"
                 ><ChevronDown /></button>
               </div>

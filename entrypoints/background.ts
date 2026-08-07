@@ -2351,6 +2351,14 @@ export default defineBackground(() => {
     }).catch((e: any) => console.error('[background] openCheckoutTab error:', e));
   }
 
+  // ── Safari native-app bridge ──
+  /** The containing app's bundle identifier. Safari ignores this argument (an extension
+   *  can only ever reach its own containing app), but the API requires it. */
+  const NATIVE_APP_ID = 'com.disinfax.app';
+  /** Custom URL scheme the app registers so ASWebAuthenticationSession can catch the
+   *  OAuth redirect. Must match the `redirectTo` the popup sends to Supabase. */
+  const NATIVE_CALLBACK_SCHEME = 'disinfax';
+
   // ─────────────────────────────────────────────────────────────────────────
   // Message entry points. One-off requests (popup) arrive on runtime.onMessage;
   // the content-script relay instead holds a long-lived "classify" port, because
@@ -2380,6 +2388,30 @@ export default defineBackground(() => {
     if (message?.type === 'MF_OPEN_CHECKOUT' && typeof message.url === 'string') {
       openCheckoutTab(message.url);
       return undefined; // no response
+    }
+    // Safari drives OAuth (ASWebAuthenticationSession) and top-ups (StoreKit) through the
+    // containing app. Safari only lets the BACKGROUND script call sendNativeMessage — a
+    // popup calling it directly is not answered — so the popup asks here and this relays.
+    // `import.meta.env.SAFARI` is a build-time constant, so this block is dropped entirely
+    // from the Chromium and Firefox bundles.
+    if (import.meta.env.SAFARI && (message?.type === 'MF_NATIVE_SIGN_IN' || message?.type === 'MF_NATIVE_PURCHASE')) {
+      (async () => {
+        try {
+          const payload = message.type === 'MF_NATIVE_SIGN_IN'
+            ? { action: 'SIGN_IN', url: message.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME }
+            : { action: 'PURCHASE_TOPUP', amount: message.amount, userId: message.userId };
+          const res = await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, payload);
+          // Passed through untouched: the popup already understands the host's shapes
+          // ({access_token,refresh_token} / {code} / {callbackUrl} / {signedTransaction} /
+          // {error}). Never resolve as undefined — the popup awaits this reply, and a
+          // missing one would leave its spinner up forever.
+          sendResponse(res ?? { error: 'The DisinfaX app did not respond.' });
+        } catch (e: any) {
+          console.error('[background] sendNativeMessage failed:', e);
+          sendResponse({ error: e?.message || 'Could not reach the DisinfaX app.' });
+        }
+      })();
+      return true; // async sendResponse
     }
     // A DOM context (popup or relay) reported the browser's dark/light preference;
     // the service worker cannot read it itself. See utils/toolbarIcon.ts.

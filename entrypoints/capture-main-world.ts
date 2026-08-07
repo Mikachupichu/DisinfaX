@@ -11,6 +11,12 @@
  *  would intercept nothing. The trade-off is that this script shares a global scope with
  *  the host page, which is why it does nothing but parse and forward — the relay
  *  verifies every message's origin before trusting it.
+ *
+ *  Delivered into the MAIN world via injectScript() from relay.content.ts, rather than a
+ *  declarative `world: 'main'` content script: that declarative form is Chromium/MV3-only
+ *  (unsupported on Firefox's MV2 and on Safari), while injectScript() works identically
+ *  across all three. On MV3 targets injectScript() still evaluates synchronously at the
+ *  calling content script's run_at time, same as the declarative form did.
  */
 import {
     parseHomeTimeline,
@@ -48,11 +54,7 @@ const TIMELINE_ENDPOINTS: { marker: string; label: string; parse: (responseText:
     { marker: 'CommunitiesFetchOneQuery',  label: 'Community Fetch One',     parse: parseCommunityFetchOne },
 ];
 
-export default defineContentScript({
-  matches: ['*://x.com/*'],
-  world: 'MAIN',
-  runAt: 'document_start',
-  main() {
+export default defineUnlistedScript(() => {
     console.log('DisinfaX: Active');
     const originalOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function(_method, url) {
@@ -94,5 +96,4 @@ export default defineContentScript({
         });
         return originalOpen.apply(this, arguments as any);
     };
-  },
 });

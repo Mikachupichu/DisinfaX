@@ -3,6 +3,7 @@ import { supabase } from './supabaseClient';
 import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import Dashboard from './Dashboard';
 import { useT, getUiLocale, isRtl } from './i18n';
+import { browser } from 'wxt/browser';
 
 type OAuthProvider = 'x' | 'google' | 'apple';
 
@@ -71,7 +72,10 @@ export default function App() {
   const [authError, setAuthError] = useState<string | null>(null);
 
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(() => {
-    return localStorage.getItem(LAST_PROVIDER_STORAGE_KEY);
+    // Guarded because this runs during the first render: a throwing localStorage
+    // (Safari can restrict it under some privacy settings) would take the whole popup
+    // down over a cosmetic badge. Matches the defensive access in ./i18n.ts.
+    try { return localStorage.getItem(LAST_PROVIDER_STORAGE_KEY); } catch { return null; }
   });
 
   useEffect(() => {
@@ -94,7 +98,10 @@ export default function App() {
 
   /** Record the provider that just worked, so it can be badged next time. */
   const rememberProvider = (provider: OAuthProvider) => {
-    localStorage.setItem(LAST_PROVIDER_STORAGE_KEY, provider);
+    // Swallowed deliberately: this runs AFTER the session is established, inside the
+    // sign-in try block. An unguarded throw here would surface as an auth error to a
+    // user who is, in fact, now signed in — over a badge that failed to persist.
+    try { localStorage.setItem(LAST_PROVIDER_STORAGE_KEY, provider); } catch { /* badge is best-effort */ }
     setLastUsedProvider(provider);
   };
 
@@ -102,75 +109,134 @@ export default function App() {
     setLoading(true);
     setAuthError(null);
     try {
-      const extensionRedirectUrl = chrome.identity.getRedirectURL();
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: extensionRedirectUrl,
-          skipBrowserRedirect: true,
-          scopes: provider === 'x' ? 'users.read' : (provider === 'google' ? 'openid' : (provider === 'apple' ? '' : undefined)),
-        },
-      });
+      if (import.meta.env.SAFARI) {
+        // -------------------------------------------------------------
+        // SAFARI FLOW (Native Swift ASWebAuthenticationSession)
+        // -------------------------------------------------------------
+        
+        // 1. Generate OAuth URL & store PKCE verifier in Supabase JS storage
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: 'disinfax://auth-callback', // Custom URL scheme handled by Swift app
+            skipBrowserRedirect: true,
+            scopes: provider === 'x' ? 'users.read' : (provider === 'google' ? 'openid' : (provider === 'apple' ? '' : undefined)),
+          },
+        });
 
-      if (error) throw error;
-      if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
+        if (error) throw error;
+        if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
 
-      // Drive the handshake in Chrome's own auth window rather than a tab, so the
-      // provider redirects back to the extension's identity URL.
-      const callbackUrl = await chrome.identity.launchWebAuthFlow({
-        url: data.url,
-        interactive: true,
-      });
+        // 2. Pass generated URL to Swift host to open via ASWebAuthenticationSession.
+        //    Relayed through the background: Safari only answers sendNativeMessage from
+        //    the background script, not from a popup. See background.ts.
+        const nativeRes: any = await browser.runtime.sendMessage({
+          type: 'MF_NATIVE_SIGN_IN',
+          url: data.url,
+        });
 
-      if (!callbackUrl) {
-        throw new Error('Authentication flow was cancelled or failed.');
-      }
+        if (!nativeRes || nativeRes.error) {
+          throw new Error(nativeRes?.error || 'Authentication flow was cancelled or failed.');
+        }
 
-      const parsedCallback = new URL(callbackUrl);
-
-      // 1. Check if the URL returned an explicit error from the provider.
-      // Providers put this in the query string or the fragment, so check both.
-      const errorDescription =
-        parsedCallback.searchParams.get('error_description') ||
-        new URLSearchParams(parsedCallback.hash.substring(1)).get('error_description');
-
-      if (errorDescription) {
-        throw new Error(`Provider Error: ${errorDescription}`);
-      }
-
-      // 2. Try Pathway A: PKCE Authorization Code Flow
-      const code = parsedCallback.searchParams.get('code');
-
-      if (code) {
-        const { data: sessionData, error: sessionError } =
-          await supabase.auth.exchangeCodeForSession(code);
-        if (sessionError) throw sessionError;
-
-        // SUCCESS! Safe to commit and update state
-        rememberProvider(provider);
-        setUser(sessionData.user);
-        return;
-      }
-
-      // 3. Try Pathway B: Implicit Grant Flow Fallback (Tokens in the Hash)
-      const hashParams = new URLSearchParams(parsedCallback.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token');
-
-      if (accessToken && refreshToken) {
-        const { data: sessionData, error: sessionError } =
-          await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
+        // 3. Option A: Direct Token Pair (if Swift app exchanges token natively)
+        if (nativeRes.access_token && nativeRes.refresh_token) {
+          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+            access_token: nativeRes.access_token,
+            refresh_token: nativeRes.refresh_token,
           });
-        if (sessionError) throw sessionError;
-        rememberProvider(provider);
-        setUser(sessionData.user);
-        return; // Exit successfully
-      }
+          if (sessionError) throw sessionError;
 
-      // If neither pathway resolved, throw a clean fallback error
-      throw new Error('Authentication succeeded, but no usable tokens or codes were found in the callback URL.');
+          rememberProvider(provider);
+          setUser(sessionData.user);
+          return;
+        }
+
+        // 4. Option B: Callback URL / Code Exchange (PKCE verifier is present in storage!)
+        const callbackUrl = nativeRes.callbackUrl || nativeRes.url;
+        const code = nativeRes.code || (callbackUrl ? new URL(callbackUrl).searchParams.get('code') : null);
+
+        if (code) {
+          const { data: sessionData, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
+          if (sessionError) throw sessionError;
+
+          rememberProvider(provider);
+          setUser(sessionData.user);
+          return;
+        }
+
+        throw new Error('Authentication succeeded, but no usable tokens or codes were returned.');
+      } else {
+        const extensionRedirectUrl = browser.identity.getRedirectURL();
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: extensionRedirectUrl,
+            skipBrowserRedirect: true,
+            scopes: provider === 'x' ? 'users.read' : (provider === 'google' ? 'openid' : (provider === 'apple' ? '' : undefined)),
+          },
+        });
+
+        if (error) throw error;
+        if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
+
+        // Drive the handshake in Chrome's own auth window rather than a tab, so the
+        // provider redirects back to the extension's identity URL.
+        const callbackUrl = await browser.identity.launchWebAuthFlow({
+          url: data.url,
+          interactive: true,
+        });
+
+        if (!callbackUrl) {
+          throw new Error('Authentication flow was cancelled or failed.');
+        }
+
+        const parsedCallback = new URL(callbackUrl);
+
+        // 1. Check if the URL returned an explicit error from the provider.
+        // Providers put this in the query string or the fragment, so check both.
+        const errorDescription =
+          parsedCallback.searchParams.get('error_description') ||
+          new URLSearchParams(parsedCallback.hash.substring(1)).get('error_description');
+
+        if (errorDescription) {
+          throw new Error(`Provider Error: ${errorDescription}`);
+        }
+
+        // 2. Try Pathway A: PKCE Authorization Code Flow
+        const code = parsedCallback.searchParams.get('code');
+
+        if (code) {
+          const { data: sessionData, error: sessionError } =
+            await supabase.auth.exchangeCodeForSession(code);
+          if (sessionError) throw sessionError;
+
+          // SUCCESS! Safe to commit and update state
+          rememberProvider(provider);
+          setUser(sessionData.user);
+          return;
+        }
+
+        // 3. Try Pathway B: Implicit Grant Flow Fallback (Tokens in the Hash)
+        const hashParams = new URLSearchParams(parsedCallback.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+          const { data: sessionData, error: sessionError } =
+            await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+          if (sessionError) throw sessionError;
+          rememberProvider(provider);
+          setUser(sessionData.user);
+          return; // Exit successfully
+        }
+
+        // If neither pathway resolved, throw a clean fallback error
+        throw new Error('Authentication succeeded, but no usable tokens or codes were found in the callback URL.');
+    }
 
     } catch (err: any) {
       console.error('OAuth Workflow Failed:', err);
