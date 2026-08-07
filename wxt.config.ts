@@ -4,8 +4,11 @@ import tailwindcss from '@tailwindcss/vite';
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
-  vite: () => ({
+  vite: (env) => ({
     plugins: [tailwindcss()],
+    esbuild: env.mode === 'production' 
+      ? { drop: ['console', 'debugger'] } 
+      : {},
   }),
   manifest: (env) => ({
     name: 'DisinfaX',
