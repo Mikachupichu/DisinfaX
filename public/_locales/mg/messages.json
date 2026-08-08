@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Mamarika sy manasongadina ny vainga ao amin'ny tweets amin'ny alalan'ny famakafakana AI.",
+    "message": "Mamarika sy manasongadina ny fampitam-baovao diso ao amin'ny tweets amin'ny alalan'ny famakafakana AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Fanamarinana|Fikarohana|Fanadiovana|Famoahana ny Marina|Fahitana|Fisainana|Fanazavana|Fihadiana|Fisavana|Fanaraha-maso Mifandanja|Famakafakana|Fandavana Lainga|Fitadiavana ny Marina|Fieritreretana|Fanangonan-kevitra|Famahana Mistery|Fanatsoahan-kevitra|Fandinihana|Fanadihadiana|Fitsikarana|Fanentanana ny Marina|Fisafoana|Fikarohana Lalindalina|Fanadiovana Vaovao|Famerenana Marina|Fanovana Lainga ho Marina",
+    "message": "Fanamarinana|Fikarohana|Fanadiovana|Famoahana ny Marina|Fahitana|Fisainana|Fanazavana|Fihadiana|Fisavana|Fanaraha-maso Mifandanja|Famakafakana|Fandavana Lainga|Fitadiavana ny Marina|Fieritreretana|Fanangonan-kevitra|Famahana Mistery|Fanatsoahan-kevitra|Fandinihana|Fanadihadiana|Fitsikarana|Fanentanana ny Marina|Fisafoana|Fikarohana Lalindalina|Fanadiovana Lalina|Famerenana Marina|Fanovana Lainga ho Marina",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -112,7 +112,7 @@
     }
   },
   "copyTooltip": {
-    "message": "Adikao",
+    "message": "Kopia",
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Adikao ny Fanamarinana",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Adikao",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ho",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ho $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Voamarina",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Miverina",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Fanamarinana",
+    "message": "Manamarina",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -188,7 +188,7 @@
     "message": "Ahenoy"
   },
   "topUpBalance": {
-    "message": "Ampiana vola"
+    "message": "Ampio ny vola sisa"
   },
   "processing": {
     "message": "Eo am-panodinana…"
@@ -212,10 +212,10 @@
     "message": "Hiala"
   },
   "onboardDisinfactClick": {
-    "message": "Ny fanindriana ny %BTN% dia hampiseho ny fanambarana ary hisy sarany hesorina amin'ny volanao"
+    "message": "Ny fanindriana ny %BTN% dia hampiseho ny filazana ary hisy sarany hesorina amin'ny volanao"
   },
   "onboardDisinfactTap": {
-    "message": "Ny fikapohana ny %BTN% dia hampiseho ny fanambarana ary hisy sarany hesorina amin'ny volanao"
+    "message": "Ny fikapohana ny %BTN% dia hampiseho ny filazana ary hisy sarany hesorina amin'ny volanao"
   },
   "onboardWillCharge": {
     "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
@@ -260,7 +260,7 @@
     "message": "Diovy ny fandraisam-baovao X anao."
   },
   "disclaimerJurisdiction": {
-    "message": "Ao anatin'i Etazonia, ny mponin'i Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ary Wyoming ihany no afaka mampiasa DisinfaX sy mameno ny volany; Washington, D.C., ny faritany amerikana rehetra, ary ny fanjakana rehetra tsy voatanisa dia tsy tafiditra. Any ivelan'i Etazonia, dia misy any Kanada, Aostralia, Nouvelle-Zélande, Singapore, Afrika Atsimo, Japon, Taiwan, Indonezia, Thailandy, Filipina, Malezia, Vietnam, ary Soisa."
+    "message": "Ao anatin'i Etazonia, ny mponin'i Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ary Wyoming ihany no afaka mampiasa DisinfaX sy mameno ny volany; Washington, D.C., ny faritany amerikana rehetra, ary ny fanjakana rehetra tsy voatanisa dia tsy tafiditra. Any ivelan'i Etazonia, dia misy any Kanada, Aostralia, Nouvelle-Zélande, Singapore, Afrika Atsimo, Japana, Taiwan, Indonezia, Thailandy, Filipina, Malezia, Vietnam, ary Soisa."
   },
   "factCheckAllButton": {
     "message": "Manamarina daholo"
@@ -279,7 +279,7 @@
     "message": "Tsy tafiditra ianao. Azafady midira ary andramo indray."
   },
   "errInvalidRequest": {
-    "message": "Tsy fantatra ny ampahany amin'ity fangatahana ity. Azafadyamarino fa efa nohavaozina ny fanitarana."
+    "message": "Tsy fantatra ny ampahany amin'ity fangatahana ity. Azafady amarino fa efa nohavaozina ny fanitarana."
   },
   "errServiceUnavailable": {
     "message": "Nisy hadisoana teo amin'ny lafinay. Azafady andramo indray afaka kelikely."

@@ -116,11 +116,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Открий повторно ги сите тврдења во овој твит",
+    "message": "Откријте ги повторно сите тврдења во овој твит",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Повторно истражи ја оваа тврдење",
+    "message": "Истражете го повторно ова тврдење",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,11 +128,11 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Преведи ги проверките",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Преведи",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Проверено",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Врати се",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -279,7 +279,7 @@
     "message": "Не сте најавени. Најавете се и обидете се повторно."
   },
   "errInvalidRequest": {
-    "message": "Дел од оваа заявка не беше препознаен. Проверете дали додатокот е ажуриран."
+    "message": "Дел од ова барање не беше препознаен. Проверете дали додатокот е ажуриран."
   },
   "errServiceUnavailable": {
     "message": "Настана грешка од наша страна. Обидете се повторно за момент."

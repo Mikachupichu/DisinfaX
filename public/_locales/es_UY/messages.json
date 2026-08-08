@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -194,7 +194,7 @@
     "message": "Procesando…"
   },
   "checkoutError": {
-    "message": "No se pudo iniciar el pago. Inténtalo de nuevo."
+    "message": "No se pudo iniciar el pago. Intentalo de nuevo."
   },
   "termsOfService": {
     "message": "Términos del servicio"
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Tu saldo es demasiado bajo. Recarga tu cuenta para continuar."
+    "message": "Tu saldo es demasiado bajo. Recargá tu cuenta para continuar."
   },
   "errAccountSuspended": {
     "message": "Tu cuenta ha sido suspendida."
   },
   "errNotSignedIn": {
-    "message": "No has iniciado sesión. Inicia sesión y vuelve a intentarlo."
+    "message": "No has iniciado sesión. Iniciá sesión y volvé a intentarlo."
   },
   "errInvalidRequest": {
-    "message": "Algo en esta solicitud no se reconoció. Asegúrate de que la extensión esté actualizada."
+    "message": "Algo en esta solicitud no se reconoció. Asegurate de que la extensión esté actualizada."
   },
   "errServiceUnavailable": {
-    "message": "Ocurrió un error de nuestro lado. Vuelve a intentarlo en un momento."
+    "message": "Ocurrió un error de nuestra parte. Volvé a intentarlo en un momento."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX aún no está disponible en tu región debido a requisitos regulatorios."
   },
   "errInvalidAmount": {
-    "message": "Ese monto de recarga no es válido. Elige un monto diferente."
+    "message": "Ese monto de recarga no es válido. Elegí un monto diferente."
   },
   "errNotFound": {
-    "message": "No se pudo encontrar eso. Vuelve a intentarlo."
+    "message": "No se pudo encontrar eso. Volvé a intentarlo."
   }
 }

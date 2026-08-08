@@ -4,15 +4,15 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI QIn Daj tlhab net ngoQ tweets Daj.",
+    "message": "tweets lIe' ghov 'ej cha' AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
-    "message": "QeylIS",
+    "message": "teH",
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Ha'",
+    "message": "teHbe'",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -20,7 +20,7 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "QIn",
+    "message": "nejtaH",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
@@ -28,11 +28,11 @@
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "HeH chovnatlh",
+    "message": "chovnatlh law'",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Chovnatlh",
+    "message": "chovnatlh",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "QIn",
+    "message": "bID",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -112,35 +112,35 @@
     }
   },
   "copyTooltip": {
-    "message": "ratlh",
+    "message": "rapmoH",
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "tweetvam Dotlh Hoch cha'moH",
+    "message": "tweetvam mu'tlheghmey Hoch cha'moHqa'",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "QongDujqa' mu'",
+    "message": "mu'tlhegh vam nejqa'",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "QIn",
+    "message": "nejtaH",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Dotlhmey mugh",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "mugh",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "'oH",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ 'oH $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "nejpu'",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "yIcheghqa'",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "QaD",
+    "message": "ghov",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "aiDisclaimer": {

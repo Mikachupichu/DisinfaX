@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -282,7 +282,7 @@
     "message": "Algo en esta solicitud no se reconoció. Asegúrate de que la extensión esté actualizada."
   },
   "errServiceUnavailable": {
-    "message": "Ocurrió un error de nuestro lado. Vuelve a intentarlo en un momento."
+    "message": "Ocurrió un error de nuestra parte. Vuelve a intentarlo en un momento."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX aún no está disponible en tu región debido a requisitos regulatorios."

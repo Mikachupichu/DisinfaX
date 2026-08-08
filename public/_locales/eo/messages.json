@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detektas kaj elstarigas malinformojn en tweets per AI-analizo.",
+    "message": "Detektas kaj elstarigas malinformojn en tvitoj per AI-analizo.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -24,15 +24,15 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Kontrolado|Esplorado|Purigado|Malkovrado|Malkaŝado|Pripensado|Lumigado|Fosado|Kribrado|Nudigado|Konfirmado|Analizado|Kruckontrolado|Klarigado|Komparado|Malimplikado|Kolektado|Senmaskigado|Filtrado|Ekzamenado|Divenado|Konsiderado|Serĉado|Detektado|Rivelado",
+    "message": "Malsensencigado|Malinformumado|Purigado|Malfalsnovaĵigado|Riparado|Purlavado|Serĉado|Esplorado|Faktokontrolado|Malcerbolavado|Verigado|Konfirmado|Pensado|Malkovrado|Eltrovado|Kontrolado|Traserĉado|Verserĉado|Travidebligado|Verecigado|Malfalsigado|Lumigado|Klasigado|Verdiktado|Alportado|Informado|Turnado|Ŝargado|Cirklado|Rondirado|Faktigado|Faktecigado|Faktumado|Malmistifikado|Prilaborado|Malklaklogigado|Fosado|Verumado|Defalsigado|Nefalsigado|Refalsigado|Malŝajnigado|Generado|Skribado|Sciigado|Pripensado|Meditado|Konsiderado|Kontemplado|Animserĉado|Aventurado|Kuirado|Ĉefkuirado|Intuicado|Logikado|Rezonado|Filozofumado|Klarigado|Solvado|Klerigado|Konkludado|Kolektado|Amasigado|Malaĉigado|Malkredigado|Mitrompado|Malantaŭjuĝigado|Malpropagandigado|Rektparolado|Sanigado|Maltoksigado|Faktopremado|Kvalifikado|Kribrado|Kruckontrolado|Pridemandado|Senmaskigado|Sekcado|Malimplikado|Analizado|Elfumigado|Elradikigado|Malkonstruado|Ekzamenado|Triangulado|Krucreferencado|Kunkonfirmado|Validigado|Distilado|Sintezado|Maĉado|Malklarigado|Malnebuligado|Nebuldispelado|Filtrado|Rentgenumado|Malkaŝigado|Prilumado|Kribrelektado",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Tre verŝajna",
+    "message": "Tre verŝajne",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Verŝajna",
+    "message": "Verŝajne",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -44,7 +44,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Diskutebla",
+    "message": "Diskuteble",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Ambigua",
+    "message": "Ambigue",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Remalkaŝi ĉiujn asertojn de ĉi tiu tweet",
+    "message": "Remalkaŝi la asertojn de ĉi tiu tvito",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -128,11 +128,11 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Traduki faktokontrolojn",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Traduki",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -140,7 +140,7 @@
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ esti $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Faktokontrolita",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Reiri",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -179,7 +179,7 @@
     "message": "Propra"
   },
   "customAmountLabel": {
-    "message": "Propra rekargosumo en usonaj dolaroj"
+    "message": "Propra reŝargosumo en usonaj dolaroj"
   },
   "increase": {
     "message": "Pligrandigi"
@@ -188,10 +188,10 @@
     "message": "Malpligrandigi"
   },
   "topUpBalance": {
-    "message": "Rekargi saldon"
+    "message": "Reŝargi saldon"
   },
   "processing": {
-    "message": "Traktante…"
+    "message": "Prilaborado…"
   },
   "checkoutError": {
     "message": "Ne eblis komenci pagon. Bonvolu reprovi."
@@ -203,34 +203,34 @@
     "message": "Privateca politiko"
   },
   "disclaimerAgree": {
-    "message": "Rekargante, vi konsentas al niaj %TOS% kaj %PRIVACY%."
+    "message": "Reŝargante, vi konsentas al niaj %TOS% kaj %PRIVACY%."
   },
   "disclaimerFx": {
-    "message": "Valutŝanĝaj kotizoj povas apliki se vi pagas en valuto krom USD."
+    "message": "Se vi pagas en valuto krom USD, eble validos valutŝanĝaj kotizoj."
   },
   "signOut": {
     "message": "Elsaluti"
   },
   "onboardDisinfactClick": {
-    "message": "Klako sur %BTN% montras asertojn kaj pagigos vian saldon"
+    "message": "Klaki sur %BTN% malkaŝas asertojn kaj pagigos vian saldon"
   },
   "onboardDisinfactTap": {
-    "message": "Frapeto sur %BTN% montras asertojn kaj pagigos vian saldon"
+    "message": "Frapeti sur %BTN% malkaŝas asertojn kaj pagigos vian saldon"
   },
   "onboardWillCharge": {
-    "message": "Klako sur %BTN% pagigos vian saldon"
+    "message": "Klaki sur %BTN% pagigos vian saldon"
   },
   "onboardFactcheck": {
-    "message": "Klako sur %BTN% pagigos vian saldon"
+    "message": "Klaki sur %BTN% pagigos vian saldon"
   },
   "onboardTranslations": {
-    "message": "Klako sur %BTN% pagigos vian saldon"
+    "message": "Klaki sur %BTN% pagigos vian saldon"
   },
   "onboardRefreshes": {
-    "message": "Klako sur %BTN% pagigos vian saldon"
+    "message": "Klaki sur %BTN% pagigos vian saldon"
   },
   "topUp": {
-    "message": "Rekargi"
+    "message": "Reŝargi"
   },
   "showMore": {
     "message": "Montri pli"
@@ -242,7 +242,7 @@
     "message": "Malkaŝu la veron. Trovu la mensogojn."
   },
   "landingTagline2": {
-    "message": "Ne plu misinformado. Nur faktoj."
+    "message": "Ne plu malinformado. Nur faktoj."
   },
   "continueWithX": {
     "message": "Daŭrigi per X"
@@ -260,10 +260,10 @@
     "message": "Purigu vian X-fluon."
   },
   "disclaimerJurisdiction": {
-    "message": "Ene de Usono, nur loĝantoj de Alabamo, Arizono, Kalifornio, Kolorado, Konektikuto, Delavaro, Florido, Idaho, Ilinojso, Indianao, Iovao, Kansaso, Kentukio, Luiziano, Majno, Masaĉuseco, Misisipo, Misurio, Montano, Nov-Hampŝiro, Nov-Meksiko, Nov-Jorko, Norda Karolino, Norda Dakoto, Oklahomo, Oregono, Pensilvanio, Suda Karolino, Suda Dakoto, Tenesio, Teksaso, Utaho, Vaŝingtono, Viskonsino kaj Vajomingo povas uzi DisinfaX kaj rekargi sian saldon; Vaŝingtono, D.C., ĉiuj usonaj teritorioj kaj ĉiuj ne listigitaj ŝtatoj estas ekskluditaj. Ekster Usono, ĝi disponeblas en Kanado, Aŭstralio, Nov-Zelando, Singapuro, Sud-Afriko, Japanio, Tajvano, Indonezio, Tajlando, Filipinoj, Malajzio, Vjetnamio kaj Svislando."
+    "message": "Ene de Usono, nur loĝantoj de Alabamo, Arizono, Kalifornio, Kolorado, Konektikuto, Delavaro, Florido, Idaho, Ilinojso, Indianao, Iovao, Kansaso, Kentukio, Luiziano, Majno, Masaĉuseco, Misisipo, Misurio, Montano, Nov-Hampŝiro, Nov-Meksiko, Nov-Jorko, Norda Karolino, Norda Dakoto, Oklahomo, Oregono, Pensilvanio, Suda Karolino, Suda Dakoto, Tenesio, Teksaso, Utaho, Vaŝingtono, Viskonsino kaj Vajomingo povas uzi DisinfaX kaj reŝargi sian saldon; Vaŝingtono, D.C., ĉiuj usonaj teritorioj kaj ĉiuj ne listigitaj ŝtatoj estas ekskluditaj. Ekster Usono, ĝi disponeblas en Kanado, Aŭstralio, Nov-Zelando, Singapuro, Sud-Afriko, Japanio, Tajvano, Indonezio, Tajlando, Filipinoj, Malajzio, Vjetnamio kaj Svislando."
   },
   "factCheckAllButton": {
-    "message": "Kontroli ĉion"
+    "message": "Faktokontroli ĉion"
   },
   "aiDisclaimer": {
     "message": "DisinfaX povas fari erarojn. Duoble kontrolu la informojn.",
@@ -273,7 +273,7 @@
     "message": "Via saldo estas tro malalta. Bonvolu reŝargi por daŭrigi."
   },
   "errAccountSuspended": {
-    "message": "Via konto estis suspendita."
+    "message": "Via konto estas suspendita."
   },
   "errNotSignedIn": {
     "message": "Vi ne estas ensalutinta. Bonvolu ensaluti kaj reprovi."
@@ -291,6 +291,6 @@
     "message": "Tiu reŝargsumo ne estas valida. Bonvolu elekti alian sumon."
   },
   "errNotFound": {
-    "message": "Tio ne povis esti trovita. Reprovu."
+    "message": "Tio ne povis esti trovita. Bonvolu reprovi."
   }
 }

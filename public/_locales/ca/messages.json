@@ -18,11 +18,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Verificació",
+    "message": "Verificant",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Neteja|Recerca|Desemmascarament|Descobriment|Reflexió|Il·luminació|Excavació|Filtratge|Verificació creuada|Purificació|Anàlisi|Recerca de la veritat|Desmitificació|Desmuntatge de mentides|Rentat|Desintoxicació|Comprovació|Desenterrament|Aclariment|Sanejament|Garbellament|Classificació|Contrastació|Escorcoll|Desxiframent|Desembolic|Contrastació de fets|Rastreig|Escodrinyament|Investigació",
+    "message": "Desbajanejant|Desinfactant|Netejant|Desfaketejant|Arreglant|Rentant|Cercant|Investigant|Verificant|Desrentant cervells|Veritatitzant|Comprovant|Pensant|Descobrint|Destapant|Explorant|Cercant la veritat|Transparentant|Veritatificant|Desfalsant|Il·luminant|Classificant|Veredictant|Recuperant dades|Informant|Girant|Carregant|Voltant|Rodant|Factualitzant|Factant|Desmistificant|Processant|Desclicbaitejant|Excavant|Veritatejant|Desfalsificant|Desenganyant|Generant|Escrivint|Coneixent|Reflexionant|Ponderant|Contemplant|Considerant|Meditant|Buscant l'ànima|Aventurant-se|Cuinant|Fent de xef|Intuint|Raonant|Filosofant|Elucidant|Resolent|Il·lustrant|Inferint|Recopilant|Recollint|Descrapificant|Desmentint|Desmuntant mites|Desbiaixant|Despropaganditzant|Parlant clar|Sanejant|Desintoxicant|Exprimint fets|Auditant|Garbellant|Interrogant en creu|Interrogant|Desemmascarant|Dissecant|Desembolicant|Analitzant|Ensumant|Arrelant|Desconstruint|Escrutant|Triangulant|Contrastant|Corroborant|Validant|Destil·lant|Sintetitzant|Rosegant dades|Desenfocant|Desemboirant|Travessant la boira|Filtrant|Radiografiant|Exposant|Aclarint dubtes|Ventant|Escorcollant|Escodrinyant|Desxifrant|Rastrejant|Purificant",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -122,11 +122,11 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Verificació",
+    "message": "Verificant",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Tradueix la verificació",
+    "message": "Tradueix les verificacions",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -134,11 +134,11 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "de ser",
+    "message": "que sigui",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ que sigui $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Verificat",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Torna enrere",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -171,13 +171,13 @@
     "message": "Saldo"
   },
   "gifted": {
-    "message": "Regalat"
+    "message": "De regal"
   },
   "customTopup": {
     "message": "Personalitzat"
   },
   "customAmountLabel": {
-    "message": "Import de recàrrega personalitzat en dòlars EUA"
+    "message": "Import de recàrrega personalitzat en dòlars americans"
   },
   "increase": {
     "message": "Augmenta"
@@ -210,22 +210,22 @@
     "message": "Tanca la sessió"
   },
   "onboardDisinfactClick": {
-    "message": "Fer clic a %BTN% mostra les afirmacions i cobrarà del teu saldo"
+    "message": "En fer clic a %BTN% es revelen les afirmacions i es cobrarà del teu saldo"
   },
   "onboardDisinfactTap": {
-    "message": "Tocar %BTN% mostra les afirmacions i cobrarà del teu saldo"
+    "message": "En tocar %BTN% es revelen les afirmacions i es cobrarà del teu saldo"
   },
   "onboardWillCharge": {
-    "message": "Fer clic a %BTN% cobrarà del teu saldo"
+    "message": "En fer clic a %BTN% es cobrarà del teu saldo"
   },
   "onboardFactcheck": {
-    "message": "Fer clic a %BTN% cobrarà del teu saldo"
+    "message": "En fer clic a %BTN% es cobrarà del teu saldo"
   },
   "onboardTranslations": {
-    "message": "Fer clic a %BTN% cobrarà del teu saldo"
+    "message": "En fer clic a %BTN% es cobrarà del teu saldo"
   },
   "onboardRefreshes": {
-    "message": "Fer clic a %BTN% cobrarà del teu saldo"
+    "message": "En fer clic a %BTN% es cobrarà del teu saldo"
   },
   "topUp": {
     "message": "Recarrega"
@@ -283,7 +283,7 @@
     "message": "S'ha produït un error del nostre costat. Torna-ho a provar d'aquí un moment."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX encara no és disponible a la teva regió per requisits normatius."
+    "message": "DisinfaX encara no està disponible a la teva regió a causa de requisits normatius."
   },
   "errInvalidAmount": {
     "message": "Aquest import de recàrrega no és vàlid. Tria un altre import."

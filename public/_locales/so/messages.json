@@ -16,7 +16,7 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Lamaan",
+    "message": "Lama Yaqaan",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
@@ -24,19 +24,19 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Xaqiijin|Nadiifin|Baaritaan|Sahamin|Fikirid|Iftiimin|Qodid|Shaandhayn|Kashifid|Falanqayn|Ogaansho|Kala saarid|Isku-dayid runta|Halgan xaqiiqo|Baadhitaan|Qiimeyn|Dooxid|Daaha ka qaadid|Cad-cadeyn|Wax-baadhis|Isbarbardhig|Hubin|Xaqiijin xog|Nadiifin xaqiiqo|Waxyaabo baadhid",
+    "message": "Xaqiijin|Nadiifin|Baaritaan|Sahamin|Fikirid|Iftiimin|Qodid|Shaandhayn|Kashifid|Falanqayn|Ogaansho|Kala saarid|Runraacid|Caddayn|Baadhitaan|Qiimeyn|Been-burin|Daaha ka qaadid|Kormeerid|Isbarbardhig|Hubin|Xog-ururin|Isweydiin|Miisaamid",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Aad u suuragal",
+    "message": "Aad u suurtagal",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Suuragal",
+    "message": "Suurtagal",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Sidoo kale",
+    "message": "Malaha",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Turjun Xaqiijinnada",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Turjun",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "oo ah",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ oo ah $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -166,11 +166,11 @@
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Xaqiijin",
+    "message": "Xaqiiji",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
-    "message": "Haraaga"
+    "message": "Hadhaaga"
   },
   "gifted": {
     "message": "Hadyad"
@@ -188,7 +188,7 @@
     "message": "Yaree"
   },
   "topUpBalance": {
-    "message": "Buuxi Haraaga"
+    "message": "Buuxi Hadhaaga"
   },
   "processing": {
     "message": "Waa la habeynayaa…"
@@ -212,22 +212,22 @@
     "message": "Ka bax"
   },
   "onboardDisinfactClick": {
-    "message": "Guji %BTN% ayaa muujin doona sheegashooyinka waxaana lagaa jari doonaa hadhaaga"
+    "message": "Gujinta %BTN% waxay muujinaysaa sheegashooyinka waxayna ka jareysaa hadhaagaaga"
   },
   "onboardDisinfactTap": {
-    "message": "Taabashada %BTN% ayaa muujin doona sheegashooyinka waxaana lagaa jari doonaa hadhaaga"
+    "message": "Taabashada %BTN% waxay muujinaysaa sheegashooyinka waxayna ka jareysaa hadhaagaaga"
   },
   "onboardWillCharge": {
-    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+    "message": "Gujinta %BTN% waxay ka jareysaa hadhaagaaga"
   },
   "onboardFactcheck": {
-    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+    "message": "Gujinta %BTN% waxay ka jareysaa hadhaagaaga"
   },
   "onboardTranslations": {
-    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+    "message": "Gujinta %BTN% waxay ka jareysaa hadhaagaaga"
   },
   "onboardRefreshes": {
-    "message": "Gujinta %BTN% waxay jarayaan hadhaagaaga"
+    "message": "Gujinta %BTN% waxay ka jareysaa hadhaagaaga"
   },
   "topUp": {
     "message": "Buuxi"
@@ -254,7 +254,7 @@
     "message": "Ku sii wad Apple"
   },
   "lastUsed": {
-    "message": "Markii ugu dambeeyay ee la isticmaalay"
+    "message": "Isticmaalkii ugu dambeeyay"
   },
   "cleanupTagline": {
     "message": "Nadiifi Feedkaaga X."
@@ -279,13 +279,13 @@
     "message": "Ma soo gelin. Fadlan soo gal oo mar kale isku day."
   },
   "errInvalidRequest": {
-    "message": "Qayb ka mid ah codsigan lama aqoonsan. Fadlan hubi in kordhinta cusboonaysiin leedahay."
+    "message": "Qayb ka mid ah codsigan lama aqoonsan. Fadlan hubi in extension-ku yahay nooca ugu dambeeya."
   },
   "errServiceUnavailable": {
-    "message": "Khalad ka dhacay dhinacayaga. Fadlan mar kale isku day wax yar ka dib."
+    "message": "Khalad ayaa ka dhacay dhinaceenna. Fadlan wax yar ka dib mar kale isku day."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX weli kuma jiro gobolkaaga sababtoo ah shuruudaha sharciga."
+    "message": "DisinfaX weli looma heli karo gobolkaaga, sababtoo ah shuruumaha sharciga."
   },
   "errInvalidAmount": {
     "message": "Qadarkaas buuxinta ma sax ah. Fadlan dooro qadar kale."

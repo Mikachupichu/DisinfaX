@@ -188,7 +188,7 @@
     "message": "Reducer"
   },
   "topUpBalance": {
-    "message": "Recargar balancia"
+    "message": "Recargar le balancia"
   },
   "processing": {
     "message": "Processante…"
@@ -203,7 +203,7 @@
     "message": "Politica de privacitate"
   },
   "disclaimerAgree": {
-    "message": "Recargante, tu accepta nostre %TOS% e %PRIVACY%."
+    "message": "Per recargar, tu accepta nostre %TOS% e %PRIVACY%."
   },
   "disclaimerFx": {
     "message": "Costos de cambio de moneta pote applicar se si tu paga in un moneta differente del USD."
@@ -212,22 +212,22 @@
     "message": "Clauder session"
   },
   "onboardDisinfactClick": {
-    "message": "Cliccar %BTN% revelara le allegationes e chargiara tu saldo"
+    "message": "Cliccar %BTN% revelara le allegationes e cargara tu balancia"
   },
   "onboardDisinfactTap": {
-    "message": "Tappar %BTN% revelara le allegationes e chargiara tu saldo"
+    "message": "Tappar %BTN% revelara le allegationes e cargara tu balancia"
   },
   "onboardWillCharge": {
-    "message": "Cliccar %BTN% chargiara tu saldo"
+    "message": "Cliccar %BTN% cargara tu balancia"
   },
   "onboardFactcheck": {
-    "message": "Cliccar %BTN% chargiara tu saldo"
+    "message": "Cliccar %BTN% cargara tu balancia"
   },
   "onboardTranslations": {
-    "message": "Cliccar %BTN% chargiara tu saldo"
+    "message": "Cliccar %BTN% cargara tu balancia"
   },
   "onboardRefreshes": {
-    "message": "Cliccar %BTN% chargiara tu saldo"
+    "message": "Cliccar %BTN% cargara tu balancia"
   },
   "topUp": {
     "message": "Recargar le balancia"
@@ -291,6 +291,6 @@
     "message": "Ille montante de recarga non es valide. Per favor selige un altere montante."
   },
   "errNotFound": {
-    "message": "Illo non poteva esser trovate. Reproba."
+    "message": "Illo non poteva esser trovate. Per favor, tenta de novo."
   }
 }

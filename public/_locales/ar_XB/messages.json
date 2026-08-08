@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "ترجمة التحقق من الحقائق",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ترجمة",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ليكون",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "تم التحقق",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "رجوع",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -203,7 +203,94 @@
     "message": "داخل الولايات المتحدة، يمكن فقط لسكان ألاباما وأريزونا وكاليفورنيا وكولورادو وكونيتيكت وديلاوير وفلوريدا وأيداهو وإلينوي وإنديانا وآيوا وكانساس وكنتاكي ولويزيانا ومين وماساتشوستس وميسيسيبي وميزوري ومونتانا ونيوهامبشير ونيومكسيكو ونيويورك وكارولينا الشمالية وداكوتا الشمالية وأوكلاهوما وأوريغون وبنسلفانيا وكارولينا الجنوبية وداكوتا الجنوبية وتينيسي وتكساس ويوتا وواشنطن وويسكونسن ووايومنغ استخدام DisinfaX وشحن رصيدهم؛ وتُستثنى واشنطن D.C. وجميع الأقاليم الأمريكية وأي ولايات غير مدرجة. خارج الولايات المتحدة، يتوفر في كندا وأستراليا ونيوزيلندا وسنغافورة وجنوب أفريقيا واليابان وتايوان وإندونيسيا وتايلاند والفلبين وماليزيا وفيتنام وسويسرا."
   },
   "aiDisclaimer": {
-    "message": "DisinfaX يمكن أن يرتكب أخطاء. تحقق من المعلومات مرتين.",
+    "message": "قد ترتكب DisinfaX أخطاء. يُرجى التحقق من المعلومات.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "balanceLabel": {
+    "message": "الرصيد"
+  },
+  "gifted": {
+    "message": "هدية"
+  },
+  "customTopup": {
+    "message": "مخصص"
+  },
+  "customAmountLabel": {
+    "message": "مبلغ الشحن المخصص بالدولار الأمريكي"
+  },
+  "increase": {
+    "message": "زيادة"
+  },
+  "decrease": {
+    "message": "تقليل"
+  },
+  "topUpBalance": {
+    "message": "شحن الرصيد"
+  },
+  "processing": {
+    "message": "قيد المعالجة…"
+  },
+  "checkoutError": {
+    "message": "تعذّر بدء عملية الدفع. يرجى المحاولة مرة أخرى."
+  },
+  "termsOfService": {
+    "message": "شروط الخدمة"
+  },
+  "privacyPolicy": {
+    "message": "سياسة الخصوصية"
+  },
+  "disclaimerAgree": {
+    "message": "بالشحن، فإنك توافق على %TOS% و%PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "قد تُطبَّق رسوم صرف عملات إذا دفعت بعملة غير الدولار الأمريكي."
+  },
+  "signOut": {
+    "message": "تسجيل الخروج"
+  },
+  "onboardDisinfactClick": {
+    "message": "النقر على %BTN% يكشف الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardDisinfactTap": {
+    "message": "النقر على %BTN% يكشف الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardWillCharge": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardFactcheck": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardTranslations": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardRefreshes": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "factCheckAllButton": {
+    "message": "تحقق من الكل"
+  },
+  "errBalanceTooLow": {
+    "message": "رصيدك منخفض جدًا. يرجى الشحن للاستمرار."
+  },
+  "errAccountSuspended": {
+    "message": "تم تعليق حسابك."
+  },
+  "errNotSignedIn": {
+    "message": "لم تُسجّل الدخول. يرجى تسجيل الدخول والمحاولة مرة أخرى."
+  },
+  "errInvalidRequest": {
+    "message": "تعذّر التعرف على جزء من هذا الطلب. يرجى التأكد من أن الإضافة محدّثة."
+  },
+  "errServiceUnavailable": {
+    "message": "حدث خطأ ما من جانبنا. يرجى المحاولة مرة أخرى بعد قليل."
+  },
+  "errRegionNotSupported": {
+    "message": "لا تتوفر DisinfaX في منطقتك حاليًا بسبب المتطلبات التنظيمية."
+  },
+  "errInvalidAmount": {
+    "message": "مبلغ الشحن هذا غير صالح. يرجى اختيار مبلغ آخر."
+  },
+  "errNotFound": {
+    "message": "تعذّر العثور على ذلك. يرجى المحاولة مرة أخرى."
   }
 }

@@ -1,10 +1,73 @@
 {
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Í gávu"
+  },
+  "customTopup": {
+    "message": "Serskikkað"
+  },
+  "customAmountLabel": {
+    "message": "Serskikkað áfyllingarupphædd í USD"
+  },
+  "increase": {
+    "message": "Øk"
+  },
+  "decrease": {
+    "message": "Minka"
+  },
+  "topUpBalance": {
+    "message": "Fyll upp saldo"
+  },
+  "processing": {
+    "message": "Viðgerð…"
+  },
+  "checkoutError": {
+    "message": "Kundi ikki byrja keypsgongdina. Vinarliga royn aftur."
+  },
+  "termsOfService": {
+    "message": "Tænastutreytir"
+  },
+  "privacyPolicy": {
+    "message": "Privatlívspolitikkur"
+  },
+  "disclaimerAgree": {
+    "message": "Við at fylla upp, samtykkir tú okkara %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Gjøld fyri gjaldoyraskifti kunnu galda, um tú rindar í øðrum gjaldoyra enn USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Innan fyri Sambandsríki Amerika kunnu bert íbúgvar í Alabama, Arizona, Kaliforniu, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Norður-Karolina, Norður-Dakota, Oklahoma, Oregon, Pennsylvania, Suður-Karolina, Suður-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming brúka DisinfaX og fylla upp saldo sín; Washington, D.C., øll amerikonsk øki og allir statir, sum ikki eru nevndir, eru undantiknir. Uttan fyri Sambandsríki Amerika er tað tøkt í Kanada, Avstralia, Nýsælandi, Singapor, Suðurafrika, Japan, Taivan, Indonesia, Tailandi, Filipsoyggjum, Malaisia, Vjetnam og Sveis."
+  },
+  "signOut": {
+    "message": "Logga út"
+  },
+  "onboardDisinfactClick": {
+    "message": "At klikkja á %BTN% vísir ásagnir og tekur gjald av saldo tínum"
+  },
+  "onboardDisinfactTap": {
+    "message": "At trýsta á %BTN% vísir ásagnir og tekur gjald av saldo tínum"
+  },
+  "onboardWillCharge": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "onboardFactcheck": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "onboardTranslations": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "onboardRefreshes": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Finnur og markar misupplýsingar í tweets við hjálp av AI-greining.",
+    "message": "Finnur og markar misupplýsingar í tweetum við hjálp av AI-greining.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,11 +179,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sýn aftur allar ásagnir í hesum tweetinum",
+    "message": "Sýn ásagnirnar í hesum tweetinum aftur",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Kanna hesa ástøði aftur",
+    "message": "Kanna hesa ásøgn aftur",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +191,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Umset kanningar",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Umset",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Kannað",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Far aftur",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Kanna",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "at vera",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ at vera $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,78 +231,6 @@
         "example": "Very Likely"
       }
     }
-  },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "Kanna",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "Saldo"
-  },
-  "gifted": {
-    "message": "Í gávu"
-  },
-  "customTopup": {
-    "message": "Serskikkað"
-  },
-  "customAmountLabel": {
-    "message": "Serskikkað ábótarupphædd í US dollarum"
-  },
-  "increase": {
-    "message": "Øk"
-  },
-  "decrease": {
-    "message": "Minka"
-  },
-  "topUpBalance": {
-    "message": "Fyll upp saldo"
-  },
-  "processing": {
-    "message": "Viðgerð…"
-  },
-  "checkoutError": {
-    "message": "Kundi ikki byrja rindan. Vinarliga royn aftur."
-  },
-  "termsOfService": {
-    "message": "Tænastutreytir"
-  },
-  "privacyPolicy": {
-    "message": "Privatlívspolitikkur"
-  },
-  "disclaimerAgree": {
-    "message": "Við at fylla upp, samtykkir tú okkara %TOS% og %PRIVACY%."
-  },
-  "disclaimerFx": {
-    "message": "Gjøld fyri gjaldoyraskifti kunnu galda, um tú rindar í øðrum gjaldoyra enn USD."
-  },
-  "signOut": {
-    "message": "Rita út"
-  },
-  "onboardDisinfactClick": {
-    "message": "Klikk á %BTN% vísir ásagnir og fer at taka gjald av kontoinnstøðu tíni"
-  },
-  "onboardDisinfactTap": {
-    "message": "Trýst á %BTN% vísir ásagnir og fer at taka gjald av kontoinnstøðu tíni"
-  },
-  "onboardWillCharge": {
-    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
-  },
-  "onboardFactcheck": {
-    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
-  },
-  "onboardTranslations": {
-    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
-  },
-  "onboardRefreshes": {
-    "message": "Klikk á %BTN% fer at taka gjald av kontoinnstøðu tíni"
   },
   "topUp": {
     "message": "Fyll upp"
@@ -259,9 +262,6 @@
   "cleanupTagline": {
     "message": "Reinsa tína X-rás."
   },
-  "disclaimerJurisdiction": {
-    "message": "Innan fyri Sambandsríki Amerika kunnu bert íbúgvar í Alabama, Arizona, Kaliforniu, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Norður-Karolina, Norður-Dakota, Oklahoma, Oregon, Pennsylvania, Suður-Karolina, Suður-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming brúka DisinfaX og fylla upp síni innistandandi; Washington, D.C., øll amerikonsk øki og allir statir, sum ikki eru nevndir, eru undantiknir. Uttan fyri Sambandsríki Amerika er tað tøkt í Kanada, Avstralia, Nýsælandi, Singapor, Suðurafrika, Japan, Taivan, Indonesia, Tailandi, Filipsoyggjum, Malaisia, Vjetnam og Sveis."
-  },
   "factCheckAllButton": {
     "message": "Kanna alt"
   },
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Restur tín er ov lágur. Vinarliga áfyll fyri at halda áfram."
+    "message": "Saldo tín er ov lágur. Vinarliga fyll upp fyri at halda áfram."
   },
   "errAccountSuspended": {
-    "message": "Kontan tín er ordin sett úr sambandi."
+    "message": "Konta tín er steðgað."
   },
   "errNotSignedIn": {
-    "message": "Tú ert ikki logga inn. Vinarliga log inn og royn aftur."
+    "message": "Tú ert ikki loggað inn. Vinarliga logga inn og royn aftur."
   },
   "errInvalidRequest": {
-    "message": "Ein partur av hesi umbøn varð ikki kend. Vinarliga eftirse um víðkanin er dagført."
+    "message": "Ein partur av hesi umbøn varð ikki kendur. Vinarliga eftirse um víðkanin er dagført."
   },
   "errServiceUnavailable": {
     "message": "Ein villa hendi á okkara síðu. Vinarliga royn aftur eftir eina løtu."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX er ikki longu tøkt á tínum svæði av tí at reglur krevja tað."
+    "message": "DisinfaX er ikki enn tøkt á tínum svæði orsakað av myndugleikakrøvum."
   },
   "errInvalidAmount": {
     "message": "Tann áfyllingarupphædd er ikki galdandi. Vinarliga vel eina aðra upphædd."
   },
   "errNotFound": {
-    "message": "Hetta kundi ikki finnast. Royn aftur."
+    "message": "Hetta kundi ikki finnast. Vinarliga royn aftur."
   }
 }

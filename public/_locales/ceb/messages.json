@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Makamatikod ug magpasiugda sa sayop nga impormasyon sa tweets gamit ang AI analysis.",
+    "message": "Nakit-an ug gipasiugda ang mali nga impormasyon sa mga tweet pinaagi sa pag-analisar sa AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,7 +16,7 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Wala mahibaloi",
+    "message": "Dili Mahibaloan",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Pagsusi|Pagpangita|Paghinlo|Pagpanukiduki|Pagpangusisa|Paghubad|Paghunahuna|Pagpalamdag|Pagkalot|Pagsala|Pagbutyag|Pagpamatuod|Pagsuta|Pagpaklaro|Pagtimbang-timbang|Paghinagiap|Pagtuki|Pagpangalkal|Paglimpyo|Paglantugi|Paghusay|Pagsuhid|Pagsulbad|Pagpanglantaw|Pagbanabana|Pagpangutana|Pagpangubkob|Pagpangayam",
+    "message": "Pagsusi|Pagpangita|Paghinlo|Pagpanukiduki|Pagpangusisa|Paghubad|Paghunahuna|Pagpalamdag|Pagkalot|Pagsala|Pagbutyag|Pagpamatuod|Pagsuta|Pagpaklaro|Pagtimbang-timbang|Paghinagiap|Pagtuki|Pagpangalkal|Paglimpyo|Paglantugi|Paghusay|Pagsuhid|Pagsulbad|Pagpanglantaw|Pagbanabana|Pagpangutana|Pagpangubkob|Pagpangayam|Pagpanghimatuod|Pagpangahulugan|Pagpangduhaduha|Pagpangsukna|Pagbunyag sa Kamatuoran|Pagwagtang sa Bakak|Pag-usisa|Pagdiskubre|Pagpangolekta|Pagtapok sa Ebidensya|Pagpang-analisar|Pagpang-imbestigar|Pagsuhid-suhid|Pagsayod|Pagpangita sa Tinuod|Pagpanghinlo sa Bakak|Pagpangihap|Pagpang-uswag sa Panabot|Pagpangatarungan|Pagpang-analisa sa Datos|Pagpangita sa Gigikanan|Pagpalig-on sa Ebidensya|Pagpang-uyon|Pagsalikway sa Bakak|Pagpangdayag sa Tinuod|Pagpasabot|Pagpasiugda sa Tinuod|Pagsuhid sa Kamatuoran|Pagpanghikay sa Ebidensya|Pagpangita sa Panabot|Pagpangkumpirma|Pagbutang sa Konteksto|Pagpangita sa Ugat sa Sayop|Pagpangaplíka sa Lohika|Pagbutyag sa Kamatuoran|Paglantaw sa Ebidensya",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ipakita pag-usab ang tanang pangangkon niining tweeta",
+    "message": "Ipakita pag-usab ang mga pag-angkon niini nga tweet",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Hubara ang mga Fact-Check",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Hubara",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "nga",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ nga $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Napamatud-an Na",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Balik",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -185,7 +185,7 @@
     "message": "Dugangi"
   },
   "decrease": {
-    "message": "Ibhan"
+    "message": "Kunhod-i"
   },
   "topUpBalance": {
     "message": "I-top Up ang Balanse"
@@ -209,13 +209,13 @@
     "message": "Mahimong magamit ang mga bayad sa pagbaylo sa salapi kung mobayad ka sa kwarta nga dili USD."
   },
   "signOut": {
-    "message": "Sign out"
+    "message": "Mag-sign Out"
   },
   "onboardDisinfactClick": {
-    "message": "Ang pag-klik sa %BTN% magpakita sa mga pahayag ug mokutlo sa imong balanse"
+    "message": "Ang pag-klik sa %BTN% magpakita sa mga pag-angkon ug mokutlo sa imong balanse"
   },
   "onboardDisinfactTap": {
-    "message": "Ang pag-tap sa %BTN% magpakita sa mga pahayag ug mokutlo sa imong balanse"
+    "message": "Ang pag-tap sa %BTN% magpakita sa mga pag-angkon ug mokutlo sa imong balanse"
   },
   "onboardWillCharge": {
     "message": "Ang pag-klik sa %BTN% mokutlo sa imong balanse"
@@ -270,7 +270,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Ang imong balanse gamay ra kaayo. Palihug pagdugang aron makasugod."
+    "message": "Ang imong balanse gamay ra kaayo. Palihug pag-top up aron makapadayon."
   },
   "errAccountSuspended": {
     "message": "Ang imong account gi-suspend."

@@ -54,6 +54,9 @@
     "message": "ಪರಿಶೀಲನೆ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "ಪರಿಶೀಲನೆ|ಸಂಶೋಧನೆ|ಶುದ್ಧೀಕರಣ|ಶೋಧನೆ|ವಿಶ್ಲೇಷಣೆ|ಅಗೆಯುವಿಕೆ|ಹುಡುಕಾಟ|ಪತ್ತೆಹಚ್ಚುವಿಕೆ|ದೃಢೀಕರಣ|ಸೋಸುವಿಕೆ|ಚಿಂತನೆ|ಪರಿಗಣನೆ|ತರ್ಕ|ಬಹಿರಂಗಪಡಿಸುವಿಕೆ|ಬೆಳಕು ಚೆಲ್ಲುವಿಕೆ|ವಿಭಜನೆ|ಹೋಲಿಕೆ|ಅಧ್ಯಯನ|ಸಂಗ್ರಹಣೆ|ಮೌಲ್ಯಮಾಪನ|ವರ್ಗೀಕರಣ|ಸತ್ಯಶೋಧನೆ|ಮರುಪರಿಶೀಲನೆ|ಸುಳ್ಳು ಬಹಿರಂಗ|ಆಳವಾದ ಶೋಧನೆ|ಸಾಕ್ಷ್ಯ ಸಂಗ್ರಹ|ಪುರಾವೆ ಪರಿಶೀಲನೆ"
+  },
   "adjVeryLikely": {
     "message": "ಅತ್ಯಂತ ಸಂಭವನೀಯ",
     "description": "Adjective for high-confidence verdicts."
@@ -147,7 +150,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "ಈ ಹಕ್ಕನ್ನು ಮರುಸಂಶೋಧಿಸಿ",
+    "message": "ಈ ಹೇಳಿಕೆಯನ್ನು ಮರುಸಂಶೋಧಿಸಿ",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -197,7 +200,7 @@
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
-    "message": "ಬಾಕಿ"
+    "message": "ಬ್ಯಾಲೆನ್ಸ್"
   },
   "gifted": {
     "message": "ಉಡುಗೊರೆ"
@@ -215,7 +218,7 @@
     "message": "ಕಡಿಮೆ ಮಾಡಿ"
   },
   "topUpBalance": {
-    "message": "ಬಾಕಿ ಟಾಪ್ ಅಪ್ ಮಾಡಿ"
+    "message": "ಬ್ಯಾಲೆನ್ಸ್ ಟಾಪ್ ಅಪ್ ಮಾಡಿ"
   },
   "processing": {
     "message": "ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುತ್ತಿದೆ…"
@@ -239,10 +242,10 @@
     "message": "ಸೈನ್ ಔಟ್"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ಹಕ್ಕುಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ಹೇಳಿಕೆಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
   },
   "onboardDisinfactTap": {
-    "message": "%BTN% ಟ್ಯಾಪ್ ಮಾಡುವುದರಿಂದ ಹಕ್ಕುಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+    "message": "%BTN% ಟ್ಯಾಪ್ ಮಾಡುವುದರಿಂದ ಹೇಳಿಕೆಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
   },
   "onboardWillCharge": {
     "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
@@ -264,7 +267,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "ನಿಮ್ಮ ಬಾಕಿ ಬಹಳ ಕಡಿಮೆಯಾಗಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಟಾಪ್ ಅಪ್ ಮಾಡಿ."
+    "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಬಹಳ ಕಡಿಮೆಯಾಗಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಟಾಪ್ ಅಪ್ ಮಾಡಿ."
   },
   "errAccountSuspended": {
     "message": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸ್ಥಗಿತಗೊಳಿಸಲಾಗಿದೆ."

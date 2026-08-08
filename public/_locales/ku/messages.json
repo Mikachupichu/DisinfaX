@@ -23,6 +23,9 @@
     "message": "Kontrol",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Kontrolkirin|Lêkolîn|Lêpirsîn|Paqijkirin|Eşkerekirin|Vekolîn|Fikirîn|Ramankirin|Ronîkirin|Kolan|Parzûnkirin|Rastandin|Analîzkirin|Şîrovekirin|Lêgerîn|Berhevkirin|Berawirdkirin|Şopandin|Zelalkirin|Rastiyê Eşkerekirin|Derewan Eşkerekirin|Kûrbûn|Pakijkirin|Vekolana Kûr|Verastkirin|Nirxandin|Tespîtkirin|Kifşkirin"
+  },
   "adjVeryLikely": {
     "message": "Pir îhtîmal",
     "description": "Adjective for high-confidence verdicts."
@@ -116,7 +119,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Vê îdîayê ji nû ve lêkolîn bike",
+    "message": "Vê angaştê ji nû ve lêkolîn bike",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -208,22 +211,22 @@
     "message": "Derkeve"
   },
   "onboardDisinfactClick": {
-    "message": "Klîk kirin li ser %BTN% dê îdiayan nîşan bide û dê ji bakiyeya te bêt kirin"
+    "message": "Klîk kirin li ser %BTN% dê angaştan nîşan bide û dê ji balansê te bêt kirin"
   },
   "onboardDisinfactTap": {
-    "message": "Tikandin li ser %BTN% dê îdiayan nîşan bide û dê ji bakiyeya te bêt kirin"
+    "message": "Tikandin li ser %BTN% dê angaştan nîşan bide û dê ji balansê te bêt kirin"
   },
   "onboardWillCharge": {
-    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+    "message": "Klîk kirin li ser %BTN% dê ji balansê te bêt kirin"
   },
   "onboardFactcheck": {
-    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+    "message": "Klîk kirin li ser %BTN% dê ji balansê te bêt kirin"
   },
   "onboardTranslations": {
-    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+    "message": "Klîk kirin li ser %BTN% dê ji balansê te bêt kirin"
   },
   "onboardRefreshes": {
-    "message": "Klîk kirin li ser %BTN% dê ji bakiyeya te bêt kirin"
+    "message": "Klîk kirin li ser %BTN% dê ji balansê te bêt kirin"
   },
   "topUp": {
     "message": "Bar bike"
@@ -266,7 +269,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Bakiyeya te pir kêm e. Ji kerema xwe dagirtin bike da ku bidomînî."
+    "message": "Balansê te pir kêm e. Ji kerema xwe dagirtin bike da ku bidomînî."
   },
   "errAccountSuspended": {
     "message": "Hesabê te hatiye rawestandin."

@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -194,7 +194,7 @@
     "message": "Procesando…"
   },
   "checkoutError": {
-    "message": "No se pudo iniciar el pago. Inténtalo de nuevo."
+    "message": "No se pudo iniciar el pago. Inténtalo otra vez."
   },
   "termsOfService": {
     "message": "Términos del servicio"
@@ -291,6 +291,6 @@
     "message": "Ese monto de recarga no es válido. Elige un monto diferente."
   },
   "errNotFound": {
-    "message": "No se pudo encontrar eso. Vuelve a intentarlo."
+    "message": "No se pudo encontrar eso. Inténtalo de nuevo."
   }
 }

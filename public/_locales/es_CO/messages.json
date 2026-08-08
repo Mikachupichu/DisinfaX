@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -194,7 +194,7 @@
     "message": "Procesando…"
   },
   "checkoutError": {
-    "message": "No se pudo iniciar el pago. Inténtalo de nuevo."
+    "message": "No se pudo iniciar el pago. Inténtelo de nuevo."
   },
   "termsOfService": {
     "message": "Términos del servicio"
@@ -203,31 +203,31 @@
     "message": "Política de privacidad"
   },
   "disclaimerAgree": {
-    "message": "Al recargar, aceptas nuestros %TOS% y nuestra %PRIVACY%."
+    "message": "Al recargar, acepta nuestros %TOS% y nuestra %PRIVACY%."
   },
   "disclaimerFx": {
-    "message": "Pueden aplicarse comisiones de cambio de divisa si pagas en una moneda distinta al USD."
+    "message": "Pueden aplicarse comisiones de cambio de divisa si paga en una moneda distinta al USD."
   },
   "signOut": {
     "message": "Cerrar sesión"
   },
   "onboardDisinfactClick": {
-    "message": "Al hacer clic en %BTN% se revelan las afirmaciones y se descontará de tu saldo"
+    "message": "Al hacer clic en %BTN% se revelan las afirmaciones y se descontará de su saldo"
   },
   "onboardDisinfactTap": {
-    "message": "Al tocar %BTN% se revelan las afirmaciones y se descontará de tu saldo"
+    "message": "Al tocar %BTN% se revelan las afirmaciones y se descontará de su saldo"
   },
   "onboardWillCharge": {
-    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+    "message": "Al hacer clic en %BTN% se descontará de su saldo"
   },
   "onboardFactcheck": {
-    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+    "message": "Al hacer clic en %BTN% se descontará de su saldo"
   },
   "onboardTranslations": {
-    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+    "message": "Al hacer clic en %BTN% se descontará de su saldo"
   },
   "onboardRefreshes": {
-    "message": "Al hacer clic en %BTN% se descontará de tu saldo"
+    "message": "Al hacer clic en %BTN% se descontará de su saldo"
   },
   "topUp": {
     "message": "Recargar"
@@ -266,31 +266,31 @@
     "message": "Verificar todo"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX puede cometer errores. Verifica siempre la información importante.",
+    "message": "DisinfaX puede cometer errores. Compruebe siempre la información importante.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Tu saldo es demasiado bajo. Recarga tu cuenta para continuar."
+    "message": "Su saldo es demasiado bajo. Recargue su cuenta para continuar."
   },
   "errAccountSuspended": {
-    "message": "Tu cuenta ha sido suspendida."
+    "message": "Su cuenta ha sido suspendida."
   },
   "errNotSignedIn": {
-    "message": "No has iniciado sesión. Inicia sesión y vuelve a intentarlo."
+    "message": "No ha iniciado sesión. Inicie sesión y vuelva a intentarlo."
   },
   "errInvalidRequest": {
-    "message": "Algo en esta solicitud no se reconoció. Asegúrate de que la extensión esté actualizada."
+    "message": "Algo en esta solicitud no se reconoció. Asegúrese de que la extensión esté actualizada."
   },
   "errServiceUnavailable": {
-    "message": "Ocurrió un error de nuestro lado. Vuelve a intentarlo en un momento."
+    "message": "Ocurrió un error de nuestro lado. Vuelva a intentarlo en un momento."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX aún no está disponible en tu región debido a requisitos regulatorios."
+    "message": "DisinfaX aún no está disponible en su región debido a requisitos regulatorios."
   },
   "errInvalidAmount": {
-    "message": "Ese monto de recarga no es válido. Elige un monto diferente."
+    "message": "Ese monto de recarga no es válido. Elija un monto diferente."
   },
   "errNotFound": {
-    "message": "No se pudo encontrar eso. Vuelve a intentarlo."
+    "message": "No se pudo encontrar eso. Vuelva a intentarlo."
   }
 }

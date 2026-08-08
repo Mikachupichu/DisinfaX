@@ -23,6 +23,9 @@
     "message": "ការត្រួតពិនិត្យ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "ការត្រួតពិនិត្យ|ការស្រាវជ្រាវ|ការសម្អាត|ការរកឃើញ|ការវិភាគ|ការជីករក|ការស្វែងរក|ការផ្ទៀងផ្ទាត់|ការបញ្ជាក់|ការត្រង|ការគិត|ការពិចារណា|ការវែកញែក|ការលាតត្រដាង|ការបំភ្លឺ|ការញែក|ការប្រៀបធៀប|ការសិក្សា|ការស្រង់ចេញ|ការវាយតម្លៃ|ការចាត់ថ្នាក់|ការប្រមូលព័ត៌មាន|ការស្រាវជ្រាវការពិត|ការត្រួតពិនិត្យសារជាថ្មី"
+  },
   "adjVeryLikely": {
     "message": "ទំនងខ្លាំង",
     "description": "Adjective for high-confidence verdicts."
@@ -256,7 +259,7 @@
     "message": "សម្អាតព័ត៌មាន X របស់អ្នក។"
   },
   "disclaimerJurisdiction": {
-    "message": "នៅក្នុងសហរដ្ឋអាមេរិក មានតែអ្នករស់នៅក្នុងរដ្ឋ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin និង Wyoming ប៉ុណ្ណោះដែលអាចប្រើ DisinfaX និងបញ្ចូលទឹកប្រាក់ក្នុងសមតុល្យរបស់ខ្លួនបាន។ Washington, D.C., ដែនដីទាំងអស់របស់សហរដ្ឋអាមេរិក និងរដ្ឋណាមួយដែលមិនបានរាយបញ្ជីត្រូវបានដកចេញ។ នៅក្រៅសហរដ្ឋអាមេរិក វាមានផ្តល់ជូននៅ Canada, Australia, New Zealand, Singapore, អាហ្វ្រិកខាងត្បូង, ជប៉ុន, តៃវ៉ាន់, ឥណ្ឌូនេស៊ី, ថៃ, ហ្វីលីពីន, ម៉ាឡេស៊ី, វៀតណាម និង ស្វីស។"
+    "message": "នៅក្នុងសហរដ្ឋអាមេរិក មានតែអ្នករស់នៅក្នុងរដ្ឋ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin និង Wyoming ប៉ុណ្ណោះដែលអាចប្រើ DisinfaX និងបញ្ចូលទឹកប្រាក់ក្នុងសមតុល្យរបស់ខ្លួនបាន។ Washington, D.C., ដែនដីទាំងអស់របស់សហរដ្ឋអាមេរិក និងរដ្ឋណាមួយដែលមិនបានរាយបញ្ជីត្រូវបានដកចេញ។ នៅក្រៅសហរដ្ឋអាមេរិក វាមានផ្តល់ជូននៅកាណាដា, អូស្ត្រាលី, នូវែលសេឡង់, សិង្ហបុរី, អាហ្វ្រិកខាងត្បូង, ជប៉ុន, តៃវ៉ាន់, ឥណ្ឌូនេស៊ី, ថៃ, ហ្វីលីពីន, ម៉ាឡេស៊ី, វៀតណាម និង ស្វីស។"
   },
   "factCheckAllButton": {
     "message": "ត្រួតពិនិត្យទាំងអស់"

@@ -55,15 +55,15 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "तपासणी|संशोधन|स्वच्छता|उघड करणे|शोध|विचार|प्रकाशयोजना|खोदकाम|गाळणी|क्रॉस-चेकिंग|विश्लेषण|खंडन|तथ्य पडताळणी|सत्यशोध|स्पष्टीकरण|चिंतन|पडताळणी|माहिती संकलन|गैरसमज दूर करणे|निष्कर्ष काढणे|छाननी|खरे शोधणे|उकल|मंथन|पारखणी",
+    "message": "तपासणी|संशोधन|स्वच्छता|उघड करणे|शोध|विचार|प्रकाश टाकणे|खोदकाम|गाळणे|क्रॉस-चेकिंग|विश्लेषण|खंडन|तथ्य पडताळणी|सत्यशोध|स्पष्टीकरण|चिंतन|पडताळणी|माहिती संकलन|गैरसमज दूर करणे|निष्कर्ष काढणे|छाननी|खरे शोधणे|उकल|मंथन|पारखणे",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "अत्यंत शक्य",
+    "message": "अत्यंत संभाव्य",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "शक्य",
+    "message": "संभाव्य",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -147,7 +147,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "या ट्विटमधील सर्व दावे पुन्हा उघड करा",
+    "message": "या ट्वीटमधील सर्व दावे पुन्हा उघड करा",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -159,15 +159,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "तथ्य-पडताळण्यांचे भाषांतर करा",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "भाषांतर करा",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "असणे",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -189,11 +189,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "तथ्य पडताळले",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "मागे जा",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {

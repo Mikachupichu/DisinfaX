@@ -6,11 +6,11 @@
     "message": "Atklāj un izceļ dezinformāciju tvītos, izmantojot MI analīzi."
   },
   "verdictTrue": {
-    "message": "Patiesība",
+    "message": "Patiess",
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Nepatiesība",
+    "message": "Nepatiess",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -21,12 +21,15 @@
     "message": "Pārbaude",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Pārbaude|Izpēte|Tīrīšana|Atklāšana|Pārdomas|Apgaismošana|Rakšana|Sijāšana|Analīze|Izsekošana|Skaidrošana|Demaskošana|Salīdzināšana|Patiesības Meklēšana|Apstiprināšana|Vākšana|Melu Atklāšana|Padziļināta Izpēte|Faktu Pārbaude|Filtrēšana|Izmeklēšana|Precizēšana|Pārskatīšana|Izvērtēšana|Pierādīšana"
+  },
   "adjVeryLikely": {
-    "message": "Ļoti iespējams",
+    "message": "Ļoti ticams",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Iespējams",
+    "message": "Ticams",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -38,7 +41,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Apšaubāmi",
+    "message": "Apstrīdami",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -122,7 +125,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Tulkot pārbaudi",
+    "message": "Tulkot faktu pārbaudes",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -130,11 +133,11 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "būt",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ būt $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -152,11 +155,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Pārbaudīts",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Atgriezties",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -206,22 +209,22 @@
     "message": "Izrakstīties"
   },
   "onboardDisinfactClick": {
-    "message": "Noklikšķinot uz %BTN% tiks atklāti apgalvojumi un no jūsu bilances tiks noņemta maksa"
+    "message": "Noklikšķinot uz %BTN% tiks atklāti apgalvojumi un no tava atlikuma tiks noņemta maksa"
   },
   "onboardDisinfactTap": {
-    "message": "Pieskaroties %BTN% tiks atklāti apgalvojumi un no jūsu bilances tiks noņemta maksa"
+    "message": "Pieskaroties %BTN% tiks atklāti apgalvojumi un no tava atlikuma tiks noņemta maksa"
   },
   "onboardWillCharge": {
-    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
   },
   "onboardFactcheck": {
-    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
   },
   "onboardTranslations": {
-    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
   },
   "onboardRefreshes": {
-    "message": "Noklikšķinot uz %BTN% no jūsu bilances tiks noņemta maksa"
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
   },
   "topUp": {
     "message": "Papildināt"
@@ -264,7 +267,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Tava atlikuma summa ir pārāk maza. Papildini kontu, lai turpinātu."
+    "message": "Tava atlikuma summa ir pārāk maza. Papildini atlikumu, lai turpinātu."
   },
   "errAccountSuspended": {
     "message": "Tavs konts ir apturēts."

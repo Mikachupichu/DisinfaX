@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "بە بەکارهێنانی شیکاری AI لە تویتەکاندا زانیاری هەڵە دەدۆزێتەوە و جەختی لێدەکاتەوە.",
+    "message": "بە بەکارهێنانی شیکاریکردنی AI، زانیاری هەڵە لە تویتەکاندا دەدۆزێتەوە و ڕووناکیدەکاتەوە.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -20,11 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "پشکنین",
+    "message": "ڕاستیپشکنین",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "پشکنین|لێکۆڵینەوە|پاکژکردن|پووچەڵکردنەوە|ئاشکراکردنەوە|بیرکردنەوە|ڕووناککردنەوە|هەڵکۆڵین|پاڵاوتن|سەلماندن|لێکدانەوە|گەڕان|کۆکردنەوە|تاوتوێکردن|ڕوونکردنەوە|بەراوردکردن|دەستنیشانکردن|هەڵسەنگاندن|دۆزینەوە|پشتڕاستکردنەوە|پرسیارکردن|شیکردنەوە|دەرخستن|لێپرسینەوە|خوێندنەوە",
+    "message": "پشکنین|لێکۆڵینەوە|پاکژکردن|پووچەڵکردنەوە|ئاشکراکردنەوە|بیرکردنەوە|ڕووناککردنەوە|هەڵکۆڵین|پاڵاوتن|سەلماندن|لێکدانەوە|گەڕان|کۆکردنەوە|تاوتوێکردن|ڕوونکردنەوە|بەراوردکردن|دەستنیشانکردن|هەڵسەنگاندن|دۆزینەوە|پشتڕاستکردنەوە|پرسیارکردن|شیکردنەوە|دەرخستن|لێپرسینەوە|خوێندنەوە|کاولکردنی درۆ|تیشکخستنەسەر|وردبینیکردن|کوورکردنەوە|هەڵوەشاندنەوە|پارچەپارچەکردن|چێشتلێنان|سرینەوەی درۆ|تیشکدان|یەکلاکردنەوە|پێداچوونەوە|ڕاستاندن|بەڵگەکۆکردنەوە|چاوگدۆزینەوە|شرۆڤەکردن|قوڵبوونەوە|ڕوخاندنی هەڵە|ڕاستیدۆزینەوە|پاکتاوکردن|توێژینەوە|بۆنکردنی درۆ|بەربووژینەوە|چاودێریکردن|ڕوونبۆکردنەوە|دەستکاریکردن|کۆتاییلێهێنان",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -44,7 +44,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "گفتوگۆی لەسەرە",
+    "message": "بەگفتوگۆوە",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -124,23 +124,23 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "پشکنین",
+    "message": "ڕاستیپشکنین",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "وەرگێڕانی ڕاستیپشکنینەکان",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "وەرگێڕان",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "بێت",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ $ADJ$ $VERDICT$ بێت",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "پشکنرا",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "بگەرێوە",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "پشکنین",
+    "message": "ئاشکراکردن",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -191,16 +191,16 @@
     "message": "پڕکردنەوەی باڵانس"
   },
   "processing": {
-    "message": "لە پرۆسەکردندایە…"
+    "message": "لە پرۆسەدایە…"
   },
   "checkoutError": {
-    "message": "نەتوانرا پارەدان دەستپێبکات. تکایە دووبارە هەوڵبدەرەوە."
+    "message": "نەتوانرا پرۆسەی پارەدان دەستپێ بکرێت. تکایە دووبارە هەوڵبدەرەوە."
   },
   "termsOfService": {
     "message": "مەرجەکانی خزمەتگوزاری"
   },
   "privacyPolicy": {
-    "message": "سیاسەتی تایبەتمەندی"
+    "message": "سیاسەتی تایبەتێتی"
   },
   "disclaimerAgree": {
     "message": "بە پڕکردنەوە، تۆ ڕازی دەبیت بە %TOS% و %PRIVACY%ی ئێمە."
@@ -263,14 +263,14 @@
     "message": "لە ناو ویلایەتە یەکگرتووەکاندا، تەنها دانیشتووانی ئالاباما، ئەریزۆنا، کالیفۆرنیا، کۆلۆرادۆ، کۆنێکتیکەت، دێلاوێر، فلۆریدا، ئایداهۆ، ئیلینۆی، ئیندیانا، ئایۆوا، کانزاس، کێنتەکی، لویزیانا، مەین، ماساچوسێتس، میسیسیپی، میسووری، مۆنتانا، نیو هامپشایەر، نیو مێکسیکۆ، نیویۆرک، کارۆلینای باکوور، داکۆتای باکوور، ئۆکلاهۆما، ئۆریگۆن، پێنسیلڤانیا، کارۆلینای باشوور، داکۆتای باشوور، تێنێسی، تێکساس، یوتا، واشنتۆن، ویسکۆنسن، و وایۆمینگ دەتوانن DisinfaX بەکاربهێنن و باڵانسەکەیان پڕ بکەنەوە؛ واشنتۆن، D.C.، هەموو ناوچەکانی ئەمریکا، و هەر ویلایەتێک کە لە لیستەکەدا نەبێت، دەرخراون. لە دەرەوەی ویلایەتە یەکگرتووەکان، لە کەنەدا، ئوستڕالیا، نیوزیلاند، سینگاپور، ئەفریقای باشوور، ژاپۆن، تایوان، ئەندۆنیزیا، تایلاند، فیلیپین، مالیزیا، ڤیەتنام، و سویسرا بەردەستە."
   },
   "factCheckAllButton": {
-    "message": "هەموو پشکنین بکە"
+    "message": "هەمووی ڕاستی پشکنین بکە"
   },
   "aiDisclaimer": {
     "message": "DisinfaX دەتوانێت هەڵە بکات. زانیارییەکان دووبارە پشکنین بکە.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "باڵانسەکەت زۆر کەمە. تکایە بۆ بەردەوامبوون بارگاوی بکە."
+    "message": "باڵانسەکەت زۆر کەمە. تکایە بۆ بەردەوامبوون باڵانسەکەت پڕ بکەرەوە."
   },
   "errAccountSuspended": {
     "message": "هەژماری تۆ ڕاگیراوە."
@@ -288,9 +288,9 @@
     "message": "لەبەر داواکارییەکانی ڕێکخستن، DisinfaX هێشتا لە ناوچەکەتدا بەردەست نییە."
   },
   "errInvalidAmount": {
-    "message": "ئەو بڕە بۆ بارگاوی کردن دروست نییە. تکایە بڕێکی تر هەڵبژێرە."
+    "message": "ئەو بڕە بۆ پڕکردنەوە دروست نییە. تکایە بڕێکی تر هەڵبژێرە."
   },
   "errNotFound": {
-    "message": "ئەوە نەدۆزرایەوە. دووبارە هەوڵبدەرەوە."
+    "message": "ئەوە نەدۆزرایەوە. تکایە دووبارە هەوڵبدەرەوە."
   }
 }

@@ -18,15 +18,15 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Doğrulama",
+    "message": "Doğrulanıyor",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Doğrulama|Araştırma|Temizleme|Çürütme|Ortaya çıkarma|Düşünme|Aydınlatma|Kazma|Eleme|Karşılaştırma|İfşa etme|Damıtma|Toplama|Sorgulama|Maskesini düşürme|Çözümleme|Didikleme|Netleştirme|Süzme|Avlanma|Kanıtlama|Derinleşme|Tespit etme|Arındırma|Işık tutma|Gerçeği arama|Kıyaslama|Doğrulatma",
+    "message": "Doğrulama|Araştırma|Temizleme|Çürütme|Ortaya Çıkarma|Düşünme|Aydınlatma|Kazma|Eleme|Karşılaştırma|İfşa Etme|Damıtma|Toplama|Sorgulama|Maskesini Düşürme|Çözümleme|Didikleme|Netleştirme|Süzme|Avlanma|Kanıtlama|Derinleşme|Tespit Etme|Arındırma|Işık Tutma|Gerçeği Arama|Kıyaslama|Doğrulatma|Yalan Avcılığı|Gerçek Avcılığı|Arıtma|Süzgeçten Geçirme|Kurcalama|Kanıt Ayıklama|Elekten Geçirme|Yalan Temizliği|Zihin Açma|Bulanıklık Giderme|Sisi Dağıtma|Duman Perdesini Kaldırma|Efsane Avcılığı|Palavra Ayıklama|Saçmalık Ayıklama|Özünü Çıkarma|Pişirme|Kaynatma|Damardan Yakalama|İz Sürme|Delil Toplama|Delil Tartma|Delil Süzme|Kanıt Kazıma|Kanıt Avcılığı|Kanıt Elemesi|Doğruyu Ayıklama|Yalanı Kovalama|Kökünü Kazıma|Röntgen Çekme|Mikroskopla İnceleme|Büyüteçle Bakma|Dedektiflik Oynama|İpuçlarını Toplama|Bağlantıları Kurma|Noktaları Birleştirme|Bulmaca Çözme|Ruh Arayışı|Düşünceye Dalma|Kafa Yorma|Beyin Fırtınası|İçe Dönme|Meditasyona Girme|Mantık Yürütme|Felsefe Yapma|Akıl Yürütme|Fikir Damıtma|Bilgi Süzme|Bilgi Toplama|Bilgi Kazıma|Kaynak Tarama|Kaynak Karşılaştırma|Kaynak Doğrulama|Çapraz Kontrol|Çapraz Sorgulama|Teyit Etme|Doğrulukla Yüzleştirme|Yalanla Yüzleşme|Şüpheyle Yaklaşma|Şüpheleri Giderme|Gerçeği Süzme|Hakikat Arayışı|Hakikati Kazıma|Sır Çözme|Perdeyi Kaldırma|Sırrı Aydınlatma|Karanlığı Aydınlatma|Tozunu Alma|Kılıfını Çıkarma|Kartları Masaya Yatırma|Yalanın İzini Sürme|Doğrunun İzini Sürme|Hakikati Ayıklama",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Çok muhtemel",
+    "message": "Çok Muhtemel",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
@@ -34,7 +34,7 @@
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Olabilir",
+    "message": "Olası",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -122,11 +122,11 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Doğrulama",
+    "message": "Doğrulanıyor",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Doğrulamayı çevir",
+    "message": "Doğrulamaları Çevir",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -134,11 +134,11 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ki",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ki $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Doğrulandı",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Geri Dön",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -216,16 +216,16 @@
     "message": "%BTN% simgesine dokunmak iddiaları gösterir ve bakiyenizden ücret düşer"
   },
   "onboardWillCharge": {
-    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
   },
   "onboardFactcheck": {
-    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
   },
   "onboardTranslations": {
-    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
   },
   "onboardRefreshes": {
-    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşürecek"
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
   },
   "topUp": {
     "message": "Yükle"

@@ -6,8 +6,8 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   vite: (env) => ({
     plugins: [tailwindcss()],
-    esbuild: env.mode === 'production' 
-      ? { drop: ['console', 'debugger'] } 
+    esbuild: env.mode === 'production'
+      ? { drop: ['console', 'debugger'] }
       : {},
   }),
   manifest: (env) => ({
@@ -43,12 +43,6 @@ export default defineConfig({
       {
         resources: ['_locales/*/messages.json'],
         matches: ['<all_urls>']
-      },
-      {
-        // The MAIN-world XHR interceptor (entrypoints/capture-main-world.ts), loaded via
-        // injectScript() from relay.content.ts. See that file's header comment for why.
-        resources: ['capture-main-world.js'],
-        matches: ['*://x.com/*']
       }
     ],
     permissions: [

@@ -20,7 +20,7 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "事实核查",
+    "message": "事實查核",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
@@ -124,7 +124,7 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "事实核查",
+    "message": "事實查核",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "查核完成",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "返回",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "您的余额不足，请充值后继续。"
+    "message": "您的餘額不足，請儲值後繼續。"
   },
   "errAccountSuspended": {
-    "message": "您的账户已被暂停。"
+    "message": "您的帳戶已被停用。"
   },
   "errNotSignedIn": {
-    "message": "您尚未登录，请登录后重试。"
+    "message": "您尚未登入，請登入後重試。"
   },
   "errInvalidRequest": {
-    "message": "此请求的部分内容无法识别，请确认扩展程序为最新版本。"
+    "message": "此請求的部分內容無法辨識，請確認擴充功能為最新版本。"
   },
   "errServiceUnavailable": {
-    "message": "我们这边出现了问题，请稍后重试。"
+    "message": "我們這邊出現了問題，請稍後重試。"
   },
   "errRegionNotSupported": {
-    "message": "由于监管要求，DisinfaX 目前尚未在您所在地区提供服务。"
+    "message": "由於法規要求，DisinfaX 目前尚未在您所在地區提供服務。"
   },
   "errInvalidAmount": {
-    "message": "充值金额无效，请选择其他金额。"
+    "message": "儲值金額無效，請選擇其他金額。"
   },
   "errNotFound": {
-    "message": "未找到相关内容，请重试。"
+    "message": "找不到相關內容，請重試。"
   }
 }

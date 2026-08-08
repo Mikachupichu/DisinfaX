@@ -18,11 +18,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Kontroll",
+    "message": "Kontrollerar",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Kontroll|Städning|Sökande|Avslöjande|Grubblande|Belysning|Grävande|Sållning|Filtrering|Utredning|Analysering|Avmaskering|Sanningssökande|Faktainsamling|Korskontroll|Sortering|Utvärdering|Avslöjande av lögner|Klarläggande|Detektivarbete|Nedbrytning|Uppklarande|Uppdagande|Genomlysning|Renande|Grubbel",
+    "message": "Kontrollerar|Städning|Sökande|Avslöjande|Grubblande|Belysning|Grävande|Sållning|Filtrering|Utredning|Analyserande|Avmaskering|Sanningssökande|Faktainsamling|Korskontroll|Sortering|Utvärdering|Avslöjande av lögner|Klarläggande|Detektivarbete|Nedbrytning|Uppklarande|Uppdagande|Genomlysning|Renande|Nagelfarande",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -114,19 +114,19 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Avslöja igen alla påståenden i denna tweet",
+    "message": "Avslöja alla påståenden i den här tweeten igen",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Undersök detta påstående på nytt",
+    "message": "Undersök det här påståendet på nytt",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Kontroll",
+    "message": "Kontrollerar",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Översätt faktakontroll",
+    "message": "Översätt faktakontroller",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -134,11 +134,11 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "att vara",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ att vara $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,22 +156,22 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Faktakontrollerad",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Gå tillbaka",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Faktakolla",
+    "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
     "message": "Saldo"
   },
   "gifted": {
-    "message": "Gåva"
+    "message": "Skänkt"
   },
   "customTopup": {
     "message": "Anpassat"
@@ -216,16 +216,16 @@
     "message": "Genom att trycka på %BTN% visas påståenden och ditt saldo debiteras"
   },
   "onboardWillCharge": {
-    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+    "message": "Genom att klicka på %BTN% debiteras ditt saldo"
   },
   "onboardFactcheck": {
-    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+    "message": "Genom att klicka på %BTN% debiteras ditt saldo"
   },
   "onboardTranslations": {
-    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+    "message": "Genom att klicka på %BTN% debiteras ditt saldo"
   },
   "onboardRefreshes": {
-    "message": "Att klicka på %BTN% kommer att debitera ditt saldo"
+    "message": "Genom att klicka på %BTN% debiteras ditt saldo"
   },
   "topUp": {
     "message": "Fyll på"
@@ -289,6 +289,6 @@
     "message": "Det påfyllningsbeloppet är inte giltigt. Välj ett annat belopp."
   },
   "errNotFound": {
-    "message": "Det gick inte att hitta. Försök igen."
+    "message": "Det kunde inte hittas. Försök igen."
   }
 }

@@ -1,4 +1,67 @@
 {
+  "balanceLabel": {
+    "message": "Баланс"
+  },
+  "gifted": {
+    "message": "у падарунак"
+  },
+  "customTopup": {
+    "message": "Іншая"
+  },
+  "customAmountLabel": {
+    "message": "Уласная сума папаўнення ў доларах ЗША"
+  },
+  "increase": {
+    "message": "Павялічыць"
+  },
+  "decrease": {
+    "message": "Паменшыць"
+  },
+  "topUpBalance": {
+    "message": "Папоўніць баланс"
+  },
+  "processing": {
+    "message": "Апрацоўка…"
+  },
+  "checkoutError": {
+    "message": "Не ўдалося пачаць аплату. Калі ласка, паспрабуйце яшчэ раз."
+  },
+  "termsOfService": {
+    "message": "Умовы карыстання"
+  },
+  "privacyPolicy": {
+    "message": "Палітыка прыватнасці"
+  },
+  "disclaimerAgree": {
+    "message": "Папаўняючы баланс, вы згаджаецеся з нашымі %TOS% і %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Пры аплаце ў валюце, адрознай ад USD, могуць спаганяцца камісіі за канвертацыю."
+  },
+  "disclaimerJurisdiction": {
+    "message": "На тэрыторыі Злучаных Штатаў карыстацца DisinfaX і папаўняць свой баланс могуць толькі жыхары штатаў Алабама, Арызона, Каліфорнія, Каларада, Канектыкут, Дэлавэр, Фларыда, Айдаха, Ілінойс, Індыяна, Аёва, Канзас, Кентукі, Луізіяна, Мэн, Масачусетс, Місісіпі, Місуры, Мантана, Нью-Гэмпшыр, Нью-Мексіка, Нью-Ёрк, Паўночная Караліна, Паўночная Дакота, Аклахома, Арэгон, Пенсільванія, Паўднёвая Караліна, Паўднёвая Дакота, Тэнэсі, Тэхас, Юта, Вашынгтон, Вісконсін і Ваёмінг; Вашынгтон, Д.К., усе тэрыторыі ЗША і любыя іншыя штаты, не пазначаныя ў спісе, выключаюцца. Па-за межамі Злучаных Штатаў сэрвіс даступны ў Канадзе, Аўстраліі, Новай Зеландыі, Сінгапуры, Паўднёва-Афрыканскай Рэспубліцы, Японіі, Тайвані, Інданезіі, Тайландзе, на Філіпінах, у Малайзіі, В'етнаме і Швейцарыі."
+  },
+  "signOut": {
+    "message": "Выйсці"
+  },
+  "onboardDisinfactClick": {
+    "message": "Націск на %BTN% раскрывае сцвярджэнні і спісвае сродкі з вашага балансу"
+  },
+  "onboardDisinfactTap": {
+    "message": "Дотык да %BTN% раскрывае сцвярджэнні і спісвае сродкі з вашага балансу"
+  },
+  "onboardWillCharge": {
+    "message": "Націск на %BTN% спісвае сродкі з вашага балансу"
+  },
+  "onboardFactcheck": {
+    "message": "Націск на %BTN% спісвае сродкі з вашага балансу"
+  },
+  "onboardTranslations": {
+    "message": "Націск на %BTN% спісвае сродкі з вашага балансу"
+  },
+  "onboardRefreshes": {
+    "message": "Націск на %BTN% спісвае сродкі з вашага балансу"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -24,7 +87,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Ачышчэнне ад лухты|Дэзінфекцыя|Ачыстка|Выкрыццё фэйкавых навін|Выпраўленне|Мыццё|Пошук|Даследаванне|Фактчэкінг|Разбурэнне прамыўкі мазгоў|Высвятленне праўды|Спраўджванне|Роздум|Выяўленне|Адкрыццё|Кантроль|Разведванне|Пошук праўды|Праясненне|Здыманне маскі|Асвятленне|Класіфікацыя|Збор дадзеных|Інфармаванне|Кручэнне|Загрузка|Капанне|Выкрыццё хлусні|Фільтраванне|Крыжаваная праверка|Дэманстрацыя",
+    "message": "Ачышчэнне ад лухты|Дэзінфекцыя|Ачыстка|Выкрыццё фэйкавых навін|Выпраўленне|Мыццё|Пошук|Даследаванне|Фактчэкінг|Выкрыццё прамыўкі мазгоў|Высвятленне праўды|Спраўджванне|Роздум|Выяўленне|Адкрыццё|Праверка|Разведванне|Пошук праўды|Праясненне|Здыманне маскі|Асвятленне|Класіфікацыя|Збор дадзеных|Інфармаванне|Кручэнне|Загрузка|Капанне|Выкрыццё хлусні|Фільтраванне|Крыжаваная праверка|Пацвярджэнне",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -120,7 +183,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Перадаследаваць гэта сцвярджэнне",
+    "message": "Даследаваць гэта сцвярджэнне паўторна",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +191,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Перакласці фактчэкі",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Перакласці",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Праверана",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Назад",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Праверыць",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "быць",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ быць $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,78 +231,6 @@
         "example": "Very Likely"
       }
     }
-  },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "Праверыць",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "Баланс"
-  },
-  "gifted": {
-    "message": "Падарунак"
-  },
-  "customTopup": {
-    "message": "Свой"
-  },
-  "customAmountLabel": {
-    "message": "Уласная сума папаўнення ў доларах ЗША"
-  },
-  "increase": {
-    "message": "Павялічыць"
-  },
-  "decrease": {
-    "message": "Паменшыць"
-  },
-  "topUpBalance": {
-    "message": "Папоўніць баланс"
-  },
-  "processing": {
-    "message": "Апрацоўка…"
-  },
-  "checkoutError": {
-    "message": "Не ўдалося пачаць аплату. Калі ласка, паспрабуйце яшчэ раз."
-  },
-  "termsOfService": {
-    "message": "Умовы карыстання"
-  },
-  "privacyPolicy": {
-    "message": "Палітыка прыватнасці"
-  },
-  "disclaimerAgree": {
-    "message": "Папаўняючы баланс, вы згаджаецеся з нашымі %TOS% і %PRIVACY%."
-  },
-  "disclaimerFx": {
-    "message": "Пры аплаце ў валюце, адрознай ад USD, могуць спаганяцца камісіі за канвертацыю."
-  },
-  "signOut": {
-    "message": "Выйсці"
-  },
-  "onboardDisinfactClick": {
-    "message": "Націск на %BTN% пакажа сцвярджэнні і спіша сродкі з вашага балансу"
-  },
-  "onboardDisinfactTap": {
-    "message": "Дотык да %BTN% пакажа сцвярджэнні і спіша сродкі з вашага балансу"
-  },
-  "onboardWillCharge": {
-    "message": "Націск на %BTN% спіша сродкі з вашага балансу"
-  },
-  "onboardFactcheck": {
-    "message": "Націск на %BTN% спіша сродкі з вашага балансу"
-  },
-  "onboardTranslations": {
-    "message": "Націск на %BTN% спіша сродкі з вашага балансу"
-  },
-  "onboardRefreshes": {
-    "message": "Націск на %BTN% спіша сродкі з вашага балансу"
   },
   "topUp": {
     "message": "Папоўніць"
@@ -259,9 +262,6 @@
   "cleanupTagline": {
     "message": "Ачысціце сваю стужку X."
   },
-  "disclaimerJurisdiction": {
-    "message": "На тэрыторыі Злучаных Штатаў карыстацца DisinfaX і папаўняць свой баланс могуць толькі жыхары штатаў Алабама, Арызона, Каліфорнія, Каларада, Канектыкут, Дэлавэр, Фларыда, Айдаха, Ілінойс, Індыяна, Аёва, Канзас, Кентукі, Луізіяна, Мэн, Масачусетс, Місісіпі, Місуры, Мантана, Нью-Гэмпшыр, Нью-Мексіка, Нью-Ёрк, Паўночная Караліна, Паўночная Дакота, Аклахома, Арэгон, Пенсільванія, Паўднёвая Караліна, Паўднёвая Дакота, Тэнэсі, Тэхас, Юта, Вашынгтон, Вісконсін і Ваёмінг; Вашынгтон, D.C., усе тэрыторыі ЗША і любыя штаты, не пазначаныя ў спісе, выключаюцца. Па-за межамі Злучаных Штатаў сэрвіс даступны ў Канадзе, Аўстраліі, Новай Зеландыі, Сінгапуры, Паўднёва-Афрыканскай Рэспубліцы, Японіі, Тайвані, Інданезіі, Тайландзе, на Філіпінах, у Малайзіі, В'етнаме і Швейцарыі."
-  },
   "factCheckAllButton": {
     "message": "Праверыць усё"
   },
@@ -270,7 +270,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Ваш баланс занадта нізкі. Папаўніце рахунак, каб працягнуць."
+    "message": "Ваш баланс занадта нізкі. Папаўніце баланс, каб працягнуць."
   },
   "errAccountSuspended": {
     "message": "Ваш акаунт быў прыпынены."
@@ -288,9 +288,9 @@
     "message": "DisinfaX пакуль недаступны ў вашым рэгіёне з-за нарматыўных вымог."
   },
   "errInvalidAmount": {
-    "message": "Гэтая сума папаўнення несапраўдная. Выберыце іншую суму."
+    "message": "Гэтая сума папаўнення недапушчальная. Калі ласка, выберыце іншую суму."
   },
   "errNotFound": {
-    "message": "Не ўдалося знайсці гэта. Паспрабуйце зноў."
+    "message": "Не ўдалося гэта знайсці. Калі ласка, паспрабуйце зноў."
   }
 }

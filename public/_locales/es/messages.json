@@ -22,7 +22,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Desinfectando|Limpiando|Desenmascarando|Desmintiendo|Verificando|Investigando|Comprobando|Explorando|Buscando la verdad|Desmitificando|Desenredando|Destripando|Diseccionando|Decodificando|Descifrando|Analizando|Cocinando|Reflexionando|Meditando|Pensando|Cavilando|Filosofando|Razonando|Resolviendo|Iluminando|Desenterrando|Excavando|Cribando|Filtrando|Depurando|Desintoxicando|Sanitizando|Auditando|Contrastando|Corroborando|Validando|Destilando|Sintetizando|Procesando|Generando|Recopilando|Rastreando|Desvelando|Desempolvando|Cazando bulos|Desmontando mitos|Aclarando|Descubriendo|Desempañando",
+    "message": "Desinfectando|Limpiando|Desenmascarando|Desmintiendo|Verificando|Investigando|Comprobando|Explorando|Buscando la verdad|Desmitificando|Desenredando|Destripando|Diseccionando|Decodificando|Descifrando|Analizando|Cocinando|Reflexionando|Meditando|Pensando|Cavilando|Filosofando|Razonando|Resolviendo|Iluminando|Desenterrando|Excavando|Cribando|Filtrando|Depurando|Desintoxicando|Sanitizando|Auditando|Contrastando|Corroborando|Validando|Destilando|Sintetizando|Procesando|Generando|Recopilando|Rastreando|Desvelando|Desempolvando|Cazando bulos|Desmontando mitos|Aclarando|Descubriendo|Desempañando|Desengañando|Blanqueando|Desprogramando|Verdadeando|Hallando|Chequeando|Transparentando|Sincerando|Desfalseando|Clasificando|Dictaminando|Recuperando|Informando|Girando|Cargando|Rondando|Rotando|Factualizando|Factchequeando|Desclickbaiteando|Cavando|Averiguando|Escribiendo|Conociendo|Contemplando|Considerando|Explorando el alma|Aventurando|Cheffeando|Intuyendo|Deduciendo|Elucidando|Alumbrando|Infiriendo|Reuniendo|Corrigiendo sesgos|Despropagandizando|Yendo al grano|Exprimiendo los hechos|Cuestionando|Descomponiendo|Sacando a la luz|Erradicando|Deconstruyendo|Escrutando|Triangulando|Cotejando|Enfocando|Despejando|Disipando la niebla|Radiografiando|Exponiendo|Esclareciendo|Seleccionando",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -126,7 +126,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -164,7 +164,7 @@
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Verificar",
+    "message": "Desinfectar",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -268,7 +268,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Tu saldo es demasiado bajo. Recarga tu cuenta para continuar."
+    "message": "Tu saldo es demasiado bajo. Recarga tu saldo para continuar."
   },
   "errAccountSuspended": {
     "message": "Tu cuenta ha sido suspendida."
@@ -286,7 +286,7 @@
     "message": "DisinfaX aún no está disponible en tu región debido a requisitos regulatorios."
   },
   "errInvalidAmount": {
-    "message": "Ese monto de recarga no es válido. Elige un monto diferente."
+    "message": "Ese importe de recarga no es válido. Elige un importe diferente."
   },
   "errNotFound": {
     "message": "No se pudo encontrar eso. Vuelve a intentarlo."

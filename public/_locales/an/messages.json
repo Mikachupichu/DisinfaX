@@ -1,4 +1,67 @@
 {
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Regalau"
+  },
+  "customTopup": {
+    "message": "Presonalizada"
+  },
+  "customAmountLabel": {
+    "message": "Cantidat de recarga presonalizada en dolars estauunidencs"
+  },
+  "increase": {
+    "message": "Aumentar"
+  },
+  "decrease": {
+    "message": "Disminuir"
+  },
+  "topUpBalance": {
+    "message": "Recargar saldo"
+  },
+  "processing": {
+    "message": "Procesando…"
+  },
+  "checkoutError": {
+    "message": "No s'ha puesto encetar o pago. Torna a intentar-lo."
+  },
+  "termsOfService": {
+    "message": "Termins d'o servicio"
+  },
+  "privacyPolicy": {
+    "message": "Politica de privacidat"
+  },
+  "disclaimerAgree": {
+    "message": "En recargar, acceptas os nuestros %TOS% y %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Podrían aplicar-se cargos de cambio de divisa si pagas en una moneda distinta d'o USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Dentro d'os Estaus Unius, nomás os residents d'Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Luisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nueva Hampshire, Nuevo Mexico, Nueva York, Carolina d'o Norte, Dakota d'o Norte, Oklahoma, Oregon, Pensilvania, Carolina d'o Sur, Dakota d'o Sur, Tennessee, Texas, Utah, Washington, Wisconsin y Wyoming pueden fer servir DisinfaX y recargar o suyo saldo; Washington, D.C., toz os territorios d'os EUA y qualsequier estau no listau son excluius. Difuera d'os Estaus Unius, ye disponible en Canadá, Australia, Nueva Zelanda, Singapur, Sudafrica, Chapón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam y Suiza."
+  },
+  "signOut": {
+    "message": "Zarrar sesión"
+  },
+  "onboardDisinfactClick": {
+    "message": "Fer clic en %BTN% revela as afirmacions y cargará o tuyo saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tocar %BTN% revela as afirmacions y cargará o tuyo saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Fer clic en %BTN% cargará o tuyo saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Fer clic en %BTN% cargará o tuyo saldo"
+  },
+  "onboardTranslations": {
+    "message": "Fer clic en %BTN% cargará o tuyo saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Fer clic en %BTN% cargará o tuyo saldo"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -16,7 +79,7 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Desconoixito",
+    "message": "Desconoixiu",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
@@ -24,7 +87,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Verificación|Limpieza|Investigación|Depuración|Desenmascarada|Escavación|Busca d'a verdat|Pensamiento|Reflexión|Iluminación|Filtración|Contrastación|Descubrimiento|Comprebación|Examinación|Clasificación|Purga|Escritura|Carga|Proceso|Rechira|Analís|Triaje|Corrobación|Validación|Destilación|Sintesi|Esclarimiento",
+    "message": "Verificación|Limpieza|Investigación|Depuración|Desenmascarament|Escavación|Busca d'a verdat|Pensamiento|Reflexión|Iluminación|Filtración|Contrastación|Descubrimiento|Comprebación|Examinación|Clasificación|Purga|Escritura|Carga|Proceso|Rechira|Analís|Triaje|Corrobación|Validación|Destilación|Sintesi|Esclarimiento",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -44,7 +107,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Discutible",
+    "message": "Discutiblement",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +115,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Equivoco",
+    "message": "Equivocament",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -128,19 +191,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Traducir Verificacions",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Traducir",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Verificau",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Tornar cara zaga",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Verificar",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "de ser",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ de ser $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -157,78 +232,6 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "Verificar",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "Saldo"
-  },
-  "gifted": {
-    "message": "Regalau"
-  },
-  "customTopup": {
-    "message": "Presonalizau"
-  },
-  "customAmountLabel": {
-    "message": "Cantidat de recarga presonalizada en dolars EU"
-  },
-  "increase": {
-    "message": "Aumentar"
-  },
-  "decrease": {
-    "message": "Disminuir"
-  },
-  "topUpBalance": {
-    "message": "Recargar saldo"
-  },
-  "processing": {
-    "message": "Procesando…"
-  },
-  "checkoutError": {
-    "message": "No s'ha puesto encetar o pago. Torna a intentar-lo."
-  },
-  "termsOfService": {
-    "message": "Termins d'o servicio"
-  },
-  "privacyPolicy": {
-    "message": "Politica de privacidat"
-  },
-  "disclaimerAgree": {
-    "message": "En recargar, acceptas os nuestros %TOS% y %PRIVACY%."
-  },
-  "disclaimerFx": {
-    "message": "Podrían aplicar-se cargos de cambio de divisa si pagas en una moneda distinta d'o USD."
-  },
-  "signOut": {
-    "message": "Zarrar sesión"
-  },
-  "onboardDisinfactClick": {
-    "message": "Fer clic en %BTN% amuestra as afirmacions y cargará o tuyo saldo"
-  },
-  "onboardDisinfactTap": {
-    "message": "Tocar %BTN% amuestra as afirmacions y cargará o tuyo saldo"
-  },
-  "onboardWillCharge": {
-    "message": "Fer clic en %BTN% cargará o tuyo saldo"
-  },
-  "onboardFactcheck": {
-    "message": "Fer clic en %BTN% cargará o tuyo saldo"
-  },
-  "onboardTranslations": {
-    "message": "Fer clic en %BTN% cargará o tuyo saldo"
-  },
-  "onboardRefreshes": {
-    "message": "Fer clic en %BTN% cargará o tuyo saldo"
-  },
   "topUp": {
     "message": "Recargar"
   },
@@ -242,7 +245,7 @@
     "message": "Desvela a verdat. Troba as mentiras."
   },
   "landingTagline2": {
-    "message": "No més desinformación. Nomás feitos."
+    "message": "No más desinformación. Nomás feitos."
   },
   "continueWithX": {
     "message": "Continar con X"
@@ -259,9 +262,6 @@
   "cleanupTagline": {
     "message": "Limpia o tuyo feed d'X."
   },
-  "disclaimerJurisdiction": {
-    "message": "Dentro d'os Estaus Unius, nomás os residents d'Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Luisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nueva Hampshire, Nuevo Mexico, Nueva York, Carolina d'o Norte, Dakota d'o Norte, Oklahoma, Oregon, Pensilvania, Carolina d'o Sur, Dakota d'o Sur, Tennessee, Texas, Utah, Washington, Wisconsin y Wyoming pueden fer servir DisinfaX y recargar o suyo saldo; Washington, D.C., toz os territorios d'os EUA y qualsequier estau no listau son excluius. Difuera d'os Estaus Unius, ye disponible en Canadá, Australia, Nueva Zelanda, Singapur, Sudafrica, Chapón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam y Suiza."
-  },
   "factCheckAllButton": {
     "message": "Verificar tot"
   },
@@ -270,10 +270,10 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "O tuyo saldo ye masiau baixo. Recargue ta continar."
+    "message": "O tuyo saldo ye masiau baixo. Recarga ta continar."
   },
   "errAccountSuspended": {
-    "message": "O tuyo cuenta ha estau suspenduda."
+    "message": "A tuya cuenta ha estau suspendida."
   },
   "errNotSignedIn": {
     "message": "No yes conectau. Conecta-te y intenta-lo de nuebo."
@@ -282,13 +282,13 @@
     "message": "Una part d'ista solicitut no ha estau reconoixida. Asegura-te que l'extensión sía actualizada."
   },
   "errServiceUnavailable": {
-    "message": "S'ha produciu una error d'a nuestra part. Intenta-lo de nuebo en un momento."
+    "message": "S'ha produciu un error d'a nuestra part. Intenta-lo de nuebo en un momento."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX no ye encara disponible en a tuya rechión por requisitos regulatorios."
   },
   "errInvalidAmount": {
-    "message": "Ixe importe de recarga no ye valido. Trigo un atro importe."
+    "message": "Ixe importe de recarga no ye valido. Triga un atro importe."
   },
   "errNotFound": {
     "message": "No s'ha puesto trobar ixo. Intenta-lo de nuebo."

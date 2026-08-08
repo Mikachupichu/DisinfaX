@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "ʻOku kumi mo fakahaaʻi ʻa e fakamatala hala ʻi he tweets ʻaki ʻa e ʻilo tokipiki AI.",
+    "message": "ʻOku ʻiloʻi mo fakahaaʻi ʻa e ngaahi fakamatala hala ʻi he ngaahi tweet ʻaki ʻa e sivi AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,7 +16,7 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Ta'e 'ilo",
+    "message": "Taʻeʻiloa",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Sivi|Kumi|Fakamaʻa|Fakaʻā|Fifili|Sivisivi|Fakamoʻoni|Keli|ʻIlo|Vakai|Fakasino|Faʻu lea|Fakaava|Tānaki|Fakamahino|Fetuʻutaki|Fakaʻaʻau|Fakahaofi|Fehuʻi|Fakatonuʻi|Toe vakai|Fakaʻilo|Fua|Fakamatala|Filifili|Fakalelei",
+    "message": "Sivi|Kumi|Fakamaʻa|Fakahaaʻi|Fifili|Sivisivi|Fakamoʻoni|Keli|ʻIlo|Vakai|Fakatotolo|Faʻu lea|Fakaava|Tānaki|Fakamahino|Fetuʻutaki|Fakaʻilonga|Sivi Fakaikiiki|Fehuʻi|Fakatonuʻi|Toe Vakai|Fakaʻilo|Fakafuofua|Fakamatala|Filifili|Fakalelei",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -112,7 +112,7 @@
     }
   },
   "copyTooltip": {
-    "message": "Tohi 'o e fooa",
+    "message": "Kopi",
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
@@ -120,7 +120,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Toe vakavakai 'a e kole ko 'eni",
+    "message": "Toe siviʻi ʻa e fakamatala ni",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Liliu ʻa e Ngaahi Sivi",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Liliu",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ke",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ke $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Kuo Sivi",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Foki Ki Mui",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Sivi",
+    "message": "Fakahā",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -212,22 +212,22 @@
     "message": "Hū kituʻa"
   },
   "onboardDisinfactClick": {
-    "message": "Ko hono lomi ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai ho pate"
+    "message": "Ko hono lomi ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai hoʻo toenga paʻanga"
   },
   "onboardDisinfactTap": {
-    "message": "Ko hono tuki ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai ho pate"
+    "message": "Ko hono tuki ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai hoʻo toenga paʻanga"
   },
   "onboardWillCharge": {
-    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
   },
   "onboardFactcheck": {
-    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
   },
   "onboardTranslations": {
-    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
   },
   "onboardRefreshes": {
-    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai ho pate"
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
   },
   "topUp": {
     "message": "Fakakakato Paʻanga"
@@ -263,14 +263,14 @@
     "message": "ʻI loto ʻi he Puleʻanga Fakatahataha ʻAmelika, ko e kau nofoʻanga pē ʻo Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, mo Wyoming ʻe lava ke ngāueʻaki ʻa DisinfaX pea fakakakato ʻenau toenga paʻanga; ʻoku ʻikai kau ai ʻa Washington, D.C., mo e ngaahi feituʻu kotoa ʻo ʻAmelika, mo ha ngaahi siteiti ʻoku ʻikai lisi. ʻI tuʻa mei he Puleʻanga Fakatahataha ʻAmelika, ʻoku maʻu ia ʻi Kānata, ʻAositelēlia, Nuʻusila, Singapoa, ʻAfilika Tonga, Siapani, Taiuani, ʻInitonēsia, Tailani, Filipaine, Malēsia, Vietinami, mo Suisilani."
   },
   "factCheckAllButton": {
-    "message": "Sivi kotoa"
+    "message": "Sivi Kotoa"
   },
   "aiDisclaimer": {
-    "message": "ʻE lava ke fai hala ʻa e DisinfaX. Sivi ʻo taha e fakamatala.",
+    "message": "ʻE lava ke fai hala ʻa e DisinfaX. Toe siviʻi ʻa e fakamatala.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "ʻOku siʻisiʻi ʻaupito hoʻo pālaniti. Kātaki ʻo fakalahi ke fai atu."
+    "message": "ʻOku siʻisiʻi ʻaupito hoʻo toenga paʻanga. Kātaki fakakakato ke hoko atu."
   },
   "errAccountSuspended": {
     "message": "Kuo taʻofi ho ʻakauni."
@@ -279,7 +279,7 @@
     "message": "ʻOku ʻikai te ke hū ki loto. Kātaki hū ki loto ʻo toe feinga."
   },
   "errInvalidRequest": {
-    "message": "Naʻe ʻikai ʻiloʻi ha konga ʻo e kole ni. Fakapapauʻi kuo fakaʻāʻonganoa ʻa e fakalahiʻanga."
+    "message": "Naʻe ʻikai ʻiloʻi ha konga ʻo e kole ni. Kātaki fakapapauʻi kuo fakaʻāʻonga taimi lelei ʻa e extension."
   },
   "errServiceUnavailable": {
     "message": "Naʻe hoko ha fehalaaki ʻi hotau tafaʻaki. Kātaki toe feinga ʻi ha taimi siʻi."
@@ -288,9 +288,9 @@
     "message": "ʻOku teʻeki ala maʻu ʻa DisinfaX ʻi ho fonua koeʻuhi ko e ngaahi fiemaʻu fakalao."
   },
   "errInvalidAmount": {
-    "message": "ʻOku ʻikai lelei ʻa e paʻanga fakalahi ko ia. Kātaki fili ha paʻanga kehe."
+    "message": "ʻOku ʻikai lelei ʻa e lahi ʻo e fakakakato ko ia. Kātaki fili ha lahi paʻanga kehe."
   },
   "errNotFound": {
-    "message": "Naʻe ʻikai lava ʻo ʻilo ia. Toe feinga."
+    "message": "Naʻe ʻikai lava ʻo ʻilo ia. Kātaki ke toe feinga."
   }
 }

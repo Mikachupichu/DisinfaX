@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "de AI nhwehwɛmu di dwuma de hwehwɛ ne kyerɛ nkontompo a ɛwɔ tweets mu.",
+    "message": "Ɛde AI nhwehwɛmu hwehwɛ na ɛda atosɛm a ɛwɔ tweets mu adi.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,23 +16,23 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Wonnim",
+    "message": "Wɔnnim",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Nhwɛso",
+    "message": "Nhwehwɛmu",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Nhwɛso|Nhwehwɛmu|Ahwɛyie|Ntew ho|Nokware hwehwɛ|Nsusuwii|Adwenemu nsusuwii|Nkyerɛkyerɛmu|Mmuae hwehwɛ|Nkontompo kyerɛ|Nokware kyerɛ|Adesua|Nyansa hwehwɛ|Nsɛm hwehwɛ|Nokware pɛ|Nteɛteɛ mu|Nkyerɛmu|Amanneɛ hwehwɛ|Nokwaredi|Nhwɛso foforo|Nkabom hwehwɛ|Nteɛteɛmu|Nsɛnkyerɛnne hwehwɛ|Nyinasoɛ hwehwɛ|Adwuma yɛ",
+    "message": "Nhwehwɛmu|Nokware Hwehwɛ|Nkontompo Yiyi|Nsɛm Mu Hwɛ|Nyansahwɛ|Nteɛteɛmu|Nokware Pɛ|Atosɛm Yiyi|Mmuae Hwehwɛ|Nokwasɛm Hwehwɛ|Nhwehwɛmu Foforo|Nokware Kyerɛ|Nsusuwii|Nkyerɛkyerɛmu|Adwene Mu Hwɛ|Nokware Twe|Nhunumu Hwehwɛ|Atoro Yiyi|Nokware Da Adi|Nsɛm Hwehwɛ|Nkyerɛmu|Nokwaredi|Adesua",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Ebetumi ayɛ",
+    "message": "Ɛbɛtumi Ayɛ Ampa",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Ebetumi",
+    "message": "Ɛbɛtumi Ayɛ",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -40,11 +40,11 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "Ne fa kɛseɛ",
+    "message": "Ne Fa Kɛse",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Wobetumi asɔre atia",
+    "message": "Akyinnyeɛ Mu",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Nnipa ahennie",
+    "message": "Abɔhyɛn Mu",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -112,35 +112,35 @@
     }
   },
   "copyTooltip": {
-    "message": "Kyerɛw",
+    "message": "Kopi",
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Yi nsɛm nyinaa a ɛwɔ tweet yi mu adi bio",
+    "message": "Da tweet yi mu nsɛm nyinaa adi bio",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Hwehwɛ bio saa ka yi",
+    "message": "Hwehwɛ asɛm yi bio",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Nhwɛso",
+    "message": "Nhwehwɛmu",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Sesa Nhwehwɛmu Nsɛm",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Sesa",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ayɛ",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ayɛ $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Nhwehwɛmu Awie",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "San Kɔ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Hwehwɛ",
+    "message": "Da Adi",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -179,7 +179,7 @@
     "message": "Wʼankasa"
   },
   "customAmountLabel": {
-    "message": "Wʼankasa top-up dodow wɔ US dɔla mu"
+    "message": "Wʼankasa sika dodoɔ a wode bɛgu mu, wɔ US dɔla mu"
   },
   "increase": {
     "message": "Ma ɛnkɔ soro"
@@ -194,10 +194,10 @@
     "message": "Ɛreyɛ adwuma…"
   },
   "checkoutError": {
-    "message": "Yɛantumi anfi checkout ase. Yɛsrɛ wo sɔ hwɛ bio."
+    "message": "Yɛantumi anfi checkout ase. Yɛsrɛ wo, sɔ hwɛ bio."
   },
   "termsOfService": {
-    "message": "Nsɛm a Wɔde Som"
+    "message": "Adwuma Ho Nhyehyɛe"
   },
   "privacyPolicy": {
     "message": "Kokoamsɛm Ho Nhyehyɛe"
@@ -206,31 +206,31 @@
     "message": "Sɛ wode sika gu mu a, wopene yɛn %TOS% ne %PRIVACY% so."
   },
   "disclaimerFx": {
-    "message": "Sɛ wutua ka wɔ sika foforo bi a ɛnyɛ USD mu a, sika sesa ho ka bɛtumi aba."
+    "message": "Sɛ wutua ka wɔ sika foforɔ a ɛnyɛ USD mu a, sika-sesa ho kaa bɛtumi aba."
   },
   "signOut": {
-    "message": "Fi mu"
+    "message": "Fi Adi"
   },
   "onboardDisinfactClick": {
-    "message": "Sɛ wode wo nsa ka %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo kyɛfa mu"
+    "message": "Sɛ wode wo nsa ka %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo akontaa mu"
   },
   "onboardDisinfactTap": {
-    "message": "Sɛ wode wo nsa bɔ %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo kyɛfa mu"
+    "message": "Sɛ wode wo nsa bɔ %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo akontaa mu"
   },
   "onboardWillCharge": {
-    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo akontaa mu"
   },
   "onboardFactcheck": {
-    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo akontaa mu"
   },
   "onboardTranslations": {
-    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo akontaa mu"
   },
   "onboardRefreshes": {
-    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo kyɛfa mu"
+    "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo akontaa mu"
   },
   "topUp": {
-    "message": "Fa Sika Gu Mu"
+    "message": "Fa Sika Gu"
   },
   "showMore": {
     "message": "Kyerɛ pii"
@@ -239,7 +239,7 @@
     "message": "Kyerɛ kakra"
   },
   "landingTagline1": {
-    "message": "Da Nokware Adi. Hwehwɛ Atorɔ No."
+    "message": "Da Nokware Adi. Hunu Atorɔ No."
   },
   "landingTagline2": {
     "message": "Atosɛm Nni Hɔ Bio. Nokwasɛm Nko Ara."
@@ -260,37 +260,37 @@
     "message": "Siesie wo X Feed no."
   },
   "disclaimerJurisdiction": {
-    "message": "Wɔ Amerika Nkabom Aman no mu no, Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne Wyoming amanfoɔ nko ara na wɔbɛtumi de DisinfaX adi dwuma na wɔde sika agu wɔn balance mu; Washington, D.C., Amerika nsase nyinaa, ne aman biara a wɔanka ho asɛm no nni mu. Wɔ Amerika Nkabom Aman no akyi no, ɛwɔ hɔ wɔ Kanada, Australia, New Zealand, Singapore, Anafoɔ Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne Switzerland."
+    "message": "Wɔ Amerika Nkabom Aman no mu no, Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne Wyoming amanfoɔ nko ara na wɔbɛtumi de DisinfaX adi dwuma na wɔde sika agu wɔn akontaa mu; Washington, D.C., Amerika nsase nyinaa, ne aman biara a wɔanka ho asɛm no nni mu. Wɔ Amerika Nkabom Aman no akyi no, ɛwɔ hɔ wɔ Kanada, Australia, New Zealand, Singapore, Anafoɔ Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne Switzerland."
   },
   "factCheckAllButton": {
-    "message": "Hwehwɛ nyinaa"
+    "message": "Hwehwɛ Nyinaa"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX betumi ayɛ mfomso. Hwɛ nsɛm mu bio.",
+    "message": "DisinfaX bɛtumi ayɛ mfomsoɔ. Hwɛ nsɛm mu bio.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "W'akontaa a aka no sua dodo. Yɛ srɛ wo koto ma ɛnkɔ so."
+    "message": "W'akontaa mu sika sua dodo. Yɛsrɛ wo, fa sika gu mu na woatoa so."
   },
   "errAccountSuspended": {
-    "message": "W'akontaa no atwa."
+    "message": "Wɔabra w'akontaa so."
   },
   "errNotSignedIn": {
-    "message": "Wonkɔɔ akontaa mu. Yɛ srɛ wo kɔ akontaa mu na sɔ hwɛ bio."
+    "message": "Wonkɔɔ akontaa mu. Yɛsrɛ wo, kɔ akontaa mu na sɔ hwɛ bio."
   },
   "errInvalidRequest": {
-    "message": "Saa abisadeɛ yi fa bi ho no wɔnhu. Yɛ srɛ wo hwɛ sɛ mmoa no yɛ foforɔ."
+    "message": "Yɛnhu saa abisadeɛ yi fa bi. Yɛsrɛ wo, hwɛ sɛ extension no yɛ foforɔ."
   },
   "errServiceUnavailable": {
-    "message": "Mfomsoɔ bi asi wɔ yɛn afa. Yɛ srɛ wo sɔ hwɛ bio wɔ bere tiaa bi mu."
+    "message": "Mfomsoɔ bi asi wɔ yɛn afa. Yɛsrɛ wo, sɔ hwɛ bio wɔ bere tiaa bi mu."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX nnya nkɔ w'mantam mu esiane mmara ho ahyɛdeɛ."
   },
   "errInvalidAmount": {
-    "message": "Saa sika a wode koto no nyɛ deɛ ɛfata. Yɛ srɛ wo paw sika foforɔ."
+    "message": "Saa sika dodoɔ a wopɛ sɛ wode gu mu no nyɛ deɛ ɛfata. Yɛsrɛ wo, paw sika foforɔ."
   },
   "errNotFound": {
-    "message": "Wɔanhu no. Sɔ hwɛ bio."
+    "message": "Wɔanhu no. Yɛsrɛ wo, sɔ hwɛ bio."
   }
 }

@@ -1,6 +1,6 @@
 {
   "topUp": {
-    "message": "Ouzhpennañ arc'hant"
+    "message": "Kargañ"
   },
   "showMore": {
     "message": "Diskouez muioc'h"
@@ -12,7 +12,7 @@
     "message": "Diskuliañ ar Wirionez. Kavout ar Gevier."
   },
   "landingTagline2": {
-    "message": "Disinformadur ebet ken. Nemet Deverioù."
+    "message": "Disinformadur ebet ken. Nemet Fedoù."
   },
   "continueWithX": {
     "message": "Kenderc'hel gant X"
@@ -27,7 +27,7 @@
     "message": "Implijet da ziwezhañ"
   },
   "cleanupTagline": {
-    "message": "Naetaat ho lanv X."
+    "message": "Naetaat ho red X."
   },
   "disclaimerJurisdiction": {
     "message": "E-barzh ar Stadoù-Unanet, ne c'hall nemet annezidi Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina an Norzh, Dakota an Norzh, Oklahoma, Oregon, Pennsylvania, Karolina ar Su, Dakota ar Su, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming implijout DisinfaX hag ouzhpennañ arc'hant d'o c'hont; ezlakaet eo Washington, D.C., holl dachennoù ar Stadoù-Unanet, hag ar stadoù n'int ket rollet. Er-maez eus ar Stadoù-Unanet, ez eo hegerz e Kanada, Aostralia, Zeland-Nevez, Singapour, Suafrika, Japan, Taiwan, Indonezia, Thailand, ar Filipinez, Malaysia, Vietnam, ha Suis."
@@ -37,7 +37,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detektout ha diskouez a ra an dezineuzerezh er postodoù gant arver an dielfennañ AI.",
+    "message": "Dinoiñ ha lakaat war wel an dizinformadur er postoù, dre zielfennadur gant AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -57,15 +57,15 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Naetaañ|Klask|Dizoleiñ|Furchal|Silañ|Soñjal|Prederiañ|Sklaeraat|Dinoiñ|Klask ar wirionez|Furchal don|Netaat|Gwiriekaat|Dielfennañ|Diskuliañ|Enklask|Displegañ|Dizoleiñ gevier|Sellet don|Furchal er stlennoù|Merzhiñ|Sioulaat|Aozañ|Kavout|Studiañ|Skeulaat|Dic'hriziennañ",
+    "message": "Naetaat|Dic'hlanaat|Gwiriekaat|Gwiriañ|Furchal|Klask|Enklask|Studiañ|Dielfennañ|Soñjal|Prederiañ|Meizañ|Displegañ|Sklaeraat|Dinoiñ|Dizoleiñ|Merzhiñ|Renkañ|Barnañ|Kelaouiñ|Treiñ|Kargañ|Troiñ|Krouiñ|Skrivañ|Furnisañ|Aventuriñ|Keginañ|Poazhat|Santiñ|Rezonañ|Filosofiañ|Sklerijennañ|Diskoulmañ|Dastum|Distruj mojennoù|Diframmañ|Dispenn|Kizellañ ar wirionez|Kadarnaat|Kempouezañ|Goulennata|Diskleriañ|Silañ|Furchal don|Sellet don|Prederiañ don|Klask ar wirionez|Naetaat ar fatrazh|Berrañ|Kempenn|Sevel ar wirionez|Dizoueriñ ar gevier|Distagañ ar gaou|Diskuliañ|Furchal en teuliadoù|Dastum stlennoù|Kempenn ar stlennoù|Klask an dro|Dizoueriñ ar mojennoù|Diskrivañ|Digeriñ daoulagad|Sellet a-dost|Anaout ar wir|Dilezel ar fals|Diskuliañ ar gwir|Klask ar gaou|Furchal don en traoù|Prederiañ war ar gaou|Merzhiñ ar fazioù|Sioulaat an dud|Aozañ ar stlennoù",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Gwallus",
+    "message": "Moarvat-tre",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Gwallus",
+    "message": "Moarvat",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -77,15 +77,15 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Tabutaus",
+    "message": "Tabutus",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "Damoezhel",
+    "message": "Darnel",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Amspis",
+    "message": "A-zivseurt",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -149,11 +149,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Diskouez adarre holl frazennoù an tweet-mañ",
+    "message": "Diskouez adarre holl afirmadennoù an tweet-mañ",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Adklask ar ar goulenn-mañ",
+    "message": "Adklask an afirmadenn-mañ",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -161,19 +161,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Treiñ ar Gwiriadennoù",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Treiñ",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "da vezañ",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ da vezañ $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -191,19 +191,19 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Gwiriet",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Distreiñ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Gwiriañ",
+    "message": "Difalsaat",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
-    "message": "Chelead"
+    "message": "Soum"
   },
   "gifted": {
     "message": "Prof"
@@ -221,7 +221,7 @@
     "message": "Digreskiñ"
   },
   "topUpBalance": {
-    "message": "Kargañ ar chelead"
+    "message": "Kargañ ar soum"
   },
   "processing": {
     "message": "O treiñ…"
@@ -230,13 +230,13 @@
     "message": "N'eus ket bet gallet kregiñ gant ar paeamant. Klaskit en-dro, mar plij."
   },
   "termsOfService": {
-    "message": "Divizoù ar Servij"
+    "message": "Termenoù ar Servij"
   },
   "privacyPolicy": {
     "message": "Reolennoù prevezded"
   },
   "disclaimerAgree": {
-    "message": "En ur gargañ, e asantit d'hor %TOS% ha %PRIVACY%."
+    "message": "En ur gargañ, e asantit d'hor %TOS% ha d'hor %PRIVACY%."
   },
   "disclaimerFx": {
     "message": "Tailhoù eskemm moneiz a c'hall bezañ arloet ma paeit e ur voneiz all eget an USD."
@@ -245,10 +245,10 @@
     "message": "Digevreañ"
   },
   "onboardDisinfactClick": {
-    "message": "O klikañ war %BTN% e teu war-wel ar c'hlemmoù hag e vo tennet arc'hant diwar ho kont"
+    "message": "O klikañ war %BTN% e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont"
   },
   "onboardDisinfactTap": {
-    "message": "O stekiñ war %BTN% e teu war-wel ar c'hlemmoù hag e vo tennet arc'hant diwar ho kont"
+    "message": "O stekiñ war %BTN% e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont"
   },
   "onboardWillCharge": {
     "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Re izel eo ho koulzad. Marplij lakait arc'hant evit kenderc'hel."
+    "message": "Re izel eo ho soum. Marplij lakait arc'hant evit kenderc'hel."
   },
   "errAccountSuspended": {
-    "message": "Suspantet eo bet ho kont."
+    "message": "Harzet eo bet ho kont."
   },
   "errNotSignedIn": {
-    "message": "N'oc'h ket kevreet. Marplij kevreañ hag esae en-dro."
+    "message": "N'oc'h ket kevreet. Kevreit ha klaskit en-dro, mar plij."
   },
   "errInvalidRequest": {
     "message": "N'eo ket bet anavezet un darn eus ar goulenn-mañ. Marplij gwiriañ ma'z eo hizivaet an astenn."
   },
   "errServiceUnavailable": {
-    "message": "Ur fazi zo bet war hor tu. Marplij esae en-dro a-benn ur pennadig."
+    "message": "Ur fazi zo bet war hor tu. Marplij klaskit en-dro a-benn ur pennadig."
   },
   "errRegionNotSupported": {
-    "message": "N'eo ket dihegerz DisinfaX c'hoazh en ho rannvro abalamour da rekizadurioù reoliadel."
+    "message": "N'eo ket hegerz c'hoazh DisinfaX en ho rannvro abalamour da rekizadurioù reoliadel."
   },
   "errInvalidAmount": {
     "message": "N'eo ket talvoudek ar sammad-se. Marplij dibab ur sammad all."
   },
   "errNotFound": {
-    "message": "N'eo ket bet kavet an dra-se. Esae en-dro."
+    "message": "N'eo ket bet kavet an dra-se. Marplij klaskit en-dro."
   }
 }

@@ -1,4 +1,67 @@
 {
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Hədiyyə"
+  },
+  "customTopup": {
+    "message": "Fərdi"
+  },
+  "customAmountLabel": {
+    "message": "ABŞ dolları ilə fərdi balans artırma məbləği"
+  },
+  "increase": {
+    "message": "Artır"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Balansı Artır"
+  },
+  "processing": {
+    "message": "Emal edilir…"
+  },
+  "checkoutError": {
+    "message": "Ödəniş başladıla bilmədi. Zəhmət olmasa yenidən cəhd edin."
+  },
+  "termsOfService": {
+    "message": "Xidmət Şərtləri"
+  },
+  "privacyPolicy": {
+    "message": "Məxfilik Siyasəti"
+  },
+  "disclaimerAgree": {
+    "message": "Balansı artırmaqla siz %TOS% və %PRIVACY% ilə razılaşırsınız."
+  },
+  "disclaimerFx": {
+    "message": "USD-dən fərqli valyutada ödəniş etsəniz, valyuta dəyişdirmə haqları tətbiq oluna bilər."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Birləşmiş Ştatları daxilində yalnız Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaho, İllinoys, İndiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massaçusets, Missisipi, Missuri, Montana, Nyu-Hempşir, Nyu-Meksiko, Nyu-York, Şimali Karolina, Şimali Dakota, Oklahoma, Oreqon, Pensilvaniya, Cənubi Karolina, Cənubi Dakota, Tennessi, Texas, Yuta, Vaşinqton, Viskonsin və Vayominq sakinləri DisinfaX-dan istifadə edə və balanslarını artıra bilər; Vaşinqton, D.C., bütün ABŞ əraziləri və sadalanmayan hər hansı ştatlar istisnadır. Amerika Birləşmiş Ştatlarından kənarda Kanada, Avstraliya, Yeni Zelandiya, Sinqapur, Cənubi Afrika, Yaponiya, Tayvan, İndoneziya, Tailand, Filippin, Malayziya, Vyetnam və İsveçrədə mövcuddur."
+  },
+  "signOut": {
+    "message": "Çıxış"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% düyməsini klikləmək iddiaları göstərəcək və balansınızdan pul tutulacaq"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% düyməsinə toxunmaq iddiaları göstərəcək və balansınızdan pul tutulacaq"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -20,23 +83,23 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Yoxlama",
+    "message": "Faktyoxlama",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Zibilyığmadan təmizləmə|Dezinfeksiya|Təmizləmə|Saxta xəbərlərdən təmizləmə|Düzəltmə|Yuma|Axtarış|Araşdırma|Faktyoxlama|Beyin yuyulmasını aradan qaldırma|Həqiqəti üzə çıxarma|Doğrulama|Düşünmə|Aşkarlama|Kəşf etmə|Nəzərdən keçirmə|Kəşfiyyat aparma|Həqiqət axtarışı|Şəffaflaşdırma|Niqabı götürmə|İşıq salma|Təsnifləşdirmə|Məlumat toplama|Məlumatlandırma|Fırlanma|Yüklənmə|Qazma|Yalanları ifşa etmə|Aydınlatma|Süzgəcdən keçirmə|Çarpaz yoxlama|İfşa etmə",
+    "message": "Cəfəngiyatdan təmizləmə|Dezinfeksiya|Təmizləmə|Saxta xəbərlərdən təmizləmə|Düzəltmə|Yuma|Axtarış|Araşdırma|Faktyoxlama|Beyin yuyulmasını aradan qaldırma|Həqiqəti üzə çıxarma|Doğrulama|Düşünmə|Aşkarlama|Kəşf etmə|Nəzərdən keçirmə|Kəşfiyyat aparma|Həqiqət axtarışı|Şəffaflaşdırma|Maskanı Götürmə|İşıq salma|Təsnifləndirmə|Məlumat toplama|Məlumatlandırma|Fırlanma|Yüklənmə|Qazma|Yalanları ifşa etmə|Aydınlatma|Süzgəcdən keçirmə|Çarpaz yoxlama|İfşa etmə",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Çox Ehtimal",
+    "message": "Çox ehtimal ki",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Ehtimal",
+    "message": "Ehtimal ki",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Ehtimal ki",
+    "message": "Bəlkə",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -120,23 +183,35 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Bu iddianı yeniden araşdır",
+    "message": "Bu iddianı yenidən araşdır",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Yoxlama",
+    "message": "Faktyoxlama",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Faktyoxlamaları Tərcümə Et",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Tərcümə et",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Yoxlanıldı",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Geri qayıt",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Yoxla",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "kimi",
+    "message": "olaraq",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -157,80 +232,8 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "Yoxla",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "Balans"
-  },
-  "gifted": {
-    "message": "Hədiyyə"
-  },
-  "customTopup": {
-    "message": "Fərdi"
-  },
-  "customAmountLabel": {
-    "message": "ABŞ dolları ilə fərdi artırma məbləği"
-  },
-  "increase": {
-    "message": "Artır"
-  },
-  "decrease": {
-    "message": "Azalt"
-  },
-  "topUpBalance": {
-    "message": "Balansı Artır"
-  },
-  "processing": {
-    "message": "Emal edilir…"
-  },
-  "checkoutError": {
-    "message": "Ödəniş başladıla bilmədi. Zəhmət olmasa yenidən cəhd edin."
-  },
-  "termsOfService": {
-    "message": "Xidmət Şərtləri"
-  },
-  "privacyPolicy": {
-    "message": "Məxfilik Siyasəti"
-  },
-  "disclaimerAgree": {
-    "message": "Balansı artırmaqla siz %TOS% və %PRIVACY% ilə razılaşırsınız."
-  },
-  "disclaimerFx": {
-    "message": "USD-dən fərqli valyutada ödəniş etsəniz, valyuta dəyişdirmə haqları tətbiq oluna bilər."
-  },
-  "signOut": {
-    "message": "Çıxış"
-  },
-  "onboardDisinfactClick": {
-    "message": "%BTN% düyməsini klikləmək iddiaları göstərəcək və balansınızdan pul tutulacaq"
-  },
-  "onboardDisinfactTap": {
-    "message": "%BTN% düyməsinə toxunmaq iddiaları göstərəcək və balansınızdan pul tutulacaq"
-  },
-  "onboardWillCharge": {
-    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
-  },
-  "onboardFactcheck": {
-    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
-  },
-  "onboardTranslations": {
-    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
-  },
-  "onboardRefreshes": {
-    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulmasına səbəb olacaq"
-  },
   "topUp": {
-    "message": "Artır"
+    "message": "Balans Artır"
   },
   "showMore": {
     "message": "Daha çox göstər"
@@ -239,7 +242,7 @@
     "message": "Daha az göstər"
   },
   "landingTagline1": {
-    "message": "Həqiqəti Aç. Yalanları Tap."
+    "message": "Həqiqəti Üzə Çıxar. Yalanları Tap."
   },
   "landingTagline2": {
     "message": "Artıq Dezinformasiya Yoxdur. Yalnız Faktlar."
@@ -259,18 +262,15 @@
   "cleanupTagline": {
     "message": "X Lentinizi təmizləyin."
   },
-  "disclaimerJurisdiction": {
-    "message": "Amerika Birləşmiş Ştatları daxilində yalnız Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaho, İllinoys, İndiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massaçusets, Missisipi, Missuri, Montana, Nyu-Hempşir, Nyu-Meksiko, Nyu-York, Şimali Karolina, Şimali Dakota, Oklahoma, Oreqon, Pensilvaniya, Cənubi Karolina, Cənubi Dakota, Tennessi, Texas, Yuta, Vaşinqton, Viskonsin və Vayominq sakinləri DisinfaX-dan istifadə edə və balanslarını artıra bilər; Vaşinqton, D.C., bütün ABŞ əraziləri və sadalanmayan hər hansı ştatlar istisnadır. Amerika Birləşmiş Ştatlarından kənarda Kanada, Avstraliya, Yeni Zelandiya, Sinqapur, Cənubi Afrika, Yaponiya, Tayvan, İndoneziya, Tailand, Filippin, Malayziya, Vyetnam və İsveçrədə mövcuddur."
-  },
   "factCheckAllButton": {
-    "message": "Hamısını yoxla"
+    "message": "Hamısını Yoxla"
   },
   "aiDisclaimer": {
     "message": "DisinfaX səhv edə bilər. Məlumatı yenidən yoxlayın.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Balansınız çox aşağıdır. Davam etmək üçün balansı artırın."
+    "message": "Balansınız kifayət qədər deyil. Davam etmək üçün balansı artırın."
   },
   "errAccountSuspended": {
     "message": "Hesabınız dayandırılıb."
@@ -279,10 +279,10 @@
     "message": "Siz daxil olmamısınız. Zəhmət olmasa daxil olun və yenidən cəhd edin."
   },
   "errInvalidRequest": {
-    "message": "Bu sorğunun bir hissəsi tanınmadı. Uzantının yenilənmiş olduğuna əmin olun."
+    "message": "Bu sorğunun bir hissəsi tanınmadı. Zəhmət olmasa uzantının yenilənmiş olduğuna əmin olun."
   },
   "errServiceUnavailable": {
-    "message": "Bizim tərəfimizdə xəta baş verdi. Bir az sonra yenidən cəhd edin."
+    "message": "Bizim tərəfimizdə xəta baş verdi. Zəhmət olmasa bir az sonra yenidən cəhd edin."
   },
   "errRegionNotSupported": {
     "message": "Tənzimləyici tələblər səbəbindən DisinfaX hələ sizin regionda mövcud deyil."
@@ -291,6 +291,6 @@
     "message": "Həmin balans artırma məbləği düzgün deyil. Zəhmət olmasa başqa məbləğ seçin."
   },
   "errNotFound": {
-    "message": "Bu tapılmadı. Yenidən cəhd edin."
+    "message": "Bu tapılmadı. Zəhmət olmasa yenidən cəhd edin."
   }
 }

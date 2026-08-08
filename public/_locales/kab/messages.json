@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Ittwali-d tettwafren tenguri tinettant deg tweets s useqdec n tesleḍt AI.",
+    "message": "Yettwaf yerna d-ițbeggin tanguri deg tweets s tesleḍt n AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,15 +16,18 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Ur ittwețțin ara",
+    "message": "Ur yettwassen ara",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
     "message": "Asenqed",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Asenqed|Anadi|Asizdeg|Askan|Tasleḍt|Afham|Asefru|Asegzi|Anadi ɣef tidet|Askan n tidet|Asizdeg n tikerkas|Asenqed n telɣut|Asefru n wugur|Afham n tidet"
+  },
   "adjVeryLikely": {
-    "message": "Aḥric yezmer",
+    "message": "Yezmer aṭas",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
@@ -36,19 +39,19 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "Aṭas",
+    "message": "S waṭas",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Yella wawalen",
+    "message": "S wawal",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "Di lǧeṛ",
+    "message": "S waḥric",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Ur d aḍnet",
+    "message": "S ttḥiṛa",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -112,11 +115,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ales aẓray n meṛṛa iɣewwaṛen n tweet-agi",
+    "message": "Ales askan n tignisin n tweet-agi",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Ales anadi n wawal-agi",
+    "message": "Ales anadi ɣef tignist-agi",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -124,19 +127,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Suqel isenqaden",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Suqel",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ad yili",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ad yili $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -154,11 +157,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Yettwasenqed",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Uɣal ɣer deffir",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -169,7 +172,7 @@
     "message": "Amuḍin"
   },
   "gifted": {
-    "message": "D tikci"
+    "message": "Tikci"
   },
   "customTopup": {
     "message": "Udmawan"
@@ -208,22 +211,22 @@
     "message": "Ffeɣ"
   },
   "onboardDisinfactClick": {
-    "message": "Asiti ɣef %BTN% ad d-issken tignisin yerna ad iqecc lḥsab-ik"
+    "message": "Asiti ɣef %BTN% ad d-issken tignisin yerna ad iqecc amuḍin-ik"
   },
   "onboardDisinfactTap": {
-    "message": "Anadam ɣef %BTN% ad d-issken tignisin yerna ad iqecc lḥsab-ik"
+    "message": "Anadam ɣef %BTN% ad d-issken tignisin yerna ad iqecc amuḍin-ik"
   },
   "onboardWillCharge": {
-    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
   },
   "onboardFactcheck": {
-    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
   },
   "onboardTranslations": {
-    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
   },
   "onboardRefreshes": {
-    "message": "Asiti ɣef %BTN% ad iqecc lḥsab-ik"
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
   },
   "topUp": {
     "message": "Ɛemmer"
@@ -235,10 +238,10 @@
     "message": "Ssken-d drus"
   },
   "landingTagline1": {
-    "message": "Kken-d tidet. Af-d tikerkas."
+    "message": "Ssken-d tidet. Af-d tikerkas."
   },
   "landingTagline2": {
-    "message": "Ulac tanguri tuffirt. Ala tidyanin."
+    "message": "Ulac tanguri. Ala tidyanin."
   },
   "continueWithX": {
     "message": "Kemmel s X"
@@ -256,7 +259,7 @@
     "message": "Zdig asuddem-ik n X."
   },
   "disclaimerJurisdiction": {
-    "message": "Deg Iwunak Yedduklen, d imezdaɣ n Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina Ugafa, Dakota Ugafa, Oklahoma, Oregon, Pennsylvania, Karolina Unẓul, Dakota Unẓul, Tennessee, Texas, Utah, Washington, Wisconsin, akked Wyoming kan i izemren ad sqedcen DisinfaX yerna ad ɛemmren taɣda-nsen; Washington, D.C., akk tamnaḍin n Marikan, akked yal awank ur d-nettwabder ttwakksen. Beṛṛa n Iwunak Yedduklen, yella deg Kanada, Ustralya, Ziland Tamaynut, Singabur, Tafriqt n Wadda, Japun, Taywan, Indunizya, Tayland, Filipin, Malizya, Vyetnam, akked Swis."
+    "message": "Deg Iwunak Yedduklen, d imezdaɣ n Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina Ugafa, Dakota Ugafa, Oklahoma, Oregon, Pennsylvania, Karolina Unẓul, Dakota Unẓul, Tennessee, Texas, Utah, Washington, Wisconsin, akked Wyoming kan i izemren ad sqedcen DisinfaX yerna ad ɛemmren amuḍin-nsen; Washington, D.C., akk tamnaḍin n Marikan, akked yal awank ur d-nettwabder ttwakksen. Beṛṛa n Iwunak Yedduklen, yella deg Kanada, Ustralya, Ziland Tamaynut, Singabur, Tafriqt n Wadda, Japun, Taywan, Indunizya, Tayland, Filipin, Malizya, Vyetnam, akked Swis."
   },
   "factCheckAllButton": {
     "message": "Senqed kullec"
@@ -266,27 +269,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Aẓar-ik yedrus aṭas. Ttxil-k sekcem idrimen akken ad tkemmleḍ."
+    "message": "Amuḍin-ik yedrus aṭas. Ttxil-k ɛemmer-it akken ad tkemmleḍ."
   },
   "errAccountSuspended": {
-    "message": "Amiḍan-ik yeḥbes."
+    "message": "Amiḍan-ik yettwaḥbas."
   },
   "errNotSignedIn": {
-    "message": "Ur teqqneḍ ara. Ttxil-k qqen tɛawdeḍ aɛraḍ."
+    "message": "Ur teqqneḍ ara. Ttxil-k qqen sakin ɛreḍ tikkelt-nniḍen."
   },
   "errInvalidRequest": {
-    "message": "Yiwen n uḥric n uḏeggar-a ur yettwaf ara. Ttxil-k ssken ma d asseglem yellan d amaynut."
+    "message": "Kra deg ssuter-agi ur yettwassen ara. Ttxil-k senqed ma yella usnas-ik d amaynut."
   },
   "errServiceUnavailable": {
-    "message": "Yella tuccḍa deg tama-nneɣ. Ttxil-k ɛreḍ tikkelt-nniḍen ḥa kra n wakud."
+    "message": "Yella wugur deg tama-nneɣ. Ttxil-k ɛreḍ tikkelt-nniḍen ɣef kra n wakud."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX urɛad yebda ara di temnaḍt-ik ilmend n tuttriwin n usebḥer."
+    "message": "DisinfaX urɛad yelli ara di temnaḍt-ik, ilmend n tuttriwin n usebḥer."
   },
   "errInvalidAmount": {
-    "message": "Asqamu-a n usekcem drimen mačči d aṣeḥḥi. Ttxil-k fren asqamu nniḍen."
+    "message": "Azal-agi n uɛemmer mačči d aṣeḥḥi. Ttxil-k fren azal nniḍen."
   },
   "errNotFound": {
-    "message": "Ayen-nni ur d-ittwaf ara. Ɛreḍ tikkelt-nniḍen."
+    "message": "Ayen-nni ur d-ittwaf ara. Ttxil-k ɛreḍ tikkelt-nniḍen."
   }
 }

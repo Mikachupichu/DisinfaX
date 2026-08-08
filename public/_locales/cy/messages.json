@@ -1,6 +1,6 @@
 {
   "topUp": {
-    "message": "Ychwanegu credyd"
+    "message": "Ychwanegu"
   },
   "showMore": {
     "message": "Dangos mwy"
@@ -30,7 +30,7 @@
     "message": "Glanhewch eich ffrwd X."
   },
   "disclaimerJurisdiction": {
-    "message": "O fewn yr Unol Daleithiau, dim ond trigolion Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Efrog Newydd, Gogledd Carolina, Gogledd Dakota, Oklahoma, Oregon, Pennsylvania, De Carolina, De Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, a Wyoming sy'n cael defnyddio DisinfaX ac ychwanegu at eu balans; mae Washington, D.C., holl diriogaethau'r Unol Daleithiau, ac unrhyw daleithiau nad ydynt wedi'u rhestru wedi'u heithrio. Y tu allan i'r Unol Daleithiau, mae ar gael yng Nghanada, Awstralia, Seland Newydd, Singapore, De Affrica, Japan, Taiwan, Indonesia, Gwlad Thai, Ynysoedd y Philipinau, Malaysia, Fietnam, a'r Swistir."
+    "message": "O fewn yr Unol Daleithiau, dim ond preswylwyr Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Efrog Newydd, Gogledd Carolina, Gogledd Dakota, Oklahoma, Oregon, Pennsylvania, De Carolina, De Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, a Wyoming a gaiff ddefnyddio DisinfaX ac ychwanegu at eu balans; mae Washington, D.C., holl diriogaethau'r Unol Daleithiau, ac unrhyw daleithiau nad ydynt wedi'u rhestru wedi'u heithrio. Y tu allan i'r Unol Daleithiau, mae ar gael yng Nghanada, Awstralia, Seland Newydd, Singapore, De Affrica, Japan, Taiwan, Indonesia, Gwlad Thai, Ynysoedd y Philipinau, Malaysia, Fietnam, a'r Swistir."
   },
   "appName": {
     "message": "DisinfaX",
@@ -45,7 +45,7 @@
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Gau",
+    "message": "Anghywir",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -53,11 +53,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Gwirio",
+    "message": "Ffeithwirio",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Gwirio|Ymchwilio|Glanhau|Datgelu|Datrys|Meddwl|Goleuo|Cloddio|Nithio|Archwilio|Dadansoddi|Eglurhau|Cymharu|Datod|Dinoethi|Chwilota|Craffu|Profi|Ystyried|Pendroni|Casglu|Didoli|Datgloi|Turio|Holi",
+    "message": "Ffeithwirio|Ymchwilio|Glanhau|Datgelu|Datrys|Meddwl|Goleuo|Cloddio|Nithio|Archwilio|Dadansoddi|Egluro|Cymharu|Datod|Dinoethi|Chwilota|Craffu|Profi|Ystyried|Pendroni|Casglu|Didoli|Datgloi|Turio|Holi|Dadlennu|Gwireddu|Puro|Sgwrio|Sganio|Chwilio|Herio|Cwestiynu|Trafod|Dyfarnu|Dosbarthu|Dilysu|Cadarnhau|Cywiro|Unioni|Dad-ffugio|Dad-lygru|Chwynnu|Sifftio|Hidlo|Dadgodio|Dehongli|Rhidyllu|Bwrw Goleuni|Chwalu Chwedlau|Tafoli|Pwyso a Mesur|Synhwyro|Ymresymu|Rhesymegu|Athronyddu|Myfyrio|Synfyfyrio|Cnoi Cil|Coginio'r Ffeithiau|Distyllu|Cyfuno|Prosesu|Cynhyrchu Atebion|Ysgrifennu|Ymgynghori|Croesgyfeirio|Chwynnu Celwyddau|Datgymalu|Amlygu|Datguddio|Clirio'r Niwl|Pelydru X|Diberfeddu|Dryllio Chwedlau|Datgelu'r Gwir|Trywanu'r Twyll|Datgamwybodaethu|Dad-ffugnewyddu|Puro'r Gwir|Sniffio Celwyddau|Rhoi Trefn|Cloriannu|Bwrw Amheuaeth|Datgloi'r Dirgelwch",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -153,19 +153,19 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Ail-ymchwilio'r hawliad hwn",
+    "message": "Ail-ymchwilio'r honiad hwn",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Gwirio",
+    "message": "Ffeithwirio",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Cyfieithu'r Ffeithwiriadau",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Cyfieithu",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -173,7 +173,7 @@
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ i fod yn $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -191,11 +191,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Wedi'i Ffeithwirio",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Yn Ôl",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -209,10 +209,10 @@
     "message": "Rhoddwyd"
   },
   "customTopup": {
-    "message": "Personol"
+    "message": "Pwrpasol"
   },
   "customAmountLabel": {
-    "message": "Swm ychwanegu personol mewn doleri UDA"
+    "message": "Swm ychwanegu pwrpasol mewn doleri UDA"
   },
   "increase": {
     "message": "Cynyddu"
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Mae dy falans yn rhy isel. Ychwanega arian i barhau."
+    "message": "Mae eich balans yn rhy isel. Ychwanegwch arian i barhau."
   },
   "errAccountSuspended": {
-    "message": "Mae dy gyfrif wedi'i atal."
+    "message": "Mae eich cyfrif wedi'i atal."
   },
   "errNotSignedIn": {
-    "message": "Nid wyt wedi mewngofnodi. Mewngofnoda a cheisia eto."
+    "message": "Nid ydych wedi mewngofnodi. Mewngofnodwch a cheisiwch eto."
   },
   "errInvalidRequest": {
-    "message": "Ni chafodd rhan o'r cais hwn ei chydnabod. Sicrha fod yr estyniad wedi'i ddiweddaru."
+    "message": "Doedd rhan o'r cais hwn ddim yn adnabyddus. Sicrhewch fod yr estyniad wedi'i ddiweddaru."
   },
   "errServiceUnavailable": {
-    "message": "Digwyddodd gwall ar ein rhan ni. Ceisia eto mewn ychydig."
+    "message": "Digwyddodd gwall ar ein rhan ni. Ceisiwch eto mewn ychydig."
   },
   "errRegionNotSupported": {
-    "message": "Nid yw DisinfaX ar gael yn dy ranbarth eto oherwydd gofynion rheoleiddiol."
+    "message": "Nid yw DisinfaX ar gael yn eich rhanbarth eto oherwydd gofynion rheoleiddiol."
   },
   "errInvalidAmount": {
-    "message": "Nid yw'r swm ychwanegu hwnnw'n ddilys. Dewisa swm gwahanol."
+    "message": "Nid yw'r swm ychwanegu hwnnw'n ddilys. Dewiswch swm gwahanol."
   },
   "errNotFound": {
-    "message": "Ni ellid dod o hyd i hynny. Ceisia eto."
+    "message": "Ni ellid dod o hyd i hynny. Ceisiwch eto."
   }
 }

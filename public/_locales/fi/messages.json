@@ -1,4 +1,67 @@
 {
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Lahjana"
+  },
+  "customTopup": {
+    "message": "Mukautettu"
+  },
+  "customAmountLabel": {
+    "message": "Mukautettu latausmäärä Yhdysvaltain dollareina"
+  },
+  "increase": {
+    "message": "Lisää"
+  },
+  "decrease": {
+    "message": "Vähennä"
+  },
+  "topUpBalance": {
+    "message": "Lataa saldoa"
+  },
+  "processing": {
+    "message": "Käsitellään…"
+  },
+  "checkoutError": {
+    "message": "Kassalle siirtymistä ei voitu aloittaa. Yritä uudelleen."
+  },
+  "termsOfService": {
+    "message": "Käyttöehdot"
+  },
+  "privacyPolicy": {
+    "message": "Tietosuojakäytäntö"
+  },
+  "disclaimerAgree": {
+    "message": "Lataamalla saldoa hyväksyt %TOS% ja %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Valuutanvaihtomaksuja voidaan periä, jos maksat muussa valuutassa kuin USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Yhdysvalloissa vain seuraavien osavaltioiden asukkaat voivat käyttää DisinfaX-palvelua ja ladata saldoaan: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Pohjois-Carolina, Pohjois-Dakota, Oklahoma, Oregon, Pennsylvania, Etelä-Carolina, Etelä-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ja Wyoming; Washington, D.C., kaikki Yhdysvaltain alueet ja kaikki luettelemattomat osavaltiot on suljettu pois. Yhdysvaltain ulkopuolella se on saatavilla Kanadassa, Australiassa, Uudessa-Seelannissa, Singaporessa, Etelä-Afrikassa, Japanissa, Taiwanissa, Indonesiassa, Thaimaassa, Filippiineillä, Malesiassa, Vietnamissa ja Sveitsissä."
+  },
+  "signOut": {
+    "message": "Kirjaudu ulos"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%-painikkeen napsauttaminen näyttää väitteet ja veloittaa saldoasi"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%-painikkeen napauttaminen näyttää väitteet ja veloittaa saldoasi"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
   "appName": {
     "message": "DisinfaX"
   },
@@ -26,11 +89,11 @@
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Erittäin todennäköinen",
+    "message": "Erittäin todennäköisesti",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Todennäköinen",
+    "message": "Todennäköisesti",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -42,7 +105,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Kyseenalaisesti",
+    "message": "Perustellusti",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -114,7 +177,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Paljasta uudelleen kaikki tämän twiitin väitteet",
+    "message": "Paljasta tämän twiitin väitteet uudelleen",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -126,19 +189,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Käännä faktantarkistus",
+    "message": "Käännä faktantarkistukset",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
     "message": "Käännä",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Tarkistettu",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Takaisin",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Paljasta väitteet",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "olevan",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ olevan $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -155,80 +230,8 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "Faktantarkistus",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "Saldo"
-  },
-  "gifted": {
-    "message": "Lahjaksi"
-  },
-  "customTopup": {
-    "message": "Mukautettu"
-  },
-  "customAmountLabel": {
-    "message": "Mukautettu latausmäärä Yhdysvaltain dollareina"
-  },
-  "increase": {
-    "message": "Lisää"
-  },
-  "decrease": {
-    "message": "Vähennä"
-  },
-  "topUpBalance": {
-    "message": "Lataa saldoa"
-  },
-  "processing": {
-    "message": "Käsitellään…"
-  },
-  "checkoutError": {
-    "message": "Kassalle siirtymistä ei voitu aloittaa. Yritä uudelleen."
-  },
-  "termsOfService": {
-    "message": "Käyttöehdot"
-  },
-  "privacyPolicy": {
-    "message": "Tietosuojakäytäntö"
-  },
-  "disclaimerAgree": {
-    "message": "Lataamalla saldoa hyväksyt %TOS% ja %PRIVACY%."
-  },
-  "disclaimerFx": {
-    "message": "Valuutanvaihtomaksuja voidaan periä, jos maksat muussa valuutassa kuin USD."
-  },
-  "signOut": {
-    "message": "Kirjaudu ulos"
-  },
-  "onboardDisinfactClick": {
-    "message": "%BTN%-painikkeen napsauttaminen näyttää väitteet ja veloittaa saldoasi"
-  },
-  "onboardDisinfactTap": {
-    "message": "%BTN%-painikkeen napauttaminen näyttää väitteet ja veloittaa saldoasi"
-  },
-  "onboardWillCharge": {
-    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
-  },
-  "onboardFactcheck": {
-    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
-  },
-  "onboardTranslations": {
-    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
-  },
-  "onboardRefreshes": {
-    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
-  },
   "topUp": {
-    "message": "Lataa saldoa"
+    "message": "Lataa"
   },
   "showMore": {
     "message": "Näytä lisää"
@@ -256,9 +259,6 @@
   },
   "cleanupTagline": {
     "message": "Siisti X-syötteesi."
-  },
-  "disclaimerJurisdiction": {
-    "message": "Yhdysvalloissa vain seuraavien osavaltioiden asukkaat voivat käyttää DisinfaX-palvelua ja ladata saldoaan: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Pohjois-Carolina, Pohjois-Dakota, Oklahoma, Oregon, Pennsylvania, Etelä-Carolina, Etelä-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ja Wyoming; Washington, D.C., kaikki Yhdysvaltain alueet ja kaikki luettelemattomat osavaltiot on suljettu pois. Yhdysvaltain ulkopuolella se on saatavilla Kanadassa, Australiassa, Uudessa-Seelannissa, Singaporessa, Etelä-Afrikassa, Japanissa, Taiwanissa, Indonesiassa, Thaimaassa, Filippiineillä, Malesiassa, Vietnamissa ja Sveitsissä."
   },
   "factCheckAllButton": {
     "message": "Tarkista kaikki"

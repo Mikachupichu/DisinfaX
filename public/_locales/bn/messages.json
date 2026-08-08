@@ -1,36 +1,66 @@
 {
-  "topUp": {
-    "message": "টপ আপ করুন"
+  "balanceLabel": {
+    "message": "ব্যালেন্স"
   },
-  "showMore": {
-    "message": "আরও দেখুন"
+  "gifted": {
+    "message": "বোনাস"
   },
-  "showLess": {
-    "message": "কম দেখুন"
+  "customTopup": {
+    "message": "কাস্টম"
   },
-  "landingTagline1": {
-    "message": "সত্য প্রকাশ করুন। মিথ্যা খুঁজে বের করুন।"
+  "customAmountLabel": {
+    "message": "মার্কিন ডলারে কাস্টম টপ-আপের পরিমাণ"
   },
-  "landingTagline2": {
-    "message": "আর কোনো ভুল তথ্য নয়। শুধুই তথ্য।"
+  "increase": {
+    "message": "বাড়ান"
   },
-  "continueWithX": {
-    "message": "X দিয়ে চালিয়ে যান"
+  "decrease": {
+    "message": "কমান"
   },
-  "continueWithGoogle": {
-    "message": "Google দিয়ে চালিয়ে যান"
+  "topUpBalance": {
+    "message": "ব্যালেন্স টপ আপ করুন"
   },
-  "continueWithApple": {
-    "message": "Apple দিয়ে চালিয়ে যান"
+  "processing": {
+    "message": "প্রক্রিয়াকরণ চলছে…"
   },
-  "lastUsed": {
-    "message": "সর্বশেষ ব্যবহৃত"
+  "checkoutError": {
+    "message": "চেকআউট শুরু করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
-  "cleanupTagline": {
-    "message": "আপনার X ফিড পরিষ্কার করুন।"
+  "termsOfService": {
+    "message": "পরিষেবার শর্তাবলী"
+  },
+  "privacyPolicy": {
+    "message": "গোপনীয়তা নীতি"
+  },
+  "disclaimerAgree": {
+    "message": "টপ আপ করার মাধ্যমে, আপনি আমাদের %TOS% এবং %PRIVACY%-তে সম্মত হচ্ছেন।"
+  },
+  "disclaimerFx": {
+    "message": "আপনি USD ব্যতীত অন্য মুদ্রায় অর্থ প্রদান করলে বৈদেশিক মুদ্রা বিনিময় ফি প্রযোজ্য হতে পারে।"
   },
   "disclaimerJurisdiction": {
     "message": "মার্কিন যুক্তরাষ্ট্রের মধ্যে, শুধুমাত্র আলাবামা, অ্যারিজোনা, ক্যালিফোর্নিয়া, কলোরাডো, কানেটিকাট, ডেলাওয়্যার, ফ্লোরিডা, আইডাহো, ইলিনয়, ইন্ডিয়ানা, আইওয়া, ক্যানসাস, কেন্টাকি, লুইজিয়ানা, মেইন, ম্যাসাচুসেটস, মিসিসিপি, মিসৌরি, মন্টানা, নিউ হ্যাম্পশায়ার, নিউ মেক্সিকো, নিউ ইয়র্ক, নর্থ ক্যারোলিনা, নর্থ ডাকোটা, ওকলাহোমা, ওরেগন, পেনসিলভানিয়া, সাউথ ক্যারোলিনা, সাউথ ডাকোটা, টেনেসি, টেক্সাস, উটাহ, ওয়াশিংটন, উইসকনসিন এবং ওয়াইওমিং-এর বাসিন্দারা DisinfaX ব্যবহার করতে এবং তাদের ব্যালেন্স টপ আপ করতে পারবেন; ওয়াশিংটন, D.C., সমস্ত মার্কিন অঞ্চল এবং তালিকাভুক্ত নয় এমন যেকোনো রাজ্য বাদ দেওয়া হয়েছে। মার্কিন যুক্তরাষ্ট্রের বাইরে, এটি কানাডা, অস্ট্রেলিয়া, নিউজিল্যান্ড, সিঙ্গাপুর, দক্ষিণ আফ্রিকা, জাপান, তাইওয়ান, ইন্দোনেশিয়া, থাইল্যান্ড, ফিলিপাইন, মালয়েশিয়া, ভিয়েতনাম এবং সুইজারল্যান্ডে উপলব্ধ।"
+  },
+  "signOut": {
+    "message": "সাইন আউট"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%-এ ক্লিক করলে দাবিগুলি প্রকাশ করবে এবং আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%-এ ট্যাপ করলে দাবিগুলি প্রকাশ করবে এবং আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
   },
   "appName": {
     "message": "DisinfaX"
@@ -51,39 +81,39 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "যাচাই",
+    "message": "যাচাই চলছে",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "পরিষ্কার|অনুসন্ধান|পর্দাফাঁস|উদঘাটন|চিন্তাভাবনা|আলোকপাত|খোঁড়াখুঁড়ি|ছাঁকনি|মিলিয়ে দেখা|পরিশোধন|বিশ্লেষণ|সত্যানুসন্ধান|শুদ্ধিকরণ|খোঁজ|তদন্ত|যুক্তি-বিচার|আবিষ্কার|পরিচ্ছন্নকরণ|রহস্যভেদ|মন্থন|যাচাইকরণ|সত্য উন্মোচন|আলো ফেলা|গভীরে অনুসন্ধান|মিথ্যা ভাঙা|পরিশীলন|সংগ্রহ|যাচাই-বাছাই|নিরীক্ষণ|খুঁটিয়ে দেখা",
+    "message": "পরিষ্কার|অনুসন্ধান|পর্দাফাঁস|উদঘাটন|চিন্তাভাবনা|আলোকপাত|খোঁড়াখুঁড়ি|ছাঁকা|মিলিয়ে দেখা|পরিশোধন|বিশ্লেষণ|সত্যানুসন্ধান|শুদ্ধিকরণ|খোঁজ|তদন্ত|যুক্তি-বিচার|আবিষ্কার|পরিচ্ছন্নকরণ|রহস্যভেদ|মন্থন|যাচাইকরণ|সত্য উন্মোচন|আলো ফেলা|গভীরে অনুসন্ধান|মিথ্যা ভাঙা|পরিশীলন|সংগ্রহ|যাচাই-বাছাই|নিরীক্ষণ|খুঁটিয়ে দেখা",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "অত্যন্ত সম্ভাবনাপূর্ণ",
+    "message": "অতি সম্ভবত",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "সম্ভাবনাপূর্ণ",
+    "message": "সম্ভবত",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "সম্ভবত",
+    "message": "হয়তো",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "বেশিরভাগ",
+    "message": "মূলত",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "তর্কসাপেক্ষ",
+    "message": "তর্কসাপেক্ষে",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "আংশিক",
+    "message": "আংশিকভাবে",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "দ্ব্যর্থক",
+    "message": "দ্ব্যর্থকভাবে",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -151,27 +181,39 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "এই দাবিটি পুনঃগবেষণা করুন",
+    "message": "এই দাবিটি পুনরায় যাচাই করুন",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "যাচাই",
+    "message": "যাচাই চলছে",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "ফ্যাক্ট-চেক অনুবাদ করুন",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "অনুবাদ করুন",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "যাচাই হয়েছে",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "পিছনে যান",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "যাচাই করুন",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "হওয়া",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ হওয়া $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -188,77 +230,35 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  "topUp": {
+    "message": "টপ আপ করুন"
   },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  "showMore": {
+    "message": "আরও দেখুন"
   },
-  "disinfactButton": {
-    "message": "যাচাই করুন",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  "showLess": {
+    "message": "কম দেখুন"
   },
-  "balanceLabel": {
-    "message": "ব্যালেন্স"
+  "landingTagline1": {
+    "message": "সত্য প্রকাশ করুন। মিথ্যা খুঁজে বের করুন।"
   },
-  "gifted": {
-    "message": "উপহার"
+  "landingTagline2": {
+    "message": "আর কোনো ভুল তথ্য নয়। শুধুই তথ্য।"
   },
-  "customTopup": {
-    "message": "কাস্টম"
+  "continueWithX": {
+    "message": "X দিয়ে চালিয়ে যান"
   },
-  "customAmountLabel": {
-    "message": "মার্কিন ডলারে কাস্টম টপ-আপের পরিমাণ"
+  "continueWithGoogle": {
+    "message": "Google দিয়ে চালিয়ে যান"
   },
-  "increase": {
-    "message": "বাড়ান"
+  "continueWithApple": {
+    "message": "Apple দিয়ে চালিয়ে যান"
   },
-  "decrease": {
-    "message": "কমান"
+  "lastUsed": {
+    "message": "সর্বশেষ ব্যবহৃত"
   },
-  "topUpBalance": {
-    "message": "ব্যালেন্স টপ আপ করুন"
-  },
-  "processing": {
-    "message": "প্রক্রিয়াকরণ চলছে…"
-  },
-  "checkoutError": {
-    "message": "চেকআউট শুরু করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
-  },
-  "termsOfService": {
-    "message": "পরিষেবার শর্তাবলী"
-  },
-  "privacyPolicy": {
-    "message": "গোপনীয়তা নীতি"
-  },
-  "disclaimerAgree": {
-    "message": "টপ আপ করার মাধ্যমে, আপনি আমাদের %TOS% এবং %PRIVACY%-তে সম্মত হচ্ছেন।"
-  },
-  "disclaimerFx": {
-    "message": "আপনি USD ব্যতীত অন্য মুদ্রায় অর্থ প্রদান করলে বৈদেশিক মুদ্রা বিনিময় ফি প্রযোজ্য হতে পারে।"
-  },
-  "signOut": {
-    "message": "সাইন আউট"
-  },
-  "onboardDisinfactClick": {
-    "message": "%BTN%-এ ক্লিক করলে দাবিগুলি দেখাবে এবং আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
-  },
-  "onboardDisinfactTap": {
-    "message": "%BTN%-এ ট্যাপ করলে দাবিগুলি দেখাবে এবং আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
-  },
-  "onboardWillCharge": {
-    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
-  },
-  "onboardFactcheck": {
-    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
-  },
-  "onboardTranslations": {
-    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
-  },
-  "onboardRefreshes": {
-    "message": "%BTN%-এ ক্লিক করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
+  "cleanupTagline": {
+    "message": "আপনার X ফিড পরিষ্কার করুন।"
   },
   "factCheckAllButton": {
     "message": "সব যাচাই করুন"
@@ -268,7 +268,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "আপনার ব্যালেন্স অনেক কম। চালিয়ে যেতে অনুগ্রহ করে টপ আপ করুন।"
+    "message": "আপনার ব্যালেন্স খুব কম। চালিয়ে যেতে অনুগ্রহ করে টপ আপ করুন।"
   },
   "errAccountSuspended": {
     "message": "আপনার অ্যাকাউন্ট স্থগিত করা হয়েছে।"
@@ -277,10 +277,10 @@
     "message": "আপনি সাইন ইন করেননি। অনুগ্রহ করে সাইন ইন করুন এবং আবার চেষ্টা করুন।"
   },
   "errInvalidRequest": {
-    "message": "এই রিকোয়েস্টের কিছু অংশ চেনা যায়নি। এক্সটেনশনটি আপ টু ডেট আছে কিনা নিশ্চিত করুন।"
+    "message": "এই রিকোয়েস্টের কিছু অংশ চেনা যায়নি। অনুগ্রহ করে নিশ্চিত করুন এক্সটেনশনটি আপ টু ডেট আছে কিনা।"
   },
   "errServiceUnavailable": {
-    "message": "আমাদের পক্ষ থেকে একটি ত্রুটি ঘটেছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।"
+    "message": "আমাদের পক্ষ থেকে কিছু একটা ভুল হয়েছে। অনুগ্রহ করে কিছুক্ষণ পরে আবার চেষ্টা করুন।"
   },
   "errRegionNotSupported": {
     "message": "নিয়ন্ত্রক প্রয়োজনীয়তার কারণে DisinfaX এখনো আপনার অঞ্চলে উপলব্ধ নয়।"
@@ -289,6 +289,6 @@
     "message": "সেই টপ-আপ পরিমাণ সঠিক নয়। অনুগ্রহ করে অন্য একটি পরিমাণ নির্বাচন করুন।"
   },
   "errNotFound": {
-    "message": "সেটি খুঁজে পাওয়া যায়নি। আবার চেষ্টা করুন।"
+    "message": "সেটি খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
   }
 }

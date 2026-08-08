@@ -4,15 +4,15 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI تجزیہ استعمال کرکے ٹویٹس میں غلط معلومات کا پتہ لگاتا ہے اور نمایاں کرتا ہے۔",
+    "message": "AI تجزیے کی مدد سے ٹویٹس میں غلط معلومات کا پتہ لگاتا اور نمایاں کرتا ہے۔",
     "description": "The extension description."
   },
   "verdictTrue": {
-    "message": "سچ",
+    "message": "درست",
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "جھوٹ",
+    "message": "غلط",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -20,23 +20,23 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "جانچ",
+    "message": "تحقیق",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "جانچ|تحقیق|صفائی|پردہ فاش|انکشاف|غور و فکر|روشنی ڈالنا|کھدائی|چھان بین|موازنہ|تصدیق|جمع آوری|تفتیش|تجزیہ|وضاحت|سچائی کی تلاش|پاکیزگی|کھوج|نقاب کشائی|گہرائی میں جانا|تعین|حقیقت کی روشنی|چھلنی کرنا|تقابل|درجہ بندی",
+    "message": "کھدائی جاری|جھوٹ پکڑائی|راز کھولنا|سچائی کی تلاش|چھان بین|جاسوسی|پردہ فاش|کھوج لگانا|حقیقت کی روشنی|سر کھپائی|غور و فکر|گہرائی میں جانا|تفتیش|صفائی|دھول جھاڑنا|کھرا سچ نکالنا|سراغ رسانی|تصدیق|انکشاف|چھلنی کرنا|تانا بانا سلجھانا|نبض پکڑنا|تہہ تک پہنچنا|جوڑ جوڑ کھولنا|کھانا پکانا|باورچی خانے میں|مصالحہ لگانا|پکوان تیاری|سوچ بچار|خیال آرائی|دھیان لگانا|اندر کی تلاش|فلسفیانہ سوچ|استدلال|منطق لگانا|اندازہ لگانا|من ہی من سوچنا|زہر نکالنا|جراثیم کش|کوڑا صاف|کھری کھری|تعصب ہٹانا|پروپیگنڈا صاف|نقاب کشائی|بے نقاب کرنا|روشنی ڈالنا|دھند چھانٹنا|ایکسرے کرنا|دھندلاہٹ دور کرنا|دھند ہٹانا|تلاش جاری|کھوج بین|کھدائی|جڑ سے تلاش|دھواں نکالنا|جانچ پرکھ|آڈٹ کرنا|سوال جواب|جرح کرنا|حوالہ جوڑنا|تصدیق ملانا|توثیق کرنا|حقیقت پرکھنا|حقیقت بنانا|فیصلہ سازی|درجہ بندی|سچ نکھارنا|سچائی جانچنا|جھوٹ گھٹانا|جھوٹ ہٹانا|جھوٹ مٹانا|جھوٹ کاٹنا|جھوٹ توڑنا|جھوٹی خبر کا خاتمہ|ذہن کی صفائی|بکواس ہٹانا|بھانڈا پھوڑنا|افسانہ توڑنا|حاصل کرنا|جمع کرنا|اکٹھا کرنا|نچوڑ نکالنا|ترکیب سازی|کچلنا|فلٹر کرنا|چھاننا|الگ کرنا|پروسیسنگ|تخلیق کرنا|تحریر کرنا|لوڈ ہونا|چکر لگانا|گردش کرنا|گھماؤ|مہم جوئی|علم بڑھانا|روشن کرنا|حل کرنا|وضاحت کرنا|آگاہی دینا|اندازہ نکالنا",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "بہت ممکن",
+    "message": "تقریباً یقینی",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "ممکن",
+    "message": "غالباً",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "ممکنہ طور پر",
+    "message": "شاید",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "اس ٹویٹ میں موجود تمام دعووں کو دوبارہ ظاہر کریں",
+    "message": "اس ٹویٹ کے دعوے دوبارہ ظاہر کریں",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -124,23 +124,23 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "جانچ",
+    "message": "تحقیق",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "تصدیقات کا ترجمہ کریں",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ترجمہ کریں",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ہونے",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ہونے $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "تصدیق مکمل",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "واپس جائیں",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -176,7 +176,7 @@
     "message": "تحفہ"
   },
   "customTopup": {
-    "message": "حسب ضرورت"
+    "message": "اپنی مرضی"
   },
   "customAmountLabel": {
     "message": "امریکی ڈالر میں اپنی مرضی کی ٹاپ اپ رقم"
@@ -209,7 +209,7 @@
     "message": "اگر آپ USD کے علاوہ کسی کرنسی میں ادائیگی کرتے ہیں تو زرِ مبادلہ کی فیس لاگو ہو سکتی ہے۔"
   },
   "signOut": {
-    "message": "سائن آؤٹ"
+    "message": "سائن آؤٹ کریں"
   },
   "onboardDisinfactClick": {
     "message": "%BTN% پر کلک کرنے سے دعوے ظاہر ہوں گے اور آپ کے بیلنس سے رقم کٹے گی"
@@ -266,23 +266,23 @@
     "message": "سب کی تصدیق کریں"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX غلطی کر سکتا ہے۔ معلومات کو دوبارہ چیک کریں۔",
+    "message": "DisinfaX غلطی کر سکتا ہے۔ معلومات کی دوبارہ تصدیق کریں۔",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "آپ کا بیلنس بہت کم ہے۔ جاری رکھنے کے لیے ٹاپ اپ کریں۔"
+    "message": "آپ کا بیلنس بہت کم ہے۔ جاری رکھنے کے لیے براہ کرم ٹاپ اپ کریں۔"
   },
   "errAccountSuspended": {
     "message": "آپ کا اکاؤنٹ معطل کر دیا گیا ہے۔"
   },
   "errNotSignedIn": {
-    "message": "آپ سائن ان نہیں ہیں۔ سائن ان کریں اور دوبارہ کوشش کریں۔"
+    "message": "آپ سائن ان نہیں ہیں۔ براہ کرم سائن ان کریں اور دوبارہ کوشش کریں۔"
   },
   "errInvalidRequest": {
-    "message": "اس درخواست کا کچھ حصہ شناخت نہیں ہو سکا۔ یقینی بنائیں کہ ایکسٹینشن اپ ڈیٹ ہے۔"
+    "message": "اس درخواست کا کچھ حصہ شناخت نہیں ہو سکا۔ براہ کرم یقینی بنائیں کہ ایکسٹینشن تازہ ترین ہے۔"
   },
   "errServiceUnavailable": {
-    "message": "ہماری طرف سے ایک خرابی پیش آئی۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔"
+    "message": "ہماری طرف سے ایک خرابی پیش آئی۔ تھوڑی دیر بعد براہ کرم دوبارہ کوشش کریں۔"
   },
   "errRegionNotSupported": {
     "message": "‏DisinfaX ریگولیٹری تقاضوں کی وجہ سے ابھی آپ کے علاقے میں دستیاب نہیں ہے۔"
@@ -291,6 +291,6 @@
     "message": "وہ ٹاپ اپ رقم درست نہیں ہے۔ براہ کرم دوسری رقم منتخب کریں۔"
   },
   "errNotFound": {
-    "message": "یہ نہیں ملا۔ دوبارہ کوشش کریں۔"
+    "message": "یہ نہیں ملا۔ براہ کرم دوبارہ کوشش کریں۔"
   }
 }

@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Verifika|Riċerka|Tindif|Kxif|Skoperta|Ħsieb|Illuminazzjoni|Tħaffir|Iffiltrar|Analiżi|Riflessjoni|Konfutazzjoni|Investigazzjoni|Purifikazzjoni|Spjegazzjoni|Ġbir|Żvelar|Ċarifikazzjoni|Eżaminazzjoni|Skrutinju|Valutazzjoni|Verifika Doppja|Tfittxija tal-Verità|Tikxif tal-Miti|Distillazzjoni|Ġenerazzjoni",
+    "message": "Verifika|Riċerka|Tindif|Kxif|Skoperta|Ħsieb|Illuminazzjoni|Tħaffir|Iffiltrar|Analiżi|Riflessjoni|Konfutazzjoni|Investigazzjoni|Purifikazzjoni|Spjegazzjoni|Ġbir|Żvelar|Kjarifikazzjoni|Eżaminazzjoni|Skrutinju|Valutazzjoni|Verifika Doppja|Tfittxija tal-Verità|Tikxif tal-Miti|Distillazzjoni|Ġenerazzjoni",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -40,7 +40,7 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "L-aktar",
+    "message": "Fil-biċċa l-kbira",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
@@ -116,11 +116,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Uri mill-ġdid l-affermazzjonijiet kollha f'dan it-tweet",
+    "message": "Uri mill-ġdid l-allegazzjonijiet kollha f'dan it-tweet",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Irriċerka din id-dikjarazzjoni",
+    "message": "Irriċerka din l-allegazzjoni",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,11 +128,11 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Traduċi l-Verifiki tal-Fatti",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Traduċi",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Ivverifikat",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Lura",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -179,7 +179,7 @@
     "message": "Personalizzat"
   },
   "customAmountLabel": {
-    "message": "Ammont ta' żieda personalizzat f'dollari Amerikani"
+    "message": "Ammont ta' rikarga personalizzat f'dollari Amerikani"
   },
   "increase": {
     "message": "Żid"
@@ -188,7 +188,7 @@
     "message": "Naqqas"
   },
   "topUpBalance": {
-    "message": "Żid il-Bilanċ"
+    "message": "Irrikarga l-Bilanċ"
   },
   "processing": {
     "message": "Qed jipproċessa…"
@@ -203,7 +203,7 @@
     "message": "Politika tal-Privatezza"
   },
   "disclaimerAgree": {
-    "message": "Billi żżid il-bilanċ, taqbel mat-%TOS% u l-%PRIVACY% tagħna."
+    "message": "Billi tirrikarga, taqbel mat-%TOS% u l-%PRIVACY% tagħna."
   },
   "disclaimerFx": {
     "message": "Jistgħu japplikaw tariffi tal-kambju jekk tħallas b'munita differenti mid-USD."
@@ -230,7 +230,7 @@
     "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
   },
   "topUp": {
-    "message": "Iċċarġja"
+    "message": "Irrikarga"
   },
   "showMore": {
     "message": "Uri aktar"
@@ -242,7 +242,7 @@
     "message": "Skopri l-verità. Sib il-gideb."
   },
   "landingTagline2": {
-    "message": "Le aktar diżinformazzjoni. Fatti biss."
+    "message": "M'hemmx aktar diżinformazzjoni. Fatti biss."
   },
   "continueWithX": {
     "message": "Kompli b'X"
@@ -270,13 +270,13 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Il-bilanċ tiegħek huwa baxx wisq. Jekk jogħġbok agħmel top-up biex tkompli."
+    "message": "Il-bilanċ tiegħek huwa baxx wisq. Jekk jogħġbok irrikarga biex tkompli."
   },
   "errAccountSuspended": {
     "message": "Il-kont tiegħek ġie sospiż."
   },
   "errNotSignedIn": {
-    "message": "Ma inti daħħalx. Jekk jogħġbok idħol u erġa' pprova."
+    "message": "Ma intix illoggjat. Jekk jogħġbok idħol u erġa' pprova."
   },
   "errInvalidRequest": {
     "message": "Parti minn din it-talba ma ġietx rikonoxxuta. Iċċekkja li l-estensjoni hija aġġornata."
@@ -288,9 +288,9 @@
     "message": "DisinfaX għadu mhux disponibbli fir-reġjun tiegħek minħabba rekwiżiti regolatorji."
   },
   "errInvalidAmount": {
-    "message": "Dak l-ammont ta' top-up mhux validu. Jekk jogħġbok agħżel ammont ieħor."
+    "message": "Dak l-ammont ta' rikarga mhux validu. Jekk jogħġbok agħżel ammont ieħor."
   },
   "errNotFound": {
-    "message": "Dan ma setax jinstab. Erġa' pprova."
+    "message": "Dan ma setax jinstab. Jekk jogħġbok erġa' pprova."
   }
 }

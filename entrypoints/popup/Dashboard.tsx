@@ -25,6 +25,17 @@ function Usd({ value, locale, hangUs = true }: { value: number; locale: string; 
 const CHECKOUT_URL = 'https://create-checkout-session.michael-pouget01.workers.dev/';
 const SAFARI_VERIFY_URL = 'https://verify-apple-topup.michael-pouget01.workers.dev/';
 
+/** Apple sells top-ups as pre-registered in-app purchase products, one per whole-dollar
+ *  amount from $1 to $100 — there is no dynamic pricing as with Stripe. So the Safari
+ *  amount must be an integer inside this range or no product exists to buy, which is why
+ *  the custom field is clamped rather than merely floored. */
+const APPLE_MIN_TOPUP = 1;
+const APPLE_MAX_TOPUP = 100;
+const appleProductId = (amount: number) => `com.disinfax.topup.v6.${amount}`;
+
+/** Lower bound for the custom field: Apple's smallest product, or Stripe's $5 floor. */
+const CUSTOM_MIN = import.meta.env.SAFARI ? APPLE_MIN_TOPUP : 5;
+
 /** Preset top-up amounts (USD). "custom" is a free-entry integer ≥ 5. */
 const PRESETS = import.meta.env.SAFARI ? [3, 5, 10, 20] as const: [5, 10, 15, 30] as const;
 type SafariSelection = '3' | '5' | '10' | '20' | 'custom';
@@ -50,11 +61,15 @@ function storageSet(obj: Record<string, any>): void {
   try { browser.storage.local.set(obj).catch(() => { /* ignore */ }); } catch { /* ignore */ }
 }
 
-/** Effective integer amount from the custom field's raw text (min $5). */
+/** Effective integer amount from the custom field's raw text, clamped to the range the
+ *  active payment backend can actually charge. Every consumer of the amount goes through
+ *  here, so an out-of-range typed value can never reach checkout. */
 function customToAmount(raw: string): number {
   const n = Math.floor(Number(raw));
-  const min = import.meta.env.SAFARI ? 1 : 5;
-  return Number.isFinite(n) && n >= min ? n : min;
+  if (!Number.isFinite(n) || n < CUSTOM_MIN) return CUSTOM_MIN;
+  // Stripe prices the session dynamically and has no upper product bound; Apple does.
+  if (import.meta.env.SAFARI && n > APPLE_MAX_TOPUP) return APPLE_MAX_TOPUP;
+  return n;
 }
 
 /** Split a template containing %TOKEN% markers into React nodes, substituting each
@@ -150,8 +165,10 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   const selectedAmount = selection === 'custom' ? customToAmount(customInput) : Number(selection);
 
   const stepCustom = (delta: number) => {
-    const next = String(Math.max(import.meta.env.SAFARI ? 1 : 5, customToAmount(customInput) + delta));
-    commitCustom(next);
+    // customToAmount() re-clamps, so the ceiling is enforced here too; the explicit
+    // Math.max keeps the step from dropping below the floor before it gets there.
+    const next = customToAmount(String(Math.max(CUSTOM_MIN, customToAmount(customInput) + delta)));
+    commitCustom(String(next));
   };
 
   const startCheckout = async () => {
@@ -171,12 +188,24 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         // SAFARI / APPLE STOREKIT FLOW
         // -------------------------------------------------------------
         
+        // Final guard before spending. selectedAmount is already clamped by
+        // customToAmount(), so this only trips if a preset were ever mis-set — but an
+        // out-of-range value would resolve to a product id that does not exist, and the
+        // StoreKit sheet would fail with nothing useful to show the user.
+        if (!Number.isInteger(selectedAmount) || selectedAmount < APPLE_MIN_TOPUP || selectedAmount > APPLE_MAX_TOPUP) {
+          throw new Error(t('checkoutError'));
+        }
+
         // 1. Ask the Swift host app to display the StoreKit purchase sheet. Relayed through
         //    the background: Safari only answers sendNativeMessage from the background
         //    script, not from a popup. See background.ts.
+        //    `productId` is the pre-registered in-app purchase to present; `amount` is sent
+        //    alongside it for logging only — Apple's own signed price is what the worker
+        //    credits, never a client-supplied figure.
         const nativeRes: any = await browser.runtime.sendMessage({
           type: 'MF_NATIVE_PURCHASE',
           amount: selectedAmount,
+          productId: appleProductId(selectedAmount),
           userId,
         });
 
@@ -329,11 +358,17 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
                 className="flex-1 min-w-0 bg-transparent py-2.5 text-sm font-semibold text-white outline-none"
               />
               <div className="flex flex-col border-l border-emerald-500/40">
-                <button onClick={() => stepCustom(1)} aria-label={t('increase')} className="flex-1 px-2 text-zinc-300 hover:text-white hover:bg-emerald-900/40"><ChevronUp /></button>
+                <button
+                  onClick={() => stepCustom(1)}
+                  aria-label={t('increase')}
+                  // Only Apple has a ceiling — Stripe prices the session dynamically.
+                  disabled={import.meta.env.SAFARI && customToAmount(customInput) >= APPLE_MAX_TOPUP}
+                  className="flex-1 px-2 text-zinc-300 hover:text-white hover:bg-emerald-900/40 disabled:text-zinc-600 disabled:hover:bg-transparent disabled:hover:text-zinc-600 disabled:cursor-not-allowed"
+                ><ChevronUp /></button>
                 <button
                   onClick={() => stepCustom(-1)}
                   aria-label={t('decrease')}
-                  disabled={customToAmount(customInput) <= (import.meta.env.SAFARI ? 1 : 5)}
+                  disabled={customToAmount(customInput) <= CUSTOM_MIN}
                   className="flex-1 px-2 text-zinc-300 hover:text-white hover:bg-emerald-900/40 border-t border-emerald-500/40 disabled:text-zinc-600 disabled:hover:bg-transparent disabled:hover:text-zinc-600 disabled:cursor-not-allowed"
                 ><ChevronDown /></button>
               </div>
@@ -368,12 +403,14 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
               TOS: <a key="tos" href="https://disinfax.app/terms-of-use" target="_blank" rel="noreferrer" className="text-zinc-400 underline hover:text-zinc-200">{t('termsOfService')}</a>,
               PRIVACY: <a key="pp" href="https://disinfax.app/privacy-policy" target="_blank" rel="noreferrer" className="text-zinc-400 underline hover:text-zinc-200">{t('privacyPolicy')}</a>,
             })}
-            {disclaimerExpanded
+            {!import.meta.env.SAFARI && (
+              disclaimerExpanded
               ? <>{' '}{t('disclaimerFx')}{' '}{t('disclaimerJurisdiction')}</>
-              : (disclaimerRestPreview && <>{' '}{disclaimerRestPreview}</>)}
-            {!disclaimerExpanded && disclaimerNeedsTruncate ? '…' : null}
+              : (disclaimerRestPreview && <>{' '}{disclaimerRestPreview}</>)
+            )}
+            {!disclaimerExpanded && disclaimerNeedsTruncate && !import.meta.env.SAFARI ? '…' : null}
           </p>
-          {disclaimerNeedsTruncate && (
+          {disclaimerNeedsTruncate && !import.meta.env.SAFARI && (
             <button
               type="button"
               onClick={() => setDisclaimerExpanded(v => !v)}

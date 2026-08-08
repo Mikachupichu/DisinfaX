@@ -1,6 +1,6 @@
 {
   "topUp": {
-    "message": "Προσθήκη υπολοίπου"
+    "message": "Ανανέωση"
   },
   "showMore": {
     "message": "Εμφάνιση περισσότερων"
@@ -55,15 +55,15 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Έλεγχος|Έρευνα|Καθαρισμός|Αποκάλυψη|Διάψευση|Σκέψη|Διαφώτιση|Σκάψιμο|Κοσκίνισμα|Ξεσκέπασμα|Επαλήθευση|Ανάλυση|Διασταύρωση|Διερεύνηση|Αποσαφήνιση|Ανακάλυψη|Αναζήτηση|Επιβεβαίωση|Ξετρύπωμα|Απομυθοποίηση|Στοχασμός|Διαλογισμός|Συλλογή|Φιλτράρισμα|Ξεσκόνισμα",
+    "message": "Έλεγχος|Έρευνα|Καθαρισμός|Αποκάλυψη|Διάψευση|Σκέψη|Διαφώτιση|Σκάψιμο|Κοσκίνισμα|Ξεσκέπασμα|Επαλήθευση|Ανάλυση|Διασταύρωση|Διερεύνηση|Αποσαφήνιση|Ανακάλυψη|Αναζήτηση|Επιβεβαίωση|Ξετρύπωμα|Απομυθοποίηση|Στοχασμός|Διαλογισμός|Συλλογή|Φιλτράρισμα|Ξεσκόνισμα|Ξεμπούρδισμα|Ξεσκαρτάρισμα|Αλήθευση|Ξεψεύτισμα|Γεγονοτολόγηση|Ξεθόλωμα|Φωτισμός|Διαφανοποίηση|Αποκρυπτογράφηση|Ταξινόμηση|Κατηγοριοποίηση|Ετυμηγορία|Άντληση στοιχείων|Ενημέρωση|Στριφογύρισμα|Φόρτωση|Κύκλισμα|Περιστροφή|Επεξεργασία|Ξεθεαματοποίηση|Σκάλισμα|Αληθολόγηση|Αποψευδοποίηση|Ξεψευδοποίηση|Επικύρωση|Παραγωγή|Συγγραφή|Γνωσιολόγηση|Προβληματισμός|Περισυλλογή|Εξέταση|Ενδοσκόπηση|Περιπλάνηση|Μαγείρεμα|Σεφάρισμα|Διαίσθηση|Λογικοποίηση|Συλλογισμός|Φιλοσόφημα|Διασαφήνιση|Επίλυση|Φωταγώγηση|Συνεπαγωγή|Περιμάζεμα|Ξεσκατοποίηση|Κατάρριψη|Ξεμύθευση|Αποπροκατάληψη|Αποπροπαγανδισμός|Ευθύτητα|Απολύμανση|Αποτοξίνωση|Στύψιμο γεγονότων|Επιθεώρηση|Διαλογή|Αντεξέταση|Ανάκριση|Ξεμασκάρεμα|Ανατομή|Ξεδιάλυμα|Ξεκάπνισμα|Ξερίζωμα|Αποδόμηση|Διεξέταση|Τριγωνοποίηση|Διασταύρωση πηγών|Τεκμηρίωση|Απόσταξη|Σύνθεση|Ζύμωμα δεδομένων|Σκίσιμο της ομίχλης|Ακτινοσκόπηση|Έκθεση αλήθειας|Διαφωτισμός|Ξεχώρισμα ήρας από στάρι",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Πολύ πιθανό",
+    "message": "Πολύ πιθανόν",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Πιθανό",
+    "message": "Πιθανόν",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -147,7 +147,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Αποκάλυψη ξανά όλων των ισχυρισμών σε αυτό το tweet",
+    "message": "Εκ νέου εμφάνιση των ισχυρισμών αυτού του tweet",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -159,7 +159,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Μετάφραση ελέγχου",
+    "message": "Μετάφραση Ελέγχων",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -167,11 +167,11 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "να είναι",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ να είναι $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -189,11 +189,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Ελέγχθηκε",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Επιστροφή",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {

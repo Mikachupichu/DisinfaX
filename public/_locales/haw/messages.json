@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Unuhi i ka Hōʻoia",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Unuhi",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "he",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Ua Hōʻoiaʻia",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "E Hoʻi",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -279,7 +279,7 @@
     "message": "ʻAʻole ʻoe i kau inoa i ka pūnaewele. E ʻoluʻolu e kau inoa a hoʻāʻo hou."
   },
   "errInvalidRequest": {
-    "message": "ʻAʻole i ʻike ʻia kekahi ʻāpana o kēia noi. E ʻoluʻolu e hōʻoia ua hoʻonui ʻia ka hoʻolako."
+    "message": "ʻAʻole i ʻike ʻia kekahi ʻāpana o kēia noi. E ʻoluʻolu e hōʻoia ua hōʻano hou ʻia ka extension."
   },
   "errServiceUnavailable": {
     "message": "Ua loaʻa kekahi hewa ma kā mākou ʻaoʻao. E ʻoluʻolu e hoʻāʻo hou i kekahi manawa."

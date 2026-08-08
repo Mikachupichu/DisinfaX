@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detecta y resalta la desinformación en los tweets mediante análisis de IA.",
+    "message": "Detecta y resalta la desinformación en los tuits mediante análisis de IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Volver a revelar todas las afirmaciones de este tweet",
+    "message": "Volver a revelar todas las afirmaciones de este tuit",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -194,7 +194,7 @@
     "message": "Procesando…"
   },
   "checkoutError": {
-    "message": "No se pudo iniciar el pago. Inténtalo de nuevo."
+    "message": "No se ha podido iniciar el pago. Inténtalo de nuevo."
   },
   "termsOfService": {
     "message": "Términos del servicio"
@@ -279,18 +279,18 @@
     "message": "No has iniciado sesión. Inicia sesión y vuelve a intentarlo."
   },
   "errInvalidRequest": {
-    "message": "Algo en esta solicitud no se reconoció. Asegúrate de que la extensión esté actualizada."
+    "message": "Algo en esta solicitud no se ha reconocido. Asegúrate de que la extensión esté actualizada."
   },
   "errServiceUnavailable": {
-    "message": "Ocurrió un error de nuestro lado. Vuelve a intentarlo en un momento."
+    "message": "Se ha producido un error por nuestra parte. Vuelve a intentarlo en un momento."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX aún no está disponible en tu región debido a requisitos regulatorios."
   },
   "errInvalidAmount": {
-    "message": "Ese monto de recarga no es válido. Elige un monto diferente."
+    "message": "Ese importe de recarga no es válido. Elige un importe diferente."
   },
   "errNotFound": {
-    "message": "No se pudo encontrar eso. Vuelve a intentarlo."
+    "message": "No se ha podido encontrar eso. Vuelve a intentarlo."
   }
 }

@@ -12,11 +12,13 @@
  *  the host page, which is why it does nothing but parse and forward — the relay
  *  verifies every message's origin before trusting it.
  *
- *  Delivered into the MAIN world via injectScript() from relay.content.ts, rather than a
- *  declarative `world: 'main'` content script: that declarative form is Chromium/MV3-only
- *  (unsupported on Firefox's MV2 and on Safari), while injectScript() works identically
- *  across all three. On MV3 targets injectScript() still evaluates synchronously at the
- *  calling content script's run_at time, same as the declarative form did.
+ *  Declared with `world: 'MAIN'` rather than injected via injectScript(). That matters
+ *  here specifically: injectScript() appends a real <script src="…"> to the page, which
+ *  the PAGE'S Content-Security-Policy governs, and x.com's script-src blocks it outright
+ *  ("Refused to execute a script because its hash, its nonce, or 'unsafe-inline' does not
+ *  appear in the script-src directive"). A declarative MAIN-world content script is
+ *  injected by the browser itself and is exempt from page CSP. Chrome MV3 and Firefox
+ *  128+ (MV2 and MV3 alike) both support this.
  */
 import {
     parseHomeTimeline,
@@ -54,7 +56,11 @@ const TIMELINE_ENDPOINTS: { marker: string; label: string; parse: (responseText:
     { marker: 'CommunitiesFetchOneQuery',  label: 'Community Fetch One',     parse: parseCommunityFetchOne },
 ];
 
-export default defineUnlistedScript(() => {
+export default defineContentScript({
+  matches: ['*://x.com/*'],
+  world: 'MAIN',
+  runAt: 'document_start',
+  main() {
     console.log('DisinfaX: Active');
     const originalOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function(_method, url) {
@@ -96,4 +102,5 @@ export default defineUnlistedScript(() => {
         });
         return originalOpen.apply(this, arguments as any);
     };
+  },
 });

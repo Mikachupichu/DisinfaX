@@ -22,7 +22,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Перевірка|Дослідження|Очищення|Спростування|Викриття|Роздуми|Висвітлення|Копання|Просіювання|Звірка|Розкриття|Збирання|Допит|Аналіз|Розбір|Уточнення|Демаскування|Заглиблення|З'ясування|Освітлення фактів|Пошук істини|Фільтрація|Зіставлення|Розслідування|Перевірка фактів|Розплутування|Верифікація|Спостереження",
+    "message": "Перевіряємо|Досліджуємо|Наводимо лад|Спростовуємо|Викриваємо|Розмірковуємо|Проливаємо світло|Копаємо глибше|Просіюємо факти|Звіряємо дані|Виводимо на чисту воду|Збираємо докази|Допитуємо факти|Аналізуємо|Розбираємось|Уточнюємо деталі|Демаскуємо|Заглиблюємось|З'ясовуємо правду|Розвіюємо міфи|Шукаємо істину|Фільтруємо інфо|Зіставляємо факти|Розслідуємо|Перевіряємо факти|Розплутуємо клубок|Верифікуємо|Ловимо брехню",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -118,7 +118,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Передослідити це твердження",
+    "message": "Дослідити це твердження ще раз",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -126,7 +126,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Перекласти перевірку",
+    "message": "Перекласти перевірки",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Перевірено",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Повернутися",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -210,22 +210,22 @@
     "message": "Вийти"
   },
   "onboardDisinfactClick": {
-    "message": "Клік на %BTN% показує твердження та спише кошти з вашого балансу"
+    "message": "Натискання на %BTN% показує твердження і спише кошти з вашого балансу"
   },
   "onboardDisinfactTap": {
-    "message": "Дотик до %BTN% показує твердження та спише кошти з вашого балансу"
+    "message": "Дотик до %BTN% показує твердження і спише кошти з вашого балансу"
   },
   "onboardWillCharge": {
-    "message": "Клік на %BTN% спише кошти з вашого балансу"
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
   },
   "onboardFactcheck": {
-    "message": "Клік на %BTN% спише кошти з вашого балансу"
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
   },
   "onboardTranslations": {
-    "message": "Клік на %BTN% спише кошти з вашого балансу"
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
   },
   "onboardRefreshes": {
-    "message": "Клік на %BTN% спише кошти з вашого балансу"
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
   },
   "topUp": {
     "message": "Поповнити"
@@ -258,29 +258,29 @@
     "message": "Очистіть свою стрічку X."
   },
   "disclaimerJurisdiction": {
-    "message": "На території Сполучених Штатів користуватися DisinfaX і поповнювати баланс можуть лише жителі штатів Алабама, Аризона, Каліфорнія, Колорадо, Коннектикут, Делавер, Флорида, Айдахо, Іллінойс, Індіана, Айова, Канзас, Кентуккі, Луїзіана, Мен, Массачусетс, Міссісіпі, Міссурі, Монтана, Нью-Гемпшир, Нью-Мексико, Нью-Йорк, Північна Кароліна, Північна Дакота, Оклахома, Орегон, Пенсільванія, Південна Кароліна, Південна Дакота, Теннессі, Техас, Юта, Вашингтон, Вісконсин і Вайомінг; Вашингтон, D.C., усі території США та будь-які штати, не зазначені в списку, виключено. За межами Сполучених Штатів сервіс доступний у Канаді, Австралії, Новій Зеландії, Сінгапурі, Південно-Африканській Республіці, Японії, Тайвані, Індонезії, Таїланді, на Філіппінах, у Малайзії, В'єтнамі та Швейцарії."
+    "message": "На території Сполучених Штатів користуватися DisinfaX і поповнювати баланс можуть лише жителі штатів Алабама, Аризона, Каліфорнія, Колорадо, Коннектикут, Делавер, Флорида, Айдахо, Іллінойс, Індіана, Айова, Канзас, Кентуккі, Луїзіана, Мен, Массачусетс, Міссісіпі, Міссурі, Монтана, Нью-Гемпшир, Нью-Мексико, Нью-Йорк, Північна Кароліна, Північна Дакота, Оклахома, Орегон, Пенсільванія, Південна Кароліна, Південна Дакота, Теннессі, Техас, Юта, Вашингтон, Вісконсин і Вайомінг; округ Колумбія, усі території США та будь-які штати, не зазначені в списку, виключено. За межами Сполучених Штатів сервіс доступний у Канаді, Австралії, Новій Зеландії, Сінгапурі, Південно-Африканській Республіці, Японії, Тайвані, Індонезії, Таїланді, на Філіппінах, у Малайзії, В'єтнамі та Швейцарії."
   },
   "factCheckAllButton": {
     "message": "Перевірити все"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX може помилятися. Перевіряйте інформацію двічі.",
+    "message": "DisinfaX може помилятися. Завжди перевіряйте інформацію.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Ваш баланс занадто низький. Поповніть рахунок, щоб продовжити."
+    "message": "Ваш баланс занадто низький. Поповніть баланс, щоб продовжити."
   },
   "errAccountSuspended": {
-    "message": "Ваш облік призупинено."
+    "message": "Ваш обліковий запис призупинено."
   },
   "errNotSignedIn": {
-    "message": "Ви не увійшли в систему. Увійдіть і повторіть спробу."
+    "message": "Ви не увійшли в систему. Увійдіть і спробуйте ще раз."
   },
   "errInvalidRequest": {
     "message": "Частину цього запиту не розпізнано. Переконайтеся, що розширення оновлено."
   },
   "errServiceUnavailable": {
-    "message": "На нашому боці сталася помилка. Повторіть спробу трохи згодом."
+    "message": "На нашому боці сталася помилка. Спробуйте ще раз трохи згодом."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX ще не доступний у вашому регіоні через нормативні вимоги."
@@ -289,6 +289,6 @@
     "message": "Ця сума поповнення недійсна. Виберіть іншу суму."
   },
   "errNotFound": {
-    "message": "Не вдалося знайти це. Повторіть спробу."
+    "message": "Не вдалося це знайти. Спробуйте ще раз."
   }
 }

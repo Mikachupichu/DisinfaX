@@ -1,4 +1,67 @@
 {
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Skonken"
+  },
+  "customTopup": {
+    "message": "Oanpast"
+  },
+  "customAmountLabel": {
+    "message": "Oanpast opwurdearringsbedrach yn Amerikaanske dollars"
+  },
+  "increase": {
+    "message": "Ferheegje"
+  },
+  "decrease": {
+    "message": "Ferleegje"
+  },
+  "topUpBalance": {
+    "message": "Saldo opwurdearje"
+  },
+  "processing": {
+    "message": "Ferwurkje…"
+  },
+  "checkoutError": {
+    "message": "De ôfrekkening koe net begjinne. Besykje it nochris."
+  },
+  "termsOfService": {
+    "message": "Tsjinstbetingsten"
+  },
+  "privacyPolicy": {
+    "message": "Privacybelied"
+  },
+  "disclaimerAgree": {
+    "message": "Troch op te wurdearjen gean jo akkoart mei ús %TOS% en %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Wikselkoerskosten kinne jilde as jo yn in oare munt as USD betelje."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Binnen de Feriene Steaten kinne allinnich ynwenners fan Alabama, Arizona, Kalifornje, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Noard-Karolina, Noard-Dakota, Oklahoma, Oregon, Súd-Karolina, Súd-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin en Wyoming DisinfaX brûke en har saldo opwurdearje; Washington, D.C., alle Amerikaanske gebieten en alle net-neamde steaten binne útsletten. Bûten de Feriene Steaten is it beskikber yn Kanada, Austraalje, Nij-Seelân, Singapore, Súd-Afrika, Japan, Taiwan, Yndoneezje, Tailân, de Filipinen, Maleizje, Fjetnam en Switserlân."
+  },
+  "signOut": {
+    "message": "Ôfmelde"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikke op %BTN% lit bewearingen sjen en sil jo saldo ôfskriuwe"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tikje op %BTN% lit bewearingen sjen en sil jo saldo ôfskriuwe"
+  },
+  "onboardWillCharge": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "onboardFactcheck": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "onboardTranslations": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
+  "onboardRefreshes": {
+    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -12,11 +75,11 @@
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Net wier",
+    "message": "Ûnwier",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Net bekend",
+    "message": "Ûnbekend",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
@@ -24,7 +87,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Kontrôle|Undersyk|Skjinmeitsjen|Untdekking|Ûntkrêfting|Tinken|Ferljochting|Opgraving|Filterjen|Iepenbierring|Befêstiging|Analyze|Fergeliking|Untwarren|Opspoaring|Sykjen|Sammeljen|Ferifikaasje|Krúsferliking|Neitinken|Untbleatsjen|Opheldering|Bewiissykjen|Trochljochting|Untraffeljen",
+    "message": "Kontrôle|Ûndersyk|Skjinmeitsjen|Ûntdekking|Ûntkrêfting|Tinken|Ferljochting|Opgraving|Filterjen|Iepenbiering|Befêstiging|Analysearjen|Fergeliking|Ûntwarren|Opspoaring|Sykjen|Sammeljen|Ferifikaasje|Krúsferliking|Neitinken|Ûntbleatsjen|Opheldering|Bewiissykjen|Trochljochting|Ûntraffeljen",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -40,7 +103,7 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "Foar it grutste part",
+    "message": "Meast",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
@@ -48,11 +111,11 @@
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "Foar in part",
+    "message": "Diels",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Net dúdlik",
+    "message": "Dûbelsinnich",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -128,19 +191,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Kontrôles oersette",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Oersette",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Kontrolearre",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Werom",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Kontrôle",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "te wêze",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ te wêze $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -157,78 +232,6 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "Kontrôle",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "Saldo"
-  },
-  "gifted": {
-    "message": "Skonken"
-  },
-  "customTopup": {
-    "message": "Oanpast"
-  },
-  "customAmountLabel": {
-    "message": "Oanpast opwurdearringsbedrach yn Amerikaanske dollars"
-  },
-  "increase": {
-    "message": "Ferheegje"
-  },
-  "decrease": {
-    "message": "Ferleegje"
-  },
-  "topUpBalance": {
-    "message": "Saldo opwurdearje"
-  },
-  "processing": {
-    "message": "Ferwurkje…"
-  },
-  "checkoutError": {
-    "message": "Kin ôfrekkenjen net starte. Besykje it nochris."
-  },
-  "termsOfService": {
-    "message": "Tsjinstbetingsten"
-  },
-  "privacyPolicy": {
-    "message": "Privacybelied"
-  },
-  "disclaimerAgree": {
-    "message": "Troch op te wurdearjen gean jo akkoart mei ús %TOS% en %PRIVACY%."
-  },
-  "disclaimerFx": {
-    "message": "Wikselkoerskosten kinne jilde as jo yn in oare munt as USD betelje."
-  },
-  "signOut": {
-    "message": "Ofmelde"
-  },
-  "onboardDisinfactClick": {
-    "message": "Klikke op %BTN% lit beweringen sjen en sil jo saldo ôfskriuwe"
-  },
-  "onboardDisinfactTap": {
-    "message": "Tikje op %BTN% lit beweringen sjen en sil jo saldo ôfskriuwe"
-  },
-  "onboardWillCharge": {
-    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
-  },
-  "onboardFactcheck": {
-    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
-  },
-  "onboardTranslations": {
-    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
-  },
-  "onboardRefreshes": {
-    "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
-  },
   "topUp": {
     "message": "Opwurdearje"
   },
@@ -239,7 +242,7 @@
     "message": "Minder sjen litte"
   },
   "landingTagline1": {
-    "message": "Ûnthâld de wierheid. Fyn de leagens."
+    "message": "Lit de wierheid sjen. Fyn de leagens."
   },
   "landingTagline2": {
     "message": "Gjin misynformaasje mear. Allinnich feiten."
@@ -257,10 +260,7 @@
     "message": "Lêst brûkt"
   },
   "cleanupTagline": {
-    "message": "Rêd dyn X-feed op."
-  },
-  "disclaimerJurisdiction": {
-    "message": "Binnen de Feriene Steaten kinne allinnich ynwenners fan Alabama, Arizona, Kalifornje, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Noard-Karolina, Noard-Dakota, Oklahoma, Oregon, Súd-Karolina, Súd-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin en Wyoming DisinfaX brûke en har saldo opwurdearje; Washington, D.C., alle Amerikaanske gebieten en alle net-neamde steaten binne útsletten. Bûten de Feriene Steaten is it beskikber yn Kanada, Austraalje, Nij-Seelân, Singapore, Súd-Afrika, Japan, Taiwan, Yndoneezje, Tailân, de Filipinen, Maleizje, Fjetnam en Switserlân."
+    "message": "Romje jo X-feed op."
   },
   "factCheckAllButton": {
     "message": "Alles kontrolearje"
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Jo saldo is te leech. Fol asjebleart oan om troch te gean."
+    "message": "Jo saldo is te leech. Wurdearje asjebleart op om troch te gean."
   },
   "errAccountSuspended": {
     "message": "Jo akkount is opskorst."
   },
   "errNotSignedIn": {
-    "message": "Jo binne net oanmeld. Meld jo asjebleart oan en probearje it opnij."
+    "message": "Jo binne net oanmeld. Meld jo asjebleart oan en besykje it nochris."
   },
   "errInvalidRequest": {
     "message": "In diel fan dizze oanfraach waard net erkend. Kontrolearje asjebleart oft de taheaksel bywurke is."
   },
   "errServiceUnavailable": {
-    "message": "Der barde in flater oan ús kant. Probearje it asjebleart nochris oer in amerij."
+    "message": "Der barde in flater oan ús kant. Besykje it asjebleart nochris oer in amerij."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX is noch net beskikber yn jo regio troch regeljouwing."
   },
   "errInvalidAmount": {
-    "message": "Dat opladebedrach is net jildich. Kies asjebleart in oar bedrach."
+    "message": "Dat opwurdearringsbedrach is net jildich. Kies asjebleart in oar bedrach."
   },
   "errNotFound": {
-    "message": "Dat koe net fûn wurde. Probearje it opnij."
+    "message": "Dat koe net fûn wurde. Besykje it nochris."
   }
 }
