@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI analizini ulanyp, twitlerdäki ýalan informasiýany kesgitleýär we bellik edýär.",
+    "message": "AI seljermesini ulanyp, twitlerdäki dezinformasiýany ýüze çykarýar we belleýär.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -20,11 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Barlag",
+    "message": "Barlanýar",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Barlag|Arassalaýyş|Gözleg|Ýüze çykaryş|Pikirlenme|Yşyklandyryş|Gazyş|Elemek|Derňew|Seljerme|Ýalanlary paş etmek|Deňeşdirme|Bahalandyryş|Faktlary ýygnamak|Aç-açan etmek|Detektiw işi|Tassyklama|Çuňňur öwreniş|Hakykaty gözlemek|Maglumat süzgüçlemesi|Jemleme|Toplaýyş|Anyklaýyş|Çözgüt gözlegi|Hakykaty ýagtylandyrmak",
+    "message": "Ýalan gyryş|Dezinfaktlama|Arassalaýyş|Galp habar kowuş|Düzediş|Ýuwulyş|Gözleg|Öwreniş|Barlag|Aň arassalaýyş|Hakykatlaşdyryş|Tassyklaýyş|Pikirlenme|Ýüze çykaryş|Açyş|Barlaýyş|Syn ediş|Hakykaty gözlemek|Aç-açanlaşdyryş|Dogruçyllaşdyryş|Galplykdan halas ediş|Yşyklandyryş|Toparlaýyş|Höküm çykaryş|Getiriş|Habarlandyryş|Pyrlanyş|Ýüklenme|Aýlanyş|Öwrüliş|Faktlaşdyryş|Faktlandyryş|Faktlaýyş|Syrlary açyş|Gaýtadan işleýiş|Aldawdan halas ediş|Gazyş|Hakyky ediş|Ýalanlykdan saplaýyş|Ýalanyny aýyryş|Galp zatlary bejeriş|Galplykdan saplaýyş|Galpsyzlaýyş|Döredýiş|Ýazyş|Bilim toplaýyş|Oýlanyş|Oýa batyş|Çuň pikirleniş|Ölçerip-döküp görüş|Düşünjä çümüş|Kalp gözlegi|Syýahat ediş|Bişiriş|Aşpezlik ediş|Duýgy bilen çözüş|Logikalaşdyryş|Delillendiriş|Pelsepe ediş|Aýdyňlaşdyryş|Çözüş|Röwşenlendiriş|Netije çykaryş|Ýygnaýyş|Toplaýyş|Zibilden arassalaýyş|Ýalanlary paş etmek|Rowaýatlary ýykyş|Taraplylykdan halas ediş|Propagandadan arassalaýyş|Göni aýdyş|Sagdynlaşdyryş|Zäherden arassalaýyş|Faktlary sykyş|Barlag geçiriş|Elemek|Görkezmeleri barlaýyş|Soragladyş|Maskany aýyryş|Bölekleýin seljeriş|Çylşyrymlylygy açyş|Bölekläp seljeriş|Gizlini ýüze çykaryş|Köki bilen ýok ediş|Sökülip seljeriş|Gözden geçiriş|Çeşmeleri deňeşdiriş|Çeşmeleri barlaýyş|Tassyklap berkidiş|Hakykylygyny tassyklaýyş|Süzüp arassalaýyş|Jemleýiş|Sanlary owradyş|Bulaşyklygy aýyryş|Bulutlary dargadyş|Dumany deşiş|Süzgüçleýiş|Rentgen ediş|Paş ediş|Nury saçyş|Saýlap-seçiş",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -36,7 +36,7 @@
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Mümkin",
+    "message": "Belki",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Ikiwagtly",
+    "message": "Ikuçly",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -116,31 +116,31 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Bu twitdäki ähli beýanlary täzeden aç",
+    "message": "Bu twitiň beýanlaryny täzeden aç",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Bu däwany täzeden gözleg geçir",
+    "message": "Bu beýany täzeden gözle",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Barlag",
+    "message": "Barlanýar",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Barlaglary terjime et",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Terjime et",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "bolup",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ bolup $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Barlandy",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Yza gaýt",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Barlag",
+    "message": "Barla",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -203,31 +203,31 @@
     "message": "Gizlinlik syýasaty"
   },
   "disclaimerAgree": {
-    "message": "Balansy doldurmak bilen, siz biziň %TOS% we %PRIVACY% şertlerimize razy bolýarsyňyz."
+    "message": "Balansyňyzy doldurmak arkaly, siz biziň %TOS% we %PRIVACY% bilen ylalaşýarsyňyz."
   },
   "disclaimerFx": {
     "message": "Eger töleg USD-den başga walýutada amala aşyrylsa, walýuta çalyşmak tölegleri alynyp bilner."
   },
   "signOut": {
-    "message": "Çykyş"
+    "message": "Ulgamdan çyk"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN% üstüne basmak talaplary görkezer we hasabyňyzdan pul tutular"
+    "message": "%BTN% üstüne basmak beýanlary ýüze çykarar we balansyňyzdan pul tutar"
   },
   "onboardDisinfactTap": {
-    "message": "%BTN% ekranyna degmek talaplary görkezer we hasabyňyzdan pul tutular"
+    "message": "%BTN%-e degmek beýanlary ýüze çykarar we balansyňyzdan pul tutar"
   },
   "onboardWillCharge": {
-    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
   },
   "onboardFactcheck": {
-    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
   },
   "onboardTranslations": {
-    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
   },
   "onboardRefreshes": {
-    "message": "%BTN% üstüne basmak hasabyňyzdan pul tutar"
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
   },
   "topUp": {
     "message": "Dolduryň"
@@ -279,7 +279,7 @@
     "message": "Siz ulgama girmediňiz. Ulgama giriň we gaýtadan synanyşyň."
   },
   "errInvalidRequest": {
-    "message": "Bu sorag baradaky bir bölek tanalmady. Giňeltmäniň täzelenendigine göz ýetiriň."
+    "message": "Bu soragyň bir bölegi tanalmady. Giňeltmäniň iň soňky wersiýadygyna göz ýetiriň."
   },
   "errServiceUnavailable": {
     "message": "Biziň tarapymyzdan ýalňyşlyk ýüze çykdy. Az wagtdan soň gaýtadan synanyşyň."

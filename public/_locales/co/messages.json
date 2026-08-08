@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Verifica|Ricerca|Pulizia|Scuperta|Riflessione|Illuminazione|Scavu|Setaccio|Spiigazione|Cunfirmazione|Analisi|Investigazione|Chjarificazione|Cunfrontu|Disvelamentu|Sbugiardatura|Ripulitura|Ricuperazione|Ricustruzzione|Ragiunamentu|Ponderazione|Scandagliu|Verificazione|Scrutiniu|Cunsiderazione",
+    "message": "Verifica|Ricerca|Pulizia|Scuperta|Riflessione|Illuminazione|Scavu|Setaccio|Spiegazione|Cunfirmazione|Analisi|Investigazione|Chjarificazione|Cunfrontu|Disvelamentu|Sbugiardatura|Ripulitura|Ricuperazione|Ricustruzzione|Ragiunamentu|Ponderazione|Scandagliu|Verificazione|Scrutiniu|Cunsiderazione|Sfangatura|Disinfazione|Sfalsatura|Riparazione|Lavatura|Circamentu|Studiu|Sdisinfurmazione|Veritizazione|Pensamentu|Scuprimentu|Cuntrollu|Esplurazione|Cerca di a verità|Trasparenza|Sinceratura|Sfalsificazione|Chjarore|Classificazione|Verdettu|Ricuperu|Infurmazione|Girata|Caricamentu|Giru|Fattualizazione|Dimistificazione|Trattamentu|Sfarcicatura di titoli|Scavamentu|Disfalsificazione|Disfalsazione|Generazione|Scrittura|Cunniscenza|Cuntemplazione|Meditazione|Ricerca di l'anima|Avventura|Cucina|Ricetta|Intuizione|Logica|Filusufia|Elucidazione|Risoluzione|Sclariciu|Induzione|Cullezzione|Sbulizzatura|Smintata|Rottura di miti|Sbulizzatura di i preghjudizii|Disprupagandizazione|Franchezza|Sanitizazione|Disintossicazione|Spremitura di i fatti|Auditu|Passaggiu à u setaccio|Cuntrointerrugatoriu|Interrugazione|Smascheramentu|Dissezzione|Sbrigliata|Spartimentu|Fumata fora|Sradicazione|Descustruzzione|Cuntrollu di qualità|Triangulazione|Riferimentu incruciatu|Curruburazione|Validazione|Distillazione|Sintesi|Trituramentu|Sfucata|Sciarimentu di e nuvule|Sfundata di a nebbia|Filtragiu|Radiugrafia|Divulgazione|Vagliatura",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -36,7 +36,7 @@
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Pussibbilmente",
+    "message": "Pussibilmente",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -44,7 +44,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Discussione",
+    "message": "Discutibilmente",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Equivocu",
+    "message": "Equivucamente",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -116,11 +116,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Rivelà torna tutte l'affermazioni di stu tweet",
+    "message": "Rivelà torna tutte l'affirmazioni di stu tweet",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Ritruvà sta affirmazione",
+    "message": "Ricercà torna st'affirmazione",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Traduce e verifiche",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Traduce",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "d'esse",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ d'esse $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Verificatu",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Vultà",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -179,7 +179,7 @@
     "message": "Persunalizatu"
   },
   "customAmountLabel": {
-    "message": "Sguma di ricarica persunalizata in dòllari US"
+    "message": "Impurtu di ricarica persunalizatu, in dòllari americani"
   },
   "increase": {
     "message": "Aumentà"
@@ -200,10 +200,10 @@
     "message": "Termini di serviziu"
   },
   "privacyPolicy": {
-    "message": "Pulìtica di cunfidenzialità"
+    "message": "Pulitica di cunfidenzialità"
   },
   "disclaimerAgree": {
-    "message": "Ricaricendu, accettate i nostri %TOS% è %PRIVACY%."
+    "message": "Ricaricandu, accettate i nostri %TOS% è %PRIVACY%."
   },
   "disclaimerFx": {
     "message": "Pòdenu applicàssi tasse di cambiu di valuta s'è pagate in una valuta diversa da l'USD."
@@ -282,10 +282,10 @@
     "message": "Una parte di sta dumanda ùn hè stata ricunnisciuta. Assicuratevi chì l'estensione hè aghjurnata."
   },
   "errServiceUnavailable": {
-    "message": "Un errore hè accadutu dal nostru latu. Pruvate torna in un mumentu, per piacè."
+    "message": "Qualcosa hè andatu male da a nostra parte. Pruvate torna in un mumentu, per piacè."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX ùn hè ancu dispunibule in la vostra regione per motivi regulatori."
+    "message": "DisinfaX ùn hè ancu dispunibule in a vostra regione per motivi regulatori."
   },
   "errInvalidAmount": {
     "message": "Quellu importu di ricarica ùn hè micca valabile. Sceglite un altru importu, per piacè."

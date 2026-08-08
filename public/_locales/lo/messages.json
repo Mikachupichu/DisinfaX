@@ -23,6 +23,9 @@
     "message": "ການກວດສອບ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "ການກວດສອບ|ການຄົ້ນຄວ້າ|ການທຳຄວາມສະອາດ|ການເປີດເຜີຍ|ການຄົ້ນພົບ|ການຄິດ|ການສ່ອງແສງ|ການຂຸດຄົ້ນ|ການກັ່ນຕອງ|ການວິເຄາະ|ການສືບຄົ້ນ|ການອະທິບາຍ|ການເປີດໂປງ|ການປຽບທຽບ|ການພິສູດ|ການຢືນຢັນ|ການເກັບກຳຂໍ້ມູນ|ການເປີດເຜີຍຄວາມຈິງ|ການສືບສວນ|ການກວດກາ|ການທົບທວນ|ການໄຕ່ຕອງ|ການວິນິດໄສ|ການແກະຮອຍ|ການສືບຫາຄວາມຈິງ|ການກັ່ນຄວາມຈິງ"
+  },
   "adjVeryLikely": {
     "message": "ມີໂອກາດສູງຫຼາຍ",
     "description": "Adjective for high-confidence verdicts."
@@ -124,19 +127,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "ແປຜົນການກວດສອບ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ແປ",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ຄື",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ຄື $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -154,11 +157,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "ກວດສອບແລ້ວ",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "ກັບຄືນ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {

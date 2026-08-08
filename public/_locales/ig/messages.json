@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Na-achọpụta ma na-egosipụta ozi ụgha na tweets site na iji nyocha AI.",
+    "message": "Na-achọpụta ma na-egosipụta ozi ụgha na tweets site na nyocha AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -20,8 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Nlele",
+    "message": "Na-enyocha",
     "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Na-enyocha|Na-achọpụta|Na-eleba anya|Na-ahazi|Na-edozi|Na-akọwapụta|Na-atụle|Na-echepụta|Na-ekpughe eziokwu|Na-asachapụta ụgha|Na-achịkọta ozi|Na-egbochi ụgha|Na-atụgharị uche|Na-achọpụta akaebe|Na-eme nchọpụta|Na-eme ntule|Na-achọpụta eziokwu|Na-eweta ihe ọma|Na-eleba anya nke ọma|Na-asachapụta|Na-akwado eziokwu|Na-enyocha ọzọ|Na-achọ eziokwu|Na-edozi ozi|Na-akọwa ihe|Na-eme nyocha ọzọ|Na-elele akụkọ|Na-enyocha isi ihe"
   },
   "adjVeryLikely": {
     "message": "O yikarịrị",
@@ -120,7 +123,7 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Nlele",
+    "message": "Na-enyocha",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
@@ -272,10 +275,10 @@
     "message": "Akaụntụ gị ka akwụsịtụrụ."
   },
   "errNotSignedIn": {
-    "message": "I banyeghị. Biko banye ma nwaa ọzọ."
+    "message": "Ị banyeghị. Biko banye ma nwaa ọzọ."
   },
   "errInvalidRequest": {
-    "message": "Otu akụkụ nke arịrịọ a a nabataghị. Biko gbaa mbọ hụ na ngbakwunye ahụ dị ọhụrụ."
+    "message": "E ghọtaghị akụkụ ụfọdụ nke arịrịọ a. Biko gbaa mbọ hụ na ngbakwunye ahụ dị ọhụrụ."
   },
   "errServiceUnavailable": {
     "message": "Njehie mere n'akụkụ anyị. Biko nwaa ọzọ n'oge na-adịghị anya."

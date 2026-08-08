@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Finnur og auðkennir rangfærslur í tístum með gervigreindargreiningu.",
+    "message": "Greinir og auðkennir rangfærslur í tístum með gervigreindargreiningu.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -20,15 +20,18 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Staðfesta",
+    "message": "Sannprófar",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Sannprófar|Rannsakar|Skoðar|Kannar|Greinir|Hreinsar|Afhjúpar|Grefur|Flokkar|Staðfestir|Krýfur|Sigtar|Ígrundar|Hugsar|Rýnir|Vegur og metur|Leitar|Uppgötvar|Skýrir|Kembir|Krossprófar|Vottar|Eimir|Bræðir saman|Sannreynir|Athugar|Metur|Yfirfer|Bendir á lygar|Lýsir upp"
+  },
   "adjVeryLikely": {
-    "message": "Mjög líklegt",
+    "message": "Mjög líklega",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Líklegt",
+    "message": "Líklega",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -40,7 +43,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Deilumál",
+    "message": "Umdeilanlega",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -120,15 +123,15 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Staðfesta",
+    "message": "Sannprófar",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Þýða sannprófanir",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Þýða",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -136,7 +139,7 @@
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ að vera $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -154,11 +157,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Sannprófað",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Til baka",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -169,7 +172,7 @@
     "message": "Inneign"
   },
   "gifted": {
-    "message": "Gefið"
+    "message": "Gjöf"
   },
   "customTopup": {
     "message": "Sérsniðið"
@@ -178,13 +181,13 @@
     "message": "Sérsniðin inneignarupphæð í Bandaríkjadölum"
   },
   "increase": {
-    "message": "Auka"
+    "message": "Hækka"
   },
   "decrease": {
-    "message": "Minnka"
+    "message": "Lækka"
   },
   "topUpBalance": {
-    "message": "Bæta við inneign"
+    "message": "Fylla á inneign"
   },
   "processing": {
     "message": "Vinnur…"
@@ -199,7 +202,7 @@
     "message": "Persónuverndarstefna"
   },
   "disclaimerAgree": {
-    "message": "Með því að bæta við inneign samþykkir þú %TOS% og %PRIVACY%."
+    "message": "Með því að fylla á inneign þína samþykkir þú %TOS% og %PRIVACY%."
   },
   "disclaimerFx": {
     "message": "Gjaldeyrisþóknun kann að leggjast á ef þú greiðir í öðrum gjaldmiðli en USD."
@@ -259,14 +262,14 @@
     "message": "Innan Bandaríkjanna geta aðeins íbúar í Alabama, Arizona, Kaliforníu, Colorado, Connecticut, Delaware, Flórída, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nýju-Mexíkó, New York, Norður-Karólínu, Norður-Dakóta, Oklahoma, Oregon, Pennsylvaníu, Suður-Karólínu, Suður-Dakóta, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming notað DisinfaX og fyllt á inneign sína; Washington, D.C., öll bandarísk yfirráðasvæði og öll ríki sem ekki eru talin upp eru undanskilin. Utan Bandaríkjanna er það fáanlegt í Kanada, Ástralíu, Nýja-Sjálandi, Singapúr, Suður-Afríku, Japan, Taívan, Indónesíu, Taílandi, Filippseyjum, Malasíu, Víetnam og Sviss."
   },
   "factCheckAllButton": {
-    "message": "Staðfesta allt"
+    "message": "Sannprófa allt"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX getur gert mistök. Tvítékaðu upplýsingarnar.",
+    "message": "DisinfaX getur gert mistök. Yfirfarðu upplýsingarnar.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Innistæðan þín er of lítil. Vinsamlegast greiddu inn til að halda áfram."
+    "message": "Inneignin þín er of lítil. Vinsamlegast fylltu á til að halda áfram."
   },
   "errAccountSuspended": {
     "message": "Reikningnum þínum hefur verið lokað tímabundið."

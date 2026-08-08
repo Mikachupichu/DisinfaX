@@ -26,11 +26,11 @@
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Muito provável",
+    "message": "Muito provavelmente",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Provável",
+    "message": "Provavelmente",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -38,7 +38,7 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "Mayormente",
+    "message": "Maioritariamente",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
@@ -50,7 +50,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Ambiguo",
+    "message": "Ambiguamente",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -126,7 +126,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traduzir verificação",
+    "message": "Traduzir verificações",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Verificado",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Voltar",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -171,7 +171,7 @@
     "message": "Saldo"
   },
   "gifted": {
-    "message": "de bônus"
+    "message": "de bónus"
   },
   "customTopup": {
     "message": "Personalizado"
@@ -186,7 +186,7 @@
     "message": "Diminuir"
   },
   "topUpBalance": {
-    "message": "Recarregar saldo"
+    "message": "Carregar saldo"
   },
   "processing": {
     "message": "Processando…"
@@ -201,7 +201,7 @@
     "message": "Política de Privacidade"
   },
   "disclaimerAgree": {
-    "message": "Ao recarregar, você concorda com nossos %TOS% e nossa %PRIVACY%."
+    "message": "Ao carregar saldo, aceita os nossos %TOS% e a nossa %PRIVACY%."
   },
   "disclaimerFx": {
     "message": "Taxas de câmbio podem ser aplicadas se você pagar em uma moeda diferente do USD."
@@ -210,22 +210,22 @@
     "message": "Sair"
   },
   "onboardDisinfactClick": {
-    "message": "Clicar em %BTN% revela alegações e cobrará do seu saldo"
+    "message": "Clicar em %BTN% revela as alegações e cobra o seu saldo"
   },
   "onboardDisinfactTap": {
-    "message": "Tocar em %BTN% revela alegações e cobrará do seu saldo"
+    "message": "Tocar em %BTN% revela as alegações e cobra o seu saldo"
   },
   "onboardWillCharge": {
-    "message": "Clicar em %BTN% cobrará do seu saldo"
+    "message": "Clicar em %BTN% cobra o seu saldo"
   },
   "onboardFactcheck": {
-    "message": "Clicar em %BTN% cobrará do seu saldo"
+    "message": "Clicar em %BTN% cobra o seu saldo"
   },
   "onboardTranslations": {
-    "message": "Clicar em %BTN% cobrará do seu saldo"
+    "message": "Clicar em %BTN% cobra o seu saldo"
   },
   "onboardRefreshes": {
-    "message": "Clicar em %BTN% cobrará do seu saldo"
+    "message": "Clicar em %BTN% cobra o seu saldo"
   },
   "topUp": {
     "message": "Carregar saldo"

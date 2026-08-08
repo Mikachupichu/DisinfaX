@@ -152,10 +152,23 @@ export default function App() {
           return;
         }
 
-        // 4. Option B: Callback URL / Code Exchange (PKCE verifier is present in storage!)
+        // 4. Option B: parse the callback URL the host caught. Which half of it carries
+        //    the credential depends on the client's flowType: PKCE puts `?code=` in the
+        //    query, the implicit grant puts `#access_token=&refresh_token=` in the
+        //    fragment. utils/supabase.ts sets no flowType, so the default applies —
+        //    check both, exactly as the Chromium branch below does.
         const callbackUrl = nativeRes.callbackUrl || nativeRes.url;
-        const code = nativeRes.code || (callbackUrl ? new URL(callbackUrl).searchParams.get('code') : null);
+        const parsedCallback = callbackUrl ? new URL(callbackUrl) : null;
+        const hashParams = parsedCallback ? new URLSearchParams(parsedCallback.hash.replace(/^#/, '')) : null;
 
+        // A provider-side rejection lands in either half too; surface its own message
+        // rather than the generic failure below.
+        const errorDescription = parsedCallback?.searchParams.get('error_description')
+          ?? hashParams?.get('error_description');
+        if (errorDescription) throw new Error(`Provider Error: ${errorDescription}`);
+
+        // Pathway A: PKCE authorization code.
+        const code = nativeRes.code || parsedCallback?.searchParams.get('code') || null;
         if (code) {
           const { data: sessionData, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
           if (sessionError) throw sessionError;
@@ -165,7 +178,28 @@ export default function App() {
           return;
         }
 
-        throw new Error('Authentication succeeded, but no usable tokens or codes were returned.');
+        // Pathway B: implicit grant — tokens ride in the fragment.
+        const hashAccessToken = hashParams?.get('access_token');
+        const hashRefreshToken = hashParams?.get('refresh_token');
+        if (hashAccessToken && hashRefreshToken) {
+          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+            access_token: hashAccessToken,
+            refresh_token: hashRefreshToken,
+          });
+          if (sessionError) throw sessionError;
+
+          rememberProvider(provider);
+          setUser(sessionData.user);
+          return;
+        }
+
+        // TEMP DIAGNOSTIC: parameter NAMES only, never values — a token must not be
+        // rendered on screen. Remove once the native contract is confirmed.
+        const seen = [
+          ...Array.from(parsedCallback?.searchParams.keys() ?? []).map(k => `?${k}`),
+          ...Array.from(hashParams?.keys() ?? []).map(k => `#${k}`),
+        ].join(', ') || '(no query or fragment parameters)';
+        throw new Error(`Authentication succeeded, but no usable tokens or codes were returned. Callback carried: ${seen}`);
       } else {
         const extensionRedirectUrl = browser.identity.getRedirectURL();
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -315,7 +349,7 @@ export default function App() {
       {/* Footer layout compressed cleanly near bottom edge */}
       <div className="text-center space-y-0.5 mt-2 select-none">
         <div className="text-[10px] text-zinc-600">DisinfaX v1.0.0</div>
-        <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>
+        {user && <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>}
         {!user && <div className="text-[10px] text-zinc-700">{t('cleanupTagline')}</div>}
       </div>
     </div>

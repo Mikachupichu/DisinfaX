@@ -20,15 +20,18 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Pamriksan",
+    "message": "Mriksa…",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "Mriksa|Nliti|Nggoleki|Ngresiki|Mbukak|Nggali|Mikir|Nimbang|Mbedhah|Nglumpukake|Nyaring|Ndandani|Mbuktekake|Nemtokake|Ngonfirmasi|Nyoroti|Nerangake|Ngungkap|Mriksa Maneh|Nyinaoni|Nyemak|Ngerteni|Ngudi Kasunyatan|Mbabar|Ngresiki Ujar Palsu|Mriksa Bukti|Nggoleki Bukti|Ndeteksi|Nganalisis"
+  },
   "adjVeryLikely": {
-    "message": "Bisa Banget",
+    "message": "Meh Mesthi",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Bisa",
+    "message": "Mesthine",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -40,11 +43,11 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Bisa Dibantah",
+    "message": "Bisa Diarani",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "Sebagean",
+    "message": "Sapérangan",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
@@ -120,23 +123,23 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Pamriksan",
+    "message": "Mriksa…",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Terjemahake Priksa Fakta",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Terjemahake",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "dadi",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ dadi $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -154,11 +157,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Wis Dipriksa",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Bali",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -169,10 +172,10 @@
     "message": "Saldo"
   },
   "gifted": {
-    "message": "Hadiah"
+    "message": "Bonus"
   },
   "customTopup": {
-    "message": "Ngatur dhewe"
+    "message": "Khusus"
   },
   "customAmountLabel": {
     "message": "Jumlah isi ulang khusus ing dolar AS"
@@ -190,7 +193,7 @@
     "message": "Ngolah…"
   },
   "checkoutError": {
-    "message": "Ora bisa miwiti pambayaran. Coba maneh."
+    "message": "Ora bisa miwiti pambayaran. Mangga coba maneh."
   },
   "termsOfService": {
     "message": "Katentuan Layanan"
@@ -208,22 +211,22 @@
     "message": "Metu"
   },
   "onboardDisinfactClick": {
-    "message": "Nyeklik %BTN% bakal nampilake klaim lan bakal ngisi biaya saka saldomu"
+    "message": "Nyeklik %BTN% bakal nampilake klaim lan ngurangi saldomu"
   },
   "onboardDisinfactTap": {
-    "message": "Nyentuh %BTN% bakal nampilake klaim lan bakal ngisi biaya saka saldomu"
+    "message": "Nyentuh %BTN% bakal nampilake klaim lan ngurangi saldomu"
   },
   "onboardWillCharge": {
-    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+    "message": "Nyeklik %BTN% bakal ngurangi saldomu"
   },
   "onboardFactcheck": {
-    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+    "message": "Nyeklik %BTN% bakal ngurangi saldomu"
   },
   "onboardTranslations": {
-    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+    "message": "Nyeklik %BTN% bakal ngurangi saldomu"
   },
   "onboardRefreshes": {
-    "message": "Nyeklik %BTN% bakal ngisi biaya saka saldomu"
+    "message": "Nyeklik %BTN% bakal ngurangi saldomu"
   },
   "topUp": {
     "message": "Isi Ulang"
@@ -235,7 +238,7 @@
     "message": "Tampilake luwih sithik"
   },
   "landingTagline1": {
-    "message": "Ungkapna Bebener. Temokna Ngapusi."
+    "message": "Ungkapna Bebener. Temokna Goroh."
   },
   "landingTagline2": {
     "message": "Ora ana Disinformasi maneh. Mung Fakta."
@@ -256,7 +259,7 @@
     "message": "Resiki Feed X sampeyan."
   },
   "disclaimerJurisdiction": {
-    "message": "Ing sajrone Amerika Serikat, mung warga negara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Lor, Dakota Lor, Oklahoma, Oregon, Pennsylvania, Carolina Kidul, Dakota Kidul, Tennessee, Texas, Utah, Washington, Wisconsin, lan Wyoming sing bisa nganggo DisinfaX lan ngisi ulang saldone; Washington, D.C., kabeh wilayah A.S., lan negara bagian apa wae sing ora kadhaptar ora kalebu. Ing njaba Amerika Serikat, kasedhiya ing Kanada, Australia, Selandia Baru, Singapura, Afrika Kidul, Jepang, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, lan Swiss."
+    "message": "Ing sajrone Amerika Serikat, mung warga negara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, lan Wyoming sing bisa nganggo DisinfaX lan ngisi ulang saldone; Washington, D.C., kabeh wilayah A.S., lan negara bagian apa wae sing ora kadhaptar ora kalebu. Ing njaba Amerika Serikat, kasedhiya ing Kanada, Australia, Selandia Baru, Singapura, Afrika Kidul, Jepang, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, lan Swiss."
   },
   "factCheckAllButton": {
     "message": "Priksa Kabeh"
@@ -266,27 +269,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Saldo sampeyan kasuwen. Mangga ngisi saldo kanggo nglajengake."
+    "message": "Saldo sampeyan kurang. Mangga ngisi saldo kanggo nglajengake."
   },
   "errAccountSuspended": {
-    "message": "Akun sampeyan wis disuspend."
+    "message": "Akun sampeyan wis disuspensi."
   },
   "errNotSignedIn": {
     "message": "Sampeyan durung mlebu. Mangga mlebu lan coba maneh."
   },
   "errInvalidRequest": {
-    "message": "Sebagian saka panyuwunan iki ora dikenali. Mangga priksa yen ekstensi wis anyar."
+    "message": "Sebagian saka panyuwunan iki ora dikenali. Mangga priksa yen ekstensi wis versi paling anyar."
   },
   "errServiceUnavailable": {
-    "message": "Ana kesalahan ing pihak kita. Mangga coba maneh sawetara wektu."
+    "message": "Ana kesalahan ing pihak kita. Mangga coba maneh sedhela engkas."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX durung kasedhiya ing wilayah sampeyan amarga syarat regulasi."
   },
   "errInvalidAmount": {
-    "message": "Jumlah top-up kasebut ora valid. Mangga pilih jumlah liyane."
+    "message": "Jumlah isi ulang kasebut ora sah. Mangga pilih jumlah liyane."
   },
   "errNotFound": {
-    "message": "Iku ora ditemokake. Coba maneh."
+    "message": "Iku ora ditemokake. Mangga coba maneh."
   }
 }

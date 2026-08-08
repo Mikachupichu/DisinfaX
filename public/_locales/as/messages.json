@@ -1,4 +1,67 @@
 {
+  "balanceLabel": {
+    "message": "ব্যালেন্স"
+  },
+  "gifted": {
+    "message": "উপহাৰ"
+  },
+  "customTopup": {
+    "message": "স্বনিৰ্বাচিত"
+  },
+  "customAmountLabel": {
+    "message": "আমেৰিকান ডলাৰত স্বনিৰ্বাচিত টপ-আপৰ পৰিমাণ"
+  },
+  "increase": {
+    "message": "বঢ়াওক"
+  },
+  "decrease": {
+    "message": "কমাওক"
+  },
+  "topUpBalance": {
+    "message": "ব্যালেন্স টপ আপ কৰক"
+  },
+  "processing": {
+    "message": "প্ৰক্ৰিয়াকৰণ চলিছে…"
+  },
+  "checkoutError": {
+    "message": "চেকআউট আৰম্ভ কৰিব পৰা নগ'ল। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।"
+  },
+  "termsOfService": {
+    "message": "সেৱাৰ চৰ্তাৱলী"
+  },
+  "privacyPolicy": {
+    "message": "গোপনীয়তা নীতি"
+  },
+  "disclaimerAgree": {
+    "message": "টপ আপ কৰাৰ দ্বাৰা, আপুনি আমাৰ %TOS% আৰু %PRIVACY%ৰ সৈতে সন্মত হৈছে।"
+  },
+  "disclaimerFx": {
+    "message": "আপুনি USDৰ বাহিৰে অন্য মুদ্ৰাত পৰিশোধ কৰিলে বৈদেশিক মুদ্ৰা বিনিময়ৰ মাচুল প্ৰযোজ্য হ'ব পাৰে।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "মাৰ্কিন যুক্তৰাষ্ট্ৰৰ ভিতৰত, কেৱল আলাবামা, এৰিজোনা, কেলিফৰ্নিয়া, কলোৰাডো, কানেক্টিকাট, ডেলাৱেৰ, ফ্ল'ৰিডা, আইডাহো, ইলিনয়, ইণ্ডিয়ানা, আইঅৱা, কানছাছ, কেণ্টাকী, লুইজিয়ানা, মেইন, মেছাচুছেটছ, মিছিছিপি, মিছৌৰী, মণ্টানা, নিউ হেম্পশ্বায়াৰ, নিউ মেক্সিকো, নিউ ইয়ৰ্ক, উত্তৰ কেৰোলিনা, উত্তৰ ডাকোটা, অক্লাহোমা, অৰেগন, পেন্সিলভেনিয়া, দক্ষিণ কেৰোলিনা, দক্ষিণ ডাকোটা, টেনেছী, টেক্সাছ, উটাহ, ৱাশ্বিংটন, উইছকনছিন, আৰু ৱাইঅ'মিংৰ বাসিন্দাসকলে DisinfaX ব্যৱহাৰ কৰিব পাৰে আৰু তেওঁলোকৰ ব্যালেন্স টপ আপ কৰিব পাৰে; ৱাশ্বিংটন, D.C., সকলো মাৰ্কিন অঞ্চল, আৰু তালিকাত নথকা যিকোনো ৰাজ্য বাদ দিয়া হৈছে। মাৰ্কিন যুক্তৰাষ্ট্ৰৰ বাহিৰত, ই কানাডা, অষ্ট্ৰেলিয়া, নিউজিলেণ্ড, ছিংগাপুৰ, দক্ষিণ আফ্ৰিকা, জাপান, টাইৱান, ইণ্ডোনেছিয়া, থাইলেণ্ড, ফিলিপাইনছ, মালয়েছিয়া, ভিয়েটনাম, আৰু চুইজাৰলেণ্ডত উপলব্ধ।"
+  },
+  "signOut": {
+    "message": "সাইন আউট"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%ত ক্লিক কৰিলে দাবীসমূহ দেখুৱাব আৰু আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%ত টেপ কৰিলে দাবীসমূহ দেখুৱাব আৰু আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
+  },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
@@ -20,7 +83,7 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "পৰীক্ষণ",
+    "message": "তথ্য পৰীক্ষণ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
@@ -40,11 +103,11 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "বেছিভাগ",
+    "message": "মূলতঃ",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "বিতৰ্কিত",
+    "message": "যুক্তিযুক্তভাৱে",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +115,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "অস্পষ্ট",
+    "message": "অস্পষ্টভাৱে",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -124,23 +187,35 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "পৰীক্ষণ",
+    "message": "তথ্য পৰীক্ষণ",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "তথ্য পৰীক্ষণ অনুবাদ কৰক",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "অনুবাদ কৰক",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "তথ্য পৰীক্ষিত",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "পিছুৱাই যাওক",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "পৰীক্ষা কৰক",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "হৈ",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ হৈ $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,78 +231,6 @@
         "example": "Very Likely"
       }
     }
-  },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "পৰীক্ষা কৰক",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "বেলেঞ্চ"
-  },
-  "gifted": {
-    "message": "উপহাৰ"
-  },
-  "customTopup": {
-    "message": "স্বনিৰ্বাচিত"
-  },
-  "customAmountLabel": {
-    "message": "আমেৰিকান ডলাৰত স্বনিৰ্বাচিত টপ-আপৰ পৰিমাণ"
-  },
-  "increase": {
-    "message": "বঢ়াওক"
-  },
-  "decrease": {
-    "message": "কমাওক"
-  },
-  "topUpBalance": {
-    "message": "বেলেঞ্চ টপ আপ কৰক"
-  },
-  "processing": {
-    "message": "প্ৰক্ৰিয়াকৰণ চলিছে…"
-  },
-  "checkoutError": {
-    "message": "চেকআউট আৰম্ভ কৰিব পৰা নগ'ল। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।"
-  },
-  "termsOfService": {
-    "message": "সেৱাৰ চৰ্তাৱলী"
-  },
-  "privacyPolicy": {
-    "message": "গোপনীয়তা নীতি"
-  },
-  "disclaimerAgree": {
-    "message": "টপ আপ কৰাৰ জৰিয়তে, আপুনি আমাৰ %TOS% আৰু %PRIVACY%ত সন্মত হয়।"
-  },
-  "disclaimerFx": {
-    "message": "আপুনি USDৰ বাহিৰে অন্য মুদ্ৰাত পৰিশোধ কৰিলে বৈদেশিক মুদ্ৰা বিনিময়ৰ মাচুল প্ৰযোজ্য হ'ব পাৰে।"
-  },
-  "signOut": {
-    "message": "ছাইন আউট"
-  },
-  "onboardDisinfactClick": {
-    "message": "%BTN%ত ক্লিক কৰিলে দাবীসমূহ দেখুৱাব আৰু আপোনাৰ বেলেঞ্চৰ পৰা টকা কাটি লোৱা হ'ব"
-  },
-  "onboardDisinfactTap": {
-    "message": "%BTN%ত টেপ কৰিলে দাবীসমূহ দেখুৱাব আৰু আপোনাৰ বেলেঞ্চৰ পৰা টকা কাটি লোৱা হ'ব"
-  },
-  "onboardWillCharge": {
-    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ বেলেঞ্চৰ পৰা টকা কাটি লোৱা হ'ব"
-  },
-  "onboardFactcheck": {
-    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ বেলেঞ্চৰ পৰা টকা কাটি লোৱা হ'ব"
-  },
-  "onboardTranslations": {
-    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ বেলেঞ্চৰ পৰা টকা কাটি লোৱা হ'ব"
-  },
-  "onboardRefreshes": {
-    "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ বেলেঞ্চৰ পৰা টকা কাটি লোৱা হ'ব"
   },
   "topUp": {
     "message": "টপ আপ"
@@ -259,38 +262,35 @@
   "cleanupTagline": {
     "message": "আপোনাৰ X ফীড পৰিষ্কাৰ কৰক।"
   },
-  "disclaimerJurisdiction": {
-    "message": "মাৰ্কিন যুক্তৰাষ্ট্ৰৰ ভিতৰত, কেৱল আলাবামা, এৰিজোনা, কেলিফৰ্নিয়া, কলোৰাডো, কানেক্টিকাট, ডেলাৱেৰ, ফ্ল'ৰিডা, আইডাহো, ইলিনয়, ইণ্ডিয়ানা, আইঅৱা, কানছাছ, কেণ্টাকী, লুইজিয়ানা, মেইন, মেছাচুছেটছ, মিছিছিপি, মিছৌৰী, মণ্টানা, নিউ হেম্পশ্বায়াৰ, নিউ মেক্সিকো, নিউ ইয়ৰ্ক, উত্তৰ কেৰোলিনা, উত্তৰ ডাকোটা, অক্লাহোমা, অৰেগন, পেন্সিলভেনিয়া, দক্ষিণ কেৰোলিনা, দক্ষিণ ডাকোটা, টেনেছী, টেক্সাছ, উটাহ, ৱাশ্বিংটন, উইছকনছিন, আৰু ৱাইঅ'মিংৰ বাসিন্দাসকলে DisinfaX ব্যৱহাৰ কৰিব পাৰে আৰু তেওঁলোকৰ বেলেঞ্চ টপ আপ কৰিব পাৰে; ৱাশ্বিংটন, D.C., সকলো মাৰ্কিন অঞ্চল, আৰু তালিকাত নথকা যিকোনো ৰাজ্য বাদ দিয়া হৈছে। মাৰ্কিন যুক্তৰাষ্ট্ৰৰ বাহিৰত, ই কানাডা, অষ্ট্ৰেলিয়া, নিউজিলেণ্ড, ছিংগাপুৰ, দক্ষিণ আফ্ৰিকা, জাপান, টাইৱান, ইণ্ডোনেছিয়া, থাইলেণ্ড, ফিলিপাইনছ, মালয়েছিয়া, ভিয়েটনাম, আৰু চুইজাৰলেণ্ডত উপলব্ধ।"
-  },
   "factCheckAllButton": {
-    "message": "সকলো পৰীক্ষা কৰক"
+    "message": "সকলো তথ্য পৰীক্ষা কৰক"
   },
   "aiDisclaimer": {
     "message": "DisinfaX-ৱে ভুল কৰিব পাৰে। তথ্য দুবাৰ পৰীক্ষা কৰক।",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "তোমার বেলেঞ্চ বহুত কম। অনুগ্রহ কৰি অব্যাহত ৰাখিবলে টপ আপ কৰক।"
+    "message": "আপোনাৰ ব্যালেন্স বহুত কম। অনুগ্ৰহ কৰি অব্যাহত ৰাখিবলে টপ আপ কৰক।"
   },
   "errAccountSuspended": {
-    "message": "তোমাৰ একাউণ্ট স্থগিত কৰা হৈছে।"
+    "message": "আপোনাৰ একাউণ্ট স্থগিত কৰা হৈছে।"
   },
   "errNotSignedIn": {
-    "message": "তুমি সাইন ইন কৰা নাই। অনুগ্রহ কৰি সাইন ইন কৰি পুনৰ চেষ্টা কৰক।"
+    "message": "আপুনি সাইন ইন কৰা নাই। অনুগ্ৰহ কৰি সাইন ইন কৰি পুনৰ চেষ্টা কৰক।"
   },
   "errInvalidRequest": {
-    "message": "এই অনুৰোধৰ কিছু অংশ চিনাক্ত কৰিব পৰা নগৈছিল। এক্সটেনশনটো আপডেট হৈ আছে নেকি নিশ্চিত কৰক।"
+    "message": "এই অনুৰোধৰ কিছু অংশ চিনাক্ত কৰিব পৰা নগ'ল। অনুগ্ৰহ কৰি এক্সটেনশনটো আপডেট হৈ থকাটো নিশ্চিত কৰক।"
   },
   "errServiceUnavailable": {
-    "message": "আমাৰ ফালৰ পৰা এটা ত্রুটি হৈছিল। অনুগ্রহ কৰি অলপ পিছত পুনৰ চেষ্টা কৰক।"
+    "message": "আমাৰ ফালৰ পৰা এটা ত্ৰুটি হৈছিল। অনুগ্ৰহ কৰি অলপ পিছত পুনৰ চেষ্টা কৰক।"
   },
   "errRegionNotSupported": {
-    "message": "নিয়ামক প্ৰয়োজনীয়তাৰ বাবে DisinfaX এতিয়াও তোমাৰ অঞ্চলত উপলব্ধ নাই।"
+    "message": "নিয়ামক প্ৰয়োজনীয়তাৰ বাবে DisinfaX এতিয়াও আপোনাৰ অঞ্চলত উপলব্ধ নাই।"
   },
   "errInvalidAmount": {
-    "message": "সেই টপ-আপ পৰিমাণ বৈধ নহয়। অনুগ্রহ কৰি অন্য পৰিমাণ বাছনি কৰক।"
+    "message": "সেই টপ-আপ পৰিমাণ বৈধ নহয়। অনুগ্ৰহ কৰি অন্য পৰিমাণ বাছনি কৰক।"
   },
   "errNotFound": {
-    "message": "সেইটো বিচাৰি পাব পৰা নগৈছিল। পুনৰ চেষ্টা কৰক।"
+    "message": "সেইটো বিচাৰি পাব পৰা নগ'ল। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।"
   }
 }

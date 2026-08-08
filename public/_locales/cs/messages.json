@@ -6,11 +6,11 @@
     "message": "Detekuje a zvýrazňuje dezinformace v tweetech pomocí AI analýzy."
   },
   "verdictTrue": {
-    "message": "Pravda",
+    "message": "Pravdivé",
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Nepravda",
+    "message": "Nepravdivé",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -18,23 +18,23 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Kontrola",
+    "message": "Ověřování",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Kontrola|Ověřování|Pátrání|Čištění|Odhalování|Vyvracení|Přemýšlení|Osvětlování|Kopání|Prosévání|Odkrývání|Zkoumání|Analyzování|Objasňování|Porovnávání|Vyšetřování|Pročesávání|Rozplétání|Prohledávání|Rozebírání|Prověřování|Hloubání|Objevování|Třídění|Prokousávání",
+    "message": "Ověřování|Pátrání|Čištění|Odhalování|Vyvracení|Přemýšlení|Osvětlování|Kopání|Prosévání|Odkrývání|Zkoumání|Analyzování|Objasňování|Porovnávání|Vyšetřování|Pročesávání|Rozplétání|Prohledávání|Rozebírání|Prověřování|Hloubání|Objevování|Třídění|Prokousávání|Odblbování|Vyvětrávání lží|Louskání|Bádání|Pídění se po pravdě|Slídění|Lovení pravdy|Honba za pravdou|Rozmotávání klubka|Prosvěcování|Filtrování nesmyslů|Sbírání důkazů|Skládání puzzle|Přemítání|Rozjímání|Křížové ověřování|Destilace pravdy|Prozařování mlhy|Louskání oříšku|Šťourání se v tom|Rozklíčovávání|Dolování pravdy|Prubování",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Velmi pravděpodobné",
+    "message": "Velmi pravděpodobně",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Pravděpodobné",
+    "message": "Pravděpodobně",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Možné",
+    "message": "Možná",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -42,7 +42,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Diskutabilní",
+    "message": "Diskutabilně",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -50,7 +50,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Nejednoznačné",
+    "message": "Nejednoznačně",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -122,7 +122,7 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Kontrola",
+    "message": "Ověřování",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
@@ -134,11 +134,11 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "že je",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$, že je $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Ověřeno",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Zpět",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -171,7 +171,7 @@
     "message": "Zůstatek"
   },
   "gifted": {
-    "message": "Darováno"
+    "message": "Darem"
   },
   "customTopup": {
     "message": "Vlastní"
@@ -268,7 +268,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Váš zůstatek je příliš nízký. Dobijte kredit a pokračujte."
+    "message": "Váš zůstatek je příliš nízký. Dobijte si ho a pokračujte."
   },
   "errAccountSuspended": {
     "message": "Váš účet byl pozastaven."

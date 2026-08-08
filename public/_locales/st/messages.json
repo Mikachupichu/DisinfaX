@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "E fumana le ho hlakisa leshano ho tweets ka ho sebedisa tlhahlobo ya AI.",
+    "message": "E fumana le ho totobatsa leshano ho di-tweet ka ho sebedisa tlhahlobo ya AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Fetolela Dihlahlobo",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Fetolela",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ho ba",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ho ba $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "E Hlahlobiwe",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Khutlela Morao",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -203,7 +203,7 @@
     "message": "Leano la Lekunutu"
   },
   "disclaimerAgree": {
-    "message": "Ka ho tlatsa, u lumellana le %TOS% le %PRIVACY% tsa rona."
+    "message": "Ka ho tlatsa, o dumellana le %TOS% le %PRIVACY% ya rona."
   },
   "disclaimerFx": {
     "message": "Litefiso tsa phapanyetsano ea chelete ea kantle ho naha li ka sebetsa haeba u lefa ka chelete e seng USD."
@@ -270,13 +270,13 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Bolanse ya hao e tlaase haholo. Ka kopo tlatsa ho tswela pele."
+    "message": "Chelete ya hao e setseng e tlaase haholo. Ka kopo e tlatse ho tswela pele."
   },
   "errAccountSuspended": {
     "message": "Akhaonto ya hao e emisitswe."
   },
   "errNotSignedIn": {
-    "message": "Ha o kene. Ka kopo kena o boetse o leke hape."
+    "message": "Ha o kene. Ka kopo kena, ebe o leka hape."
   },
   "errInvalidRequest": {
     "message": "Karolo ya kopo ena ha e tsejwe. Netefatsa hore tlatsetso e ntjhafalitswe."
@@ -291,6 +291,6 @@
     "message": "Chelete eo ya tlatsetso ha e nepahale. Ka kopo kgetha chelete e fapaneng."
   },
   "errNotFound": {
-    "message": "Seo se ne se ke se fumanwe. Leka hape."
+    "message": "Seo ha se fumanwe. Ka kopo leka hape."
   }
 }

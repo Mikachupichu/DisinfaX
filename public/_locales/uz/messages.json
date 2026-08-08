@@ -20,11 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Tekshirish",
+    "message": "Tekshirilmoqda",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Tekshirish|Tadqiq qilish|Tozalash|Fosh qilish|Ochish|Mulohaza qilish|Yoritish|Qazish|Saralash|Solishtirish|Yig'ish|So'roq qilish|Tahlil qilish|Aniqlash|Haqiqatni izlash|Poklash|Izlanish|Niqobini ochish|Chuqurlashish|Yorug'lik solish|Filtrlash|Tekshirib chiqish|Ajratish|Isbotlash|Kuzatish",
+    "message": "Tekshirish|Tadqiq qilish|Tozalash|Fosh qilish|Ochish|Mulohaza qilish|Yoritish|Qazish|Saralash|Solishtirish|Yig'ish|So'roq qilish|Tahlil qilish|Aniqlash|Haqiqatni izlash|Poklash|Izlanish|Niqobini ochish|Chuqur qazish|Yorug'lik sochish|Filtrlash|Tekshirib chiqish|Ajratish|Isbotlash|Kuzatish|Yolg'onni fosh qilish|Haqiqatni qidirish|Detektiv o'ynash|Iz kuzatish|Dalil izlash|Manbalarni tekshirish|Chalkashlikni yechish|Tumanni tarqatish|Changni artish|Tubiga yetish|Sirni ochish|Ipini tortish|Rostini bilish|Elakdan o'tkazish|Mikroskop ostiga qo'yish|Faktlarni terish|Chuqur o'ylash|Miya ishlatish|Xulosa chiqarish|Dalil to'plash|Haqiqatga intilish|Yolg'onni ushlash|Ipni yechish|Tinimsiz qidirish|Puxta tekshirish|Har tomonlama o'rganish|Sabr bilan tekshirish|Detallarni ko'rib chiqish|Skanerlash|Jumboqni yechish|Sirlarni fosh qilish|Asl holatni bilish|Xato qidirish|Rost-yolg'onni ajratish|Ishonchni tekshirish|Manbani qazish|Faktlarni yaxlitlash|Sinash|Baholash|Kuzatib borish|Detektivona izlanish|Chinligini sinash|Asliga yetkazish|Gap tubiga tushish|Fikrlarni tartiblash|Xayolga cho'mish|O'ylab topish|Kashf qilish|Sinovdan o'tkazish|Sharhlash|Tafsilotlarga chuqurlashish|Yashiringan haqiqatni topish|Zamirini anglash|Chigalni yozish|Rostgo'ylikni sinash|Manba izlash|Chuqur kovlash|Yashirin gaplarni ochish|Aql bilan tahlil qilish|Tafakkur qilish|Haqiqat izidan borish|Belgilarni kuzatish|Yechim izlash|Asosini tekshirish|Chinakamligini aniqlash|Ip uchini topish|Pishirish|Osh damlash|Qozon qaynatish|Bosh qotirish|Ko'z yugurtirish|Varaqlab chiqish|G'alvirdan o'tkazish|Naq o'ziga yetish|Aniqlik kiritish|Chuqur mushohada qilish",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -124,19 +124,19 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Tekshirish",
+    "message": "Tekshirilmoqda",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Faktlarni tarjima qilish",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Tarjima qilish",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "bo'lib",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Tekshirildi",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Ortga qaytish",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -176,10 +176,10 @@
     "message": "Sovg'a"
   },
   "customTopup": {
-    "message": "Boshqa"
+    "message": "Maxsus"
   },
   "customAmountLabel": {
-    "message": "AQSh dollarida ixtiyoriy to'ldirish miqdori"
+    "message": "AQSh dollarida maxsus to'ldirish miqdori"
   },
   "increase": {
     "message": "Oshirish"
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Balansingiz juda past. Davom etish uchun hisobni to‘ldiring."
+    "message": "Balansingiz juda past. Davom etish uchun balansni to'ldiring."
   },
   "errAccountSuspended": {
-    "message": "Hisobingiz to‘xtatib qo‘yilgan."
+    "message": "Hisobingiz to'xtatib qo'yilgan."
   },
   "errNotSignedIn": {
-    "message": "Siz tizimga kirmagansiz. Tizimga kiring va qayta urinib ko‘ring."
+    "message": "Siz tizimga kirmagansiz. Tizimga kiring va qayta urinib ko'ring."
   },
   "errInvalidRequest": {
-    "message": "Ushbu so‘rovning bir qismi aniqlanmadi. Kengaytmaning yangilanganligiga ishonch hosil qiling."
+    "message": "Ushbu so'rovning bir qismi aniqlanmadi. Kengaytmaning yangilanganligiga ishonch hosil qiling."
   },
   "errServiceUnavailable": {
-    "message": "Bizning tomonimizda xatolik yuz berdi. Bir oz vaqtdan so‘ng qayta urinib ko‘ring."
+    "message": "Bizning tomonimizda xatolik yuz berdi. Bir oz vaqtdan so'ng qayta urinib ko'ring."
   },
   "errRegionNotSupported": {
     "message": "Tartibga solish talablari sababli DisinfaX hozircha mintaqangizda mavjud emas."
   },
   "errInvalidAmount": {
-    "message": "Ushbu to‘ldirish summasi yaroqsiz. Boshqa summani tanlang."
+    "message": "Ushbu to'ldirish summasi yaroqsiz. Boshqa summani tanlang."
   },
   "errNotFound": {
-    "message": "Bu topilmadi. Qayta urinib ko‘ring."
+    "message": "Bu topilmadi. Qayta urinib ko'ring."
   }
 }

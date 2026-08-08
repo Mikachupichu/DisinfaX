@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -279,7 +279,7 @@
     "message": "No has iniciado sesión. Inicia sesión y vuelve a intentarlo."
   },
   "errInvalidRequest": {
-    "message": "Algo en esta solicitud no se reconoció. Asegúrate de que la extensión esté actualizada."
+    "message": "Algo en esta solicitud no se reconoció. Verifica que la extensión esté actualizada."
   },
   "errServiceUnavailable": {
     "message": "Ocurrió un error de nuestro lado. Vuelve a intentarlo en un momento."

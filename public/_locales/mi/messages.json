@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Ka kitea, ka whakanuia hoki ngā kōrero hē i roto i ngā tweets mā te tātari AI.",
+    "message": "Ka kitea, ka whakaatuhia hoki ngā kōrero hē i roto i ngā tweets mā te tātari AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -20,11 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Tirotiro",
+    "message": "Arotake",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Tirotiro|Rangahau|Horoi|Whakaatu|Kitenga|Whakaaro|Whakamārama|Keri|Tātari|Whakataurite|Wetewete|Whakakore|Whakapono|Kohikohi|Rapu|Whakaputa|Aromatawai|Whakaaroaro|Hōpara|Whakamana|Kimi|Ata Tirotiro|Wetewete Kōrero|Whakamātau|Rapurapu",
+    "message": "Arotake|Rangahau|Horoi|Whakaatu|Kitenga|Whakaaro|Whakamārama|Keri|Tātari|Whakataurite|Wetewete|Whakakore|Whakaū|Kohikohi|Rapu|Whakaputa|Aromatawai|Whakaaroaro|Hōpara|Whakamana|Kimi|Ata Tirotiro|Wetewete Kōrero|Whakamātau|Rapurapu",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -124,15 +124,15 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Tirotiro",
+    "message": "Arotake",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Whakamāori i ngā Arotake Meka",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Whakamāori",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Kua Arotakehia",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Hoki Whakamuri",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Tirotiro",
+    "message": "Arotake",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -212,22 +212,22 @@
     "message": "Takiputa"
   },
   "onboardDisinfactClick": {
-    "message": "Ko te pāwhiri i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō putea"
+    "message": "Ko te pāwhiri i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō toenga"
   },
   "onboardDisinfactTap": {
-    "message": "Ko te pā i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō putea"
+    "message": "Ko te pā i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō toenga"
   },
   "onboardWillCharge": {
-    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
   },
   "onboardFactcheck": {
-    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
   },
   "onboardTranslations": {
-    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
   },
   "onboardRefreshes": {
-    "message": "Ko te pāwhiri i te %BTN% ka utua tō putea"
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
   },
   "topUp": {
     "message": "Whakakī"

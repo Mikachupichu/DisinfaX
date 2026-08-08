@@ -126,7 +126,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Преведи проверу",
+    "message": "Преведи провере",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -134,7 +134,7 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -156,19 +156,19 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Проверено",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Назад",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Провери",
+    "message": "Откриј",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
-    "message": "Стање"
+    "message": "Салдо"
   },
   "gifted": {
     "message": "Поклоњено"
@@ -186,7 +186,7 @@
     "message": "Смањи"
   },
   "topUpBalance": {
-    "message": "Допуни стање"
+    "message": "Допуни салдо"
   },
   "processing": {
     "message": "Обрада…"
@@ -243,13 +243,13 @@
     "message": "Нема више дезинформација. Само чињенице."
   },
   "continueWithX": {
-    "message": "Настави са X"
+    "message": "Наставите са X"
   },
   "continueWithGoogle": {
-    "message": "Настави са Google"
+    "message": "Наставите са Google"
   },
   "continueWithApple": {
-    "message": "Настави са Apple"
+    "message": "Наставите са Apple"
   },
   "lastUsed": {
     "message": "Последње коришћено"
@@ -258,17 +258,17 @@
     "message": "Очистите свој X фид."
   },
   "disclaimerJurisdiction": {
-    "message": "У оквиру Сједињених Држава, само становници Алабаме, Аризоне, Калифорније, Колорада, Конектиката, Делавера, Флориде, Ајдаха, Илиноиса, Индијане, Ајове, Канзаса, Кентакија, Луизијане, Мејна, Масачусетса, Мисисипија, Мисурија, Монтане, Њу Хемпшира, Њу Мексика, Њујорка, Северне Каролине, Северне Дакоте, Оклахоме, Орегона, Пенсилваније, Јужне Каролине, Јужне Дакоте, Тенесија, Тексаса, Јуте, Вашингтона, Висконсина и Вајоминга могу да користе DisinfaX и да допуне свој биланс; Вашингтон, D.C., све територије САД и све државе које нису наведене су искључене. Ван Сједињених Држава, доступно је у Канади, Аустралији, Новом Зеланду, Сингапуру, Јужноафричкој Републици, Јапану, Тајвану, Индонезији, Тајланду, Филипинима, Малезији, Вијетнаму и Швајцарској."
+    "message": "У оквиру Сједињених Држава, само становници Алабаме, Аризоне, Калифорније, Колорада, Конектиката, Делавера, Флориде, Ајдаха, Илиноиса, Индијане, Ајове, Канзаса, Кентакија, Луизијане, Мејна, Масачусетса, Мисисипија, Мисурија, Монтане, Њу Хемпшира, Њу Мексика, Њујорка, Северне Каролине, Северне Дакоте, Оклахоме, Орегона, Пенсилваније, Јужне Каролине, Јужне Дакоте, Тенесија, Тексаса, Јуте, Вашингтона, Висконсина и Вајоминга могу да користе DisinfaX и да допуне свој салдо; Вашингтон, D.C., све територије САД и све државе које нису наведене су искључене. Ван Сједињених Држава, доступно је у Канади, Аустралији, Новом Зеланду, Сингапуру, Јужноафричкој Републици, Јапану, Тајвану, Индонезији, Тајланду, Филипинима, Малезији, Вијетнаму и Швајцарској."
   },
   "factCheckAllButton": {
     "message": "Провери све"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX може погрешити. Провeрите информације два пута.",
+    "message": "DisinfaX може погрешити. Проверите информације још једном.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Ваш салдо је прениско. Допуните рачун да бисте наставили."
+    "message": "Ваш салдо је прениско. Допуните га да бисте наставили."
   },
   "errAccountSuspended": {
     "message": "Ваш налог је суспендован."

@@ -18,7 +18,7 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Kontroll",
+    "message": "Kontrollimine",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
@@ -114,19 +114,19 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Paljastage uuesti kõik selle säutsu väited",
+    "message": "Paljasta uuesti kõik selle säutsu väited",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Uurige seda väidet uuesti",
+    "message": "Uuri seda väidet uuesti",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Kontroll",
+    "message": "Kontrollimine",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Tõlgi kontroll",
+    "message": "Tõlgi faktikontrollid",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -134,7 +134,7 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "olevat",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Kontrollitud",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Tagasi",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -201,7 +201,7 @@
     "message": "Privaatsuspoliitika"
   },
   "disclaimerAgree": {
-    "message": "Saldot täiendades nõustud meie tingimustega %TOS% ja %PRIVACY%."
+    "message": "Saldot täiendades nõustud meie %TOS% ja %PRIVACY%-ga."
   },
   "disclaimerFx": {
     "message": "Valuutavahetustasud võivad kehtida, kui maksad muus valuutas kui USD."
@@ -210,22 +210,22 @@
     "message": "Logi välja"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN% klõpsamine kuvab väited ja debiteerib teie kontojääki"
+    "message": "%BTN% klõpsamine kuvab väited ja arvab tasu maha sinu saldost"
   },
   "onboardDisinfactTap": {
-    "message": "%BTN% puudutamine kuvab väited ja debiteerib teie kontojääki"
+    "message": "%BTN% puudutamine kuvab väited ja arvab tasu maha sinu saldost"
   },
   "onboardWillCharge": {
-    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+    "message": "%BTN% klõpsamine arvab tasu maha sinu saldost"
   },
   "onboardFactcheck": {
-    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+    "message": "%BTN% klõpsamine arvab tasu maha sinu saldost"
   },
   "onboardTranslations": {
-    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+    "message": "%BTN% klõpsamine arvab tasu maha sinu saldost"
   },
   "onboardRefreshes": {
-    "message": "%BTN% klõpsamine debiteerib teie kontojääki"
+    "message": "%BTN% klõpsamine arvab tasu maha sinu saldost"
   },
   "topUp": {
     "message": "Lae kontot"

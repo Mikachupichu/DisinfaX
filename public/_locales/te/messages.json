@@ -18,13 +18,13 @@
     "message": "ఇక తప్పుడు సమాచారం లేదు. కేవలం వాస్తవాలు మాత్రమే."
   },
   "continueWithX": {
-    "message": "X తో కొనసాగించండి"
+    "message": "Xతో కొనసాగించండి"
   },
   "continueWithGoogle": {
-    "message": "Google తో కొనసాగించండి"
+    "message": "Googleతో కొనసాగించండి"
   },
   "continueWithApple": {
-    "message": "Apple తో కొనసాగించండి"
+    "message": "Appleతో కొనసాగించండి"
   },
   "lastUsed": {
     "message": "చివరిగా ఉపయోగించినది"
@@ -43,7 +43,7 @@
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "అబద్ధం",
+    "message": "తప్పు",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -75,7 +75,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "వివాదాస్పదంగా",
+    "message": "వాదనాత్మకంగా",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -147,7 +147,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ఈ ట్వీట్‌లోని అన్ని వాదనలను తిరిగి వెల్లడించు",
+    "message": "ఈ ట్వీట్‌లోని వాదనలను తిరిగి వెల్లడించు",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -159,19 +159,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "వాస్తవ తనిఖీలను అనువదించండి",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "అనువదించు",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "అయ్యే",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ అయ్యే $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -189,11 +189,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "వాస్తవ తనిఖీ పూర్తయింది",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "వెనక్కి వెళ్ళు",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -204,7 +204,7 @@
     "message": "బ్యాలెన్స్"
   },
   "gifted": {
-    "message": "బహుమతిగా ఇచ్చినది"
+    "message": "బహుమతి"
   },
   "customTopup": {
     "message": "అనుకూలం"
@@ -261,7 +261,7 @@
     "message": "%BTN% క్లిక్ చేయడం మీ బ్యాలెన్స్ నుండి రుసుము వసూలు చేస్తుంది"
   },
   "factCheckAllButton": {
-    "message": "అన్నింటినీ తనిఖీ చేయండి"
+    "message": "అన్నింటినీ వాస్తవ తనిఖీ చేయండి"
   },
   "aiDisclaimer": {
     "message": "DisinfaX పొరపాట్లు చేయవచ్చు. సమాచారాన్ని మళ్లీ నిర్ధారించుకోండి.",
@@ -277,7 +277,7 @@
     "message": "మీరు సైన్ ఇన్ కాలేదు. దయచేసి సైన్ ఇన్ చేసి మళ్లీ ప్రయత్నించండి."
   },
   "errInvalidRequest": {
-    "message": "ఈ రిక్వెస్ట్‌లో కొంత భాగం గుర్తించబడలేదు. ఎక్స్‌టెన్షన్ అప్‌డేట్‌గా ఉందని నిర్ధారించుకోండి."
+    "message": "ఈ రిక్వెస్ట్‌లో కొంత భాగం గుర్తించబడలేదు. దయచేసి ఎక్స్‌టెన్షన్ అప్‌డేట్‌గా ఉందని నిర్ధారించుకోండి."
   },
   "errServiceUnavailable": {
     "message": "మా వైపు నుండి ఒక లోపం సంభవించింది. దయచేసి కొద్దిసేపటి తర్వాత మళ్లీ ప్రయత్నించండి."
@@ -289,6 +289,6 @@
     "message": "ఆ టాప్-అప్ మొత్తం చెల్లదు. దయచేసి వేరే మొత్తాన్ని ఎంచుకోండి."
   },
   "errNotFound": {
-    "message": "అది కనుగొనబడలేదు. మళ్లీ ప్రయత్నించండి."
+    "message": "అది కనుగొనబడలేదు. దయచేసి మళ్లీ ప్రయత్నించండి."
   }
 }

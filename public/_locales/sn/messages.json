@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Inoona nekuratidza ruzivo rwenhema mutweeti uchishandisa AI kuongorora.",
+    "message": "Inoona uye kuratidza ruzivo rwenhema mumatweet, ichishandisa ongororo yeAI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,15 +16,15 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Hazivikanwi",
+    "message": "Hazvizivikanwi",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Kutarisa",
+    "message": "Kuongorora",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Kutarisa|Kuchenesa|Kutsvaga|Kuvhenekera|Kuchera|Kufungisisa|Kuongorora|Kufukura|Kutsanangura|Kuparadza nhema|Kusefa|Kuunganidza|Kuedza|Kuverenga|Kutsvakurudza|Kuvhura pfungwa|Kubatanidza|Kudzidza|Kutsvaga chokwadi|Kuongorora chokwadi|Kubvisa nhema|Kuvhenekera chokwadi|Kufunga|Kutsvagurudza chokwadi",
+    "message": "Kutarisa|Kuchenesa|Kutsvaga|Kuvhenekera|Kuchera|Kufungisisa|Kuongorora|Kufukura|Kutsanangura|Kuparadza nhema|Kusefa|Kuunganidza|Kuedza|Kuverenga|Kutsvakurudza|Kuvhura pfungwa|Kubatanidza|Kudzidza|Kutsvaga chokwadi|Kuongorora chokwadi|Kubvisa nhema|Kuvhenekera chokwadi|Kufunga|Kutsvakurudza chokwadi",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -116,31 +116,31 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Kuratidza patsva zvirevo zvese mu tweet iyi",
+    "message": "Ratidzazve zvirevo zvese zvetweet iyi",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Kutsvaga zvakare chirevo ichi",
+    "message": "Ongororazve chirevo ichi",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Kutarisa",
+    "message": "Kuongorora",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Shandura Ongororo Dzechokwadi",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Shandura",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "kuva",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ kuva $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Zvaongororwa",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Dzokera Shure",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -176,10 +176,10 @@
     "message": "Chipo"
   },
   "customTopup": {
-    "message": "Yakagadziriswa"
+    "message": "Yakasarudzwa"
   },
   "customAmountLabel": {
-    "message": "Mari yakagadziriswa yekuwedzera mumaUS dollars"
+    "message": "Mari yakasarudzwa yekuwedzera, mumadhora eUS"
   },
   "increase": {
     "message": "Wedzera"
@@ -194,7 +194,7 @@
     "message": "Kugadzirisa…"
   },
   "checkoutError": {
-    "message": "Hazvina kukwanisa kutanga kubhadhara. Ndapota edzazve."
+    "message": "Takatadza kutanga kubhadhara. Ndapota edzazve."
   },
   "termsOfService": {
     "message": "Mitemo Yesevhisi"
@@ -254,7 +254,7 @@
     "message": "Enderera mberi neApple"
   },
   "lastUsed": {
-    "message": "Yakapedzisira Kushandiswa"
+    "message": "Yakashandiswa Kekupedzisira"
   },
   "cleanupTagline": {
     "message": "Chenesa X Feed yako."
@@ -270,27 +270,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Mari yako yakaderera kwazvo. Ndapota isa mari kuti uenderere mberi."
+    "message": "Bhalansi yako yakaderera kwazvo. Ndapota wedzera mari kuti uenderere mberi."
   },
   "errAccountSuspended": {
-    "message": "Akaunti yako yamiswa."
+    "message": "Akaunti yako yakamiswa."
   },
   "errNotSignedIn": {
-    "message": "Hausiri kupinda. Ndapota pinda uye edza zvakare."
+    "message": "Hausati wapinda. Ndapota pinda wozoedza zvakare."
   },
   "errInvalidRequest": {
-    "message": "Chikamu chechikumbiro ichi hachina kuzivikanwa. Ndapota ona kuti chiwedzero chava chechinguva chino."
+    "message": "Pane chimwe chinhu pachikumbiro ichi chisina kunzwisiswa. Ndapota ona kuti chiwedzero chako chiri patsva."
   },
   "errServiceUnavailable": {
     "message": "Chikanganiso chaitika kudivi redu. Ndapota edza zvakare mushure mekanguva."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX haisati yave kushandiswa mudunhu rako nekuda kwezvinodiwa nemitemo."
+    "message": "DisinfaX haisati yakwanisa kushandiswa mudunhu rako, nekuda kwezvinodiwa nemitemo."
   },
   "errInvalidAmount": {
-    "message": "Mari iyoyo yekuisa haina kunaka. Ndapota sarudza mari yakasiyana."
+    "message": "Mari iyoyo yekuwedzera haisi yakanaka. Ndapota sarudza mari yakasiyana."
   },
   "errNotFound": {
-    "message": "Izvi hazvina kuwanikwa. Edza zvakare."
+    "message": "Izvi hazvina kuwanikwa. Ndapota edza zvakare."
   }
 }

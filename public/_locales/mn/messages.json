@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Шалгалт|Судалгаа|Цэвэрлэгээ|Илчлэлт|Нээлт|Бодол|Гэрэлтүүлэг|Ухалт|Шүүлтүүр|Хөндлөнгийн Шалгалт|Дүн Шинжилгээ|Няцаалт|Эрэл Хайгуул|Тайлбарлалт|Шүүн Ялгалт|Эргэцүүлэл|Гүнзгийрүүлэлт|Задлан Шинжилгээ|Цуглуулга|Баталгаажуулалт|Тодруулга|Үнэн Хайлт|Хуурмаг Илрүүлэлт|Баримтжуулалт|Нягтлан Үзэлт|Ялган Шүүлт",
+    "message": "Шалгалт|Судалгаа|Цэвэрлэгээ|Илчлэлт|Нээлт|Бодол|Гэрэлтүүлэг|Ухалт|Шүүлт|Хөндлөнгийн Шалгалт|Дүн Шинжилгээ|Няцаалт|Эрэл Хайгуул|Тайлбар|Шүүн Ялгалт|Эргэцүүлэл|Нарийвчлал|Задлан Шинжилгээ|Цуглуулга|Баталгаажуулалт|Тодруулга|Үнэн Хайлт|Хуурмаг Илрүүлэлт|Баримтжуулалт|Нягтлан Үзэлт|Ялган Шүүлт",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -36,7 +36,7 @@
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "Боломжтой",
+    "message": "Магадгүй",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Шалгалтыг Орчуулах",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Орчуулах",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "байх",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Шалгагдсан",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Буцах",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -212,22 +212,22 @@
     "message": "Гарах"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN% дээр товшиход мэдэгдлүүд харагдах бөгөөд таны балансаас мөнгө шимтгэгдэнэ"
-  },
-  "onboardDisinfactTap": {
     "message": "%BTN% дээр дарахад мэдэгдлүүд харагдах бөгөөд таны балансаас мөнгө шимтгэгдэнэ"
   },
+  "onboardDisinfactTap": {
+    "message": "%BTN% дээр товшихад мэдэгдлүүд харагдах бөгөөд таны балансаас мөнгө шимтгэгдэнэ"
+  },
   "onboardWillCharge": {
-    "message": "%BTN% дээр товшиход таны балансаас мөнгө шимтгэгдэнэ"
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
   },
   "onboardFactcheck": {
-    "message": "%BTN% дээр товшиход таны балансаас мөнгө шимтгэгдэнэ"
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
   },
   "onboardTranslations": {
-    "message": "%BTN% дээр товшиход таны балансаас мөнгө шимтгэгдэнэ"
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
   },
   "onboardRefreshes": {
-    "message": "%BTN% дээр товшиход таны балансаас мөнгө шимтгэгдэнэ"
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
   },
   "topUp": {
     "message": "Цэнэглэх"

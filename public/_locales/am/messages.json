@@ -1,9 +1,72 @@
 {
+  "balanceLabel": {
+    "message": "ቀሪ ሂሳብ"
+  },
+  "gifted": {
+    "message": "ስጦታ"
+  },
+  "customTopup": {
+    "message": "ብጁ"
+  },
+  "customAmountLabel": {
+    "message": "በአሜሪካ ዶላር ብጁ የመሙያ መጠን"
+  },
+  "increase": {
+    "message": "ጨምር"
+  },
+  "decrease": {
+    "message": "ቀንስ"
+  },
+  "topUpBalance": {
+    "message": "ሂሳብ ሙላ"
+  },
+  "processing": {
+    "message": "በሂደት ላይ…"
+  },
+  "checkoutError": {
+    "message": "ክፍያ መጀመር አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
+  },
+  "termsOfService": {
+    "message": "የአገልግሎት ውሎች"
+  },
+  "privacyPolicy": {
+    "message": "የግላዊነት ፖሊሲ"
+  },
+  "disclaimerAgree": {
+    "message": "ሂሳብ በመሙላት፣ ከ%TOS% እና %PRIVACY% ጋር ተስማምተዋል።"
+  },
+  "disclaimerFx": {
+    "message": "ከUSD ውጭ በሆነ ገንዘብ ከከፈሉ የውጭ ምንዛሬ ክፍያዎች ሊተገበሩ ይችላሉ።"
+  },
+  "disclaimerJurisdiction": {
+    "message": "በዩናይትድ ስቴትስ ውስጥ፣ የAlabama፣ Arizona፣ California፣ Colorado፣ Connecticut፣ Delaware፣ Florida፣ Idaho፣ Illinois፣ Indiana፣ Iowa፣ Kansas፣ Kentucky፣ Louisiana፣ Maine፣ Massachusetts፣ Mississippi፣ Missouri፣ Montana፣ New Hampshire፣ New Mexico፣ New York፣ North Carolina፣ North Dakota፣ Oklahoma፣ Oregon፣ Pennsylvania፣ South Carolina፣ South Dakota፣ Tennessee፣ Texas፣ Utah፣ Washington፣ Wisconsin እና Wyoming ነዋሪዎች ብቻ DisinfaX መጠቀም እና ሂሳባቸውን መሙላት ይችላሉ፤ Washington, D.C.፣ ሁሉም የአሜሪካ ግዛቶች እና ያልተዘረዘሩ ማናቸውም ግዛቶች አይካተቱም። ከዩናይትድ ስቴትስ ውጭ፣ በካናዳ፣ አውስትራሊያ፣ ኒው ዚላንድ፣ ሲንጋፖር፣ ደቡብ አፍሪካ፣ ጃፓን፣ ታይዋን፣ ኢንዶኔዥያ፣ ታይላንድ፣ ፊሊፒንስ፣ ማሌዥያ፣ ቬትናም እና ስዊዘርላንድ ይገኛል።"
+  },
+  "signOut": {
+    "message": "ውጣ"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%ን ጠቅ ማድረግ የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%ን መንካት የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
+  },
   "appName": {
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "በትዊቶች ውስጥ የተሳሳተ መረጃን በ AI ትንታኔ ያገኛል እና ያመላክታል።"
+    "message": "በAI ትንታኔ በመጠቀም በትዊቶች ውስጥ የተሳሳተ መረጃን ይለያል እና ያጎላል።"
   },
   "verdictTrue": {
     "message": "እውነት",
@@ -18,11 +81,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "ማረጋገጥ",
+    "message": "በማጣራት ላይ",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "ማጽዳት|ማጋለጥ|መመርመር|ማጥራት|እውነት መፈለግ|ማሰብ|ማብራራት|መቆፈር|ማጣራት|ማወዳደር|ውሸት ማጋለጥ|መገንዘብ|ማሰላሰል|መተንተን|ማጠናቀር|ማብራት|ማጣሪያ ማድረግ|መደርደር|ማጥናት|መፈተሽ|ማጠራቀም|ማደስ|መጻፍ|ማሳየት|ማጎልበት|መፍታት|ማጤን|ማጠቃለል",
+    "message": "ማጽዳት|ማጋለጥ|መመርመር|ማጥራት|እውነት መፈለግ|ማሰብ|ማብራራት|መቆፈር|ማጣራት|ማወዳደር|ውሸት ማጋለጥ|መገንዘብ|ማሰላሰል|መተንተን|ማጠናቀር|ማብራት|ማጥለል|መደርደር|ማጥናት|መፈተሽ|ማጠራቀም|ማደስ|መጻፍ|ማሳየት|ማጎልበት|መፍታት|ማጤን|ማጠቃለል",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -122,23 +185,35 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "ማረጋገጥ",
+    "message": "በማጣራት ላይ",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "ማጣራቶችን ተርጉም",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ተርጉም",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "ተጣርቷል",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "ተመለስ",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "አጣራ",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "የሚሆን",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ የሚሆን $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -154,78 +229,6 @@
         "example": "Very Likely"
       }
     }
-  },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "ማረጋገጥ",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "ቀሪ ሂሳብ"
-  },
-  "gifted": {
-    "message": "ስጦታ"
-  },
-  "customTopup": {
-    "message": "ብጁ"
-  },
-  "customAmountLabel": {
-    "message": "በአሜሪካ ዶላር ብጁ የመሙያ መጠን"
-  },
-  "increase": {
-    "message": "ጨምር"
-  },
-  "decrease": {
-    "message": "ቀንስ"
-  },
-  "topUpBalance": {
-    "message": "ሂሳብ ሙላ"
-  },
-  "processing": {
-    "message": "በሂደት ላይ…"
-  },
-  "checkoutError": {
-    "message": "ክፍያ መጀመር አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
-  },
-  "termsOfService": {
-    "message": "የአገልግሎት ውሎች"
-  },
-  "privacyPolicy": {
-    "message": "የግላዊነት ፖሊሲ"
-  },
-  "disclaimerAgree": {
-    "message": "ሂሳብ በመሙላት፣ ከ%TOS% እና %PRIVACY% ጋር ተስማምተዋል።"
-  },
-  "disclaimerFx": {
-    "message": "ከUSD ውጭ በሆነ ገንዘብ ከከፈሉ የውጭ ምንዛሬ ክፍያዎች ሊተገበሩ ይችላሉ።"
-  },
-  "signOut": {
-    "message": "ውጣ"
-  },
-  "onboardDisinfactClick": {
-    "message": "%BTN%ን ጠቅ ማድረግ የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
-  },
-  "onboardDisinfactTap": {
-    "message": "%BTN%ን መንካት የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
-  },
-  "onboardWillCharge": {
-    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
-  },
-  "onboardFactcheck": {
-    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
-  },
-  "onboardTranslations": {
-    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
-  },
-  "onboardRefreshes": {
-    "message": "%BTN%ን ጠቅ ማድረግ ከቀሪ ሂሳብዎ ላይ ይቀንሳል"
   },
   "topUp": {
     "message": "ሙላ"
@@ -255,29 +258,26 @@
     "message": "መጨረሻ የተጠቀሙበት"
   },
   "cleanupTagline": {
-    "message": "የX ምግብዎን ያፅዱ።"
-  },
-  "disclaimerJurisdiction": {
-    "message": "በዩናይትድ ስቴትስ ውስጥ፣ የAlabama፣ Arizona፣ California፣ Colorado፣ Connecticut፣ Delaware፣ Florida፣ Idaho፣ Illinois፣ Indiana፣ Iowa፣ Kansas፣ Kentucky፣ Louisiana፣ Maine፣ Massachusetts፣ Mississippi፣ Missouri፣ Montana፣ New Hampshire፣ New Mexico፣ New York፣ North Carolina፣ North Dakota፣ Oklahoma፣ Oregon፣ Pennsylvania፣ South Carolina፣ South Dakota፣ Tennessee፣ Texas፣ Utah፣ Washington፣ Wisconsin እና Wyoming ነዋሪዎች ብቻ DisinfaX መጠቀም እና ሒሳባቸውን መሙላት ይችላሉ፤ Washington, D.C.፣ ሁሉም የአሜሪካ ግዛቶች እና ያልተዘረዘሩ ማናቸውም ግዛቶች አይካተቱም። ከዩናይትድ ስቴትስ ውጭ፣ በካናዳ፣ አውስትራሊያ፣ ኒው ዚላንድ፣ ሲንጋፖር፣ ደቡብ አፍሪካ፣ ጃፓን፣ ታይዋን፣ ኢንዶኔዥያ፣ ታይላንድ፣ ፊሊፒንስ፣ ማሌዥያ፣ ቬትናም እና ስዊዘርላንድ ይገኛል።"
+    "message": "የX ፊድዎን ያፅዱ።"
   },
   "factCheckAllButton": {
-    "message": "ሁሉንም ማረጋገጥ"
+    "message": "ሁሉንም አጣራ"
   },
   "aiDisclaimer": {
     "message": "DisinfaX ስህተት ሊፈጠር ይችላል። መረጃውን ደግመው ያረጋግጡ።",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "ቀሪ ገንዘብዎ በጣም ዝቅተኛ ነው። ለመቀጠል እባክዎ ገንዘብ ይሙሉ።"
+    "message": "ቀሪ ሂሳብዎ በጣም ዝቅተኛ ነው። ለመቀጠል እባክዎ ሂሳብዎን ይሙሉ።"
   },
   "errAccountSuspended": {
-    "message": "መለያዎ ለጊዜው ተይዟል።"
+    "message": "መለያዎ ተይዟል።"
   },
   "errNotSignedIn": {
     "message": "አልገቡም። እባክዎ ይግቡ እና እንደገና ይሞክሩ።"
   },
   "errInvalidRequest": {
-    "message": "የዚህ ጥያቄ የተወሰነ ክፍል አልታወቀም። ተጨማሪው ወቅታዊ መሆኑን ያረጋግጡ።"
+    "message": "የዚህ ጥያቄ የተወሰነ ክፍል አልታወቀም። እባክዎ ቅጥያው ወቅታዊ መሆኑን ያረጋግጡ።"
   },
   "errServiceUnavailable": {
     "message": "በእኛ በኩል ስህተት ተከስቷል። እባክዎ ከትንሽ ጊዜ በኋላ እንደገና ይሞክሩ።"
@@ -286,9 +286,9 @@
     "message": "በቁጥጥር መስፈርቶች ምክንያት DisinfaX በአካባቢዎ እስካሁን አይገኝም።"
   },
   "errInvalidAmount": {
-    "message": "ያ የገንዘብ መጠን ልክ አይደለም። እባክዎ ሌላ መጠን ይምረጡ።"
+    "message": "ያ የመሙያ መጠን ልክ አይደለም። እባክዎ ሌላ መጠን ይምረጡ።"
   },
   "errNotFound": {
-    "message": "ያ ማግኘት አልተቻለም። እንደገና ይሞክሩ።"
+    "message": "ያ ማግኘት አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
   }
 }

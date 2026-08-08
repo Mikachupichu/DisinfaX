@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Acsene et mostrer les foû-vreyès infôrmåcions dins les tweets avou l'analize IA.",
+    "message": "Detecte eyet mete e vedete li disinformåcion dins les tweets, avou l' analize IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -24,15 +24,15 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Verifiaedje|Rcweraedje|Netiaedje|Dismentaedje|Discovraedje|Sondjaedje|Sclérixhaedje|Fouyaedje|Passaedje|Comparaedje|Mostraedje|Ramassaedje|Cwestionaedje|Analijhaedje|Dizôlaedje|Precijhaedje|Porifiaedje|Ademaskaedje|Apurfondixhaedje|Etudiaedje|Sclairaedje del vraiy|Cweraedje del vraiy",
+    "message": "Verifiaedje|Rcweraedje|Netiaedje|Dismentaedje|Discovraedje|Sondjaedje|Sclérixhaedje|Fouyaedje|Bourixhaedje|Comparaedje|Mostraedje|Ramassaedje|Cwestionaedje|Analijhaedje|Disbrouyaedje|Precijhaedje|Purifiaedje|Ademaskaedje|Apurfondixhaedje|Situdiaedje|Dislumaedje|Dispistaedje|Sipiaedje|Sicrutaedje|Cûjhinaedje|Mitonaedje|Pinsaedje|Rêvasaedje|Meditaedje|Rassemblaedje|Dizabuzaedje|Dinetiaedje|Rinetiaedje|Purdjaedje|Trijaedje|Criblaedje|Fultraedje|Lorgnaedje|Niflaedje|Grujhaedje|Racsegnaedje|Veyaedje|Dischifraedje|Dismontaedje|Pizaedje|Djudjaedje|Riwaitaedje|Loupaedje|Sicanaedje|Testaedje|Validaedje|Rilijhaedje|Waitaedje|Trovaedje|Lijhaedje|Sicrijhaedje|Sayaedje|Studiaedje|Notaedje|Distilaedje|Sintezaedje|Crontchaedje|Tamisaedje|Rayonaedje|Dizombraedje|Ronjaedje|Dismaskaedje|Sipoûssetaedje|Rilûjhaedje|Dispakaedje|Arivaedje|Voyaedje|Bourdonaedje|Adjovaedje|Pårlaedje|Kidjåsaedje|Magnaedje|Bouyaedje|Håstaedje|Toûrnaedje|Rôlaedje|Môlaedje|Forjaedje|Bastixhaedje|Promoenaedje|Dijhaedje|Sûvaedje|Rotaedje|Adjåsaedje|Riflechixhaedje|Adjustaedje|Kimincaedje|Finixhaedje|Rissatchaedje|Sipandaedje|Poirsûvaedje|Dischaufaedje|Sopesaedje|Rimontaedje|Avisaedje|Codaedje",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Foirt probåbe",
+    "message": "Foirt probåblumint",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Probåbe",
+    "message": "Probåblumint",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -44,7 +44,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Discutåve",
+    "message": "Discutåvlumint",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Ecvoc",
+    "message": "Ecwivokmint",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -120,7 +120,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Riricwerdi ciste afirmåcion",
+    "message": "Ricweri ciste afirmåcion",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Translater les verifiaedjes",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Translater",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "d' esse",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ d' esse $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Verifyî",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Rivni",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -170,7 +170,7 @@
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
-    "message": "Balance"
+    "message": "Solde"
   },
   "gifted": {
     "message": "Cadô"
@@ -188,13 +188,13 @@
     "message": "Diminuwer"
   },
   "topUpBalance": {
-    "message": "Ritchårdjî l' balance"
+    "message": "Ricoirdjî l' solde"
   },
   "processing": {
     "message": "Traitmint en cours…"
   },
   "checkoutError": {
-    "message": "Dji n' a nén polou ataker l' payemint. Rissayîz s' i vs plait."
+    "message": "Nos n' avans nén savou ataker l' payemint. Rissayîz, s' i vs plait."
   },
   "termsOfService": {
     "message": "Conditions do siervice"
@@ -230,7 +230,7 @@
     "message": "Cliker so %BTN% cotêyerè vosse solde"
   },
   "topUp": {
-    "message": "Ristoker li conte"
+    "message": "Ricoirdjî"
   },
   "showMore": {
     "message": "Mostrer di pus"
@@ -239,7 +239,7 @@
     "message": "Mostrer moens"
   },
   "landingTagline1": {
-    "message": "Dischovrez l' veur. Trovez les mintes."
+    "message": "Dischovrez li vraiy. Trovez les mintes."
   },
   "landingTagline2": {
     "message": "Pupont d' disinformåcion. Rén ki des faits."
@@ -257,7 +257,7 @@
     "message": "Dièrin eployî"
   },
   "cleanupTagline": {
-    "message": "Rnetyîz vosse floû X."
+    "message": "Rnetyîz vosse fil X."
   },
   "disclaimerJurisdiction": {
     "message": "Ås Estats-Unis, seulmint les cîtoyéns d' l'Alabama, di l'Arizona, di l' Californeye, do Colorado, do Connecticut, do Delaware, di l' Floride, di l'Idaho, di l'Illinois, di l'Indiana, di l'Iowa, do Kansas, do Kentucky, di l' Louisiane, do Maine, do Massachusetts, do Mississippi, do Missouri, do Montana, do New Hampshire, do Nouvea-Mèxike, di New York, di l' Caroline do Nôr, do Dakota do Nôr, di l'Oklahoma, di l'Oregon, di l' Pensilvaneye, di l' Caroline do Sud, do Dakota do Sud, do Tennessee, do Texas, di l'Utah, di Washington, do Wisconsin eyet do Wyoming polèt eployî DisinfaX eyet ristoker leu solde ; Washington, D.C., tos les teritwaires amerikins eyet tos les Estats nén lîstés sont exclus. Foû des Estats-Unis, c' est disponibe å Canada, e l'Australeye, e l' Nouvele-Zelande, a Singapour, e l' Afrike do Sud, å Djapon, a Taiwan, e l'Indonezeye, e l' Tayilande, ås Filipenes, e l' Malèzeye, å Vietnam eyet e l' Suisse."
@@ -266,31 +266,31 @@
     "message": "Verifyî tot"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX pout fé des maleûrs. Ripurdoz l' informåcion deus côps.",
+    "message": "DisinfaX pout si mesprinde. Verifyîz tocôps l' informåcion.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Vosse balance est trop basse. S'i vs plait, rimplixhoz po continouwer."
+    "message": "Vosse solde est trop bas. S' i vs plait, ricoirdjîz vosse solde po continouwer."
   },
   "errAccountSuspended": {
     "message": "Vosse conte a stî sospindou."
   },
   "errNotSignedIn": {
-    "message": "Vos n'estez nén elodjî. S'i vs plait, elodjîz vos et rissayîz."
+    "message": "Vos n' estez nén loguî. S' i vs plait, loguîz vos eyet rissayîz."
   },
   "errInvalidRequest": {
-    "message": "Ene pårt di ç' dimande ci n' a nén stî riconoxhowe. S' i vs plait, verifyîz ki l' ecinne est mete a djoû."
+    "message": "Ene pårt di ç' dimande ci n' a nén stî riconoxhowe. S' i vs plait, verifyîz ki l' ecstinsion est bén metowe a djoû."
   },
   "errServiceUnavailable": {
-    "message": "Ene aroke a arivé di nosse costé. S' i vs plait, rissayîz on pô pus lon."
+    "message": "Ene aroke a arivé di nosse costé. S' i vs plait, rissayîz dins on moumint."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX n' est nén co disponibe dins vosse redjon a cåze des egzijances di l' Etat."
+    "message": "DisinfaX n' est nén co disponibe dins vosse redjon a cåze des egzijances reglementaires."
   },
   "errInvalidAmount": {
-    "message": "Ci monteu la de rimplixhaedje n' est nén valide. S' i vs plait, tchoezixhoz on ôte monteu."
+    "message": "Ci monteu la di ricoirdjaedje n' est nén valide. S' i vs plait, tchoezixhoz on ôte monteu."
   },
   "errNotFound": {
-    "message": "Çoula n' a nén stî trové. Rissayîz."
+    "message": "Çoula n' a nén stî trové. Rissayîz, s' i vs plait."
   }
 }

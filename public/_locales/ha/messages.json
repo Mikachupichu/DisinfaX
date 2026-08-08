@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Fassara Bincike",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Fassara",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "kasance",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "An Bincika",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Koma Baya",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -279,7 +279,7 @@
     "message": "Ba ka shiga ba. Da fatan za a shiga sannan a sake gwadawa."
   },
   "errInvalidRequest": {
-    "message": "Wani bangare na wannan buƙatar bai gane ba. Tabbatar cewa ƴaƴan shafin yana da sabuntawa."
+    "message": "Wani bangare na wannan buƙatar bai gane ba. Tabbatar cewa extension ɗin yana da sabuntar zamani."
   },
   "errServiceUnavailable": {
     "message": "An samu matsala a bangaren mu. Da fatan za a sake gwadawa bayan ɗan lokaci."

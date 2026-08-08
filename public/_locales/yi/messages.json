@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "דעטעקטירט און הייבט ארויס פאַלשע אינפֿארמאַציע אין טוויטס מיט AI אַנאַליז.",
+    "message": "דעטעקטירט און הייבט אַרויס פֿאַלשע אינפֿאָרמאַציע אין טוויטס מיט אַ AI-אַנאַליז.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,15 +16,15 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "אומבאַוואוסט",
+    "message": "אומבאַקאַנט",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "פאַקט־קאָנטראָל",
+    "message": "פֿאַקט־קאָנטראָל",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "פֿאַרזוכן|פֿאָרשן|רייניקן|אַנטלאַרוון|אויפֿדעקן|טראַכטן|באַלויכטן|גראָבן|זיפֿן|פֿאַרגלייכן|אַנטדעקן|זאַמלען|אויספֿרעגן|אַנאַליזירן|קלאָר מאַכן|זוכן דעם אמת|ריין מאַכן|פֿאַרטיפֿן זיך|באַשטעטיקן|אויסזיפֿן|באַװײַזן|אַנטפּלעקן|אָפּזוכן|אַרײַנקוקן|פֿאַרטראַכטן זיך",
+    "message": "אַנטבלאָפֿירן|דיסאינפֿאַקטירן|רייניקן|אַנטפֿאַלשניוזן|פֿאַרריכטן|וואַשן|זוכן|פֿאָרשן|פֿאַקט־קאָנטראָלירן|אַנטמוחוואַשן|אמתדיקן|באַשטעטיקן|טראַכטן|אַנטדעקן|אַנטפּלעקן|קאָנטראָלירן|אַרומפֿאָרשן|זוכן דעם אמת|טראַנספּאַרענטירן|אמתפֿולעווען|אַנטפֿאַלשן|באַלויכטן|קלאַסיפֿיצירן|פּסקענען|אָפּהאָלן|אינפֿאָרמירן|דרייען|לאָדן|קרייזלען|קײַקלען זיך|פֿאַקטירן|פֿאַקטואַליזירן|פֿאַקטן|אַנטמיסטיפֿיצירן|באַאַרבעטן|אַנטקליקבייטן|גראָבן|אמתן|דעפֿאַלשירן|אַנטפֿאַלשירן|אַנטפֿאַלסיפֿיצירן|דעפֿאַלסיפֿיצירן|דעפֿייקן|גענערירן|שרייבן|באַוויסיקן|רעפֿלעקטירן|זיך באַטראַכטן|קאָנטעמפּלירן|באַטראַכטן|מעדיטירן|זוכן אין דער נשמה|אַוואַנטורירן|קאָכן|שעפֿירן|אינטויִרן|לאָגיקירן|רעזאָנירן|פֿילאָסאָפֿירן|קלאָרמאַכן|לייזן|אויפֿקלערן|פֿאָלגערן|קלייבן|זאַמלען|אַנטדרעקן|אַנטלאַרוון|מיטאָס־צעשלאָגן|אַנטנגיעהן|אַנטפּראָפּאַגאַנדירן|גלײַך רעדן|דיזאינפֿעקטירן|דעטאָקסיפֿיצירן|אויסקוועטשן פֿאַקטן|רעוויזירן|זיפֿן|קרייץ־אויספֿרעגן|אויספֿרעגן|אַראָפּנעמען די מאַסקע|צעשנײַדן|אַנטפּלאָנטערן|צעלייגן|אַרויסרייכערן|אויסוואָרצלען|דעקאָנסטרוירן|אָפּקלײַבן|טריאַנגולירן|קרייץ־פֿאַרגלייכן|באַקרעפֿטיקן|וואַלידירן|דיסטילירן|סינטעטיזירן|קנאַקן|אַנטבלוירן|אַנטוואָלקענען|דורכשטעכן דעם נעפּל|פֿילטרירן|רענטגענירן|אַרויסשטעלן|אויפֿהעלן|אויסקלייבן",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -44,7 +44,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "דיסקוטירבאַר",
+    "message": "טענהדיק",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -116,31 +116,31 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "אַנטפּלעקן ווידער אַלע טענות אין דעם טוויט",
+    "message": "אַנטפּלעקן ווידער די טענות פֿון דעם טוויט",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "ריפֿאָרשן דעם טענה",
+    "message": "פֿאָרשן ווידער די טענה",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "פאַקט־קאָנטראָל",
+    "message": "פֿאַקט־קאָנטראָל",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "איבערזעצן פֿאַקט־קאָנטראָלן",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "איבערזעצן",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "צו זײַן",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ צו זײַן $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "פֿאַקט־קאָנטראָלירט",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "גיי צוריק",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "פאַקט־קאָנטראָל",
+    "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -176,10 +176,10 @@
     "message": "געשאָנקען"
   },
   "customTopup": {
-    "message": "אייגן"
+    "message": "אייגענע"
   },
   "customAmountLabel": {
-    "message": "אייגענע פֿילן־סומע אין אמעריקאנער דאלאר"
+    "message": "אייגענע סומע פֿאַר אָנפֿילן, אין אַמעריקאַנער דאָלאַר"
   },
   "increase": {
     "message": "פֿאַרגרעסערן"
@@ -194,28 +194,28 @@
     "message": "באַאַרבעטן…"
   },
   "checkoutError": {
-    "message": "מען האָט נישט געקענט אָנהייבן דעם אויסצאָל. ביטע פּרוּווט נאָך אַ מאָל."
+    "message": "מען האָט נישט געקענט אָנהייבן דעם צאָלפּראָצעס. ביטע פּרוּווט נאָך אַ מאָל."
   },
   "termsOfService": {
-    "message": "טנאָים פֿון סערוויס"
+    "message": "תּנאָים פֿון סערוויס"
   },
   "privacyPolicy": {
     "message": "פּריוואַטקייט־פּאָליסי"
   },
   "disclaimerAgree": {
-    "message": "מיטן אָנפֿילן, איר שטימט צו אונדזערע %TOS% און %PRIVACY%."
+    "message": "ווען איר פֿילט אָן דעם באַלאַנס, שטימט איר צו אונדזערע %TOS% און %PRIVACY%."
   },
   "disclaimerFx": {
-    "message": "אויסטויש־אָפּצאָלן קענען זיך באַקומען אויב איר צאָלט אין אַן אַנדער וואַלוטע ווי USD."
+    "message": "אויב איר צאָלט אין אַן אַנדער וואַלוטע ווי USD, קען מען אײַך רעכענען אויסטויש־אָפּצאָלונגען."
   },
   "signOut": {
     "message": "אַרויסלאָגירן"
   },
   "onboardDisinfactClick": {
-    "message": "אַ קליק אויף %BTN% ווייזט אויס טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+    "message": "אַ קליק אויף %BTN% אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
   },
   "onboardDisinfactTap": {
-    "message": "אַ טאַפּ אויף %BTN% ווייזט אויס טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+    "message": "אַ טאַפּ אויף %BTN% אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
   },
   "onboardWillCharge": {
     "message": "אַ קליק אויף %BTN% וועט אָפּרעכענען פֿון אײַער באַלאַנס"
@@ -245,13 +245,13 @@
     "message": "נישט מער דיסאינפֿאָרמאַציע. נאָר פֿאַקטן."
   },
   "continueWithX": {
-    "message": "המשך מיט X"
+    "message": "פֿאָרזעץ מיט X"
   },
   "continueWithGoogle": {
-    "message": "המשך מיט Google"
+    "message": "פֿאָרזעץ מיט Google"
   },
   "continueWithApple": {
-    "message": "המשך מיט Apple"
+    "message": "פֿאָרזעץ מיט Apple"
   },
   "lastUsed": {
     "message": "צולעצט גענוצט"
@@ -260,37 +260,37 @@
     "message": "רייניק אײַער X פֿיד."
   },
   "disclaimerJurisdiction": {
-    "message": "אין די פֿאַראייניקטע שטאַטן, נאָר תושבֿים פֿון אַלאַבאַמאַ, אַריזאָנאַ, קאַליפֿאָרניע, קאָלאָראַדאָ, קאָנעטיקאָט, דעלאַוער, פֿלאָרידאַ, איידאַהאָ, אילינוי, אינדיאַנאַ, אייאָוואַ, קאַנזאַס, קענטאָקי, לואיזיאַנאַ, מיין, מאַסאַטשוסעטס, מיסיסיפּי, מיזורי, מאָנטאַנאַ, ניו העמפּשיר, ניו מעקסיקאָ, ניו יאָרק, צפֿון קאַראָלינאַ, צפֿון דאַקאָטאַ, אָקלאַהאָמאַ, אָרעגאָן, פּענסילוועיניע, דרום קאַראָלינאַ, דרום דאַקאָטאַ, טענעסי, טעקסאַס, יוטאַ, וואַשינגטאָן, וויסקאָנסין, און וויאָמינג קענען ניצן DisinfaX און אָנפֿילן זייער באַלאַנס; וואַשינגטאָן, D.C., אַלע אַמעריקאַנער טעריטאָריעס, און וועלכע ניט־געציילטע שטאַטן זענען אויסגעשלאָסן. אינדרויסן פֿון די פֿאַראייניקטע שטאַטן, איז עס פֿאַראַן אין קאַנאַדע, אויסטראַליע, ניו זילאַנד, סינגאַפּור, דרום־אַפֿריקע, יאַפּאַן, טײַוואַן, אינדאָנעזיע, טײַלאַנד, די פֿיליפּינען, מאַלייזיע, וויעטנאַם, און שווייץ."
+    "message": "אין די פֿאַראייניקטע שטאַטן, נאָר תושבֿים פֿון אַלאַבאַמאַ, אַריזאָנאַ, קאַליפֿאָרניע, קאָלאָראַדאָ, קאָנעטיקאָט, דעלאַוער, פֿלאָרידאַ, איידאַהאָ, אילינוי, אינדיאַנאַ, אייאָוואַ, קאַנזאַס, קענטאָקי, לואיזיאַנאַ, מיין, מאַסאַטשוסעטס, מיסיסיפּי, מיזורי, מאָנטאַנאַ, ניו העמפּשיר, ניו מעקסיקאָ, ניו יאָרק, צפֿון קאַראָלינאַ, צפֿון דאַקאָטאַ, אָקלאַהאָמאַ, אָרעגאָן, פּענסילוועיניע, דרום קאַראָלינאַ, דרום דאַקאָטאַ, טענעסי, טעקסאַס, יוטאַ, וואַשינגטאָן, וויסקאָנסין, און וויאָמינג קענען ניצן DisinfaX און אָנפֿילן זייער באַלאַנס; וואַשינגטאָן, D.C., אַלע אַמעריקאַנער טעריטאָריעס, און אַלע שטאַטן וואָס זענען נישט דערמאָנט זענען אויסגעשלאָסן. אינדרויסן פֿון די פֿאַראייניקטע שטאַטן, איז עס פֿאַראַן אין קאַנאַדע, אויסטראַליע, ניו זילאַנד, סינגאַפּור, דרום־אַפֿריקע, יאַפּאַן, טײַוואַן, אינדאָנעזיע, טײַלאַנד, די פֿיליפּינען, מאַלייזיע, וויעטנאַם, און שווייץ."
   },
   "factCheckAllButton": {
-    "message": "פאַקט־קאָנטראָלירן אַלץ"
+    "message": "פֿאַקט־קאָנטראָלירן אַלע טענות"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX קען מאַכן גרייזן. קאָנטראָלירט די אינפאָרמאַציע נאָך אַ מאָל.",
+    "message": "DisinfaX קען מאַכן גרייזן. קאָנטראָלירט די אינפֿאָרמאַציע נאָך אַ מאָל.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "דיין וואָג איז צו נידעריק. ביטע לאָדן אָנצוגיין."
+    "message": "אײַער באַלאַנס איז צו נידעריק. ביטע פֿילט אים אָן כּדי פֿאָרצוזעצן."
   },
   "errAccountSuspended": {
-    "message": "דיין חשבון איז סוספּענדירט געוואָרן."
+    "message": "אײַער חשבון איז סוספּענדירט געוואָרן."
   },
   "errNotSignedIn": {
-    "message": "איר זענט נישט אײַנגעשריבן. ביטע מעלדט זיך אָן און פּרוּווט נאָך אַ מאָל."
+    "message": "איר זענט נישט אַרײַנגעלאָגירט. ביטע לאָגירט זיך אַרײַן און פּרוּווט נאָך אַ מאָל."
   },
   "errInvalidRequest": {
-    "message": "א טייל פֿון דעם בקשה איז נישט דערקענט געוואָרן. זיכער מאַכן דאָס אויסשפּרייטונג איז אַקטואַל."
+    "message": "עפּעס אין דער בקשה איז נישט דערקענט געוואָרן. ביטע זיכערט זיך אַז די עקסטענזיע איז אַקטועל."
   },
   "errServiceUnavailable": {
-    "message": "א טעות איז געשען אויף אונדזער זייט. פּרוּווט נאָך אַ מאָל אין א מינוט."
+    "message": "אַ טעות איז געשען אויף אונדזער זײַט. ביטע פּרוּווט נאָך אַ מאָל אין אַ מינוט."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX איז נאָך נישט צוגענגלעך אין דיין געגנט צוליב רעגולאטאָרישע פֿאָדערונגען."
+    "message": "DisinfaX איז נאָך נישט צוגענגלעך אין אײַער געגנט צוליב רעגולאַטאָרישע פֿאָדערונגען."
   },
   "errInvalidAmount": {
-    "message": "דער סומע פֿאַר לאָדן איז נישט גילטיק. ביטע קלייבט אַן אַנדער סומע."
+    "message": "די סומע פֿאַר אָנפֿילן איז נישט גילטיק. ביטע קלײַבט אַן אַנדער סומע."
   },
   "errNotFound": {
-    "message": "דאָס האָט מען נישט געפֿונען. פּרוּווט נאָך אַ מאָל."
+    "message": "דאָס האָט מען נישט געפֿונען. ביטע פּרוּווט נאָך אַ מאָל."
   }
 }

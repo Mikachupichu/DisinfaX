@@ -134,7 +134,7 @@
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -156,19 +156,19 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Preverjeno",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Nazaj",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Preveri",
+    "message": "Razkrij",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
-    "message": "Stanje"
+    "message": "Dobroimetje"
   },
   "gifted": {
     "message": "Podarjeno"
@@ -186,13 +186,13 @@
     "message": "Zmanjšaj"
   },
   "topUpBalance": {
-    "message": "Dopolni stanje"
+    "message": "Dopolni dobroimetje"
   },
   "processing": {
     "message": "Obdelava…"
   },
   "checkoutError": {
-    "message": "Blagajne ni bilo mogoče zagnati. Poskusite znova."
+    "message": "Postopka plačila ni bilo mogoče začeti. Poskusite znova."
   },
   "termsOfService": {
     "message": "Pogoji storitve"
@@ -228,7 +228,7 @@
     "message": "Klik na %BTN% bo obremenil vaše dobroimetje"
   },
   "topUp": {
-    "message": "Napolni"
+    "message": "Dopolni"
   },
   "showMore": {
     "message": "Pokaži več"
@@ -243,22 +243,22 @@
     "message": "Nič več dezinformacij. Samo dejstva."
   },
   "continueWithX": {
-    "message": "Nadaljuj z X"
+    "message": "Nadaljujte z X"
   },
   "continueWithGoogle": {
-    "message": "Nadaljuj z Google"
+    "message": "Nadaljujte z Google"
   },
   "continueWithApple": {
-    "message": "Nadaljuj z Apple"
+    "message": "Nadaljujte z Apple"
   },
   "lastUsed": {
     "message": "Nazadnje uporabljeno"
   },
   "cleanupTagline": {
-    "message": "Uredite svoj vir na X."
+    "message": "Počistite svoj vir na X."
   },
   "disclaimerJurisdiction": {
-    "message": "Znotraj Združenih držav lahko DisinfaX uporabljajo in polnijo dobroimetje samo prebivalci držav Alabama, Arizona, Kalifornija, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Misisipi, Misuri, Montana, New Hampshire, Nova Mehika, New York, Severna Karolina, Severna Dakota, Oklahoma, Oregon, Pensilvanija, Južna Karolina, Južna Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin in Wyoming; Washington, D.C., vsa ozemlja ZDA in vse nenavedene države so izključene. Zunaj Združenih držav je storitev na voljo v Kanadi, Avstraliji, na Novi Zelandiji, v Singapurju, Južnoafriški republiki, na Japonskem, Tajvanu, v Indoneziji, na Tajskem, Filipinih, v Maleziji, Vietnamu in Švici."
+    "message": "Znotraj Združenih držav lahko DisinfaX uporabljajo in polnijo dobroimetje samo prebivalci držav Alabama, Arizona, Kalifornija, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Misisipi, Misuri, Montana, New Hampshire, Nova Mehika, New York, Severna Karolina, Severna Dakota, Oklahoma, Oregon, Pensilvanija, Južna Karolina, Južna Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin in Wyoming; Washington, D.C., vsa ozemlja ZDA in vse nenavedene države so izključene. Zunaj Združenih držav je storitev na voljo v Kanadi, Avstraliji, na Novi Zelandiji, v Singapurju, v Južnoafriški republiki, na Japonskem, na Tajvanu, v Indoneziji, na Tajskem, na Filipinih, v Maleziji, v Vietnamu in v Švici."
   },
   "factCheckAllButton": {
     "message": "Preveri vse"
@@ -271,7 +271,7 @@
     "message": "Vaše dobroimetje je prenizko. Dopolnite ga za nadaljevanje."
   },
   "errAccountSuspended": {
-    "message": "Vaš račun je bil začasno onemogočen."
+    "message": "Vaš račun je bil suspendiran."
   },
   "errNotSignedIn": {
     "message": "Niste prijavljeni. Prijavite se in poskusite znova."

@@ -24,15 +24,15 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Siaki|Su'esu'e|Fa'amamā|Su'e mea moni|Mafaufau|Fa'amalamalama|Eli|Fa'amaonia|Fa'ailoa|Iloa|Fa'ailoa pepelo|Fa'atonutonu|Su'esu'ega|Fa'aaliga|Va'ai loloto|Fa'amaoni|Fa'asa'oina|Su'eina|Fa'ailoaina|Fa'amamāina|Su'esu'e loloto|Fa'ailoa mea moni|Tapenapena|Fa'atulagaina|Fa'amaonia mea moni",
+    "message": "Siaki|Su'esu'e|Fa'amamā|Su'e mea moni|Mafaufau|Fa'amalamalama|Eli|Fa'amaonia|Fa'ailoa|Iloa|Fa'ailoa pepelo|Iloiloina|Su'esu'ega|Fa'aaliga|Va'ai loloto|Fa'amaoni|Fa'asa'oina|Su'eina|Fa'ailoaina|Fa'amamāina|Su'esu'e loloto|Fa'ailoa mea moni|Tapenapena|Fa'atulagaina|Fa'amaonia mea moni",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "E matua mafai lava",
+    "message": "Manino lava",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "E mafai",
+    "message": "Masani",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -40,15 +40,15 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "O le tele",
+    "message": "Tele",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "E felafolafoa'i",
+    "message": "Felafolafoa'i",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "O se vaega",
+    "message": "Vaega",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
@@ -116,11 +116,11 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Toe fa'aalia fa'amatalaga uma i lenei tweet",
+    "message": "Toe fa'aalia tautinoga uma i lenei tweet",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Toe su'esu'e le tagi lea",
+    "message": "Toe su'esu'e le tautinoga lea",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Faaliliu Siakiga",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Faaliliu",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "e",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Ua Siakiina",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Toe Fo'i",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Siaki",
+    "message": "Fa'aali",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -179,7 +179,7 @@
     "message": "Fa'apitoa"
   },
   "customAmountLabel": {
-    "message": "Aofa'i fa'apitoa e fa'aopoopo i tala Amerika"
+    "message": "Aofa'i fa'apitoa e fa'atumu ai, i tala Amerika"
   },
   "increase": {
     "message": "Fa'ateleina"
@@ -188,7 +188,7 @@
     "message": "Fa'aitiitia"
   },
   "topUpBalance": {
-    "message": "Fa'aopoopo le Paleni"
+    "message": "Fa'atumu le Paleni"
   },
   "processing": {
     "message": "O lo'o fa'agasolo…"
@@ -200,34 +200,34 @@
     "message": "Tu'utu'uga o le Auaunaga"
   },
   "privacyPolicy": {
-    "message": "Faiga Fa'avae mo le Le Faalauaiteleina"
+    "message": "Faiga Fa'avae mo le Faalilolilo"
   },
   "disclaimerAgree": {
-    "message": "E ala i le fa'aopoopoina, e te malie i a matou %TOS% ma le %PRIVACY%."
+    "message": "E ala i le fa'atumuina o lau paleni, e te malie ai i le %TOS% ma le %PRIVACY% a matou."
   },
   "disclaimerFx": {
     "message": "E ono fa'aaogaina totogi o fesuia'iga tupe pe a e totogi i se isi tupe e ese mai le USD."
   },
   "signOut": {
-    "message": "Saini i fafo"
+    "message": "Saini ese"
   },
   "onboardDisinfactClick": {
-    "message": "O le kiliki i le %BTN% e faʻaalia ai faʻamatalaga ma o le a totogia ai lau paketi"
+    "message": "O le kiliki i le %BTN% e faʻaalia ai tautinoga ma o le a totogia ai lau paleni"
   },
   "onboardDisinfactTap": {
-    "message": "O le tapa i le %BTN% e faʻaalia ai faʻamatalaga ma o le a totogia ai lau paketi"
+    "message": "O le tapa i le %BTN% e faʻaalia ai tautinoga ma o le a totogia ai lau paleni"
   },
   "onboardWillCharge": {
-    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
   },
   "onboardFactcheck": {
-    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
   },
   "onboardTranslations": {
-    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
   },
   "onboardRefreshes": {
-    "message": "O le kiliki i le %BTN% o le a totogia ai lau paketi"
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
   },
   "topUp": {
     "message": "Faatumu"
@@ -270,7 +270,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "E maualalo tele lau paleni. Faamolemole faaopoopo ina ia mafai ai ona faaauau."
+    "message": "E maualalo tele lau paleni. Faamolemole faʻatumu ina ia mafai ai ona faaauau."
   },
   "errAccountSuspended": {
     "message": "Ua faamotu lou tautusi."
@@ -282,15 +282,15 @@
     "message": "E leʻi iloa se vaega o lenei talosaga. Faamolemole mautinoa ua faafouina le faaopoopoga."
   },
   "errServiceUnavailable": {
-    "message": "Sa tupu se mea sese i le mataupu a matou. Faamolemole toe taumafai i se taimi laititi."
+    "message": "Na tupu se faʻafitauli i le itu o matou. Faamolemole toe taumafai i se taimi laititi."
   },
   "errRegionNotSupported": {
     "message": "E leʻi avanoa le DisinfaX i lou itulagi ona o manaoga faatonutonu."
   },
   "errInvalidAmount": {
-    "message": "E le aoga lena aofaiga o le faaopoopoga. Faamolemole filifili se aofaiga eseese."
+    "message": "E le aoga lena aofaʻi o le faʻatumuina. Faamolemole filifili se aofaʻi eseese."
   },
   "errNotFound": {
-    "message": "E leʻi mafai ona maua lena. Toe taumafai."
+    "message": "E leʻi mafai ona maua lena. Faʻamolemole toe taumafai."
   }
 }

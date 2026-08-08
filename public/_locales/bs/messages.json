@@ -20,11 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Provjera",
+    "message": "Provjera činjenica",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Čišćenje|Pretraga|Istraživanje|Razotkrivanje|Otkrivanje|Razmišljanje|Osvjetljavanje|Kopanje|Filtriranje|Unakrsna provjera|Pročišćavanje|Analiziranje|Traganje za istinom|Demistifikacija|Raskrinkavanje|Pranje|Detoksikacija|Provjeravanje|Otkopavanje|Rasvjetljavanje|Razobličavanje|Prosijavanje|Sortiranje|Ukrštanje podataka|Prečešljavanje|Razlaganje|Dešifrovanje|Razmrsivanje|Provjera činjenica|Njuškanje",
+    "message": "Čišćenje|Raskrinkavanje|Otkrivanje|Razotkrivanje|Traganje za istinom|Provjeravanje|Provjera činjenica|Istraživanje|Razmišljanje|Promišljanje|Kopanje|Otkopavanje|Pretraga|Filtriranje|Prosijavanje|Sortiranje|Prečešljavanje|Unakrsna provjera|Ukrštanje podataka|Potvrđivanje|Provjera izvora|Analiziranje|Rasklapanje|Razlaganje|Dekonstrukcija|Rastavljanje|Rasvjetljavanje|Osvjetljavanje|Razobličavanje|Demistifikacija|Pročišćavanje|Pranje|Detoksikacija|Dezinfekcija laži|Uklanjanje gluposti|Razotkrivanje lažnih vijesti|Debunkiranje|Razbijanje mitova|Ispravljanje|Popravljanje|Sređivanje|Njuškanje|Tragačenje|Ispitivanje|Unakrsno ispitivanje|Saslušavanje|Demaskiranje|Skidanje maske|Rasparčavanje|Razmrsivanje|Dešifrovanje|Dekodiranje|Klasificiranje|Ocjenjivanje|Presuđivanje|Dohvatanje podataka|Prikupljanje|Skupljanje dokaza|Informisanje|Vrtenje|Učitavanje|Kruženje|Okretanje|Obrađivanje|Procesiranje|Generisanje odgovora|Pisanje|Razmatranje|Promatranje|Kontempliranje|Meditiranje|Traganje za smislom|Avanturisanje|Kuhanje istine|Kombinovanje tragova|Zaključivanje|Rasuđivanje|Filozofiranje|Razjašnjavanje|Rješavanje|Prosvjetljivanje|Provjera pristranosti|Uklanjanje propagande|Otkrivanje istine bez uvijanja|Sanitizacija informacija|Detoksikacija vijesti|Cijeđenje činjenica|Revizija|Provjera pouzdanosti|Ukrštanje izvora|Potkrepljivanje dokazima|Validacija|Destilacija|Sintetiziranje|Obračunavanje podataka|Izoštravanje slike|Razgrtanje magle|Rendgensko snimanje|Razotkrivanje prevare|Iluminacija",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -124,15 +124,15 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Provjera",
+    "message": "Provjera činjenica",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Prevedi provjere činjenica",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Prevedi",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Provjereno",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Nazad",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Provjeri",
+    "message": "Otkrij",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -197,7 +197,7 @@
     "message": "Plaćanje nije moglo biti pokrenuto. Molimo pokušajte ponovo."
   },
   "termsOfService": {
-    "message": "Uslovi korištenja"
+    "message": "Uvjeti korištenja"
   },
   "privacyPolicy": {
     "message": "Politika privatnosti"
@@ -212,25 +212,25 @@
     "message": "Odjava"
   },
   "onboardDisinfactClick": {
-    "message": "Klik na %BTN% prikazuje tvrdnje i naplatit će se s vašeg salda"
+    "message": "Klik na %BTN% prikazuje tvrdnje i naplaćuje se s vašeg stanja"
   },
   "onboardDisinfactTap": {
-    "message": "Dodir na %BTN% prikazuje tvrdnje i naplatit će se s vašeg salda"
+    "message": "Dodir na %BTN% prikazuje tvrdnje i naplaćuje se s vašeg stanja"
   },
   "onboardWillCharge": {
-    "message": "Klik na %BTN% naplatit će se s vašeg salda"
+    "message": "Klik na %BTN% naplaćuje se s vašeg stanja"
   },
   "onboardFactcheck": {
-    "message": "Klik na %BTN% naplatit će se s vašeg salda"
+    "message": "Klik na %BTN% naplaćuje se s vašeg stanja"
   },
   "onboardTranslations": {
-    "message": "Klik na %BTN% naplatit će se s vašeg salda"
+    "message": "Klik na %BTN% naplaćuje se s vašeg stanja"
   },
   "onboardRefreshes": {
-    "message": "Klik na %BTN% naplatit će se s vašeg salda"
+    "message": "Klik na %BTN% naplaćuje se s vašeg stanja"
   },
   "topUp": {
-    "message": "Nadoplati"
+    "message": "Dopuni"
   },
   "showMore": {
     "message": "Prikaži više"
@@ -270,13 +270,13 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Vaš saldo je previše nizak. Dopunite račun da biste nastavili."
+    "message": "Vaše stanje je prenisko. Dopunite ga da biste nastavili."
   },
   "errAccountSuspended": {
-    "message": "Vaš račun je suspendovan."
+    "message": "Vaš račun je suspendiran."
   },
   "errNotSignedIn": {
-    "message": "Nisi prijavljen. Prijavite se i pokušajte ponovo."
+    "message": "Niste prijavljeni. Prijavite se i pokušajte ponovo."
   },
   "errInvalidRequest": {
     "message": "Dio ovog zahtjeva nije prepoznat. Provjerite da li je ekstenzija ažurna."

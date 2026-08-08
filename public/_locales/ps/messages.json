@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "تایید|پلټنه|پاکول|رسوا کول|کشف|فکر کول|رڼا کول|کیندنه|چاڼول|شننه|لټون|افشا کول|روښانول|فلټر کول|پرانستل|اصلاح|سکن کول|بیرته کتنه|کوډ ايستل|ماتول کول|حقایقو ټاکل|پرتله کول|لنډیز کول|ځیرکتیا|رازونه ښکاره کول",
+    "message": "تایید|پلټنه|پاکول|رسوا کول|کشف|فکر کول|رڼا کول|کیندنه|چاڼول|شننه|لټون|افشا کول|روښانول|فلټر کول|پرانستل|اصلاح|سکن کول|بياکتنه|کوډ ايستل|ماتول|حقیقت پلټنه|پرتله کول|لنډیز کول|پوهیدنه|رازونه ښکاره کول",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -36,7 +36,7 @@
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
-    "message": "کېدای شي",
+    "message": "شاید",
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
@@ -120,7 +120,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "دا ادعا بیا څېړل",
+    "message": "دا ادعا بیا وپلټئ",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "تایید وژباړئ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ژباړه",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "چې",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ چې $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "تایید شوی",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "بیرته",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {

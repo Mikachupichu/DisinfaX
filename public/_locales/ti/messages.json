@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI መተንተኒ ብምጥቃም ኣብ ትዊታት ሓሰት ሓበሬታ ይረኽብን ዘሕብርን እዩ።",
+    "message": "ብምጥቃም ናይ AI ትንተና፡ ኣብ ትዊታት ዘሎ ጌጋ ሓበሬታ ይልልን ብሩህ ይገብሮን።",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -16,7 +16,7 @@
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "ዘይትፈለጥ",
+    "message": "ዘይፍለጥ",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "ምርምር|ምጽራይ|ምንጻህ|ምድላይ|ምግላጽ|ምሕሳብ|ምብራህ|ምንባብ|ምግምጋም|ምቅላዕ|ምጥርናፍ|ምድህሳስ|ምቁጽጻር|ምጽራይ ሓቂ|ምድላይ ሓቂ|ምግላጽ ሓሶት|ምንጻር ሓቂ|ብርሃን ምብራህ|ናይ መርማሪ ስራሕ|ምውህሃድ ሓበሬታ|ምንጻል ሓሶት|ምስትብሃል|ምጽራይ ሓበሬታ|ምድላይ ሓቂ ብዕምቆት|ምንጻፍ ሓበሬታ",
+    "message": "ምርምር|ምጽራይ|ምንጻር|ምድላይ|ምግላጽ|ምምርማር|ምብራህ|ምንጻል ሓቂ ካብ ሓሶት|ምግምጋም|ምቅላዕ|ምጥርናፍ|ምድህሳስ|ምቁጽጻር|ምጽራይ ሓቂ|ምድላይ ሓቂ|ምግላጽ ሓሶት|ምንጻር ሓቂ|ብርሃን ምብራህ|ናይ መርማሪ ስራሕ|ምውህሃድ ሓበሬታ|ምንጻል ሓሶት|ምስትብሃል|ምጽራይ ሓበሬታ|ምድላይ ሓቂ ብዕምቆት|ምንጻል ሓበሬታ",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -40,11 +40,11 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "ብዙሕ ግዜ",
+    "message": "ብዝበዝሐ",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "ክልውጥ ዝኽእል",
+    "message": "ብክርክር",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -52,7 +52,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "ንዑስ ሓሳብ",
+    "message": "ዘይንጹር",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -120,7 +120,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "ነዚ ይገባኛል እንደገና ምርምር",
+    "message": "ነዚ መግለጺ ደጊም መርምር",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "ምርመራታት ተርጉም",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ተርጉም",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ክኸውን",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ክኸውን $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,22 +158,22 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "ተመርመረ",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "ተመለስ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "ምርምር",
+    "message": "ግለጽ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
     "message": "ቀሪ ሒሳብ"
   },
   "gifted": {
-    "message": "ብህያብ ዝተዋህበ"
+    "message": "ህያብ"
   },
   "customTopup": {
     "message": "ብሕታዊ"
@@ -194,7 +194,7 @@
     "message": "ይሰላሰል ኣሎ…"
   },
   "checkoutError": {
-    "message": "ክፍሊት ክጅምር ኣይከኣለን። በጃኹም እንደገና ፈትኑ።"
+    "message": "ክፍሊት ክጅምር ኣይከኣለን። በጃኻ ደጊምካ ፈትን።"
   },
   "termsOfService": {
     "message": "ውዕላት ኣገልግሎት"
@@ -203,7 +203,7 @@
     "message": "ፖሊሲ ውልቃውነት"
   },
   "disclaimerAgree": {
-    "message": "ብምምላእ፡ ንዓና %TOS% ከምኡውን %PRIVACY% ትሰማማዕ ኢኻ።"
+    "message": "ብምምላእ ሒሳብካ፡ ነቶም ናትና %TOS% ከምኡ'ውን %PRIVACY% ትሰማማዕ ኣለኻ ማለት እዩ።"
   },
   "disclaimerFx": {
     "message": "ብዘይ USD ብኻልእ ባጤራ እንተኸፊልካ ናይ ወጻኢ ምልውዋጥ ክፍሊት ክውሰኽ ይኽእል እዩ።"
@@ -212,10 +212,10 @@
     "message": "ውጻእ"
   },
   "onboardDisinfactClick": {
-    "message": "ኣብ %BTN% ምጥዋቕ ነቲ ጥርዓናት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+    "message": "ኣብ %BTN% ምጥዋቕ ነቶም መግለጺታት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
   },
   "onboardDisinfactTap": {
-    "message": "ኣብ %BTN% ምንካይ ነቲ ጥርዓናት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+    "message": "ኣብ %BTN% ምንካይ ነቶም መግለጺታት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
   },
   "onboardWillCharge": {
     "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
@@ -263,34 +263,34 @@
     "message": "ኣብ ውሽጢ እቲ ሕቡራት መንግስታት፡ ነበርቲ Alabama፡ Arizona፡ California፡ Colorado፡ Connecticut፡ Delaware፡ Florida፡ Idaho፡ Illinois፡ Indiana፡ Iowa፡ Kansas፡ Kentucky፡ Louisiana፡ Maine፡ Massachusetts፡ Mississippi፡ Missouri፡ Montana፡ New Hampshire፡ New Mexico፡ New York፡ North Carolina፡ North Dakota፡ Oklahoma፡ Oregon፡ Pennsylvania፡ South Carolina፡ South Dakota፡ Tennessee፡ Texas፡ Utah፡ Washington፡ Wisconsin፡ ከምኡውን Wyoming ጥራይ እዮም DisinfaX ክጥቀሙን ቀሪ ሒሳቦም ክመልኡን ዝኽእሉ፤ Washington, D.C.፡ ኩሎም ግዝኣታት ኣመሪካ፡ ከምኡውን ዘይተዘርዘሩ ዝኾኑ ግዝኣታት ኣይካተቱን። ኣብ ወጻኢ እቲ ሕቡራት መንግስታት፡ ኣብ ካናዳ፡ ኣውስትራልያ፡ ኒው ዚላንድ፡ ሲንጋፖር፡ ደቡብ ኣፍሪቃ፡ ጃፓን፡ ታይዋን፡ ኢንዶነዥያ፡ ታይላንድ፡ ፊሊፒንስ፡ ማለዥያ፡ ቬትናም፡ ከምኡውን ስዊዘርላንድ ይርከብ።"
   },
   "factCheckAllButton": {
-    "message": "ኩሉ ምርምር"
+    "message": "ኩሉ መርምር"
   },
   "aiDisclaimer": {
     "message": "DisinfaX ጌጋታት ክፍጠር ይኽእል እዩ። ሓበሬታ ደጊምካ ኣረጋግጽ።",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "ቀሪ ገንዘብካ ትሑት እዩ። ንምቕጻል በጃኻ መልእ።"
+    "message": "ቀሪ ሒሳብካ ትሑት እዩ። ንምቕጻል በጃኻ መልእ።"
   },
   "errAccountSuspended": {
-    "message": "ኣካውንትካ ተታሓዙ ኣሎ።"
+    "message": "ኣካውንትካ ተኣጊዱ ኣሎ።"
   },
   "errNotSignedIn": {
     "message": "ኣይኣተውካን። በጃኻ እቶ እሞ ደጊምካ ፈትን።"
   },
   "errInvalidRequest": {
-    "message": "ገለ ካብዚ ጠለብ ኣይተፈለጠን። በጃኻ መተካእታ ዘመናዊ ምዃኑ ኣረጋግጽ።"
+    "message": "ገለ ካብዚ ጠለብ ኣይተፈለጠን። በጃኻ እቲ ኤክስተንሽን ዘመናዊ ምዃኑ ኣረጋግጽ።"
   },
   "errServiceUnavailable": {
     "message": "ካብ ወገንና ጌጋ ተፈጢሩ። በጃኻ ድሕሪ ሓጺር ግዜ ደጊምካ ፈትን።"
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX ብሰንኪ ናይ ቁጽጽር ጠለባት ኣብ ከባቢኻ ገና የለን።"
+    "message": "DisinfaX ብሰንኪ ቁጽጽራዊ ጠለባት ኣብ ከባቢኻ ገና የለን።"
   },
   "errInvalidAmount": {
     "message": "እቲ ናይ ምምላእ መጠን ግቡእ ኣይኮነን። በጃኻ ካልእ መጠን ምረጽ።"
   },
   "errNotFound": {
-    "message": "እዚ ክርከብ ኣይተኻእለን። ደጊምካ ፈትን።"
+    "message": "እዚ ክርከብ ኣይተኻእለን። በጃኻ ደጊምካ ፈትን።"
   }
 }

@@ -114,7 +114,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "이 주장 재연구",
+    "message": "이 주장 재조사",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {

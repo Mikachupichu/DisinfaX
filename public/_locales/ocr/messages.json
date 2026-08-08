@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Traduire las verificacions",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Traduire",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "d'èsser",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Verificat",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Tornar",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -212,22 +212,22 @@
     "message": "Se desconnectar"
   },
   "onboardDisinfactClick": {
-    "message": "Clicking %BTN% reveals claims and will charge your balance"
+    "message": "Un clic sus %BTN% revèla las afirmacions e prendrà d'argent sus vòstre saldo"
   },
   "onboardDisinfactTap": {
-    "message": "Tapping %BTN% reveals claims and will charge your balance"
+    "message": "Un tòc sus %BTN% revèla las afirmacions e prendrà d'argent sus vòstre saldo"
   },
   "onboardWillCharge": {
-    "message": "Clicking %BTN% will charge your balance"
+    "message": "Un clic sus %BTN% prendrà d'argent sus vòstre saldo"
   },
   "onboardFactcheck": {
-    "message": "Clicking %BTN% will charge your balance"
+    "message": "Un clic sus %BTN% prendrà d'argent sus vòstre saldo"
   },
   "onboardTranslations": {
-    "message": "Clicking %BTN% will charge your balance"
+    "message": "Un clic sus %BTN% prendrà d'argent sus vòstre saldo"
   },
   "onboardRefreshes": {
-    "message": "Clicking %BTN% will charge your balance"
+    "message": "Un clic sus %BTN% prendrà d'argent sus vòstre saldo"
   },
   "topUp": {
     "message": "Recargar lo saldo"
@@ -263,10 +263,10 @@
     "message": "Als Estats Units, solament los residents d'Alabama, Arizona, Califòrnia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nòu Hampshire, Nòu Mexic, Nòva York, Carolina del Nòrd, Dakota del Nòrd, Oklahoma, Oregon, Pennsilvània, Carolina del Sud, Dakota del Sud, Tennessee, Texas, Utah, Washington, Wisconsin e Wyoming pòdon utilizar DisinfaX e recargar lor saldo; Washington, D.C., totes los territòris dels Estats Units e tot estat pas listat son exclús. Fòra dels Estats Units, es disponible al Canadà, Austràlia, Nòva Zelanda, Singapor, Africa del Sud, Japon, Taiwan, Indonesia, Tailàndia, las Filipinas, Malàisia, Vietnam e Soïssa."
   },
   "factCheckAllButton": {
-    "message": "Fact-Check All"
+    "message": "Verificar tot"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX can make mistakes. Double-check information.",
+    "message": "DisinfaX pòt far d'errors. Verificatz doblament las informacions.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {

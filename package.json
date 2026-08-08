@@ -8,7 +8,7 @@
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
-    "build:safari": "wxt build -b safari",
+    "build:safari": "wxt build -b safari && cp -R .output/safari-mv2/* ./DisinfaX/Shared\\ \\(Extension\\)/",
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",

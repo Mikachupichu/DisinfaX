@@ -20,11 +20,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "जाँच",
+    "message": "जाँच जारी",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "सफाई|खोजबीन|पर्दाफाश|अनुसंधान|सोच-विचार|उजियार|खुदाई|छानबीन|पुष्टि|भांडाफोड़|मंथन|पड़ताल|सत्यापन|खुलासा|धोवाई|शुद्धिकरण|निचोड़|गोताखोरी|पहचान|सुलझावट|खंगाल|चमकावट|तर्क-वितर्क|पुनरीक्षण|विश्लेषण|प्रकाश डालल|सच्चाई के तलाश|गहराई में खोज",
+    "message": "सफाई|खोजबीन|पर्दाफाश|अनुसंधान|सोच-विचार|उजियार|खुदाई|छानबीन|पुष्टि|भांडाफोड़|मंथन|पड़ताल|सत्यापन|खुलासा|धोवाई|शुद्धिकरण|निचोड़|गोताखोरी|पहचान|समाधान|खंगाल|रोशनी|तर्क-वितर्क|पुनरीक्षण|विश्लेषण|प्रकाश डालत|सच्चाई के तलाश|गहराई में खोज",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -120,27 +120,27 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "एह दावा के फिर से खोजीं",
+    "message": "एह दावा के फेर से खोजीं",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "जाँच",
+    "message": "जाँच जारी",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "फैक्ट-चेक के अनुवाद करीं",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "अनुवाद करीं",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "होखे",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ होखे $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "जाँच भइल",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "वापस जाईं",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -176,7 +176,7 @@
     "message": "उपहार"
   },
   "customTopup": {
-    "message": "अपना"
+    "message": "मनचाहा"
   },
   "customAmountLabel": {
     "message": "अमेरिकी डॉलर में अपना टॉप-अप रकम"
@@ -194,16 +194,16 @@
     "message": "प्रोसेस हो रहल बा…"
   },
   "checkoutError": {
-    "message": "चेकआउट शुरू ना हो सकल। फेर से कोसिस करीं।"
+    "message": "चेकआउट शुरू ना हो सकल। फेर से कोशिश करीं।"
   },
   "termsOfService": {
-    "message": "सेवा के सर्त"
+    "message": "सेवा के शर्त"
   },
   "privacyPolicy": {
     "message": "गोपनीयता नीति"
   },
   "disclaimerAgree": {
-    "message": "टॉप अप करके, रउआ हमनी के %TOS% आ %PRIVACY% से सहमत बानी।"
+    "message": "टॉप अप करके, रउआ हमनी के %TOS% आ %PRIVACY% से सहमत बानीं।"
   },
   "disclaimerFx": {
     "message": "जदी रउआ USD के अलावा कवनो दोसर मुद्रा में भुगतान करीले त विदेशी मुद्रा विनिमय शुल्क लागू हो सकेला।"
@@ -230,7 +230,7 @@
     "message": "%BTN% पर क्लिक कइला से रउरा बैलेंस से पइसा कट जाई"
   },
   "topUp": {
-    "message": "पइसा जोड़ीं"
+    "message": "टॉप अप करीं"
   },
   "showMore": {
     "message": "अउरी देखावीं"

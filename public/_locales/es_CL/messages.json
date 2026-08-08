@@ -128,7 +128,7 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Traducir verificación",
+    "message": "Traducir verificaciones",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
@@ -194,7 +194,7 @@
     "message": "Procesando…"
   },
   "checkoutError": {
-    "message": "No se pudo iniciar el pago. Inténtalo de nuevo."
+    "message": "No se pudo generar el pago. Inténtalo nuevamente."
   },
   "termsOfService": {
     "message": "Términos del servicio"
@@ -266,7 +266,7 @@
     "message": "Verificar todo"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX puede cometer errores. Verifica siempre la información importante.",
+    "message": "DisinfaX puede cometer errores. Revisa siempre la información importante.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
@@ -282,7 +282,7 @@
     "message": "Algo en esta solicitud no se reconoció. Asegúrate de que la extensión esté actualizada."
   },
   "errServiceUnavailable": {
-    "message": "Ocurrió un error de nuestro lado. Vuelve a intentarlo en un momento."
+    "message": "Ocurrió un error en nuestro sistema. Vuelve a intentarlo en un momento."
   },
   "errRegionNotSupported": {
     "message": "DisinfaX aún no está disponible en tu región debido a requisitos regulatorios."

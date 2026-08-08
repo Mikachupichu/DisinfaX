@@ -24,11 +24,11 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Pamariksaan|Panyaringan|Pamaluruhan|Pamikiran|Panerangan|Panggalian|Panganalisaan|Pambukaan bohong|Pangumpulan fakta|Pamriksaan silang|Pangbersihan|Panalungtikan|Pamastian|Panilikan|Pamancakan|Pangbuktian|Pamisahan bebeneran|Pamikiran jero|Panyingkiran hoax|Pamedaran|Panganalisaan data|Panempoan deui|Pamastian fakta|Pangajaran fakta|Pamaluruhan bebeneran",
+    "message": "Pamariksaan|Panyaringan|Pamaluruhan|Pamikiran|Panerangan|Panggalian|Panganalisaan|Pambukaan Bohong|Pangumpulan Fakta|Pamariksaan Silang|Pangbersihan|Panalungtikan|Pamastian|Panilikan|Panalusuran|Pangbuktian|Pamisahan Bebeneran|Pamikiran Jero|Panyingkiran Hoax|Pamedaran|Panganalisaan Data|Panempoan Deui|Pamastian Fakta|Pangajaran Fakta|Pamaluruhan Bebeneran",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Kacida Mungkinna",
+    "message": "Kacida Mungkin",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
@@ -128,11 +128,11 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Tarjamahkeun Pamariksaan Fakta",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Tarjamahkeun",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Parantos Dipariksa",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Balik",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -173,19 +173,19 @@
     "message": "Saldo"
   },
   "gifted": {
-    "message": "Hadiah"
+    "message": "Dihadiahkeun"
   },
   "customTopup": {
     "message": "Khusus"
   },
   "customAmountLabel": {
-    "message": "Jumlah top-up khusus dina dolar AS"
+    "message": "Jumlah eusian khusus dina dolar AS"
   },
   "increase": {
-    "message": "Tambihan"
+    "message": "Tambah"
   },
   "decrease": {
-    "message": "Kurangan"
+    "message": "Kurangi"
   },
   "topUpBalance": {
     "message": "Eusian Saldo"
@@ -230,7 +230,7 @@
     "message": "Klik %BTN% bakal ngabeban saldo anjeun"
   },
   "topUp": {
-    "message": "Eusian Ulang"
+    "message": "Eusian"
   },
   "showMore": {
     "message": "Témbongkeun leuwih loba"
@@ -245,13 +245,13 @@
     "message": "Teu aya deui Disinformasi. Ngan Fakta."
   },
   "continueWithX": {
-    "message": "Teruskeun ku X"
+    "message": "Teruskeun kalayan X"
   },
   "continueWithGoogle": {
-    "message": "Teruskeun ku Google"
+    "message": "Teruskeun kalayan Google"
   },
   "continueWithApple": {
-    "message": "Teruskeun ku Apple"
+    "message": "Teruskeun kalayan Apple"
   },
   "lastUsed": {
     "message": "Panungtung Dipaké"
@@ -266,20 +266,20 @@
     "message": "Pariksa Sadayana"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX bisa kaliru. Pariksa deui inpormasi.",
+    "message": "DisinfaX tiasa lepat. Mangga pariksa deui inpormasina.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "Saldo anjeun teu cekap. Mangga eusian deui saldo pikeun neraskeun."
   },
   "errAccountSuspended": {
-    "message": "Akun anjeun geus dieureunkeun."
+    "message": "Akun anjeun parantos dieureunkeun."
   },
   "errNotSignedIn": {
-    "message": "Anjeun tacan lebet. Mangga lebet sareng cobian deui."
+    "message": "Anjeun teu acan lebet. Mangga lebet sareng cobian deui."
   },
   "errInvalidRequest": {
-    "message": "Aya bagian tina pamundut ieu anu teu wawuh. Mangga pastikeun éksténsi geus anyar."
+    "message": "Aya bagian tina pamundut ieu anu teu wawuh. Mangga pastikeun éksténsi parantos dianyarkeun."
   },
   "errServiceUnavailable": {
     "message": "Aya kasalahan ti pihak kami. Mangga cobian deui sakedap."
@@ -291,6 +291,6 @@
     "message": "Jumlah eusian éta teu valid. Mangga pilih jumlah nu sanés."
   },
   "errNotFound": {
-    "message": "Éta teu kapendak. Cobian deui."
+    "message": "Éta teu kapendak. Mangga cobian deui."
   }
 }

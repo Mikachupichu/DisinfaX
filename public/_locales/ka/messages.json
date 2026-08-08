@@ -1,6 +1,6 @@
 {
   "topUp": {
-    "message": "ბალანსის შევსება"
+    "message": "შევსება"
   },
   "showMore": {
     "message": "მეტის ჩვენება"
@@ -30,7 +30,7 @@
     "message": "გაასუფთავე შენი X-ის ფიდი."
   },
   "disclaimerJurisdiction": {
-    "message": "შეერთებული შტატების შიგნით DisinfaX-ის გამოყენება და ბალანსის შევსება შეუძლიათ მხოლოდ ალაბამას, არიზონას, კალიფორნიის, კოლორადოს, კონექტიკუტის, დელავერის, ფლორიდას, აიდაჰოს, ილინოისის, ინდიანას, აიოვას, კანზასის, კენტუკის, ლუიზიანას, მეინის, მასაჩუსეტსის, მისისიპის, მისურის, მონტანას, ნიუ-ჰემფშირის, ნიუ-მექსიკოს, ნიუ-იორკის, ჩრდილოეთ კაროლინას, ჩრდილოეთ დაკოტას, ოკლაჰომას, ორეგონის, პენსილვანიის, სამხრეთ კაროლინას, სამხრეთ დაკოტას, ტენესის, ტეხასის, იუტას, ვაშინგტონის, ვისკონსინისა და ვაიომინგის მკვიდრებს; ვაშინგტონი D.C., აშშ-ის ყველა ტერიტორია და ნებისმიერი ჩამოუთვლელი შტატი გამორიცხულია. შეერთებული შტატების გარეთ ის ხელმისაწვდომია კანადაში, ავსტრალიაში, ახალ ზელანდიაში, სინგაპურში, სამხრეთ აფრიკაში, იაპონიაში, ტაივანში, ინდონეზიაში, ტაილანდში, ფილიპინებში, მალაიზიაში, ვიეტნამსა და შვეიცარიაში."
+    "message": "შეერთებული შტატების შიგნით DisinfaX-ის გამოყენება და ბალანსის შევსება შეუძლიათ მხოლოდ ალაბამის, არიზონის, კალიფორნიის, კოლორადოს, კონექტიკუტის, დელავერის, ფლორიდის, აიდაჰოს, ილინოისის, ინდიანის, აიოვის, კანზასის, კენტუკის, ლუიზიანის, მეინის, მასაჩუსეტსის, მისისიპის, მისურის, მონტანის, ნიუ-ჰემფშირის, ნიუ-მექსიკოს, ნიუ-იორკის, ჩრდილოეთ კაროლინის, ჩრდილოეთ დაკოტის, ოკლაჰომის, ორეგონის, პენსილვანიის, სამხრეთ კაროლინის, სამხრეთ დაკოტის, ტენესის, ტეხასის, იუტის, ვაშინგტონის, ვისკონსინისა და ვაიომინგის მკვიდრებს; ვაშინგტონი D.C., აშშ-ის ყველა ტერიტორია და ნებისმიერი ჩამოუთვლელი შტატი გამორიცხულია. შეერთებული შტატების გარეთ ის ხელმისაწვდომია კანადაში, ავსტრალიაში, ახალ ზელანდიაში, სინგაპურში, სამხრეთ აფრიკაში, იაპონიაში, ტაივანში, ინდონეზიაში, ტაილანდში, ფილიპინებში, მალაიზიაში, ვიეტნამში და შვეიცარიაში."
   },
   "appName": {
     "message": "DisinfaX",
@@ -56,6 +56,9 @@
     "message": "შემოწმება",
     "description": "Verdict label shown while the claim is being analyzed."
   },
+  "researchingWords": {
+    "message": "შემოწმება|გამოკვლევა|გამოვლენა|გაწმენდა|ძებნა|აღმოჩენა|ანალიზი|შეფასება|დადასტურება|გადამოწმება|გაფილტვრა|ჭეშმარიტების ძიება|განმარტება|დამტკიცება|გამორკვევა|გაშიფვრა|დაზუსტება|განსჯა|დაფიქრება|დამუშავება|ცნობა|მოსინჯვა|დაზვერვა|ცოდნის მოძიება|სიცრუის მხილება|სინათლის მოფენა"
+  },
   "adjVeryLikely": {
     "message": "ძალიან სავარაუდო",
     "description": "Adjective for high-confidence verdicts."
@@ -73,7 +76,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "სადავო",
+    "message": "სადავოდ",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -81,7 +84,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "ორაზროვანი",
+    "message": "ორაზროვნად",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -149,7 +152,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "ამ მტკიცების ხელახალი კვლევა",
+    "message": "ამ მტკიცების ხელახლა კვლევა",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -157,11 +160,11 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "შემოწმებების თარგმნა",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "თარგმნა",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -169,7 +172,7 @@
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ იყოს $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -187,15 +190,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "შემოწმებულია",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "დაბრუნება",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "შემოწმება",
+    "message": "გამოვლენა",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -232,7 +235,7 @@
     "message": "კონფიდენციალურობის პოლიტიკა"
   },
   "disclaimerAgree": {
-    "message": "შევსებით თქვენ ეთანხმებით ჩვენს %TOS%-სა და %PRIVACY%-ს."
+    "message": "ბალანსის შევსებით თქვენ ეთანხმებით ჩვენს %TOS%-სა და %PRIVACY%-ს."
   },
   "disclaimerFx": {
     "message": "სავალუტო კონვერტაციის საკომისიო შესაძლოა დაგერიცხოთ, თუ გადაიხდით USD-ისგან განსხვავებულ ვალუტაში."
@@ -241,10 +244,10 @@
     "message": "გასვლა"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN%-ზე დაწკაპუნება გამოავლენს განცხადებებს და დაგერიცხებათ საფასური ბალანსიდან"
+    "message": "%BTN%-ზე დაწკაპუნება გამოავლენს მტკიცებებს და დაგერიცხებათ საფასური ბალანსიდან"
   },
   "onboardDisinfactTap": {
-    "message": "%BTN%-ზე შეხებით გამოჩნდება განცხადებები და დაგერიცხებათ საფასური ბალანსიდან"
+    "message": "%BTN%-ზე შეხება გამოავლენს მტკიცებებს და დაგერიცხებათ საფასური ბალანსიდან"
   },
   "onboardWillCharge": {
     "message": "%BTN%-ზე დაწკაპუნებით დაგერიცხებათ საფასური ბალანსიდან"
@@ -266,27 +269,27 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "თქვენი ბალანსი ძალიან დაბალია. გასაგრძელებლად შეავსეთ ბალანსი."
+    "message": "თქვენი ბალანსი ძალიან დაბალია. გთხოვთ, შეავსოთ ბალანსი გასაგრძელებლად."
   },
   "errAccountSuspended": {
     "message": "თქვენი ანგარიში შეჩერებულია."
   },
   "errNotSignedIn": {
-    "message": "თქვენ არ ხართ შესული. გთხოვთ, შედით და კვლავ სცადოთ."
+    "message": "თქვენ არ ხართ შესული. გთხოვთ, შეხვიდეთ და ხელახლა სცადოთ."
   },
   "errInvalidRequest": {
-    "message": "ამ მოთხოვნის ნაწილი არ იქნა ამოცნობილი. დარწმუნდით, რომ გაფართოება განახლებულია."
+    "message": "ამ მოთხოვნის ნაწილი არ იქნა ამოცნობილი. გთხოვთ, დარწმუნდეთ, რომ გაფართოება განახლებულია."
   },
   "errServiceUnavailable": {
-    "message": "ჩვენს მხრიდან წარმოიშვა შეცდომა. მოგვიანებით სცადეთ ხელახლა."
+    "message": "ჩვენს მხრიდან მოხდა შეცდომა. გთხოვთ, მოგვიანებით ისევ სცადოთ."
   },
   "errRegionNotSupported": {
     "message": "რეგულატორული მოთხოვნების გამო DisinfaX ჯერ არ არის ხელმისაწვდომი თქვენს რეგიონში."
   },
   "errInvalidAmount": {
-    "message": "ეს შევსების თანხა არასწორია. აირჩიეთ სხვა თანხა."
+    "message": "ეს შევსების თანხა არასწორია. გთხოვთ, აირჩიოთ სხვა თანხა."
   },
   "errNotFound": {
-    "message": "ეს ვერ მოიძებნა. სცადეთ ხელახლა."
+    "message": "ეს ვერ მოიძებნა. გთხოვთ, სცადოთ ხელახლა."
   }
 }

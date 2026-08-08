@@ -1,43 +1,73 @@
 {
-  "topUp": {
-    "message": "Cuir Airgead Leis"
+  "balanceLabel": {
+    "message": "Iarmhéid"
   },
-  "showMore": {
-    "message": "Taispeáin níos mó"
+  "gifted": {
+    "message": "Bronnta"
   },
-  "showLess": {
-    "message": "Taispeáin níos lú"
+  "customTopup": {
+    "message": "Saincheaptha"
   },
-  "landingTagline1": {
-    "message": "Nocht an Fhírinne. Aimsigh na Bréaga."
+  "customAmountLabel": {
+    "message": "Méid athlíonta saincheaptha i ndollair SAM"
   },
-  "landingTagline2": {
-    "message": "Deireadh leis an mBréagaisnéis. Fíricí amháin."
+  "increase": {
+    "message": "Méadaigh"
   },
-  "continueWithX": {
-    "message": "Lean ar aghaidh le X"
+  "decrease": {
+    "message": "Laghdaigh"
   },
-  "continueWithGoogle": {
-    "message": "Lean ar aghaidh le Google"
+  "topUpBalance": {
+    "message": "Athlíon an Iarmhéid"
   },
-  "continueWithApple": {
-    "message": "Lean ar aghaidh le Apple"
+  "processing": {
+    "message": "Á phróiseáil…"
   },
-  "lastUsed": {
-    "message": "Úsáidte go Deireanach"
+  "checkoutError": {
+    "message": "Níorbh fhéidir an íocaíocht a thosú. Bain triail eile as."
   },
-  "cleanupTagline": {
-    "message": "Glan suas d'Fhotha X."
+  "termsOfService": {
+    "message": "Téarmaí Seirbhíse"
+  },
+  "privacyPolicy": {
+    "message": "Beartas Príobháideachais"
+  },
+  "disclaimerAgree": {
+    "message": "Trí athlíonadh, aontaíonn tú lenár %TOS% agus %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "D’fhéadfadh táillí malairte eachtraí a bheith i bhfeidhm má íocann tú in airgeadra seachas USD."
   },
   "disclaimerJurisdiction": {
-    "message": "Laistigh de na Stáit Aontaithe, ní féidir ach le cónaitheoirí Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Nua-Eabhrac, Carolina Thuaidh, Dakota Thuaidh, Oklahoma, Oregon, Pennsylvania, Carolina Theas, Dakota Theas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a úsáid agus a n-iarmhéid a mhéadú; tá Washington, D.C., críocha uile na S.A., agus aon stát nach bhfuil liostaithe eisiata. Lasmuigh de na Stáit Aontaithe, tá sé ar fáil i gCeanada, san Astráil, sa Nua-Shéalainn, i Singeapór, san Afraic Theas, sa tSeapáin, san Téaváin, san Indinéis, sa Téalainn, sna hOileáin Fhilipíneacha, sa Mhalaeisia, i Vítneam, agus san Eilvéis."
+    "message": "Laistigh de na Stáit Aontaithe, ní féidir ach le cónaitheoirí Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Nua-Eabhrac, Carolina Thuaidh, Dakota Thuaidh, Oklahoma, Oregon, Pennsylvania, Carolina Theas, Dakota Theas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a úsáid agus a n-iarmhéid a mhéadú; tá Washington, D.C., críocha uile na S.A., agus aon stát nach bhfuil liostaithe eisiata. Lasmuigh de na Stáit Aontaithe, tá sé ar fáil i gCeanada, san Astráil, sa Nua-Shéalainn, i Singeapór, san Afraic Theas, sa tSeapáin, sa Téaváin, san Indinéis, sa Téalainn, sna hOileáin Fhilipíneacha, sa Mhalaeisia, i Vítneam, agus san Eilvéis."
+  },
+  "signOut": {
+    "message": "Logáil amach"
+  },
+  "onboardDisinfactClick": {
+    "message": "Nuair a chliceálann tú %BTN%, nochtar éilimh agus gearrfar ar d'iarmhéid"
+  },
+  "onboardDisinfactTap": {
+    "message": "Nuair a thapálann tú %BTN%, nochtar éilimh agus gearrfar ar d'iarmhéid"
+  },
+  "onboardWillCharge": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar ar d'iarmhéid"
+  },
+  "onboardFactcheck": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar ar d'iarmhéid"
+  },
+  "onboardTranslations": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar ar d'iarmhéid"
+  },
+  "onboardRefreshes": {
+    "message": "Nuair a chliceálann tú %BTN%, gearrfar ar d'iarmhéid"
   },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Braitheann agus aibhsíonn sé bréagaisnéis i d tweets ag baint úsáide as anailís AI.",
+    "message": "Braitheann agus aibhsíonn sé bréagaisnéis i dtvuíteanna ag baint úsáide as anailís AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -57,7 +87,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Seiceáil|Taighde|Glanadh|Nochtadh|Bréagnú|Smaoineamh|Soilsiú|Tochailt|Síoladh|Deimhniú|Anailísiú|Comparáid|Réiteach|Fionnachtain|Cuardach|Bailiú|Scagadh|Trasnú|Machnamh|Follasú|Fiosrú|Cinntiú|Grinnscrúdú|Iniúchadh|Meá",
+    "message": "Seiceáil|Taighde|Glanadh|Nochtadh|Bréagnú|Smaoineamh|Soilsiú|Tochailt|Cíoradh|Deimhniú|Anailísiú|Comparáid|Réiteach|Fionnachtain|Cuardach|Bailiú|Scagadh|Trasnú|Machnamh|Follasú|Fiosrú|Cinntiú|Grinnscrúdú|Iniúchadh|Meá",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -85,7 +115,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Ainbheartha",
+    "message": "Débhríoch",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -153,7 +183,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Taighde arís ar an éileamh seo",
+    "message": "Déan taighde ar an éileamh seo arís",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -161,19 +191,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Aistrigh na Seiceálacha",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Aistrigh",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Seiceáilte",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Téigh Siar",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Seiceáil",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "badgeFiller": {
     "message": "a bheith",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ a bheith $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -190,87 +232,45 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  "topUp": {
+    "message": "Athlíon"
   },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  "showMore": {
+    "message": "Taispeáin níos mó"
   },
-  "disinfactButton": {
-    "message": "Seiceáil",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  "showLess": {
+    "message": "Taispeáin níos lú"
   },
-  "balanceLabel": {
-    "message": "Iarmhéid"
+  "landingTagline1": {
+    "message": "Nocht an Fhírinne. Aimsigh na Bréaga."
   },
-  "gifted": {
-    "message": "Bronnta"
+  "landingTagline2": {
+    "message": "Deireadh leis an mBréagaisnéis. Fíricí amháin."
   },
-  "customTopup": {
-    "message": "Saincheaptha"
+  "continueWithX": {
+    "message": "Lean ar aghaidh le X"
   },
-  "customAmountLabel": {
-    "message": "Méid athlíonta saincheaptha i ndollair SAM"
+  "continueWithGoogle": {
+    "message": "Lean ar aghaidh le Google"
   },
-  "increase": {
-    "message": "Méadaigh"
+  "continueWithApple": {
+    "message": "Lean ar aghaidh le Apple"
   },
-  "decrease": {
-    "message": "Laghdaigh"
+  "lastUsed": {
+    "message": "Úsáidte go Deireanach"
   },
-  "topUpBalance": {
-    "message": "Athlíon an tIarmhéid"
-  },
-  "processing": {
-    "message": "Á phróiseáil…"
-  },
-  "checkoutError": {
-    "message": "Níorbh fhéidir an t-íoc a thosú. Bain triail eile as."
-  },
-  "termsOfService": {
-    "message": "Téarmaí Seirbhíse"
-  },
-  "privacyPolicy": {
-    "message": "Beartas Príobháideachais"
-  },
-  "disclaimerAgree": {
-    "message": "Trí athlíonadh, aontaíonn tú lenár %TOS% agus %PRIVACY%."
-  },
-  "disclaimerFx": {
-    "message": "D’fhéadfadh táillí malairte eachtraí a bheith i bhfeidhm má íocann tú in airgeadra seachas USD."
-  },
-  "signOut": {
-    "message": "Logáil amach"
-  },
-  "onboardDisinfactClick": {
-    "message": "Nuair a chliceálann tú %BTN%, nochtar éilimh agus gearrfar do d'iarmhéid"
-  },
-  "onboardDisinfactTap": {
-    "message": "Nuair a thapálann tú %BTN%, nochtar éilimh agus gearrfar do d'iarmhéid"
-  },
-  "onboardWillCharge": {
-    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
-  },
-  "onboardFactcheck": {
-    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
-  },
-  "onboardTranslations": {
-    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
-  },
-  "onboardRefreshes": {
-    "message": "Nuair a chliceálann tú %BTN%, gearrfar do d'iarmhéid"
+  "cleanupTagline": {
+    "message": "Glan suas d'Fhotha X."
   },
   "factCheckAllButton": {
-    "message": "Seiceáil uile"
+    "message": "Seiceáil Uile"
   },
   "aiDisclaimer": {
     "message": "Is féidir le DisinfaX botúin a dhéanamh. Seiceáil an fhaisnéis go cúramach.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Tá d'iarmhéid ró-íseal. Cuir breis chun leanúint ar aghaidh."
+    "message": "Tá d'iarmhéid ró-íseal. Athlíon é chun leanúint ar aghaidh."
   },
   "errAccountSuspended": {
     "message": "Cuireadh do chuntas ar fionraí."
@@ -288,7 +288,7 @@
     "message": "Níl DisinfaX ar fáil i do réigiún fós mar gheall ar riachtanais rialála."
   },
   "errInvalidAmount": {
-    "message": "Níl an méid breise sin bailí. Roghnaigh méid difriúil."
+    "message": "Níl an méid athlíonta sin bailí. Roghnaigh méid difriúil."
   },
   "errNotFound": {
     "message": "Níorbh fhéidir é sin a aimsiú. Bain triail eile as."

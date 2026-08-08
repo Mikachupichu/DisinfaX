@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Бо истифода аз таҳлили AI иттилооти бардурӯғро дар твитҳо ошкор ва таъкид мекунад.",
+    "message": "Бо истифода аз таҳлили AI иттилооти бардурӯғро дар твитҳо муайян ва қайд мекунад.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -24,7 +24,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Тафтиш|Тозакунӣ|Ҷустуҷӯ|Ошкоркунӣ|Фикркунӣ|Равшанкунӣ|Кофтуков|Ғарбол|Таҳлил|Тафаккур|Санҷиш|Ошкор кардани дурӯғ|Ҷамъоварии далелҳо|Муқоиса|Баҳодиҳӣ|Кушодани сир|Кори детективӣ|Тасдиқ|Ҷудокунӣ|Равшансозии ҳақиқат|Тафтиши мутақобила|Гурӯҳбандӣ|Омӯзиш|Кофтуковкунии ҳақиқат|Тозакунии иттилоот",
+    "message": "Тафтиш|Тозакунӣ|Ҷустуҷӯ|Ошкоркунӣ|Фикркунӣ|Равшанкунӣ|Кофтуков|Ғарболкунӣ|Таҳлил|Тафаккур|Санҷиш|Ошкор кардани дурӯғ|Ҷамъоварии далелҳо|Муқоиса|Баҳодиҳӣ|Кушодани сир|Кори детективӣ|Тасдиқ|Ҷудокунӣ|Равшансозии ҳақиқат|Тафтиши мутақобила|Гурӯҳбандӣ|Омӯзиш|Кофтуковкунии ҳақиқат|Тозакунии иттилоот",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -120,7 +120,7 @@
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Азнавтаҳқиқ кардани ин даъво",
+    "message": "Аз нав тафтиш кардани ин даъво",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
@@ -128,19 +128,19 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Тарҷумаи натиҷаҳои тафтиш",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Тарҷума",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ки",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ ки $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,15 +158,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Тафтиш шуд",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Бозгашт",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Тафтиш",
+    "message": "Ошкор кардан",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -176,10 +176,10 @@
     "message": "Тӯҳфа"
   },
   "customTopup": {
-    "message": "Фармоишӣ"
+    "message": "Дилхоҳ"
   },
   "customAmountLabel": {
-    "message": "Маблағи фармоишии пуркунӣ бо доллари ИМА"
+    "message": "Маблағи дилхоҳи пуркунӣ бо доллари ИМА"
   },
   "increase": {
     "message": "Зиёд кардан"
@@ -212,22 +212,22 @@
     "message": "Баромадан"
   },
   "onboardDisinfactClick": {
-    "message": "Клик кардан ба %BTN% даъвоҳоро нишон медиҳад ва аз тавозуни шумо маблағ гирифта мешавад"
+    "message": "Клик кардан ба %BTN% даъвоҳоро ошкор мекунад ва аз бақияи шумо маблағ гирифта мешавад"
   },
   "onboardDisinfactTap": {
-    "message": "Зер кардани %BTN% даъвоҳоро нишон медиҳад ва аз тавозуни шумо маблағ гирифта мешавад"
+    "message": "Зер кардани %BTN% даъвоҳоро ошкор мекунад ва аз бақияи шумо маблағ гирифта мешавад"
   },
   "onboardWillCharge": {
-    "message": "Клик кардан ба %BTN% аз тавозуни шумо маблағ мегирад"
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
   },
   "onboardFactcheck": {
-    "message": "Клик кардан ба %BTN% аз тавозуни шумо маблағ мегирад"
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
   },
   "onboardTranslations": {
-    "message": "Клик кардан ба %BTN% аз тавозуни шумо маблағ мегирад"
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
   },
   "onboardRefreshes": {
-    "message": "Клик кардан ба %BTN% аз тавозуни шумо маблағ мегирад"
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
   },
   "topUp": {
     "message": "Пур кардан"
@@ -266,11 +266,11 @@
     "message": "Ҳамаро тафтиш кардан"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX мумкин хато кунад. Маълумотро дубора санҷед.",
+    "message": "DisinfaX метавонад хато кунад. Маълумотро дубора санҷед.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Тавозуни шумо хеле паст аст. Барои идома додан, лутфан пур кунед."
+    "message": "Бақияи шумо хеле кам аст. Барои идома додан, лутфан онро пур кунед."
   },
   "errAccountSuspended": {
     "message": "Ҳисоби шумо боздошта шудааст."
@@ -279,16 +279,16 @@
     "message": "Шумо ворид нашудаед. Лутфан ворид шавед ва боз кӯшиш кунед."
   },
   "errInvalidRequest": {
-    "message": "Қисме аз ин дархост шинохта нашуд. Лутфан мутмаин шавед, ки васеъшавӣ навсозӣ шудааст."
+    "message": "Қисме аз ин дархост шинохта нашуд. Лутфан мутмаин шавед, ки барнома навсозӣ шудааст."
   },
   "errServiceUnavailable": {
     "message": "Дар тарафи мо хатогӣ рух дод. Лутфан пас аз лаҳзае боз кӯшиш кунед."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX ҳоло дар минтақаи шумо мавҷуд нест, зеро талаботи танзимкунанда."
+    "message": "DisinfaX ҳоло дар минтақаи шумо аз сабаби талаботи қонунгузорӣ дастрас нест."
   },
   "errInvalidAmount": {
-    "message": "Ин миқдори пуркунӣ дуруст нест. Лутфан миқдори дигар интихоб кунед."
+    "message": "Ин маблағи пуркунӣ дуруст нест. Лутфан маблағи дигар интихоб кунед."
   },
   "errNotFound": {
     "message": "Он ёфт нашуд. Лутфан боз кӯшиш кунед."

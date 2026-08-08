@@ -1,9 +1,72 @@
 {
+  "balanceLabel": {
+    "message": "الرصيد"
+  },
+  "gifted": {
+    "message": "هدية"
+  },
+  "customTopup": {
+    "message": "مخصص"
+  },
+  "customAmountLabel": {
+    "message": "مبلغ شحن مخصص بالدولار الأمريكي"
+  },
+  "increase": {
+    "message": "زيادة"
+  },
+  "decrease": {
+    "message": "تقليل"
+  },
+  "topUpBalance": {
+    "message": "شحن الرصيد"
+  },
+  "processing": {
+    "message": "جارٍ المعالجة…"
+  },
+  "checkoutError": {
+    "message": "تعذّر بدء الدفع. يُرجى المحاولة مرة أخرى."
+  },
+  "termsOfService": {
+    "message": "شروط الخدمة"
+  },
+  "privacyPolicy": {
+    "message": "سياسة الخصوصية"
+  },
+  "disclaimerAgree": {
+    "message": "بشحن رصيدك، فإنك توافق على %TOS% و%PRIVACY% الخاصة بنا."
+  },
+  "disclaimerFx": {
+    "message": "قد تُطبَّق رسوم صرف العملات إذا دفعت بعملة غير الدولار الأمريكي."
+  },
+  "disclaimerJurisdiction": {
+    "message": "داخل الولايات المتحدة، يمكن فقط لسكان ألاباما وأريزونا وكاليفورنيا وكولورادو وكونيتيكت وديلاوير وفلوريدا وأيداهو وإلينوي وإنديانا وآيوا وكانساس وكنتاكي ولويزيانا ومين وماساتشوستس وميسيسيبي وميزوري ومونتانا ونيوهامبشير ونيومكسيكو ونيويورك وكارولينا الشمالية وداكوتا الشمالية وأوكلاهوما وأوريغون وبنسلفانيا وكارولينا الجنوبية وداكوتا الجنوبية وتينيسي وتكساس ويوتا وواشنطن وويسكونسن ووايومنغ استخدام DisinfaX وشحن رصيدهم؛ وتُستثنى واشنطن D.C. وجميع الأقاليم الأمريكية وأي ولايات غير مدرجة. خارج الولايات المتحدة، يتوفر في كندا وأستراليا ونيوزيلندا وسنغافورة وجنوب أفريقيا واليابان وتايوان وإندونيسيا وتايلاند والفلبين وماليزيا وفيتنام وسويسرا."
+  },
+  "signOut": {
+    "message": "تسجيل الخروج"
+  },
+  "onboardDisinfactClick": {
+    "message": "النقر على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardDisinfactTap": {
+    "message": "الضغط على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardWillCharge": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardFactcheck": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardTranslations": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardRefreshes": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
   "appName": {
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "يكشف ويبرز المعلومات المضللة في التغريدات باستخدام تحليلات الذكاء الاصطناعي."
+    "message": "يكتشف التضليل في التغريدات ويسلّط الضوء عليه باستخدام تحليل الذكاء الاصطناعي."
   },
   "verdictTrue": {
     "message": "صحيح",
@@ -18,7 +81,7 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "التحقق",
+    "message": "قيد التحقق",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
@@ -26,7 +89,7 @@
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "محتمل جداً",
+    "message": "محتمل جدًا",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
@@ -42,15 +105,15 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "قابل للنقاش",
+    "message": "جدلاً",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
-    "message": "جزئياً",
+    "message": "جزئيًا",
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "مبهم",
+    "message": "ملتبس",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -114,31 +177,43 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "الكشف مجددًا عن كل الادعاءات في هذه التغريدة",
+    "message": "إعادة الكشف عن ادعاءات هذه التغريدة",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "إعادة بحث هذا الادعاء",
+    "message": "إعادة البحث في هذا الادعاء",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "التحقق",
+    "message": "قيد التحقق",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "ترجمة التحقق",
+    "message": "ترجمة نتائج التحقق",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
     "message": "ترجمة",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "تم التحقق",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "رجوع",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "تحقق",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "أن يكون",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ أن يكون $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -154,78 +229,6 @@
         "example": "Very Likely"
       }
     }
-  },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
-  },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
-  },
-  "disinfactButton": {
-    "message": "تحقق",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
-  },
-  "balanceLabel": {
-    "message": "الرصيد"
-  },
-  "gifted": {
-    "message": "هدية"
-  },
-  "customTopup": {
-    "message": "مخصص"
-  },
-  "customAmountLabel": {
-    "message": "مبلغ شحن مخصص بالدولار الأمريكي"
-  },
-  "increase": {
-    "message": "زيادة"
-  },
-  "decrease": {
-    "message": "إنقاص"
-  },
-  "topUpBalance": {
-    "message": "شحن الرصيد"
-  },
-  "processing": {
-    "message": "جارٍ المعالجة…"
-  },
-  "checkoutError": {
-    "message": "تعذّر بدء الدفع. يُرجى المحاولة مرة أخرى."
-  },
-  "termsOfService": {
-    "message": "شروط الخدمة"
-  },
-  "privacyPolicy": {
-    "message": "سياسة الخصوصية"
-  },
-  "disclaimerAgree": {
-    "message": "بشحن رصيدك، فإنك توافق على %TOS% و%PRIVACY% الخاصة بنا."
-  },
-  "disclaimerFx": {
-    "message": "قد تُطبَّق رسوم صرف العملات إذا دفعت بعملة غير الدولار الأمريكي."
-  },
-  "signOut": {
-    "message": "تسجيل الخروج"
-  },
-  "onboardDisinfactClick": {
-    "message": "النقر على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
-  },
-  "onboardDisinfactTap": {
-    "message": "الضغط على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
-  },
-  "onboardWillCharge": {
-    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
-  },
-  "onboardFactcheck": {
-    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
-  },
-  "onboardTranslations": {
-    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
-  },
-  "onboardRefreshes": {
-    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
   },
   "topUp": {
     "message": "شحن"
@@ -257,18 +260,15 @@
   "cleanupTagline": {
     "message": "نظّف خلاصتك على X."
   },
-  "disclaimerJurisdiction": {
-    "message": "داخل الولايات المتحدة، يمكن فقط لسكان ألاباما وأريزونا وكاليفورنيا وكولورادو وكونيتيكت وديلاوير وفلوريدا وأيداهو وإلينوي وإنديانا وآيوا وكانساس وكنتاكي ولويزيانا ومين وماساتشوستس وميسيسيبي وميزوري ومونتانا ونيوهامبشير ونيومكسيكو ونيويورك وكارولينا الشمالية وداكوتا الشمالية وأوكلاهوما وأوريغون وبنسلفانيا وكارولينا الجنوبية وداكوتا الجنوبية وتينيسي وتكساس ويوتا وواشنطن وويسكونسن ووايومنغ استخدام DisinfaX وشحن رصيدهم؛ وتُستثنى واشنطن D.C. وجميع الأقاليم الأمريكية وأي ولايات غير مدرجة. خارج الولايات المتحدة، يتوفر في كندا وأستراليا ونيوزيلندا وسنغافورة وجنوب أفريقيا واليابان وتايوان وإندونيسيا وتايلاند والفلبين وماليزيا وفيتنام وسويسرا."
-  },
   "factCheckAllButton": {
     "message": "تحقق من الكل"
   },
   "aiDisclaimer": {
-    "message": "قد يرتكب DisinfaX أخطاء. تحقق من المعلومات مرتين.",
+    "message": "قد يرتكب DisinfaX أخطاء. يُرجى التحقق من المعلومات.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "رصيدك منخفض جدًا. يُرجى إعادة الشحن للمتابعة."
+    "message": "رصيدك منخفض جدًا. يُرجى شحن الرصيد للمتابعة."
   },
   "errAccountSuspended": {
     "message": "تم تعليق حسابك."

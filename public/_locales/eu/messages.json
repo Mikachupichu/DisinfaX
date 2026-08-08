@@ -1,36 +1,66 @@
 {
-  "topUp": {
-    "message": "Saldoa kargatu"
+  "balanceLabel": {
+    "message": "Saldoa"
   },
-  "showMore": {
-    "message": "Erakutsi gehiago"
+  "gifted": {
+    "message": "Dohainik"
   },
-  "showLess": {
-    "message": "Erakutsi gutxiago"
+  "customTopup": {
+    "message": "Pertsonalizatua"
   },
-  "landingTagline1": {
-    "message": "Egia agerian utzi. Gezurrak aurkitu."
+  "customAmountLabel": {
+    "message": "Saldoa kargatzeko zenbateko pertsonalizatua AEBetako dolarretan"
   },
-  "landingTagline2": {
-    "message": "Desinformaziorik ez gehiago. Egitateak baino ez."
+  "increase": {
+    "message": "Handitu"
   },
-  "continueWithX": {
-    "message": "Jarraitu X-ekin"
+  "decrease": {
+    "message": "Txikitu"
   },
-  "continueWithGoogle": {
-    "message": "Jarraitu Google-ekin"
+  "topUpBalance": {
+    "message": "Kargatu saldoa"
   },
-  "continueWithApple": {
-    "message": "Jarraitu Apple-ekin"
+  "processing": {
+    "message": "Prozesatzen…"
   },
-  "lastUsed": {
-    "message": "Azken erabilera"
+  "checkoutError": {
+    "message": "Ezin izan da ordainketa hasi. Saiatu berriro."
   },
-  "cleanupTagline": {
-    "message": "Garbitu zure X jarioa."
+  "termsOfService": {
+    "message": "Zerbitzu-baldintzak"
+  },
+  "privacyPolicy": {
+    "message": "Pribatutasun-politika"
+  },
+  "disclaimerAgree": {
+    "message": "Saldoa kargatzean, gure %TOS% eta %PRIVACY% onartzen dituzu."
+  },
+  "disclaimerFx": {
+    "message": "Dibisa-truke komisioak aplika daitezke USD ez den moneta batean ordaintzen baduzu."
   },
   "disclaimerJurisdiction": {
     "message": "Estatu Batuen barruan, Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Mexiko Berria, New York, Ipar Carolina, Ipar Dakota, Oklahoma, Oregon, Pennsylvania, Hego Carolina, Hego Dakota, Tennessee, Texas, Utah, Washington, Wisconsin eta Wyoming estatuetako biztanleek soilik erabil dezakete DisinfaX eta kargatu dezakete beren saldoa; Washington D.C., AEBetako lurralde guztiak eta zerrendatu gabeko edozein estatu kanpoan geratzen dira. Estatu Batuetatik kanpo, Kanadan, Australian, Zeelanda Berrian, Singapurren, Hego Afrikan, Japonian, Taiwanen, Indonesian, Thailandian, Filipinetan, Malaysian, Vietnamen eta Suitzan dago eskuragarri."
+  },
+  "signOut": {
+    "message": "Amaitu saioa"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% klikatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% sakatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
   },
   "appName": {
     "message": "DisinfaX",
@@ -41,11 +71,11 @@
     "description": "The extension description."
   },
   "verdictTrue": {
-    "message": "Egia",
+    "message": "Egiazkoa",
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Gezurra",
+    "message": "Faltsua",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -53,19 +83,19 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Egiaztapena",
+    "message": "Egiaztatzen",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Egiaztapena|Ikerketa|Garbiketa|Argitzea|Ezeztapena|Gogoeta|Argiztapena|Zulaketa|Bahetzea|Agerraraztea|Berrespena|Analisia|Konparaketa|Askatzea|Aurkikuntza|Bilaketa|Bilketa|Iragazketa|Gurutzaketa|Ikuskaketa|Hausnarketa|Frogatzea|Ondorioztatzea|Azterketa|Ateratzea",
+    "message": "Egiaztapena|Ikerketa|Garbiketa|Argitzea|Ezeztapena|Gogoeta|Argiztapena|Zulaketa|Bahetzea|Agerraraztea|Berrespena|Analisia|Konparaketa|Askatzea|Aurkikuntza|Bilaketa|Bilketa|Iragazketa|Gurutzaketa|Ikuskapena|Hausnarketa|Frogatzea|Ondorioztatzea|Azterketa|Ateratzea",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "Oso probable",
+    "message": "Oso litekeena",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "Probable",
+    "message": "Litekeena",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -77,7 +107,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Eztabaidagarria",
+    "message": "Eztabaidagarriki",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -85,7 +115,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Anbiguoa",
+    "message": "Anbiguoki",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -149,31 +179,43 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Agerian jarri berriro txio honetako baieztapen guztiak",
+    "message": "Berriz agerian jarri txio honetako baieztapen guztiak",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Berriz ikertu erreklamazio hau",
+    "message": "Berriz ikertu baieztapen hau",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Egiaztapena",
+    "message": "Egiaztatzen",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Itzuli egiaztapenak",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Itzuli",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
+  "factCheckedFloatingButton": {
+    "message": "Egiaztatuta",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Atzera",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Desinfaktatu",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
   "badgeFiller": {
-    "message": "to be",
+    "message": "izatea",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ izatea $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -190,87 +232,45 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  "topUp": {
+    "message": "Saldoa kargatu"
   },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  "showMore": {
+    "message": "Erakutsi gehiago"
   },
-  "disinfactButton": {
-    "message": "Egiaztapena",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  "showLess": {
+    "message": "Erakutsi gutxiago"
   },
-  "balanceLabel": {
-    "message": "Saldoa"
+  "landingTagline1": {
+    "message": "Egia agerian utzi. Gezurrak aurkitu."
   },
-  "gifted": {
-    "message": "Opari eginda"
+  "landingTagline2": {
+    "message": "Desinformaziorik ez gehiago. Egitateak baino ez."
   },
-  "customTopup": {
-    "message": "Pertsonalizatua"
+  "continueWithX": {
+    "message": "Jarraitu X-ekin"
   },
-  "customAmountLabel": {
-    "message": "Saldoa kargatzeko zenbateko pertsonalizatua AEBetako dolarretan"
+  "continueWithGoogle": {
+    "message": "Jarraitu Google-ekin"
   },
-  "increase": {
-    "message": "Handitu"
+  "continueWithApple": {
+    "message": "Jarraitu Apple-ekin"
   },
-  "decrease": {
-    "message": "Txikitu"
+  "lastUsed": {
+    "message": "Azken erabilera"
   },
-  "topUpBalance": {
-    "message": "Kargatu saldoa"
-  },
-  "processing": {
-    "message": "Prozesatzen…"
-  },
-  "checkoutError": {
-    "message": "Ezin izan da ordainketa hasi. Saiatu berriro."
-  },
-  "termsOfService": {
-    "message": "Zerbitzu-baldintzak"
-  },
-  "privacyPolicy": {
-    "message": "Pribatutasun-politika"
-  },
-  "disclaimerAgree": {
-    "message": "Saldoa kargatzean, gure %TOS% eta %PRIVACY% onartzen dituzu."
-  },
-  "disclaimerFx": {
-    "message": "Dibisa-truke komisioak aplika daitezke USD ez den moneta batean ordaintzen baduzu."
-  },
-  "signOut": {
-    "message": "Amaitu saioa"
-  },
-  "onboardDisinfactClick": {
-    "message": "%BTN% klikatzeak baieztapenak erakutsiko ditu eta zure saldotik kobratuko da"
-  },
-  "onboardDisinfactTap": {
-    "message": "%BTN% ukitzeak baieztapenak erakutsiko ditu eta zure saldotik kobratuko da"
-  },
-  "onboardWillCharge": {
-    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
-  },
-  "onboardFactcheck": {
-    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
-  },
-  "onboardTranslations": {
-    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
-  },
-  "onboardRefreshes": {
-    "message": "%BTN% klikatzeak zure saldotik kobratuko du"
+  "cleanupTagline": {
+    "message": "Garbitu zure X jarioa."
   },
   "factCheckAllButton": {
     "message": "Egiaztatu guztia"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX-ek akatsak egin ditzake. Egiaztatu informazioa bi aldiz.",
+    "message": "DisinfaX-ek akatsak egin ditzake. Egiaztatu informazioa berriro.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Zure saldoa txikiegia da. Kargatu saldoa jarraitzeko."
+    "message": "Zure saldoa ez da nahikoa. Kargatu saldoa jarraitzeko."
   },
   "errAccountSuspended": {
     "message": "Zure kontua etenda dago."

@@ -1,43 +1,73 @@
 {
-  "topUp": {
-    "message": "Cuir ris"
+  "balanceLabel": {
+    "message": "Cothromachadh"
   },
-  "showMore": {
-    "message": "Seall barrachd"
+  "gifted": {
+    "message": "Air a thoirt seachad"
   },
-  "showLess": {
-    "message": "Seall nas lugha"
+  "customTopup": {
+    "message": "Gnàthaichte"
   },
-  "landingTagline1": {
-    "message": "Foillsich an Fhìrinn. Lorg na Breugan."
+  "customAmountLabel": {
+    "message": "Suim ath-lìonaidh ghnàthaichte ann an dolairean nan SA"
   },
-  "landingTagline2": {
-    "message": "Gun bharrachd mì-fhiosrachaidh. Dìreach fìrinnean."
+  "increase": {
+    "message": "Meudaich"
   },
-  "continueWithX": {
-    "message": "Lean air adhart le X"
+  "decrease": {
+    "message": "Lùghdaich"
   },
-  "continueWithGoogle": {
-    "message": "Lean air adhart le Google"
+  "topUpBalance": {
+    "message": "Ath-lìon an cothromachadh"
   },
-  "continueWithApple": {
-    "message": "Lean air adhart le Apple"
+  "processing": {
+    "message": "A' pròiseasadh…"
   },
-  "lastUsed": {
-    "message": "Air a chleachdadh mu dheireadh"
+  "checkoutError": {
+    "message": "Cha b’ urrainn am pàigheadh a thòiseachadh. Feuch ris a-rithist."
   },
-  "cleanupTagline": {
-    "message": "Glan suas an inbhir X agad."
+  "termsOfService": {
+    "message": "Teirmean Seirbheis"
+  },
+  "privacyPolicy": {
+    "message": "Poileasaidh Prìobhaideachd"
+  },
+  "disclaimerAgree": {
+    "message": "Le bhith ag ath-lìonadh, tha thu ag aontachadh ris na %TOS% agus %PRIVACY% againn."
+  },
+  "disclaimerFx": {
+    "message": "Faodaidh cìsean iomlaid airgid a bhith an sàs ma phàigheas tu ann an airgeadra seach USD."
   },
   "disclaimerJurisdiction": {
-    "message": "Taobh a-staigh nan Stàitean Aonaichte, chan urrainn ach do luchd-còmhnaidh Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina a Tuath, Dakota a Tuath, Oklahoma, Oregon, Pennsylvania, Carolina a Deas, Dakota a Deas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a chleachdadh agus an cothromachd aca a chur ris; tha Washington, D.C., criochan-tìre nan SA gu lèir, agus stàitean sam bith nach eil air an liostadh air an dùnadh a-mach. Taobh a-muigh nan Stàitean Aonaichte, tha e ri fhaotainn ann an Canada, Astràilia, Sealan Nuadh, Singeapòr, Afraga a Deas, Iapan, Taidhbhean, Indonesia, Thàilloandh, Na h-Eileanan Filipineach, Malaisia, Bhietnam, agus An Eilbheis."
+    "message": "Taobh a-staigh nan Stàitean Aonaichte, chan urrainn ach do luchd-còmhnaidh Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina a Tuath, Dakota a Tuath, Oklahoma, Oregon, Pennsylvania, Carolina a Deas, Dakota a Deas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a chleachdadh agus an cothromachadh aca a ath-lìonadh; tha Washington, D.C., crìochan-tìre nan SA gu lèir, agus stàitean sam bith nach eil air an liostadh air an dùnadh a-mach. Taobh a-muigh nan Stàitean Aonaichte, tha e ri fhaotainn ann an Canada, Astràilia, Sealan Nuadh, Singeapòr, Afraga a Deas, Iapan, Taiwan, Indonesia, Thailand, Na h-Eileanan Filipineach, Malaisia, Bhietnam, agus An Eilbheis."
+  },
+  "signOut": {
+    "message": "Clàraich a-mach"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ma nì thu briogadh air %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ma bheanas tu ri %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardWillCharge": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardFactcheck": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardTranslations": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardRefreshes": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
   },
   "appName": {
     "message": "DisinfaX",
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Lorgaicheas agus soillsicheas eadar-dhealachaidhean ann an tweets le mion-sgrùdadh AI.",
+    "message": "Lorgaidh agus soillsichidh e mì-fhiosrachadh ann an tweets le mion-sgrùdadh AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -45,7 +75,7 @@
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Bréige",
+    "message": "Meallta",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
@@ -57,7 +87,7 @@
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Dearbhadh|Rannsachadh|Sgioblachadh|Lorg|Smaoineachadh|Soilleireachadh|Cladhach|Sìoladh|Nochdadh|Ceasnachadh|Fiosrachadh|Beachdachadh|Cnuasachadh|Rùrachadh|Deuchainn|Mìneachadh|Ath-sgrùdadh|Sireadh|Aithneachadh|Sgaoileadh|Foillseachadh|Sgrùdadh domhainn|Solas a leigeil a-steach|Fìrinn a lorg|Ceistean a chur|Sgudal a ghlanadh|Aithris|Toimhseachan a fhuasgladh",
+    "message": "Dearbhadh|Rannsachadh|Sgioblachadh|Lorgadh|Smaoineachadh|Soilleireachadh|Cladhach|Sìoladh|Nochdadh|Ceasnachadh|Fiosrachadh|Beachdachadh|Cnuasachadh|Rùrachadh|Deuchainn|Mìneachadh|Ath-sgrùdadh|Sireadh|Aithneachadh|Sgaoileadh|Foillseachadh|Sgrùdadh domhainn|Solas a leigeil a-steach|Fìrinn a lorg|Ceistean a chur|Sgudal a ghlanadh|Aithris|Toimhseachan a fhuasgladh",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -73,7 +103,7 @@
     "description": "Adjective for low-confidence verdicts."
   },
   "adjMostly": {
-    "message": "A' mhòr-chuid",
+    "message": "Sa mhòr-chuid",
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
@@ -85,7 +115,7 @@
     "description": "Veracity adjective: partially true/false, mixed evidence."
   },
   "adjEquivocally": {
-    "message": "Teagmhach",
+    "message": "Dà-sheaghach",
     "description": "Veracity adjective: equivocally true/false, balanced evidence."
   },
   "badgeVerdictOnly": {
@@ -145,11 +175,11 @@
     }
   },
   "copyTooltip": {
-    "message": "Copaidh",
+    "message": "Lethbhreac",
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Foillsich a-rithist a h-uile tagradh san tweet seo",
+    "message": "Ath-fhoillsich tagraidhean an tweet seo.",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -161,19 +191,31 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Eadar-theangaich na sgrùdaidhean",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Eadar-theangaich",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Air a sgrùdadh",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Rach air ais",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "disinfactButton": {
+    "message": "Sgrùd",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "badgeFiller": {
     "message": "a bhith",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ a bhith $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -190,77 +232,35 @@
       }
     }
   },
-  "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
-    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  "topUp": {
+    "message": "Ath-lìon"
   },
-  "goBackFloatingButton": {
-    "message": "Go Back",
-    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  "showMore": {
+    "message": "Seall barrachd"
   },
-  "disinfactButton": {
-    "message": "Sgrùdadh",
-    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  "showLess": {
+    "message": "Seall nas lugha"
   },
-  "balanceLabel": {
-    "message": "Cothromachadh"
+  "landingTagline1": {
+    "message": "Foillsich an Fhìrinn. Lorg na Breugan."
   },
-  "gifted": {
-    "message": "Air a thoirt seachad"
+  "landingTagline2": {
+    "message": "Gun bharrachd mì-fhiosrachaidh. Dìreach fìrinnean."
   },
-  "customTopup": {
-    "message": "Gnàthaichte"
+  "continueWithX": {
+    "message": "Lean air adhart le X"
   },
-  "customAmountLabel": {
-    "message": "Suim ath-lìonaidh ghnàthaichte ann an dolairean nan SA"
+  "continueWithGoogle": {
+    "message": "Lean air adhart le Google"
   },
-  "increase": {
-    "message": "Meudaich"
+  "continueWithApple": {
+    "message": "Lean air adhart le Apple"
   },
-  "decrease": {
-    "message": "Lùghdaich"
+  "lastUsed": {
+    "message": "Air a chleachdadh mu dheireadh"
   },
-  "topUpBalance": {
-    "message": "Ath-lìon an cothromachadh"
-  },
-  "processing": {
-    "message": "Ga phròiseasadh…"
-  },
-  "checkoutError": {
-    "message": "Cha b’ urrainn am pàigheadh a thòiseachadh. Feuch ris a-rithist."
-  },
-  "termsOfService": {
-    "message": "Teirmichean Seirbheis"
-  },
-  "privacyPolicy": {
-    "message": "Poileasaidh Prìobhaideachd"
-  },
-  "disclaimerAgree": {
-    "message": "Le bhith ag ath-lìonadh, tha thu ag aontachadh ris na %TOS% agus %PRIVACY% againn."
-  },
-  "disclaimerFx": {
-    "message": "Faodaidh cìsean iomlaid airgid a bhith an sàs ma phàigheas tu ann an airgeadra seach USD."
-  },
-  "signOut": {
-    "message": "Clàraich a-mach"
-  },
-  "onboardDisinfactClick": {
-    "message": "Ma nì thu briogadh air %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chunntas"
-  },
-  "onboardDisinfactTap": {
-    "message": "Ma bhogas tu air %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chunntas"
-  },
-  "onboardWillCharge": {
-    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
-  },
-  "onboardFactcheck": {
-    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
-  },
-  "onboardTranslations": {
-    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
-  },
-  "onboardRefreshes": {
-    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chunntas"
+  "cleanupTagline": {
+    "message": "Glan suas an sruth X agad."
   },
   "factCheckAllButton": {
     "message": "Sgrùd na h-uile"
@@ -270,7 +270,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Tha am buidheann-airgid agad ro ìseal. Cuir airgead ris gus leantainn air adhart."
+    "message": "Tha an cothromachadh agad ro ìseal. Ath-lìon e gus leantainn air adhart."
   },
   "errAccountSuspended": {
     "message": "Chaidh an cunntas agad a chur na thàmh."
@@ -279,7 +279,7 @@
     "message": "Chan eil thu clàraichte a-steach. Clàraich a-steach agus feuch ris a-rithist."
   },
   "errInvalidRequest": {
-    "message": "Cha do chaidh pàirt den iarrtas seo aithneachadh. Dèan cinnteach gu bheil an leudachan ùraichte."
+    "message": "Cha deach pàirt den iarrtas seo aithneachadh. Dèan cinnteach gu bheil an leudachan ùraichte."
   },
   "errServiceUnavailable": {
     "message": "Thachair mearachd air ar taobh-ne. Feuch ris a-rithist ann an tiotan."
@@ -288,9 +288,9 @@
     "message": "Chan eil DisinfaX ri fhaotainn fhathast san sgìre agad ri linn riatanasan riaghlaidh."
   },
   "errInvalidAmount": {
-    "message": "Chan eil an t-suim sin de bharrachd dligheach. Tagh suim eile."
+    "message": "Chan eil an t-suim ath-lìonaidh sin dligheach. Tagh suim eile."
   },
   "errNotFound": {
-    "message": "Cha b' urrainn dhuinn sin a lorg. Feuch ris a-rithist."
+    "message": "Cha b’ urrainn dhuinn sin a lorg. Feuch ris a-rithist."
   }
 }

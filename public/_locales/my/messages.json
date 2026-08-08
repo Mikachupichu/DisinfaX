@@ -128,15 +128,15 @@
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "အချက်အလက်စစ်ဆေးမှုများကို ဘာသာပြန်ပါ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "ဘာသာပြန်ပါ",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "ဖြစ်ရန်",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "အချက်အလက်စစ်ဆေးပြီးပါပြီ",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "နောက်သို့ပြန်သွားပါ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -212,10 +212,10 @@
     "message": "ထွက်ရန်"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN% ကို နှိပ်လိုက်ပါက အခိုင်အမာပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+    "message": "%BTN% ကို နှိပ်လိုက်ပါက ပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
   },
   "onboardDisinfactTap": {
-    "message": "%BTN% ကို တို့လိုက်ပါက အခိုင်အမာပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+    "message": "%BTN% ကို တို့လိုက်ပါက ပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
   },
   "onboardWillCharge": {
     "message": "%BTN% ကို နှိပ်လိုက်ပါက သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
@@ -288,7 +288,7 @@
     "message": "စည်းမျဉ်းဆိုင်ရာ လိုအပ်ချက်များကြောင့် DisinfaX ကို သင့်ဒေသတွင် မရရှိသေးပါ။"
   },
   "errInvalidAmount": {
-    "message": "ထိုငွေဖြည့်ပမာณ မှားနေပါသည်။ အခြားပမာณတစ်ခု ရွေးပါ။"
+    "message": "ထိုငွေဖြည့်ပမာဏ မှားနေပါသည်။ အခြားပမာဏတစ်ခု ရွေးပါ။"
   },
   "errNotFound": {
     "message": "ရှာမတွေ့ပါ။ ထပ်စမ်းကြည့်ပါ။"

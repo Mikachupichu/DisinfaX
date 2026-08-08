@@ -18,7 +18,7 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Ukaguzi",
+    "message": "Uhakiki",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
@@ -42,7 +42,7 @@
     "description": "Veracity adjective: mostly true/false with some nuance."
   },
   "adjArguably": {
-    "message": "Kwa Ubishani",
+    "message": "Kwa Hoja",
     "description": "Veracity adjective: arguably true/false, leaning one way."
   },
   "adjPartially": {
@@ -122,23 +122,23 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Ukaguzi",
+    "message": "Uhakiki",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Tafsiri Uhakiki",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Tafsiri",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "kuwa",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ kuwa $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,15 +156,15 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Imehakikiwa",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Rudi Nyuma",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "Hakiki",
+    "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
@@ -201,10 +201,10 @@
     "message": "Sera ya Faragha"
   },
   "disclaimerAgree": {
-    "message": "Kwa kuongeza salio, unakubali %TOS% na %PRIVACY% zetu."
+    "message": "Kwa kuongeza salio, unakubali %TOS% na %PRIVACY% yetu."
   },
   "disclaimerFx": {
-    "message": "Ada za ubadilishaji fedha zinaweza kutozwa ukilipa kwa sarafu isiyo USD."
+    "message": "Ada za kubadilisha fedha zinaweza kutozwa ukilipa kwa sarafu isiyokuwa dola za Marekani."
   },
   "signOut": {
     "message": "Ondoka"
@@ -255,20 +255,20 @@
     "message": "Ilitumika mwisho"
   },
   "cleanupTagline": {
-    "message": "Safisha mpasho wako wa X."
+    "message": "Safisha mlisho wako wa X."
   },
   "disclaimerJurisdiction": {
-    "message": "Ndani ya Marekani, ni wakazi wa Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kaskazini, Dakota Kaskazini, Oklahoma, Oregon, Pennsylvania, Carolina Kusini, Dakota Kusini, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming pekee wanaoweza kutumia DisinfaX na kuongeza salio lao; Washington, D.C., maeneo yote ya Marekani, na jimbo lolote ambalo halijaorodheshwa hayajumuishwi. Nje ya Marekani, inapatikana nchini Kanada, Australia, New Zealand, Singapore, Afrika Kusini, Japani, Taiwan, Indonesia, Thailand, Ufilipino, Malaysia, Vietnam, na Uswisi."
+    "message": "Ndani ya Marekani, DisinfaX inaweza kutumiwa na kuongezewa salio na wakazi wa Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kaskazini, Dakota Kaskazini, Oklahoma, Oregon, Pennsylvania, Carolina Kusini, Dakota Kusini, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming pekee; Washington, D.C., maeneo yote ya ng'ambo ya Marekani, na majimbo yoyote ambayo hayajaorodheshwa hayajumuishwi. Nje ya Marekani, inapatikana nchini Kanada, Australia, New Zealand, Singapore, Afrika Kusini, Japani, Taiwan, Indonesia, Thailand, Ufilipino, Malaysia, Vietnam, na Uswisi."
   },
   "factCheckAllButton": {
-    "message": "Hakiki yote"
+    "message": "Hakiki Madai Yote"
   },
   "aiDisclaimer": {
-    "message": "DisinfaX inaweza kufanya makosa. Hakiki taarifa mara mbili.",
+    "message": "DisinfaX inaweza kufanya makosa. Hakiki taarifa kwa uangalifu.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Salio lako ni chini sana. Tafadhali ongeza salio ili kuendelea."
+    "message": "Salio lako halitoshi. Tafadhali ongeza salio ili kuendelea."
   },
   "errAccountSuspended": {
     "message": "Akaunti yako imesimamishwa."

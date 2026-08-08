@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI ئانالىزى ئارقىلىق تۋىتلاردىكى يالغان ئۇچۇرلارنى بايقايدۇ ۋە ئەلەمگە ئالىدۇ.",
+    "message": "AI ئانالىزى ئارقىلىق تۋىتلاردىكى يالغان ئۇچۇرلارنى بايقاپ، ئالاھىدە بەلگە قىلىپ كۆرسىتىدۇ.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -20,19 +20,19 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "تەكشۈرۈش",
+    "message": "پاكىت تەكشۈرۈش",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "تەكشۈرۈش|تەتقىق قىلىش|تازىلاش|پاش قىلىش|ئاشكارىلاش|ئويلىنىش|يورۇتۇش|كولاش|سۈزۈش|سېلىشتۇرۇش|توپلاش|سوئال قويۇش|تەھلىل قىلىش|ئايرىش|ئېنىقلاش|راستلىق ئىزدەش|پاكىزلاش|ئىزدىنىش|دەلىللەش|چوڭقۇرلىشىش|پەرقلەندۈرۈش|يورۇق چۈشۈرۈش|ھەقىقەتنى ئېچىش|سېلىشتۇرۇپ تەكشۈرۈش|تەرتىپلەش",
+    "message": "يالغاننى سۈرۈش|راستلىقنى ئاجرىتىش|تازىلاش|يالغان خەۋەردىن ئايرىش|تۈزەش|يۇيۋىتىش|ئىزدەش|تەتقىق قىلىش|پاكىت تەكشۈرۈش|مېڭە يۇيۇشتىن قۇتۇلدۇرۇش|ھەقىقەتلەشتۈرۈش|دەلىللەش|ئويلىنىش|ئاشكارىلاش|بايقاش|تەكشۈرۈش|كۆزدىن كەچۈرۈش|ھەقىقەت ئىزدەش|روشەنلەشتۈرۈش|راستچىللاشتۇرۇش|ساختىلىقنى ئاشكارىلاش|نۇر چاچىش|تۈرگە ئايرىش|ھۆكۈم چىقىرىش|ئىزدەپ تېپىش|خەۋەرلەندۈرۈش|ئايلىنىش|يۈكلىنىش|چەمبەرلىنىش|چۆرگىلىنىش|پاكىتلاشتۇرۇش|پاكىت شەكىللەندۈرۈش|پاكىت توپلاش|سىرنى ئاچىش|بىر تەرەپ قىلىش|ئالدامچى سەرلەۋھىدىن ئايرىش|كولاش|راستنى ئىزدەش|يالغانچىلىقنى ئېنىقلاش|يالغاندىن ئايرىش|يالغاننى بىكار قىلىش|يالغاندىن خالىي قىلىش|ساختىلىقنى يوقىتىش|ھاسىللاش|يازىش|بىلىم توپلاش|ئىنچىكىلەپ ئويلىنىش|ئوبدان ئويلىنىش|مۆلچەرلەش|ئويلاپ باقىش|چۆمۈلۈش|ئىچكى دۇنياغا سەپەر قىلىش|سەرگۈزەشت قىلىش|پىشۇرۇش|ئاشپەز بولۇش|سەزگۇ ئىشلىتىش|مەنتىقە قوللىنىش|سەبەپ ئىزدەش|فەلسەپە قىلىش|چۈشەندۈرۈش|ھەل قىلىش|يورۇتۇش|نەتىجە چىقىرىش|توپلاش|يىغىش|ئارتۇقچىلىقنى ئايرىش|پاش قىلىش|ئەپسانىنى چاقىش|بۇرمىلاشنى تۈزەش|تەشۋىقاتتىن ئايرىش|ئوچۇق-ئاشكارا سۆزلەش|پاكىزلاش|زەھەرسىزلەندۈرۈش|پاكىتنى سىقىش|تەكشۈرۈپ باقىش|سۈزۈش|سوئال-جاۋاب قىلىش|سوراق قىلىش|نىقابنى ئېچىش|پارچىلاپ تەكشۈرۈش|چۇۋۇش|تەھلىل قىلىش|قوزغاپ چىقىرىش|يىلتىزىنى قومۇرۇش|پارچىلاش|سۈزگۈچتىن ئۆتكۈزۈش|ئۇچۇرلارنى باغلاش|سېلىشتۇرۇپ تەكشۈرۈش|ئىسپاتلاش|تەستىقلاش|سۈزۈپ چىقىرىش|بىرلەشتۈرۈش|ھېسابلاش|تىنىقلاشتۇرۇش|تۇتۇقنى تارقىتىش|تۇمانىنى يېرىش|سۈزگۈچلەش|ئىچىنى كۆرۈش|ئوچۇق قىلىش|نۇرلاندۇرۇش|سۈزۈپ ئايرىش",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
-    "message": "ئىنتايىن ئېھتىماللىق",
+    "message": "ئىنتايىن چوقۇمدەك",
     "description": "Adjective for high-confidence verdicts."
   },
   "adjLikely": {
-    "message": "ئېھتىماللىق",
+    "message": "چوقۇمدەك",
     "description": "Adjective for moderate-confidence verdicts."
   },
   "adjPossibly": {
@@ -124,23 +124,23 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "تەكشۈرۈش",
+    "message": "پاكىت تەكشۈرۈش",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "پاكىت تەكشۈرۈشلىرىنى تەرجىمە قىلىش",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "تەرجىمە قىلىش",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "بولۇشى",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ بولۇشى $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,22 +158,22 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "پاكىت تەكشۈرۈلدى",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "ئارقىغا قايتىش",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
-    "message": "تەكشۈرۈش",
+    "message": "ئاشكارىلاش",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
   "balanceLabel": {
     "message": "قالدۇق"
   },
   "gifted": {
-    "message": "سوۋغا"
+    "message": "سوۋغات"
   },
   "customTopup": {
     "message": "ئىختىيارىي"
@@ -188,7 +188,7 @@
     "message": "ئازايتىش"
   },
   "topUpBalance": {
-    "message": "قالدۇق تولۇقلاش"
+    "message": "قالدۇقنى تولۇقلاش"
   },
   "processing": {
     "message": "بىر تەرەپ قىلىنىۋاتىدۇ…"
@@ -203,19 +203,19 @@
     "message": "مەخپىيەتلىك سىياسىتى"
   },
   "disclaimerAgree": {
-    "message": "تولۇقلاش ئارقىلىق، سىز بىزنىڭ %TOS% ۋە %PRIVACY% گە قوشۇلغان بولىسىز."
+    "message": "تولۇقلاش ئارقىلىق، سىز بىزنىڭ %TOS% ۋە %PRIVACY% گە قوشۇلىسىز."
   },
   "disclaimerFx": {
     "message": "ئەگەر سىز USD دىن باشقا پۇل بىلەن تۆلىسىڭىز، پۇل ئالماشتۇرۇش ھەققى ئېلىنىشى مۇمكىن."
   },
   "signOut": {
-    "message": "چېكىنىش"
+    "message": "ھېساباتتىن چىقىش"
   },
   "onboardDisinfactClick": {
-    "message": "%BTN% نى چېكىش دەۋالارنى كۆرسىتىدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
+    "message": "%BTN% نى چېكىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
   },
   "onboardDisinfactTap": {
-    "message": "%BTN% نى چېكىش (سىيرىش) دەۋالارنى كۆرسىتىدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
+    "message": "%BTN% نى بېسىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
   },
   "onboardWillCharge": {
     "message": "%BTN% نى چېكىش قالدۇقىڭىزدىن پۇل تۇتۇۋالىدۇ"
@@ -233,10 +233,10 @@
     "message": "تولۇقلاش"
   },
   "showMore": {
-    "message": "تېخىمۇ كۆپ كۆرسەت"
+    "message": "تېخىمۇ كۆپ كۆرسىتىش"
   },
   "showLess": {
-    "message": "ئازراق كۆرسەت"
+    "message": "ئازراق كۆرسىتىش"
   },
   "landingTagline1": {
     "message": "ھەقىقەتنى ئاشكارىلاڭ. يالغانلارنى تېپىڭ."
@@ -263,7 +263,7 @@
     "message": "ئامېرىكا قوشما شتاتلىرى ئىچىدە، پەقەت ئالاباما، ئارىزونا، كالىفورنىيە، كولورادو، كوننېكتىكۇت، دېلاۋېر، فلورىدا، ئايداھو، ئىللىنويس، ئىندىيانا، ئايوۋا، كانزاس، كېنتۇككى، لۇئىزىيانا، مېين، ماسساچۇسېتس، مىسسىسسىپپى، مىسسۇرى، مونتانا، نيۇ-گەمپشىر، نيۇ-مېكسىكو، نيۇ-يورك، شىمالىي كارولىنا، شىمالىي داكوتا، ئوكلاخوما، ئورېگون، پېنسىلۋانىيە، جەنۇبىي كارولىنا، جەنۇبىي داكوتا، تېننېسسى، تېكساس، يۇتا، ۋاشىنگتون، ۋىسكونسىن ۋە ۋايومىڭ ئاھالىلىرىلا DisinfaX نى ئىشلىتىپ، قالدۇقىنى تولۇقلىيالايدۇ؛ ۋاشىنگتون، D.C.، بارلىق ئامېرىكا زېمىنلىرى ۋە تىزىملىكتە كۆرسىتىلمىگەن ھەرقانداق شتاتلار بۇنىڭدىن مۇستەسنا. ئامېرىكا قوشما شتاتلىرىنىڭ سىرتىدا، ئۇ كانادا، ئاۋسترالىيە، يېڭى زېلاندىيە، سىنگاپور، جەنۇبىي ئافرىقا، ياپونىيە، تەيۋەن، ھىندونېزىيە، تايلاند، فىلىپپىن، مالايسىيا، ۋىيېتنام ۋە شۋېتسارىيەدە ئىشلەتكىلى بولىدۇ."
   },
   "factCheckAllButton": {
-    "message": "ھەممىنى تەكشۈرۈش"
+    "message": "ھەممىنى پاكىت تەكشۈرۈش"
   },
   "aiDisclaimer": {
     "message": "DisinfaX خاتالىقلارغا يول قويۇشى مۇمكىن. ئۇچۇرنى قايتا تەكشۈرۈڭ.",
@@ -279,18 +279,18 @@
     "message": "سىز كىرمىدىڭىز. كىرىپ قايتا سىناڭ."
   },
   "errInvalidRequest": {
-    "message": "بۇ ئىلتىماسنىڭ بىر قىسمى تۇنۇلمىدى. كېڭەيتىلمىنىڭ يېڭىلانغانلىقىنى جەزملەشتۈرۈڭ."
+    "message": "بۇ ئىلتىماسنىڭ بىر قىسمى تونۇلمىدى. كېڭەيتىلمىنىڭ يېڭىلانغانلىقىنى جەزملەشتۈرۈڭ."
   },
   "errServiceUnavailable": {
     "message": "بىز تەرەپتە بىر خاتالىق يۈز بەردى. ئازراق ۋاقىتتىن كېيىن قايتا سىناڭ."
   },
   "errRegionNotSupported": {
-    "message": "تەرتىپ تەلىپى سەبەبىدىن DisinfaX تېخى رايونىڭىزدا ئىشلىتىلمەيدۇ."
+    "message": "قانۇنىي تەلەپلەر سەبەبىدىن DisinfaX تېخى رايونىڭىزدا ئىشلىتىلمەيدۇ."
   },
   "errInvalidAmount": {
-    "message": "بۇ تولۇقلاش سومما ئىناۋەتسىز. باشقا سومما تاللاڭ."
+    "message": "بۇ تولۇقلاش سوممىسى ئىناۋەتسىز. باشقا سومما تاللاڭ."
   },
   "errNotFound": {
-    "message": "بۇنى تاپالمىدى. قايتا سىناڭ."
+    "message": "بۇ تېپىلمىدى. قايتا سىناڭ."
   }
 }

@@ -1838,6 +1838,20 @@ export default defineBackground(() => {
   let fundsState: Funds | null = null;
   let lastVisibleTotal: number | null = null;
   let fundsInitPromise: Promise<void> | null = null;
+  /** Which account the cached balance + Realtime subscription belong to. The hub is
+   *  per-user, so this is what makes an account switch detectable. */
+  let fundsHubUid: string | null = null;
+
+  /** The signed-in user's id, or null when signed out. `isSignedIn()` cannot tell two
+   *  different accounts apart — both answer true — so identity is tracked separately. */
+  async function currentUserId(): Promise<string | null> {
+    try {
+      const { data } = await supabase.auth.getSession();
+      return data.session?.user?.id ?? null;
+    } catch {
+      return null;
+    }
+  }
 
   /** Broadcast a notification to every connected X content script. */
   function broadcastNotification(data: { kind: 'increase' | 'decrease' | 'error'; amount?: number; text?: string; code?: number }) {
@@ -1903,7 +1917,15 @@ export default defineBackground(() => {
 
   /** Open the funds channel FIRST, then fetch once via get_funds, then keep listening.
    *  Idempotent — a single in-flight init is shared; retried after sign-in. */
-  function initFundsHub(): Promise<void> {
+  async function initFundsHub(): Promise<void> {
+    // A hub built for a DIFFERENT account is worse than no hub: its cached balance and
+    // its Realtime subscription both belong to the previous user, and the idempotence
+    // guard below would keep handing that back forever. Rebuild on any identity change.
+    const uid = await currentUserId();
+    if (uid !== fundsHubUid) {
+      teardownFundsHub();
+      fundsHubUid = uid;
+    }
     if (fundsInitPromise) return fundsInitPromise;
     fundsInitPromise = (async () => {
       const sub = await subscribeFunds(handleFundsChange, notifyError);
@@ -1922,6 +1944,9 @@ export default defineBackground(() => {
     fundsState = null;
     lastVisibleTotal = null;
     fundsInitPromise = null;
+    // Cleared alongside the rest so "hub torn down" always implies "belongs to nobody";
+    // callers that are rebuilding assign the new owner immediately after.
+    fundsHubUid = null;
   }
 
   // Surface worker/DB failures (e.g. 402 balance-too-low) as red error notifications.
@@ -2227,6 +2252,19 @@ export default defineBackground(() => {
   function refreshActiveState() {
     activeEvalChain = activeEvalChain.then(async () => {
       const signed = await isSignedIn();
+      // Account switches must be caught BEFORE the `lastActive` guard below. Signing out
+      // of a ZERO-balance account leaves active already false, so that guard returned
+      // early and the teardown further down never ran — the next account then inherited
+      // the previous one's cached $0 balance and its Realtime subscription, because
+      // initFundsHub() saw a live fundsInitPromise and no-opped. Chrome's MV3 service
+      // worker dying between sessions wiped this state and hid the bug; Safari/Firefox
+      // MV2 use a persistent background page, so it survived every switch.
+      const uid = await currentUserId();
+      if (uid !== fundsHubUid) {
+        teardownFundsHub();
+        fundsHubUid = uid;
+        lastActive = null; // re-broadcast for the new account rather than assume no change
+      }
       if (signed) initFundsHub(); // ensure funds hub is up so balance is known
       const active = signed && balanceOk();
       if (lastActive === active) return;
@@ -2399,7 +2437,7 @@ export default defineBackground(() => {
         try {
           const payload = message.type === 'MF_NATIVE_SIGN_IN'
             ? { action: 'SIGN_IN', url: message.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME }
-            : { action: 'PURCHASE_TOPUP', amount: message.amount, userId: message.userId };
+            : { action: 'PURCHASE_TOPUP', productId: message.productId, amount: message.amount, userId: message.userId };
           const res = await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, payload);
           // Passed through untouched: the popup already understands the host's shapes
           // ({access_token,refresh_token} / {code} / {callbackUrl} / {signedTransaction} /

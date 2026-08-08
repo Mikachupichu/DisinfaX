@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Spoor wanligging in twiets op en lig dit uit met KI-analise."
+    "message": "Spoor waninligting in tweets op en lig dit uit met behulp van KI-analise."
   },
   "verdictTrue": {
     "message": "Waar",
@@ -18,11 +18,11 @@
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Kontrole",
+    "message": "Feitekontrole",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Ontmaskering|Ontbloting|Skoonmaak|Suiwering|Ondersoek|Verifiëring|Naspeuring|Deursoeking|Feitekontrole|Waarheidsoeking|Denkwerk|Oorpeinsing|Uitpluising|Blootlegging|Verligting|Sifting|Kruiskontrole|Bevestiging|Regstelling|Ontrafeling|Grawe|Speurwerk|Klassifisering|Prosessering|Ontleding|Deurspitting|Waarheidsvinding|Ontknoping|Rekonstruksie|Toetsing",
+    "message": "Ontmaskering|Ontbloting|Skoonmaak|Suiwering|Ondersoek|Verifiëring|Naspeuring|Deursoeking|Feitekontrole|Waarheidsoeking|Denkwerk|Oorpeinsing|Uitpluising|Blootlegging|Verligting|Sifting|Kruiskontrole|Bevestiging|Regstelling|Ontrafeling|Grawe|Deursifting|Speurwerk|Klassifisering|Prosessering|Ontleding|Deurspitting|Waarheidsvinding|Ontknoping|Rekonstruksie|Toetsing",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -122,15 +122,15 @@
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Kontrole",
+    "message": "Feitekontrole",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Vertaal Feitekontroles",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Vertaal",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
@@ -138,7 +138,7 @@
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ om te wees $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -156,11 +156,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Feite Gekontroleer",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Gaan Terug",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -171,7 +171,7 @@
     "message": "Saldo"
   },
   "gifted": {
-    "message": "present"
+    "message": "Geskenk"
   },
   "customTopup": {
     "message": "Pasgemaak"
@@ -201,7 +201,7 @@
     "message": "Privaatheidsbeleid"
   },
   "disclaimerAgree": {
-    "message": "Deur aan te vul, stem jy in tot ons %TOS% en %PRIVACY%."
+    "message": "Deur aan te vul, stem jy in met ons %TOS% en %PRIVACY%."
   },
   "disclaimerFx": {
     "message": "Wisselkoersfooie kan geld as jy in ’n ander geldeenheid as USD betaal."
@@ -210,22 +210,22 @@
     "message": "Teken uit"
   },
   "onboardDisinfactClick": {
-    "message": "Klik op %BTN% wys eise en trek geld van jou saldo af"
+    "message": "Deur op %BTN% te klik, word bewerings gewys en word jou saldo gehef"
   },
   "onboardDisinfactTap": {
-    "message": "Tik op %BTN% wys eise en trek geld van jou saldo af"
+    "message": "Deur op %BTN% te tik, word bewerings gewys en word jou saldo gehef"
   },
   "onboardWillCharge": {
-    "message": "Klik op %BTN% trek geld van jou saldo af"
+    "message": "Deur op %BTN% te klik, word jou saldo gehef"
   },
   "onboardFactcheck": {
-    "message": "Klik op %BTN% trek geld van jou saldo af"
+    "message": "Deur op %BTN% te klik, word jou saldo gehef"
   },
   "onboardTranslations": {
-    "message": "Klik op %BTN% trek geld van jou saldo af"
+    "message": "Deur op %BTN% te klik, word jou saldo gehef"
   },
   "onboardRefreshes": {
-    "message": "Klik op %BTN% trek geld van jou saldo af"
+    "message": "Deur op %BTN% te klik, word jou saldo gehef"
   },
   "topUp": {
     "message": "Laai op"
@@ -268,7 +268,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Jou saldo is te laag. Herlaai asseblief om voort te gaan."
+    "message": "Jou saldo is te laag. Laai asseblief op om voort te gaan."
   },
   "errAccountSuspended": {
     "message": "Jou rekening is opgeskort."
@@ -283,12 +283,12 @@
     "message": "'n Fout het aan ons kant voorgekom. Probeer asseblief binnekort weer."
   },
   "errRegionNotSupported": {
-    "message": "DisinfaX is nog nie in jou streek beskikbaar nie as gevolg van regulatoriese vereistes."
+    "message": "DisinfaX is nog nie in jou streek beskikbaar nie as gevolg van regulerende vereistes."
   },
   "errInvalidAmount": {
     "message": "Daardie herlaaibedrag is nie geldig nie. Kies asseblief 'n ander bedrag."
   },
   "errNotFound": {
-    "message": "Dit kon nie gevind word nie. Probeer weer."
+    "message": "Dit kon nie gevind word nie. Probeer asseblief weer."
   }
 }

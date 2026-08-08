@@ -8,23 +8,23 @@
     "description": "The extension description."
   },
   "verdictTrue": {
-    "message": "Òtító",
+    "message": "Òtítọ́",
     "description": "Standalone verdict label: the claim is true."
   },
   "verdictFalse": {
-    "message": "Èké",
+    "message": "Irọ́",
     "description": "Standalone verdict label: the claim is false."
   },
   "verdictUnknown": {
-    "message": "Aìmọ̀",
+    "message": "Àìmọ̀",
     "description": "Verdict label when the claim cannot be determined."
   },
   "verdictResearching": {
-    "message": "Ṣayẹwo",
+    "message": "Ń Ṣàyẹ̀wò",
     "description": "Verdict label shown while the claim is being analyzed."
   },
   "researchingWords": {
-    "message": "Ṣàyẹ̀wò|Ṣèwádìí|Ìwẹ̀nùmọ́|Tú ìtànjẹ jáde|Ṣàwárí|Ṣàrò|Ìtànmọ́lẹ̀|Wàláwàlà|Fiwé wíwo|Ìkójọpọ̀|Ìbéèrè bíbéèrè|Ṣàyẹ̀wò jinlẹ̀|Ṣàlàyé|Wíwá òtítọ́|Yíyọ èérí kúrò|Ìwádìí jíjinlẹ̀|Ìṣípayá|Ìṣàyẹ̀wò-àfiwé|Rírí ìdí ọ̀rọ̀|Ìjẹ́rìí sí i|Wíwo dáadáa|Yíyan àwọn òtítọ́|Ṣíṣí ìkọ̀kọ̀ payá|Ronú jinlẹ̀|Ṣíṣàyẹ̀wò pẹ̀lẹ́pẹ̀lẹ́",
+    "message": "Ṣàyẹ̀wò|Ṣèwádìí|Ìwẹ̀nùmọ́|Tú ìtànjẹ jáde|Ṣàwárí|Ṣàrò|Ìtànmọ́lẹ̀|Wàláwàlà|Fiwé wíwo|Ìkójọpọ̀|Ìbéèrè bíbéèrè|Ṣàyẹ̀wò jinlẹ̀|Ṣàlàyé|Wíwá òtítọ́|Yíyọ èérí kúrò|Ìwádìí jíjinlẹ̀|Ìṣípayá|Ìṣàyẹ̀wò-àfiwé|Rírí ìdí ọ̀rọ̀|Ìjẹ́rìí sí i|Wíwo dáadáa|Yíyan àwọn òtítọ́|Ṣíṣí ìkọ̀kọ̀ payá|Ronú jinlẹ̀|Ṣíṣàyẹ̀wò pẹ̀lẹ́pẹ̀lẹ́|Ṣíṣàwárí ẹ̀rí|Wíwádìí|Yíyọ irọ́ kúrò|Ṣíṣí àṣírí|Kíkó ẹ̀rí jọ|Bíbéèrè|Dídán mọ́lẹ̀|Fífiwé|Ṣíṣàtúnṣe|Yíyanjú|Wíwo jinlẹ̀|Sísè|Yíyọ àbùkù|Ṣíṣàyẹ̀wò-méjì|Kíkọ́ ẹ̀kọ́|Ṣíṣàyẹ̀wò orísun|Wíwá ìdáhùn|Yíyọ ẹ̀tàn|Ṣíṣàyẹ̀wò àkọsílẹ̀|Rírò kánkán|Ṣíṣàwárí àṣírí|Wíwádìí gbòǹgbò|Yíyọ àbùmọ́|Ṣíṣàyẹ̀wò gbogbo ìhà|Kíkó àwọn àmì jọ|Sísọ dí kékeré|Yíyan òtítọ́|Ṣíṣàyẹ̀wò pẹ̀lú ọgbọ́n|Wíwádìí orísun|Dídojúkọ ọ̀rọ̀|Ṣíṣàyẹ̀wò àwòrán|Yíyọ ìdàníyàn|Kíkọjá ẹ̀rí|Ṣíṣàyẹ̀wò ìtàn|Wíwo padà|Yíyọ àṣírí payá|Ṣíṣàyẹ̀wò agbasọ|Rírò jinlẹ̀|Ṣíṣàwárí ojútùú|Kíkàwé àkọsílẹ̀|Yíyọ ọ̀rọ̀ èké|Ṣíṣàyẹ̀wò ìjẹ́rìí|Wíwádìí ìpìlẹ̀|Ṣíṣàyẹ̀wò nọ́mbà|Dídán ẹ̀rí mọ́lẹ̀|Yíyọ ìríra|Kíkó àlàyé jọ|Ṣíṣàyẹ̀wò ìwọ̀n òtítọ́|Wíwádìí àwòkọ́ṣe|Ṣíṣàtúnṣe àṣìṣe|Yíyọ ẹ̀gún ọ̀rọ̀|Ṣíṣàyẹ̀wò ìdí|Rírí ìjìnlẹ̀|Ṣíṣàwárí ìtọ́sọ́nà|Wíwo àwòrán|Ṣíṣàyẹ̀wò padà|Yíyọ àkọsílẹ̀ èké|Kíkó ẹ̀rí papọ̀|Ṣíṣàyẹ̀wò ìtẹ̀jáde|Sísè ẹ̀rí|Ṣíṣàyẹ̀wò òdodo|Yíyọ ìtànjẹ|Wíwádìí ẹ̀rí tuntun|Ṣíṣàyẹ̀wò ìjìnlẹ̀ ọ̀rọ̀|Rírò lórí ẹ̀rí|Ṣíṣàwárí ìdí|Kíkó ìsọfúnni|Yíyọ àwọn àṣìṣe|Ṣíṣàyẹ̀wò ìkéde|Wíwádìí ìtàn ìsẹ̀yìn|Ṣíṣàyẹ̀wò àwọn ìjẹ́rìí|Rírò kíákíá|Ṣíṣàyẹ̀wò ìkẹyìn|Wíwo pẹ̀lẹ́pẹ̀lẹ́|Ṣíṣetán fún ìdájọ́|Rírò kí a tó dájọ́",
     "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
   },
   "adjVeryLikely": {
@@ -116,31 +116,31 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Tún fi gbogbo àwọn àlàyé nínú tweet yìí hàn",
+    "message": "Tún fi àwọn ẹ̀sùn nínú tweet yìí hàn",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
-    "message": "Tún ṣe iwadii ẹ̀sùn yìí",
+    "message": "Tún ṣe ìwádìí ẹ̀sùn yìí",
     "description": "Tooltip for the individual claim re-research button."
   },
   "researchingText": {
-    "message": "Ṣayẹwo",
+    "message": "Ń Ṣàyẹ̀wò",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
   "translateFactChecks": {
-    "message": "Translate Fact-Checks",
+    "message": "Túmọ̀ Àwọn Àyẹ̀wò Òtítọ́",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
   },
   "translateClaimButton": {
-    "message": "Translate",
+    "message": "Túmọ̀",
     "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
   },
   "badgeFiller": {
-    "message": "to be",
+    "message": "láti jẹ́",
     "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
   },
   "badgeAdjVerdictAdj2Verbose": {
-    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "message": "$ADJ2$ láti jẹ́ $ADJ$ $VERDICT$",
     "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
     "placeholders": {
       "adj": {
@@ -158,11 +158,11 @@
     }
   },
   "factCheckedFloatingButton": {
-    "message": "Fact-Checked",
+    "message": "Ti Ṣàyẹ̀wò",
     "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
   },
   "goBackFloatingButton": {
-    "message": "Go Back",
+    "message": "Padà Sẹ́yìn",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
   "disinfactButton": {
@@ -212,22 +212,22 @@
     "message": "Jáde"
   },
   "onboardDisinfactClick": {
-    "message": "Títẹ %BTN% máa ṣí àwọn ẹ̀tọ́ payá yóò sì gba owó lára ìwọntúnwọ̀nsì rẹ"
+    "message": "Títẹ %BTN% yóò ṣí àwọn ẹ̀sùn payá, yóò sì gba owó lára ìyókù owó rẹ"
   },
   "onboardDisinfactTap": {
-    "message": "Fífọwọ́kàn %BTN% máa ṣí àwọn ẹ̀tọ́ payá yóò sì gba owó lára ìwọntúnwọ̀nsì rẹ"
+    "message": "Fífọwọ́kàn %BTN% yóò ṣí àwọn ẹ̀sùn payá, yóò sì gba owó lára ìyókù owó rẹ"
   },
   "onboardWillCharge": {
-    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
   },
   "onboardFactcheck": {
-    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
   },
   "onboardTranslations": {
-    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
   },
   "onboardRefreshes": {
-    "message": "Títẹ %BTN% yóò gba owó lára ìwọntúnwọ̀nsì rẹ"
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
   },
   "topUp": {
     "message": "Fi Owó Kún"
@@ -270,7 +270,7 @@
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
-    "message": "Iye owó rẹ kéré jù. Jọ̀wọ́ ṣàfikún owó láti tẹ̀ síwájú."
+    "message": "Ìyókù owó rẹ kéré jù. Jọ̀wọ́ fi owó kún un láti tẹ̀ síwájú."
   },
   "errAccountSuspended": {
     "message": "A ti dá àkọọ́lẹ̀ rẹ dúró."
@@ -279,7 +279,7 @@
     "message": "O kò ti wọlé. Jọ̀wọ́ wọlé kí o sì tún gbìyànjú."
   },
   "errInvalidRequest": {
-    "message": "Apá kan ìbéèrè yìí kò ní mọ̀. Jọ̀wọ́ rí i dájú pé ìfikún náà ti wà ní ìmúdójúìwọ̀n."
+    "message": "A kò dá apá kan nínú ìbéèrè yìí mọ̀. Jọ̀wọ́ rí i dájú pé ìfikún náà ti ní ìmúdójúìwọ̀n tuntun."
   },
   "errServiceUnavailable": {
     "message": "Àṣìṣe kan ṣẹlẹ̀ ní ẹ̀gbẹ́ wa. Jọ̀wọ́ tún gbìyànjú láìpẹ́."
