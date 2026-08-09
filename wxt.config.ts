@@ -99,6 +99,33 @@ export default defineConfig({
     browser_specific_settings: {
       gecko: {
         id: "disinfax@disinfax.app", // Must be unique (email format recommended)
+        // Mandatory for every new Firefox extension since 2025-11-03; AMO rejects the
+        // upload outright with `The "data_collection_permissions" property is missing.`
+        // Firefox shows these at install time and on the about:addons Permissions and Data
+        // panel, so they must match the privacy policy rather than be minimised.
+        //
+        // Mapped from https://disinfax.app privacy policy §1:
+        //   personallyIdentifyingInfo — §1A: full name, email (or Apple relay), provider auth ID
+        //   authenticationInfo        — §1A: registration data for an account-based service
+        //   websiteContent            — §1B: raw tweet text, platform translations, usernames
+        //                               read from the rendered feed and sent for analysis
+        //
+        // Deliberately NOT declared:
+        //   financialAndPaymentInfo — §1D: card numbers and billing credentials never reach
+        //     our infrastructure; Apple StoreKit and Stripe are independent processors. (The
+        //     prepaid balance ledger is the one arguable case — see the note in the commit.)
+        //   browsingActivity — no URL or cross-site history is collected; the extension runs
+        //     only on x.com and transmits post CONTENT, which websiteContent already covers.
+        //   websiteActivity — no mouse/keyboard/scroll telemetry is collected.
+        //   technicalAndInteraction — may only appear in `optional`, and no device, crash or
+        //     usage telemetry is gathered.
+        //
+        // Firefox-only: Chrome ignores this key and Safari's manifest has no use for it.
+        ...(env.browser === 'firefox' ? {
+          data_collection_permissions: {
+            required: ['personallyIdentifyingInfo', 'authenticationInfo', 'websiteContent'],
+          },
+        } : {}),
       },
     },
   })
