@@ -4,6 +4,32 @@ import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import Dashboard from './Dashboard';
 import { useT, getUiLocale, isRtl } from './i18n';
 import { browser } from 'wxt/browser';
+import { callNativeHost, NATIVE_CALLBACK_SCHEME } from '../../utils/nativeHost';
+
+/** Where the provider sends the user back on the iOS tab-based flow.
+ *
+ *  Deliberately the site ROOT rather than a dedicated /auth-callback route: the redirect
+ *  target has to be a page that actually loads, because a content script cannot be
+ *  injected into Safari's network-error page. /auth-callback currently 404s, and the root
+ *  is also the Supabase Site URL, which is allowlisted implicitly — so this avoids both
+ *  the missing route and a redirect-allowlist rejection.
+ *
+ *  Must stay in sync with the `matches` pattern in auth-callback.content.ts. */
+const AUTH_CALLBACK_URL = 'https://disinfax.app/';
+
+/** True on iPhone/iPad. One Safari build serves macOS and iOS, so this cannot be decided
+ *  at build time via import.meta.env.SAFARI — and the two need different OAuth transports:
+ *  macOS presents ASWebAuthenticationSession through the containing app, while an iOS app
+ *  extension has no window to present it from and must use a Safari tab instead.
+ *  The maxTouchPoints clause catches iPadOS, which reports itself as "MacIntel". */
+function isIosOrIpadOs(): boolean {
+  try {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  } catch {
+    return false;
+  }
+}
 
 type OAuthProvider = 'x' | 'google' | 'apple';
 
@@ -111,14 +137,24 @@ export default function App() {
     try {
       if (import.meta.env.SAFARI) {
         // -------------------------------------------------------------
-        // SAFARI FLOW (Native Swift ASWebAuthenticationSession)
+        // SAFARI FLOW
+        //   macOS — the containing app presents ASWebAuthenticationSession and returns
+        //           the callback URL over native messaging.
+        //   iOS   — an app extension has no UIApplication.shared, no UIScene and so no
+        //           window to present that sheet from; the session never appears and the
+        //           call never returns. Open an ordinary Safari tab instead and let
+        //           auth-callback.content.ts + the background finish the exchange.
         // -------------------------------------------------------------
-        
-        // 1. Generate OAuth URL & store PKCE verifier in Supabase JS storage
+        const useTabFlow = isIosOrIpadOs();
+
+        // 1. Generate OAuth URL & store PKCE verifier in Supabase JS storage. The verifier
+        //    lives in browser.storage.local (see utils/supabase.ts), so the background can
+        //    read it later — which matters for the tab flow, where this popup is gone by
+        //    the time the provider redirects back.
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: 'disinfax://auth-callback', // Custom URL scheme handled by Swift app
+            redirectTo: useTabFlow ? AUTH_CALLBACK_URL : 'disinfax://auth-callback',
             skipBrowserRedirect: true,
             scopes: provider === 'x' ? 'users.read' : (provider === 'google' ? 'openid' : (provider === 'apple' ? '' : undefined)),
           },
@@ -127,13 +163,24 @@ export default function App() {
         if (error) throw error;
         if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
 
-        // 2. Pass generated URL to Swift host to open via ASWebAuthenticationSession.
-        //    Relayed through the background: Safari only answers sendNativeMessage from
-        //    the background script, not from a popup. See background.ts.
-        const nativeRes: any = await browser.runtime.sendMessage({
-          type: 'MF_NATIVE_SIGN_IN',
-          url: data.url,
-        });
+        if (useTabFlow) {
+          // Remember the provider now: opening the tab dismisses the popup sheet, so this
+          // component will not be alive when sign-in actually succeeds.
+          rememberProvider(provider);
+          await browser.tabs.create({ url: data.url });
+          // Nothing to await — the background establishes the session and closes the tab,
+          // and the user is already signed in when they reopen the popup.
+          return;
+        }
+
+        // 2. Pass the generated URL to the Swift host to open via
+        //    ASWebAuthenticationSession. callNativeHost() tries the direct call first
+        //    (proven on macOS) and falls back to relaying through the background — see
+        //    utils/nativeHost.ts for why both transports exist.
+        const nativeRes: any = await callNativeHost(
+          { action: 'SIGN_IN', url: data.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME },
+          { type: 'MF_NATIVE_SIGN_IN', url: data.url },
+        );
 
         if (!nativeRes || nativeRes.error) {
           throw new Error(nativeRes?.error || 'Authentication flow was cancelled or failed.');
@@ -214,6 +261,28 @@ export default function App() {
         if (error) throw error;
         if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
 
+        // Firefox closes the popup when the auth window opens, which destroys this very
+        // context mid-await — the callback then arrives with nobody to receive it. So the
+        // background runs the flow there and completes the session exchange itself; this
+        // await may simply never resolve, and that is fine, because the session is already
+        // in storage by then and is picked up when the popup is reopened.
+        //
+        // Chrome keeps its existing in-popup path: it works today, and rerouting it would
+        // risk a regression for no gain.
+        if (import.meta.env.FIREFOX) {
+          const relayed: any = await browser.runtime.sendMessage({
+            type: 'MF_WEB_AUTH',
+            url: data.url,
+          });
+          if (relayed?.error) throw new Error(relayed.error);
+          const { data: refreshed } = await supabase.auth.getSession();
+          if (refreshed.session?.user) {
+            rememberProvider(provider);
+            setUser(refreshed.session.user);
+          }
+          return;
+        }
+
         // Drive the handshake in Chrome's own auth window rather than a tab, so the
         // provider redirects back to the extension's identity URL.
         const callbackUrl = await browser.identity.launchWebAuthFlow({
@@ -289,15 +358,17 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="w-[360px] h-[360px] flex items-center justify-center bg-zinc-950 text-zinc-200">
+      <div className="w-full min-h-[360px] flex items-center justify-center bg-zinc-950 text-zinc-200">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-zinc-400"></div>
       </div>
     );
   }
 
+  // Horizontal padding stays at 20px; vertical is zero, so content starts at the very top
+  // and ends at the very bottom — vertical space is the scarce one, most of all inside the
+  // iOS modal sheet at its half-height detent.
   return (
-    /* Reduced container min-height and added explicit padding to eliminate top/bottom gaps */
-    <div dir={isRtl(locale) ? 'rtl' : 'ltr'} className="w-[360px] min-h-[360px] p-5 bg-zinc-950 text-zinc-100 flex flex-col justify-between font-sans selection:bg-zinc-800">
+    <div dir={isRtl(locale) ? 'rtl' : 'ltr'} className="w-full min-h-[360px] px-5 bg-zinc-950 text-zinc-100 flex flex-col justify-between font-sans selection:bg-zinc-800">
 
       {!user ? (
         <div className="flex flex-col flex-1 justify-center space-y-5 my-auto">
@@ -346,8 +417,8 @@ export default function App() {
         <Dashboard user={user} onSignOut={handleSignOut} />
       )}
 
-      {/* Footer layout compressed cleanly near bottom edge */}
-      <div className="text-center space-y-0.5 mt-2 select-none">
+      {/* Footer sits flush against the content above it, hard on the bottom edge. */}
+      <div className="text-center space-y-0.5 select-none">
         <div className="text-[10px] text-zinc-600">DisinfaX v1.0.0</div>
         {user && <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>}
         {!user && <div className="text-[10px] text-zinc-700">{t('cleanupTagline')}</div>}

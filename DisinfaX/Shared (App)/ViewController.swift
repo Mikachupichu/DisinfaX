@@ -16,7 +16,11 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "com.yourCompany.DisinfaX.Extension"
+// Was still the Xcode template placeholder ("com.yourCompany.DisinfaX.Extension"), which
+// matches nothing — so getStateOfSafariExtension and showPreferencesForExtension both failed
+// silently, leaving the app unable to report whether the extension is enabled. Derived from
+// the app's own identifier so it cannot drift out of sync again.
+let extensionBundleIdentifier = (Bundle.main.bundleIdentifier ?? "app.disinfax") + ".Extension"
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 

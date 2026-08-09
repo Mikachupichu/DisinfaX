@@ -26,6 +26,7 @@ import { Classification, Claim, Source, sameLanguage } from "../data/Classificat
 import { MainTweet, Tweet } from "../data/Tweets";
 import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon } from "../utils/toolbarIcon";
 import { ERROR_CODES } from "../utils/errorCodes";
+import { NATIVE_APP_ID, NATIVE_CALLBACK_SCHEME } from "../utils/nativeHost";
 
 // [ttft-ext] Fires once per service worker load — if this appears more than once in a
 // single test session, the service worker restarted mid-session (see the MV3 note at
@@ -75,7 +76,22 @@ function getUiLocale(): string {
   try { return browser?.i18n?.getUILanguage?.() ?? 'en'; } catch { return 'en'; }
 }
 
-export default defineBackground(() => {
+export default defineBackground({
+  // Scoped per browser, because the two MV2 targets want opposite things.
+  //
+  //   safari  — MUST be non-persistent. iOS/iPadOS refuse to load an extension whose
+  //             background is persistent at all ("Invalid `persistent` manifest entry").
+  //   firefox — MUST stay persistent (MV2's default). Setting it false here turned the
+  //             background into an event page that unloads when idle, which contradicts
+  //             what this file assumes: see the funds-hub note further down, which relies
+  //             on MV2's background page surviving across account switches. A long
+  //             classification run is exactly the kind of work an event page suspends
+  //             out from under, leaving the caller waiting on a reply that never comes.
+  //   chrome  — omitted entirely. MV3 emits a `service_worker` and ignores this key.
+  //
+  // Browsers absent from the map resolve to `undefined`, so the key is simply left out.
+  persistent: { safari: false, firefox: true },
+  main() {
   console.log("Background service worker started.");
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -145,6 +161,18 @@ export default defineBackground(() => {
   /** Teardown fallbacks if no DELETE arrives from the DB. */
   const PRECLASS_TIMEOUT_MS = 10000;
   const CLASSIFY_TIMEOUT_MS = 25000;
+  /** How long a research launch waits for a preclassify-origin claim's DB row to be broadcast
+   *  before giving up and classifying anyway (see awaitClaimDbRow / pullClaimBeforeClassify).
+   *
+   *  Deliberately much shorter than PRECLASS_TIMEOUT_MS, which this used to borrow. The two
+   *  measure different things: that one bounds how long a tweet subscription stays open, this
+   *  one sits directly in front of the user's paid click. The row is normally broadcast within
+   *  a few hundred ms of the claim being linked, so anything approaching a second means the
+   *  broadcast is not coming at all — and waiting the full 10s for it added ten silent seconds
+   *  to every affected fact-check (measured: two claims on one tweet cost 20s of pure waiting
+   *  on top of ~3.4s of actual research). Expiring early only risks the embedding-less
+   *  duplicate the wait exists to prevent; stalling costs the user the thing they paid for. */
+  const CLAIM_DB_ROW_TIMEOUT_MS = 2000;
   /** Open tweet subscriptions keyed by tweet id. */
   const tweetSubs = new Map<string, SubscriptionHandle>();
   /** Open per-claim (is_classifying) subscriptions keyed by `${tweetId}:${claimId}`. */
@@ -1309,7 +1337,7 @@ export default defineBackground(() => {
     // by the research save path WITHOUT an embedding. Wait (bounded) for the broadcast so the
     // embedded row exists first, then re-read the claim to pick up its now-known id.
     if (!claim?.dbClaimId) {
-      await awaitClaimDbRow(classificationId, claimText, PRECLASS_TIMEOUT_MS);
+      await awaitClaimDbRow(classificationId, claimText, CLAIM_DB_ROW_TIMEOUT_MS);
       cls = classificationCache.get(classificationId)?.classification;
       claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
     }
@@ -2389,13 +2417,6 @@ export default defineBackground(() => {
     }).catch((e: any) => console.error('[background] openCheckoutTab error:', e));
   }
 
-  // ── Safari native-app bridge ──
-  /** The containing app's bundle identifier. Safari ignores this argument (an extension
-   *  can only ever reach its own containing app), but the API requires it. */
-  const NATIVE_APP_ID = 'com.disinfax.app';
-  /** Custom URL scheme the app registers so ASWebAuthenticationSession can catch the
-   *  OAuth redirect. Must match the `redirectTo` the popup sends to Supabase. */
-  const NATIVE_CALLBACK_SCHEME = 'disinfax';
 
   // ─────────────────────────────────────────────────────────────────────────
   // Message entry points. One-off requests (popup) arrive on runtime.onMessage;
@@ -2432,13 +2453,43 @@ export default defineBackground(() => {
     // popup calling it directly is not answered — so the popup asks here and this relays.
     // `import.meta.env.SAFARI` is a build-time constant, so this block is dropped entirely
     // from the Chromium and Firefox bundles.
-    if (import.meta.env.SAFARI && (message?.type === 'MF_NATIVE_SIGN_IN' || message?.type === 'MF_NATIVE_PURCHASE')) {
+    if (import.meta.env.SAFARI && (
+      message?.type === 'MF_NATIVE_SIGN_IN' ||
+      message?.type === 'MF_NATIVE_PURCHASE' ||
+      message?.type === 'MF_NATIVE_FINISH_TX' ||
+      message?.type === 'MF_NATIVE_PENDING_TX'
+    )) {
       (async () => {
         try {
-          const payload = message.type === 'MF_NATIVE_SIGN_IN'
-            ? { action: 'SIGN_IN', url: message.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME }
+          // MF_NATIVE_FINISH_TX / MF_NATIVE_PENDING_TX complete the two-phase top-up:
+          // StoreKit hands us an *unfinished* transaction, the worker credits it, and only
+          // then is it finished. Anything left unfinished is money already taken that we
+          // still owe, so PENDING_TX lets the popup find and settle it later.
+          const payload =
+            message.type === 'MF_NATIVE_SIGN_IN'
+              ? { action: 'SIGN_IN', url: message.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME }
+            : message.type === 'MF_NATIVE_FINISH_TX'
+              ? { action: 'FINISH_TRANSACTION', transactionId: message.transactionId }
+            : message.type === 'MF_NATIVE_PENDING_TX'
+              ? { action: 'PENDING_TRANSACTIONS' }
             : { action: 'PURCHASE_TOPUP', productId: message.productId, amount: message.amount, userId: message.userId };
-          const res = await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, payload);
+          // The host drives UI the user has to complete (ASWebAuthenticationSession, the
+          // StoreKit sheet), so this ceiling is deliberately generous — it is not a
+          // latency budget. It exists so that a host which never invokes its completion
+          // handler surfaces an error instead of leaving the popup's spinner up forever.
+          // An iOS handler missing ASWebAuthenticationPresentationContextProviding does
+          // exactly that: the session cannot present, so nothing ever calls back.
+          const NATIVE_TIMEOUT_MS = 5 * 60 * 1000;
+          let timeoutId: ReturnType<typeof setTimeout> | undefined;
+          const res = await Promise.race([
+            (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, payload),
+            new Promise((_resolve, reject) => {
+              timeoutId = setTimeout(
+                () => reject(new Error('The DisinfaX app did not respond. Please try again.')),
+                NATIVE_TIMEOUT_MS,
+              );
+            }),
+          ]).finally(() => { if (timeoutId !== undefined) clearTimeout(timeoutId); });
           // Passed through untouched: the popup already understands the host's shapes
           // ({access_token,refresh_token} / {code} / {callbackUrl} / {signedTransaction} /
           // {error}). Never resolve as undefined — the popup awaits this reply, and a
@@ -2447,6 +2498,108 @@ export default defineBackground(() => {
         } catch (e: any) {
           console.error('[background] sendNativeMessage failed:', e);
           sendResponse({ error: e?.message || 'Could not reach the DisinfaX app.' });
+        }
+      })();
+      return true; // async sendResponse
+    }
+    // iOS/iPadOS sign-in lands here: the popup opened the provider in a Safari tab (it
+    // cannot use ASWebAuthenticationSession — see AuthManager.swift), and the content
+    // script on the redirect page forwarded whatever came back. The exchange has to run
+    // HERE rather than in the popup, because opening the tab dismisses the popup sheet on
+    // iOS and its JS context is gone. This client shares the popup's storage adapter, so
+    // the PKCE verifier stored during signInWithOAuth is readable from here.
+    // Firefox only. On Firefox, launchWebAuthFlow opens its auth window in a way that
+    // closes the popup, and closing the popup destroys the JS context that was awaiting
+    // the result — so the callback URL arrives with nobody left to receive it. Google
+    // appeared to work only because an already-signed-in account redirects fast enough
+    // to beat the teardown; Apple and X need real interaction and always lost the race.
+    //
+    // The background survives, so it runs the flow AND completes the session exchange.
+    // The popup does not need to be alive at the end: the session lands in storage, and
+    // whenever the popup is reopened it reads it back. Chrome is deliberately excluded —
+    // its popup path works today and must not be disturbed.
+    if (import.meta.env.FIREFOX && message?.type === 'MF_WEB_AUTH' && typeof message.url === 'string') {
+      (async () => {
+        try {
+          const callbackUrl = await (browser.identity as any).launchWebAuthFlow({
+            url: message.url,
+            interactive: true,
+          });
+          if (!callbackUrl) throw new Error('Authentication flow was cancelled or failed.');
+
+          const parsed = new URL(callbackUrl);
+          const hashParams = new URLSearchParams(parsed.hash.replace(/^#/, ''));
+
+          const errorDescription =
+            parsed.searchParams.get('error_description') || hashParams.get('error_description');
+          if (errorDescription) throw new Error(errorDescription);
+
+          const code = parsed.searchParams.get('code');
+          if (code) {
+            const { error } = await supabase.auth.exchangeCodeForSession(code);
+            if (error) throw error;
+          } else {
+            const accessToken = hashParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token');
+            if (!accessToken || !refreshToken) {
+              const seen = [
+                ...Array.from(parsed.searchParams.keys()).map(k => `?${k}`),
+                ...Array.from(hashParams.keys()).map(k => `#${k}`),
+              ].join(', ') || '(no query or fragment parameters)';
+              throw new Error(`Authentication succeeded, but no usable tokens or codes were returned. Callback carried: ${seen}`);
+            }
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (error) throw error;
+          }
+
+          // Warm the pipeline so the balance is already known when the popup reopens.
+          refreshActiveState();
+          sendResponse({ ok: true });
+        } catch (e: any) {
+          console.error('[background] web auth flow failed:', e);
+          sendResponse({ error: e?.message || 'Sign-in could not be completed.' });
+        }
+      })();
+      return true;
+    }
+
+    if (import.meta.env.SAFARI && message?.type === 'MF_AUTH_CALLBACK') {
+      (async () => {
+        const closeCallbackTab = () => {
+          const tabId = _sender?.tab?.id;
+          if (tabId != null) { try { browser.tabs.remove(tabId); } catch { /* already gone */ } }
+        };
+        try {
+          if (message.errorDescription) {
+            console.error('[background] OAuth provider rejected sign-in:', message.errorDescription);
+            closeCallbackTab();
+            sendResponse({ error: message.errorDescription });
+            return;
+          }
+          if (message.code) {
+            const { error } = await supabase.auth.exchangeCodeForSession(message.code);
+            if (error) throw error;
+          } else if (message.accessToken && message.refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: message.accessToken,
+              refresh_token: message.refreshToken,
+            });
+            if (error) throw error;
+          } else {
+            throw new Error('Callback carried no code or tokens.');
+          }
+          // Bring the pipeline up for the newly signed-in account before the user gets
+          // back to the popup, so the balance is already known when they reopen it.
+          refreshActiveState();
+          closeCallbackTab();
+          sendResponse({ ok: true });
+        } catch (e: any) {
+          console.error('[background] OAuth callback exchange failed:', e);
+          closeCallbackTab();
+          sendResponse({ error: e?.message || 'Sign-in could not be completed.' });
         }
       })();
       return true; // async sendResponse
@@ -3095,4 +3248,5 @@ export default defineBackground(() => {
       }
     });
   });
+  },
 });

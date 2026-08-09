@@ -1,19 +1,22 @@
 {
-  "name": "wxt-react-starter",
+  "name": "disinfax",
   "description": "manifest.json description",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
-    "build:safari": "wxt build -b safari && cp -R .output/safari-mv2/* ./DisinfaX/Shared\\ \\(Extension\\)/",
+    "build:safari": "wxt build -b safari && npm run copy:safari",
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "copy:safari": "bash scripts/copy-safari.sh",
+    "verify": "bash scripts/verify-release.sh",
+    "release": "bash scripts/release.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.7",
