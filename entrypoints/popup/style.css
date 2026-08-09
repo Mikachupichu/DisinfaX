@@ -9,3 +9,54 @@
 button:not(:disabled) {
   cursor: pointer;
 }
+
+/* ── Popup sizing ───────────────────────────────────────────────────────────────
+   Desktop (Chrome, Firefox, Safari on macOS) renders the popup as a fixed panel that
+   sizes itself to the document, so the width must be stated explicitly here — the
+   React tree uses w-full and would otherwise collapse to its minimum content width. */
+html,
+body {
+  margin: 0;
+  width: 360px;
+  min-height: 360px;
+}
+
+/* iOS and iPadOS present the popup as a modal sheet instead of a panel, and the sheet
+   IS the viewport: it spans the device width and the user can drag it between a
+   half-height and a full-height detent. So fill the available space rather than sitting
+   as a fixed 360x360 block inside it.
+
+   `dvh` rather than `vh` is the important part — `vh` is frozen to the largest possible
+   viewport, so it would overflow at the half-height detent, while `dvh` tracks the sheet
+   as it is dragged between detents.
+
+   Keyed on `pointer: coarse` because one Safari build serves both macOS (panel) and
+   iOS/iPadOS (sheet), so this cannot be decided at build time. */
+@media (pointer: coarse) {
+  html,
+  body {
+    width: 100%;
+    /* iPadOS presents the popup as a popover rather than iPhone's full-width sheet, but
+       it matches `pointer: coarse` all the same. A popover is sized by its content, so
+       `width: 100%` has nothing to resolve against and the document collapses to its
+       minimum content width — a ~180px column with every button wrapping over three
+       lines. The floor keeps it at the desktop width there while still letting the
+       iPhone sheet expand to the full device width. */
+    min-width: 360px;
+    min-height: 100dvh;
+  }
+
+  /* Both the loading state and the main view are a single child of #root; growing them
+     lets `justify-between` space content against the real sheet height instead of 360px. */
+  #root,
+  #root > div {
+    min-height: 100dvh;
+  }
+
+  /* Clear the home indicator at the full-height detent, and nothing beyond that. There is
+     no minimum floor here on purpose: the inset resolves to 0 on hardware without a home
+     indicator, so content reaches the very edge of the sheet. */
+  #root > div {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

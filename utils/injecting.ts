@@ -263,6 +263,25 @@ function formatRawMessage(entry: RawMessageEntry, subs?: string[]): string {
     return msg.replace(/\$\$/g, '$');
 }
 
+/** Finish any positional substitution the browser's i18n left undone.
+ *
+ *  A named placeholder resolves to a positional token (`$VERDICT$` → `"$2"`), and the
+ *  engine is then supposed to swap that token for the caller's substitution. Safari only
+ *  applies the FIRST one, so a two-placeholder badge rendered as "Partially $2" — the raw
+ *  token leaking into the UI. Chrome substitutes them all, so this finds nothing there and
+ *  is a no-op.
+ *
+ *  Mirrors the `$n` handling in formatRawMessage: an index with no matching substitution
+ *  is left exactly as-is rather than blanked, so a genuine mistake stays visible instead of
+ *  silently producing truncated copy. */
+function applyLeftoverSubs(message: string, subs?: string[]): string {
+    if (!subs?.length || !message.includes('$')) return message;
+    return message.replace(/\$(\d+)/g, (whole, num: string) => {
+        const idx = parseInt(num, 10) - 1;
+        return subs[idx] !== undefined ? subs[idx] : whole;
+    });
+}
+
 /** Safe i18n lookup — falls back to English via `_locales/en/messages.json`. All copy
  *  lives exclusively in `public/_locales/<locale>/messages.json`; nothing is duplicated here. */
 function t(key: string, subs?: string[]): string {
@@ -280,7 +299,7 @@ function t(key: string, subs?: string[]): string {
                 : null;
         if (api?.getMessage) {
             const result = api.getMessage(key, subs);
-            if (result) return result;
+            if (result) return applyLeftoverSubs(result, subs);
         }
     } catch {}
     ensureLocaleMessagesLoading('en');
@@ -554,6 +573,7 @@ function removeInjectedElements(tweetId: string) {
  *  un-classed so a later re-login re-renders segments from scratch. */
 function freezeSegmentWrap(wrap: HTMLElement) {
     for (const badge of Array.from(wrap.querySelectorAll('.mf-inline-badge'))) badge.remove();
+    for (const spinner of Array.from(wrap.querySelectorAll('.mf-standalone-spinner'))) spinner.remove();
     for (const span of Array.from(wrap.querySelectorAll<HTMLElement>('.mf-segment-claim'))) {
         span.classList.remove('mf-segment-claim', 'mf-highlight-reveal');
         span.style.backgroundColor = '';
@@ -617,6 +637,84 @@ function isTweetVisible(tweetId: string): boolean {
         }
     }
     return false;
+}
+
+/** Returns true when EVERY highlighted claim of this tweet is fully inside the viewport.
+ *
+ *  This is the question the Fact-Checked button actually cares about: "can the user see the
+ *  verdicts they just paid for?" — not isTweetVisible()'s "is any pixel of the article on
+ *  screen?". A tweet taller than a screen counted as visible the moment its first line
+ *  scrolled into view, which suppressed the button (and, once shown, cleared it 500ms later)
+ *  while every highlight was still below the fold.
+ *
+ *  Falls back to isTweetVisible() when no highlight span is laid out — the claims may not be
+ *  rendered yet, or may have matched no text — so behaviour is unchanged where this cannot
+ *  answer. Quoted-tweet claims are covered too: their spans live inside the same article. */
+function areTweetHighlightsVisible(tweetId: string): boolean {
+    const links = document.querySelectorAll(`a[href*="/status/${tweetId}"]`);
+    if (links.length === 0) return false;
+
+    let sawLaidOutHighlight = false;
+
+    for (const link of links) {
+        const target = link.closest('article, div[role="link"], div[data-testid="card.wrapper"]') ?? link;
+        const spans = target.querySelectorAll('span.mf-segment-claim');
+        if (spans.length === 0) continue;
+
+        let allVisible = true;
+        let anyLaidOut = false;
+        for (const span of spans) {
+            const rect = span.getBoundingClientRect();
+            // A zero-size rect means the span isn't laid out (collapsed/hidden subtree); it
+            // carries no position to judge, so it neither confirms nor denies visibility.
+            if (rect.height === 0 && rect.width === 0) continue;
+            anyLaidOut = true;
+            if (rect.top < 0 || rect.bottom > window.innerHeight) { allVisible = false; break; }
+        }
+        if (!anyLaidOut) continue;
+        sawLaidOutHighlight = true;
+        // Any single on-screen representation showing all its highlights is enough.
+        if (allVisible) return true;
+    }
+
+    return sawLaidOutHighlight ? false : isTweetVisible(tweetId);
+}
+
+/** Which way the user has to scroll to reach this tweet's nearest off-screen highlight, or
+ *  null when no highlight is laid out (caller then falls back to the article's own rect).
+ *
+ *  The floating button used to take its side and arrow from the article rect alone — "is the
+ *  tweet's bottom above mid-screen?". Once the button started appearing for a single highlight
+ *  slipping off an otherwise on-screen tweet, that inference broke: scrolling down a little
+ *  pushes the first highlight off the TOP while the article's bottom is still well below the
+ *  middle, so the button pinned itself to the bottom with a down arrow, pointing away from the
+ *  content it was offering to return to.
+ *
+ *  Distance-ranked rather than order-ranked: on a tweet spilling past both edges, the nearest
+ *  off-screen highlight is the one the user just lost and expects to get back. */
+function offScreenHighlightDirection(tweetId: string): 'above' | 'below' | null {
+    const links = document.querySelectorAll(`a[href*="/status/${tweetId}"]`);
+    if (links.length === 0) return null;
+
+    let nearestAbove = Infinity;
+    let nearestBelow = Infinity;
+    let sawLaidOutHighlight = false;
+
+    for (const link of links) {
+        const target = link.closest('article, div[role="link"], div[data-testid="card.wrapper"]') ?? link;
+        for (const span of target.querySelectorAll('span.mf-segment-claim')) {
+            const rect = span.getBoundingClientRect();
+            if (rect.height === 0 && rect.width === 0) continue;
+            sawLaidOutHighlight = true;
+            if (rect.top < 0) nearestAbove = Math.min(nearestAbove, -rect.top);
+            if (rect.bottom > window.innerHeight) nearestBelow = Math.min(nearestBelow, rect.bottom - window.innerHeight);
+        }
+    }
+
+    if (!sawLaidOutHighlight) return null;
+    if (nearestAbove === Infinity && nearestBelow === Infinity) return null;
+    // Ties go up: the earliest claim in the tweet is the one that scrolls off the top first.
+    return nearestAbove <= nearestBelow ? 'above' : 'below';
 }
 
 /** Smoothly scroll the window so the top of the tweet is visible.
@@ -821,7 +919,7 @@ function handlePathChange(oldPath: string, newPath: string) {
             }, newState.remainingTimeMs);
 
             newState.visibilityCheck = setInterval(() => {
-                if (isTweetVisible(newState.tweetId)) {
+                if (areTweetHighlightsVisible(newState.tweetId)) {
                     clearFloatingButtonForPath(newPath, true);
                 }
             }, 500);
@@ -1022,8 +1120,8 @@ function factCheckedButtonContent(extraHtml: string, label: string, iconSvg: str
 
 /** Show the "Fact-Checked" floating button if the tweet is off-screen. */
 function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number, classification: Classification) {
-    if (isTweetVisible(tweetId)) {
-        console.log(`[misinfo] showFactCheckedFloatingButton ${tweetId}: tweet is visible, skipping`);
+    if (areTweetHighlightsVisible(tweetId)) {
+        console.log(`[misinfo] showFactCheckedFloatingButton ${tweetId}: all highlights visible, skipping`);
         return;
     }
 
@@ -1038,9 +1136,14 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     const article = document.querySelector(`a[href*="/status/${tweetId}"]`)?.closest('article');
     const tweetRect = article?.getBoundingClientRect();
 
-    // If fact-checked tweet is above viewport, position = 'top', arrow points UP.
-    // If fact-checked tweet is below viewport, position = 'bottom', arrow points DOWN.
-    const isTweetAbove = tweetRect ? tweetRect.bottom <= window.innerHeight / 2 : true;
+    // Point at whatever the user actually has to scroll towards. The off-screen highlight is
+    // the reason this button exists, so it — not the article's midpoint — decides the side and
+    // the arrow. Only when no highlight is laid out do we fall back to the old article-rect
+    // inference: content above viewport => position 'top', arrow UP; below => 'bottom', DOWN.
+    const highlightDirection = offScreenHighlightDirection(tweetId);
+    const isTweetAbove = highlightDirection !== null
+        ? highlightDirection === 'above'
+        : (tweetRect ? tweetRect.bottom <= window.innerHeight / 2 : true);
     const position: 'top' | 'bottom' = isTweetAbove ? 'top' : 'bottom';
     const factCheckedIcon = position === 'top' ? upArrowSvg : downArrowSvg;
 
@@ -1175,7 +1278,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     const state = floatingButtonRegistry.get(path);
     if (state) {
         state.visibilityCheck = setInterval(() => {
-            if (isTweetVisible(tweetId)) {
+            if (areTweetHighlightsVisible(tweetId)) {
                 clearFloatingButtonForPath(path, true);
             }
         }, 500);
@@ -1247,31 +1350,66 @@ function updateOnHoldScrollTracking(classification: Classification) {
     for (const text of Array.from(state.pendingClaimTexts)) {
         if (!currentClaimTexts.has(text)) state.pendingClaimTexts.delete(text);
     }
+
+    /** Done for the purposes of the Fact-Checked button: the claim has a VERDICT.
+     *
+     *  Deliberately does not wait on `note` (the reasoning). Reasoning and sources stream
+     *  in afterwards and the popover renders them live, so gating on the note kept the
+     *  button hidden long after the highlight had already settled on its final colour —
+     *  the user could not be sent back to a tweet whose verdicts were, visibly, ready.
+     *  The `verdict !== "research required"` guard stays: a claim can carry a DB-matched
+     *  confidence/veracity while still awaiting its own research, and that must not count. */
+    const hasVerdict = (cl: Claim) =>
+        cl.verdict !== "research required"
+        && cl.confidence !== undefined && cl.confidence !== null
+        && cl.veracity !== undefined && cl.veracity !== null;
+
+    /** Only a claim that is actually IN FLIGHT can hold the button back.
+     *
+     *  A claim sitting on hold is idle — it is waiting on the user's own Fact-Check click,
+     *  not on a result — so it must not count as outstanding. Otherwise fact-checking one
+     *  claim on a multi-claim tweet left the others permanently un-verdicted, the pending
+     *  set never emptied, and the button never appeared at all for a partial check. */
+    const isAwaitingVerdict = (cl: Claim) => !hasVerdict(cl) && cl.reclassifyOnHold !== true;
+
     for (const cl of allClaims) {
-        const isResearched = cl.verdict !== "research required" && cl.note !== null && cl.note !== undefined;
-        if (!isResearched && !state.pendingClaimTexts.has(cl.text)) {
+        if (isAwaitingVerdict(cl) && !state.pendingClaimTexts.has(cl.text)) {
             state.pendingClaimTexts.add(cl.text);
         }
     }
 
+    // Clear anything that is no longer outstanding — either it produced a verdict, or it
+    // went back on hold (a reverted/cancelled research), which makes it idle rather than
+    // pending and must not strand the set at a non-zero size forever.
     for (const cl of allClaims) {
-        const isResearched = cl.verdict !== "research required" && cl.note !== null && cl.note !== undefined;
-        if (isResearched) {
+        if (!isAwaitingVerdict(cl)) {
             state.pendingClaimTexts.delete(cl.text);
         }
     }
 
-    console.log(`[misinfo] updateOnHoldScrollTracking ${classification.id}: pending=${state.pendingClaimTexts.size}, anyFresh=${allClaims.some(cl => cl.freshlyResearched)}, visible=${isTweetVisible(classification.id)}`);
+    console.log(`[misinfo] updateOnHoldScrollTracking ${classification.id}: pending=${state.pendingClaimTexts.size}, anyFresh=${allClaims.some(cl => cl.freshlyResearched)}, tweetVisible=${isTweetVisible(classification.id)}, highlightsVisible=${areTweetHighlightsVisible(classification.id)}`);
 
     if (state.pendingClaimTexts.size === 0) {
-        const anyCompleted = allClaims.some(cl =>
-            cl.verdict !== "research required" && cl.note !== null && cl.note !== undefined
-        );
+        const anyCompleted = allClaims.some(hasVerdict);
         if (anyCompleted) {
             console.log(`[misinfo] updateOnHoldScrollTracking ${classification.id}: showing Fact-Checked button`);
             showFactCheckedFloatingButton(classification.id, state.originalScrollY, classification);
+            // Tear the tracker down only once it has done its job.
+            onHoldScrollStates.delete(classification.id);
         }
-        onHoldScrollStates.delete(classification.id);
+        // Otherwise: keep tracking. Nothing has a verdict yet, so there is nowhere to send
+        // the user back to — but the click is still being worked on.
+        //
+        // Deleting here was the regression. In the moment after the Disinfact click every
+        // claim is still flagged reclassifyOnHold, so isAwaitingVerdict() exempts all of
+        // them, the pending set is empty, and no claim has a verdict yet. This branch then
+        // destroyed the tracker before research had even begun, and every later update bailed
+        // at the `!state` guard above — so the button could never appear at all. The set is
+        // empty here for two opposite reasons ("not started" vs "all done"), and only the
+        // second one means we are finished.
+        //
+        // Retaining it cannot leak: clearAllInjectedUi() clears onHoldScrollStates on
+        // navigation, and the visibility interval dismisses a stale button on its own.
     }
 }
 
@@ -2153,6 +2291,43 @@ function getInlineStyles(): string {
     margin-right: 3px;
     flex-shrink: 0;
 }
+/* Narrow viewports (phones) run out of room on the action row that X already packs with
+   its own controls, so the Disinfact / Fact-Check All buttons get squeezed or pushed to
+   wrap. Reclaim the horizontal padding X's button classes apply — the tap target stays
+   full-height, only the dead space either side of the label shrinks.
+
+   The container's own margin (MF_BTN_GAP, applied inline at placement time) is the larger
+   share of the visible gap, and an inline style can only be beaten with !important — which
+   is why targeting just the buttons left the spacing looking unchanged. Scoped to our own
+   elements via .mf-btn-container / data-mf-charge so nothing of X's is touched. */
+@media (max-width: 500px) {
+    /* NOTE: the container's MARGIN is deliberately not set here. It is written inline at
+       placement time (see MF_BTN_GAP_NARROW in placeButtonContainer), because overriding an
+       inline margin from this stylesheet proved unreliable in practice — inspecting a live
+       button showed the original inline 10px still winning over an !important rule. Padding
+       below is class-derived, so it overrides normally. */
+    /* The button AND its inner div[dir="ltr"] both carry X's own button classes, and both
+       contribute padding — zeroing only the outer left most of the gap in place. */
+    [data-mf-charge="disinfact"],
+    [data-mf-charge="factcheckall"],
+    [data-mf-charge="disinfact"] > div,
+    [data-mf-charge="factcheckall"] > div {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        min-width: 0 !important;
+        column-gap: 0 !important;
+    }
+    /* Degrade to an ellipsis rather than overflowing once it does have to give way. */
+    [data-mf-charge="disinfact"] > div > span,
+    [data-mf-charge="factcheckall"] > div > span {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        min-width: 0 !important;
+    }
+}
 .mf-popover .mf-popover-copy-icon:hover,
 .mf-popover .mf-popover-close:hover {
     background-color: var(--mf-popover-hover) !important;
@@ -2848,7 +3023,19 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
             const label = verdictLabel(claim.confidence, claim.veracity, `${classificationId ?? ''}:${claim.text}`);
             const reasoning = extractReasoning(claim.note, claim.confidence, claim.veracity);
             const isOnHold = claim.reclassifyOnHold;
-            const isResearching = claim.verdict === "research required" || claim.refreshing || claim.confidence === undefined || claim.veracity === undefined || claim.confidence === null || claim.veracity === null || claim.confidence < 0.2;
+            // `confidence < 0.2` alone used to mean "still researching", which conflated two
+            // very different states: a claim that has never been researched, and one that
+            // HAS been researched and honestly came back uncertain (the model's web search
+            // failing yields a real result of confidence 0 with a reasoning note). Treating
+            // the second as unresearched reverted its badge to "Fact-Check", so the user
+            // clicked again, was charged again, got the same zero-confidence answer, and
+            // could loop indefinitely — paying every time for a claim that can never resolve.
+            //
+            // A note is the completion signal: unresearched claims carry none. Low
+            // confidence with a note now renders as an Unknown verdict (verdictLabel already
+            // handles < 0.2) instead of pretending the work never happened.
+            const hasResearchNote = claim.note !== undefined && claim.note !== null && String(claim.note).trim() !== "";
+            const isResearching = claim.verdict === "research required" || claim.refreshing || claim.confidence === undefined || claim.veracity === undefined || claim.confidence === null || claim.veracity === null || (claim.confidence < 0.2 && !hasResearchNote);
             // On-hold ("Fact-Check") = black/white tint; researching/no-verdict = gray;
             // else the verdict color (kept during refresh so it doesn't flash grey).
             const bgColor = highlightBgColor(claim, false);
@@ -2906,7 +3093,13 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 const isRefreshing = span.dataset.refreshing === "true";
                 const isOnHoldNow = span.dataset.reclassifyOnHold === "true";
                 const inPipeline = classificationId ? processingOnHoldIds.has(classificationId) : false;
-                const isResearchingNow = isRefreshing || prob === undefined || ver === undefined || prob < 0.2;
+                // Same conflation as `isResearching` above, but this is the one that actually
+                // decides the badge TEXT: without the note check, a researched-but-uncertain
+                // claim satisfies isPipelineClaim and gets relabelled "Fact-Check", even though
+                // verdictLabel() would correctly render it as Unknown, and even though its
+                // popover is already showing the reasoning that proves it was researched.
+                const isResearchingNow = isRefreshing || prob === undefined || ver === undefined
+                    || (prob < 0.2 && !hasResearchNote);
                 const isPipelineClaim = inPipeline && isResearchingNow && !isOnHoldNow && !isRefreshing;
                 const lbl = (isOnHoldNow || isPipelineClaim) ? "Fact-Check" : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
                 const txtColor = (isOnHoldNow || isPipelineClaim)
@@ -2942,6 +3135,15 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
 
             if (showPermanentBadge) {
                 span.appendChild(createInlineBadge(true));
+            } else if (claim.refreshing || isResearching) {
+                // The badge carries the spinner, but the badge itself is only permanent for
+                // on-hold / in-pipeline claims — a RECLASSIFY (claim.refreshing) shows no
+                // badge at all, so on touch, where there is no hover to summon one, the
+                // highlight gave no sign it was working. Stand in a bare spinner so every
+                // loading state is visible. Removed again by the badge-toggle handlers below
+                // (so the two never show at once) and by the next re-render once the result
+                // lands, since this whole block re-runs with refreshing/isResearching false.
+                span.appendChild(createStandaloneSpinner(isRTL));
             }
 
             // Exposed so showPopover can create the same badge on a tap — mouseenter
@@ -2956,6 +3158,9 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 if (span.dataset.hoverBg) {
                     span.style.backgroundColor = span.dataset.hoverBg;
                 }
+                // The hover badge carries its own spinner, so drop the stand-in first —
+                // otherwise a loading claim would briefly show two.
+                span.querySelector(".mf-standalone-spinner")?.remove();
                 // A permanent badge only for a claim that is still on hold in the live
                 // dataset; a classified claim gets a transient hover-only badge.
                 span.appendChild(createInlineBadge(span.dataset.reclassifyOnHold === "true"));
@@ -2975,6 +3180,12 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 span.style.backgroundColor = baseBg;
                 const badge = span.querySelector(".mf-inline-badge");
                 if (badge) badge.remove();
+                // Restore the stand-in if this claim is still loading — the badge that was
+                // showing the spinner has just been taken away with the hover.
+                const stillLoading = span.dataset.refreshing === "true" || noVerdict;
+                if (stillLoading && !span.querySelector(".mf-standalone-spinner")) {
+                    span.appendChild(createStandaloneSpinner(isRTLLocale(getEffectiveUILocale())));
+                }
             });
 
             wrap.appendChild(span);
@@ -3014,7 +3225,19 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 const claim = claims[idx];
                 const label = verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
                 const reasoning = extractReasoning(claim.note, claim.confidence, claim.veracity);
-                const isResearching = claim.verdict === "research required" || claim.refreshing || claim.confidence === undefined || claim.veracity === undefined || claim.confidence === null || claim.veracity === null || claim.confidence < 0.2;
+                // `confidence < 0.2` alone used to mean "still researching", which conflated two
+            // very different states: a claim that has never been researched, and one that
+            // HAS been researched and honestly came back uncertain (the model's web search
+            // failing yields a real result of confidence 0 with a reasoning note). Treating
+            // the second as unresearched reverted its badge to "Fact-Check", so the user
+            // clicked again, was charged again, got the same zero-confidence answer, and
+            // could loop indefinitely — paying every time for a claim that can never resolve.
+            //
+            // A note is the completion signal: unresearched claims carry none. Low
+            // confidence with a note now renders as an Unknown verdict (verdictLabel already
+            // handles < 0.2) instead of pretending the work never happened.
+            const hasResearchNote = claim.note !== undefined && claim.note !== null && String(claim.note).trim() !== "";
+            const isResearching = claim.verdict === "research required" || claim.refreshing || claim.confidence === undefined || claim.veracity === undefined || claim.confidence === null || claim.veracity === null || (claim.confidence < 0.2 && !hasResearchNote);
                 // Highlight color: keep a claim's classification color even while it is
                 // being reclassified (refreshing) as long as it still carries a valid
                 // verdict — so a reclassifying claim shows its soon-to-be-replaced color
@@ -3108,6 +3331,21 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     badge.textContent = "Fact-Check";
                     el.appendChild(badge);
                     (el as any)._mfBadgePermanent = badge;
+                }
+
+                // Keep the stand-in spinner in sync on the IN-PLACE update path (this runs
+                // without a full re-render, so it is what makes the spinner appear when a
+                // reclassify starts and vanish the moment the result lands). It is only ever
+                // shown when no badge is present, since the badge carries its own spinner.
+                {
+                    const loadingNow = el.dataset.refreshing === "true" || isResearching;
+                    const hasBadge = !!el.querySelector(".mf-inline-badge");
+                    const standalone = el.querySelector(".mf-standalone-spinner");
+                    if (loadingNow && !hasBadge && !standalone) {
+                        el.appendChild(createStandaloneSpinner(isRTLEl));
+                    } else if ((!loadingNow || hasBadge) && standalone) {
+                        standalone.remove();
+                    }
                 }
 
                 if (changed) {
@@ -4022,6 +4260,18 @@ function ensurePopoverDisclaimer(popover: HTMLElement) {
     popover.appendChild(el);
 }
 
+/** A bare spinner shown inline where the badge would be, for loading states that do not
+ *  get a permanent badge (notably a reclassify). Mirrors the badge's own margins so the
+ *  highlight's layout is identical whichever of the two is present. */
+function createStandaloneSpinner(isRTL: boolean): HTMLElement {
+    const spinner = document.createElement("span");
+    spinner.className = "mf-fc-spinner mf-standalone-spinner";
+    spinner.style.marginLeft = isRTL ? "0" : "3px";
+    spinner.style.marginRight = isRTL ? "3px" : "0";
+    spinner.style.verticalAlign = "middle";
+    return spinner;
+}
+
 /** Get the bounding rectangle of the Fact-Checked floating button if it exists. */
 function getFactCheckedButtonRect(): DOMRect | null {
     const btn = document.querySelector<HTMLElement>(".mf-floating-scroll-btn");
@@ -4281,6 +4531,41 @@ function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
         popover.style.width = '';
         popover.style.maxWidth = '';
     }
+    observeTriggerGeometry(popover, trigger);
+}
+
+/** Keep a popover clear of its trigger as the trigger's own box CHANGES under it.
+ *
+ *  The placement above reads the trigger once, but a highlight is not static at that
+ *  moment: its badge is inserted immediately AFTER the popover opens (and on touch there is
+ *  no hover, so the badge only ever appears post-tap). If the badge does not fit on the line
+ *  the highlight ends on, it wraps to the next one — which grows the highlight's bounding
+ *  box downward, leaving the popover, placed against the pre-badge geometry, sitting on top
+ *  of the very badge it was meant to avoid.
+ *
+ *  A ResizeObserver re-runs placement whenever that box actually changes, which also covers
+ *  reflow from font loading, rotation and text rewrapping. Repositioning the popover never
+ *  resizes the trigger, so this cannot feed back into itself. Self-disconnects once the
+ *  popover leaves the DOM, so call sites need no cleanup.
+ */
+function observeTriggerGeometry(popover: HTMLElement, trigger: HTMLElement) {
+    if (typeof ResizeObserver !== 'function') return;
+    const holder = popover as HTMLElement & { _mfTriggerObserver?: ResizeObserver };
+    if (holder._mfTriggerObserver) return;
+    try {
+        const observer = new ResizeObserver(() => {
+            if (!popover.isConnected || !trigger.isConnected) {
+                observer.disconnect();
+                delete holder._mfTriggerObserver;
+                return;
+            }
+            // Respect a user-dragged popover exactly as positionPopover() does.
+            if ((popover as any)._mfManuallyPositioned) return;
+            positionPopover(popover, trigger);
+        });
+        observer.observe(trigger);
+        holder._mfTriggerObserver = observer;
+    } catch { /* unobservable trigger — initial placement still applies */ }
 }
 
 /** Position an onboarding popover with `position: fixed`, pinned directly to the button's
@@ -5147,6 +5432,13 @@ function createDisinfactLogoSvg(): SVGSVGElement {
     svg.setAttribute("fill", "none");
     svg.style.flexShrink = "0";
     svg.style.marginTop = "-5px";
+    // Narrow screens: close the gap between the mark and its label. The wrapper's flex gap
+    // is already 0, so the remaining slack is the mark not filling its own 128x128 viewBox —
+    // only a negative margin can take it back. Set inline, like the container's gap, because
+    // that reliably wins where a stylesheet rule did not.
+    if (window.innerWidth <= MF_NARROW_MAX_WIDTH) {
+        svg.style.marginRight = "-3px";
+    }
     svg.innerHTML = DISINFAX_MARK_PATHS;
     return svg;
 }
@@ -5158,7 +5450,27 @@ function createDisinfactLogoSvg(): SVGSVGElement {
  *  RIGHT of the timestamp — so the same visual gap separates it from its neighbor either
  *  way (previously the fixed margin-right left it cramped against the timestamp). */
 const MF_BTN_GAP = '10px';
+/** Narrow screens: X's own row already separates its children with `column-gap: 8px`, so
+ *  our extra 10px on top of that was pure surplus — measured at ~26px of dead space around
+ *  the button, which is what squeezed the display name down to "The W…". Pull back past the
+ *  row's gap instead, leaving a small deliberate separation.
+ *
+ *  Applied INLINE rather than from the injected stylesheet on purpose: the margin is set
+ *  inline at placement, and stylesheet rules (even !important ones inside a media query)
+ *  proved unreliable at overriding it here. Setting it at the source is unambiguous. */
+const MF_BTN_GAP_NARROW = '-4px';
+const MF_NARROW_MAX_WIDTH = 500;
+function currentBtnGap(): string {
+    return window.innerWidth <= MF_NARROW_MAX_WIDTH ? MF_BTN_GAP_NARROW : MF_BTN_GAP;
+}
 function placeButtonContainer(container: HTMLElement, article: Element, time: Element, grokData: { row: HTMLElement } | null) {
+    const MF_BTN_GAP = currentBtnGap();
+    // On narrow screens tighten BOTH sides: only one of them carries the gap below, and the
+    // other side still inherits the row's 8px, so leaving it untouched would look lopsided.
+    if (window.innerWidth <= MF_NARROW_MAX_WIDTH) {
+        container.style.marginLeft = MF_BTN_GAP_NARROW;
+        container.style.marginRight = MF_BTN_GAP_NARROW;
+    }
     const actionRow = findActionRow(article);
     if (actionRow) {
         container.style.marginRight = MF_BTN_GAP;
@@ -5167,9 +5479,12 @@ function placeButtonContainer(container: HTMLElement, article: Element, time: El
         container.style.marginRight = MF_BTN_GAP;
         grokData.row.insertBefore(container, grokData.row.firstChild);
     } else {
-        // After the timestamp: neighbor is on the LEFT, so the gap goes on the left.
+        // After the timestamp: neighbor is on the LEFT, so the gap goes on the left. On
+        // narrow screens keep the pull-back on the right too, rather than resetting it to 0
+        // and re-introducing the row's full 8px on that side.
         container.style.marginLeft = MF_BTN_GAP;
-        container.style.marginRight = '0';
+        container.style.marginRight =
+            window.innerWidth <= MF_NARROW_MAX_WIDTH ? MF_BTN_GAP_NARROW : '0';
         time.insertAdjacentElement("afterend", container);
     }
 }
@@ -5244,6 +5559,7 @@ function enterPrintMode() {
         }
 
         const container = document.createElement("div");
+        container.classList.add("mf-btn-container");
         container.setAttribute("mf-on-hold-id", classification.id);
         container.style.cssText = `
             display: inline-flex;
@@ -5286,6 +5602,7 @@ function injectOnHoldButton(
     if (article.querySelector(`[mf-on-hold-id="${classification.id}"]`)) return;
 
     const container = document.createElement("div");
+    container.classList.add("mf-btn-container");
     container.setAttribute("mf-on-hold-id", classification.id);
     container.style.cssText = `
         display: inline-flex;
@@ -5502,6 +5819,7 @@ function injectTranslateFactChecksButton(
     if (article.querySelector(`[translate-fc-id="${classification.id}"]`)) return;
 
     const container = document.createElement("div");
+    container.classList.add("mf-btn-container");
     container.setAttribute("translate-fc-id", classification.id);
     container.style.cssText = `
         display: inline-flex;

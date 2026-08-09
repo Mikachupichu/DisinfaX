@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Required for iOS/iPadOS, where the popup is a modal sheet rendered by a real
+         mobile WebView: without this, iOS assumes a ~980px desktop viewport and scales
+         the whole popup down. Desktop popups ignore it, so this is safe everywhere.
+         `viewport-fit=cover` + the safe-area padding in style.css keeps content clear of
+         the home indicator when the sheet is dragged to full height. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>DisinfaX</title>
 </head>
 <body>

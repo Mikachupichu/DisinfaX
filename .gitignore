@@ -41,3 +41,22 @@ config.yaml
 
 # Python virtual environment
 venv/
+
+# Safari extension build output.
+#
+# `npm run release` compiles the extension into .output/safari-mv2 and then copies it here,
+# because Xcode bundles this directory into the .appex. It is generated, not authored — the
+# only files in here that belong in git are the Swift sources (and .storekit.storekit, which
+# is listed separately below if you choose to track it).
+#
+# Vite content-hashes the popup chunk and CSS, so committing these would add two new files
+# and orphan two old ones on every build that touches the popup — churn with no upside.
+DisinfaX/Shared (Extension)/_locales/
+DisinfaX/Shared (Extension)/assets/
+DisinfaX/Shared (Extension)/chunks/
+DisinfaX/Shared (Extension)/content-scripts/
+DisinfaX/Shared (Extension)/icon/
+DisinfaX/Shared (Extension)/background.js
+DisinfaX/Shared (Extension)/manifest.json
+DisinfaX/Shared (Extension)/popup.html
+DisinfaX/Shared (Extension)/*.svg

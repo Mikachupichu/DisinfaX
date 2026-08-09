@@ -4,6 +4,7 @@ import { supabase } from './supabaseClient';
 import { useT, getUiLocale, formatUsdNumber, giftPercent, formatPercent } from './i18n';
 import { parseWorkerErrorMessage, codeToMessageKey } from '../../utils/errorCodes';
 import { browser } from 'wxt/browser';
+import { callNativeHost } from '../../utils/nativeHost';
 
 /** Render a USD amount with a smaller "US$" symbol vertically centered against the
  *  number (rather than baseline-aligned). Symbol size scales with the surrounding font
@@ -171,6 +172,83 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
     commitCustom(String(next));
   };
 
+  /**
+   * Credits one Apple transaction, then finishes it — strictly in that order.
+   *
+   * A finished StoreKit transaction is gone for good: Apple never redelivers it. So it
+   * is only finished once the worker has returned 200, which means the balance is
+   * credited. If anything fails first the transaction stays unfinished, and
+   * settlePendingTopUps() picks it up next time. Crediting is idempotent on Apple's
+   * transaction id, so a retry can never double-credit.
+   */
+  const verifyAndFinishTopUp = useCallback(async (
+    signedTransaction: string,
+    transactionId: string | undefined,
+    token: string,
+  ) => {
+    const response = await fetch(SAFARI_VERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ signedTransaction }),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      let failureMessage = body;
+      try {
+        const parsed = JSON.parse(body);
+        if (parsed?.error) failureMessage = parsed.error;
+      } catch { /* not JSON — keep raw body */ }
+
+      const parsedError = parseWorkerErrorMessage(failureMessage, locale);
+      const messageKey = parsedError.code != null ? codeToMessageKey(parsedError.code) : null;
+      const resolvedMessage = messageKey ? t(messageKey) : parsedError.text;
+      throw new Error(resolvedMessage || t('checkoutError'));
+    }
+
+    // Prefer the id the worker echoes back: it comes from Apple's own record rather
+    // than the client, so it is the one StoreKit will match.
+    const settled = await response.json().catch(() => null);
+    const idToFinish = settled?.transactionId || transactionId;
+    if (idToFinish) {
+      await callNativeHost(
+        { action: 'FINISH_TRANSACTION', transactionId: String(idToFinish) },
+        { type: 'MF_NATIVE_FINISH_TX', transactionId: String(idToFinish) },
+      ).catch(() => { /* credited already; it will be retried as pending */ });
+    }
+  }, [locale, t]);
+
+  /**
+   * Settles anything paid for but never credited — a purchase interrupted by a crash,
+   * a worker outage, or an Ask to Buy request approved long after the fact. Runs
+   * quietly on open; failures are left for the next attempt.
+   */
+  const settlePendingTopUps = useCallback(async () => {
+    if (!import.meta.env.SAFARI) return;
+    try {
+      const res: any = await callNativeHost(
+        { action: 'PENDING_TRANSACTIONS' },
+        { type: 'MF_NATIVE_PENDING_TX' },
+      );
+      const pending: any[] = Array.isArray(res?.pending) ? res.pending : [];
+      if (!pending.length) return;
+
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) return;
+
+      for (const item of pending) {
+        if (!item?.signedTransaction) continue;
+        try {
+          await verifyAndFinishTopUp(item.signedTransaction, item.transactionId, token);
+        } catch { /* still owed; retried on a later open */ }
+      }
+      try { browser.runtime.sendMessage({ type: 'MF_FUNDS_GET' }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
+    } catch { /* native host unavailable — nothing to do */ }
+  }, [verifyAndFinishTopUp]);
+
+  useEffect(() => { void settlePendingTopUps(); }, [settlePendingTopUps]);
+
   const startCheckout = async () => {
     setCheckoutError(null);
     setCheckoutBusy(true);
@@ -202,42 +280,31 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         //    `productId` is the pre-registered in-app purchase to present; `amount` is sent
         //    alongside it for logging only — Apple's own signed price is what the worker
         //    credits, never a client-supplied figure.
-        const nativeRes: any = await browser.runtime.sendMessage({
-          type: 'MF_NATIVE_PURCHASE',
-          amount: selectedAmount,
-          productId: appleProductId(selectedAmount),
-          userId,
-        });
+        const nativeRes: any = await callNativeHost(
+          {
+            action: 'PURCHASE_TOPUP',
+            productId: appleProductId(selectedAmount),
+            amount: selectedAmount,
+            userId,
+          },
+          {
+            type: 'MF_NATIVE_PURCHASE',
+            amount: selectedAmount,
+            productId: appleProductId(selectedAmount),
+            userId,
+          },
+        );
 
         if (!nativeRes || nativeRes.error || !nativeRes.signedTransaction) {
           throw new Error(nativeRes?.error || t('checkoutError'));
         }
 
-        // 2. Send Apple's signed JWS transaction payload to your Safari Cloudflare Worker
-        const response = await fetch(SAFARI_VERIFY_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            signedTransaction: nativeRes.signedTransaction,
-          }),
-        });
-
-        if (!response.ok) {
-          const body = await response.text();
-          let failureMessage = body;
-          try {
-            const parsed = JSON.parse(body);
-            if (parsed?.error) failureMessage = parsed.error;
-          } catch { /* not JSON — keep raw body */ }
-
-          const parsedError = parseWorkerErrorMessage(failureMessage, locale);
-          const messageKey = parsedError.code != null ? codeToMessageKey(parsedError.code) : null;
-          const resolvedMessage = messageKey ? t(messageKey) : parsedError.text;
-          throw new Error(resolvedMessage || t('checkoutError'));
-        }
+        // 2. Verify with the worker and credit the balance. The StoreKit transaction is
+        //    still UNFINISHED at this point, deliberately: if this call fails, Apple keeps
+        //    redelivering it and settlePendingTopUps() can recover it on a later open.
+        //    Finishing first would discard it permanently and the user would be charged
+        //    with nothing credited and no trace of it.
+        await verifyAndFinishTopUp(nativeRes.signedTransaction, nativeRes.transactionId, token);
 
         // 3. Refresh user balance in background and close popup
         try { browser.runtime.sendMessage({ type: 'MF_FUNDS_GET' }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
@@ -307,7 +374,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
 
       {/* ── Balance ── */}
       <div className="text-center pt-1">
-        <div className="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">{t('balanceLabel')}</div>
+        <div className="text-[10px] uppercase tracking-widest text-zinc-500">{t('balanceLabel')}</div>
         <div className="text-4xl font-black tracking-tight text-white tabular-nums break-all">
           {total === null ? '—' : <Usd value={total} locale={locale} />}
         </div>
@@ -403,7 +470,9 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
               TOS: <a key="tos" href="https://disinfax.app/terms-of-use" target="_blank" rel="noreferrer" className="text-zinc-400 underline hover:text-zinc-200">{t('termsOfService')}</a>,
               PRIVACY: <a key="pp" href="https://disinfax.app/privacy-policy" target="_blank" rel="noreferrer" className="text-zinc-400 underline hover:text-zinc-200">{t('privacyPolicy')}</a>,
             })}
-            {!import.meta.env.SAFARI && (
+            {import.meta.env.SAFARI ? (
+              <>{' '}{t('disclaimerFx')}</>
+            ) : (
               disclaimerExpanded
               ? <>{' '}{t('disclaimerFx')}{' '}{t('disclaimerJurisdiction')}</>
               : (disclaimerRestPreview && <>{' '}{disclaimerRestPreview}</>)

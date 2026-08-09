@@ -6,10 +6,46 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   vite: (env) => ({
     plugins: [tailwindcss()],
+    // Production strips console, which is right for shipping but makes a production-only
+    // bug undebuggable — and some bugs only appear there, because `wxt dev` re-injects
+    // content scripts on every change and that behaves differently from a single clean
+    // injection. `KEEP_LOGS=1 npm run build:firefox` gives a production build that still
+    // logs. The default is unchanged, so a normal build cannot accidentally ship logs.
     esbuild: env.mode === 'production'
-      ? { drop: ['console', 'debugger'] }
+      ? { drop: process.env.KEEP_LOGS ? ['debugger'] : ['console', 'debugger'] }
       : {},
   }),
+  // Only the Firefox build produces a SOURCES zip (wxt sets zipSources for firefox/opera), and
+  // that zip is built from the repo root — not from the compiled output. WXT's default is
+  // default-OPEN: it globs `**/*` and removes only what `excludeSources` names, so every file in
+  // the repo ships unless someone remembers to add a pattern. That shipped `config.yaml` (live
+  // DeepSeek/Anthropic/Mistral API keys), the whole `venv/` (22,967 files) and the entire nested
+  // `DisinfaX/` Xcode project — 517 MB of source, none of which Mozilla needs.
+  //
+  // Inverted to default-CLOSED. wxt's filter is
+  //   picomatch(path, include) || !picomatch(path, exclude)
+  // so an `include` match wins over `exclude`: excluding `**/*` denies everything, and
+  // `includeSources` becomes a true allowlist. A file added to the repo later is therefore
+  // excluded by default rather than published by default — which is the only way this stays
+  // correct without anyone maintaining it.
+  //
+  // The list below is exactly what compiles the extension; verified by rebuilding from the
+  // extracted zip and byte-comparing against the normal build. Nothing here needs a `.env`:
+  // every `import.meta.env` read in the source is a wxt build-time browser constant.
+  zip: {
+    excludeSources: ['**/*'],
+    includeSources: [
+      'entrypoints/**',
+      'utils/**',
+      'data/**',
+      'assets/**',
+      'public/**',
+      'wxt.config.ts',
+      'tsconfig.json',
+      'package.json',
+      'package-lock.json',
+    ],
+  },
   manifest: (env) => ({
     name: 'DisinfaX',
     description: "Identifies and highlights disinformation in tweets using fast and intelligent research.",

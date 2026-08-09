@@ -376,6 +376,10 @@ function getTweetTranslationState(tweetElement: Element) {
 
 mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
+  // The DOM reads below are refinements to the translation signal. They are guarded so a
+  // failure cannot swallow the intent: losing them costs some translation accuracy, losing
+  // the send costs the user a click that appears to do nothing.
+  try {
   // Report which side of a translation the user is actually looking at. The background
   // otherwise infers it as "a translation exists in the payload, therefore the translation
   // is on screen" (runPreclassification), which keys the highlight ranges under the
@@ -403,6 +407,16 @@ mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
     : null;
   console.log(`[misinfo] relay: process-on-hold for ${tweetId} (displayedSide=${displayedSide ?? 'unknown'}, displayedText=${displayedText ? `${displayedText.length} chars` : 'none'})`);
   sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide, displayedText } });
+  } catch (err) {
+    console.error(`[misinfo] relay: mf-process-on-hold THREW for ${tweetId}`, err);
+    // Send anyway. The DOM reads above are refinements — losing them costs some translation
+    // accuracy, but losing the intent costs the user a click that appears to do nothing.
+    try {
+      sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide: null, displayedText: null } });
+    } catch (sendErr) {
+      console.error(`[misinfo] relay: fallback send also failed for ${tweetId}`, sendErr);
+    }
+  }
 }) as EventListener);
 
 mfBus.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {

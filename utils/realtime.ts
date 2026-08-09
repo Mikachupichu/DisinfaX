@@ -256,6 +256,18 @@ export interface SubscribeOptions {
 // life of the service worker. Every logical "subscription" dispatches through it by
 // row id instead of getting its own channel — so finishing one never touches another.
 const subscriptionDispatch = new Map<string, (msg: any) => void>();
+/** Ids we registered and have since torn down, kept only so an unmatched event can say WHY it
+ *  matched nothing. Closing a subscription removes its dispatch entry, so a broadcast that
+ *  arrives after our own timeout is indistinguishable at the channel from one addressed to an
+ *  id we never knew — yet they mean opposite things ("we gave up too early" vs "the id the DB
+ *  stored isn't the one we're listening for"). Bounded; this is a diagnostic, not state. */
+const recentlyClosedSubscriptions = new Set<string>();
+function rememberClosedSubscription(id: string) {
+    recentlyClosedSubscriptions.add(id);
+    if (recentlyClosedSubscriptions.size > 50) {
+        recentlyClosedSubscriptions.delete(recentlyClosedSubscriptions.values().next().value as string);
+    }
+}
 let sharedSubscriptionsChannelReady: Promise<void> | null = null;
 // [ttft-ext] Monotonic counter stamped on every dispatch invocation, so two genuinely
 // separate deliveries of the "same" event are visibly distinct in the console instead
@@ -272,10 +284,25 @@ function ensureSharedSubscriptionsChannel(): Promise<void> {
         { event: '*', schema: 'public', table: 'subscriptions' },
         (msg: any) => {
           const id = msg.new?.id ?? msg.old?.id;
-          if (!id) return;
+          if (!id) {
+            console.log(`[ttft-ext] shared channel: ${msg.eventType} event with NO id — cannot route`);
+            return;
+          }
           const dispatch = subscriptionDispatch.get(id);
           if (dispatch) {
             try { dispatch(msg); } catch (e) { console.error('[realtime] shared channel dispatch error:', e); }
+          } else {
+            // [ttft-ext] Without this, an event that arrives but matches no registered
+            // subscription leaves no trace at all — making "Realtime never delivered it"
+            // indistinguishable from "delivered under an id we aren't listening for". Those
+            // need opposite fixes, so the silence has to be broken here.
+            const why = recentlyClosedSubscriptions.has(id)
+              ? 'LATE (we closed this subscription already — broadcast worked, we gave up first)'
+              : 'UNKNOWN ID (never registered by this worker — someone else\'s, or the DB stored a different id)';
+            console.log(
+              `[ttft-ext] shared channel: UNMATCHED ${msg.eventType} for id=${id} — ${why}, ` +
+              `hasPayload=${!!msg.new?.payload}, live=[${Array.from(subscriptionDispatch.keys()).join(', ') || 'none'}]`
+            );
           }
         }
       )
@@ -313,6 +340,7 @@ export async function subscribeRow(opts: SubscribeOptions): Promise<Subscription
     closed = true;
     if (timer) { clearTimeout(timer); timer = null; }
     subscriptionDispatch.delete(subscriptionId);
+    rememberClosedSubscription(subscriptionId);
     markReady();
   };
 
@@ -365,11 +393,20 @@ export async function subscribeRow(opts: SubscribeOptions): Promise<Subscription
 
   try {
     console.log(`[fetches-usage] subscribe kind=${opts.kind} hash=${opts.hash ?? 'none'} claimId=${opts.claimId ?? 'none'} claimText="${(opts.claimText ?? '').slice(0, 40)}"`);
-    const { error } = await supabase.rpc('subscribe', args);
+    const { data, error } = await supabase.rpc('subscribe', args);
     if (error) {
       console.error('[realtime] subscribe RPC error:', error.message);
       finish();
     } else {
+      // [ttft-ext] subscribe() RETURNS the id it actually stored. It is supposed to honour the
+      // one we passed (subscribe.sql section 2), and the dispatch map is keyed on ours — so if
+      // these ever diverge, every event for this subscription routes to nothing and the caller
+      // just times out. Confirms the row committed under the id we are listening for.
+      if (data && data !== subscriptionId) {
+        console.error(`[ttft-ext] subscribe ${opts.kind}: ID MISMATCH — sent ${subscriptionId}, DB stored ${data}`);
+      } else {
+        console.log(`[ttft-ext] subscribe ${opts.kind} ${subscriptionId}: row registered (returned=${data ?? 'null'})`);
+      }
       // Live and registered — callers may now fetch.
       markReady();
     }
