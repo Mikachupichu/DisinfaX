@@ -54,7 +54,7 @@ export default defineConfig({
   manifest: (env) => ({
     name: 'DisinfaX',
     description: "Identifies and highlights disinformation in tweets using fast and intelligent research.",
-    version: '1.0.0',
+    version: '1.0.1',
     default_locale: 'en',
     // Static icons (chrome://extensions, the extensions menu, the Web Store
     // listing) cannot be themed at runtime, so they use the neutral gray logo
