@@ -1086,7 +1086,11 @@ function factCheckedButtonDefaultHtml(label: string, iconSvg: string, isRTL: boo
 /** Build the preview text (first 140 chars of tweet, italic, with ellipsis if cut). */
 function factCheckedButtonPreviewHtml(tweetText: string, isRTL: boolean): string {
     const preview = tweetText.length > 140 ? tweetText.slice(0, 140) + '...' : tweetText;
-    const escaped = preview.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Shares escapeHtml() with renderClaims rather than keeping its own inline version — the
+    // two had already drifted (this one escaped, renderClaims did not), which is exactly how
+    // the injection above went unnoticed. Output is unchanged: the extra " and ' escapes
+    // render as the same characters in a text node.
+    const escaped = escapeHtml(preview);
     return `<div class="mf-fc-btn-preview" style="font-size:12px;line-height:1.35;font-weight:400;font-style:italic;opacity:0.92;text-align:${isRTL ? 'right' : 'left'};max-width:340px;white-space:normal;word-wrap:break-word;padding:4px 0;cursor:pointer;">${escaped}</div>`;
 }
 
@@ -1098,7 +1102,7 @@ function factCheckedButtonClaimsHtml(classification: Classification, isRTL: bool
     const q = quoteMarksForLocale(locale);
     const rows = claims.map(cl => {
         const display = (cl.rewritten && cl.rewritten !== cl.text) ? cl.rewritten : `${q.open}${cl.text}${q.close}`;
-        const escaped = display.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const escaped = escapeHtml(display);
         const badgeColor = cl.confidence !== undefined && cl.veracity !== undefined
             ? confidenceRgba(cl.confidence, 1, cl.veracity)
             : 'rgb(180,180,180)';
@@ -1418,6 +1422,27 @@ function htmlDecode(text: string): string {
   const el = document.createElement('div');
   el.innerHTML = text;
   return el.textContent ?? text;
+}
+
+/** Escape text before interpolating it into an HTML template string.
+ *
+ *  Mandatory for anything derived from a tweet. Claim text is a verbatim span of the post and
+ *  reasoning is model output about it, so both are attacker-influenced — and htmlDecode()
+ *  above runs on them first (see the cl.text/cl.rewritten calls), which turns X's own escaped
+ *  `&lt;img&gt;` back into a live `<img>`. Interpolating that into innerHTML would parse it as
+ *  markup and let an inline handler run in x.com's page context: an injection point the
+ *  platform itself does not have, since X escapes its rendering of the same text.
+ *
+ *  Every value passed through here is rendered as a text node, so these five characters are
+ *  sufficient; nothing lands in an unquoted attribute. Escaping cannot double-encode, because
+ *  the inputs are decoded before they get here. */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 /** Dispatch a custom event to fetch a quoted tweet classification from DB concurrently. */
@@ -2102,10 +2127,10 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
                 : extractReasoning(claim.note, claim.confidence, claim.veracity);
             return `
             <div style="margin-bottom: 8px; line-height: 1.4;">
-                <div style="font-size: 13px; color: inherit; margin-bottom: 3px;">${claim.rewritten ?? claim.text}</div>
+                <div style="font-size: 13px; color: inherit; margin-bottom: 3px;">${escapeHtml(String(claim.rewritten ?? claim.text))}</div>
                 <div>
-                    <span style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${isOnHold ? '' : ((claim.confidence === undefined || claim.refreshing) ? '<span class="mf-fc-spinner"></span>' : '')}${label}</span>
-                    <span style="font-size: 13px; color: inherit;"> ${reasoning}</span>
+                    <span style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${isOnHold ? '' : ((claim.confidence === undefined || claim.refreshing) ? '<span class="mf-fc-spinner"></span>' : '')}${escapeHtml(label)}</span>
+                    <span style="font-size: 13px; color: inherit;"> ${escapeHtml(reasoning)}</span>
                 </div>
             </div>
         `;
