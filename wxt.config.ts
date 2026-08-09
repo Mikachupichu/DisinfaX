@@ -44,6 +44,11 @@ export default defineConfig({
       'tsconfig.json',
       'package.json',
       'package-lock.json',
+      // AMO requires reviewers be able to reproduce the submitted bundle: step-by-step
+      // instructions, a script that runs them, OS/environment requirements, and install
+      // instructions for the tools involved. These two carry all four.
+      'README.md',
+      'build.sh',
     ],
   },
   manifest: (env) => ({
