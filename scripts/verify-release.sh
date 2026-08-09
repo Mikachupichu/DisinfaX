@@ -20,7 +20,14 @@ bad()  { printf '  \033[31mFAIL\033[0m  %s\n' "$1"; FAIL=1; }
 
 # Anything that must never reach a store or a reviewer. Extend this list freely — it is a
 # tripwire, not the mechanism (the allowlist is the mechanism).
-FORBIDDEN='config\.yaml|venv/|DisinfaX/|CLAUDE|README|\.env|\.git|\.swift$|\.plist$|xcodeproj|storekit|Apple Payments'
+# README.md is deliberately absent: AMO REQUIRES build instructions in the source archive,
+# so it is now an expected inclusion and is asserted for in check 3b instead.
+FORBIDDEN='config\.yaml|venv/|DisinfaX/|CLAUDE|\.env|\.git|\.swift$|\.plist$|xcodeproj|storekit|Apple Payments'
+
+# AMO requires the source archive to carry step-by-step build instructions, a script that
+# runs them, environment requirements, and tool installation instructions. Missing either of
+# these is a rejection, and it is invisible unless something asserts on it.
+REQUIRED_IN_SOURCES='README.md build.sh'
 
 echo "1. Build outputs contain only extension assets"
 for d in chrome-mv3 firefox-mv2 safari-mv2; do
@@ -43,6 +50,24 @@ for z in .output/*.zip; do
   hits=$(unzip -Z1 "$z" | grep -iE "$FORBIDDEN" || true)
   [ -z "$hits" ] && ok "$(basename "$z")" || bad "$(basename "$z") contains:\n$hits"
 done
+
+echo "3b. Sources zip carries the AMO-required build documentation"
+SRC_ZIP_CHK=$(ls .output/*sources*.zip 2>/dev/null | head -1)
+if [ -z "$SRC_ZIP_CHK" ]; then
+  bad "no sources zip — run npm run zip:firefox"
+else
+  # Listed once into a variable and matched with a here-string, NOT `unzip | grep -q`:
+  # grep -q exits on the first match, unzip takes SIGPIPE, and `set -o pipefail` reports the
+  # whole pipeline as failed — which read as "file missing" when the file was present.
+  SRC_LIST="$(unzip -Z1 "$SRC_ZIP_CHK")"
+  for req in $REQUIRED_IN_SOURCES; do
+    if grep -qx "$req" <<<"$SRC_LIST"; then
+      ok "$req present"
+    else
+      bad "$req MISSING from the sources zip — AMO requires it (add to includeSources)"
+    fi
+  done
+fi
 
 echo "4. Safari folder matches the build and has no orphans"
 SAFARI_DIR="DisinfaX/Shared (Extension)"
