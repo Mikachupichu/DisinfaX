@@ -1,6 +1,6 @@
 # Building DisinfaX from source
 
-These instructions reproduce the submitted `disinfax-1.0.0-firefox.zip` from this source
+These instructions reproduce the submitted `disinfax-1.0.1-firefox.zip` from this source
 archive. A build script, `build.sh`, performs every step below.
 
 ## 1. Build environment requirements
@@ -41,7 +41,7 @@ every other dependency is installed by `npm ci` at the exact versions pinned in
 ## 2. Build
 
 ```sh
-unzip disinfax-1.0.0-sources.zip
+unzip disinfax-1.0.1-sources.zip
 cd disinfax
 bash build.sh
 ```
@@ -76,7 +76,7 @@ before stopping the process.
 .output/firefox-mv2/
 ```
 
-This directory is the contents of the submitted `disinfax-1.0.0-firefox.zip` — the zip is
+This directory is the contents of the submitted `disinfax-1.0.1-firefox.zip` — the zip is
 that directory compressed, with nothing added or removed.
 
 `background.js`, `content-scripts/relay.js` and `content-scripts/capture.js` reproduce
