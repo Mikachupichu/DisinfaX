@@ -13,7 +13,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Must be running before any purchase, not after: transactions that complete outside a
+        // purchase() call — Ask to Buy approvals, SCA challenges finished elsewhere, Apple's own
+        // retries — are delivered only to this listener, and are lost if nothing is listening.
+        if #available(iOS 15.0, *) {
+            StoreKitManager.shared.startObservingTransactionUpdates()
+        }
         return true
     }
 

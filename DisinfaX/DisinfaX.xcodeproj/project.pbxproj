@@ -51,14 +51,28 @@
 		9394CF103026AEDA00AE138E /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = 9394CEF83026AEDA00AE138E /* _locales */; };
 		9394CF113026AEDA00AE138E /* icon in Resources */ = {isa = PBXBuildFile; fileRef = 9394CEF93026AEDA00AE138E /* icon */; };
 		9394CF123026AEDA00AE138E /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 9394CEFA3026AEDA00AE138E /* assets */; };
-		93D690843026AF4A009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
-		93D690853026AF4A009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
 		93D690873026AF7A009E7A19 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690863026AF66009E7A19 /* AuthManager.swift */; };
 		93D690883026AF7A009E7A19 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690863026AF66009E7A19 /* AuthManager.swift */; };
 		93D6908A3027EB01009E7A19 /* .storekit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 93D690893027EB01009E7A19 /* .storekit.storekit */; };
 		93D6908B3027EB01009E7A19 /* .storekit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 93D690893027EB01009E7A19 /* .storekit.storekit */; };
 		93D6908C3027EB01009E7A19 /* .storekit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 93D690893027EB01009E7A19 /* .storekit.storekit */; };
 		93D6908D3027EB01009E7A19 /* .storekit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 93D690893027EB01009E7A19 /* .storekit.storekit */; };
+		93D69095302A7811009E7A19 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
+		93D69096302A7811009E7A19 /* SafariSettingsOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69092302A7811009E7A19 /* SafariSettingsOpener.swift */; };
+		93D69097302A7811009E7A19 /* TopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69094302A7811009E7A19 /* TopUpView.swift */; };
+		93D69098302A7811009E7A19 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
+		93D69099302A7811009E7A19 /* SafariSettingsOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69092302A7811009E7A19 /* SafariSettingsOpener.swift */; };
+		93D6909A302A7811009E7A19 /* TopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69094302A7811009E7A19 /* TopUpView.swift */; };
+		93D6909B302A7C64009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
+		93D6909C302A7CB1009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
+		E86212D1066396EA0AD71965 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */; };
+		51FE0FB882415A26E814DB1D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */; };
+		93D6909E302A7EA7009E7A19 /* TopUpHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D6909D302A7EA7009E7A19 /* TopUpHandoff.swift */; };
+		93D6909F302A7EA7009E7A19 /* TopUpHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D6909D302A7EA7009E7A19 /* TopUpHandoff.swift */; };
+		93D690A0302A7EBE009E7A19 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
+		93D690A1302A7EC5009E7A19 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
+		93D690A2302A7FE9009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
+		93D690A3302A7FEF009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +153,15 @@
 		93D690833026AF42009E7A19 /* StoreKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitManager.swift; sourceTree = "<group>"; };
 		93D690863026AF66009E7A19 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		93D690893027EB01009E7A19 /* .storekit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = .storekit.storekit; sourceTree = "<group>"; };
+		93D6908E302A765E009E7A19 /* DisinfaX (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DisinfaX (iOS).entitlements"; sourceTree = "<group>"; };
+		93D6908F302A7670009E7A19 /* DisinfaX (macOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DisinfaX (macOS).entitlements"; sourceTree = "<group>"; };
+		93D69090302A7678009E7A19 /* DisinfaX Extension (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DisinfaX Extension (iOS).entitlements"; sourceTree = "<group>"; };
+		93D69091302A7686009E7A19 /* DisinfaX Extension (macOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DisinfaX Extension (macOS).entitlements"; sourceTree = "<group>"; };
+		93D69092302A7811009E7A19 /* SafariSettingsOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariSettingsOpener.swift; sourceTree = "<group>"; };
+		93D69093302A7811009E7A19 /* SharedTopUpStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTopUpStore.swift; sourceTree = "<group>"; };
+		93D69094302A7811009E7A19 /* TopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUpView.swift; sourceTree = "<group>"; };
+		93D6909D302A7EA7009E7A19 /* TopUpHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUpHandoff.swift; sourceTree = "<group>"; };
+		B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +199,10 @@
 		9394CE8E3026AED900AE138E = {
 			isa = PBXGroup;
 			children = (
+				93D69091302A7686009E7A19 /* DisinfaX Extension (macOS).entitlements */,
+				93D69090302A7678009E7A19 /* DisinfaX Extension (iOS).entitlements */,
+				93D6908F302A7670009E7A19 /* DisinfaX (macOS).entitlements */,
+				93D6908E302A765E009E7A19 /* DisinfaX (iOS).entitlements */,
 				9394CE933026AED900AE138E /* Shared (App) */,
 				9394CE9C3026AEDA00AE138E /* Shared (Extension) */,
 				9394CEA43026AEDA00AE138E /* iOS (App) */,
@@ -189,7 +216,13 @@
 		9394CE933026AED900AE138E /* Shared (App) */ = {
 			isa = PBXGroup;
 			children = (
+				93D6909D302A7EA7009E7A19 /* TopUpHandoff.swift */,
+				93D690833026AF42009E7A19 /* StoreKitManager.swift */,
+				93D69092302A7811009E7A19 /* SafariSettingsOpener.swift */,
+				93D69093302A7811009E7A19 /* SharedTopUpStore.swift */,
+				93D69094302A7811009E7A19 /* TopUpView.swift */,
 				9394CE9A3026AED900AE138E /* ViewController.swift */,
+				B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */,
 				9394CE9B3026AEDA00AE138E /* Assets.xcassets */,
 				9394CE943026AED900AE138E /* Resources */,
 			);
@@ -211,7 +244,6 @@
 			isa = PBXGroup;
 			children = (
 				93D690863026AF66009E7A19 /* AuthManager.swift */,
-				93D690833026AF42009E7A19 /* StoreKitManager.swift */,
 				93D690893027EB01009E7A19 /* .storekit.storekit */,
 				9394CEEE3026AEDA00AE138E /* Resources */,
 				9394CE9D3026AEDA00AE138E /* SafariWebExtensionHandler.swift */,
@@ -429,6 +461,7 @@
 				9394CEDA3026AEDA00AE138E /* Assets.xcassets in Resources */,
 				9394CEAE3026AEDA00AE138E /* Main.storyboard in Resources */,
 				9394CED43026AEDA00AE138E /* Style.css in Resources */,
+				E86212D1066396EA0AD71965 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,6 +476,7 @@
 				9394CED73026AEDA00AE138E /* Script.js in Resources */,
 				9394CEDB3026AEDA00AE138E /* Assets.xcassets in Resources */,
 				9394CED13026AEDA00AE138E /* Main.html in Resources */,
+				51FE0FB882415A26E814DB1D /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,9 +525,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93D6909C302A7CB1009E7A19 /* StoreKitManager.swift in Sources */,
 				9394CED83026AEDA00AE138E /* ViewController.swift in Sources */,
 				9394CEA63026AEDA00AE138E /* AppDelegate.swift in Sources */,
+				93D6909F302A7EA7009E7A19 /* TopUpHandoff.swift in Sources */,
 				9394CEA83026AEDA00AE138E /* SceneDelegate.swift in Sources */,
+				93D69098302A7811009E7A19 /* SharedTopUpStore.swift in Sources */,
+				93D69099302A7811009E7A19 /* SafariSettingsOpener.swift in Sources */,
+				93D6909A302A7811009E7A19 /* TopUpView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,8 +540,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93D6909B302A7C64009E7A19 /* StoreKitManager.swift in Sources */,
+				93D69095302A7811009E7A19 /* SharedTopUpStore.swift in Sources */,
+				93D69096302A7811009E7A19 /* SafariSettingsOpener.swift in Sources */,
+				93D69097302A7811009E7A19 /* TopUpView.swift in Sources */,
 				9394CED93026AEDA00AE138E /* ViewController.swift in Sources */,
 				9394CEB73026AEDA00AE138E /* AppDelegate.swift in Sources */,
+				93D6909E302A7EA7009E7A19 /* TopUpHandoff.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,7 +554,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93D690843026AF4A009E7A19 /* StoreKitManager.swift in Sources */,
+				93D690A3302A7FEF009E7A19 /* StoreKitManager.swift in Sources */,
+				93D690A0302A7EBE009E7A19 /* SharedTopUpStore.swift in Sources */,
 				93D690883026AF7A009E7A19 /* AuthManager.swift in Sources */,
 				9394CEDC3026AEDA00AE138E /* SafariWebExtensionHandler.swift in Sources */,
 			);
@@ -520,7 +565,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93D690853026AF4A009E7A19 /* StoreKitManager.swift in Sources */,
+				93D690A2302A7FE9009E7A19 /* StoreKitManager.swift in Sources */,
+				93D690A1302A7EC5009E7A19 /* SharedTopUpStore.swift in Sources */,
 				93D690873026AF7A009E7A19 /* AuthManager.swift in Sources */,
 				9394CEDD3026AEDA00AE138E /* SafariWebExtensionHandler.swift in Sources */,
 			);
@@ -694,6 +740,7 @@
 		9394CEE13026AEDA00AE138E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WJFG5784YR;
@@ -728,6 +775,7 @@
 		9394CEE23026AEDA00AE138E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WJFG5784YR;
@@ -765,6 +813,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX (iOS).entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -808,6 +857,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX (iOS).entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -850,6 +900,7 @@
 		9394CEE83026AEDA00AE138E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WJFG5784YR;
@@ -883,6 +934,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Extension;
 				PRODUCT_NAME = "DisinfaX Extension";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -896,6 +948,7 @@
 		9394CEE93026AEDA00AE138E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WJFG5784YR;
@@ -929,6 +982,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Extension;
 				PRODUCT_NAME = "DisinfaX Extension";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -944,6 +998,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WJFG5784YR;
@@ -996,6 +1051,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WJFG5784YR;

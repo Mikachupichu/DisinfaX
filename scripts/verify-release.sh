@@ -118,6 +118,20 @@ else
   rm -rf "$TMP"
 fi
 
+# ── Apple top-up store: assertions, not inspection ──────────────────────────
+# The record-keeping between a completed purchase and a credited balance. A fault here loses a
+# customer's money silently rather than crashing, so it is gated rather than reviewed.
+echo
+echo "7. Apple top-up shared store"
+if [ ! -f scripts/test-topup-store.sh ]; then
+  bad "scripts/test-topup-store.sh is missing"
+elif bash scripts/test-topup-store.sh > /tmp/topup-store-test.log 2>&1; then
+  ok "top-up store assertions pass ($(grep -c '^ok ' /tmp/topup-store-test.log) checks)"
+else
+  bad "top-up store assertions FAILED — see /tmp/topup-store-test.log"
+  grep -E '^FAIL|error' /tmp/topup-store-test.log | head -5 | sed 's/^/     /'
+fi
+
 echo
 [ "$FAIL" = "0" ] && echo "ALL CHECKS PASSED — safe to submit" || echo "CHECKS FAILED — do not submit"
 exit $FAIL
