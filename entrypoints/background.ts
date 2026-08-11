@@ -173,6 +173,9 @@ export default defineBackground({
    *  on top of ~3.4s of actual research). Expiring early only risks the embedding-less
    *  duplicate the wait exists to prevent; stalling costs the user the thing they paid for. */
   const CLAIM_DB_ROW_TIMEOUT_MS = 2000;
+  /** How long to coalesce balance writes to the App Group. Long enough that a burst of
+   *  classifications is one write, short enough that returning to the app feels immediate. */
+  const NATIVE_SYNC_DEBOUNCE_MS = 1500;
   /** Open tweet subscriptions keyed by tweet id. */
   const tweetSubs = new Map<string, SubscriptionHandle>();
   /** Open per-claim (is_classifying) subscriptions keyed by `${tweetId}:${claimId}`. */
@@ -1897,6 +1900,85 @@ export default defineBackground({
     else if (messageOrCode) broadcastNotification({ kind: 'error', text: messageOrCode });
   }
 
+  /** Last total written into the App Group, so an unchanged value costs nothing. */
+  let lastNativeSyncedTotal: number | null = null;
+  /** Whether the app currently holds an identity from us, so sign-out is sent exactly once. */
+  let nativeAccountShared = false;
+  let nativeSyncTimer: ReturnType<typeof setTimeout> | undefined;
+
+  /**
+   * Tell the containing app that nobody is signed in.
+   *
+   * Safari only. The app has no Supabase session, so it believes whatever identity we last wrote
+   * — and until this existed we never unwrote it. Signing out of the popup therefore left the app
+   * holding the previous user's id, still showing the top-up card, and still able to complete a
+   * purchase against an account that was no longer signed in.
+   *
+   * Sent immediately rather than debounced: this one revokes a permission, and the debounce exists
+   * to spare the app process a wake-up for a number, not to delay that.
+   */
+  function clearNativeAccount() {
+    if (!import.meta.env.SAFARI) return;
+    if (!nativeAccountShared) return; // nothing to revoke
+
+    // Cancel any queued balance write. It carries the identity we are revoking, and arriving after
+    // this would re-authorise the app.
+    if (nativeSyncTimer !== undefined) { clearTimeout(nativeSyncTimer); nativeSyncTimer = undefined; }
+    nativeAccountShared = false;
+    lastNativeSyncedTotal = null;
+
+    (async () => {
+      try {
+        await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, { action: 'CLEAR_ACCOUNT' });
+      } catch (e: any) {
+        // The app also expires the identity on its own after a week, so a failure here degrades
+        // to "stale for a while" rather than "sells forever".
+        console.warn('[background] native account clear failed:', e?.message || e);
+      }
+    })();
+  }
+
+  /**
+   * Mirror the balance into the shared App Group container so the containing app can show it.
+   *
+   * Safari only, and it exists because the app has no Supabase session of its own — it cannot ask
+   * the server what the balance is. Until now only the POPUP wrote that value across, so the app
+   * showed whatever the balance was the last time the popup happened to be open. Now that the
+   * webhook credits top-ups server-side within seconds, the popup was the only thing left forcing
+   * the user to go and open it.
+   *
+   * Debounced, because a balance moves on every classification: without this each spend would wake
+   * the app extension process just to write four bytes. The trailing edge is the one that matters —
+   * intermediate values are of no interest to a screen nobody is looking at yet.
+   */
+  function syncFundsToNativeApp(total: number) {
+    if (!import.meta.env.SAFARI) return;
+    if (total === lastNativeSyncedTotal) return;
+
+    if (nativeSyncTimer !== undefined) clearTimeout(nativeSyncTimer);
+    nativeSyncTimer = setTimeout(() => {
+      nativeSyncTimer = undefined;
+      (async () => {
+        try {
+          const userId = await currentUserId();
+          if (!userId) return; // signed out; nothing to attribute a balance to
+          await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, {
+            action: 'SYNC_ACCOUNT',
+            userId,
+            balance: total,
+          });
+          lastNativeSyncedTotal = total;
+          nativeAccountShared = true;
+        } catch (e: any) {
+          // The app not being installed, or the host not answering, must never disturb the
+          // extension. The popup still syncs on open, so this is an optimisation, not a
+          // dependency.
+          console.warn('[background] native balance sync failed:', e?.message || e);
+        }
+      })();
+    }, NATIVE_SYNC_DEBOUNCE_MS);
+  }
+
   /** Push the current visible total (balance + hold) to the popup dashboard, if open. */
   function relayFundsToPopup(total: number | null) {
     try {
@@ -1925,6 +2007,8 @@ export default defineBackground({
     const total = Math.round(visibleTotal(funds) * 10000) / 10000;
     // The dashboard always shows the up-to-date total.
     relayFundsToPopup(total);
+    // …and so does the containing app, which cannot look it up itself.
+    syncFundsToNativeApp(total);
     if (lastVisibleTotal === null) {
       // First value this session = baseline; no notification.
       lastVisibleTotal = total;
@@ -1971,6 +2055,9 @@ export default defineBackground({
     if (fundsSub) { fundsSub.close(); fundsSub = null; }
     fundsState = null;
     lastVisibleTotal = null;
+    // Cleared too, or the next user's identical total would be suppressed as "unchanged" and
+    // the app would keep showing the previous account's balance.
+    lastNativeSyncedTotal = null;
     fundsInitPromise = null;
     // Cleared alongside the rest so "hub torn down" always implies "belongs to nobody";
     // callers that are rebuilding assign the new owner immediately after.
@@ -2294,6 +2381,10 @@ export default defineBackground({
         lastActive = null; // re-broadcast for the new account rather than assume no change
       }
       if (signed) initFundsHub(); // ensure funds hub is up so balance is known
+      // Revoke the app's copy of the identity the moment we know nobody is signed in. Placed here
+      // because this runs on sign-out, on sign-in, and on every account switch — the three events
+      // after which the app's stored identity could otherwise be someone else's.
+      if (!signed) clearNativeAccount();
       const active = signed && balanceOk();
       if (lastActive === active) return;
       // [ttft-ext] Every active/inactive flip, with the inputs that produced it — this is
@@ -2362,9 +2453,40 @@ export default defineBackground({
   fetchAndStoreMessages();
   try {
     browser.alarms.create(MESSAGES_ALARM, { periodInMinutes: 24 * 60 });
+
     browser.alarms.onAlarm.addListener((alarm: any) => {
       if (alarm.name === MESSAGES_ALARM) fetchAndStoreMessages();
     });
+
+    // Safari's background page is non-persistent, so Safari suspends it while the user is in the
+    // containing app — and a suspended page holds no Realtime connection, so a balance credited
+    // server-side during that window reaches nobody. The observed symptom was exactly that: the
+    // app's balance moved only on returning to Safari, because returning is what woke this page.
+    //
+    // An alarm is the sanctioned way to wake a suspended background page. One minute is the floor
+    // the browsers enforce, so that is the worst-case staleness. The wake alone is usually enough
+    // (a reloaded page re-runs refreshActiveState, which syncs) but funds are read explicitly too,
+    // for when the page was alive all along and only its channel had gone quiet.
+    //
+    // Everything lives INSIDE the guard, constant included: declared outside it, the alarm name
+    // string survived into the Chromium and Firefox bundles even with all its uses eliminated.
+    if (import.meta.env.SAFARI) {
+      const FUNDS_SYNC_ALARM = 'mf_funds_native_sync';
+      browser.alarms.create(FUNDS_SYNC_ALARM, { periodInMinutes: 1 });
+      browser.alarms.onAlarm.addListener((alarm: any) => {
+        if (alarm.name !== FUNDS_SYNC_ALARM) return;
+        (async () => {
+          try {
+            if (!(await isSignedIn())) return;
+            await initFundsHub();
+            const funds = await getFunds();
+            if (funds) handleFundsChange(funds);
+          } catch (e: any) {
+            console.warn('[background] funds sync alarm failed:', e?.message || e);
+          }
+        })();
+      });
+    }
   } catch (e) { console.error('[background] alarms setup error:', e); }
 
   // After a Stripe checkout returns, the top-up is credited asynchronously by the
@@ -2429,7 +2551,20 @@ export default defineBackground({
     if (message?.type === 'MF_FUNDS_GET') {
       (async () => {
         await initFundsHub();
-        if (!fundsState) {
+        // `force` refetches instead of answering from the cached row. Used right after a
+        // top-up is credited: the Realtime push is the normal way the total moves, but money
+        // the user has just paid for should not depend on that push arriving — a dropped
+        // channel would leave the dashboard showing the pre-purchase balance.
+        //
+        // Routed through handleFundsChange rather than assigning fundsState directly so the
+        // freeze state, the waitlist and the in-page notification all see it. It also makes
+        // this idempotent with the push that follows: lastVisibleTotal is already updated, so
+        // the same total arriving again is a zero delta and notifies nobody twice.
+        // `import.meta.env.SAFARI` is a build-time constant, so for Chromium and Firefox this
+        // whole clause folds to `false &&` and disappears — those builds are left with exactly
+        // the cache-or-fetch behaviour they had before the Apple top-up work existed.
+        const forceRefetch = import.meta.env.SAFARI && message.force === true;
+        if (forceRefetch || !fundsState) {
           const funds = await getFunds();
           if (funds) handleFundsChange(funds);
         }
@@ -2455,7 +2590,10 @@ export default defineBackground({
     // from the Chromium and Firefox bundles.
     if (import.meta.env.SAFARI && (
       message?.type === 'MF_NATIVE_SIGN_IN' ||
-      message?.type === 'MF_NATIVE_PURCHASE' ||
+      message?.type === 'MF_NATIVE_PREPARE_TOPUP' ||
+      message?.type === 'MF_NATIVE_HANDOFF_TX' ||
+      message?.type === 'MF_NATIVE_CLEAR_HANDOFF_TX' ||
+      message?.type === 'MF_NATIVE_SYNC_ACCOUNT' ||
       message?.type === 'MF_NATIVE_FINISH_TX' ||
       message?.type === 'MF_NATIVE_PENDING_TX'
     )) {
@@ -2465,6 +2603,12 @@ export default defineBackground({
           // StoreKit hands us an *unfinished* transaction, the worker credits it, and only
           // then is it finished. Anything left unfinished is money already taken that we
           // still owe, so PENDING_TX lets the popup find and settle it later.
+          //
+          // MF_NATIVE_PREPARE_TOPUP replaced the old PURCHASE_TOPUP: the purchase itself now
+          // happens in the containing app, because an app extension has no window to present
+          // the StoreKit sheet into (and App Review 4.4 forbids IAP in an extension anyway).
+          // So this only stages the amount and account in the shared container; the app then
+          // charges, records the result there, and HANDOFF_TX brings it back on the next open.
           const payload =
             message.type === 'MF_NATIVE_SIGN_IN'
               ? { action: 'SIGN_IN', url: message.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME }
@@ -2472,7 +2616,13 @@ export default defineBackground({
               ? { action: 'FINISH_TRANSACTION', transactionId: message.transactionId }
             : message.type === 'MF_NATIVE_PENDING_TX'
               ? { action: 'PENDING_TRANSACTIONS' }
-            : { action: 'PURCHASE_TOPUP', productId: message.productId, amount: message.amount, userId: message.userId };
+            : message.type === 'MF_NATIVE_HANDOFF_TX'
+              ? { action: 'HANDOFF_TRANSACTION' }
+            : message.type === 'MF_NATIVE_CLEAR_HANDOFF_TX'
+              ? { action: 'CLEAR_HANDOFF_TRANSACTION', transactionId: message.transactionId }
+            : message.type === 'MF_NATIVE_SYNC_ACCOUNT'
+              ? { action: 'SYNC_ACCOUNT', userId: message.userId, balance: message.balance }
+            : { action: 'PREPARE_TOPUP', amount: message.amount, userId: message.userId, balance: message.balance };
           // The host drives UI the user has to complete (ASWebAuthenticationSession, the
           // StoreKit sheet), so this ceiling is deliberately generous — it is not a
           // latency budget. It exists so that a host which never invokes its completion

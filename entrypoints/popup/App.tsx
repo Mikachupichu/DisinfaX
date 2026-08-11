@@ -419,7 +419,10 @@ export default function App() {
 
       {/* Footer sits flush against the content above it, hard on the bottom edge. */}
       <div className="text-center space-y-0.5 select-none">
-        <div className="text-[10px] text-zinc-600">DisinfaX v1.0.0</div>
+        {/* Read from the manifest, never hardcoded. A literal "v1.0.0" here survived a
+            version bump and made a correctly-updated build look stale — it cost a real
+            debugging detour chasing an installation problem that did not exist. */}
+        <div className="text-[10px] text-zinc-600">DisinfaX v{browser.runtime.getManifest().version}</div>
         {user && <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>}
         {!user && <div className="text-[10px] text-zinc-700">{t('cleanupTagline')}</div>}
       </div>

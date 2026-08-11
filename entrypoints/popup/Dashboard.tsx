@@ -32,7 +32,6 @@ const SAFARI_VERIFY_URL = 'https://verify-apple-topup.michael-pouget01.workers.d
  *  the custom field is clamped rather than merely floored. */
 const APPLE_MIN_TOPUP = 1;
 const APPLE_MAX_TOPUP = 100;
-const appleProductId = (amount: number) => `com.disinfax.topup.v6.${amount}`;
 
 /** Lower bound for the custom field: Apple's smallest product, or Stripe's $5 floor. */
 const CUSTOM_MIN = import.meta.env.SAFARI ? APPLE_MIN_TOPUP : 5;
@@ -173,6 +172,26 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   };
 
   /**
+   * Pulls the authoritative total and applies it, rather than waiting to be told.
+   *
+   * The background pushes MF_FUNDS_UPDATE on every Realtime funds change and that remains the
+   * normal path — but a top-up is the one moment where the user is watching for a specific
+   * number, so it is re-read directly instead of trusting a push to arrive. `force` makes the
+   * background refetch rather than answer from its cached row, which would still hold the
+   * pre-purchase balance. The value is balance + hold, so a hold opening does not move it.
+   */
+  const refreshFunds = useCallback(async () => {
+    // Safari only. Its callers are the Apple settlement paths, which already return early
+    // elsewhere — but gating the body too means the code is dropped from the Chromium and
+    // Firefox bundles rather than merely going uncalled in them.
+    if (!import.meta.env.SAFARI) return;
+    try {
+      const response: any = await browser.runtime.sendMessage({ type: 'MF_FUNDS_GET', force: true });
+      if (response && typeof response.total === 'number') setTotal(response.total);
+    } catch { /* background asleep or popup closing — the push covers it */ }
+  }, []);
+
+  /**
    * Credits one Apple transaction, then finishes it — strictly in that order.
    *
    * A finished StoreKit transaction is gone for good: Apple never redelivers it. So it
@@ -243,11 +262,85 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
           await verifyAndFinishTopUp(item.signedTransaction, item.transactionId, token);
         } catch { /* still owed; retried on a later open */ }
       }
-      try { browser.runtime.sendMessage({ type: 'MF_FUNDS_GET' }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
+      await refreshFunds();
     } catch { /* native host unavailable — nothing to do */ }
-  }, [verifyAndFinishTopUp]);
+  }, [verifyAndFinishTopUp, refreshFunds]);
+
+  /**
+   * Credits a purchase made in the containing app.
+   *
+   * The app writes the verified transaction into the shared App Group container the instant
+   * StoreKit returns it, then tells the user to come back here — so this runs on every popup
+   * open, which is exactly when they return. The record is cleared only after the credit is
+   * confirmed: clearing it first would lose a paid-for transaction if the worker were down.
+   *
+   * This is belt-and-braces with settlePendingTopUps(), not a duplicate of it. That one reads
+   * StoreKit's own unfinished set; this one reads an explicit record the app wrote. Either can
+   * recover the transaction on its own, and crediting is idempotent on Apple's transaction id,
+   * so both running is harmless.
+   */
+  const settleHandoffTopUp = useCallback(async () => {
+    if (!import.meta.env.SAFARI) return;
+    try {
+      const res: any = await callNativeHost(
+        { action: 'HANDOFF_TRANSACTION' },
+        { type: 'MF_NATIVE_HANDOFF_TX' },
+      );
+      const handoffs: any[] = Array.isArray(res?.pending) ? res.pending : [];
+      if (!handoffs.length) return;
+
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) return;
+
+      let credited = false;
+      for (const item of handoffs) {
+        if (!item?.signedTransaction) continue;
+        try {
+          await verifyAndFinishTopUp(item.signedTransaction, item.transactionId, token);
+          credited = true;
+          // Cleared per id, and only after that id was credited: a failure on one purchase must
+          // not discard the others, and a record left behind is re-credited idempotently on the
+          // next open rather than lost.
+          if (item.transactionId) {
+            await callNativeHost(
+              { action: 'CLEAR_HANDOFF_TRANSACTION', transactionId: String(item.transactionId) },
+              { type: 'MF_NATIVE_CLEAR_HANDOFF_TX', transactionId: String(item.transactionId) },
+            ).catch(() => { /* credited; the stale record is harmless and retried */ });
+          }
+        } catch { /* still owed — left in place for the next open */ }
+      }
+
+      if (credited) await refreshFunds();
+    } catch { /* native host unavailable, or nothing waiting */ }
+  }, [verifyAndFinishTopUp, refreshFunds]);
+
+  useEffect(() => { void settleHandoffTopUp(); }, [settleHandoffTopUp]);
 
   useEffect(() => { void settlePendingTopUps(); }, [settlePendingTopUps]);
+
+  /**
+   * Keeps the app's copy of the account in step.
+   *
+   * The Supabase session lives only in this extension, so the app has no way of knowing who is
+   * signed in or what they have. Without a user id it refuses to sell at all — so this runs on
+   * open and again whenever the balance changes, rather than only at hand-off time: someone who
+   * opens the app directly from the Dock still gets a working screen with a real balance on it.
+   */
+  useEffect(() => {
+    if (!import.meta.env.SAFARI) return;
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const userId = data.session?.user?.id;
+        if (!userId) return;
+        await callNativeHost(
+          { action: 'SYNC_ACCOUNT', userId, balance: typeof total === 'number' ? total : undefined },
+          { type: 'MF_NATIVE_SYNC_ACCOUNT', userId, balance: typeof total === 'number' ? total : undefined },
+        );
+      } catch { /* native host unavailable — the app falls back to its own stored values */ }
+    })();
+  }, [total]);
 
   const startCheckout = async () => {
     setCheckoutError(null);
@@ -274,40 +367,65 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
           throw new Error(t('checkoutError'));
         }
 
-        // 1. Ask the Swift host app to display the StoreKit purchase sheet. Relayed through
-        //    the background: Safari only answers sendNativeMessage from the background
-        //    script, not from a popup. See background.ts.
-        //    `productId` is the pre-registered in-app purchase to present; `amount` is sent
-        //    alongside it for logging only — Apple's own signed price is what the worker
-        //    credits, never a client-supplied figure.
-        const nativeRes: any = await callNativeHost(
+        // 1. Hand off to the containing app. The purchase CANNOT happen from here: an app
+        //    extension has no window, and Product.purchase() has to present a payment sheet
+        //    into one. Measured, not assumed — the extension resolves the product fine and
+        //    then throws StoreKitError.unknown 36ms later, which is the "Unable to Complete
+        //    Request" this used to show. App Review 4.4 also forbids in-app purchases inside
+        //    an extension, so the app owns the amount field, the confirmation and the sheet.
+        //
+        //    This call only stages state in the shared App Group container; nothing is
+        //    charged yet. `balance` rides along so the app can show "before → after" without
+        //    needing the Supabase session, which lives only in this extension.
+        const prep: any = await callNativeHost(
           {
-            action: 'PURCHASE_TOPUP',
-            productId: appleProductId(selectedAmount),
+            action: 'PREPARE_TOPUP',
             amount: selectedAmount,
             userId,
+            balance: typeof total === 'number' ? total : undefined,
           },
           {
-            type: 'MF_NATIVE_PURCHASE',
+            type: 'MF_NATIVE_PREPARE_TOPUP',
             amount: selectedAmount,
-            productId: appleProductId(selectedAmount),
             userId,
+            balance: typeof total === 'number' ? total : undefined,
           },
         );
 
-        if (!nativeRes || nativeRes.error || !nativeRes.signedTransaction) {
-          throw new Error(nativeRes?.error || t('checkoutError'));
+        if (!prep || prep.error || !prep.handoff) {
+          throw new Error(prep?.error || t('checkoutError'));
         }
 
-        // 2. Verify with the worker and credit the balance. The StoreKit transaction is
-        //    still UNFINISHED at this point, deliberately: if this call fails, Apple keeps
-        //    redelivering it and settlePendingTopUps() can recover it on a later open.
-        //    Finishing first would discard it permanently and the user would be charged
-        //    with nothing credited and no trace of it.
-        await verifyAndFinishTopUp(nativeRes.signedTransaction, nativeRes.transactionId, token);
+        // 2. Open the app — unless the native side already did. It reports that in `opened`
+        //    because neither route is guaranteed: an app extension can be denied
+        //    LaunchServices access, and a browser page can refuse to navigate to a custom
+        //    scheme. Only one needs to work, and re-running the other would merely re-focus
+        //    an app that is already frontmost, so this is a fallback rather than a race.
+        // 3. Only `opened` is trusted. Neither browser route can be verified: tabs.create
+        //    resolves with a tab object whether or not Safari honoured the scheme, and
+        //    window.open returns non-null just the same — so treating either as proof is how
+        //    "the popup closed and nothing happened" becomes a silent failure. They are still
+        //    worth attempting, but they do not license closing the popup.
+        if (prep.opened !== true) {
+          const handoffUrl = `disinfax://topup?amount=${encodeURIComponent(String(selectedAmount))}`;
+          try {
+            await browser.tabs.create({ url: handoffUrl });
+          } catch { /* Safari may refuse a non-http scheme here */ }
+          try {
+            window.open(handoffUrl, '_blank');
+          } catch { /* popup blocker or scheme refusal */ }
 
-        // 3. Refresh user balance in background and close popup
-        try { browser.runtime.sendMessage({ type: 'MF_FUNDS_GET' }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
+          // Reported as a failure precisely because it cannot be confirmed. If one of the
+          // attempts above did work, the app takes focus, the popup is dismissed, and this is
+          // never seen — so the message only ever surfaces when nothing actually opened.
+          // Nothing has been charged at this point; only the request was staged.
+          throw new Error(t('checkoutError'));
+        }
+
+        // 4. Nothing is credited here. The app records the verified transaction into the
+        //    shared container the instant StoreKit returns it, and settleHandoffTopUp() picks
+        //    it up the next time this popup opens — which is exactly when the user comes back
+        //    from the app. Closing now keeps the popup from sitting on a stale balance.
         window.close();
       } else {
         const response = await fetch(CHECKOUT_URL, {
