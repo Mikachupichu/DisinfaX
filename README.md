@@ -7,6 +7,8 @@ DisinfaX is an intelligent fact-checker integrated directly into your X (Twitter
 - **Transparency:** Provided research sources that contributed to a verdict.
 - **Multilingual Support:** Near-instant translations of reasoning descriptions & other metadata previously generated in foreign languages.
 
+# FOR MOZILLA REVIEWERS:
+
 # Building DisinfaX from source
 
 These instructions reproduce the submitted `disinfax-1.0.1-firefox.zip` from this source
