@@ -1,3 +1,12 @@
+DisinfaX is an intelligent fact-checker integrated directly into your X (Twitter) feed. Accurately verify claims and reveal disinformation with blazing speed.
+- **Ultra Cheap, Ultra Fast Fact-Checking:** usually less than 5 seconds & US$0.02 per claim.
+- **Free, Instant Verdicts: Tweets & claims** previously fact-checked by other users reveal their verdict in the blink of an eye — and free of charge.
+- **Seamless Integration:** Verdicts & their metadata are directly embedded inside tweets. Fact-checked claims are colour-coded: red if false, green if true, and intermediate shades for partial truth.
+- **Reasoning:** Clear & detailed explanation of the verdict reached.
+- **Confidence Level:** Estimated likelihood of a verdict's correctness.
+- **Transparency:** Provided research sources that contributed to a verdict.
+- **Multilingual Support:** Near-instant translations of reasoning descriptions & other metadata previously generated in foreign languages.
+
 # Building DisinfaX from source
 
 These instructions reproduce the submitted `disinfax-1.0.1-firefox.zip` from this source
