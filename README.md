@@ -1,5 +1,5 @@
 DisinfaX is an intelligent fact-checker integrated directly into your X (Twitter) feed. Accurately verify claims and reveal disinformation with blazing speed.
-- **Ultra Cheap, Ultra Fast Fact-Checking:** usually less than 5 seconds & US$0.02 per claim.
+- **Ultra Cheap, Ultra Fast Fact-Checking:** typically ~US$0.03 & ~3s per claim.
 - **Free, Instant Verdicts: Tweets & claims** previously fact-checked by other users reveal their verdict in the blink of an eye — and free of charge.
 - **Seamless Integration:** Verdicts & their metadata are directly embedded inside tweets. Fact-checked claims are colour-coded: red if false, green if true, and intermediate shades for partial truth.
 - **Reasoning:** Clear & detailed explanation of the verdict reached.
