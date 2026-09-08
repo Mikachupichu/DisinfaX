@@ -90,6 +90,26 @@ function isTouchInput(): boolean {
 
 const allClassifications: Classification[] = [];
 const processingOnHoldIds = new Set<string>();
+/** Tweet IDs with a user-triggered re-preclassification in flight (the top-of-tweet
+ *  refresh button). Distinct from `processingOnHoldIds` (owned by the
+ *  Disinfact/pipeline flow): both sets drive the same top-of-tweet wheel, and the
+ *  wheel is shown while EITHER is non-empty. Cleared when the first streamed
+ *  claims land (broadcast path) or when the run fails to produce them (the
+ *  button's 30s revert), never optimistically at click time. */
+const refreshRunPendingIds = new Set<string>();
+/** Tweet IDs with a user-triggered initial preclassification in flight (Disinfact click).
+ *  Cleared when streamed claims land or when the run fails / times out. */
+const disinfactRunPendingIds = new Set<string>();
+/** Tweet IDs whose cached preclassification visuals are currently hidden — either
+ *  the user clicked Hide, or cached visuals arrived with no engagement this
+ *  session (DB hit, or their own earlier click before a reload) and defaulted to
+ *  hidden. Rendering is gated ONLY; derivation, spend, and pipeline state are
+ *  untouched. Main tweets only. */
+const hiddenVisualIds = new Set<string>();
+/** Tweet IDs the user has revealed (Reveal button) or engaged with (clicked any
+ *  top-of-tweet action button: Disinfact, Fact-Check All, translate, refresh).
+ *  Takes precedence over the hidden set. Main tweets only. */
+const revealedVisualIds = new Set<string>();
 // Safety net for the (rare) case where a Disinfact/Translate-Fact-Checks backend call fails:
 // its button becomes a spinner and, with no result to re-render it away, would stay stuck. If
 // after this long the button is STILL connected AND still marked processing (i.e. no success
@@ -557,13 +577,21 @@ function removeInjectedElements(tweetId: string) {
         if (fallback) fallback.remove();
         const unmatched = article.querySelector(`[mf-unmatched="${tweetId}"]`);
         if (unmatched) unmatched.remove();
+        const topBar = article.querySelector(`[mf-top-bar-id="${tweetId}"]`);
+        if (topBar) topBar.remove();
         const tfc = article.querySelector(`[translate-fc-id="${tweetId}"]`);
         if (tfc) tfc.remove();
         const onHold = article.querySelector(`[mf-on-hold-id="${tweetId}"]`);
         if (onHold) onHold.remove();
+        const refresh = article.querySelector(`[mf-refresh-id="${tweetId}"]`);
+        if (refresh) refresh.remove();
+        const visual = article.querySelector(`[mf-visual-id="${tweetId}"]`);
+        if (visual) visual.remove();
     }
     processingOnHoldIds.delete(tweetId);
     processingTranslateFactChecksIds.delete(tweetId);
+    refreshRunPendingIds.delete(tweetId);
+    disinfactRunPendingIds.delete(tweetId);
 }
 
 /** Neutralize a segment wrap so the tweet text stays visible but carries no
@@ -598,7 +626,7 @@ export function removeAllInjections() {
         freezeSegmentWrap(wrap);
     }
     const standalone = document.querySelectorAll(
-        '[classification-id],[mf-unmatched],[translate-fc-id],[mf-on-hold-id],.mf-popover,.mf-onboard,.mf-onboard-attached,.mf-notif-container,.mf-floating-scroll-btn'
+        '[classification-id],[mf-unmatched],[translate-fc-id],[mf-on-hold-id],[mf-refresh-id],[mf-visual-id],[mf-top-bar-id],.mf-popover,.mf-onboard,.mf-onboard-attached,.mf-notif-container,.mf-floating-scroll-btn'
     );
     for (const el of Array.from(standalone)) el.remove();
 
@@ -607,6 +635,7 @@ export function removeAllInjections() {
     allClassifications.length = 0;
     processingOnHoldIds.clear();
     processingTranslateFactChecksIds.clear();
+    refreshRunPendingIds.clear();
     requestedQuotedDbFetchIds.clear();
     factCheckAllClickedIds.clear();
     individuallyClickedOnHoldClaims.clear();
@@ -1133,7 +1162,9 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     const isRTL = isRTLLocale(getEffectiveUILocale());
     const avgColor = averageClaimColor(classification);
     const darkened = avgColor ? darkenColor(avgColor, 0.25) : null;
-    const brightened = avgColor ? brightenColor(avgColor, 0.5) : null;
+    // 0.15 (not higher): the claim text stays white, so a strong brighten washes it
+    // out and makes the hover list unreadable. A subtle lift keeps contrast intact.
+    const brightened = avgColor ? brightenColor(avgColor, 0.15) : null;
     const normalRgb = darkened ? `${darkened.r}, ${darkened.g}, ${darkened.b}` : "29, 155, 240";
     const hoverRgb = brightened ? `${brightened.r}, ${brightened.g}, ${brightened.b}` : "29, 155, 240";
 
@@ -1522,6 +1553,14 @@ export function injectClassifications(classifications: Classification[], tweetTe
     console.log(`[misinfo] injectClassifications: received ${classifications.length} classifications`, classifications.map(c => ({ id: c.id, claims: c.claims?.length, hasSegments: !!c.segments, cacheHas: tweetTextCache?.has(c.id), translatedHas: translatedTextCache?.has(c.id) })));
 
     for (const c of classifications) {
+        if (!c.onHold && !c.preclassifying) {
+            disinfactRunPendingIds.delete(c.id);
+            processingOnHoldIds.delete(c.id);
+        }
+        if (!c.translateFactChecksOnHold && !c.localizingHighlights) {
+            processingTranslateFactChecksIds.delete(c.id);
+        }
+
         if (c.quoting?.id) {
             requestQuotedDbFetch(c.quoting.id, c.id);
         }
@@ -1611,6 +1650,23 @@ export function injectClassifications(classifications: Classification[], tweetTe
 
     if (!observerSetup) {
         observerSetup = true;
+        let maxTimeout: NodeJS.Timeout | null = null;
+
+        const runInjections = () => {
+            if (debounceTimeout) { clearTimeout(debounceTimeout); debounceTimeout = null; }
+            if (maxTimeout) { clearTimeout(maxTimeout); maxTimeout = null; }
+            classificationInjections(allClassifications);
+            refreshOnboarding();
+            // Re-squeeze after host-driven DOM churn (theme toggles, timeline
+            // re-renders): a pass that ran mid-transition can leave a stale cap
+            // with no later trigger to clear it. Caps-clear-first makes this a
+            // pure healing pass once layout has settled.
+            for (const slot of Array.from(document.querySelectorAll<HTMLElement>('[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'))) {
+                const article = slot.closest('article');
+                if (article) updateTopButtonSqueeze(article);
+            }
+        };
+
         const observer = new MutationObserver((mutations) => {
             checkPathChange();
             // Only re-inject when the HOST page actually changed (a tweet mounted /
@@ -1621,11 +1677,15 @@ export function injectClassifications(classifications: Classification[], tweetTe
             // thread and detaches open popovers (the "click a highlight, badge sticks,
             // popover never opens, highlight frozen" bug).
             if (!mutations.some(hasNonExtensionChange)) return;
+
+            // Schedule a guaranteed max-wait run so rapid continuous scrolling
+            // doesn't indefinitely starve injection of newly mounted tweets.
+            if (!maxTimeout) {
+                maxTimeout = setTimeout(runInjections, 200);
+            }
+
             if (debounceTimeout) clearTimeout(debounceTimeout);
-            debounceTimeout = setTimeout(() => {
-                classificationInjections(allClassifications);
-                refreshOnboarding();
-            }, 300);
+            debounceTimeout = setTimeout(runInjections, 100);
         });
         observer.observe(document.body, {
             childList: true,
@@ -1636,7 +1696,7 @@ export function injectClassifications(classifications: Classification[], tweetTe
 
 /** Selector matching every element the extension injects, so the timeline
  *  MutationObserver can distinguish host-page (real tweet) changes from our own. */
-const MF_OWN_SELECTOR = '.mf-segment-wrap, .mf-popover, .mf-onboard, .mf-notif-container, .mf-floating-scroll-btn, [mf-on-hold-id], [classification-id], [mf-unmatched], [translate-fc-id]';
+const MF_OWN_SELECTOR = '.mf-segment-wrap, .mf-popover, .mf-onboard, .mf-notif-container, .mf-floating-scroll-btn, .mf-btn-container, .mf-spinner-slot, [mf-on-hold-id], [classification-id], [mf-unmatched], [translate-fc-id], [mf-refresh-id], [mf-visual-id], [mf-top-bar-id]';
 
 /** True if a mutated node is (or lives inside) one of our injected elements. */
 function isOwnMutationNode(n: Node): boolean {
@@ -1649,6 +1709,10 @@ function isOwnMutationNode(n: Node): boolean {
 /** True only when a mutation adds/removes at least one node that ISN'T ours — i.e. a
  *  genuine host-page change worth re-injecting for. Extension-only mutations return false. */
 export function hasNonExtensionChange(m: MutationRecord): boolean {
+    const targetEl = (m.target?.nodeType === 1 ? m.target : m.target?.parentElement) as Element | null;
+    if (targetEl && (targetEl.matches?.(MF_OWN_SELECTOR) || targetEl.closest?.(MF_OWN_SELECTOR) != null)) {
+        return false;
+    }
     const nodes = [...Array.from(m.addedNodes), ...Array.from(m.removedNodes)];
     if (nodes.length === 0) return false;
     return nodes.some(n => !isOwnMutationNode(n));
@@ -2121,7 +2185,7 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
     return claims
         .map((claim) => {
             const isOnHold = claim.reclassifyOnHold;
-            const label = isOnHold ? "Fact-Check" : verdictLabel(claim.confidence, claim.veracity, `${c.id}:${claim.text}`);
+            const label = isOnHold ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${c.id}:${claim.text}`);
             const reasoning = isOnHold
                 ? (claim.cachedNote ?? tapify("Click to re-check this claim"))
                 : extractReasoning(claim.note, claim.confidence, claim.veracity);
@@ -2333,10 +2397,10 @@ function getInlineStyles(): string {
        below is class-derived, so it overrides normally. */
     /* The button AND its inner div[dir="ltr"] both carry X's own button classes, and both
        contribute padding — zeroing only the outer left most of the gap in place. */
-    [data-mf-charge="disinfact"],
-    [data-mf-charge="factcheckall"],
     [data-mf-charge="disinfact"] > div,
-    [data-mf-charge="factcheckall"] > div {
+    [data-mf-charge="factcheckall"] > div,
+    [data-mf-charge="translate-tweet"] > div,
+    [data-mf-visual] > div {
         padding-left: 0 !important;
         padding-right: 0 !important;
         margin-left: 0 !important;
@@ -2346,7 +2410,9 @@ function getInlineStyles(): string {
     }
     /* Degrade to an ellipsis rather than overflowing once it does have to give way. */
     [data-mf-charge="disinfact"] > div > span,
-    [data-mf-charge="factcheckall"] > div > span {
+    [data-mf-charge="factcheckall"] > div > span,
+    [data-mf-charge="translate-tweet"] > div > span,
+    [data-mf-visual] > div > span {
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
@@ -2405,6 +2471,7 @@ function getInlineStyles(): string {
 }
 .mf-notif {
     pointer-events: auto;
+    cursor: pointer;
     padding: 10px 14px;
     border-radius: 12px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -2460,7 +2527,7 @@ function injectStyles() {
 
 /** Notification colors, matching the highlight extremes and center: green (most
  *  true), yellow/orange (center), red (most false) — derived from confidenceRgba. */
-function notifColor(kind: 'increase' | 'decrease' | 'error'): { bg: string; fg: string } {
+function notifColor(kind: 'increase' | 'decrease' | 'error' | 'broke'): { bg: string; fg: string } {
     if (kind === 'increase') return { bg: confidenceRgba(1, 0.96, 1), fg: '#000' };
     if (kind === 'decrease') return { bg: confidenceRgba(1, 0.96, 0), fg: '#000' };
     return { bg: confidenceRgba(1, 0.96, -1), fg: '#fff' };
@@ -2477,8 +2544,28 @@ function getNotifContainer(): HTMLElement {
     return c;
 }
 
-/** Format a signed USD delta, e.g. "+US$5" / "-US$0.0013", with the locale separator. */
-/** Returns HTML for a signed USD amount with a small, vertically-centered "US" (mirrors
+/** True when the locale writes a currency symbol AFTER the number (e.g. French
+ *  "3,24 $US"). Probed from the platform's own USD formatting so every locale
+ *  follows its own convention; only the position is taken from the probe, the
+ *  symbol text stays this extension's "US$" branding. Mirrors the popup's
+ *  usdSymbolAfterAmount (popup/i18n.ts) — kept local because the content script
+ *  cannot import the popup bundle. */
+function usdSymbolAfterAmount(locale?: string): boolean {
+    try {
+        // Underscore form ("pt_BR") is valid for `_locales/` lookup but not for Intl.
+        const tag = (locale ?? getEffectiveUILocale()).replace(/_/g, '-');
+        const parts = new Intl.NumberFormat(tag, { style: 'currency', currency: 'USD' }).formatToParts(1);
+        const currencyIdx = parts.findIndex(part => part.type === 'currency');
+        const integerIdx = parts.findIndex(part => part.type === 'integer');
+        return currencyIdx !== -1 && integerIdx !== -1 && currencyIdx > integerIdx;
+    } catch {
+        return false;
+    }
+}
+
+/** Format a signed USD delta ("+US$5" / "-US$0.0013" in prefix locales, "+5 US$" /
+ *  "-0,0013 US$" with the locale separator in suffix locales).
+ *  Returns HTML for a signed USD amount with a small, vertically-centered "US" (mirrors
  *  the dashboard's Usd component). Values are numeric/controlled — safe for innerHTML. */
 function formatSignedUsd(amount: number, sign: '+' | '-'): string {
     // Mirror the balance's formatUsdNumber rule exactly (popup/i18n.ts): round to 4dp,
@@ -2488,25 +2575,95 @@ function formatSignedUsd(amount: number, sign: '+' | '-'): string {
     const dot = trimmed.indexOf('.');
     const decimals = dot === -1 ? 0 : trimmed.length - dot - 1;
     const frac = decimals === 0 ? 0 : decimals === 1 ? 2 : decimals;
-    const n = new Intl.NumberFormat(getEffectiveUILocale(), { minimumFractionDigits: frac, maximumFractionDigits: frac }).format(rounded);
+    const locale = getEffectiveUILocale();
+    const n = new Intl.NumberFormat(locale, { minimumFractionDigits: frac, maximumFractionDigits: frac }).format(rounded);
+    const us = `<span style="font-size:0.6em;font-weight:600;line-height:1;margin:0 0.5px 0 1px;position:relative;top:1px;">US</span>`;
+    const dollar = `<span style="font-weight:600;line-height:1;">$</span>`;
+    // Suffix form uses a non-breaking space (like the platform convention) so the
+    // number and currency can never wrap onto separate lines.
+    const nbsp = ' ';
+    const currency = usdSymbolAfterAmount(locale) ? `${dollar}${us}` : `${us}${dollar}`;
+    const body = usdSymbolAfterAmount(locale) ? `${n}${nbsp}${currency}` : `${currency}${n}`;
     return `<span style="display:inline-flex;align-items:center;line-height:1;">`
         + `${sign}`
-        + `<span style="font-size:0.6em;font-weight:600;line-height:1;margin:0 0.5px 0 1px;position:relative;top:1px;">US</span>`
-        + `<span style="font-weight:600;line-height:1;">$</span>`
-        + `${n}`
+        + body
         + `</span>`;
 }
 
-/** Show a balance-change (green ↑ / orange ↓) or error (red) notification. Auto-dismisses after 5s. */
-export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: { amount?: number; text?: string; code?: number }) {
-    if (extensionFrozen) return;
-    if (!document.body) return;
+/** Auto-dismiss delay for a notification, restarted from scratch every time the
+ *  pointer leaves it (see armNotifDismiss). */
+const NOTIF_DISMISS_MS = 5000;
+/** Fade-out length, mirroring the .mf-notif opacity transition above. */
+const NOTIF_FADE_MS = 300;
+
+/** Arm (or re-arm) a notification's auto-dismiss: after NOTIF_DISMISS_MS it fades
+ *  and removes itself.
+ *
+ *  Hover pauses the countdown instead of letting it die mid-read: entering clears
+ *  the pending timeout, and leaving starts a FRESH full-length one — not the
+ *  remainder — so "resets precisely when we exit the hover" holds no matter how
+ *  many times the pointer dips in and out. Each notification tracks its own timers,
+ *  so stacked toasts dismiss independently. */
+function armNotifDismiss(container: HTMLElement, el: HTMLElement) {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    let fadeTimeout: ReturnType<typeof setTimeout> | null = null;
+    const dismiss = () => {
+        timeout = null;
+        el.classList.remove('mf-notif-visible');
+        fadeTimeout = setTimeout(() => { el.remove(); if (container.childElementCount === 0) container.remove(); }, NOTIF_FADE_MS);
+    };
+    const schedule = () => {
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(dismiss, NOTIF_DISMISS_MS);
+    };
+    // Hovering pauses the countdown; it also cancels a fade already in progress
+    // (re-hovering mid-fade restores the toast instead of watching it vanish).
+    el.addEventListener('mouseenter', () => {
+        if (timeout) { clearTimeout(timeout); timeout = null; }
+        if (fadeTimeout) { clearTimeout(fadeTimeout); fadeTimeout = null; el.classList.add('mf-notif-visible'); }
+    });
+    el.addEventListener('mouseleave', schedule);
+    schedule();
+}
+
+/** Shared toast construction: colored box, fade-in, click-through to the popup,
+ *  hover-paused auto-dismiss. The click dispatches onto mfBus so the relay (which
+ *  owns the background port) can forward it — injecting.ts never touches the port
+ *  itself, keeping the "host page cannot forge money intents" boundary intact for
+ *  everything except this one benign open-the-popup request. content is set by the
+ *  caller (textContent for localized copy, innerHTML only for the integer-controlled
+ *  formatSignedUsd output). */
+function buildNotification(kind: 'increase' | 'decrease' | 'error' | 'broke'): { container: HTMLElement; el: HTMLElement } {
     const container = getNotifContainer();
     const el = document.createElement('div');
     el.className = 'mf-notif';
     const { bg, fg } = notifColor(kind);
     el.style.backgroundColor = bg;
     el.style.color = fg;
+    el.addEventListener('click', () => {
+        mfBus.dispatchEvent(new CustomEvent('mf-open-popup', {}));
+    });
+    container.appendChild(el);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('mf-notif-visible')));
+    armNotifDismiss(container, el);
+    return { container, el };
+}
+
+/** Show a balance-change (green ↑ / orange ↓), error (red), or empty-balance (red)
+ *  notification. Auto-dismisses after 5s.
+ *
+ *  The empty-balance notice deliberately bypasses the freeze guard: the freeze at zero
+ *  balance is exactly what it exists to explain, and a frozen tab would otherwise
+ *  swallow it (e.g. re-login with an empty balance re-sends no MF_AUTH, so nothing
+ *  else would ever announce the state). */
+export function showNotification(kind: 'increase' | 'decrease' | 'error' | 'broke', opts: { amount?: number; text?: string; code?: number }) {
+    if (kind === 'broke') {
+        showBrokeNotification();
+        return;
+    }
+    if (extensionFrozen) return;
+    if (!document.body) return;
+    const { container, el } = buildNotification(kind);
     if (kind === 'error') {
         // A recognized error code (see utils/errorCodes.ts) takes this extension's own
         // localized text over whatever the backend sent; opts.text is pre-resolved
@@ -2514,17 +2671,25 @@ export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: 
         // error the parser couldn't map to a code).
         const messageKey = opts.code != null ? codeToMessageKey(opts.code) : null;
         const resolvedText = messageKey ? t(messageKey) : opts.text;
-        if (!resolvedText) return;
+        if (!resolvedText) { el.remove(); if (container.childElementCount === 0) container.remove(); return; }
         el.textContent = resolvedText;
     } else {
         el.innerHTML = formatSignedUsd(opts.amount ?? 0, kind === 'increase' ? '+' : '-');
     }
-    container.appendChild(el);
-    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('mf-notif-visible')));
-    setTimeout(() => {
-        el.classList.remove('mf-notif-visible');
-        setTimeout(() => { el.remove(); if (container.childElementCount === 0) container.remove(); }, 300);
-    }, 5000);
+}
+
+/** "Your balance is empty" notice (red, no amount). Shown once per page-load, so a
+ *  tab left open on x.com doesn't re-announce a state the user already saw — the
+ *  session flag is per content-script lifetime. */
+let brokeNotificationShown = false;
+function showBrokeNotification() {
+    if (brokeNotificationShown) return;
+    // Check the body BEFORE setting the flag: an MF_NOTIFICATION can arrive at
+    // document_start before <body> exists, and that delivery must not consume the
+    // one announcement — a later broadcast (funds baseline, tab connect) retries it.
+    if (!document.body) return;
+    brokeNotificationShown = true;
+    buildNotification('broke').el.textContent = t('balanceEmpty');
 }
 
 // ── Onboarding "charge-balance" popovers ─────────────────────────────────────
@@ -2537,8 +2702,10 @@ export function showNotification(kind: 'increase' | 'decrease' | 'error', opts: 
 
 const ONBOARD_DISMISS_KEY = 'mf_onboarding_dismissed';
 const ONBOARD_CLICKED_KEY = 'mf_onboarding_clicked_types';
-/** Types anchored directly next to a single per-tweet button. */
-const STANDALONE_CHARGE_TYPES = new Set(['disinfact', 'factcheckall', 'translate-tweet']);
+/// Types anchored directly next to a single per-tweet button. 'refresh-top' is the
+// top-of-tweet batch-refresh icon: same charge warning as the in-popover refresh it
+// replaces, now anchored to the button at the tweet instead.
+const STANDALONE_CHARGE_TYPES = new Set(['disinfact', 'factcheckall', 'translate-tweet', 'refresh-top']);
 let onboardingDismissed = false;
 const onboardingClickedTypes = new Set<string>();
 /** Maps a charge-button anchor to its onboarding popover. */
@@ -2547,14 +2714,28 @@ const onboardingByAnchor = new WeakMap<HTMLElement, HTMLElement>();
 function persistOnboardingClicked() {
     try { browser.storage.local.set({ [ONBOARD_CLICKED_KEY]: Array.from(onboardingClickedTypes) }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
 }
+/** Disinfact and the highlight-localization Disinfact (translate-tweet) are the same
+ *  labeled button as far as the user is concerned — clicking either dismisses onboarding
+ *  for both. Other charge types stay independent. */
+function onboardingCluster(type: string): string[] {
+    if (type === 'disinfact' || type === 'translate-tweet') return ['disinfact', 'translate-tweet'];
+    return [type];
+}
 function markOnboardingClicked(type: string) {
-    if (!type || onboardingClickedTypes.has(type)) return;
-    onboardingClickedTypes.add(type);
+    if (!type) return;
+    let added = false;
+    for (const t of onboardingCluster(type)) {
+        if (onboardingClickedTypes.has(t)) continue;
+        onboardingClickedTypes.add(t);
+        added = true;
+    }
+    if (!added) return;
     persistOnboardingClicked();
     refreshOnboarding();
 }
 function onboardingActive(type: string): boolean {
-    return !onboardingDismissed && !onboardingClickedTypes.has(type);
+    if (onboardingDismissed) return false;
+    return !onboardingCluster(type).some(t => onboardingClickedTypes.has(t));
 }
 /** On touch devices, present click-oriented copy as tap-oriented. Reuses the same
  *  `is-touch-active` signal that sizes the buttons. English-only best-effort: localized
@@ -2568,15 +2749,18 @@ function tapify(msg: string): string {
 
 function onboardingMessage(type: string): string {
     let msg: string;
-    if (type === 'disinfact') {
+    if (type === 'disinfact' || type === 'translate-tweet') {
         // Keep the properly-localized Tap variant for this one; tapify() is the fallback
         // that also covers the other messages, which have no dedicated Tap key.
+        // translate-tweet is the same Disinfact label (highlight localization instead of
+        // a fresh preclassification) — same copy, not onboardWillCharge.
         const tap = document.documentElement.classList.contains('is-touch-active');
         msg = tap ? t('onboardDisinfactTap') : t('onboardDisinfactClick');
     } else if (type === 'factcheck') msg = t('onboardFactcheck');
     else if (type === 'translate-inner') msg = t('onboardTranslations');
     else if (type === 'refresh-inner') msg = t('onboardRefreshes');
-    else msg = t('onboardWillCharge'); // factcheckall, translate-tweet
+    else if (type === 'refresh-top') msg = t('onboardRefreshes');
+    else msg = t('onboardWillCharge'); // factcheckall
     return tapify(msg);
 }
 // Inline icons embedded in the onboarding text for the icon-only buttons.
@@ -2591,10 +2775,11 @@ function onboardingButtonRef(type: string): { label?: string; icon?: string } {
         case 'disinfact': return { label: t('disinfactButton') };
         case 'factcheckall': return { label: t('factCheckAllButton') };
         case 'translate-tweet': return { label: t('disinfactButton') };
-        case 'factcheck': return { label: 'Fact-Check' };
+        case 'factcheck': return { label: t('factCheckButton') };
         case 'translate-inner': return { icon: onboardTranslateIconSvg };
         case 'refresh-inner': return { icon: onboardRefreshIconSvg };
-        default: return { label: 'Fact-Check' };
+        case 'refresh-top': return { icon: onboardRefreshIconSvg };
+        default: return { label: t('factCheckButton') };
     }
 }
 
@@ -2654,11 +2839,10 @@ function ensureStandaloneOnboarding(anchor: HTMLElement, type: string) {
         document.body.appendChild(pop);
         onboardingByAnchor.set(anchor, pop);
     }
-    // Disinfact / Fact-Check All specifically prefer opening ABOVE their button when
-    // there's no room to the right, before falling back below — translate-tweet (which
-    // reuses the Disinfact label/slot) keeps the original right-then-below behavior,
-    // matching what was explicitly asked for rather than guessing it in too.
-    const preferAbove = type === 'disinfact' || type === 'factcheckall';
+    // Disinfact (including the highlight-localization variant) / Fact-Check All
+    // specifically prefer opening ABOVE their button when there's no room to the
+    // right, before falling back below.
+    const preferAbove = type === 'disinfact' || type === 'translate-tweet' || type === 'factcheckall';
     positionOnboardingPopover(pop, anchor, preferAbove);
 }
 /** Re-evaluate all standalone onboarding popovers (called on injection + scroll). */
@@ -2673,12 +2857,113 @@ function refreshStandaloneOnboarding() {
         const p = onboardingByAnchor.get(anchor);
         if (p) wanted.add(p);
     }
-    // Drop standalone popovers whose anchor is gone / type now clicked.
+    // Drop standalone popovers whose anchor is gone / type now clicked. A removed
+    // popover un-exempts its anchor button, so its article must be re-squeezed below —
+    // otherwise an injection-time cap sticks forever: a compressed button with space.
+    const unexempted = new Set<Element>();
     for (const pop of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard'))) {
         const type = pop.dataset.mfOnboard ?? '';
         if (!STANDALONE_CHARGE_TYPES.has(type)) continue;
-        if (!wanted.has(pop)) pop.remove();
+        if (!wanted.has(pop)) {
+            const article = anchorForOnboardingPop(pop)?.closest('article');
+            if (article) unexempted.add(article);
+            pop.remove();
+        }
     }
+    // When a tweet-top Fact-Check All popover and a tweet-top refresh popover are both
+    // showing for the SAME tweet, stack them: refresh above, Fact-Check All below.
+    // Same-tweet = anchors in the same article (beside-variant) or the same on-hold
+    // container subtree; different tweets never coordinate.
+    stackTopOnboardingPairs();
+    // A popover opening/closing flips the squeeze exemption for its anchor button,
+    // so re-run the squeezer on every affected article: the ones still showing a
+    // popover (newly exempt) AND the ones that just lost one (newly un-exempt).
+    const squeezed = new Set<Element>();
+    for (const pop of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard'))) {
+        const anchor = anchorForOnboardingPop(pop);
+        const article = anchor?.closest('article');
+        if (article && !squeezed.has(article)) { squeezed.add(article); updateTopButtonSqueeze(article); }
+    }
+    for (const article of unexempted) {
+        if (!squeezed.has(article)) { squeezed.add(article); updateTopButtonSqueeze(article); }
+    }
+}
+
+/** Stack same-tweet tweet-top onboarding pairs: the refresh popover above, the
+ *  Fact-Check All popover below. Only overrides placement when BOTH are showing
+ *  for the same tweet; every other popover keeps its computed position. Runs on
+ *  every standalone refresh (injection + scroll), so stacking tracks movement and
+ *  a dismissed/expired popover simply stops participating. */
+function stackTopOnboardingPairs() {
+    const pops = Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard[data-mf-onboard="refresh-top"], .mf-onboard[data-mf-onboard="factcheckall"]'));
+    if (pops.length < 2) return;
+    // Group by tweet: the article holding both anchors.
+    const byTweet = new Map<Element, { refresh?: HTMLElement; factcheckall?: HTMLElement }>();
+    for (const pop of pops) {
+        if (!pop.isConnected) continue;
+        const anchor = anchorForOnboardingPop(pop);
+        const article = anchor?.closest('article');
+        if (!article) continue;
+        let g = byTweet.get(article);
+        if (!g) { g = {}; byTweet.set(article, g); }
+        if (pop.dataset.mfOnboard === 'refresh-top') g.refresh = pop;
+        else g.factcheckall = pop;
+    }
+    for (const { refresh, factcheckall } of byTweet.values()) {
+        if (!refresh || !factcheckall) continue;
+        const refreshAnchor = anchorForOnboardingPop(refresh);
+        const fcaAnchor = anchorForOnboardingPop(factcheckall);
+        if (!refreshAnchor || !fcaAnchor) continue;
+        // Anchor both popovers to the refresh button's row: refresh directly above it,
+        // Fact-Check All directly below it. Both share the same left edge so they read
+        // as one stacked callout.
+        const rRect = getTriggerViewportRect(refreshAnchor);
+        const fRect = getTriggerViewportRect(fcaAnchor);
+        const trigRect = {
+            top: Math.min(rRect.top, fRect.top),
+            bottom: Math.max(rRect.bottom, fRect.bottom),
+            left: Math.min(rRect.left, fRect.left),
+            right: Math.max(rRect.right, fRect.right),
+        };
+        const padding = 8;
+        const refreshH = refresh.getBoundingClientRect().height || 0;
+        const fcaH = factcheckall.getBoundingClientRect().height || 0;
+        const viewportWidth = window.innerWidth;
+        // Horizontal: align to the buttons' left, clamped into the viewport. The
+        // normal right-side placement is skipped here by construction — stacking
+        // only matters on cramped widths where both fell back to vertical.
+        const w = Math.max(refresh.getBoundingClientRect().width || 0, factcheckall.getBoundingClientRect().width || 0, 280);
+        const left = Math.max(padding, Math.min(trigRect.left, viewportWidth - w - padding));
+        refresh.style.position = 'fixed';
+        factcheckall.style.position = 'fixed';
+        refresh.style.left = `${left}px`;
+        factcheckall.style.left = `${left}px`;
+        refresh.style.width = `${w}px`;
+        refresh.style.maxWidth = `${w}px`;
+        factcheckall.style.width = `${w}px`;
+        factcheckall.style.maxWidth = `${w}px`;
+        // Refresh above the row when it fits, else below the Fact-Check All popover
+        // is impossible (that's the row itself) — so fall back to directly below the
+        // row, pushing Fact-Check All further down.
+        const spaceAbove = trigRect.top - padding;
+        if (refreshH > 0 && spaceAbove >= refreshH) {
+            refresh.style.top = `${trigRect.top - refreshH - padding}px`;
+            factcheckall.style.top = `${trigRect.bottom + padding}px`;
+        } else {
+            factcheckall.style.top = `${trigRect.bottom + padding}px`;
+            refresh.style.top = `${trigRect.bottom + padding + fcaH + padding}px`;
+        }
+        // User drags re-apply on the next positionOnboardingPopover pass (they are
+        // stored as offsets and added there); stacking only sets the base positions.
+    }
+}
+
+/** Reverse-lookup the anchor element a standalone onboarding popover was built for. */
+function anchorForOnboardingPop(pop: HTMLElement): HTMLElement | null {
+    for (const anchor of Array.from(document.querySelectorAll<HTMLElement>('[data-mf-charge]'))) {
+        if (onboardingByAnchor.get(anchor) === pop) return anchor;
+    }
+    return null;
 }
 
 /** One "Fact-checking a claim will charge your balance" popover per tweet, attached
@@ -3126,7 +3411,7 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 const isResearchingNow = isRefreshing || prob === undefined || ver === undefined
                     || (prob < 0.2 && !hasResearchNote);
                 const isPipelineClaim = inPipeline && isResearchingNow && !isOnHoldNow && !isRefreshing;
-                const lbl = (isOnHoldNow || isPipelineClaim) ? "Fact-Check" : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
+                const lbl = (isOnHoldNow || isPipelineClaim) ? t("factCheckButton") : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
                 const txtColor = (isOnHoldNow || isPipelineClaim)
                   ? 'rgb(180, 180, 180)'
                   : confidenceRgba(prob, 1, ver);
@@ -3353,7 +3638,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     const badge = document.createElement("span");
                     badge.className = "mf-inline-badge";
                     badge.style.cssText = `display: inline-flex; align-items: center; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; margin-left: ${isRTLEl ? '0' : '3px'}; margin-right: ${isRTLEl ? '3px' : '0'}; color: rgb(180, 180, 180); background: rgba(0,0,0,0.7); cursor: pointer;`;
-                    badge.textContent = "Fact-Check";
+                    badge.textContent = t("factCheckButton");
                     el.appendChild(badge);
                     (el as any)._mfBadgePermanent = badge;
                 }
@@ -3380,7 +3665,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         const isOnHold = el.dataset.reclassifyOnHold === "true";
                         const isRefreshingNow = el.dataset.refreshing === "true";
                         const pipelineResearching = inPipeline && isResearching && !isOnHold && !claim.refreshing;
-                        const newLabel = (isOnHold || pipelineResearching) ? "Fact-Check" : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
+                        const newLabel = (isOnHold || pipelineResearching) ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
                         const newColor = (isOnHold || pipelineResearching)
                             ? 'rgb(180, 180, 180)'
                             : confidenceRgba(claim.confidence, 1, claim.veracity);
@@ -3523,9 +3808,64 @@ function setupGlobalHandlers() {
     window.addEventListener("beforeprint", enterPrintMode);
     window.addEventListener("afterprint", exitPrintMode);
 
+    // Coalesced via rAF like the scroll handler below: each squeeze forces a
+    // reflow, and raw resize events fire continuously through a window drag.
+    let topBtnSqueezeRaf = 0;
     window.addEventListener("resize", () => {
         updateOpenPopover();
+        if (topBtnSqueezeRaf) return;
+        topBtnSqueezeRaf = requestAnimationFrame(() => {
+            topBtnSqueezeRaf = 0;
+            resqueezeAllTopButtons();
+        });
     });
+    // Window resize never fires when a narrow pane grows (side panel, split
+    // view, zoom-to-fit): X's own layout reflows the header row in place and a
+    // stale max-width cap sticks with room to spare. A ResizeObserver on each
+    // row carrying our buttons re-runs the squeezer — whose caps-clear-first
+    // pass snaps labels back to full width — whenever the row itself changes
+    // size in EITHER direction. One observer for the whole page (articles come
+    // and go); a WeakSet keeps each row observed exactly once. Observing is
+    // inert: it only schedules updateTopButtonSqueeze, which is itself idempotent.
+    if (typeof ResizeObserver !== 'undefined') {
+        const topBtnRowObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const article = (entry.target as Element).closest('article');
+                if (!article) continue;
+                updateTopButtonSqueeze(article);
+            }
+            // Loop guard: our own maxWidth writes change label widths, which can
+            // re-fire the observer — but updateTopButtonSqueeze is coalesced (rAF
+            // + 300ms trail) and converges (caps only shrink while clip > 1px),
+            // so each burst schedules at most one extra pass and the trail
+            // pass settles it.
+        });
+        const topBtnRowsObserved = new WeakSet<Element>();
+        const observeTopButtonRows = () => {
+            for (const slot of Array.from(document.querySelectorAll<HTMLElement>('[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'))) {
+                const row = slot.parentElement;
+                if (row && !topBtnRowsObserved.has(row)) {
+                    topBtnRowsObserved.add(row);
+                    topBtnRowObserver.observe(row);
+                }
+            }
+        };
+        const topBtnRowsTimer = window.setInterval(observeTopButtonRows, 2000);
+        // Clean up with the page: single-page-app navigations never unload the
+        // content script, but if they ever do, don't leave a timer behind.
+        window.addEventListener("beforeunload", () => window.clearInterval(topBtnRowsTimer));
+        observeTopButtonRows();
+    }
+}
+
+/** Re-run the top-button squeezer on every article holding one of our buttons.
+ *  Shared by the window-resize handler above (grow AND shrink — the squeezer's
+ *  caps-clear-first pass snaps labels back when space returns). */
+function resqueezeAllTopButtons() {
+    for (const slot of Array.from(document.querySelectorAll<HTMLElement>('[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'))) {
+        const article = slot.closest('article');
+        if (article) updateTopButtonSqueeze(article);
+    }
 }
 
 function setupArticleHandlers(articleEl: Element) {
@@ -3933,7 +4273,6 @@ function populatePopoverContent(
     const copyIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     const refreshIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`;
-    const batchRefreshIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`;
     const translateIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path></svg>`;
 
     function appendTextRow(text: string, container: HTMLElement, styleClass: string, extraButtons?: { icon: string, title: string, onClick: () => void }[], preButton?: { icon: string, title: string, label?: string, onClick: () => void }) {
@@ -4065,17 +4404,6 @@ function populatePopoverContent(
     }
 
     if (claimText) {
-        const batchId = trigger.dataset.batchId;
-        const extraBtns = batchId ? [{
-            icon: batchRefreshIconSvg,
-            title: t("refreshBatchTooltip"),
-            onClick: () => {
-                closePopover();
-                mfBus.dispatchEvent(new CustomEvent('mf-refresh-batch', {
-                    detail: { batchId }
-                }));
-            }
-        }] : undefined;
 
         const claimLocale = trigger.dataset.claimLocale;
         const uiLocale = getEffectiveUILocale();
@@ -4111,7 +4439,9 @@ function populatePopoverContent(
                 }
             };
         }
-        appendTextRow(claimText, popover, "mf-popover-claim-text", extraBtns, translatePreBtn);
+        // No batch-refresh button on the claim row any more: it lives at the top of
+        // the tweet now (beside Fact-Check All, or alone when neither button remains).
+        appendTextRow(claimText, popover, "mf-popover-claim-text", undefined, translatePreBtn);
     }
 
     const isRefreshing = trigger.dataset.refreshing === "true";
@@ -5353,8 +5683,18 @@ function findGrokRow(article: Element): { row: HTMLElement; btn: HTMLElement } |
 function findActionRow(article: Element): HTMLElement | null {
     const grokBtn = article.querySelector<HTMLElement>('button[aria-label*="Grok"]');
     const grokWrapper = grokBtn?.parentElement;
-    const row = grokWrapper?.parentElement;
-    return row as HTMLElement | null;
+    if (grokWrapper?.parentElement) return grokWrapper.parentElement as HTMLElement;
+
+    const caretBtn = article.querySelector<HTMLElement>('button[data-testid="caret"]');
+    if (caretBtn?.parentElement?.parentElement) return caretBtn.parentElement.parentElement as HTMLElement;
+
+    const moreBtn = article.querySelector<HTMLElement>('button[aria-label*="More"]');
+    if (moreBtn?.parentElement?.parentElement) return moreBtn.parentElement.parentElement as HTMLElement;
+
+    const header = article.querySelector<HTMLElement>('[data-testid="User-Name"]');
+    if (header && header.children.length > 1) return header.lastElementChild as HTMLElement;
+
+    return null;
 }
 
 /** Find the Subscribe button if present. The data-testid is dynamic and follows
@@ -5449,21 +5789,22 @@ const DISINFAX_MARK_PATHS = disinfaxMarkRaw
  *  sets no color of its own — every call site already colors its wrapping text-wrap div
  *  to match the label next to it, and `color` inherits down to this SVG, so it always
  *  matches automatically instead of hardcoding the same value a second time. */
-function createDisinfactLogoSvg(): SVGSVGElement {
+function createDisinfactLogoSvg(hoisted: boolean = false): SVGSVGElement {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "16");
-    svg.setAttribute("height", "16");
+    // 13px matches the label (`fontSize: 13px`) so the mark is the same height as
+    // "Disinfact" and `align-items: center` on the wrap can actually center it.
+    // The old 16px box + `marginTop: -5px` is what sat the bottle on the text
+    // baseline and stretched the header (the extra 3px plus the pill's vertical
+    // padding is Image #15).
+    svg.setAttribute("width", "13");
+    svg.setAttribute("height", "13");
     svg.setAttribute("viewBox", "0 0 128 128");
     svg.setAttribute("fill", "none");
     svg.style.flexShrink = "0";
-    svg.style.marginTop = "-5px";
-    // Narrow screens: close the gap between the mark and its label. The wrapper's flex gap
-    // is already 0, so the remaining slack is the mark not filling its own 128x128 viewBox —
-    // only a negative margin can take it back. Set inline, like the container's gap, because
-    // that reliably wins where a stylesheet rule did not.
-    if (window.innerWidth <= MF_NARROW_MAX_WIDTH) {
-        svg.style.marginRight = "-3px";
-    }
+    svg.style.display = "block";
+    // Inside a button, translateY(-0.5px) aligns with the baseline of 13px type.
+    // When hoisted in the enclosing area, translateY(0) optically centers it in the pill.
+    svg.style.transform = hoisted ? "translateY(0)" : "translateY(-0.5px)";
     svg.innerHTML = DISINFAX_MARK_PATHS;
     return svg;
 }
@@ -5496,6 +5837,10 @@ function placeButtonContainer(container: HTMLElement, article: Element, time: El
         container.style.marginLeft = MF_BTN_GAP_NARROW;
         container.style.marginRight = MF_BTN_GAP_NARROW;
     }
+    // Full priority against X's shrinking name/handle: without this the Grok cluster
+    // (flex item, min-width:0 via the classes we copy) compresses our pill and the
+    // label ellipsizes while a gap opens to the left — Image #12.
+    container.style.flexShrink = '0';
     const actionRow = findActionRow(article);
     if (actionRow) {
         container.style.marginRight = MF_BTN_GAP;
@@ -5512,6 +5857,7 @@ function placeButtonContainer(container: HTMLElement, article: Element, time: El
             window.innerWidth <= MF_NARROW_MAX_WIDTH ? MF_BTN_GAP_NARROW : '0';
         time.insertAdjacentElement("afterend", container);
     }
+    updateTopButtonSqueeze(article);
 }
 
 // ── Screenshot mode (print) ───────────────────────────────────────────────────
@@ -5524,7 +5870,9 @@ function placeButtonContainer(container: HTMLElement, article: Element, time: El
 // tweet is already fully resolved and has no button left. Reverted exactly on afterprint.
 const printBadgesAdded = new Set<HTMLElement>();
 const printContainerOriginalHTML = new Map<HTMLElement, string>();
+const printContainerOriginalStyle = new Map<HTMLElement, string>();
 const printContainersAdded = new Set<HTMLElement>();
+const printRefreshHidden = new Set<HTMLElement>();
 
 /** The "DisinfaX" mark shown in place of the Disinfact/Fact-Check All button while
  *  printing — styled to match whatever text element it's replacing (`innerClass` is
@@ -5558,6 +5906,14 @@ function enterPrintMode() {
         printBadgesAdded.add(badge);
     }
 
+    // 1b. Hide standalone refresh + Reveal/Hide buttons while printing — the
+    // button area reads as the "DisinfaX" label (step 2), and an icon or toggle
+    // next to it would leak chrome into the capture. Restored verbatim on afterprint.
+    for (const r of Array.from(document.querySelectorAll<HTMLElement>('[mf-top-bar-id], [mf-refresh-id], [mf-visual-id]'))) {
+        printRefreshHidden.add(r);
+        r.style.display = "none";
+    }
+
     // 2. Swap the button area for a "DisinfaX" label on every tweet with at least one
     // classified (not on-hold, not mid-refresh, verdict-bearing) claim.
     for (const classification of allClassifications) {
@@ -5574,18 +5930,23 @@ function enterPrintMode() {
         }
         if (!time || !article) continue;
 
-        const existing = article.querySelector<HTMLElement>(`[mf-on-hold-id="${classification.id}"]`);
+        const existing = article.querySelector<HTMLElement>(`[mf-top-bar-id="${classification.id}"], [mf-on-hold-id="${classification.id}"]`);
         if (existing) {
             printContainerOriginalHTML.set(existing, existing.innerHTML);
+            printContainerOriginalStyle.set(existing, existing.style.cssText);
             const innerClass = existing.querySelector('div[dir="ltr"]')?.className ?? "";
             existing.innerHTML = "";
+            existing.style.display = "";
+            existing.style.backgroundColor = "transparent";
+            existing.style.boxShadow = "none";
+            existing.style.padding = "0";
             existing.appendChild(buildPrintLabel(innerClass));
             continue;
         }
 
         const container = document.createElement("div");
         container.classList.add("mf-btn-container");
-        container.setAttribute("mf-on-hold-id", classification.id);
+        container.setAttribute("mf-top-bar-id", classification.id);
         container.style.cssText = `
             display: inline-flex;
             align-items: center;
@@ -5606,114 +5967,399 @@ function exitPrintMode() {
     for (const badge of printBadgesAdded) badge.remove();
     printBadgesAdded.clear();
 
-    for (const [container, html] of printContainerOriginalHTML) container.innerHTML = html;
+    for (const [container, html] of printContainerOriginalHTML) {
+        container.innerHTML = html;
+        const origStyle = printContainerOriginalStyle.get(container);
+        if (origStyle !== undefined) container.style.cssText = origStyle;
+    }
     printContainerOriginalHTML.clear();
+    printContainerOriginalStyle.clear();
 
     for (const container of printContainersAdded) container.remove();
     printContainersAdded.clear();
+
+    for (const r of printRefreshHidden) r.style.display = "";
+    printRefreshHidden.clear();
+    // Print mode swaps container HTML wholesale; re-run the squeezer on every
+    // article still holding a button so no stale max-width cap survives.
+    for (const slot of Array.from(document.querySelectorAll<HTMLElement>('[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'))) {
+        const article = slot.closest('article');
+        if (article) updateTopButtonSqueeze(article);
+    }
 }
 
-function injectOnHoldButton(
-    time: Element,
+// ── Top-of-tweet batch refresh ──────────────────────────────────────────────
+// The "re-reveal this tweet's claims" action (mf-refresh-batch) used to sit on the
+// claim row inside the popover; it now lives at the top of the tweet instead. Two
+// variants share one builder: beside Fact-Check All while that container is present
+// (built inline by injectOnHoldButton), and alone in the same slot once the tweet is
+// fully resolved (synced by syncBatchRefreshButton below). Neither is ever shown next
+// to a Disinfact button — on-hold or translate variant — since that button IS the
+// pending action. The reasoning refresh inside the popover is a different action
+// (mf-refresh-claim) and is untouched.
+// Clicking either variant removes the button at once and shows the wheel
+// optimistically (transient in the kept standalone container, pre-existing in the
+// beside wrap); the preclassifying broadcast then reconciles to the spinner state,
+// and a 30s revert restores a clickable button if no broadcast ever arrives.
+
+/** Icon SVG for the top-of-tweet refresh (same arrows as the old in-popover one). */
+const TOP_BATCH_REFRESH_SVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`;
+
+/** Progressive truncation for the text-carrying top-of-tweet buttons (Disinfact,
+ *  Fact-Check All, translate-labeled Disinfact — never the icon-only refresh).
+ *  When the header row runs out of room, the label clamps from the RIGHT
+ *  (ellipsis) while the logo stays fully visible, through intermediaries
+ *  (e.g. Disinfact → Disinf… → Disi…). All three tiers are inline so X's row
+ *  styles can't override them:
+ *  the label's `max-width` cap is the knob `updateTopButtonSqueeze` turns, and
+ *  `overflow-x: clip` (not `hidden`) avoids creating a scroll container.
+ *
+ *  The onboarding exemption is enforced at update time, not here: while the
+ *  button's onboarding popover is showing, `updateTopButtonSqueeze` skips it
+ *  entirely so the callout always points at the full, uncut button. */
+function markTopButtonSqueezable(btn: HTMLButtonElement, label: HTMLElement) {
+    label.classList.add('mf-topbtn-label');
+    label.style.overflowX = 'clip';
+    label.style.textOverflow = 'ellipsis';
+    label.style.whiteSpace = 'nowrap';
+    // The label is a flex item of its text-wrap div: without this, min-width:auto
+    // refuses to shrink below content size and the maxWidth cap below does nothing.
+    label.style.minWidth = '0';
+    // Natural size by default; the squeezer only ever writes maxWidth.
+    label.style.maxWidth = 'none';
+    (btn as any)._mfTopBtnLabel = label;
+}
+
+/** Re-evaluate truncation for every squeezed top button in `article`'s header row.
+ *  Called on resize (global handler), after each injection pass into the article,
+ *  and when a standalone onboarding popover opens/closes (exemption flip).
+ *
+ *  Policy: buttons keep full priority — they only start truncating once the header
+ *  is genuinely overflowing, and then they give way progressively, logo last.
+ *  A button whose onboarding popover is currently showing is skipped, so the
+ *  callout always anchors to the full label the copy describes.
+ *
+ *  Inject runs `placeButtonContainer` (and this) in the same turn the node is
+ *  inserted; the Grok cluster's flex width is often still 0 then, so a sync
+ *  measure writes a crop that sticks — our own insert is filtered out of the
+ *  MutationObserver, so the 300ms host-heal never runs for page-load inject
+ *  (theme toggles re-render X's DOM and do). Double rAF waits for that first
+ *  layout; a coalesced 300ms trail catches fonts / X's own handle-ellipsis
+ *  applying a frame later. */
+const squeezeSoon = new Set<Element>();
+const squeezeTrail = new Set<Element>();
+let squeezeRaf = 0;
+let squeezeTimer = 0;
+function updateTopButtonSqueeze(article: Element) {
+    squeezeSoon.add(article);
+    squeezeTrail.add(article);
+    if (!squeezeRaf) {
+        squeezeRaf = requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                squeezeRaf = 0;
+                const batch = Array.from(squeezeSoon);
+                squeezeSoon.clear();
+                for (const a of batch) applyTopButtonSqueeze(a);
+            });
+        });
+    }
+    if (!squeezeTimer) {
+        squeezeTimer = window.setTimeout(() => {
+            squeezeTimer = 0;
+            const batch = Array.from(squeezeTrail);
+            squeezeTrail.clear();
+            for (const a of batch) applyTopButtonSqueeze(a);
+        }, 300);
+    }
+}
+
+/** Laid-out width of `el` if flex weren't shrinking it. `max-content` + bounding
+ *  rect, not scrollWidth: X's a11y copy inside verified badges inflates scrollWidth
+ *  (Image #42/#44). `hide` is taken out of flow so a timestamp-fallback button
+ *  inside the cluster isn't counted twice. */
+function measureUnconstrainedWidth(el: HTMLElement, hide?: HTMLElement | null): number {
+    const prevHide = hide ? hide.style.display : '';
+    if (hide) hide.style.display = 'none';
+    const prevWidth = el.style.width;
+    const prevMin = el.style.minWidth;
+    const prevMax = el.style.maxWidth;
+    const prevFlex = el.style.flexShrink;
+    el.style.width = 'max-content';
+    el.style.minWidth = 'max-content';
+    el.style.maxWidth = 'none';
+    el.style.flexShrink = '0';
+    const w = el.getBoundingClientRect().width;
+    el.style.width = prevWidth;
+    el.style.minWidth = prevMin;
+    el.style.maxWidth = prevMax;
+    el.style.flexShrink = prevFlex;
+    if (hide) hide.style.display = prevHide;
+    return w;
+}
+
+function applyTopButtonSqueeze(article: Element) {
+    if (!article.isConnected) return;
+    const container = article.querySelector<HTMLElement>(
+        '[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'
+    );
+    if (!container) return;
+    const row = container.parentElement;
+    if (!row) return;
+
+    const btns: HTMLButtonElement[] = [];
+    const all: HTMLButtonElement[] = [];
+    for (const b of Array.from(container.querySelectorAll<HTMLElement>('button[data-mf-charge], button[data-mf-visual]'))) {
+        const label = (b as any)._mfTopBtnLabel as HTMLElement | undefined;
+        if (!label || !label.isConnected) continue;
+        all.push(b as HTMLButtonElement);
+        // Onboarding exemption: a button whose OWN onboarding popover is currently
+        // showing keeps its full label, so the callout always anchors to the full
+        // label the copy describes. (The translate-tweet button reuses the Disinfact
+        // label, and its own translate-tweet popover names that label — each anchor's
+        // popover is built from its own data-mf-charge, so own-type is the check.)
+        const pop = onboardingByAnchor.get(b);
+        const charge = b.dataset.mfCharge ?? '';
+        if (pop && pop.isConnected && onboardingActive(charge)) continue; // onboarding: full label
+        btns.push(b as HTMLButtonElement);
+    }
+    if (all.length === 0) return;
+    // Clear caps on EVERYTHING first — including newly-exempt buttons, which must
+    // snap back to full width. A previous squeeze pass (e.g. at injection time,
+    // before the popover opened) would otherwise leave a stale cap keeping the
+    // button truncated while its popover shows. Caps are re-applied from scratch
+    // after measuring, so the baseline reflects natural widths and never ratchets
+    // downward on repeat calls.
+    for (const b of all) ((b as any)._mfTopBtnLabel as HTMLElement).style.maxWidth = 'none';
+
+    const userName = article.querySelector<HTMLElement>('[data-testid="User-Name"]');
+    const header = (userName && row && !userName.contains(row) && userName.parentElement?.contains(row))
+        ? userName.parentElement as HTMLElement
+        : (userName ?? row);
+    if (!header || header.clientWidth === 0) return;
+
+    const userCluster = (userName?.firstElementChild as HTMLElement | null)
+        ?? (header.firstElementChild as HTMLElement | null);
+
+    const headerRect = header.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const headerGap = parseFloat(getComputedStyle(header).columnGap || getComputedStyle(header).gap || '0') || 0;
+    const userRect = (userCluster && userCluster !== container && !userCluster.contains(container))
+        ? userCluster.getBoundingClientRect()
+        : null;
+    const leftover = userRect ? (containerRect.left - userRect.right - headerGap) : 0;
+    const hideInsideUser = userCluster && userCluster.contains(container) ? container : null;
+    const naturalUserW = userCluster
+        ? measureUnconstrainedWidth(userCluster, hideInsideUser)
+        : 0;
+    const actionEl = (row !== header && row !== userCluster) ? row : container;
+    const actionWidth = actionEl.getBoundingClientRect().width;
+
+    // TEMP squeeze diagnosis log — remove once the crush-driven policy is confirmed.
+    const userVisibleW = userRect ? userRect.width : -1;
+    const crushed = userRect ? (naturalUserW - userVisibleW) : 0;
+    {
+        const contMinusHeader = containerRect.right - headerRect.right;
+        const term1 = naturalUserW + actionWidth + headerGap - headerRect.width;
+        const nameSnippet = (userName?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+        const btnLabels = all.map((b) => ((b as any)._mfTopBtnLabel as HTMLElement)?.textContent?.trim().slice(0, 12) || '?').join('|');
+        const shape = `hdrIsUC=${String(header === userCluster)} hdrIsRow=${String(header === row)}`;
+        console.log(`[misinfo] squeeze-debug leftover=${leftover.toFixed(1)} userVisibleW=${userVisibleW.toFixed(1)} naturalUserW=${naturalUserW.toFixed(1)} crushed=${crushed.toFixed(1)} actionW=${actionWidth.toFixed(1)} headerW=${headerRect.width.toFixed(1)} contMinusHeader=${contMinusHeader.toFixed(1)} term1=${term1.toFixed(1)} name="${nameSnippet}" btns=${all.length}[${btnLabels}] ${shape}`);
+    }
+
+    // Crush-driven policy: the username's own crushed deficit (natural minus
+    // visible) is the only signal we trust. Uncrushed name → never squeeze —
+    // any "overflow" the old arithmetic reported in that state was phantom
+    // (header measured as the User-Name block vs the row, container.right -
+    // header.right, ...). This subsumes both the old ample-guard and the
+    // Kalshi/BBC far-guard case without blocking real squeezes: after X
+    // ellipsizes the name, space-between reopens the gap (the WSJ "Th..."
+    // case: 90-130px crush with 30-48px leftover), and that state must squeeze.
+    // TEMP: outcome log (see end of function).
+    const dbgName = (userName?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+    if (!userRect || crushed <= 1) { console.log(`[misinfo] squeeze-outcome name="${dbgName}" no-squeeze uncrushed crushed=${crushed.toFixed(1)}`); return; }
+
+    // Squeeze exactly the deficit (+2px buffer so the name fully recovers),
+    // spread right-to-left with a 24px floor per label: an 8px deficit takes
+    // 8px off the buttons (visually untouched) instead of flooring them, and
+    // a 130px deficit spreads across both buttons into Disinf… intermediaries.
+    let remaining = crushed + 2;
+    const caps: string[] = [];
+    for (const b of [...btns].reverse()) {
+        if (remaining <= 0) break;
+        const label = (b as any)._mfTopBtnLabel as HTMLElement;
+        const labelFull = label.getBoundingClientRect().width;
+        // Keep enough width for a letter + ellipsis (e.g. "Disinf…") instead of
+        // collapsing the label to 0 / logo-only in one hop.
+        const minLabelWidth = 24;
+        const shrinkable = Math.max(0, labelFull - minLabelWidth);
+        const take = Math.min(remaining, shrinkable);
+        label.style.maxWidth = `${Math.max(minLabelWidth, labelFull - take)}px`;
+        remaining -= take;
+        caps.push(`${label.textContent?.trim().slice(0, 12)}->${label.style.maxWidth}`);
+    }
+    console.log(`[misinfo] squeeze-outcome name="${dbgName}" SQUEEZED crushed=${crushed.toFixed(1)} btns=${btns.length} exempt=${all.length - btns.length} caps=[${caps.join(', ')}]`);
+}
+
+/** Visible pill chrome + hover affordance for the top-of-tweet buttons (Disinfact,
+ *  Fact-Check All, translate-labeled Disinfact, refresh icon). They inherit X's row
+ *  className so they sit naturally in the row, but that class carries no button
+ *  chrome of its own — without this they read as plain text next to Grok's
+ *  identical-looking row items. The gray matches the row text color X uses
+ *  (rgb(83, 100, 113)) so it reads on both light and dark themes.
+ *
+ *  `tint` is the Reveal/Hide verdict summary: per the design it is NOT hover
+ *  chrome — it is the button's persistent background, applied at build time
+ *  only. The normal/hover paint closures below deliberately ignore it: the
+ *  tint must survive any mouse pass untouched. */
+function styleTopTweetButton(
+    btn: HTMLButtonElement,
+    iconOnly: boolean,
+    tint?: { bg: string; hoverBg: string },
+    textBlack?: boolean
+) {
+    // Ring is an inset shadow, not a border: a 1px border + 3px vertical padding
+    // on top of 13px type is what pushed the tweet body down (Image #15). Zero
+    // vertical padding keeps the pill the same height as Grok / the timestamp.
+    btn.style.border = "none";
+    btn.style.borderRadius = "999px";
+    // A Reveal/Hide verdict tint paints over the gray default and its own ring;
+    // otherwise the standard gray pill.
+    btn.style.backgroundColor = tint?.bg ?? "rgba(83, 100, 113, 0.08)";
+    btn.style.boxShadow = tint?.bg
+        ? `inset 0 0 0 1px ${tint.bg}`
+        : "inset 0 0 0 1px rgba(83, 100, 113, 0.35)";
+    btn.style.padding = iconOnly ? "0 8px" : "0 10px";
+    btn.style.lineHeight = "1";
+    btn.style.height = "20px";
+    btn.style.minHeight = "20px";
+    btn.style.boxSizing = "border-box";
+    btn.style.display = "inline-flex";
+    btn.style.alignItems = "center";
+    btn.style.justifyContent = "center";
+    btn.style.flexShrink = "0";
+    btn.style.alignSelf = "center";
+    btn.style.transition = "background-color 120ms ease, box-shadow 120ms ease";
+    if (textBlack) btn.style.color = "#000";
+
+    const paintNormal = () => {
+        if (tint) {
+            btn.style.backgroundColor = tint.bg;
+            btn.style.boxShadow = `inset 0 0 0 1px ${tint.bg}`;
+            if (textBlack) btn.style.color = "#000";
+            return;
+        }
+        btn.style.backgroundColor = "rgba(83, 100, 113, 0.08)";
+        btn.style.boxShadow = "inset 0 0 0 1px rgba(83, 100, 113, 0.35)";
+        btn.style.color = "rgb(83, 100, 113)";
+    };
+    // Reused by click handlers that disable the button mid-hover: a disabled
+    // button stops firing mouse events, so the mouseleave below would never run
+    // and the hover tint would stick on the dimmed button.
+    (btn as any)._mfTopBtnNormal = paintNormal;
+    btn.addEventListener("mouseenter", () => {
+        if (isTouchInput() || btn.disabled) return;
+        // Tinted buttons strengthen their own verdict fill on hover instead of
+        // swapping to gray — the tint must survive any mouse pass untouched.
+        if (tint) {
+            btn.style.backgroundColor = tint.hoverBg;
+            btn.style.boxShadow = `inset 0 0 0 1px ${tint.hoverBg}`;
+            if (textBlack) btn.style.color = "#000";
+            return;
+        }
+        btn.style.backgroundColor = "rgba(83, 100, 113, 0.16)";
+        btn.style.boxShadow = "inset 0 0 0 1px rgba(83, 100, 113, 0.6)";
+    });
+    btn.addEventListener("mouseleave", () => {
+        if (btn.disabled) return;
+        paintNormal();
+    });
+}
+
+/** A claim participates in the Reveal/Hide verdict tint only when it is
+ *  classified AND will not show a Disinfact button — the tint must hint at the
+ *  tweet's veracity, never at claims the user still owes an action. Mirrors the
+ *  thresholds highlightBgColor uses: neutral below confidence 0.2. */
+function tintEligibleClaim(cl: Claim): boolean {
+    if (cl.reclassifyOnHold) return false;
+    if (cl.confidence === undefined || cl.confidence === null) return false;
+    if (cl.veracity === undefined || cl.veracity === null) return false;
+    return cl.confidence >= 0.2;
+}
+
+/** Average verdict tint for a tweet's eligible claims (rounded per channel), at
+ *  resting and hover opacity. Null when no claim is eligible — the button then
+ *  renders as the standard gray pill. */
+function averageVerdictTint(claims: Claim[] | null | undefined): { bg: string; hoverBg: string } | null {
+    const eligible = (claims ?? []).filter(tintEligibleClaim);
+    if (eligible.length === 0) return null;
+    let r = 0, g = 0, b = 0;
+    for (const cl of eligible) {
+        const [cr, cg, cb] = verdictColorChannels(cl.confidence, cl.veracity);
+        r += cr; g += cg; b += cb;
+    }
+    r = Math.round(r / eligible.length);
+    g = Math.round(g / eligible.length);
+    b = Math.round(b / eligible.length);
+    return { bg: `rgba(${r}, ${g}, ${b}, 0.25)`, hoverBg: `rgba(${r}, ${g}, ${b}, 0.5)` };
+}
+
+/** True when the tweet's cached preclassification visuals are hidden from view —
+ *  revealed only via the Reveal button. The revealed set wins. The caller is
+ *  responsible for main-tweet-only scoping (matching every other visual-gating
+ *  call site); this stays a pure state lookup so the Hide button's own toggle
+ *  click can reuse it for the article it already holds. */
+function visualsHiddenFor(tweetId: string, claims: Claim[] | null | undefined): boolean {
+    if (revealedVisualIds.has(tweetId)) return false;
+    if (hiddenVisualIds.has(tweetId)) return true;
+    if (!claims || claims.length === 0) return false;
+    // Cached preclassification (DB hit, or the user's own earlier click) with no
+    // engagement on any top-of-tweet action this session defaults to hidden.
+    const engaged = factCheckAllClickedIds.has(tweetId)
+        || processingOnHoldIds.has(tweetId)
+        || processingTranslateFactChecksIds.has(tweetId)
+        || refreshRunPendingIds.has(tweetId)
+        || revealedVisualIds.has(tweetId);
+    if (engaged) return false;
+    hiddenVisualIds.add(tweetId);
+    return true;
+}
+
+/** Main-tweet-scoped wrapper: quoted tweets never participate (their parent's
+ *  row owns the one set of visual buttons). */
+function visualsHidden(tweetId: string): boolean {
+    const c = allClassifications.find(x => x.id === tweetId);
+    if (!c) return false;
+    return visualsHiddenFor(tweetId, c.claims);
+}
+
+/** Mark a tweet as engaged with — its visuals render normally from here on,
+ *  regardless of the hidden set. Called by every top-of-tweet action button's
+ *  click handler (Disinfact, Fact-Check All, translate, refresh). */
+function markVisualsEngaged(tweetId: string) {
+    revealedVisualIds.add(tweetId);
+    hiddenVisualIds.delete(tweetId);
+}
+
+const processingTranslateFactChecksIds = new Set<string>();
+
+/** Build the Reveal (cached visuals hidden) / Hide (cached visuals shown) button. */
+function buildVisualToggleButton(
     classification: Classification,
     article: Element,
-    isQuoted: boolean = false
-) {
-    if (isQuoted) {
-        article.querySelector(`[mf-on-hold-id="${classification.id}"]`)?.remove();
-        return;
-    }
-
-    if (article.querySelector(`[mf-on-hold-id="${classification.id}"]`)) return;
-
-    const container = document.createElement("div");
-    container.classList.add("mf-btn-container");
-    container.setAttribute("mf-on-hold-id", classification.id);
-    container.style.cssText = `
-        display: inline-flex;
-        align-items: center;
-        min-width: 0;
-        flex-shrink: 0;
-    `;
-
-    const grokData = findGrokRow(article);
-    const refBtn = grokData?.btn ?? (time as HTMLElement);
-    const refClass = refBtn.className;
-    const innerDiv = grokData?.btn.querySelector<HTMLElement>('div[dir="ltr"]');
-    const innerClass = innerDiv?.className ?? refClass;
-
-    if (processingOnHoldIds.has(classification.id)) {
-        const spinnerWrap = document.createElement("div");
-        spinnerWrap.setAttribute("dir", "ltr");
-        spinnerWrap.className = innerClass;
-        spinnerWrap.style.color = "rgb(83, 100, 113)";
-        spinnerWrap.style.display = "inline-flex";
-        spinnerWrap.style.alignItems = "center";
-        spinnerWrap.style.gap = "6px";
-
-        const spinner = document.createElement("span");
-        spinner.className = "mf-spinner";
-        spinner.style.marginRight = "0";
-        spinner.style.borderColor = "rgba(83, 100, 113, 0.2)";
-        spinner.style.borderTopColor = "rgba(83, 100, 113, 0.8)";
-        spinnerWrap.appendChild(spinner);
-
-        const factCheckAllBtn = document.createElement("button");
-        factCheckAllBtn.setAttribute("role", "button");
-        factCheckAllBtn.setAttribute("type", "button");
-        factCheckAllBtn.className = refClass;
-        factCheckAllBtn.style.cursor = "pointer";
-        factCheckAllBtn.style.color = "rgb(83, 100, 113)";
-        // The placeholder wrapper below is pointer-events:none (the spinner area is
-        // inert); re-enable pointer events on the button itself so it stays clickable.
-        factCheckAllBtn.style.pointerEvents = "auto";
-        const factCheckAllText = document.createElement("div");
-        factCheckAllText.setAttribute("dir", "ltr");
-        factCheckAllText.className = innerClass;
-        factCheckAllText.style.color = "rgb(83, 100, 113)";
-        factCheckAllText.style.fontSize = "13px";
-        factCheckAllText.style.fontWeight = "700";
-        factCheckAllText.style.minWidth = "0";
-        factCheckAllText.style.display = "flex";
-        factCheckAllText.style.alignItems = "center";
-        factCheckAllText.style.gap = "0";
-        factCheckAllText.appendChild(createDisinfactLogoSvg());
-        const factCheckAllLabel = document.createElement("span");
-        factCheckAllLabel.textContent = t('factCheckAllButton');
-        factCheckAllText.appendChild(factCheckAllLabel);
-        factCheckAllBtn.appendChild(factCheckAllText);
-        factCheckAllBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            factCheckAllBtn.disabled = true;
-            factCheckAllBtn.style.opacity = "0.6";
-            factCheckAllBtn.style.cursor = "default";
-            factCheckAllClickedIds.add(classification.id);
-            mfBus.dispatchEvent(new CustomEvent('mf-fact-check-all', {
-                detail: { tweetId: classification.id }
-            }));
-        });
-        factCheckAllBtn.dataset.mfCharge = "factcheckall";
-        spinnerWrap.appendChild(factCheckAllBtn);
-
-        const placeholder = document.createElement("button");
-        placeholder.setAttribute("role", "button");
-        placeholder.setAttribute("type", "button");
-        placeholder.className = refClass;
-        placeholder.style.cursor = "default";
-        placeholder.style.pointerEvents = "none";
-        placeholder.appendChild(spinnerWrap);
-
-        container.appendChild(placeholder);
-        placeButtonContainer(container, article, time, grokData);
-        return;
-    }
-
-    const button = document.createElement("button");
-    button.dataset.mfCharge = "disinfact";
-    button.textContent = t("disinfactButton");
-    button.setAttribute("role", "button");
-    button.setAttribute("type", "button");
-    button.className = refClass;
+    time: Element,
+    refClass: string,
+    innerClass: string,
+    hidden: boolean,
+    withLogo: boolean,
+    isQuoted: boolean
+): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.setAttribute("role", "button");
+    btn.setAttribute("type", "button");
+    btn.className = refClass;
+    btn.dataset.mfVisual = hidden ? "reveal" : "hide";
+    btn.style.cursor = "pointer";
+    btn.style.color = "rgb(83, 100, 113)";
 
     const textWrap = document.createElement("div");
     textWrap.setAttribute("dir", "ltr");
@@ -5726,167 +6372,189 @@ function injectOnHoldButton(
     textWrap.style.alignItems = "center";
     textWrap.style.gap = "0";
 
-    textWrap.appendChild(createDisinfactLogoSvg());
+    if (withLogo) {
+        textWrap.appendChild(createDisinfactLogoSvg());
+    }
+
+    const label = document.createElement("span");
+    label.textContent = t(hidden ? "revealButton" : "hideButton");
+    textWrap.appendChild(label);
+    markTopButtonSqueezable(btn, label);
+
+    btn.innerHTML = "";
+    btn.appendChild(textWrap);
+    const isReveal = hidden;
+    const tint = isReveal ? averageVerdictTint(classification.claims) : null;
+    const isTinted = !!tint;
+    const textColor = isTinted ? (isDarkMode() ? "#fff" : "#000") : "rgb(83, 100, 113)";
+    btn.style.color = textColor;
+    textWrap.style.color = textColor;
+    if (isTinted) btn.dataset.mfVisualTint = "true";
+    styleTopTweetButton(btn, false, tint ?? undefined, isTinted);
+
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const id = classification.id;
+        const revealing = (btn.dataset.mfVisual ?? "") === "reveal";
+        if (revealing) {
+            markVisualsEngaged(id);
+        } else {
+            hiddenVisualIds.add(id);
+            revealedVisualIds.delete(id);
+        }
+        const nodes = document.querySelectorAll(`a[href*="/status/${id}"]`);
+        for (const node of nodes) {
+            const art = node.closest("article");
+            if (!art) continue;
+            const mainStatusId = getArticleMainStatusId(art);
+            if (mainStatusId !== null && mainStatusId !== id) continue;
+            injectClassification(node as Element, classification, art, false);
+        }
+        updateTopButtonSqueeze(article);
+    });
+    return btn;
+}
+
+/** Build the Fact-Check All button. */
+function buildFactCheckAllButton(
+    classification: Classification,
+    article: Element,
+    refClass: string,
+    innerClass: string,
+    withLogo: boolean
+): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.setAttribute("role", "button");
+    btn.setAttribute("type", "button");
+    btn.className = refClass;
+    btn.style.cursor = "pointer";
+    btn.style.color = "rgb(83, 100, 113)";
+    styleTopTweetButton(btn, false);
+    btn.style.pointerEvents = "auto";
+
+    const textWrap = document.createElement("div");
+    textWrap.setAttribute("dir", "ltr");
+    textWrap.className = innerClass;
+    textWrap.style.color = "rgb(83, 100, 113)";
+    textWrap.style.fontSize = "13px";
+    textWrap.style.fontWeight = "700";
+    textWrap.style.minWidth = "0";
+    textWrap.style.display = "flex";
+    textWrap.style.alignItems = "center";
+    textWrap.style.gap = "0";
+
+    if (withLogo) {
+        textWrap.appendChild(createDisinfactLogoSvg());
+    }
+    const label = document.createElement("span");
+    label.textContent = t("factCheckAllButton");
+    textWrap.appendChild(label);
+    markTopButtonSqueezable(btn, label);
+    btn.appendChild(textWrap);
+
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
+        btn.style.cursor = "default";
+        (btn as any)._mfTopBtnNormal?.();
+        ((btn as any)._mfTopBtnLabel as HTMLElement | undefined)?.style.setProperty("max-width", "none");
+        factCheckAllClickedIds.add(classification.id);
+        markVisualsEngaged(classification.id);
+        mfBus.dispatchEvent(new CustomEvent("mf-fact-check-all", {
+            detail: { tweetId: classification.id }
+        }));
+    });
+    btn.dataset.mfCharge = "factcheckall";
+    (btn as any)._mfFcaPreRefresh = () => updateTopButtonSqueeze(article);
+    return btn;
+}
+
+/** Build the Disinfact button. */
+function buildDisinfactButton(
+    classification: Classification,
+    time: Element,
+    article: Element,
+    refClass: string,
+    innerClass: string,
+    withLogo: boolean,
+    isQuoted: boolean
+): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.dataset.mfCharge = "disinfact";
+    btn.setAttribute("role", "button");
+    btn.setAttribute("type", "button");
+    btn.className = refClass;
+    btn.style.cursor = "pointer";
+    btn.style.color = "rgb(83, 100, 113)";
+
+    const textWrap = document.createElement("div");
+    textWrap.setAttribute("dir", "ltr");
+    textWrap.className = innerClass;
+    textWrap.style.color = "rgb(83, 100, 113)";
+    textWrap.style.fontSize = "13px";
+    textWrap.style.fontWeight = "700";
+    textWrap.style.minWidth = "0";
+    textWrap.style.display = "flex";
+    textWrap.style.alignItems = "center";
+    textWrap.style.gap = "0";
+
+    if (withLogo) {
+        textWrap.appendChild(createDisinfactLogoSvg());
+    }
     const text = document.createElement("span");
     text.textContent = t("disinfactButton");
     textWrap.appendChild(text);
+    markTopButtonSqueezable(btn, text);
 
-    button.innerHTML = "";
-    button.style.cursor = "pointer";
-    button.appendChild(textWrap);
+    btn.appendChild(textWrap);
+    styleTopTweetButton(btn, false);
 
-    button.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        disinfactRunPendingIds.add(classification.id);
         processingOnHoldIds.add(classification.id);
+        markVisualsEngaged(classification.id);
 
         onHoldScrollStates.set(classification.id, {
             originalScrollY: window.scrollY,
             pendingClaimTexts: new Set()
         });
 
-        const loadingWrap = document.createElement("div");
-        loadingWrap.setAttribute("dir", "ltr");
-        loadingWrap.className = innerClass;
-        loadingWrap.style.color = "rgb(83, 100, 113)";
-        loadingWrap.style.display = "inline-flex";
-        loadingWrap.style.alignItems = "center";
-        loadingWrap.style.gap = "6px";
-
-        const spinner = document.createElement("span");
-        spinner.className = "mf-spinner";
-        spinner.style.marginRight = "0";
-        spinner.style.borderColor = "rgba(83, 100, 113, 0.2)";
-        spinner.style.borderTopColor = "rgba(83, 100, 113, 0.8)";
-        loadingWrap.appendChild(spinner);
-
-        const factCheckAllBtn = document.createElement("button");
-        factCheckAllBtn.setAttribute("role", "button");
-        factCheckAllBtn.setAttribute("type", "button");
-        factCheckAllBtn.className = refClass;
-        factCheckAllBtn.style.cursor = "pointer";
-        factCheckAllBtn.style.color = "rgb(83, 100, 113)";
-        const factCheckAllText = document.createElement("div");
-        factCheckAllText.setAttribute("dir", "ltr");
-        factCheckAllText.className = innerClass;
-        factCheckAllText.style.color = "rgb(83, 100, 113)";
-        factCheckAllText.style.fontSize = "13px";
-        factCheckAllText.style.fontWeight = "700";
-        factCheckAllText.style.minWidth = "0";
-        factCheckAllText.style.display = "flex";
-        factCheckAllText.style.alignItems = "center";
-        factCheckAllText.style.gap = "0";
-        factCheckAllText.appendChild(createDisinfactLogoSvg());
-        const factCheckAllLabel = document.createElement("span");
-        factCheckAllLabel.textContent = t('factCheckAllButton');
-        factCheckAllText.appendChild(factCheckAllLabel);
-        factCheckAllBtn.appendChild(factCheckAllText);
-        factCheckAllBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            factCheckAllBtn.disabled = true;
-            factCheckAllBtn.style.opacity = "0.6";
-            factCheckAllBtn.style.cursor = "default";
-            factCheckAllClickedIds.add(classification.id);
-            mfBus.dispatchEvent(new CustomEvent('mf-fact-check-all', {
-                detail: { tweetId: classification.id }
-            }));
-        });
-        factCheckAllBtn.dataset.mfCharge = "factcheckall";
-        loadingWrap.appendChild(factCheckAllBtn);
-
-        button.innerHTML = "";
-        button.style.cursor = "default";
-        // The outer button is no longer a Disinfact button — it now hosts the processing
-        // spinner + Fact-Check All. Drop its disinfact charge marker so the onboarding
-        // system doesn't re-create a (now pointless) Disinfact popover on it after a
-        // reset, which would overlap and hide the Fact-Check All popover.
-        delete button.dataset.mfCharge;
-        button.appendChild(loadingWrap);
-
-        mfBus.dispatchEvent(new CustomEvent('mf-process-on-hold', {
+        mfBus.dispatchEvent(new CustomEvent("mf-process-on-hold", {
             detail: { tweetId: classification.id }
         }));
 
-        // Safety net: if the backend call fails, no classification comes back to remove the
-        // spinner, so revert to the clickable "Disinfact" button. On success the spinner is
-        // removed (or the node re-rendered), so `spinner.isConnected` is false → this no-ops.
+        syncTopButtonBar(time, classification, article, isQuoted);
+
         setTimeout(() => {
-            if (!spinner.isConnected || !processingOnHoldIds.has(classification.id)) return;
+            if (!disinfactRunPendingIds.has(classification.id)) return;
+            disinfactRunPendingIds.delete(classification.id);
             processingOnHoldIds.delete(classification.id);
             onHoldScrollStates.delete(classification.id);
-            button.innerHTML = "";
-            button.style.cursor = "pointer";
-            button.dataset.mfCharge = "disinfact";
-            button.appendChild(textWrap);
+            syncTopButtonBar(time, classification, article, isQuoted);
         }, CHARGE_REVERT_TIMEOUT_MS);
     });
-
-    container.appendChild(button);
-    placeButtonContainer(container, article, time, grokData);
+    return btn;
 }
 
-const processingTranslateFactChecksIds = new Set<string>();
-
-/** Render a "Disinfact"-labeled button for a DB-hit tweet whose highlights aren't
- *  localized for the currently-displayed locale yet — visually and behaviorally as
- *  if there were no DB hit at all. Clicking it relocalizes highlights + re-researches
- *  (TRANSLATE_FACT_CHECKS) rather than a full preclassification. Same style as
- *  injectOnHoldButton, but a separate charge type ("translate-tweet"). */
-function injectTranslateFactChecksButton(
-    time: Element,
+/** Build the translate-tweet Disinfact button. */
+function buildTranslateFactChecksButton(
     classification: Classification,
+    time: Element,
     article: Element,
-    isQuoted: boolean = false
-) {
-    if (isQuoted) {
-        article.querySelector(`[translate-fc-id="${classification.id}"]`)?.remove();
-        return;
-    }
-
-    if (article.querySelector(`[translate-fc-id="${classification.id}"]`)) return;
-
-    const container = document.createElement("div");
-    container.classList.add("mf-btn-container");
-    container.setAttribute("translate-fc-id", classification.id);
-    container.style.cssText = `
-        display: inline-flex;
-        align-items: center;
-        min-width: 0;
-        flex-shrink: 0;
-    `;
-
-    const grokData = findGrokRow(article);
-    const subscribeWrapper = findSubscribeWrapper(article);
-    const refBtn = (subscribeWrapper?.querySelector('button') as HTMLElement | null) ?? grokData?.btn ?? (time as HTMLElement);
-    const refClass = refBtn.className;
-    const innerDiv2 = grokData?.btn.querySelector<HTMLElement>('div[dir="ltr"]');
-    const innerClass = innerDiv2?.className ?? refClass;
-
-    if (processingTranslateFactChecksIds.has(classification.id)) {
-        const spinnerWrap = document.createElement("div");
-        spinnerWrap.setAttribute("dir", "ltr");
-        spinnerWrap.className = innerClass;
-        spinnerWrap.style.color = "rgb(83, 100, 113)";
-        const spinner = document.createElement("span");
-        spinner.className = "mf-spinner";
-        spinner.style.marginRight = "0";
-        spinner.style.borderColor = "rgba(83, 100, 113, 0.2)";
-        spinner.style.borderTopColor = "rgba(83, 100, 113, 0.8)";
-        spinnerWrap.appendChild(spinner);
-        const placeholder = document.createElement("button");
-        placeholder.setAttribute("role", "button");
-        placeholder.setAttribute("type", "button");
-        placeholder.className = refClass;
-        placeholder.style.cursor = "default";
-        placeholder.style.pointerEvents = "none";
-        placeholder.appendChild(spinnerWrap);
-        container.appendChild(placeholder);
-        placeButtonContainer(container, article, time, grokData);
-        return;
-    }
-
-    const button = document.createElement("button");
-    button.setAttribute("role", "button");
-    button.setAttribute("type", "button");
-    button.className = refClass;
+    refClass: string,
+    innerClass: string,
+    withLogo: boolean,
+    isQuoted: boolean
+): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.setAttribute("role", "button");
+    btn.setAttribute("type", "button");
+    btn.className = refClass;
+    btn.dataset.mfCharge = "translate-tweet";
+    btn.style.cursor = "pointer";
+    btn.style.color = "rgb(83, 100, 113)";
 
     const textWrap = document.createElement("div");
     textWrap.setAttribute("dir", "ltr");
@@ -5898,58 +6566,397 @@ function injectTranslateFactChecksButton(
     textWrap.style.display = "flex";
     textWrap.style.alignItems = "center";
     textWrap.style.gap = "0";
-    // Displayed as the "Disinfact" button (per design: a DB hit whose highlights
-    // don't yet exist for the currently-displayed locale should look exactly like
-    // no hit at all). dataset.mfCharge stays "translate-tweet" — a separate charge
-    // type from "disinfact" — since the click below only relocalizes highlights +
-    // re-researches (TRANSLATE_FACT_CHECKS), not a full preclassification.
 
-    textWrap.appendChild(createDisinfactLogoSvg());
-    const text2 = document.createElement("span");
-    text2.textContent = t("disinfactButton");
-    textWrap.appendChild(text2);
+    if (withLogo) {
+        textWrap.appendChild(createDisinfactLogoSvg());
+    }
+    const text = document.createElement("span");
+    text.textContent = t("disinfactButton");
+    textWrap.appendChild(text);
+    markTopButtonSqueezable(btn, text);
 
-    button.innerHTML = "";
-    button.style.cursor = "pointer";
-    button.dataset.mfCharge = "translate-tweet";
-    button.appendChild(textWrap);
+    btn.appendChild(textWrap);
+    styleTopTweetButton(btn, false);
 
-    button.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         processingTranslateFactChecksIds.add(classification.id);
-        const loadingWrap = document.createElement("div");
-        loadingWrap.setAttribute("dir", "ltr");
-        loadingWrap.className = innerClass;
-        loadingWrap.style.color = "rgb(83, 100, 113)";
-        const spinner = document.createElement("span");
-        spinner.className = "mf-spinner";
-        spinner.style.marginRight = "0";
-        spinner.style.borderColor = "rgba(83, 100, 113, 0.2)";
-        spinner.style.borderTopColor = "rgba(83, 100, 113, 0.8)";
-        loadingWrap.appendChild(spinner);
-        button.innerHTML = "";
-        button.style.cursor = "default";
-        button.appendChild(loadingWrap);
-        mfBus.dispatchEvent(new CustomEvent('mf-translate-fact-checks', {
+        markVisualsEngaged(classification.id);
+
+        mfBus.dispatchEvent(new CustomEvent("mf-translate-fact-checks", {
             detail: { tweetId: classification.id }
         }));
 
-        // Safety net: if the backend call fails, no localized result comes back to remove this
-        // button, so revert to the clickable "Disinfact" state. On success the
-        // [translate-fc-id] container is removed, so `button.isConnected` is false → this no-ops.
+        syncTopButtonBar(time, classification, article, isQuoted);
+
         setTimeout(() => {
-            if (!button.isConnected || !processingTranslateFactChecksIds.has(classification.id)) return;
+            if (!processingTranslateFactChecksIds.has(classification.id)) return;
             processingTranslateFactChecksIds.delete(classification.id);
-            button.innerHTML = "";
-            button.style.cursor = "pointer";
-            button.appendChild(textWrap);
+            syncTopButtonBar(time, classification, article, isQuoted);
         }, CHARGE_REVERT_TIMEOUT_MS);
     });
+    return btn;
+}
 
-    container.appendChild(button);
-    placeButtonContainer(container, article, time, grokData);
+/** Build the icon-only top-of-tweet refresh button. */
+function buildTopBatchRefreshButton(
+    classification: Classification,
+    time: Element,
+    article: Element,
+    refClass: string,
+    isQuoted: boolean
+): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.setAttribute("role", "button");
+    btn.setAttribute("type", "button");
+    btn.className = refClass;
+    btn.style.cursor = "pointer";
+    btn.style.color = "rgb(83, 100, 113)";
+    styleTopTweetButton(btn, true);
+    btn.style.pointerEvents = "auto";
+    btn.title = t("refreshBatchTooltip");
+    btn.dataset.mfCharge = "refresh-top";
+    btn.innerHTML = TOP_BATCH_REFRESH_SVG;
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (btn.disabled) return;
+        btn.disabled = true;
+        const id = classification.id;
+        factCheckAllClickedIds.delete(id);
+        refreshRunPendingIds.add(id);
+        markVisualsEngaged(id);
+        closePopover();
+        mfBus.dispatchEvent(new CustomEvent("mf-refresh-batch", {
+            detail: { batchId: classification.batchId, tweetId: id }
+        }));
+        syncTopButtonBar(time, classification, article, isQuoted);
+
+        setTimeout(() => {
+            if (!refreshRunPendingIds.has(id)) return;
+            refreshRunPendingIds.delete(id);
+            syncTopButtonBar(time, classification, article, isQuoted);
+        }, CHARGE_REVERT_TIMEOUT_MS);
+        refreshStandaloneOnboarding();
+    });
+    return btn;
+}
+
+/** Unified top button bar for a tweet: encloses all active buttons (Hide/Reveal,
+ *  Disinfact / Fact-Check All, Refresh) in a single outer pill area with consistent
+ *  spacing. If there is only 1 button, the DisinfaX logo is integrated within the
+ *  button. If there is more than 1 button, the DisinfaX logo is hoisted outside the
+ *  buttons to the far left inside the outer area, and individual buttons omit the logo.
+ *  Verdict tint applies strictly to the Reveal/Hide button itself. */
+function syncTopButtonBar(
+    time: Element,
+    classification: Classification | QuotedClassification,
+    article: Element,
+    isQuoted: boolean = false
+) {
+    injectStyles();
+    const id = classification.id;
+    const claims = classification.claims;
+    const grokData = findGrokRow(article);
+    const subscribeWrapper = findSubscribeWrapper(article);
+    const refBtn = (subscribeWrapper?.querySelector("button") as HTMLElement | null) ?? grokData?.btn ?? (time as HTMLElement);
+    const refClass = refBtn.className;
+    const innerDiv = grokData?.btn.querySelector<HTMLElement>('div[dir="ltr"]');
+    const innerClass = innerDiv?.className ?? refClass;
+
+    const cls = classification as Classification;
+
+    // 1. Determine what buttons want to be in the bar:
+    // A. Visual Toggle Button (Hide / Reveal)
+    const wantsVisual = !isQuoted
+        && !!claims && claims.length > 0
+        && !cls.onHold
+        && !cls.preclassifying
+        && !disinfactRunPendingIds.has(id)
+        && !cls.translateFactChecksOnHold
+        && !cls.localizingHighlights;
+    const isHidden = wantsVisual ? visualsHidden(id) : false;
+
+    // B. Action Button
+    const isProcessing = processingOnHoldIds.has(id);
+    let actionType: "translate-tweet" | "factcheckall" | "disinfact" | null = null;
+    if (!isQuoted) {
+        if (cls.translateFactChecksOnHold) {
+            actionType = "translate-tweet";
+        } else if (cls.onHold && !disinfactRunPendingIds.has(id) && !cls.preclassifying) {
+            actionType = "disinfact";
+        } else if (disinfactRunPendingIds.has(id) || cls.preclassifying) {
+            actionType = "factcheckall";
+        } else if (claims && claims.some(cl => cl.reclassifyOnHold) && !factCheckAllClickedIds.has(id) && !shouldRemoveOnHoldButton(cls)) {
+            processingOnHoldIds.add(id);
+            actionType = "factcheckall";
+        } else if (isProcessing && !factCheckAllClickedIds.has(id) && !shouldRemoveOnHoldButton(cls)) {
+            actionType = "factcheckall";
+        }
+    }
+
+    const isReveal = wantsVisual && isHidden;
+    const tint = isReveal ? averageVerdictTint(cls.claims) : null;
+
+    // When the Reveal button is present, all other buttons are hidden
+    if (isReveal) {
+        actionType = null;
+    }
+
+    // C. Refresh Button: shown when classification has a batchId, not in onHold/translate states
+    const wantsRefresh = !isQuoted
+        && !isReveal
+        && !cls.translateFactChecksOnHold
+        && !cls.onHold
+        && !cls.preclassifying
+        && !disinfactRunPendingIds.has(id)
+        && !!cls.batchId
+        && !refreshRunPendingIds.has(id);
+
+    // D. Spinner: active while any background run / localization is in flight
+    const wantsSpinner = refreshRunPendingIds.has(id)
+        || disinfactRunPendingIds.has(id)
+        || processingTranslateFactChecksIds.has(id)
+        || !!cls.localizingHighlights
+        || !!cls.preclassifying;
+
+    // Count active clickable buttons:
+    let buttonCount = 0;
+    if (wantsVisual) buttonCount++;
+    if (actionType !== null) buttonCount++;
+    if (wantsRefresh) buttonCount++;
+    const barKey = `${wantsVisual ? (isHidden ? "reveal" : "hide") : "none"}|${actionType ?? "none"}|${wantsRefresh}|${wantsSpinner}|${tint?.bg ?? ""}`;
+
+    const existingContainer = article.querySelector<HTMLElement>(`[mf-top-bar-id="${id}"]`);
+
+    if (buttonCount === 0 && !wantsSpinner) {
+        existingContainer?.remove();
+        return;
+    }
+
+    let container = existingContainer;
+    if (!container) {
+        container = document.createElement("div");
+        container.classList.add("mf-btn-container");
+        container.setAttribute("mf-top-bar-id", id);
+    }
+    // Drop any old separated containers that are not this container
+    for (const old of Array.from(article.querySelectorAll<HTMLElement>(`[mf-on-hold-id="${id}"]:not([mf-top-bar-id]), [translate-fc-id="${id}"]:not([mf-top-bar-id]), [mf-refresh-id="${id}"]:not([mf-top-bar-id]), [mf-visual-id="${id}"]:not([mf-top-bar-id])`))) {
+        old.remove();
+    }
+
+    if (container.isConnected && container.dataset.mfBarKey === barKey) {
+        return;
+    }
+    container.dataset.mfBarKey = barKey;
+
+    const hasMultipleButtons = buttonCount > 1;
+    const hasOuterPill = hasMultipleButtons || (buttonCount >= 1 && wantsSpinner);
+
+    // Stable spinner slot: permanently stationed at the far right of container.
+    // Preserving this node in the DOM tree prevents CSS @keyframes mf-spin resets.
+    let spinnerSlot = container.querySelector<HTMLElement>(".mf-spinner-slot");
+    if (!spinnerSlot) {
+        spinnerSlot = document.createElement("span");
+        spinnerSlot.className = "mf-spinner-slot";
+        spinnerSlot.style.cssText = "display:none;align-items:center;justify-content:center;flex-shrink:0;";
+        const spin = document.createElement("span");
+        spin.className = "mf-spinner";
+        spin.style.borderColor = "rgba(83, 100, 113, 0.2)";
+        spin.style.borderTopColor = "rgba(83, 100, 113, 0.8)";
+        spin.style.flexShrink = "0";
+        spinnerSlot.appendChild(spin);
+        container.appendChild(spinnerSlot);
+    }
+
+    // Clear previous children while preserving spinnerSlot
+    for (const child of Array.from(container.children)) {
+        if (child !== spinnerSlot) {
+            child.remove();
+        }
+    }
+
+    if (hasOuterPill) {
+        // Outer pill chrome encompassing all buttons
+        container.style.borderRadius = "999px";
+        container.style.backgroundColor = "rgba(83, 100, 113, 0.08)";
+        container.style.boxShadow = "inset 0 0 0 1px rgba(83, 100, 113, 0.35)";
+        container.style.padding = "0";
+        container.style.gap = "4px";
+        container.style.display = "inline-flex";
+        container.style.alignItems = "center";
+        container.style.minWidth = "0";
+        container.style.flexShrink = "0";
+
+        if (hasMultipleButtons) {
+            // Hoisted DisinfaX logo on the far left outside the buttons
+            const hoistedLogoWrap = document.createElement("div");
+            hoistedLogoWrap.className = "mf-hoisted-logo";
+            hoistedLogoWrap.style.cssText = `
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                color: rgb(83, 100, 113);
+                margin-left: 4px;
+                margin-right: -4px;
+            `;
+            hoistedLogoWrap.appendChild(createDisinfactLogoSvg(true));
+            container.insertBefore(hoistedLogoWrap, spinnerSlot);
+        }
+    } else {
+        // Single button with no spinner: container is transparent, button itself carries the pill chrome
+        container.style.borderRadius = "999px";
+        container.style.backgroundColor = "transparent";
+        container.style.boxShadow = "none";
+        container.style.padding = "0";
+        container.style.gap = "0";
+        container.style.display = "inline-flex";
+        container.style.alignItems = "center";
+        container.style.minWidth = "0";
+        container.style.flexShrink = "0";
+    }
+
+    const withLogo = !hasMultipleButtons;
+
+    // Left-to-right order:
+    // [Hoisted Logo] -> [Hide / Reveal] -> [Action: FCA / Disinfact] -> [Refresh] -> [Spinner (if active)]
+    if (wantsVisual) {
+        const btn = buildVisualToggleButton(
+            cls,
+            article,
+            time,
+            refClass,
+            innerClass,
+            isHidden,
+            withLogo,
+            isQuoted
+        );
+        container.insertBefore(btn, spinnerSlot);
+    }
+
+    if (actionType === "factcheckall") {
+        const btn = buildFactCheckAllButton(
+            cls,
+            article,
+            refClass,
+            innerClass,
+            withLogo
+        );
+        container.insertBefore(btn, spinnerSlot);
+    } else if (actionType === "disinfact") {
+        const btn = buildDisinfactButton(
+            cls,
+            time,
+            article,
+            refClass,
+            innerClass,
+            withLogo,
+            isQuoted
+        );
+        container.insertBefore(btn, spinnerSlot);
+    } else if (actionType === "translate-tweet") {
+        const btn = buildTranslateFactChecksButton(
+            cls,
+            time,
+            article,
+            refClass,
+            innerClass,
+            withLogo,
+            isQuoted
+        );
+        container.insertBefore(btn, spinnerSlot);
+    }
+
+    if (wantsRefresh) {
+        const btn = buildTopBatchRefreshButton(
+            cls,
+            time,
+            article,
+            refClass,
+            isQuoted
+        );
+        container.insertBefore(btn, spinnerSlot);
+    }
+
+    if (wantsSpinner) {
+        spinnerSlot.style.display = "inline-flex";
+        spinnerSlot.style.marginRight = hasOuterPill ? "3px" : "0";
+        spinnerSlot.style.marginLeft = "2px";
+    } else {
+        spinnerSlot.style.display = "none";
+    }
+
+    if (!container.isConnected) {
+        placeButtonContainer(container, article, time, grokData);
+    }
+    updateTopButtonSqueeze(article);
+}
+
+function syncVisualToggleButton(time: Element, classification: Classification, article: Element, isQuoted: boolean) {
+    syncTopButtonBar(time, classification, article, isQuoted);
+}
+
+function syncBatchRefreshButton(time: Element, classification: Classification | QuotedClassification, article: Element, isQuoted: boolean) {
+    syncTopButtonBar(time, classification as Classification, article, isQuoted);
+}
+
+function settleRefreshSlot(time: Element, classification: Classification | QuotedClassification, article: Element, isQuoted: boolean) {
+    syncTopButtonBar(time, classification as Classification, article, isQuoted);
+}
+
+function injectOnHoldButton(time: Element, classification: Classification, article: Element, isQuoted: boolean = false) {
+    syncTopButtonBar(time, classification, article, isQuoted);
+}
+
+function injectTranslateFactChecksButton(time: Element, classification: Classification, article: Element, isQuoted: boolean = false) {
+    syncTopButtonBar(time, classification, article, isQuoted);
+}
+
+function syncTopWheel(article: Element, tweetId: string, localizing = false) {
+    const c = allClassifications.find(x => x.id === tweetId);
+    if (!c) return;
+    const time = article.querySelector<HTMLElement>(`a[href*="/status/${tweetId}"]`);
+    if (!time) return;
+    const isQuoted = getArticleMainStatusId(article) !== tweetId;
+    syncTopButtonBar(time, c, article, isQuoted);
 }
 
 // ── Main injection (drives both phases above) ───────────────────────────────
+
+/** Tweet-id + DOM-lang pairs already forwarded as SET_DISPLAYED_LOCALE. Dedupes
+ *  the inject loop (MutationObserver re-entry) so we don't re-broadcast every
+ *  paint; a full reload empties the set. */
+const displayedLocaleSent = new Set<string>();
+
+/** X auto-translates on page load / display-language change without a click on
+ *  its Show translation toggle, so the toggle handler never fires
+ *  SET_DISPLAYED_LOCALE. A DB-hit tweet then injects as already-classified
+ *  (Fact-Check All + refresh) against English highlights over Spanish text.
+ *  Read the tweetText lang and, when it disagrees with the classification,
+ *  hold for highlight localization (never auto-charge) and tell the background. */
+function maybeSyncDisplayedLocaleFromDom(article: Element, classification: Classification) {
+    if (classification.onHold || classification.preclassifying) return;
+    const claims = classification.claims;
+    if (!claims || claims.length === 0) return;
+    const textEl = findTweetTextElement(article, false, classification.id);
+    const domLang = textEl?.getAttribute('lang')?.trim();
+    if (!domLang) return;
+    const current = classification.textLocale;
+    if (current && sameLanguage(domLang, current)) return;
+    if (claims.some(cl => !resolveHighlightRange(cl.highlight, domLang))) {
+        classification.translateFactChecksOnHold = true;
+    }
+    const key = `${classification.id}:${domLang}`;
+    if (displayedLocaleSent.has(key)) return;
+    displayedLocaleSent.add(key);
+    mfBus.dispatchEvent(new CustomEvent('mf-set-displayed-locale', {
+        detail: {
+            tweetId: classification.id,
+            textLocale: domLang,
+            displayedText: textEl?.textContent ?? undefined,
+        },
+    }));
+}
 
 function injectClassification(
     time: Element,
@@ -5975,35 +6982,57 @@ function injectClassification(
     }
 
     if (!isQuoted) {
+        maybeSyncDisplayedLocaleFromDom(article, classification as Classification);
         const domQuotedId = (classification as Classification).quoting?.id ?? findQuotedTweetIdInArticle(article, classification.id);
         if (domQuotedId) {
             requestQuotedDbFetch(domQuotedId, classification.id);
         }
+        const clsItem = classification as Classification;
+        if (!clsItem.onHold && !clsItem.preclassifying) {
+            disinfactRunPendingIds.delete(clsItem.id);
+            processingOnHoldIds.delete(clsItem.id);
+        }
+        if (!clsItem.translateFactChecksOnHold && !clsItem.localizingHighlights) {
+            processingTranslateFactChecksIds.delete(clsItem.id);
+        }
     }
 
-    const staleOnHold = document.querySelector(`[mf-on-hold-id="${classification.id}"]`);
+    const staleOnHold = document.querySelector(`[mf-on-hold-id="${classification.id}"]:not([mf-top-bar-id])`);
     if (staleOnHold && !(classification as Classification).onHold && shouldRemoveOnHoldButton(classification as Classification)) {
         staleOnHold.remove();
         processingOnHoldIds.delete(classification.id);
+        refreshRunPendingIds.delete(classification.id);
+        disinfactRunPendingIds.delete(classification.id);
+        settleRefreshSlot(time, classification, article, isQuoted);
     }
-    const staleTFC = document.querySelector(`[translate-fc-id="${classification.id}"]`);
+    const staleTFC = document.querySelector(`[translate-fc-id="${classification.id}"]:not([mf-top-bar-id])`);
     if (staleTFC && !(classification as Classification).translateFactChecksOnHold) {
         staleTFC.remove();
         processingTranslateFactChecksIds.delete(classification.id);
+        settleRefreshSlot(time, classification, article, isQuoted);
     }
 
     if (isQuoted) {
         if ((classification as Classification).translateFactChecksOnHold || (classification as Classification).onHold) {
-            article.querySelector(`[mf-on-hold-id="${classification.id}"]`)?.remove();
-            article.querySelector(`[translate-fc-id="${classification.id}"]`)?.remove();
+            article.querySelector(`[mf-on-hold-id="${classification.id}"]:not([mf-top-bar-id])`)?.remove();
+            article.querySelector(`[translate-fc-id="${classification.id}"]:not([mf-top-bar-id])`)?.remove();
             article.querySelector(`[mf-unmatched="${classification.id}"]`)?.remove();
+            syncBatchRefreshButton(time, classification, article, isQuoted);
+            syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
             return;
         }
     } else {
+        // Tearing the visual toggle down in the pending-action states: the
+        // button order (Hide, Reveal, Disinfact, …) presumes one action
+        // button, so with a Disinfact/translate action live the toggle goes
+        // away and returns via the sync call below once visuals are shown.
         if ((classification as Classification).translateFactChecksOnHold) {
-            article.querySelector(`[mf-on-hold-id="${classification.id}"]`)?.remove();
+            article.querySelector(`[mf-on-hold-id="${classification.id}"]:not([mf-top-bar-id])`)?.remove();
             article.querySelector(`[mf-unmatched="${classification.id}"]`)?.remove();
+            article.querySelector(`[mf-visual-id="${classification.id}"]:not([mf-top-bar-id])`)?.remove();
             injectTranslateFactChecksButton(time, classification as Classification, article, isQuoted);
+            syncBatchRefreshButton(time, classification, article, isQuoted);
+            syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
             return;
         }
 
@@ -6012,17 +7041,40 @@ function injectClassification(
         // what makes injectOnHoldButton render the spinner state rather than the button.
         if ((classification as Classification).preclassifying) {
             processingOnHoldIds.add(classification.id);
+            refreshRunPendingIds.delete(classification.id);
+            disinfactRunPendingIds.delete(classification.id);
             injectOnHoldButton(time, classification as Classification, article, isQuoted);
+            const fcaBtn = article.querySelector<HTMLElement>(`[mf-on-hold-id="${classification.id}"] button[data-mf-charge="factcheckall"]`);
+            if (fcaBtn) { const cb = (fcaBtn as any)._mfFcaPreRefresh; if (typeof cb === 'function') cb(); }
+            syncBatchRefreshButton(time, classification, article, isQuoted);
+            syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
             return;
         }
 
         if ((classification as Classification).onHold) {
+            article.querySelector(`[mf-visual-id="${classification.id}"]:not([mf-top-bar-id])`)?.remove();
             injectOnHoldButton(time, classification as Classification, article, isQuoted);
+            const fcaBtn = article.querySelector<HTMLElement>(`[mf-on-hold-id="${classification.id}"] button[data-mf-charge="factcheckall"]`);
+            if (fcaBtn) { const cb = (fcaBtn as any)._mfFcaPreRefresh; if (typeof cb === 'function') cb(); }
+            syncBatchRefreshButton(time, classification, article, isQuoted);
+            syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
             return;
         }
     }
 
-    if (!claims || claims.length === 0) return;
+    syncBatchRefreshButton(time, classification, article, isQuoted);
+    syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
+
+    // A claim-less broadcast ends any optimistic refresh run still awaiting its
+    // first claims (e.g. the worker found nothing): settle the slot now so the
+    // button rebuilds for retry instead of stranding the wheel.
+    if (!claims || claims.length === 0) {
+        refreshRunPendingIds.delete(classification.id);
+        disinfactRunPendingIds.delete(classification.id);
+        settleRefreshSlot(time, classification, article, isQuoted);
+        syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
+        return;
+    }
 
     // Keep the "Fact-Check All" container present whenever the tweet still has one
     // or more claims showing a Disinfact button — even after navigating to a new
@@ -6042,6 +7094,38 @@ function injectClassification(
         }
     }
 
+    // The on-hold container may just have been created (pending claims) or removed
+    // as resolved above — re-sync the standalone refresh against the final DOM.
+    syncBatchRefreshButton(time, classification, article, isQuoted);
+    syncTopWheel(article, classification.id, !!(classification as Classification).localizingHighlights);
+    syncVisualToggleButton(time, classification as Classification, article, isQuoted);
+
+    // Reveal/Hide gate (main tweets only): with cached preclassification visuals
+    // hidden, strip any injected visuals in place and stop — derivation, spend,
+    // buttons, fallback, and quoting are untouched. Phase-2 segments are cached
+    // (upgradeToSegments runs on the NEXT pass after Reveal), so nothing is lost.
+    // Scoped to this article's MAIN tweet: the strip selectors below match by
+    // tweet id only, so without the guard a quoted pass sharing the article
+    // would strip the parent's visuals (or vice versa).
+    if (!isQuoted && visualsHidden(classification.id)
+        && getArticleMainStatusId(article) === classification.id) {
+        for (const wrap of article.querySelectorAll<HTMLElement>('.mf-segment-wrap')) {
+            const host = wrap.parentElement as (HTMLElement & { _mfOriginalNodes?: ChildNode[] }) | null;
+            const originals = host?._mfOriginalNodes;
+            if (host && originals?.length) {
+                host.replaceChildren(...originals);
+                delete host._mfOriginalNodes;
+            } else {
+                freezeSegmentWrap(wrap);
+            }
+        }
+        const fallback = article.querySelector(`[classification-id="${classification.id}"]`);
+        if (fallback) fallback.remove();
+        const unmatched = article.querySelector(`[mf-unmatched="${classification.id}"]`);
+        if (unmatched) unmatched.remove();
+        return;
+    }
+
     if (segments && segments.length > 0) {
         console.log(`[misinfo] injectClassification: Phase 2 for ${classification.id} (isQuoted=${isQuoted})`);
         const mainCls = classification as Classification;
@@ -6051,15 +7135,19 @@ function injectClassification(
             upgradeToSegments(article, mainCls.quoting, clBatchId, true);
         }
 
-        // Once all claim highlights are injected, stop the spinner next to the
-        // Fact-Check All button, but keep the button itself.
-        if (!isQuoted && processingOnHoldIds.has(classification.id)) {
-            const onHoldContainer = document.querySelector(`[mf-on-hold-id="${classification.id}"]`);
-            if (onHoldContainer) {
-                const spinner = onHoldContainer.querySelector(".mf-spinner");
-                if (spinner) spinner.remove();
-            }
+        // First streamed claims have landed — any optimistic refresh-button run is
+        // over (its wheel was handed to the pipeline's nested spinner above, or
+        // never left the standalone slot when no preclassifying broadcast came,
+        // e.g. Test Mode). Only OUR set is cleared: processingOnHoldIds outlives
+        // the run on purpose (badge labels + Fact-Check All persistence).
+        if (!isQuoted && refreshRunPendingIds.has(classification.id)) {
+            refreshRunPendingIds.delete(classification.id);
         }
+        if (!isQuoted && disinfactRunPendingIds.has(classification.id)) {
+            disinfactRunPendingIds.delete(classification.id);
+        }
+        settleRefreshSlot(time, classification, article, isQuoted);
+        syncTopWheel(article, classification.id, !!mainCls.localizingHighlights);
 
         if (!mainCls.localizingHighlights) {
             const segmentClaimTexts = new Set<string>();
@@ -6106,11 +7194,13 @@ function injectClassification(
             }
         }
 
+        syncVisualToggleButton(time, classification as Classification, article, isQuoted);
         return;
     }
 
     if ((classification as Classification).localizingHighlights) {
         console.log(`[misinfo] injectClassification: suppressing Phase 1 fallback for ${classification.id} while localizing highlights`);
+        syncTopWheel(article, classification.id, true);
         return;
     }
     console.log(`[misinfo] injectClassification: Phase 1 (fallback) for ${classification.id}`);

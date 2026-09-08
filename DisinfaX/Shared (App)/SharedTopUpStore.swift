@@ -183,11 +183,13 @@ enum SharedTopUpStore {
         set { defaults?.set(newValue, forKey: Key.lastAmount) }
     }
 
-    /// requested (from the popup) → lastAmount (previous app top-up) → 5.
+    /// requested (from the popup) → lastAmount (previous app top-up) → 6.
+    /// 6 mirrors the extension's DEFAULT_CUSTOM: a shared first-run default so the app
+    /// and the popup agree before either side has stored anything.
     /// Clamped, because both stored values are user-influenced and the product ids only exist
     /// for 1...100 — an out-of-range amount would fail the lookup with a confusing error.
     static func initialAmount() -> Int {
-        let candidate = takeRequestedAmount() ?? lastAmount ?? 5
+        let candidate = takeRequestedAmount() ?? lastAmount ?? 6
         return min(max(candidate, 1), 100)
     }
 

@@ -163,6 +163,14 @@
     "message": "Povratak",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "Prikaži",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Sakrij",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Provjeri",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -263,12 +271,19 @@
   "factCheckAllButton": {
     "message": "Provjeri sve"
   },
+  "factCheckButton": {
+    "message": "Provjeri"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX može pogriješiti. Dvaput provjerite informacije.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "Vaše stanje je preniska. Nadoplatite kako biste nastavili."
+  },
+  "balanceEmpty": {
+    "message": "Vaše stanje je prazno. Dodajte sredstva na svoje stanje putem DisinfaX skočnog prozora.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "Vaš račun je suspendiran."

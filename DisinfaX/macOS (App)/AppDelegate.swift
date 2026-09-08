@@ -29,7 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// app performs purchases: StoreKit's sheet and the transaction that follows need the process
     /// alive, and a user who closes the window mid-purchase would otherwise kill it.
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return false
+        return true
     }
 
     /// Entry point for `disinfax://topup?amount=N`, opened by the Safari extension popup. The

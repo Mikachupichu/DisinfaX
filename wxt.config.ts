@@ -6,13 +6,12 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   vite: (env) => ({
     plugins: [tailwindcss()],
-    // Production strips console, which is right for shipping but makes a production-only
-    // bug undebuggable — and some bugs only appear there, because `wxt dev` re-injects
-    // content scripts on every change and that behaves differently from a single clean
-    // injection. `KEEP_LOGS=1 npm run build:firefox` gives a production build that still
-    // logs. The default is unchanged, so a normal build cannot accidentally ship logs.
+    // `wxt build` is always Vite production mode, so dropping console here would
+    // silence the unpacked `.output/` the user loads while developing. Logs stay
+    // unless STRIP_LOGS=1 (`npm run release` sets it). KEEP_LOGS=1 still wins if
+    // both are set, so a mistaken env cannot silently strip.
     esbuild: env.mode === 'production'
-      ? { drop: process.env.KEEP_LOGS ? ['debugger'] : ['console', 'debugger'] }
+      ? { drop: (process.env.STRIP_LOGS && !process.env.KEEP_LOGS) ? ['console', 'debugger'] : ['debugger'] }
       : {},
   }),
   // Only the Firefox build produces a SOURCES zip (wxt sets zipSources for firefox/opera), and
@@ -54,7 +53,7 @@ export default defineConfig({
   manifest: (env) => ({
     name: 'DisinfaX',
     description: "Identifies and highlights disinformation in tweets using fast and intelligent research.",
-    version: '1.0.1',
+    version: '1.0.2',
     default_locale: 'en',
     // Static icons (chrome://extensions, the extensions menu, the Web Store
     // listing) cannot be themed at runtime, so they use the neutral gray logo
@@ -96,11 +95,13 @@ export default defineConfig({
       'storage',
       'alarms'
     ],
-    // Scoped just to disinfax.app so tabs.onUpdated (used in background.ts to detect
-    // the Stripe checkout tab redirecting back) can see that tab's URL, without the
-    // broad 'tabs' permission's "read your browsing history" warning — Chrome only
-    // populates changeInfo.url for tabs matching a granted host permission.
-    host_permissions: ['*://*.disinfax.app/*'],
+    // No host_permissions entry: redirect detection (Stripe return, OAuth callback) now
+    // lands on x.com, whose content-script match already grants tabs.onUpdated URL
+    // visibility for it — Chrome only populates changeInfo.url for tabs matching a
+    // granted host permission, and x.com matches on every build. This deliberately
+    // avoids both disinfax.app access and the broad 'tabs' permission's "read your
+    // browsing history" warning.
+    host_permissions: [],
     browser_specific_settings: {
       gecko: {
         id: "disinfax@disinfax.app", // Must be unique (email format recommended)

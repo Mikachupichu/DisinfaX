@@ -1,26 +1,52 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
-import { useT, getUiLocale, formatUsdNumber, giftPercent, formatPercent } from './i18n';
+import { useT, getUiLocale, formatUsdNumber, usdSymbolAfterAmount, giftPercent, giftDollars, formatPercent, formatUsdExactCents } from './i18n';
 import { parseWorkerErrorMessage, codeToMessageKey } from '../../utils/errorCodes';
 import { browser } from 'wxt/browser';
 import { callNativeHost } from '../../utils/nativeHost';
 
-/** Render a USD amount with a smaller "US$" symbol vertically centered against the
- *  number (rather than baseline-aligned). Symbol size scales with the surrounding font
- *  size via `em`, so it works at any text size.
+/** Render a USD amount with a smaller "US" + "$" vertically centered against the
+ *  number (rather than baseline-aligned). Symbol size scales with the surrounding
+ *  font size via `em`, so it works at any text size. The currency group sits before
+ *  or after the number following the locale's own convention (e.g. "US$3.24" in
+ *  English, "3,24 US$" in French) — see usdSymbolAfterAmount.
  *
- *  `hangUs` (default true): the small "US" hangs to the left, out of flow, so only
- *  "$<amount>" participates in centering — used for the balance. Set false to keep
- *  "US" in-flow so the whole "US$<amount>" centers as one unit — used in the buttons. */
-function Usd({ value, locale, hangUs = true }: { value: number; locale: string; hangUs?: boolean }) {
+ *  `hangUs` (default true): the small "US" hangs outside the centered unit — to the
+ *  left for prefix locales, to the right for suffix locales — vertically centered
+ *  against the number, so the centered unit is "$<amount>" or "<amount>$"
+ *  respectively. Used for the balance. Set false to keep everything in-flow so the
+ *  whole amount centers as one unit — used in the preset buttons. */
+function Usd({ value, locale, hangUs = true, exactCents = false }: { value: number; locale: string; hangUs?: boolean; exactCents?: boolean }) {
+  const symbolAfter = usdSymbolAfterAmount(locale);
+  const usClasses = `${hangUs ? (symbolAfter ? 'absolute left-full top-1/2 -translate-y-1/2' : 'absolute right-full top-1/2 -translate-y-1/2') : ''} text-[0.6em] font-semibold leading-none whitespace-nowrap`;
+  // Gifted-bonus amounts always show exactly two decimals (rounded to the closest
+  // cent); everything else keeps the compact trailing-zero rules.
+  const digits = exactCents ? formatUsdExactCents(value, locale) : formatUsdNumber(value, locale);
   return (
     <span className="relative inline-flex items-center align-middle leading-none">
-      <span className={`${hangUs ? 'absolute right-full top-1/2 -translate-y-1/2' : ''} text-[0.6em] font-semibold leading-none whitespace-nowrap`}>US</span>
-      <span className="font-semibold leading-none">$</span>
-      <span className="leading-none">{formatUsdNumber(value, locale)}</span>
+      {!symbolAfter && <span className={usClasses}>US</span>}
+      {!symbolAfter && <span className="font-semibold leading-none">$</span>}
+      <span className="leading-none">{digits}</span>
+      {symbolAfter && <span className="font-semibold leading-none">&nbsp;$</span>}
+      {symbolAfter && <span className={usClasses}>US</span>}
     </span>
   );
+}
+
+/** Badge amount: only "US" is small and vertically centered. `$` and the digits are
+ *  plain text in the badge (`text-[8px] font-black`), same size as "+20%:" / "GIFTED".
+ *  Wrapping those glyphs in a nested inline-flex made them paint at a smaller cap-height
+ *  than the surrounding run — that's why ": " and "$0.60" looked tiny while "US" was fine.
+ *  Two decimals always, locale symbol order. */
+function BadgeUsd({ value, locale }: { value: number; locale: string }) {
+  const after = usdSymbolAfterAmount(locale);
+  const digits = formatUsdExactCents(value, locale);
+  // 1em box = the badge's 8px line; items-center puts the 0.6em "US" on the same
+  // midline as "$0.60" / "GIFTED". align-middle sits it on the x-height and reads low.
+  const us = <span className="inline-flex items-center h-[1em] -translate-y-px text-[0.6em] leading-none">US</span>;
+  if (!after) return <>{us}${digits}</>;
+  return <>{digits}&nbsp;${us}</>;
 }
 
 const CHECKOUT_URL = 'https://create-checkout-session.michael-pouget01.workers.dev/';
@@ -33,16 +59,18 @@ const SAFARI_VERIFY_URL = 'https://verify-apple-topup.michael-pouget01.workers.d
 const APPLE_MIN_TOPUP = 1;
 const APPLE_MAX_TOPUP = 100;
 
-/** Lower bound for the custom field: Apple's smallest product, or Stripe's $5 floor. */
-const CUSTOM_MIN = import.meta.env.SAFARI ? APPLE_MIN_TOPUP : 5;
+/** Lower bound for the custom field: Apple's smallest product, or Stripe's $1 floor. */
+const CUSTOM_MIN = 1;
 
-/** Preset top-up amounts (USD). "custom" is a free-entry integer ≥ 5. */
-const PRESETS = import.meta.env.SAFARI ? [3, 5, 10, 20] as const: [5, 10, 15, 30] as const;
-type SafariSelection = '3' | '5' | '10' | '20' | 'custom';
-type ChromiumSelection = '5' | '10' | '15' | '30' | 'custom';
-type Selection = SafariSelection | ChromiumSelection;
-const DEFAULT_SELECTION: Selection = import.meta.env.SAFARI ? '5' : '10';
-const DEFAULT_CUSTOM = import.meta.env.SAFARI ? '15' : '23';
+/** Preset top-up amounts (USD), identical on Safari and Chromium/Firefox: $1 carries no
+ *  bonus (fees consume the whole giveaway budget there), $3/$5/$10 gift 20%/24%/27%.
+ *  "custom" is a free-entry integer ≥ 1. */
+const PRESETS = [1, 3, 5, 10] as const;
+type Selection = '1' | '3' | '5' | '10' | 'custom';
+/** First-run defaults: $5 preselected, $6 in the custom field (see STORE_* below — a
+ *  returning user keeps their own persisted selection instead). */
+const DEFAULT_SELECTION: Selection = '5';
+const DEFAULT_CUSTOM = '6';
 
 /** Narrow an arbitrary stored value to a Selection, so a stale or hand-edited storage
  *  entry can't put the component into a state the UI doesn't render. */
@@ -452,7 +480,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         const { url } = await response.json();
         if (!url) throw new Error(t('checkoutError'));
         // Hand off to the background, which opens the Stripe tab and closes it on the
-        // redirect back to disinfax.app. Then close the popup.
+        // redirect back to x.com. Then close the popup.
         try { browser.runtime.sendMessage({ type: 'MF_OPEN_CHECKOUT', url }).catch(() => { /* ignore */ }); } catch { /* ignore */ }
         window.close();
       }
@@ -499,10 +527,14 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
       </div>
 
       {/* ── Top-up options ── */}
+      {/* 2-column grid with a corner badge: the short "+X%: US$X.XX Gifted" bonus
+          fits a corner pill on a half-width button (the old row layout's full
+          "Bonus: Extra …" line is what looked horrendous). $1 has no bonus. */}
       <div className="grid grid-cols-2 gap-2.5">
         {PRESETS.map((presetAmount) => {
           const isSelected = selection === String(presetAmount);
           const bonusPercent = giftPercent(presetAmount);
+          const bonusDollars = giftDollars(presetAmount);
           return (
             <button
               key={presetAmount}
@@ -512,7 +544,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
               <Usd value={presetAmount} locale={locale} hangUs={false} />
               {!import.meta.env.SAFARI && bonusPercent > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 text-[8px] font-black tracking-wide uppercase bg-emerald-500 text-black px-1.5 py-0.5 rounded-md scale-90 origin-top-right whitespace-nowrap">
-                  +{formatPercent(bonusPercent, locale)}% {t('gifted')}
+                  +{formatPercent(bonusPercent, locale)}%: <BadgeUsd value={bonusDollars} locale={locale} /> {t('gifted')}
                 </span>
               )}
             </button>
@@ -524,14 +556,18 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
           <div className="relative col-span-2">
             {!import.meta.env.SAFARI && giftPercent(customToAmount(customInput)) > 0 && (
               <span className="absolute -top-2 left-2 z-10 text-[8px] font-black tracking-wide uppercase bg-emerald-500 text-black px-1.5 py-0.5 rounded-md whitespace-nowrap">
-                +{formatPercent(giftPercent(customToAmount(customInput)), locale)}% {t('gifted')}
+                +{formatPercent(giftPercent(customToAmount(customInput)), locale)}%: <BadgeUsd value={giftDollars(customToAmount(customInput))} locale={locale} /> {t('gifted')}
               </span>
             )}
             <div className="flex items-stretch rounded-xl border border-emerald-500 bg-emerald-950/40 overflow-hidden">
-              {/* "US$" prefix for the editable field. Spelled out rather than reusing
-                  <Usd> because there is no amount to render here — the number lives in
-                  the adjacent <input> — and this copy needs its own optical nudge. */}
-              <span className="flex items-center pl-3 pr-0 text-sm text-white select-none"><span className="relative inline-flex items-center align-middle leading-none"><span className="relative top-[0.75px] text-[0.6em] font-semibold leading-none whitespace-nowrap">US</span><span className="font-semibold leading-none">$</span></span></span>
+              {/* "US$" affix for the editable field — before the number in prefix
+                  locales, after it in suffix locales (see usdSymbolAfterAmount).
+                  Spelled out rather than reusing <Usd> because there is no amount to
+                  render here — the number lives in the adjacent <input> — and this
+                  copy needs its own optical nudge. */}
+              {!usdSymbolAfterAmount(locale) && (
+                <span className="flex items-center pl-3 pr-0 text-sm text-white select-none"><span className="relative inline-flex items-center align-middle leading-none"><span className="relative top-[0.75px] text-[0.6em] font-semibold leading-none whitespace-nowrap">US</span><span className="font-semibold leading-none">$</span></span></span>
+              )}
               <input
                 ref={customRef}
                 type="text"
@@ -542,6 +578,9 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
                 aria-label={t('customAmountLabel')}
                 className="flex-1 min-w-0 bg-transparent py-2.5 text-sm font-semibold text-white outline-none"
               />
+              {usdSymbolAfterAmount(locale) && (
+                <span className="flex items-center pl-2 pr-3 text-sm text-white select-none"><span className="relative inline-flex items-center align-middle leading-none"><span className="font-semibold leading-none">$</span><span className="relative top-[0.75px] text-[0.6em] font-semibold leading-none whitespace-nowrap">US</span></span></span>
+              )}
               <div className="flex flex-col border-l border-emerald-500/40">
                 <button
                   onClick={() => stepCustom(1)}

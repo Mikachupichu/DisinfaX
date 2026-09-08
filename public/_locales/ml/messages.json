@@ -163,6 +163,14 @@
     "message": "തിരികെ പോകുക",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "കാണിക്കുക",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "മറയ്ക്കുക",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "പരിശോധന",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -263,12 +271,19 @@
   "factCheckAllButton": {
     "message": "എല്ലാം പരിശോധിക്കുക"
   },
+  "factCheckButton": {
+    "message": "പരിശോധിക്കുക"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX തെറ്റുകൾ വരുത്താം. വിവരങ്ങൾ വീണ്ടും പരിശോധിക്കുക.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "നിങ്ങളുടെ ബാലൻസ് വളരെ കുറവാണ്. തുടരാൻ ദയവായി ടോപ്പ് അപ്പ് ചെയ്യുക."
+  },
+  "balanceEmpty": {
+    "message": "നിങ്ങളുടെ ബാലൻസ് തീർന്നിരിക്കുന്നു. ദയവായി DisinfaX പോപ്പ്അപ്പ് ഉപയോഗിച്ച് നിങ്ങളുടെ ബാലൻസിലേക്ക് പണം ചേർക്കുക.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "നിങ്ങളുടെ അക്കൗണ്ട് സസ്പെൻഡ് ചെയ്തിരിക്കുന്നു."

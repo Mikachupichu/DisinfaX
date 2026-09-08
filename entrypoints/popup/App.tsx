@@ -8,14 +8,18 @@ import { callNativeHost, NATIVE_CALLBACK_SCHEME } from '../../utils/nativeHost';
 
 /** Where the provider sends the user back on the iOS tab-based flow.
  *
- *  Deliberately the site ROOT rather than a dedicated /auth-callback route: the redirect
- *  target has to be a page that actually loads, because a content script cannot be
- *  injected into Safari's network-error page. /auth-callback currently 404s, and the root
- *  is also the Supabase Site URL, which is allowlisted implicitly — so this avoids both
- *  the missing route and a redirect-allowlist rejection.
+ *  Deliberately x.com — a host the extension can already see — rather than disinfax.app,
+ *  so no host permission for the extension's own site is needed. The page's content is
+ *  irrelevant: this tab exists only for auth-callback.content.ts to harvest the OAuth
+ *  params at document_start and for the background to close it. The `disinfax_oauth`
+ *  marker distinguishes it from an ordinary x.com visit (auth-callback.content.ts,
+ *  relay.content.ts and capture.main.content.ts all key off it), and the root path keeps
+ *  the allowlist entry a single pattern — see the Supabase Redirect URLs step, where
+ *  `https://x.com/*` must be added because the Site URL no longer covers this target.
  *
- *  Must stay in sync with the `matches` pattern in auth-callback.content.ts. */
-const AUTH_CALLBACK_URL = 'https://disinfax.app/';
+ *  Must stay in sync with the `matches` pattern and marker check in
+ *  auth-callback.content.ts. */
+const AUTH_CALLBACK_URL = 'https://x.com/?disinfax_oauth=callback';
 
 /** True on iPhone/iPad. One Safari build serves macOS and iOS, so this cannot be decided
  *  at build time via import.meta.env.SAFARI — and the two need different OAuth transports:
@@ -104,6 +108,17 @@ export default function App() {
     try { return localStorage.getItem(LAST_PROVIDER_STORAGE_KEY); } catch { return null; }
   });
 
+  // The Firefox background flow (MF_WEB_AUTH) completes the session while this popup
+  // is dead, so the background records the provider in browser.storage.local — the
+  // only store both contexts share. Prefer it when present; localStorage above covers
+  // the Chrome/Safari paths and older stored values.
+  useEffect(() => {
+    browser.storage.local.get(LAST_PROVIDER_STORAGE_KEY).then((r: any) => {
+      const stored = r?.[LAST_PROVIDER_STORAGE_KEY];
+      if (stored === 'x' || stored === 'google' || stored === 'apple') setLastUsedProvider(stored);
+    }).catch(() => { /* badge is best-effort */ });
+  }, []);
+
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -128,6 +143,10 @@ export default function App() {
     // sign-in try block. An unguarded throw here would surface as an auth error to a
     // user who is, in fact, now signed in — over a badge that failed to persist.
     try { localStorage.setItem(LAST_PROVIDER_STORAGE_KEY, provider); } catch { /* badge is best-effort */ }
+    // Mirrored to browser.storage.local so every flow reads the same value: the
+    // Firefox background flow (MF_WEB_AUTH) completes while this popup is dead and
+    // writes there directly — see the mount effect above.
+    try { void browser.storage.local.set({ [LAST_PROVIDER_STORAGE_KEY]: provider }); } catch { /* badge is best-effort */ }
     setLastUsedProvider(provider);
   };
 
@@ -273,6 +292,7 @@ export default function App() {
           const relayed: any = await browser.runtime.sendMessage({
             type: 'MF_WEB_AUTH',
             url: data.url,
+            provider,
           });
           if (relayed?.error) throw new Error(relayed.error);
           const { data: refreshed } = await supabase.auth.getSession();

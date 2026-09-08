@@ -103,7 +103,7 @@ func runSuite() -> Int {
 
     // ── Amount fallback chain ───────────────────────────────────────────────
     reset()
-    check("no hint at all falls back to $5", SharedTopUpStore.initialAmount() == 5)
+    check("no hint at all falls back to $6", SharedTopUpStore.initialAmount() == 6)
     SharedTopUpStore.lastAmount = 7
     check("falls back to the last entered amount", SharedTopUpStore.initialAmount() == 7)
     SharedTopUpStore.setRequestedAmount(12)

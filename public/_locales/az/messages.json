@@ -206,6 +206,14 @@
     "message": "Geri qayıt",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "Göstər",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Gizlət",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Yoxla",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -265,12 +273,19 @@
   "factCheckAllButton": {
     "message": "Hamısını Yoxla"
   },
+  "factCheckButton": {
+    "message": "Yoxla"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX səhv edə bilər. Məlumatı yenidən yoxlayın.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "Balansınız kifayət qədər deyil. Davam etmək üçün balansı artırın."
+  },
+  "balanceEmpty": {
+    "message": "Balansınız boşdur. DisinfaX popup-u vasitəsilə balansınıza vəsait əlavə edin.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "Hesabınız dayandırılıb."

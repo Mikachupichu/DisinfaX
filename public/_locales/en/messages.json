@@ -5,7 +5,7 @@
   },
   "gifted": {
     "message": "Gifted",
-    "description": "Word in the top-up bonus badge, e.g. '+3% Gifted'."
+    "description": "Word in the top-up bonus line, e.g. 'Bonus: Extra 24% - US$1.20 Gifted'."
   },
   "customTopup": {
     "message": "Custom",
@@ -225,6 +225,14 @@
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "Reveal",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Hide",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -285,6 +293,10 @@
     "message": "Fact-Check All",
     "description": "Button that fact-checks every claim in the tweet at once (batch action, distinct from the singular per-claim Fact-Check button)."
   },
+  "factCheckButton": {
+    "message": "Fact-Check",
+    "description": "Button on a single claim highlight that fact-checks just that claim (singular action, distinct from the batch Fact-Check All button)."
+  },
   "aiDisclaimer": {
     "message": "DisinfaX can make mistakes. Double-check information.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
@@ -292,6 +304,10 @@
   "errBalanceTooLow": {
     "message": "Your balance is too low. Please top up to continue.",
     "description": "Shown when a worker rejects an action because the account balance can't cover it (error code 1)."
+  },
+  "balanceEmpty": {
+    "message": "Your balance is empty: please add funds to your balance using the DisinfaX popup",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "Your account has been suspended.",

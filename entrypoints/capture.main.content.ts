@@ -62,6 +62,10 @@ export default defineContentScript({
   runAt: 'document_start',
   main() {
     console.log('DisinfaX: Active');
+    // Same redirect-landing bail as relay.content.ts: do not even patch XHR on a tab
+    // whose URL carries a disinfax_ return marker — it is about to be harvested and
+    // closed, and its (possibly logged-out sample) tweets must never enter the pipeline.
+    if (location.search.includes('disinfax_oauth=callback') || location.search.includes('disinfax_checkout=')) return;
     const originalOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function(_method, url) {
         this.addEventListener('load', async function() {

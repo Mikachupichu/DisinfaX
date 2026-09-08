@@ -204,6 +204,14 @@
     "message": "بازگشت",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "نمایش بده",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "پنهان کن",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "راستی‌آزمایی",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -263,12 +271,19 @@
   "factCheckAllButton": {
     "message": "همه را راستی‌آزمایی کن"
   },
+  "factCheckButton": {
+    "message": "راستی‌آزمایی کن"
+  },
   "aiDisclaimer": {
     "message": "‏DisinfaX ممکن است اشتباه کند. اطلاعات را دوباره بررسی کنید.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "موجودی شما بسیار کم است. لطفاً برای ادامه شارژ کنید."
+  },
+  "balanceEmpty": {
+    "message": "موجودی شما خالی است. لطفاً با استفاده از پاپ‌آپ DisinfaX به موجودی خود پول اضافه کنید.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "حساب شما تعلیق شده است."
