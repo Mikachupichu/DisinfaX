@@ -195,6 +195,14 @@
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "ತೋರಿಸಿ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "ಮರೆಮಾಡಿ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "ಪರಿಶೀಲಿಸಿ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -262,12 +270,19 @@
   "factCheckAllButton": {
     "message": "ಎಲ್ಲವನ್ನೂ ಪರಿಶೀಲಿಸಿ"
   },
+  "factCheckButton": {
+    "message": "ಪರಿಶೀಲಿಸಿ"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX ತಪ್ಪುಗಳನ್ನು ಮಾಡಬಹುದು. ಮಾಹಿತಿಯನ್ನು ಮತ್ತೊಮ್ಮೆ ಪರಿಶೀಲಿಸಿ.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಬಹಳ ಕಡಿಮೆಯಾಗಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಟಾಪ್ ಅಪ್ ಮಾಡಿ."
+  },
+  "balanceEmpty": {
+    "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಖಾಲಿಯಾಗಿದೆ. ದಯವಿಟ್ಟು DisinfaX ಪಾಪ್ಅಪ್ ಬಳಸಿ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಹಣ ಸೇರಿಸಿ.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸ್ಥಗಿತಗೊಳಿಸಲಾಗಿದೆ."

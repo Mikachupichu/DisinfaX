@@ -9,21 +9,29 @@
  *  this script — which runs on the redirect target — hands whatever the provider returned
  *  back to the background, where the Supabase client can complete the exchange.
  *
- *  Matches the whole site rather than a dedicated callback route because the redirect
- *  lands on the site ROOT — a content script cannot be injected into Safari's
- *  network-error page, so the target has to be a URL that actually loads, and
- *  /auth-callback 404s. The handler below no-ops unless the URL actually carries OAuth
- *  parameters, so ordinary disinfax.app visits are unaffected.
+ *  Matches x.com rather than disinfax.app so the extension needs no host access to its
+ *  own site: the redirect target's content is irrelevant (this tab exists only to be
+ *  harvested and closed), and x.com is already granted on every build. The redirect
+ *  carries a `disinfax_oauth=callback` marker (see AUTH_CALLBACK_URL in popup/App.tsx)
+ *  and this handler no-ops unless it is present, so ordinary x.com visits — and any
+ *  `?code=` X itself might ever use — are unaffected. relay.content.ts and
+ *  capture.main.content.ts bail on the same marker so the logged-out X landing page's
+ *  sample tweets are never captured into the pipeline on a tab about to be torn down.
+ *
+ *  Runs at document_start so the params are read before X's SPA boot can route away —
+ *  notably when the user is logged out of X, where the 302 lands with `?code=` in the
+ *  bar and the background exchanges and closes the tab before any /login push matters.
  *
  *  Safari-only: Chromium and Firefox use browser.identity and never take this path.
  */
 export default defineContentScript({
-  matches: ['*://*.disinfax.app/*'],
+  matches: ['*://x.com/*'],
   include: ['safari'],
   runAt: 'document_start',
   main() {
     try {
       const url = new URL(location.href);
+      if (url.searchParams.get('disinfax_oauth') !== 'callback') return;
       // PKCE puts `?code=` in the query; the implicit grant puts tokens in the fragment.
       // Which one arrives depends on the Supabase client's flowType, so read both.
       const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));

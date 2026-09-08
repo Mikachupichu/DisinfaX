@@ -198,6 +198,14 @@
     "message": "ਪਿੱਛੇ ਜਾਓ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "ਦਿਖਾਓ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "ਲੁਕਾਓ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "ਤੱਥ ਜਾਂਚ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -265,12 +273,19 @@
   "factCheckAllButton": {
     "message": "ਸਭ ਦੀ ਤੱਥ ਜਾਂਚ ਕਰੋ"
   },
+  "factCheckButton": {
+    "message": "ਤੱਥ ਜਾਂਚ ਕਰੋ"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX ਗਲਤੀਆਂ ਕਰ ਸਕਦਾ ਹੈ। ਜਾਣਕਾਰੀ ਦੀ ਦੁਬਾਰਾ ਜਾਂਚ ਕਰੋ।",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "ਤੁਹਾਡਾ ਬੈਲੇਂਸ ਬਹੁਤ ਘੱਟ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਟਾਪ ਅੱਪ ਕਰੋ।"
+  },
+  "balanceEmpty": {
+    "message": "ਤੁਹਾਡਾ ਬੈਲੇਂਸ ਖਤਮ ਹੋ ਗਿਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ DisinfaX ਪੌਪਅੱਪ ਵਰਤ ਕੇ ਆਪਣੇ ਬੈਲੇਂਸ ਵਿੱਚ ਪੈਸੇ ਪਾਓ।",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "ਤੁਹਾਡਾ ਖਾਤਾ ਮੁਅੱਤਲ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।"

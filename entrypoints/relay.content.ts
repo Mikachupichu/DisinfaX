@@ -20,7 +20,7 @@ const tweetTextCache = new Map<string, string>();
 const translatedTextCache = new Map<string, string>();
 let capturedTweets: MainTweet[] = [];
 let currentBatchId: string | null = null;
-let pendingBatchRefresh: string | null = null;
+let pendingBatchRefresh: { batchId: string; tweetId?: string } | null = null;
 let localeOverride: string | null = null;
 let currentPort: any = null;
 /** True while the user is logged out: the extension is frozen (injections torn
@@ -36,10 +36,28 @@ let pendingDomReports: string[] = [];
 let lastBatchFingerprint = '';
 
 function sendToPort(message: any) {
+  if (!currentPort) {
+    // No live port — the background worker was killed (service-worker sleep after
+    // backgrounding or long idle, aggressive on phones). Reconnect first so the
+    // intent isn't silently dropped: connectAndClassify re-sends the full batch,
+    // which repopulates the background's in-memory tweet stores, and the send
+    // below then goes out on the fresh port.
+    console.log(`[misinfo] relay: no port, reconnecting to deliver message...`);
+    connectAndClassify();
+  }
   if (currentPort) {
     try { currentPort.postMessage(message); } catch (e) {
       console.log(`[misinfo] relay: failed to send to port, reconnecting...`, e);
+      // The port object itself is broken — drop it so connectAndClassify builds a
+      // fresh one instead of early-returning on the unchanged-batch fingerprint.
+      try { currentPort.disconnect(); } catch { /* ignore */ }
+      currentPort = null;
       connectAndClassify();
+      // Retry once on the fresh port: without this, the tap that healed the
+      // connection would still be lost and the user would have to tap twice.
+      try { currentPort?.postMessage(message); } catch (e2) {
+        console.error(`[misinfo] relay: retry send failed, message dropped`, e2);
+      }
     }
   }
 }
@@ -211,22 +229,30 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
   console.log(`[misinfo] relay: connectAndClassify called, tweets=${tweetsForSend.length}` + (tweetsToSend ? ' (per-group)' : ''));
   if (tweetsForSend.length === 0) return;
 
-  // Only fingerprint-check on the full batch path (skip for per-group sends)
+  // Only fingerprint-check on the full batch path (skip for per-group sends).
+  // But never skip when there is no live port: after a worker restart the port
+  // is dead, and returning here would strand every later tap — the buttons are
+  // still in the DOM but their messages go nowhere, until some unrelated new
+  // tweet happens to heal the connection.
   if (!tweetsToSend) {
     const fingerprint = batchFingerprint(tweetsForSend);
-    if (!pendingBatchRefresh && fingerprint === lastBatchFingerprint) {
+    if (!pendingBatchRefresh && fingerprint === lastBatchFingerprint && currentPort) {
       console.log(`[misinfo] relay: batch unchanged, skipping reconnect`);
       return;
     }
     lastBatchFingerprint = fingerprint;
   }
 
-  // Only create a new port for batch refreshes or when there is no port yet.
-  // Do NOT disconnect on every new XHR batch — doing so loses in-flight
-  // classification messages (e.g. on-hold "Disinfact" buttons) from the
-  // previous scroll's processFullBatch calls. The background handles multiple
-  // CLASSIFY_TWEETS on the same port concurrently just fine.
-  if (pendingBatchRefresh || !currentPort) {
+  // Only create a new port when there is none yet. A batch refresh MUST reuse the
+  // live port, never disconnect and reconnect: processFullBatch tasks from earlier
+  // scroll batches still hold the old port object, and anything they finish after
+  // the disconnect posts into the void (safePostToPort swallows the throw), so
+  // those tweets never get their buttons until an unrelated XHR happens to
+  // re-send them — the missing-button reports after a refresh-then-scroll. The
+  // background keeps no per-port state (replies address the receiving port,
+  // broadcasts fan out over activePorts), so sharing one port across refreshes is
+  // exactly as safe as sharing it across XHR batches, which the path below does.
+  if (!currentPort) {
     // Disconnect old port if any
     if (currentPort) {
       try { currentPort.disconnect(); } catch {}
@@ -242,7 +268,11 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
         console.log(`[misinfo] relay: received CLASSIFICATION for ${message.data.id}, onHold=${message.data.onHold}, translateFC=${message.data.translateFactChecksOnHold}, claims=${message.data.claims?.length ?? 0}`);
         injectClassifications([message.data], tweetTextCache, translatedTextCache);
       } else if (message.type === "MF_NOTIFICATION" && message.data) {
-        showNotification(message.data.kind, { amount: message.data.amount, text: message.data.text, code: message.data.code });
+        // 'broke' bypasses showNotification's freeze guard inside injecting.ts: a frozen
+        // tab must still hear why it is frozen. The kind union mirrors that function —
+        // anything else arriving here is dropped rather than misrendered.
+        if (message.data.kind === 'broke') showNotification('broke', {});
+        else showNotification(message.data.kind, { amount: message.data.amount, text: message.data.text, code: message.data.code });
       } else if (message.type === "MF_AUTH") {
         if (message.signedIn) {
           // Only act on a real freeze→resume transition, so a redundant
@@ -272,30 +302,34 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
 
     // Report any tweets already in the DOM on this fresh connection,
     // and flush reports that arrived before the port was ready.
+    reportedToBackground.clear();
     reportVisibleTweets();
     flushPendingDomReports();
 
     port.onDisconnect.addListener(() => {
       if (currentPort === port) currentPort = null;
       const error = browser.runtime.lastError;
-      if (capturedTweets.length > 0 && !pendingBatchRefresh) {
+      if (capturedTweets.length > 0) {
         console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, reconnecting in 1s...`);
         setTimeout(() => connectAndClassify(), 1000);
       } else {
-        console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, NOT reconnecting (capturedTweets=${capturedTweets.length}, pendingBatchRefresh=${pendingBatchRefresh})`);
+        console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, NOT reconnecting (capturedTweets=${capturedTweets.length})`);
       }
     });
   }
 
   // Send the actual data (on existing port or newly created one)
   if (pendingBatchRefresh) {
-    const refreshBatchId = pendingBatchRefresh;
+    const { batchId: refreshBatchId, tweetId: refreshTweetId } = pendingBatchRefresh;
     pendingBatchRefresh = null;
     currentBatchId = `batch_${Date.now()}`;
-    console.log(`[misinfo] relay: sending BATCH_REFRESH_FORCE for ${refreshBatchId}, new batchId=${currentBatchId}`);
+    const tweetsToSend = refreshTweetId
+      ? capturedTweets.filter(t => t.id === refreshTweetId)
+      : capturedTweets;
+    console.log(`[misinfo] relay: sending BATCH_REFRESH_FORCE for batchId=${refreshBatchId} tweetId=${refreshTweetId ?? 'all'}, sending ${tweetsToSend.length} tweet(s), new batchId=${currentBatchId}`);
     currentPort.postMessage({
       type: "BATCH_REFRESH_FORCE",
-      data: { batchId: refreshBatchId, tweets: capturedTweets, newBatchId: currentBatchId, locale: localeOverride }
+      data: { batchId: refreshBatchId, tweetId: refreshTweetId, tweets: tweetsToSend, newBatchId: currentBatchId, locale: localeOverride }
     });
   } else {
     currentBatchId = `batch_${Date.now()}`;
@@ -335,15 +369,15 @@ mfBus.addEventListener('mf-refresh-claim', ((e: CustomEvent) => {
 }) as EventListener);
 
 mfBus.addEventListener('mf-set-displayed-locale', ((e: CustomEvent) => {
-  const { tweetId, textLocale } = e.detail;
+  const { tweetId, textLocale, displayedText } = e.detail;
   console.log(`[misinfo] relay: set-displayed-locale for ${tweetId} -> ${textLocale}`);
-  sendToPort({ type: "SET_DISPLAYED_LOCALE", data: { tweetId, textLocale } });
+  sendToPort({ type: "SET_DISPLAYED_LOCALE", data: { tweetId, textLocale, displayedText } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-refresh-batch', ((e: CustomEvent) => {
-  const { batchId } = e.detail;
-  console.log(`[misinfo] relay: refresh-batch for ${batchId}, forcing reconnection`);
-  pendingBatchRefresh = batchId;
+  const { batchId, tweetId } = e.detail;
+  console.log(`[misinfo] relay: refresh-batch for ${batchId} (tweetId=${tweetId ?? 'unknown'}), forcing reconnection`);
+  pendingBatchRefresh = { batchId, tweetId };
   connectAndClassify();
 }) as EventListener);
 
@@ -443,6 +477,15 @@ mfBus.addEventListener('mf-translate-claim', ((e: CustomEvent) => {
   sendToPort({ type: "TRANSLATE_CLAIM", data: { classificationId, claimText, translateWhat, locale: localeOverride } });
 }) as EventListener);
 
+// Click on an in-page notification: ask the background to open the extension popup.
+// Sent over the long-lived port (not runtime.sendMessage) so the click's user gesture
+// reaches the background intact — openPopup() is only legal with one. The background
+// falls back to the top-up flow in a tab where the popup API refuses.
+mfBus.addEventListener('mf-open-popup', (() => {
+  console.log(`[misinfo] relay: notification clicked, requesting popup open`);
+  sendToPort({ type: "MF_OPEN_POPUP" });
+}) as EventListener);
+
 // ---- (Deferred batch processing removed — each tweet is self-contained) ----
 
 export default defineContentScript({
@@ -450,6 +493,27 @@ export default defineContentScript({
   runAt: 'document_start',
   main() {
     console.log('[misinfo] relay content script loaded, localeOverride=', localeOverride);
+
+    // Redirect-landing bail: OAuth/Stripe return to x.com with a disinfax_ marker (see
+    // AUTH_CALLBACK_URL in popup/App.tsx and the checkout worker's return URLs), and the
+    // harvester/background closes that tab within milliseconds. Classify nothing from it:
+    // when the user is logged out of X the landing page renders logged-out sample tweets,
+    // and capturing those would spend balance on someone else's content on a torn-down tab.
+    //
+    // Checkout close cannot rely on the background's tabs.onUpdated watcher alone: Stripe
+    // checkout takes long enough that the MV3 worker often idles and drops that listener,
+    // so the return tab would stay open (and this bail would then leave it with no
+    // DisinfaX UI). Sending MF_CHECKOUT_RETURN from here wakes the worker and closes the
+    // tab the same way the OAuth harvester does — before X's SPA has anything to render.
+    if (location.search.includes('disinfax_checkout=')) {
+      let outcome: string | null = null;
+      try { outcome = new URLSearchParams(location.search).get('disinfax_checkout'); } catch { /* ignore */ }
+      void browser.runtime
+        .sendMessage({ type: 'MF_CHECKOUT_RETURN', outcome })
+        ?.catch?.(() => { /* background asleep or already handled */ });
+      return;
+    }
+    if (location.search.includes('disinfax_oauth=callback')) return;
 
     // The background service worker has no DOM and so cannot read the browser's
     // dark/light preference itself. Report it from here — this keeps the toolbar

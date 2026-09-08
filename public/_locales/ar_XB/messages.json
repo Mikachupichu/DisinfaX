@@ -165,6 +165,14 @@
     "message": "رجوع",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "أظهر",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "أخفِ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "تحقق",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -269,8 +277,15 @@
   "factCheckAllButton": {
     "message": "تحقق من الكل"
   },
+  "factCheckButton": {
+    "message": "تحقق"
+  },
   "errBalanceTooLow": {
     "message": "رصيدك منخفض جدًا. يرجى الشحن للاستمرار."
+  },
+  "balanceEmpty": {
+    "message": "رصيدك فارغ. يرجى إضافة الأموال إلى رصيدك باستخدام نافذة DisinfaX المنبثقة.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "تم تعليق حسابك."

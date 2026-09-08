@@ -110,9 +110,38 @@ export function formatUsdNumber(amount: number, locale: string = getUiLocale()):
   return new Intl.NumberFormat(locale, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }).format(rounded);
 }
 
-/** Format a USD amount as "US$X" (string form; see formatUsdNumber for the rules). */
+/** True when the locale writes a currency symbol AFTER the number (e.g. French
+ *  "3,24 $US"). Probed from the platform's own USD formatting so every locale —
+ *  including ones never explicitly considered — follows its own convention. Only
+ *  the position is taken from the probe; the symbol text stays this extension's
+ *  "US$" branding. Falls back to prefix when the locale is unrecognized. */
+export function usdSymbolAfterAmount(locale: string = getUiLocale()): boolean {
+  try {
+    // Underscore form ("pt_BR") is valid for `_locales/` lookup but not for Intl.
+    const tag = locale.replace(/_/g, '-');
+    const parts = new Intl.NumberFormat(tag, { style: 'currency', currency: 'USD' }).formatToParts(1);
+    const currencyIdx = parts.findIndex(part => part.type === 'currency');
+    const integerIdx = parts.findIndex(part => part.type === 'integer');
+    return currencyIdx !== -1 && integerIdx !== -1 && currencyIdx > integerIdx;
+  } catch {
+    return false;
+  }
+}
+
+/** Format just the numeric part of a USD amount with exactly two decimals, rounded
+ *  to the closest cent (e.g. "0.60" — never "00.60", "0.6" or "0.605"). Used for
+ *  gifted-bonus amounts, which must always show cents. */
+export function formatUsdExactCents(amount: number, locale: string = getUiLocale()): string {
+  const rounded = Math.round((amount + Number.EPSILON) * 100) / 100;
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(rounded);
+}
+
+/** Format a USD amount as a string ("US$3.24" vs "3,24 US$" depending on the
+ *  locale — the suffix form uses a non-breaking space, matching the platform
+ *  convention; see formatUsdNumber for the numeric rules). */
 export function formatUsd(amount: number, locale: string = getUiLocale()): string {
-  return `US$${formatUsdNumber(amount, locale)}`;
+  const number = formatUsdNumber(amount, locale);
+  return usdSymbolAfterAmount(locale) ? `${number} US$` : `US$${number}`;
 }
 
 /** Base languages written right-to-left (used to set the popup's `dir`). */
@@ -125,23 +154,36 @@ export function isRtl(locale: string = getUiLocale()): boolean {
 }
 
 /** Payment-processing fees deducted from a top-up: a percentage plus a flat charge. */
-const PROCESSING_FEE_RATE = 0.029;
+const PROCESSING_FEE_RATE = 0.021;
 const PROCESSING_FEE_FLAT_USD = 0.30;
 /** Share of a top-up the service is willing to give up, fees included. Because the flat
- *  fee weighs more on small amounts, this budget is fully consumed at $5 and only larger
- *  top-ups have anything left over to gift. */
-const GIVEAWAY_BUDGET_PERCENT = 8.9;
+ *  fee weighs more on small amounts, this budget is fully consumed at $1 (2.1% of $1 +
+ *  $0.30 = $0.321, i.e. 32.1%) and only larger top-ups have anything left over to gift. */
+const GIVEAWAY_BUDGET_PERCENT = 32.1;
 
-/** Bonus percentage gifted for a top-up amount — mirrors the create-checkout-session
- *  worker exactly. Returns 0 for $5 (and anything ≤ $5). */
+/** Bonus percentage gifted for a top-up amount — mirrors calculateTotalCredit in the
+ *  stripe-webhook worker exactly. Returns 0 for $1 (and anything ≤ $1). */
 export function giftPercent(amount: number): number {
   if (!amount || amount <= 0) return 0;
   // Fraction of the top-up that survives processing fees...
   const netRatio = ((1 - PROCESSING_FEE_RATE) * amount - PROCESSING_FEE_FLAT_USD) / amount;
   // ...so this is what the fees cost, as a percentage of the top-up.
   const feePercent = (1 - netRatio) * 100;
-  // Whatever remains of the budget after fees becomes the user's bonus.
-  return Math.max(0, GIVEAWAY_BUDGET_PERCENT - feePercent);
+  // Whatever remains of the budget after fees becomes the user's bonus. Clamped
+  // with an epsilon, not just at zero: at $1 the subtraction leaves a ~7e-15 float
+  // residue, and the badge renders whenever this returns > 0 — so without the epsilon
+  // the $1 button would show "Bonus: Extra 0% - US$0.00 Gifted".
+  const bonus = GIVEAWAY_BUDGET_PERCENT - feePercent;
+  return bonus < 1e-9 ? 0 : bonus;
+}
+
+/** Dollar value of the gifted bonus for a top-up amount, rounded to the closest cent.
+ *  Derived from the rounded total credit rather than the raw percent, so the badge
+ *  matches what stripe-webhook actually credits cent-for-cent (e.g. $3 → $0.60). */
+export function giftDollars(amount: number): number {
+  if (!amount || amount <= 0) return 0;
+  const total = Math.round(amount * (100 + giftPercent(amount))) / 100;
+  return Math.round((total - amount) * 100) / 100;
 }
 
 /** Format a percentage value with up to 2 decimals, trailing zeros trimmed, in the

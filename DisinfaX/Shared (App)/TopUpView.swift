@@ -182,8 +182,11 @@ struct TopUpView: View {
                     // "US$", never "$". Every amount here is a USD tier, but Apple charges in the
                     // buyer's own storefront currency — the $3 tier bills CAD 4.00 in Canada. A bare
                     // "$" in front of a Canadian or Australian customer states a price that is not
-                    // what they will be charged.
-                    Text("US$").font(.system(size: 17, weight: .medium)).foregroundStyle(.secondary)
+                    // what they will be charged. Prefix or suffix following the device locale's own
+                    // USD convention (e.g. "US$5" vs "5 US$") — see UsdFormat.
+                    if !UsdFormat.symbolAfterAmount {
+                        Text("US$").font(.system(size: 17, weight: .medium)).foregroundStyle(.secondary)
+                    }
                     TextField("", text: $amountText)
                         .textFieldStyle(.roundedBorder)
                         .font(.system(size: 17, weight: .medium)).monospacedDigit()
@@ -214,6 +217,12 @@ struct TopUpView: View {
 
                     Stepper("") { increment(1) } onDecrement: { increment(-1) }
                         .labelsHidden()
+
+                    // Suffix counterpart to the "US$" prefix above: in suffix locales the
+                    // currency group sits after the field (e.g. "5 US$").
+                    if UsdFormat.symbolAfterAmount {
+                        Text("US$").font(.system(size: 17, weight: .medium)).foregroundStyle(.secondary)
+                    }
 
                     Spacer()
                 }
@@ -288,8 +297,9 @@ struct TopUpView: View {
                 .font(.system(size: 10, weight: .semibold)).tracking(0.6)
                 .foregroundStyle(.secondary)
             // "—" when the popup has never reported a balance. Showing 0 would read as a real
-            // balance of zero, which is a different and alarming thing.
-            Text(value.map { String(format: "US$%.2f", $0) } ?? "—")
+            // balance of zero, which is a different and alarming thing. Position follows the
+            // device locale's USD convention ("US$3.24" vs "3,24 US$") — see UsdFormat.
+            Text(value.map { UsdFormat.string(from: $0) } ?? "—")
                 .font(.system(size: 22, weight: .semibold)).monospacedDigit()
                 .foregroundStyle(accented ? Self.accent : Color.primary)
         }

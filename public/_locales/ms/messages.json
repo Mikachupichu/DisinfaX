@@ -163,6 +163,14 @@
     "message": "Go Back",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "Tunjukkan",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Sembunyikan",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Pemeriksaan",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -263,12 +271,19 @@
   "factCheckAllButton": {
     "message": "Semak Semua Fakta"
   },
+  "factCheckButton": {
+    "message": "Semak Fakta"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX boleh membuat kesilapan. Sentiasa semak semula maklumat penting.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "Baki anda terlalu rendah. Sila tambah nilai untuk meneruskan."
+  },
+  "balanceEmpty": {
+    "message": "Baki anda kosong. Sila tambah dana pada baki anda menggunakan popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "Akaun anda telah digantung."

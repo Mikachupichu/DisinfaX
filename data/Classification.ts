@@ -32,7 +32,11 @@ export type Claim = {
      *  auto-replaces them when the fresh classification arrives — no click needed. */
     isClassifying?: boolean;
     /** Locale-keyed character ranges for highlighting in the tweet text.
-     *  E.g. {"en": [24, 56], "es": [45, 78]} — keyed by locale, value is [start, end]. */
+     *  E.g. {"en": [24, 56], "es": [45, 78]} — keyed by bare locale, value is
+     *  [start, end]. DB rows persist keys as "<locale>:<sha256-of-displayed-text>"
+     *  (revision binding — see the workers), but the background strips those back
+     *  to bare locales on receipt, so by the time ranges reach this type the
+     *  hashes are already gone. */
     highlight?: Record<string, [number, number]>;
     /** This claim is flagged for reclassification-on-hold (reclassify trigger).
      *  Highlight should be neutral grey and badge always visible with "Disinfact". */

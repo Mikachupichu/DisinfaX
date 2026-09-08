@@ -164,6 +164,14 @@
     "message": "Uɣal ɣer deffir",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "Ssken",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Ffer",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Senqed",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -264,12 +272,19 @@
   "factCheckAllButton": {
     "message": "Senqed kullec"
   },
+  "factCheckButton": {
+    "message": "Senqed"
+  },
   "aiDisclaimer": {
     "message": "Yezmer DisinfaX ad yeɛreq. Senqed talɣut snat n tikkal.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "Amuḍin-ik yedrus aṭas. Ttxil-k ɛemmer-it akken ad tkemmleḍ."
+  },
+  "balanceEmpty": {
+    "message": "Amuḍin-ik yexwa. Ttxil-k rnu-d idrimen ɣer umuḍin-ik s popup n DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "Amiḍan-ik yettwaḥbas."

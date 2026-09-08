@@ -165,6 +165,14 @@
     "message": "גיי צוריק",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "ווײַז",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "באַהאַלט",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -265,12 +273,19 @@
   "factCheckAllButton": {
     "message": "פֿאַקט־קאָנטראָלירן אַלע טענות"
   },
+  "factCheckButton": {
+    "message": "פֿאַקט־קאָנטראָלירן"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX קען מאַכן גרייזן. קאָנטראָלירט די אינפֿאָרמאַציע נאָך אַ מאָל.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "אײַער באַלאַנס איז צו נידעריק. ביטע פֿילט אים אָן כּדי פֿאָרצוזעצן."
+  },
+  "balanceEmpty": {
+    "message": "אײַער באַלאַנס איז ליידיק. ביטע לייגט צו געלט צו אײַער באַלאַנס מיטן DisinfaX-פּאָפּאַפּ.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "אײַער חשבון איז סוספּענדירט געוואָרן."

@@ -27,6 +27,9 @@ die() { echo "${RED}error:${OFF} $1" >&2; exit 1; }
 
 # A KEEP_LOGS build keeps every console.* call. Never submittable.
 [ -z "${KEEP_LOGS:-}" ] || die "KEEP_LOGS is set — unset it; a submission build must strip logs"
+# wxt.config.ts only drops console.* when this is set — ordinary `npm run build`
+# keeps logs so unpacked-dev debugging works.
+export STRIP_LOGS=1
 
 echo "${BOLD}0. Clearing leaked build processes${OFF}"
 before=$(pgrep -f "wxt (build|zip)" 2>/dev/null | wc -l | tr -d ' ')

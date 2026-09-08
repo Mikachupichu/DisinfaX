@@ -44,7 +44,7 @@ function iconPathsFor(variant: 'black' | 'white'): Record<string, string> {
  *  builds as MV2 — their manifests declare `browser_action`). WXT's `browser` export is
  *  just `globalThis.browser ?? globalThis.chrome` with no API aliasing, so the fallback
  *  has to be spelled out here or `setIcon` would throw on those two targets. */
-function toolbarAction(): { setIcon(details: { path: Record<string, string> }): Promise<void> } | null {
+export function toolbarAction(): { setIcon(details: { path: Record<string, string> }): Promise<void>; openPopup?(): Promise<void> } | null {
   const api = (browser as any).action ?? (browser as any).browserAction;
   return api?.setIcon ? api : null;
 }

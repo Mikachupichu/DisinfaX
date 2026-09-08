@@ -18,13 +18,13 @@
  *     "already did this" sets declared at the top of the closure — they are the
  *     load-bearing guard against double-spending, not incidental memoization.
  */
-import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler } from "../utils/intelligence";
+import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
 import { supabase } from "../utils/supabase";
-import { findExactMatch, resolveHighlightRange } from "../utils/textBreakup";
+import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
 import { MainTweet, Tweet } from "../data/Tweets";
-import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon } from "../utils/toolbarIcon";
+import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon, toolbarAction } from "../utils/toolbarIcon";
 import { ERROR_CODES } from "../utils/errorCodes";
 import { NATIVE_APP_ID, NATIVE_CALLBACK_SCHEME } from "../utils/nativeHost";
 
@@ -117,6 +117,31 @@ export default defineBackground({
   const reResearchedTweetIds = new Set<string>();
   /** Store tweets that had no DB hash match, pending user click on "Disinfact". */
   const onHoldTweets = new Map<string, { tweet: MainTweet; hash: string }>();
+  /** Disinfact taps that arrived before their tweet's on-hold entry existed. The
+   *  usual cause is a worker restart after backgrounding/long idle: the relay
+   *  reconnects and re-sends the batch, but the tap lands before hashing + DB
+   *  lookup recreate the entry. Parked here and honored by
+   *  flushPendingProcessOnHold when the entry appears; dropped on timeout. */
+  const pendingProcessOnHold = new Map<string, { locale: string; displayedSide: 'TRANSLATED' | 'ORIGINAL' | null; displayedText: string | null; timer: ReturnType<typeof setTimeout> }>();
+  /** How long a parked tap waits for its entry before being dropped. Matches the
+   *  content-side spinner revert (30s), so a timed-out tap leaves the button
+   *  restored and a later tap re-parks cleanly. */
+  const PENDING_PROCESS_ON_HOLD_TIMEOUT_MS = 30000;
+  /** Honor a parked Disinfact tap now that its tweet's on-hold entry exists.
+   *  Consumes both the pending intent and the entry — exactly the live-tap
+   *  contract (claim-on-receipt), so a parked tap can never double-run with a
+   *  live one. No-op when nothing is parked or no entry exists yet. */
+  function flushPendingProcessOnHold(tweetId: string): void {
+    const pending = pendingProcessOnHold.get(tweetId);
+    if (!pending) return;
+    const entry = onHoldTweets.get(tweetId);
+    if (!entry) return;
+    pendingProcessOnHold.delete(tweetId);
+    clearTimeout(pending.timer);
+    onHoldTweets.delete(tweetId);
+    console.log(`[background] PROCESS_ON_HOLD (deferred): ${tweetId}`);
+    runPreclassification(entry, pending.locale, "PROCESS_ON_HOLD", false, pending.displayedSide, pending.displayedText);
+  }
   /** Track which claims currently have an ongoing forced reclassification,
    *  keyed by `${classificationId}:${claimText}`. Prevents concurrent re-runs. */
   const ongoingClaimRefreshes = new Set<string>();
@@ -325,10 +350,47 @@ export default defineBackground({
     return false;
   }
 
+  /** Bodies a highlight revision may bind to in order to survive the strip in
+   *  payloadToClaim. `displayed` is the sha256HexSync of the body the claim's tweet
+   *  is currently showing (best guess — null when unknown); `known` holds the hashes
+   *  of every body the client holds for the tweet. Matching is pure string equality,
+   *  so no locale guessing is involved. Unknown (hash-less) origins pass a null
+   *  displayed + empty known, which keeps legacy bare-locale keys and drops every
+   *  hashed one. */
+  type RevisionGate = { displayed: string | null; known: Set<string> };
+  const NO_REVISION_GATE: RevisionGate = { displayed: null, known: new Set() };
+
+  /** The exact tweet body a highlight range is measured against: the Grok translation
+   *  when the tweet is displayed translated, else the captured original. Mirrors the
+   *  display tweets built for the preclassify worker (tweetForDisplay) and the
+   *  TRANSLATE_FACT_CHECKS path — the workers hash these same strings. */
+  function displayedTweetText(tweet: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined): string | null {
+    if (!tweet) return null;
+    const text = (tweet.translatedText && tweet.destinationLanguage) ? tweet.translatedText : tweet.text;
+    return (typeof text === 'string' && text.length > 0) ? text : null;
+  }
+
+  /** Revision gate for payloadToClaim covering a main tweet plus its quoted tweet (the
+   *  two bodies any highlight here can address). Null/empty bodies contribute nothing
+   *  — legacy bare-locale keys never need a hash to survive. */
+  function revisionGateFor(main: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined, quoted?: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined): RevisionGate {
+    const mainBody = displayedTweetText(main);
+    const known = new Set<string>();
+    for (const body of [mainBody, displayedTweetText(quoted)]) {
+      if (body !== null) known.add(sha256HexSync(body));
+    }
+    return { displayed: mainBody !== null ? sha256HexSync(mainBody) : null, known };
+  }
+
   /** Convert one claim record (a ClaimPayload from fetch_tweet_and_touch_network /
    *  get_full_claim, or a Realtime build_claim_payload) into a UI Claim. Shared by the
    *  initial pull and by live subscription merges. Adds dbClaimId (uuid) and handles
-   *  is_classifying (another user is classifying → spinner + auto-replace on arrival). */
+   *  is_classifying (another user is classifying → spinner + auto-replace on arrival).
+   *
+   *  `gate` strips persisted "<locale>:<sha256-of-tweet-text>" highlight keys back to
+   *  their bare locale prefix, keeping only the revision bound to a displayed/held
+   *  text (see selectHighlightRevision). The client never needs the hashes; everything
+   *  downstream (merges, missing-highlight checks, injection) works on bare keys. */
   /** Certainty for a DB claim payload.
    *
    *  Uses the stored `probability` column when the payload carries it, falling back to
@@ -355,7 +417,7 @@ export default defineBackground({
     return Math.abs(Number(dbClaim?.veracity ?? 0));
   }
 
-  function payloadToClaim(dbClaim: any, locale: string): Claim {
+  function payloadToClaim(dbClaim: any, locale: string, gate: RevisionGate = NO_REVISION_GATE): Claim {
     const veracityScore = Number(dbClaim.veracity ?? 0);
     const confidenceScore = dbClaimConfidence(dbClaim);
     const claimText = extractLocaleText(dbClaim.claim, locale) || extractClaimText(dbClaim.claim);
@@ -369,10 +431,16 @@ export default defineBackground({
 
     let highlight: Record<string, [number, number]> | undefined;
     if (dbClaim.highlight && typeof dbClaim.highlight === 'object') {
-      highlight = {};
+      const raw: Record<string, [number, number]> = {};
       for (const [key, val] of Object.entries(dbClaim.highlight)) {
-        if (Array.isArray(val) && val.length === 2) highlight[key] = val as [number, number];
+        if (Array.isArray(val) && val.length === 2) raw[key] = val as [number, number];
       }
+      // Persisted keys are "<locale>:<sha256-of-displayed-tweet-text>" (appended across
+      // revisions server-side); live-stream keys are bare locales. Keep only the revision
+      // bound to the displayed text (preferring it over other held bodies), re-emitted
+      // under its bare locale prefix — the revision binding that stops a stale range
+      // ever addressing an edited tweet.
+      highlight = selectHighlightRevision(raw, gate);
       if (Object.keys(highlight).length === 0) highlight = undefined;
     }
 
@@ -453,11 +521,14 @@ export default defineBackground({
     const hasTranslation = !!tweet.translatedText && !!tweet.destinationLanguage;
     const textLocale = hasTranslation ? tweet.destinationLanguage! : tweet.sourceLanguage!;
 
-    const claims = dbClaims.map(dbClaim => payloadToClaim(dbClaim, locale));
+    // Strip persisted "<locale>:<hash>" highlight keys to the revision bound to the
+    // displayed bodies (main + quoted — the two texts any highlight here can address).
+    const gate = revisionGateFor(tweet, tweet.quoting);
+    const claims = dbClaims.map(dbClaim => payloadToClaim(dbClaim, locale, gate));
     const quoting = tweet.quoting
       ? {
           id: tweet.quoting.id,
-          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(dbClaim => payloadToClaim(dbClaim, locale)) : null
+          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(dbClaim => payloadToClaim(dbClaim, locale, gate)) : null
         }
       : null;
     return { id: tweet.id, batchId, claims, quoting, translatedLocale: tweet.destinationLanguage, translatedText: tweet.translatedText, textLocale };
@@ -1031,7 +1102,39 @@ export default defineBackground({
     }
     const cls = entry.classification;
     const batchId = cls.batchId || (entry.batchIds.values().next().value ?? '');
-    const incoming = payloadToClaim(payload, locale);
+    // The payload names the tweet only by claim row — find its cached tweet to name the
+    // displayed body/bodies whose hashes gate the strip. A quoted tweet id is never a
+    // top-level tweetCache key, so also search parents' quoting objects. Falls back to
+    // the classification's own translatedText when the tweet cache missed entirely (MV3
+    // restart between batch and broadcast): the classification carries the same
+    // displayed body dbClaimsToClassification stored, so the revision still binds.
+    const gate = (() => {
+      const direct = tweetCache.get(tweetId);
+      let g: RevisionGate | null = null;
+      if (direct) {
+        g = revisionGateFor(direct, direct.quoting);
+      } else {
+        for (const parent of tweetCache.values()) {
+          if (parent.quoting?.id === tweetId) {
+            g = revisionGateFor(parent.quoting, null);
+            break;
+          }
+        }
+      }
+      if (!g) {
+        if (cls.translatedText) {
+          const hash = sha256HexSync(cls.translatedText);
+          g = { displayed: hash, known: new Set([hash]) };
+        } else {
+          g = { displayed: null, known: new Set() };
+        }
+      }
+      if (cls.translatedText) g.known.add(sha256HexSync(cls.translatedText));
+      if (direct?.text) g.known.add(sha256HexSync(direct.text));
+      if (direct?.translatedText) g.known.add(sha256HexSync(direct.translatedText));
+      return g;
+    })();
+    const incoming = payloadToClaim(payload, locale, gate);
     const displayedLocale = cls.textLocale;
     const incomingRange = displayedLocale ? incoming.highlight?.[displayedLocale] : undefined;
 
@@ -1062,11 +1165,43 @@ export default defineBackground({
         return false;
       });
     }
+    // Fallback: match by raw highlight ranges directly from payload.highlight
+    // (in case revision gate filtering in selectHighlightRevision dropped incoming.highlight).
+    if (idx < 0 && payload.highlight && typeof payload.highlight === 'object') {
+      const rawPayloadRanges: [number, number][] = [];
+      for (const val of Object.values(payload.highlight)) {
+        if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
+          rawPayloadRanges.push(val as [number, number]);
+        }
+      }
+      if (rawPayloadRanges.length > 0) {
+        idx = claims.findIndex(c => {
+          if (!c.highlight) return false;
+          for (const range of Object.values(c.highlight)) {
+            if (Array.isArray(range) && range.length === 2) {
+              if (rawPayloadRanges.some(r => r[0] === range[0] && r[1] === range[1])) return true;
+            }
+          }
+          return false;
+        });
+      }
+    }
     if (idx < 0) {
-      idx = claims.findIndex(c =>
-        (!!c.rewritten && c.rewritten === incoming.rewritten) ||
-        c.text === incoming.text ||
-        (!!c.dbClaimText && c.dbClaimText === incoming.dbClaimText));
+      const normIncRewritten = incoming.rewritten ? normalizeText(incoming.rewritten) : '';
+      const normIncText = incoming.text ? normalizeText(incoming.text) : '';
+      const normIncDb = incoming.dbClaimText ? normalizeText(incoming.dbClaimText) : '';
+      idx = claims.findIndex(c => {
+        const normCRewritten = c.rewritten ? normalizeText(c.rewritten) : '';
+        const normCText = c.text ? normalizeText(c.text) : '';
+        const normCDb = c.dbClaimText ? normalizeText(c.dbClaimText) : '';
+        return (!!normCRewritten && (normCRewritten === normIncRewritten || normCRewritten === normIncText || normCRewritten === normIncDb)) ||
+          (!!normCText && (normCText === normIncText || normCText === normIncRewritten || normCText === normIncDb)) ||
+          (!!normCDb && (normCDb === normIncDb || normCDb === normIncRewritten));
+      });
+    }
+    // Single-claim heuristic: if there is only one claim lacking dbClaimId, correlate it directly.
+    if (idx < 0 && claims.length === 1 && !claims[0].dbClaimId) {
+      idx = 0;
     }
 
     if (idx >= 0) {
@@ -1466,19 +1601,21 @@ export default defineBackground({
       try {
         const batchId = nextBatchId();
 
-        // A forced re-preclassification has no on-hold button to turn into a spinner (the
-        // tweet is already injected), so flag it and let the content script show one in the
-        // Disinfact slot. Cleared by the first streamed result below, or in `finally`.
-        if (force) {
-          const cur = classificationCache.get(tweetId)?.classification;
-          const spinning: Classification = { ...(cur ?? { id: tweetId, claims: null, quoting: null }), batchId, preclassifying: true };
-          cacheClassification(spinning, batchId);
-          broadcastClassification(spinning);
-        }
+        // Step 0: Broadcast the spinning state immediately so the content script
+        // keeps or renders the top-of-tweet spinner right away for both forced
+        // and standard preclassifications. Cleared by the first streamed result
+        // below, or in `finally`.
+        const cur = classificationCache.get(tweetId)?.classification;
+        const spinning: Classification = { ...(cur ?? { id: tweetId, claims: null, quoting: null }), batchId, preclassifying: true };
+        cacheClassification(spinning, batchId);
+        broadcastClassification(spinning);
 
-        // If a tweet subscription is somehow still open, just extend its timer.
-        const existingSub = tweetSubs.get(tweetId);
-        if (existingSub && !existingSub.isClosed()) existingSub.resetTimeout(PRECLASS_TIMEOUT_MS);
+        // Subscribe BEFORE streaming starts (fire-and-forget, in parallel with the
+        // worker): link_tweet_claim broadcasts only land on an existing routing row,
+        // and the claim pipeline runs mid-stream — subscribing after the stream
+        // drains (oldStep 3 below) loses the race whenever linking beats stream drain.
+        // ensureTweetSubscription refreshes the timer if one is already open.
+        startTweetSubscription(tweetId, hash, locale);
 
         // Step 1 (removed): this used to re-pull the tweet from the DB on every Disinfact
         // click, in case it had landed there between the button rendering and the click.
@@ -1520,9 +1657,8 @@ export default defineBackground({
 
         reResearchedTweetIds.add(tweetId);
 
-        // Step 3: the worker inserts the tweet + claims and completes
-        // preclassification. Subscribe to receive the authoritative claims (ids +
-        // any matched-claim rewritten-text replacements) and merge them in.
+        // Step 3: refresh the Step-0 subscription timer so the routing row stays
+        // alive for the worker's link broadcasts (already a no-op reset when open).
         startTweetSubscription(tweetId, hash, locale);
       } catch (err: any) {
         console.error(`[background] ${logTag} error:`, err);
@@ -1530,13 +1666,11 @@ export default defineBackground({
         clearInterval(keepAlive);
         // Safety net: never strand the top-of-tweet spinner if the run threw or returned
         // early without ever streaming a claim.
-        if (force) {
-          const cur = classificationCache.get(tweetId)?.classification;
-          if (cur?.preclassifying) {
-            const cleared: Classification = { ...cur, preclassifying: undefined };
-            cacheClassification(cleared, cur.batchId ?? '');
-            broadcastClassification(cleared);
-          }
+        const cur = classificationCache.get(tweetId)?.classification;
+        if (cur?.preclassifying) {
+          const cleared: Classification = { ...cur, preclassifying: undefined };
+          cacheClassification(cleared, cur.batchId ?? '');
+          broadcastClassification(cleared);
         }
       }
     });
@@ -1831,6 +1965,10 @@ export default defineBackground({
             cacheClassification(onHoldClassification, batchId);
             safePostToPort(port, { type: "CLASSIFICATION", data: onHoldClassification });
             onHoldTweets.set(tweet.id, { tweet, hash: r.hash });
+            // A tap parked while the worker was dead (backgrounded / long idle)
+            // won the race and arrived before this entry existed — honor it now
+            // instead of stranding the spinner until the 30s revert. No-op untapped.
+            flushPendingProcessOnHold(tweet.id);
           }
         }
 
@@ -1884,8 +2022,10 @@ export default defineBackground({
     }
   }
 
-  /** Broadcast a notification to every connected X content script. */
-  function broadcastNotification(data: { kind: 'increase' | 'decrease' | 'error'; amount?: number; text?: string; code?: number }) {
+  /** Broadcast a notification to every connected X content script. 'broke' is the
+   *  empty-balance notice — it carries no amount and renders this extension's own
+   *  `balanceEmpty` copy on the page (see showNotification in utils/injecting.ts). */
+  function broadcastNotification(data: { kind: 'increase' | 'decrease' | 'error' | 'broke'; amount?: number; text?: string; code?: number }) {
     for (const port of activePorts) {
       try { port.postMessage({ type: 'MF_NOTIFICATION', data }); } catch { /* ignore */ }
     }
@@ -2010,10 +2150,18 @@ export default defineBackground({
     // …and so does the containing app, which cannot look it up itself.
     syncFundsToNativeApp(total);
     if (lastVisibleTotal === null) {
-      // First value this session = baseline; no notification.
+      // First value this session = baseline. The opening-X.com-with-empty-funds case
+      // announces itself here instead of staying silent: the freeze at zero balance
+      // would otherwise greet the user with nothing but dead buttons.
       lastVisibleTotal = total;
+      if (total <= 0) broadcastNotification({ kind: 'broke' });
       return;
     }
+    // Crossing from positive to empty (balance + hold ≤ 0) announces itself with the
+    // empty-balance notice alongside the usual decrease toast. lastVisibleTotal is the
+    // session's memory of the crossing, so one crossing fires exactly once no matter
+    // how many subsequent spends arrive while the balance stays empty.
+    const wasPositive = lastVisibleTotal > 0;
     const delta = total - lastVisibleTotal;
     // Surface any change that rounds to 0.0001 (the DB's 4-dp precision) or more, so the
     // notification matches what the up-to-4-dp display can show. `total` is already
@@ -2024,6 +2172,7 @@ export default defineBackground({
     if (roundedDelta >= 0.0001) {
       lastVisibleTotal = total;
       broadcastNotification({ kind: delta > 0 ? 'increase' : 'decrease', amount: roundedDelta });
+      if (wasPositive && total <= 0) broadcastNotification({ kind: 'broke' });
     }
   }
 
@@ -2137,14 +2286,15 @@ export default defineBackground({
     const words = text.trim().split(/\s+/).filter(Boolean).length;
     return Math.ceil(text.length / 3) + words;
   }
-  /** The max hold classify-tweets reserves per research (classify-tweets:128-139) — dominated by
-   *  the 32000-token output ceiling (≈ $0.49), so ~independent of claim length. If the backend
-   *  formula changes first, the backend simply rejects any over-admit (caught as a rare 402). */
+  /** Mirrors the classify-tweets hold sizing (2 generations, 3 searches, 1.5 margin,
+   *  $0.15 cap) — typical holds are ~$0.10-0.12, so a $0.25 starter balance admits two
+   *  parallel researches. If the backend formula changes first, the backend simply
+   *  rejects any over-admit (caught as a rare 402). */
   function computeClassificationHold(mainClaim: string, sources: string[] | undefined): number {
-    const GEMINI_IN = 1.50, GEMINI_OUT = 7.50, SEARCH_FEE = 0.005, MAX_SEARCHES = 1, OUTPUT_LIMIT = 32000, MARGIN = 2;
+    const GEMINI_IN = 1.50, GEMINI_OUT = 7.50, SEARCH_FEE = 0.016, MAX_SEARCHES = 3, OUTPUT_LIMIT = 2000, GENERATIONS = 2, MARGIN = 1.5, HOLD_CAP = 0.15;
     const srcText = sources && sources.length ? sources.join("\n") : "";
     const estIn = estimateTokens(mainClaim) + estimateTokens(srcText);
-    return (((estIn * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) + (SEARCH_FEE * MAX_SEARCHES)) * MARGIN;
+    return Math.min((((estIn * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) * GENERATIONS + (SEARCH_FEE * MAX_SEARCHES)) * MARGIN, HOLD_CAP);
   }
 
   /** Money free to commit now, in lag-invariant terms (unknown funds → optimistic). */
@@ -2330,6 +2480,11 @@ export default defineBackground({
     localizedHighlightLocales.clear();
     reResearchedTweetIds.clear();
     onHoldTweets.clear();
+    // Drop parked taps too: the pipeline they belong to is being torn down
+    // (sign-out or freeze). A stale tap must never fire on a later session's
+    // re-sent batch and spend on an intent long abandoned.
+    for (const pending of pendingProcessOnHold.values()) clearTimeout(pending.timer);
+    pendingProcessOnHold.clear();
     ongoingClaimRefreshes.clear();
     claimResearchPromises.clear();
     heldReclassifications.clear();
@@ -2512,10 +2667,23 @@ export default defineBackground({
     }
   }
 
-  // ── Stripe checkout: open the checkout tab and close it on redirect to disinfax.app ──
+  /** Fallback top-up destination when the popup cannot be opened programmatically
+   *  (notably stable Firefox and Safari's intermittent false "already open"): the main
+   *  site, where the user can sign in and find the top-up flow. Needs no user gesture. */
+  function openTopUpFallback() {
+    try {
+      const maybe = browser.tabs.create({ url: 'https://disinfax.app' });
+      if (maybe && typeof (maybe as any).catch === 'function') (maybe as any).catch(() => { /* ignore */ });
+    } catch { /* ignore */ }
+  }
+
+  // ── Stripe checkout: open the checkout tab and close it on the x.com return ──
   /** Open Stripe checkout in a new tab and close it again once it redirects back to
-   *  disinfax.app, then poll for the credit. Watching for the redirect is what lets the
-   *  user land back where they started instead of on a stranded success page. */
+   *  x.com carrying the disinfax_checkout marker (see the checkout worker's return
+   *  URLs), then poll for the credit. Watching for the redirect is what lets the user
+   *  land back where they started instead of on a stranded success page. x.com needs no
+   *  extra host permission: its content-script match already makes tabs.onUpdated carry
+   *  changeInfo.url for it. */
   function openCheckoutTab(url: string) {
     Promise.resolve(browser.tabs.create({ url })).then((tab: any) => {
       const tabId = tab?.id;
@@ -2523,7 +2691,7 @@ export default defineBackground({
       const onUpdated = (updatedTabId: number, changeInfo: any) => {
         if (updatedTabId !== tabId) return;
         const updatedUrl: string | undefined = changeInfo?.url;
-        if (updatedUrl && /:\/\/(www\.)?disinfax\.app\b/i.test(updatedUrl)) {
+        if (updatedUrl && /:\/\/x\.com[/?#].*disinfax_checkout=/i.test(updatedUrl)) {
           cleanup();
           try { browser.tabs.remove(tabId); } catch { /* already gone */ }
           pollFundsAfterCheckout();
@@ -2582,6 +2750,17 @@ export default defineBackground({
     if (message?.type === 'MF_OPEN_CHECKOUT' && typeof message.url === 'string') {
       openCheckoutTab(message.url);
       return undefined; // no response
+    }
+    // Stripe return tab: the content script on x.com/?disinfax_checkout= fires this at
+    // document_start because the tabs.onUpdated watcher in openCheckoutTab is often gone
+    // by then (MV3 idle during the Checkout session). Close the tab immediately — its
+    // page must not classify, and leaving it open is how a freshly-funded X tab ended
+    // up with no DisinfaX UI (relay bails on the marker and never injects).
+    if (message?.type === 'MF_CHECKOUT_RETURN') {
+      const tabId = _sender?.tab?.id;
+      if (tabId != null) { try { browser.tabs.remove(tabId); } catch { /* already gone */ } }
+      if (message.outcome === 'success') pollFundsAfterCheckout();
+      return undefined;
     }
     // Safari drives OAuth (ASWebAuthenticationSession) and top-ups (StoreKit) through the
     // containing app. Safari only lets the BACKGROUND script call sendNativeMessage — a
@@ -2705,6 +2884,18 @@ export default defineBackground({
             if (error) throw error;
           }
 
+          // The popup requested this flow but is (usually) already dead — it cannot
+          // record the provider itself, so do it here in the shared store the popup
+          // reads on mount. Otherwise the "Last Used" badge keeps its stale value
+          // (Apple/X sign-ins always lost the popup-teardown race; only a fast Google
+          // redirect survived to write it). Best-effort, like the popup's own write.
+          try {
+            const usedProvider = message.provider;
+            if (usedProvider === 'x' || usedProvider === 'google' || usedProvider === 'apple') {
+              await browser.storage.local.set({ disinfax_last_oauth_provider: usedProvider });
+            }
+          } catch { /* badge is best-effort */ }
+
           // Warm the pipeline so the balance is already known when the popup reopens.
           refreshActiveState();
           sendResponse({ ok: true });
@@ -2779,8 +2970,16 @@ export default defineBackground({
     // Tell the freshly-connected content script the current active state so a relay
     // that loaded (or reconnected after a service-worker restart) while inactive
     // (logged out or zero balance) freezes, and a previously-frozen one resumes.
+    // A tab opened on x.com while funds are already known to be empty also gets the
+    // empty-balance notice — otherwise it would freeze with no explanation, because
+    // the funds-hub baseline was set long ago and no crossing will ever fire for it.
     computeActive().then(active => {
       try { port.postMessage({ type: 'MF_AUTH', signedIn: active }); } catch { /* ignore */ }
+      try {
+        if (fundsState && visibleTotal(fundsState) <= 0) {
+          port.postMessage({ type: 'MF_NOTIFICATION', data: { kind: 'broke' } });
+        }
+      } catch { /* ignore */ }
     });
 
     port.onMessage.addListener(message => {
@@ -2812,6 +3011,27 @@ export default defineBackground({
         return;
       }
 
+      // Click on an in-page notification: open the extension popup. This arrives over
+      // the long-lived content-script port, which preserves the click's user gesture
+      // (Chrome synthesizes one on the receiving end; Firefox and Safari accept a
+      // gesture carried this way too) — so openPopup() may legally run here, provided
+      // it is called promptly with no awaits in between. Where the browser refuses
+      // (notably stable Firefox, and Safari's intermittent false "already open"), the
+      // user still needs somewhere to go, so fall back to the top-up flow in a tab.
+      if (message.type === "MF_OPEN_POPUP") {
+        console.log(`[background] MF_OPEN_POPUP: notification clicked`);
+        (async () => {
+          try {
+            const api = toolbarAction();
+            if (typeof api?.openPopup === 'function') await api.openPopup();
+            else openTopUpFallback();
+          } catch {
+            openTopUpFallback();
+          }
+        })();
+        return;
+      }
+
       if (message.type === "REFRESH_BATCH") {
         const { batchId, newBatchId, locale: msgLocale } = message.data;
 
@@ -2838,19 +3058,30 @@ export default defineBackground({
       }
 
       if (message.type === "BATCH_REFRESH_FORCE") {
-        const { batchId, newBatchId, locale: msgLocale } = message.data;
+        const { batchId, tweetId: targetTweetId, newBatchId, locale: msgLocale } = message.data;
 
-        // Retrieve stored tweets FIRST, before clearing the batch cache,
-        // otherwise batchTweets.get(batchId) returns nothing and we fall
-        // back to the relay's capturedTweets (all timeline tweets).
-        const tweets = batchTweets.get(batchId) ?? (message.data.tweets as MainTweet[] ?? []);
+        // Retrieve stored tweets FIRST, before clearing the batch cache.
+        // If targetTweetId was supplied by the click, refresh ONLY that tweet.
+        // Otherwise look in batchTweets, falling back to message.data.tweets filtered by targetTweetId.
+        let tweets: MainTweet[] = [];
+        if (targetTweetId) {
+          const cached = tweetCache.get(targetTweetId);
+          if (cached) {
+            tweets = [cached];
+          } else {
+            const list = batchTweets.get(batchId) ?? (message.data.tweets as MainTweet[] ?? []);
+            tweets = list.filter(t => t.id === targetTweetId);
+          }
+        } else {
+          tweets = batchTweets.get(batchId) ?? (message.data.tweets as MainTweet[] ?? []);
+        }
 
         // Clear classifications and research cache for this batch
         clearBatch(batchId);
         researchCache.clear();
 
         if (tweets.length === 0) {
-          console.log(`[background] BATCH_REFRESH_FORCE: no tweets found for ${batchId}`);
+          console.log(`[background] BATCH_REFRESH_FORCE: no tweets found for ${batchId} (targetTweetId=${targetTweetId ?? 'none'})`);
           return;
         }
 
@@ -2866,6 +3097,22 @@ export default defineBackground({
           dbFetchPromises.delete(id);
           reResearchedTweetIds.delete(id);
           localizedHighlightLocales.delete(id);
+          factCheckAllTweetIds.delete(id);
+          // Purge any queued waitlist items or in-flight refreshes for this tweet
+          // so refreshing never auto-triggers research or classifications on claims.
+          for (let i = factCheckWaitlist.length - 1; i >= 0; i--) {
+            if (factCheckWaitlist[i].classificationId === id) {
+              const key = `${id}:${factCheckWaitlist[i].claimText}`;
+              factCheckWaitlistKeys.delete(key);
+              factCheckWaitlist.splice(i, 1);
+            }
+          }
+          for (const k of Array.from(ongoingClaimRefreshes)) {
+            if (k.startsWith(`${id}:`)) ongoingClaimRefreshes.delete(k);
+          }
+          for (const k of Array.from(abandonedFactCheckKeys)) {
+            if (k.startsWith(`${id}:`)) abandonedFactCheckKeys.delete(k);
+          }
           const sub = tweetSubs.get(id);
           if (sub) { sub.close(); tweetSubs.delete(id); }
         };
@@ -2986,12 +3233,36 @@ export default defineBackground({
 
       if (message.type === "PROCESS_ON_HOLD") {
         const { tweetId, locale: msgLocale, displayedSide, displayedText } = message.data;
+        const locale = msgLocale ?? getUiLocale();
         const entry = onHoldTweets.get(tweetId);
         if (!entry) {
-          console.log(`[background] PROCESS_ON_HOLD: no on-hold tweet for ${tweetId}`);
+          // No entry YET — not a dead tap. The usual cause is a worker restart
+          // after backgrounding/long idle: the relay reconnects and re-sends the
+          // batch, but this tap won the race and arrived before hashing + DB
+          // lookup recreated the entry. Park the intent; flushPendingProcessOnHold
+          // honors it the moment the entry is created. (Dropping it here is what
+          // made the button spin for 30s and silently revert.)
+          const existing = pendingProcessOnHold.get(tweetId);
+          if (existing) clearTimeout(existing.timer);
+          console.log(`[background] PROCESS_ON_HOLD: no on-hold tweet for ${tweetId} yet, parking tap`);
+          pendingProcessOnHold.set(tweetId, {
+            locale,
+            displayedSide: displayedSide ?? null,
+            displayedText: displayedText ?? null,
+            timer: setTimeout(() => {
+              pendingProcessOnHold.delete(tweetId);
+              console.log(`[background] PROCESS_ON_HOLD: parked tap for ${tweetId} timed out, dropped`);
+            }, PENDING_PROCESS_ON_HOLD_TIMEOUT_MS),
+          });
           return;
         }
-        const locale = msgLocale ?? getUiLocale();
+        // A live tap supersedes any stale parked one (e.g. parked during a prior
+        // run that since completed) — the entry is claimed below either way.
+        const stalePending = pendingProcessOnHold.get(tweetId);
+        if (stalePending) {
+          pendingProcessOnHold.delete(tweetId);
+          clearTimeout(stalePending.timer);
+        }
         // Claim it immediately so a double-click can't start two pipelines.
         onHoldTweets.delete(tweetId);
         console.log(`[background] PROCESS_ON_HOLD: ${tweetId}`);
@@ -3196,18 +3467,41 @@ export default defineBackground({
         const dbClaims = dbEntry?.dbClaims;
         const displayedLocale = unheld.textLocale ?? tweet?.destinationLanguage ?? tweet?.sourceLanguage;
 
+        const clearLocalizingHighlights = () => {
+          const cur = classificationCache.get(tweetId)?.classification;
+          if (cur?.localizingHighlights) {
+            const cleared = { ...cur, localizingHighlights: false };
+            cacheClassification(cleared, anyBatchId);
+            broadcastClassification(cleared);
+          }
+        };
+
         if (displayedLocale && tweet) {
           const tweetText = unheld.translatedText ?? tweet.translatedText ?? tweet.text;
           if (dbClaims) {
             // DB hit path: use cached claims for highlight localization
-            gatedSpend(() => localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, unheld, locale, mergeHighlightsFor(unheld))
-              .catch(e => console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e)));
+            gatedSpend(async () => {
+              try {
+                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, unheld, locale, mergeHighlightsFor(unheld));
+              } catch (e) {
+                console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e);
+                clearLocalizingHighlights();
+              }
+            });
           } else {
             // Freshly classified: derive claims from classification for localization
             const clsDbClaims = claimsToDbClaims(unheld);
-            gatedSpend(() => localizeHighlights(tweetId, tweet, tweetText, displayedLocale, clsDbClaims, unheld, locale, mergeHighlightsFor(unheld))
-              .catch(e => console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e)));
+            gatedSpend(async () => {
+              try {
+                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, clsDbClaims, unheld, locale, mergeHighlightsFor(unheld));
+              } catch (e) {
+                console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e);
+                clearLocalizingHighlights();
+              }
+            });
           }
+        } else {
+          clearLocalizingHighlights();
         }
 
         // Also fire re-research if we have DB claims. Claim/reasoning translation is

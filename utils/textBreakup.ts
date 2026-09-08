@@ -211,6 +211,12 @@ function resolveOverlaps(matches: ClaimMatch[]): ClaimMatch[] {
  * Resolution is intentionally limited to exact key → base language. It NEVER bridges
  * different primary languages (that would risk applying one language's offsets to
  * another's text); those cases stay handled by the translate-fact-checks flow.
+ *
+ * NOTE on DB keys: persisted highlight keys are "<locale>:<sha256-of-tweet-text>"
+ * (see the preclassify-tweets / highlight-claims workers), but the background strips
+ * them back to bare-locale keys when the payload arrives (payloadToClaim), keeping
+ * only the revision matching the displayed text — so by the time ranges reach this
+ * function the hashes are already gone and this lookup stays exactly as it was.
  */
 export function resolveHighlightRange(
     highlight: Record<string, [number, number]> | undefined,
@@ -225,6 +231,113 @@ export function resolveHighlightRange(
         }
     }
     return undefined;
+}
+
+/** Synchronous SHA-256 of a string's raw UTF-8 bytes, as lowercase hex. Byte-identical
+ *  to crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)) and to the sha256Hex
+ *  helpers in the preclassify-tweets / highlight-claims workers, so a client-side hash of
+ *  a displayed tweet text matches the "<locale>:<hash>" key the worker persisted.
+ *  Sync (not WebCrypto) because highlight stripping runs inside the synchronous merge
+ *  paths, which must stay atomic — an await there would let two rapid payloads
+ *  interleave and clobber each other's merge. Hashing a tweet body takes microseconds. */
+export function sha256HexSync(input: string): string {
+    const bytes = new TextEncoder().encode(input);
+    const bitLen = bytes.length * 8;
+    // Padded length: multiple of 64 with room for the 0x80 byte + 8-byte length.
+    const paddedLen = (((bytes.length + 8) >> 6) + 1) << 6;
+    const padded = new Uint8Array(paddedLen);
+    padded.set(bytes);
+    padded[bytes.length] = 0x80;
+    const view = new DataView(padded.buffer);
+    // 64-bit big-endian length; tweet bodies never reach 2^32 bits, so the high word is 0.
+    view.setUint32(paddedLen - 4, bitLen >>> 0);
+
+    const rotr = (x: number, n: number): number => (x >>> n) | (x << (32 - n));
+    const K = [
+        0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+        0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+        0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+        0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+        0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+        0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+        0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+        0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+    ];
+    let h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a;
+    let h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+    const w = new Uint32Array(64);
+    for (let off = 0; off < paddedLen; off += 64) {
+        for (let i = 0; i < 16; i++) w[i] = view.getUint32(off + i * 4);
+        for (let i = 16; i < 64; i++) {
+            const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+            const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+            w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+        }
+        let a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+        for (let i = 0; i < 64; i++) {
+            const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+            const ch = (e & f) ^ (~e & g);
+            const t1 = (h + S1 + ch + K[i] + w[i]) | 0;
+            const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+            const maj = (a & b) ^ (a & c) ^ (b & c);
+            const t2 = (S0 + maj) | 0;
+            h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+        }
+        h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0;
+        h4 = (h4 + e) | 0; h5 = (h5 + f) | 0; h6 = (h6 + g) | 0; h7 = (h7 + h) | 0;
+    }
+    return [h0, h1, h2, h3, h4, h5, h6, h7]
+        .map(x => (x >>> 0).toString(16).padStart(8, '0'))
+        .join('');
+}
+
+/** Split a persisted highlight key "<locale>:<sha256-of-tweet-text>" into its locale
+ *  prefix and hash. Returns null for legacy bare-locale keys (rows written before
+ *  hashing) and live-stream keys, which carry no hash. The colon is safe to split on:
+ *  it never appears in a BCP-47 tag. */
+export function splitHighlightKey(key: string): [string, string] | null {
+    const idx = key.lastIndexOf(':');
+    if (idx <= 0) return null;
+    const hash = key.slice(idx + 1);
+    if (!/^[0-9a-f]{64}$/.test(hash)) return null;
+    return [key.slice(0, idx), hash];
+}
+
+/** Which text revision a stripped highlight key must bind to. `displayed` is the
+ *  sha256HexSync of the body the claim's tweet is currently showing (best guess —
+ *  may be null when unknown); `known` holds the hashes of every body the client
+ *  holds for the tweet (original + translation + quoted + classification body). */
+export type RevisionGate = {
+    displayed: string | null;
+    known: Set<string>;
+};
+
+/** Strip revision hashes from a DB highlight object, re-emitting survivors under
+ *  their bare locale prefix. Per locale prefix, three tiers — first match wins:
+ *    1. a "<locale>:<hash>" key whose hash is the DISPLAYED body;
+ *    2. a "<locale>:<hash>" key whose hash is another HELD body (e.g. the original
+ *       while the translation shows — still genuine, and instant if the user
+ *       toggles back);
+ *    3. a legacy bare "<locale>" key (rows written before hashing).
+ *  Unknown-hash revisions (stale translations/edits, appended forever server-side)
+ *  are dropped — the missing-highlight checks downstream then route through the
+ *  Translate Fact-Checks flow. Hash equality IS string equality here, so no locale
+ *  guessing is involved. */
+export function selectHighlightRevision(
+    highlight: Record<string, [number, number]>,
+    gate: RevisionGate
+): Record<string, [number, number]> {
+    const best = new Map<string, { tier: number; val: [number, number] }>();
+    for (const [key, val] of Object.entries(highlight)) {
+        const split = splitHighlightKey(key);
+        const prefix = split ? split[0] : key;
+        const tier = !split ? 0 : split[1] === gate.displayed ? 2 : gate.known.has(split[1]) ? 1 : -1;
+        if (tier < 0) continue;
+        if ((best.get(prefix)?.tier ?? -1) <= tier) best.set(prefix, { tier, val });
+    }
+    const out: Record<string, [number, number]> = {};
+    for (const [prefix, { val }] of best) out[prefix] = val;
+    return out;
 }
 
 /**
@@ -248,10 +361,25 @@ export function breakupWithHighlights(
         const range = resolveHighlightRange(highlight, locale);
         if (!range) continue;
 
-        const [start, end] = range;
-        // Drop ranges that don't address real text: stored offsets come from a worker
-        // and may refer to a different revision of the tweet body.
-        if (start < 0 || end > tweetText.length || start >= end) continue;
+        let [start, end] = range;
+        // Stored offsets come from a worker revision of the tweet body that can
+        // drift by a char or two (trailing t.co strip, entity decode, whitespace).
+        // Clamp a small overshoot so the final claim doesn't fall into the
+        // fallback box; drop only what can't be salvaged (wrong revision).
+        if (start < 0) {
+            if (start < -30) continue;
+            start = 0;
+        }
+        if (end > tweetText.length) {
+            const overshoot = end - tweetText.length;
+            if (overshoot <= 30) {
+                console.log(`[misinfo] breakupWithHighlights: clamped end ${end} to ${tweetText.length} (overshoot ${overshoot}) for claim "${claims[i].text.slice(0, 80)}..."`);
+                end = tweetText.length;
+            } else {
+                continue;
+            }
+        }
+        if (start >= tweetText.length || start >= end) continue;
         matches.push({ claimIndex: i, start, end });
     }
 

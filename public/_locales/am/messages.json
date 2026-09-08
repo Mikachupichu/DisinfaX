@@ -204,6 +204,14 @@
     "message": "ተመለስ",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "አሳይ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "ደብቅ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "አጣራ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -263,12 +271,19 @@
   "factCheckAllButton": {
     "message": "ሁሉንም አጣራ"
   },
+  "factCheckButton": {
+    "message": "አጣራ"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX ስህተት ሊፈጠር ይችላል። መረጃውን ደግመው ያረጋግጡ።",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "ቀሪ ሂሳብዎ በጣም ዝቅተኛ ነው። ለመቀጠል እባክዎ ሂሳብዎን ይሙሉ።"
+  },
+  "balanceEmpty": {
+    "message": "ቀሪ ሂሳብዎ ባዶ ነው። እባክዎ በ DisinfaX popup ሂሳብዎን ይሙሉ።",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "መለያዎ ተይዟል።"

@@ -163,6 +163,14 @@
     "message": "Tagasi",
     "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
   },
+  "revealButton": {
+    "message": "Näita",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Peida",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
   "disinfactButton": {
     "message": "Faktikontroll",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
@@ -263,12 +271,19 @@
   "factCheckAllButton": {
     "message": "Kontrolli kõike"
   },
+  "factCheckButton": {
+    "message": "Kontrolli"
+  },
   "aiDisclaimer": {
     "message": "DisinfaX võib teha vigu. Kontrolli teavet üle.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
   },
   "errBalanceTooLow": {
     "message": "Sinu saldo on liiga madal. Lae kontot jätkamiseks."
+  },
+  "balanceEmpty": {
+    "message": "Sinu saldo on tühi. Lisa oma saldose raha DisinfaX-i hüpikakna kaudu.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
   },
   "errAccountSuspended": {
     "message": "Sinu konto on peatatud."
