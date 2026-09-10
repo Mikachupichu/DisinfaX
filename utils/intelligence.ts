@@ -21,6 +21,13 @@ import { MainTweet } from "../data/Tweets";
 import { Classification, Claim, QuotedClassification, Source, formatVerdict } from "../data/Classification";
 import { supabase, ensureFreshSession } from "./supabase";
 import { ERROR_CODES, parseWorkerErrorMessage, type ParsedWorkerError } from "./errorCodes";
+// Pure source helpers live in ./sources (re-exported here so existing importers
+// are unaffected). They MUST stay in that dependency-free module: importing them
+// from here would drag the Supabase client into content-script bundles
+// (relay → injecting → intelligence → supabase), where each page load builds a
+// GoTrueClient that can wipe the shared session slot. See utils/sources.ts.
+import { normalizeSources, deduplicateSources } from "./sources";
+export { normalizeSources, deduplicateSources };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Auth, and routing worker failures to the right place
@@ -948,66 +955,6 @@ function extractResearchFromRegex(text: string): { mainResult: any, affectedResu
     if (mainResult.veracity === undefined) mainResult.veracity = 0;
 
     return { mainResult, affectedResults: [] };
-}
-
-/** Normalize raw sources from the model into Source[].
- *  Supports:
- *    - Dictionary {url: title} (classify worker output)
- *    - Dictionary {title: url} (legacy)
- *    - Array of strings or {url, title, domain} objects
- *  Heuristic: if a dictionary key looks like an HTTP URL, treat it as {url: title}. */
-export function normalizeSources(sources: unknown): Source[] {
-  if (!sources) return [];
-  if (typeof sources === 'object' && !Array.isArray(sources)) {
-    const result: Source[] = [];
-    for (const [key, val] of Object.entries(sources as Record<string, unknown>)) {
-      if (typeof val === 'string') {
-        if (key.match(/^https?:\/\//)) {
-          result.push({ url: key, title: val });
-        } else {
-          result.push({ title: key, url: val });
-        }
-      }
-    }
-    return result;
-  }
-  if (!Array.isArray(sources)) return [];
-  const result: Source[] = [];
-  for (const s of sources) {
-    if (typeof s === 'string') {
-      result.push({ url: s, title: extractDomainFromUrl(s) });
-    } else if (typeof s === 'object' && s !== null) {
-      const obj = s as Record<string, unknown>;
-      if (obj.url || obj.title || obj.domain) {
-        result.push({
-          url: obj.url as string | undefined,
-          title: (obj.title as string | undefined) ?? (obj.domain as string | undefined)
-        });
-      }
-    }
-  }
-  return result;
-}
-
-/** Extract a human-readable domain from a URL string (e.g. "https://www.xinhua.com/..." → "xinhua.com"). */
-function extractDomainFromUrl(urlStr: string): string {
-  try {
-    return new URL(urlStr).hostname.replace(/^www\./, '');
-  } catch {
-    return urlStr;
-  }
-}
-
-/** Deduplicate sources by URL, keeping the first occurrence. */
-function deduplicateSources(sources: Source[] | undefined): Source[] {
-  if (!sources) return [];
-  const seen = new Set<string>();
-  return sources.filter(s => {
-    const key = s.url ?? s.title ?? '';
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: string[], claimId?: string, onBalanceError?: () => void): AsyncGenerator<ResearchUpdate> {

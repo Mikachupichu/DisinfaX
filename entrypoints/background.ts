@@ -2772,6 +2772,7 @@ export default defineBackground({
       message?.type === 'MF_NATIVE_PREPARE_TOPUP' ||
       message?.type === 'MF_NATIVE_HANDOFF_TX' ||
       message?.type === 'MF_NATIVE_CLEAR_HANDOFF_TX' ||
+      message?.type === 'MF_NATIVE_CLEAR_ACCOUNT' ||
       message?.type === 'MF_NATIVE_SYNC_ACCOUNT' ||
       message?.type === 'MF_NATIVE_FINISH_TX' ||
       message?.type === 'MF_NATIVE_PENDING_TX'
@@ -2799,6 +2800,8 @@ export default defineBackground({
               ? { action: 'HANDOFF_TRANSACTION' }
             : message.type === 'MF_NATIVE_CLEAR_HANDOFF_TX'
               ? { action: 'CLEAR_HANDOFF_TRANSACTION', transactionId: message.transactionId }
+            : message.type === 'MF_NATIVE_CLEAR_ACCOUNT'
+              ? { action: 'CLEAR_ACCOUNT' }
             : message.type === 'MF_NATIVE_SYNC_ACCOUNT'
               ? { action: 'SYNC_ACCOUNT', userId: message.userId, balance: message.balance }
             : { action: 'PREPARE_TOPUP', amount: message.amount, userId: message.userId, balance: message.balance };

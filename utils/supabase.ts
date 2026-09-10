@@ -23,16 +23,56 @@ const chromeStorageAdapter = {
   },
 };
 
+/** Whether this JS context is allowed to own the authenticated session.
+ *
+ *  Content scripts must NEVER construct a persisting auth client: they share the
+ *  session slot with the popup/background, and each page load runs
+ *  `_recoverAndRefresh()` against it — a racy read there wipes the slot via
+ *  `_removeSession()` (no server call), logging the user out with zero server
+ *  logs. Content scripts need no Supabase API at all (relay/capture only pass
+ *  messages; auth headers are minted in the background).
+ *
+ *  Detection is by URL because content scripts have an x.com href while the
+ *  popup/background/options pages do not. Best-effort: anything unrecognized
+ *  keeps the session-owning client, so a detection miss degrades to today's
+ *  behaviour rather than signing anyone out. */
+function ownsAuthSession(): boolean {
+  try {
+    const href = (globalThis as { location?: { href?: unknown } }).location?.href;
+    if (typeof href !== 'string' || !href) return true;
+    // x.com pages (MAIN or isolated world alike) must not own the session.
+    // The OAuth/Stripe redirect tabs also land on x.com and are handled by the
+    // background after the harvester forwards them — also not owners.
+    if (href.includes('x.com/') || href === 'https://x.com' || href.startsWith('https://x.com?')) return false;
+    return true;
+  } catch {
+    return true;
+  }
+}
+
 /** Single shared Supabase client for the whole extension. Both the popup (auth UI)
  *  and the background service worker (Realtime subscriptions + RPCs) use this so they
- *  share one authenticated session. */
+ *  share one authenticated session.
+ *
+ *  In content-script contexts this is a sessionless client instead
+ *  (persistSession:false → private in-memory storage, autoRefreshToken:false):
+ *  it can never read, write, or wipe the shared slot. Defence in depth behind
+ *  the utils/sources.ts severance — even if a future import re-drags this module
+ *  into a content bundle, no client there can touch the session. */
+const sessionOwner = ownsAuthSession();
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: chromeStorageAdapter,
-    autoRefreshToken: true,   // Automatically refreshes tokens in the background
-    persistSession: true,     // Keeps session locked into local storage
-    detectSessionInUrl: false, // Prevents extension from misinterpreting main tab window URLs
-  },
+  auth: sessionOwner
+    ? {
+        storage: chromeStorageAdapter,
+        autoRefreshToken: true,   // Automatically refreshes tokens in the background
+        persistSession: true,     // Keeps session locked into local storage
+        detectSessionInUrl: false, // Prevents extension from misinterpreting main tab window URLs
+      }
+    : {
+        persistSession: false,    // Private in-memory storage: the shared slot is untouched
+        autoRefreshToken: false,  // No timers, no _recoverAndRefresh rotation attempts
+        detectSessionInUrl: false,
+      },
 });
 
 let refreshInFlight: Promise<void> | null = null;

@@ -371,7 +371,21 @@ export default function App() {
 
   const handleSignOut = async () => {
     setLoading(true);
-    await supabase.auth.signOut();
+    // Local scope only: the default is 'global', which revokes EVERY session on the
+    // account — signing out on one device silently logged the user out everywhere else.
+    // A Sign Out button should end the session on this device only.
+    await supabase.auth.signOut({ scope: 'local' });
+    // Direct revocation alongside the background relay (storage.onChanged →
+    // refreshActiveState → clearNativeAccount): two independent paths because
+    // neither is guaranteed — the background may be suspended at this moment.
+    // Fire-and-forget + Safari-only: sign-out completes identically if the
+    // host is unreachable; worst case is today's relay-only behaviour.
+    if (import.meta.env.SAFARI) {
+      void callNativeHost(
+        { action: 'CLEAR_ACCOUNT' },
+        { type: 'MF_NATIVE_CLEAR_ACCOUNT' },
+      ).catch(() => { /* best-effort; the background relay covers */ });
+    }
     setUser(null);
     setLoading(false);
   };
