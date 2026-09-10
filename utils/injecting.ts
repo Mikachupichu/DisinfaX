@@ -20,7 +20,7 @@
  *    state rather than by one-shot construction.
  */
 import { Classification, QuotedClassification, Claim, TextSegment, Source, sameLanguage } from "../data/Classification";
-import { normalizeSources } from "./intelligence";
+import { normalizeSources } from "./sources";
 import { breakupTweetText, breakupWithHighlights, resolveHighlightRange } from "./textBreakup";
 import { mfBus } from "./mfBus";
 import { codeToMessageKey } from "./errorCodes";

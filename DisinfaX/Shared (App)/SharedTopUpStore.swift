@@ -77,6 +77,16 @@ enum SharedTopUpStore {
     /// stops the app selling.
     private static let accountMaxAge: TimeInterval = 7 * 24 * 60 * 60
 
+    /// How fresh the stamp must be before the app will SELL. Separate from
+    /// accountMaxAge above: that is the outer backstop for a dead extension,
+    /// this is the everyday gate. The background rewrites the stamp on every
+    /// balance change and the popup on every open, so a healthy setup stays
+    /// seconds old; anything older means the extension has not reported in a
+    /// while — possibly signed out with nothing alive to send the clear — and
+    /// selling on it would charge against a stale identity. Failing closed
+    /// costs at most a trip to the popup.
+    private static let accountFreshnessWindow: TimeInterval = 60
+
     private enum Key {
         static let userId = "topup.userId"
         static let accountSyncedAt = "topup.accountSyncedAt"
@@ -126,6 +136,22 @@ enum SharedTopUpStore {
         }
         return id
     }
+
+    /// The user id, gated on FRESHNESS as well as presence: non-nil only when the
+    /// extension reported in within accountFreshnessWindow. `userId` answers "who
+    /// was last reported"; this answers "who may be sold to right now". The
+    /// distinction matters because revocation is a best-effort push (CLEAR_ACCOUNT
+    /// needs a live extension process to send it), while staleness is observable
+    /// locally — the moment the stamp goes quiet, selling stops, no message needed.
+    static var freshUserId: String? {
+        guard let d = defaults, let id = d.string(forKey: Key.userId), !id.isEmpty else { return nil }
+        guard let stamp = d.object(forKey: Key.accountSyncedAt) as? Date else { return nil }
+        if Date().timeIntervalSince(stamp) > accountFreshnessWindow {
+            return nil
+        }
+        return id
+    }
+
 
     /// Written by the extension whenever it knows who is signed in. Stamped, so the value can
     /// expire on its own if the extension stops reporting.

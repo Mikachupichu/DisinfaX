@@ -64,11 +64,12 @@ struct TopUpView: View {
     @State private var message: String?
     @State private var messageIsError = false
 
-    // State, not `let`. These were captured once when the view was constructed, so the app kept
-    // showing the balance as it stood at launch — top up, watch the popup credit it, come back,
-    // and the app was still displaying the old figure. The extension writes the fresh value into
-    // the shared container whenever the popup sees it; the app has to actually re-read it.
-    @State private var userId: String? = SharedTopUpStore.userId
+    // State, not `let`. The balance was captured once when the view was constructed, so the app
+    // kept showing the figure as it stood at launch — top up, watch the popup credit it, come
+    // back, and the app was still displaying the old figure. The extension writes the fresh value
+    // into the shared container whenever the popup sees it; the app has to actually re-read it.
+    // (Identity is read live from the store at render and sale time instead: selling must see
+    // the stamp as it is now, not as it was at view creation.)
     @State private var balance: Double? = SharedTopUpStore.balance
 
     /// Coming back from Safari is precisely when the shared container has new values in it, and
@@ -94,7 +95,12 @@ struct TopUpView: View {
     private static let pollInterval: TimeInterval = 2
     private let ticker = Timer.publish(every: pollInterval, on: .main, in: .common).autoconnect()
 
-    private var signedIn: Bool { userId?.isEmpty == false }
+    /// Selling requires a FRESH identity, not just a present one: the stamp must
+    /// be younger than SharedTopUpStore's freshness window. The whole top-up
+    /// card (balance included) renders only on fresh — a stale figure is never
+    /// passed off as current. Failing closed costs at most a trip to the popup,
+    /// which is precisely what re-freshens it.
+    private var freshUserId: String? { SharedTopUpStore.freshUserId }
 
     var body: some View {
         ScrollView {
@@ -102,12 +108,16 @@ struct TopUpView: View {
                 header
 
                 // The top-up card appears only when a purchase could actually be credited.
-                // Without a user id from the shared container there is no account to attach
-                // `appAccountToken` to and the backend has nobody to credit, so showing an
-                // amount field would be an invitation to pay into a void. In that case the
-                // Safari instructions are the whole screen — getting the user signed in via
-                // the popup IS the next step, so it is the only thing worth showing.
-                if SharedTopUpStore.isAvailable && signedIn {
+                // Without a FRESH user id from the shared container there is no account
+                // to attach `appAccountToken` to and the backend has nobody to credit,
+                // so showing an amount field would be an invitation to pay into a void.
+                // "Fresh" rather than merely "present": revocation is a best-effort push
+                // that needs a live extension process, while staleness is observable
+                // locally — the moment the stamp goes quiet, selling stops. In that
+                // case the Safari instructions are the whole screen — opening the popup
+                // IS the next step (it re-freshens the stamp), so it is the only thing
+                // worth showing.
+                if SharedTopUpStore.isAvailable && freshUserId != nil {
                     topUpCard
                     Divider()
                 } else if !SharedTopUpStore.isAvailable {
@@ -335,7 +345,6 @@ struct TopUpView: View {
     /// does not sit above a figure that has already been updated.
     private func refreshFromStore() {
         SharedTopUpStore.reloadFromDisk()
-        let latestUserId = SharedTopUpStore.userId
         let latestBalance = SharedTopUpStore.balance
 
         if latestBalance != balance {
@@ -349,7 +358,6 @@ struct TopUpView: View {
         } else if pendingCredit != nil {
             pendingTicks += 1
         }
-        userId = latestUserId
         balance = latestBalance
     }
 
@@ -427,7 +435,17 @@ struct TopUpView: View {
     // MARK: - Purchase
 
     private func purchase() async {
-        guard let userId, !userId.isEmpty else { return }
+        // Double-check freshness at the moment of sale, not just at render: the
+        // stamp can age past the window between the view appearing and the user
+        // tapping. Re-reads the store rather than trusting @State, and refreshes
+        // so the next render shows the signed-out screen instead of a dead button.
+        guard let saleUserId = SharedTopUpStore.freshUserId, !saleUserId.isEmpty else {
+            refreshFromStore()
+            message = String(localized: "Your session needs refreshing — open the DisinfaX popup in Safari, then try again.")
+            messageIsError = true
+            return
+        }
+        let userId = saleUserId
         guard let value = Int(amountText), value >= Self.minAmount, value <= Self.maxAmount else {
             message = String(localized: "Enter a whole dollar amount between 1 and 100.")
             messageIsError = true
