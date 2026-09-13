@@ -2291,7 +2291,7 @@ export default defineBackground({
    *  parallel researches. If the backend formula changes first, the backend simply
    *  rejects any over-admit (caught as a rare 402). */
   function computeClassificationHold(mainClaim: string, sources: string[] | undefined): number {
-    const GEMINI_IN = 1.50, GEMINI_OUT = 7.50, SEARCH_FEE = 0.016, MAX_SEARCHES = 3, OUTPUT_LIMIT = 2000, GENERATIONS = 2, MARGIN = 1.5, HOLD_CAP = 0.15;
+    const GEMINI_IN = 0.75, GEMINI_OUT = 3.75, SEARCH_FEE = 0.016, MAX_SEARCHES = 3, OUTPUT_LIMIT = 2000, GENERATIONS = 2, MARGIN = 1.5, HOLD_CAP = 0.15;
     const srcText = sources && sources.length ? sources.join("\n") : "";
     const estIn = estimateTokens(mainClaim) + estimateTokens(srcText);
     return Math.min((((estIn * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) * GENERATIONS + (SEARCH_FEE * MAX_SEARCHES)) * MARGIN, HOLD_CAP);
