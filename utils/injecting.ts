@@ -1135,10 +1135,11 @@ function factCheckedButtonClaimsHtml(classification: Classification, isRTL: bool
         const badgeColor = cl.confidence !== undefined && cl.veracity !== undefined
             ? confidenceRgba(cl.confidence, 1, cl.veracity)
             : 'rgb(180,180,180)';
-        const badgeLabel = cl.confidence !== undefined && cl.veracity !== undefined
-            ? verdictLabel(cl.confidence, cl.veracity)
-            : pickResearchingWord(`${classification.id}:${cl.text}`);
-        return `<div class="mf-fc-btn-claim" style="display:flex;align-items:center;${isRTL ? 'flex-direction:row-reverse;' : 'flex-direction:row;'}gap:6px;margin:2px 0;white-space:nowrap;width:100%;cursor:pointer;"><span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(0,0,0,0.5);color:${badgeColor};white-space:nowrap;flex-shrink:0;">${badgeLabel}</span><span style="font-size:11px;${isRTL ? 'text-align:right;' : 'text-align:left;'}overflow:hidden;text-overflow:ellipsis;max-width:280px;opacity:0.95;">${escaped}</span></div>`;
+        const badgeHtml = (cl.confidence !== undefined && cl.veracity !== undefined)
+            ? verdictBadgeHtml(cl.confidence, cl.veracity)
+            : escapeHtml(pickResearchingWord(`${classification.id}:${cl.text}`));
+        const badgeClass = cl.confidence !== undefined && cl.veracity !== undefined ? ` class="${VERDICT_BADGE_CLASS}"` : '';
+        return `<div class="mf-fc-btn-claim" style="display:flex;align-items:center;${isRTL ? 'flex-direction:row-reverse;' : 'flex-direction:row;'}gap:6px;margin:2px 0;white-space:nowrap;width:100%;cursor:pointer;"><span${badgeClass} style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(0,0,0,0.5);color:${badgeColor};white-space:nowrap;flex-shrink:0;">${badgeHtml}</span><span style="font-size:11px;${isRTL ? 'text-align:right;' : 'text-align:left;'}overflow:hidden;text-overflow:ellipsis;max-width:280px;opacity:0.95;">${escaped}</span></div>`;
     });
     return `<div class="mf-fc-btn-claims" style="display:flex;flex-direction:column;align-items:${isRTL ? 'flex-end' : 'flex-start'};gap:2px;max-width:360px;">${rows.join('')}</div>`;
 }
@@ -2108,6 +2109,582 @@ function verdictLabel(probability: number | undefined, veracity?: number, seed?:
         : t("badgeAdjVerdictAdj2", [t("adj" + verKey), verdict, t("adj" + probKey)]);
 }
 
+/** Which of a badge template's positional arguments holds which piece of the label. */
+type BadgeSlotRole = "conf" | "ver" | "verdict";
+
+/** Stand-ins for a template's arguments while its literal text is read back. These are
+ *  control characters, so no locale string can contain one and the split stays exact. */
+const BADGE_SENTINELS = ["\u0001", "\u0002", "\u0003"] as const;
+
+/** The score as a whole percentage, for the hover swap. Veracity's sign is dropped:
+ *  the verdict word already says true or false. */
+function scorePercent(score: number): string {
+    return `${Math.min(100, Math.max(0, Math.round(Math.abs(score) * 100)))}%`;
+}
+
+/** Verdict badges whose adjectives swap to percentages on hover are marked with this
+ *  class. Separate from mf-inline-badge, which carries the badge's own chrome and is
+ *  not applied to the Fact-Checked button's badges. */
+const VERDICT_BADGE_CLASS = "mf-verdict-badge";
+
+/** Read a rendered badge template back as its literal runs and its argument slots.
+ *
+ *  Each argument is substituted as a sentinel rather than as its own text, so what comes
+ *  back are exactly the literals this locale puts between the pieces (" to be " in en).
+ *  Nothing about spacing or word order is assumed here. */
+function parseBadgeTemplate(key: string, roles: BadgeSlotRole[]): { role: BadgeSlotRole | null; text: string }[] {
+    const rendered = t(key, roles.map((_, i) => BADGE_SENTINELS[i]));
+    const pieces: { role: BadgeSlotRole | null; text: string }[] = [];
+    let literal = "";
+    for (const ch of rendered) {
+        const idx = BADGE_SENTINELS.indexOf(ch as (typeof BADGE_SENTINELS)[number]);
+        if (idx >= 0 && idx < roles.length) {
+            pieces.push({ role: null, text: literal }, { role: roles[idx], text: "" });
+            literal = "";
+        } else {
+            literal += ch;
+        }
+    }
+    pieces.push({ role: null, text: literal });
+    return pieces;
+}
+
+/** The adjectives, verdict word and locale template a badge should show for a pair of
+ *  scores. Mirrors verdictLabel() branch for branch so the two never disagree. */
+type BadgeParts = {
+    /** Template to lay the badge out with, plus the role each of its positional
+     *  arguments plays. Null when no adjective applies and the badge is a bare word. */
+    template: { key: string; roles: BadgeSlotRole[] } | null;
+    verdict: string;
+    confAdj: string | null;
+    verAdj: string | null;
+};
+
+function verdictBadgeParts(probability: number, veracity?: number): BadgeParts {
+    const trueLabel = t("verdictTrue");
+    const falseLabel = t("verdictFalse");
+
+    // Below 0.2 the model won't commit to a direction, whatever the veracity says.
+    if (probability < 0.2) {
+        return { template: null, verdict: t("verdictUnknown"), confAdj: null, verAdj: null };
+    }
+
+    if (veracity === undefined) {
+        // Research has only landed one score: its magnitude reads as likelihood, and it
+        // takes the template's single adjective slot, ahead of the verdict word.
+        const abs = Math.abs(probability);
+        let likelihoodKey: string | null;
+        if (abs >= 0.9) likelihoodKey = null;
+        else if (abs >= 0.8) likelihoodKey = "VeryLikely";
+        else if (abs >= 0.5) likelihoodKey = "Likely";
+        else likelihoodKey = "Possibly";
+        return {
+            template: likelihoodKey ? { key: "badgeAdjVerdict", roles: ["conf", "verdict"] } : null,
+            verdict: probability >= 0 ? trueLabel : falseLabel,
+            confAdj: likelihoodKey ? t("adj" + likelihoodKey) : null,
+            verAdj: null,
+        };
+    }
+
+    let probKey: string | null = null;
+    if (probability >= 0.9) probKey = null;
+    else if (probability >= 0.8) probKey = "VeryLikely";
+    else if (probability >= 0.5) probKey = "Likely";
+    else probKey = "Possibly";
+
+    const absVer = Math.abs(veracity);
+    let verKey: string | null = null;
+    if (absVer >= 0.9) verKey = null;
+    else if (absVer >= 0.8) verKey = "Mostly";
+    else if (absVer >= 0.5) verKey = "Arguably";
+    else if (absVer >= 0.2) verKey = "Partially";
+    else verKey = "Equivocally";
+
+    // A veracity of exactly 0 reads as "false", matching formatVerdict/payloadToClaim.
+    const parts: BadgeParts = {
+        template: null,
+        verdict: veracity > 0 ? trueLabel : falseLabel,
+        confAdj: probKey ? t("adj" + probKey) : null,
+        verAdj: verKey ? t("adj" + verKey) : null,
+    };
+    if (probKey && verKey) {
+        parts.template = {
+            key: probKey === "VeryLikely" ? "badgeAdjVerdictAdj2Verbose" : "badgeAdjVerdictAdj2",
+            roles: ["ver", "verdict", "conf"],
+        };
+    } else if (probKey) {
+        parts.template = { key: "badgeVerdictAdj", roles: ["verdict", "conf"] };
+    } else if (verKey) {
+        parts.template = { key: "badgeAdjVerdict", roles: ["ver", "verdict"] };
+    }
+    return parts;
+}
+
+/** Build a claim badge's inner HTML, with the confidence and veracity adjectives in slots
+ *  that swap to their percentage on hover.
+ *
+ *  Every locale puts the confidence adjective, then the veracity adjective, then the
+ *  verdict word, so the template's literals can be handed to the slot they follow as that
+ *  slot's trailing glue. A slot therefore carries its own separator: while it is hidden
+ *  the separator goes with it, and the badge reads exactly like the plain verdictLabel()
+ *  string. A slot holding no adjective (a score of 0.9 or better gets no qualifier) stays
+ *  out of the layout until the verdict word is hovered, when it takes only the width its
+ *  percentage needs. */
+function verdictBadgeHtml(probability: number | undefined, veracity?: number, seed?: string): string {
+    if (probability === undefined) return escapeHtml(pickResearchingWord(seed));
+
+    const parts = verdictBadgeParts(probability, veracity);
+    const pieces = parts.template ? parseBadgeTemplate(parts.template.key, parts.template.roles) : [];
+
+    // Walk the template in order, handing each literal run to the piece it follows.
+    type BadgeSlot = { role: "conf" | "ver"; adj: string | null; glue: string; pct: string };
+    type BadgePiece = BadgeSlot | { role: "verdict"; glue: string };
+    const order: BadgePiece[] = [];
+    let current: BadgePiece | null = null;
+    for (const piece of pieces) {
+        if (!piece.role) {
+            if (current) current.glue += piece.text;
+            continue;
+        }
+        current = piece.role === "verdict"
+            ? { role: "verdict", glue: "" }
+            : {
+                role: piece.role,
+                adj: piece.role === "conf" ? parts.confAdj : parts.verAdj,
+                glue: "",
+                pct: piece.role === "conf" ? scorePercent(probability) : scorePercent(veracity ?? 0),
+            };
+        order.push(current);
+    }
+
+    // A badge with no adjective at all ("True", "Unknown") has no template to walk, so
+    // the verdict word goes in on its own and the slots are inserted ahead of it.
+    if (!order.some(p => p.role === "verdict")) order.push({ role: "verdict", glue: "" });
+
+    // A score with no adjective still has a percentage worth showing, so its slot goes
+    // where the template would have put it, borrowing the neighbouring slot's separator
+    // (or, with no slot to copy, the plain adjective→verdict join).
+    const wanted: BadgeSlot[] = [{ role: "conf", adj: parts.confAdj, glue: "", pct: scorePercent(probability) }];
+    if (veracity !== undefined) {
+        wanted.push({ role: "ver", adj: parts.verAdj, glue: "", pct: scorePercent(veracity) });
+    }
+    for (const slot of wanted) {
+        if (order.some(p => p.role === slot.role)) continue;
+        const verAt = order.findIndex(p => p.role === "ver");
+        const at = verAt >= 0 ? verAt : order.findIndex(p => p.role === "verdict");
+        const neighbour = order[at];
+        slot.glue = at >= 0 && neighbour && neighbour.role !== "verdict" ? neighbour.glue : verdictGlueFallback();
+        order.splice(at < 0 ? order.length : at, 0, slot);
+    }
+
+    return order.map(piece => {
+        const glue = piece.glue ? `<span class="mf-badge-glue">${escapeHtml(piece.glue)}</span>` : "";
+        if (piece.role === "verdict") {
+            return `<span class="mf-badge-verdict">${escapeHtml(parts.verdict)}</span>${glue}`;
+        }
+        const adj = piece.adj === null ? "" : `<span class="mf-badge-adj">${escapeHtml(piece.adj)}</span>`;
+        const empty = piece.adj === null ? " mf-badge-empty" : "";
+        return `<span class="mf-badge-slot mf-badge-${piece.role}${empty}">`
+            + `<span class="mf-badge-stack">${adj}<span class="mf-badge-pct">${escapeHtml(piece.pct)}</span></span>`
+            + glue
+            + `</span>`;
+    }).join("");
+}
+
+/** The locale's own separator between an adjective and the verdict word, reused for a
+ *  slot the template has no position for. */
+function verdictGlueFallback(): string {
+    const pieces = parseBadgeTemplate("badgeAdjVerdict", ["conf", "verdict"]);
+    const at = pieces.findIndex(p => p.role === "conf");
+    const after = pieces[at + 1];
+    // With no slot to read from, the template key itself comes back as one literal; a
+    // plain space is the safe separator then.
+    return at >= 0 && after && after.role === null ? after.text : " ";
+}
+
+/** Set on a verdict badge whose percentages are being held open because its own hover widened
+ *  it, moving it out from under the pointer that widened it. */
+const BADGE_HOLD_CLASS = "mf-badge-held";
+
+/** Slack around a claim's boxes, in px: enough to close the leading the browser keeps
+ *  between two of its lines, not enough to reach past the claim's paragraph. */
+const CLAIM_HOVER_PAD = 4;
+
+/** How far a finger may travel and still be the tap it started as, in px — the browser's own
+ *  slop before it reads the gesture as a scroll and drops the hover under the finger. */
+const TOUCH_TAP_SLOP = 8;
+
+/** How long after a tap's touchstart its compatibility click may arrive and still count as
+ *  that tap's echo, in ms. The browser fires it ~300ms after touchend on mobile; a second
+ *  later it is a dismissal the finger aimed, not the echo of the first tap. */
+const TOUCH_COMPAT_CLICK_WINDOW = 1000;
+
+interface Box { left: number; top: number; right: number; bottom: number; }
+
+/** A badge held open against the move its own hover caused. */
+interface BadgeHold {
+    claim: HTMLElement;
+    badge: HTMLElement;
+    /** The line of the claim the hover pushed the badge off, out to the column's content
+     *  edges — where the pointer is left standing. Null when the badge only grew in place,
+     *  and the pointer is still on the badge. */
+    vacated: Box | null;
+}
+
+let badgeHold: BadgeHold | null = null;
+
+/** Last pointer position seen over the page. Boundary events name the element the pointer is
+ *  on, but a wrapped highlight has gaps between its lines where that is no element at all —
+ *  the position itself is what tells a crossing apart from a departure. */
+let lastPointer: { x: number; y: number } | null = null;
+
+/** Claim span with a preview wait currently counting down, if any. One wait at a time for
+ *  the whole page: only one preview can be open anyway, and a wait belongs to the claim the
+ *  pointer entered last — entering another claim cancels the earlier one outright rather
+ *  than letting it fire onto an abandoned claim. */
+let hoverTimer: ReturnType<typeof setTimeout> | null = null;
+let hoveredSegment: HTMLElement | null = null;
+
+/** Bounding box over every box the elements occupy, or null when none has one to measure. */
+function silhouetteOf(els: Element[]): Box | null {
+    let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity;
+    for (const el of els) {
+        for (const rect of Array.from(el.getClientRects())) {
+            if (!rect.width && !rect.height) continue;
+            left = Math.min(left, rect.left);
+            top = Math.min(top, rect.top);
+            right = Math.max(right, rect.right);
+            bottom = Math.max(bottom, rect.bottom);
+        }
+    }
+    return left === Infinity ? null : { left, top, right, bottom };
+}
+
+function withinBox(box: Box, x: number, y: number): boolean {
+    return x >= box.left - CLAIM_HOVER_PAD && x <= box.right + CLAIM_HOVER_PAD
+        && y >= box.top - CLAIM_HOVER_PAD && y <= box.bottom + CLAIM_HOVER_PAD;
+}
+
+/** Content edges of the text column an element sits in — the padding box of its nearest block
+ *  ancestor. The space past the end of a claim's line belongs to no box of the claim, yet it
+ *  is exactly where the pointer is left when a badge outgrows that line and wraps. */
+function columnEdges(el: HTMLElement): { left: number; right: number } {
+    let node: HTMLElement | null = el.parentElement;
+    while (node && getComputedStyle(node).display.indexOf("inline") === 0) node = node.parentElement;
+    const target = node ?? el;
+    const rect = target.getBoundingClientRect();
+    const style = getComputedStyle(target);
+    return {
+        left: rect.left + (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.borderLeftWidth) || 0),
+        right: rect.right - (parseFloat(style.paddingRight) || 0) - (parseFloat(style.borderRightWidth) || 0),
+    };
+}
+
+/** The line of the claim a pointer at y is standing in, as a band across the column's content
+ *  width: the space a badge left behind when its hover pushed it onto the next line. */
+function vacatedLine(claim: HTMLElement, y: number, edges: { left: number; right: number }): Box {
+    for (const rect of Array.from(claim.getClientRects())) {
+        if (y >= rect.top && y <= rect.bottom) {
+            return { left: edges.left, top: rect.top, right: edges.right, bottom: rect.bottom };
+        }
+    }
+    return { left: edges.left, top: y, right: edges.right, bottom: y };
+}
+
+/** True when a point still counts as hovering the claim even though no part of the claim is
+ *  under the pointer.
+ *
+ *  A highlight that runs over more than one line is a stack of line boxes with the browser's
+ *  leading between them. Crossing that gap leaves the element without leaving the claim, and
+ *  reading it as a departure cancelled the pending preview and dismissed the open one — so a
+ *  pointer travelling from a highlight's upper line down to its badge lost the badge unless
+ *  the crossing was made in one quick move. The gap lies inside the claim's silhouette, so
+ *  the silhouette is the test. A held badge widens that area by the space it moved out of. */
+function inClaimHoverArea(claim: HTMLElement, x: number, y: number): boolean {
+    const box = silhouetteOf([claim]);
+    if (box && withinBox(box, x, y)) return true;
+    return badgeHold !== null && badgeHold.claim === claim && inBadgeHoldArea(badgeHold, x, y);
+}
+
+/** Whether a point is inside the area a held badge keeps open: the badge as it stands now, and
+ *  — only when the hover pushed the badge onto another line — the band of the line it left, so
+ *  the pointer can travel along that line and follow the badge down. Nothing else. The hold is
+ *  the pointer staying with the badge, not the pointer staying anywhere on the claim: reaching
+ *  across the whole highlight kept every percentage up long after the pointer had left the
+ *  verdict word for the text. */
+function inBadgeHoldArea(hold: BadgeHold, x: number, y: number): boolean {
+    // A badge rebuilt under the hold is gone, box and all, and holds no space open.
+    if (!hold.badge.isConnected) return false;
+    const box = silhouetteOf([hold.badge]);
+    if (box && withinBox(box, x, y)) return true;
+    return hold.vacated !== null && withinBox(hold.vacated, x, y);
+}
+
+/** Which part of a badge a point falls in: the slot or the verdict word it belongs to, rather
+ *  than the node itself, since a swap or a shift moves no slot's contents out from under a
+ *  point that stays within it. */
+function badgePartOf(el: Element | null): Element | null {
+    return el?.closest(".mf-badge-verdict, .mf-badge-slot") ?? null;
+}
+
+/** How far into the slot beside the verdict word a tap may land and still count as the
+ *  word's tap, in px. A finger lands where it lands, and a tap that only clipped the
+ *  neighbouring slot is a near-miss, not a request for one score. */
+const TOUCH_WORD_EDGE = 10;
+
+/** The adjective slot a tap deliberately asks one score of — null when the tap asks for
+ *  the whole badge. A tap on the verdict word or an empty slot is the whole badge; so is
+ *  a tap inside a slot but within TOUCH_WORD_EDGE of the word. Anything deeper in a slot
+ *  is aimed, not clipped. */
+function singleScoreSlot(badge: HTMLElement, on: Element, x: number): Element | null {
+    const slot = on.closest(".mf-badge-slot:not(.mf-badge-empty)");
+    if (!slot) return null;
+    const word = badge.querySelector(".mf-badge-verdict");
+    if (!word) return slot;
+    const edge = word.getBoundingClientRect();
+    const dx = x < edge.left ? edge.left - x : x > edge.right ? x - edge.right : 0;
+    return dx < TOUCH_WORD_EDGE ? null : slot;
+}
+
+/** Watch a badge the pointer has just landed on for the move that hover costs it.
+ *
+ *  Hovering an adjective-less slot widens the badge; at the end of a line that pushes the
+ *  badge onto the next one, out from under the pointer that widened it. Chrome re-tests hover
+ *  when layout moves, so the badge loses :hover, shrinks, lands under the pointer again and
+ *  widens once more — a flicker at frame rate. The same thing happens without any re-wrap when
+ *  the widening slides a slot that was already there under the pointer: hovering the verdict
+ *  word of a badge with one hidden slot widens the badge to the left of the word, and the
+ *  pointer, now over the adjective-only slot beside it, no longer holds the word's hover. A
+ *  badge that only grows and shrinks in place flickers just as hard as one that wraps.
+ *
+ *  Either way the badge is held open until the pointer follows it or leaves the space.
+ *
+ *  From a touch tap (`fromTouch`) the caller has already settled word-vs-slot, so the hold
+ *  is unconditional once asked: no empty slot needed to justify it, and no geometry left to
+ *  re-measure. A deliberate single-score tap never reaches here — the stuck hover the browser
+ *  holds on the tapped slot swaps that score on its own. */
+function armBadgeHold(badge: HTMLElement, x: number, y: number, enteredOn: Element, fromTouch = false): void {
+    // Only an adjective-less slot changes the badge's width, so only its reveal moves anything.
+    // A finger is exempt: it lands where it lands, and a tap that clipped the neighbouring
+    // slot must read as the word's tap rather than as asking for a single score.
+    if (!fromTouch && !badge.querySelector(".mf-badge-empty")) return;
+    // The class goes on now, ahead of the recalc the reveal is waiting on, and not in the frame
+    // after it. A mouse lands on the word and the browser reveals the slots in the same recalc;
+    // a finger lands on the word and the browser reveals them a recalc later, with the tap's own
+    // compatibility mouse events arriving after that to move the hover off the word onto
+    // whatever the widening slid under it. Held from here, the slots survive all of it, and the
+    // measurement below sees the badge where the reveal left it rather than where it started.
+    badge.classList.add(BADGE_HOLD_CLASS);
+    // The reveal carries the badge onto the next line out from under the pointer, and the
+    // teardown the span's own mouseleave runs fires in between, before the frame below has
+    // measured anything: with no hold yet the pointer left standing in the vacated
+    // end-of-line space reads as a departure and the badge is torn down mid-reveal — this
+    // bug, where hovering a badge that only wraps once its percentages show loses it. So
+    // the span is told to stand the teardown down until the settle below. What tells the
+    // reveal's own teardown from a genuine departure is that the pointer has not moved:
+    // the layout shifted under a stationary pointer, so the teardown names the very point
+    // the hover armed at. The guard records that point for the comparison. It is switched
+    // off again at the settle or by a real move off the badge (releaseBadgeHold disarms
+    // it), never by the teardown itself.
+    const earlyClaim = badge.closest<HTMLElement>(".mf-segment-claim") ?? badge.parentElement;
+    let earlyGuard: (() => void) | null = null;
+    if (earlyClaim) {
+        if (badgeHold && badgeHold.badge !== badge) releaseBadgeHold();
+        earlyGuard = holdTeardownGuard(earlyClaim, badge, x, y);
+    }
+    requestAnimationFrame(() => {
+        if (!badge.isConnected) { if (badgeHold?.badge === badge) badgeHold = null; earlyGuard?.(); return; }
+        // The teardown below is no longer mid-reveal: whatever it did by now, it did with the
+        // guard above watching. Switch the guard off before settling, so the decision reads
+        // the reveal that actually happened and nothing earlier.
+        earlyGuard?.();
+        // Whether the reveal cost the pointer anything is the whole question, and it is answered
+        // by where the pointer is now against where its hover landed. The layout read here is the
+        // one the class above just produced, which is the point of reading it: the reveal is
+        // exactly what has to be measured, and a slot that came into the layout only because of
+        // that class is not a slot the pointer's own hover is holding open — the pointer would
+        // have been left on the word. Reading the two as the same part means nothing moved, the
+        // hover is what is holding the reveal, and the class comes back off; unless this badge is
+        // already held, in which case it is not this call's to drop.
+        // A finger skips the question: it cannot place itself on one part rather than another,
+        // so whatever it landed on counts as the word's tap.
+        if (!fromTouch && badgePartOf(document.elementFromPoint(x, y)) === badgePartOf(enteredOn)) {
+            if (badgeHold?.badge !== badge) badge.classList.remove(BADGE_HOLD_CLASS);
+            return;
+        }
+        const claim = badge.closest<HTMLElement>(".mf-segment-claim") ?? badge.parentElement;
+        if (!claim) { if (badgeHold?.badge === badge) badgeHold = null; return; }
+        // Two ways the reveal moves the badge. Growing in place leaves the pointer on the badge,
+        // and the badge is then the whole of the hold. Outgrowing the line carries the badge to
+        // the next one, and the space it left behind — the line the pointer is standing on — is
+        // part of the hold too, so the pointer can travel that line and follow the badge down.
+        const rect = badge.getBoundingClientRect();
+        const stillOnBadge = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+        if (badgeHold && badgeHold.badge !== badge) releaseBadgeHold();
+        badgeHold = {
+            claim, badge,
+            vacated: stillOnBadge ? null : vacatedLine(claim, y, columnEdges(claim)),
+        };
+        // The reveal just re-wrapped above: its percentages grew the trigger's box downward,
+        // under any popover placed against the pre-reveal geometry. Geometry is live here —
+        // the class above already landed — and this settle is the one frame both the mouse
+        // and the tap go through. Does nothing unless the window actually covers the badge.
+        shiftPopoverBelowBadge(claim);
+    });
+}
+
+/** A teardown the span's own mouseleave runs while a badge it holds is mid-reveal.
+ *
+ *  The verdict word's hover widens the badge, and at the end of a line that carries the
+ *  badge onto the next one — out from under the pointer, which is left standing in the
+ *  vacated end-of-line space over no part of the span. The span's mouseleave fires before
+ *  the hold's settling frame has measured anything, and with no hold yet its guard reads
+ *  that as a departure and tears the badge down mid-reveal. So between arming the hold and
+ *  settling it, the span stands down only while the pointer is where the reveal left it:
+ *  a teardown naming the very point the hover armed at is the layout shifting under a
+ *  stationary pointer, not the pointer going anywhere. Anything else is a genuine
+ *  departure — the pointer leaving for the highlight's text or off the claim — and the
+ *  teardown runs as before. The one exception is the deliberate single-score mouse: its
+ *  hover lives on the aimed adjective slot, and the percentages must drop exactly as
+ *  before.
+ *
+ *  Returns a disarmer the settle frame calls once the reveal has happened, so the guard
+ *  never outlives the reveal it is guarding. Also disarmed by releaseBadgeHold and by
+ *  updateBadgeHold's release path — a real move off the badge. */
+let badgeTeardownGuard: { claim: HTMLElement; badge: HTMLElement; x: number; y: number } | null = null;
+
+function holdTeardownGuard(claim: HTMLElement, badge: HTMLElement, x: number, y: number): () => void {
+    badgeTeardownGuard = { claim, badge, x, y };
+    return () => {
+        if (badgeTeardownGuard?.claim === claim && badgeTeardownGuard?.badge === badge) {
+            badgeTeardownGuard = null;
+        }
+    };
+}
+
+/** True when the span's own mouseleave teardown must stand down for a badge mid-reveal.
+ *  Kept out of inClaimHoverArea on purpose: until the settle frame has measured the reveal,
+ *  the position of the pointer on the page decides nothing — the badge the widening carried
+ *  away is nowhere near it by design, and the vacated space it stands in counts as no part
+ *  of the claim. What tells the reveal's own teardown from a departure is that the pointer
+ *  has not moved since the hover armed, so the teardown names the arming point itself. */
+function spanTeardownStandsDown(claim: HTMLElement, x: number, y: number): boolean {
+    const guard = badgeTeardownGuard;
+    if (!guard || guard.claim !== claim) return false;
+    const badge = guard.badge;
+    if (!badge.isConnected) return false;
+    const on = document.elementFromPoint(x, y);
+    // The deliberate single-score mouse aims at its adjective slot; that hover is the
+    // pointer's own, not the reveal's, and the teardown must run for it.
+    if (on && singleScoreSlot(badge, on, x) && badge.contains(on)) return false;
+    // The widening still in flight: the layout shifted under a stationary pointer, so the
+    // teardown names the arming point. TOUCH_TAP_SLOP is the leeway for what counts as
+    // unmoved; anything further is the pointer's own travel, a genuine departure.
+    return Math.abs(x - guard.x) <= TOUCH_TAP_SLOP && Math.abs(y - guard.y) <= TOUCH_TAP_SLOP;
+}
+
+function releaseBadgeHold(): void {
+    if (badgeHold?.badge.isConnected) badgeHold.badge.classList.remove(BADGE_HOLD_CLASS);
+    badgeHold = null;
+    badgeTeardownGuard = null;
+}
+
+function updateBadgeHold(x: number, y: number): void {
+    if (!badgeHold) return;
+    if (!badgeHold.badge.isConnected) { badgeHold = null; badgeTeardownGuard = null; return; }
+    if (inBadgeHoldArea(badgeHold, x, y)) return;
+    releaseBadgeHold();
+}
+
+/** Undo a claim span's hover visuals: base background back, hover badge gone, loading
+ *  spinner restored if the claim is still waiting on its verdict. Shared by the span's own
+ *  mouseleave and the mousemove backstop below — one teardown, two triggers. */
+function teardownClaimHover(span: HTMLElement): void {
+    const pVal = parseFloat(span.dataset.probability ?? "");
+    const prob = isNaN(pVal) ? undefined : pVal;
+    const vVal = parseFloat(span.dataset.veracity ?? "");
+    const ver = isNaN(vVal) ? undefined : vVal;
+    // Keep a valid verdict's color even while reclassifying (refreshing);
+    // grey only when there's no valid verdict.
+    const noVerdict = prob === undefined || ver === undefined || prob < 0.2;
+    const baseBg = noVerdict ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
+    span.style.backgroundColor = baseBg;
+    const badge = span.querySelector(".mf-inline-badge");
+    if (badge) badge.remove();
+    // Restore the stand-in if this claim is still loading — the badge that was
+    // showing the spinner has just been taken away with the hover.
+    const stillLoading = span.dataset.refreshing === "true" || noVerdict;
+    if (stillLoading && !span.querySelector(".mf-standalone-spinner")) {
+        span.appendChild(createStandaloneSpinner(isRTLLocale(getEffectiveUILocale())));
+    }
+}
+
+/** Every claim span currently showing hover state — armed by the previews' wait and the
+ *  span's own badge reveal, cleared when the teardown runs. Boundary events fire when the
+ *  pointer leaves ELEMENTS, but a highlight's hover area reaches past its elements: the
+ *  claim-attributed leaves fire at the element edge, still inside the pad, and stand down —
+ *  then crossing the pad boundary itself fires nothing, and later leaves name no part of
+ *  the claim. Without this set, a pointer that drifts off a highlight sideways leaves the
+ *  badge and its preview open forever: no departure is ever scheduled. So each mousemove
+ *  checks the armed claims against the pointer itself, and what the pointer observably
+ *  abandoned gets the same teardown and dismiss the boundary path would have run. */
+const hoverArmedClaims = new Set<HTMLElement>();
+
+function armHoverClaim(span: HTMLElement): void {
+    hoverArmedClaims.add(span);
+}
+
+function disarmHoverClaim(span: HTMLElement): void {
+    hoverArmedClaims.delete(span);
+}
+
+/** The departure boundary events cannot deliver: the pointer is observably outside an
+ *  armed claim's hover area, so run the same teardown and dismiss the leave would have. */
+function settleHoverClaims(x: number, y: number): void {
+    if (hoverArmedClaims.size === 0) return;
+    for (const span of Array.from(hoverArmedClaims)) {
+        if (!span.isConnected) { hoverArmedClaims.delete(span); continue; }
+        if (inClaimHoverArea(span, x, y)) continue;
+        if (spanTeardownStandsDown(span, x, y)) continue;
+        hoverArmedClaims.delete(span);
+        if (!(span as any)._mfPopoverOpen && !(span as any)._mfBadgePermanent) teardownClaimHover(span);
+        cancelHoverPreview();
+        schedulePreviewPopoverDismiss(span);
+    }
+}
+
+function startHoverPreview(target: HTMLElement) {
+    if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+    if (hoveredSegment && hoveredSegment !== target) disarmHoverClaim(hoveredSegment);
+    hoveredSegment = target;
+    armHoverClaim(target);
+    hoverTimer = setTimeout(() => {
+        if (hoveredSegment !== target) return;
+        if ((target as any)._mfPopoverOpen) return;
+        if (target.dataset.reclassifyOnHold === "true") return;
+        if ((target as any)._mfBadgePermanent) return;
+        // The leave that should have cancelled this wait may have stood down instead:
+        // it fires from the pointer's position, and from a gap or the hold's vacated
+        // band that position still counts as the claim. Re-check the pointer itself —
+        // lastPointer is the freshest mousemove — and let an outran wait die quietly.
+        // The hover settles at once rather than waiting on the backstop: the pointer is
+        // observably gone, and another mousemove may never come.
+        if (lastPointer && !inClaimHoverArea(target, lastPointer.x, lastPointer.y)) {
+            hoverTimer = null;
+            hoveredSegment = null;
+            disarmHoverClaim(target);
+            if (!(target as any)._mfPopoverOpen && !(target as any)._mfBadgePermanent) teardownClaimHover(target);
+            return;
+        }
+        showPreviewPopover(target);
+    }, 1000);
+}
+
+function cancelHoverPreview() {
+    if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+    hoveredSegment = null;
+}
+
 /** Colour shown when a claim has no usable scores (not yet researched, or too uncertain). */
 const NEUTRAL_VERDICT_CHANNELS: readonly [number, number, number] = [128, 128, 128];
 
@@ -2185,6 +2762,10 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
     return claims
         .map((claim) => {
             const isOnHold = claim.reclassifyOnHold;
+            const showSpinner = !isOnHold && (claim.confidence === undefined || claim.refreshing);
+            // A badge whose verdict is settled gets hoverable adjective slots; anything
+            // still in flight (on-hold, spinner, refreshing) stays a plain label.
+            const slotBadge = !showSpinner && !isOnHold;
             const label = isOnHold ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${c.id}:${claim.text}`);
             const reasoning = isOnHold
                 ? (claim.cachedNote ?? tapify("Click to re-check this claim"))
@@ -2193,7 +2774,7 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
             <div style="margin-bottom: 8px; line-height: 1.4;">
                 <div style="font-size: 13px; color: inherit; margin-bottom: 3px;">${escapeHtml(String(claim.rewritten ?? claim.text))}</div>
                 <div>
-                    <span style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${isOnHold ? '' : ((claim.confidence === undefined || claim.refreshing) ? '<span class="mf-fc-spinner"></span>' : '')}${escapeHtml(label)}</span>
+                    <span${slotBadge ? ` class="${VERDICT_BADGE_CLASS}"` : ''} style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${showSpinner ? '<span class="mf-fc-spinner"></span>' : ''}${slotBadge ? verdictBadgeHtml(claim.confidence, claim.veracity, `${c.id}:${claim.text}`) : escapeHtml(label)}</span>
                     <span style="font-size: 13px; color: inherit;"> ${escapeHtml(reasoning)}</span>
                 </div>
             </div>
@@ -2239,6 +2820,76 @@ function getInlineStyles(): string {
     white-space: nowrap;
     margin-left: 3px;
     vertical-align: middle;
+}
+/* Verdict badge: an adjective and its percentage share one grid cell, so the slot is as
+   wide as the wider of the two and swapping them on hover moves nothing. The locale's
+   separator rides inside the slot, so a slot that is out of the layout takes it along. */
+.mf-badge-slot {
+    display: inline-flex;
+    align-items: center;
+}
+.mf-badge-stack {
+    display: inline-grid;
+    grid-template-areas: "stack";
+    align-items: center;
+    justify-items: center;
+}
+.mf-badge-adj,
+.mf-badge-pct {
+    grid-area: stack;
+    white-space: nowrap;
+}
+.mf-badge-glue {
+    white-space: pre;
+}
+.mf-badge-slot:not(.mf-badge-empty) .mf-badge-pct {
+    visibility: hidden;
+}
+/* A score of 0.9 or better gets no adjective, so its slot stays out of the layout until
+   the verdict word is hovered, then takes only the width its percentage needs. Bringing
+   the slot in widens the badge, which slides the word out from under the pointer and onto
+   the new slot — so the slot's own hover holds it open, or the rule would drop it, snap
+   the word back, and flicker. */
+.mf-badge-empty {
+    display: none;
+}
+.mf-verdict-badge:has(.mf-badge-verdict:hover) .mf-badge-empty,
+.mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-empty {
+    display: inline-flex;
+}
+/* While the pointer is with a badge whose hover widened it, the empty slots stay in the
+   layout. They are the whole of the badge's width change, so holding them holds the layout
+   still: the widening either carries the badge off the pointer's line or slides a slot under
+   the pointer in place of the word, and in both cases the hover that widened the badge would
+   otherwise be lost the moment it happened, flickering between the two widths. */
+.mf-verdict-badge.mf-badge-held .mf-badge-empty {
+    display: inline-flex;
+}
+/* What is held is the reveal, not just the width it cost: the percentages stand in whatever
+   shape the widening left the badge. Held from the line the badge vacated — the pointer
+   standing where the badge was, having followed it to the next line — the slots the pointer
+   has left behind would otherwise hand their percentages back to their adjectives, showing
+   half a badge turned over. */
+.mf-verdict-badge.mf-badge-held .mf-badge-adj {
+    visibility: hidden;
+}
+.mf-verdict-badge.mf-badge-held .mf-badge-pct {
+    visibility: visible;
+}
+/* Hovering an adjective swaps that one score. The verdict word stands for the whole badge
+   and swaps both; so does an adjective-less slot, which the pointer can only be on after
+   the widening moved it there — that is the verdict word's hover arriving. */
+.mf-verdict-badge .mf-badge-conf:hover .mf-badge-adj,
+.mf-verdict-badge .mf-badge-ver:hover .mf-badge-adj,
+.mf-verdict-badge:has(.mf-badge-verdict:hover) .mf-badge-adj,
+.mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-adj {
+    visibility: hidden;
+}
+.mf-verdict-badge .mf-badge-conf:hover .mf-badge-pct,
+.mf-verdict-badge .mf-badge-ver:hover .mf-badge-pct,
+.mf-verdict-badge:has(.mf-badge-verdict:hover) .mf-badge-pct,
+.mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-pct {
+    visibility: visible;
 }
 .mf-popover {
     position: absolute;
@@ -3411,12 +4062,13 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 const isResearchingNow = isRefreshing || prob === undefined || ver === undefined
                     || (prob < 0.2 && !hasResearchNote);
                 const isPipelineClaim = inPipeline && isResearchingNow && !isOnHoldNow && !isRefreshing;
-                const lbl = (isOnHoldNow || isPipelineClaim) ? t("factCheckButton") : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
-                const txtColor = (isOnHoldNow || isPipelineClaim)
+                const plainLabel = isOnHoldNow || isPipelineClaim;
+                const lbl = plainLabel ? t("factCheckButton") : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
+                const txtColor = plainLabel
                   ? 'rgb(180, 180, 180)'
                   : confidenceRgba(prob, 1, ver);
                 const badge = document.createElement("span");
-                badge.className = "mf-inline-badge";
+                badge.className = plainLabel ? "mf-inline-badge" : `mf-inline-badge ${VERDICT_BADGE_CLASS}`;
                 badge.style.cssText = `display: inline-flex; align-items: center; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; margin-left: ${isRTL ? '0' : '3px'}; margin-right: ${isRTL ? '3px' : '0'}; color: ${txtColor}; background: rgba(0,0,0,0.7); cursor: pointer;`;
                 if (isRefreshing || (prob === undefined && !isOnHoldNow && !isPipelineClaim)) {
                     const fcSpinner = document.createElement("span");
@@ -3431,7 +4083,9 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                         badge.appendChild(document.createTextNode(lbl));
                     }
                 } else {
-                    badge.textContent = lbl;
+                    badge.innerHTML = plainLabel
+                        ? escapeHtml(lbl)
+                        : verdictBadgeHtml(prob, ver, `${classificationId ?? ''}:${claim.text}`);
                     if (isRTL) badge.dir = "rtl";
                 }
                 if (permanent) {
@@ -3476,26 +4130,26 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 span.appendChild(createInlineBadge(span.dataset.reclassifyOnHold === "true"));
             });
 
-            span.addEventListener("mouseleave", () => {
+            span.addEventListener("mouseleave", (e) => {
                 if ((span as any)._mfPopoverOpen) return;
                 if ((span as any)._mfBadgePermanent) return;
-                const pVal = parseFloat(span.dataset.probability ?? "");
-                const prob = isNaN(pVal) ? undefined : pVal;
-                const vVal = parseFloat(span.dataset.veracity ?? "");
-                const ver = isNaN(vVal) ? undefined : vVal;
-                // Keep a valid verdict's color even while reclassifying (refreshing);
-                // grey only when there's no valid verdict.
-                const noVerdict = prob === undefined || ver === undefined || prob < 0.2;
-                const baseBg = noVerdict ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
-                span.style.backgroundColor = baseBg;
-                const badge = span.querySelector(".mf-inline-badge");
-                if (badge) badge.remove();
-                // Restore the stand-in if this claim is still loading — the badge that was
-                // showing the spinner has just been taken away with the hover.
-                const stillLoading = span.dataset.refreshing === "true" || noVerdict;
-                if (stillLoading && !span.querySelector(".mf-standalone-spinner")) {
-                    span.appendChild(createStandaloneSpinner(isRTLLocale(getEffectiveUILocale())));
-                }
+                // Crossing one of the claim's own line gaps is no departure either —
+                // measured from the pointer, since that is the one thing that says where
+                // between the lines it is. Without this, moving down a highlight to its
+                // badge dropped the badge in the gap: the teardown below ran on the way
+                // through, and only a crossing quick enough to re-enter and rebuild it
+                // before anyone noticed ever worked. The same guard keeps a held badge
+                // that re-wrapped off the pointer's line, which would otherwise be torn
+                // down on the move its own hover caused.
+                if (inClaimHoverArea(span, e.clientX, e.clientY)) return;
+                // And the verdict word's own hover widening the badge onto the next line
+                // is no departure either: the pointer it carried the badge out from under
+                // is on the word or the empty slot that arrived, and the teardown must
+                // stand down for exactly that — the frame the hold armed in has not yet
+                // measured the reveal, so the positional guard above cannot see it.
+                if (spanTeardownStandsDown(span, e.clientX, e.clientY)) return;
+                disarmHoverClaim(span);
+                teardownClaimHover(span);
             });
 
             wrap.appendChild(span);
@@ -3665,14 +4319,16 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         const isOnHold = el.dataset.reclassifyOnHold === "true";
                         const isRefreshingNow = el.dataset.refreshing === "true";
                         const pipelineResearching = inPipeline && isResearching && !isOnHold && !claim.refreshing;
-                        const newLabel = (isOnHold || pipelineResearching) ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
-                        const newColor = (isOnHold || pipelineResearching)
+                        const plainLabel = isOnHold || pipelineResearching;
+                        const newLabel = plainLabel ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
+                        const newColor = plainLabel
                             ? 'rgb(180, 180, 180)'
                             : confidenceRgba(claim.confidence, 1, claim.veracity);
                         (badge as HTMLElement).style.color = newColor;
                         (badge as HTMLElement).style.marginLeft = isRTLEl ? '0' : '3px';
                         (badge as HTMLElement).style.marginRight = isRTLEl ? '3px' : '0';
                         badge.innerHTML = '';
+                        badge.classList.toggle(VERDICT_BADGE_CLASS, !plainLabel);
                         if (isRefreshingNow || (claim.confidence === undefined && !isOnHold && !pipelineResearching)) {
                             const fcSpinner = document.createElement("span");
                             fcSpinner.className = "mf-fc-spinner";
@@ -3686,7 +4342,9 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                                 badge.appendChild(document.createTextNode(newLabel));
                             }
                         } else {
-                            badge.textContent = newLabel;
+                            badge.innerHTML = plainLabel
+                                ? escapeHtml(newLabel)
+                                : verdictBadgeHtml(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
                             if (isRTLEl) (badge as HTMLElement).dir = "rtl";
                         }
                     }
@@ -3786,6 +4444,76 @@ function setupGlobalHandlers() {
     if (globalHandlersSetup) return;
     globalHandlersSetup = true;
 
+    // A badge that grows on hover can wrap away from the pointer that grew it; these two keep
+    // it open across that move. mouseover arms the watch, mousemove finds out whether the
+    // pointer followed the badge or left the space it moved out of.
+    document.addEventListener("mouseover", (e) => {
+        if (isTouchInput()) return;
+        const on = e.target as Element;
+        // Only a hover that reveals the empty slots can move the badge's layout, so only those
+        // hovers are worth watching. Hovering an adjective the badge already shows swaps it for
+        // its percentage, which the slot's own width absorbs — arming on that would reveal a
+        // hidden slot the pointer never asked for.
+        const enteredOn = on.closest?.(".mf-badge-verdict, .mf-badge-empty") ?? null;
+        if (!enteredOn) return;
+        const badge = on.closest?.(`.${VERDICT_BADGE_CLASS}`) as HTMLElement | null;
+        if (badge) armBadgeHold(badge, e.clientX, e.clientY, enteredOn);
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        lastPointer = { x: e.clientX, y: e.clientY };
+        updateBadgeHold(e.clientX, e.clientY);
+        if (!isTouchInput()) settleHoverClaims(e.clientX, e.clientY);
+    });
+
+    // A tap is a hover the browser holds on what it landed on, but the two are read at
+    // different moments. The hover is settled at touchstart, while the tap's own compatibility
+    // mouse events arrive afterwards and are hit-tested against the layout the hover has since
+    // produced — so they name the slot the widening slid under the finger rather than the word
+    // that widened it, and following them drops the hover that revealed the percentages and
+    // leaves one of the two showing. Read at touchstart, where the tap landed is still the word —
+    // or squarely inside one adjective slot, which asks for that score alone, while a tap that
+    // only clips the neighbouring slot is a near-miss and counts as the word's tap.
+    let touchStart: { id: number; x: number; y: number; t: number } | null = null;
+    document.addEventListener("touchstart", (e) => {
+        const touch = e.changedTouches[0];
+        if (!touch) return;
+        // t stamps the tap's own window: the compatibility click below must arrive inside
+        // it to count as that tap's echo rather than a later dismissal.
+        touchStart = { id: touch.identifier, x: touch.clientX, y: touch.clientY, t: Date.now() };
+        const { clientX: x, clientY: y } = touch;
+        const on = document.elementFromPoint(x, y);
+        const badge = on?.closest<HTMLElement>(`.${VERDICT_BADGE_CLASS}`) ?? null;
+        if (!badge || !on) { releaseBadgeHold(); return; }
+        // A finger on a held badge is on that badge still: a tap has nowhere to travel to, and
+        // the spot under it may have moved since it landed. Tapping it again keeps it — unless
+        // the tap is aimed squarely at one adjective slot, which is the one thing a tap can say
+        // no other way: it asks for that score alone, so the hold goes and the stuck hover the
+        // browser keeps on the tapped slot swaps it on its own. (On a mouse the same move needs
+        // no release — the word's :hover was the whole reveal, so leaving it hands the other
+        // percentage back by itself.)
+        if (badgeHold && inBadgeHoldArea(badgeHold, x, y)) {
+            if (singleScoreSlot(badgeHold.badge, on, x) && badgeHold.badge.contains(on)) releaseBadgeHold();
+            return;
+        }
+        // A deliberate single-score tap never arms the hold: the stuck hover the browser keeps
+        // on the tapped slot swaps that score on its own, and holding would force both.
+        if (singleScoreSlot(badge, on, x)) { releaseBadgeHold(); return; }
+        armBadgeHold(badge, x, y, on.closest(".mf-badge-verdict, .mf-badge-empty") ?? on, true);
+    }, { capture: true, passive: true });
+
+    // A finger that travels rather than taps is scrolling, and the browser drops its hover for
+    // it. The hold goes too, rather than leaving the percentages up over a badge that has
+    // scrolled out from under them.
+    document.addEventListener("touchmove", (e) => {
+        const touch = e.changedTouches[0];
+        if (!touch || !touchStart || touch.identifier !== touchStart.id) return;
+        if (Math.abs(touch.clientX - touchStart.x) < TOUCH_TAP_SLOP
+            && Math.abs(touch.clientY - touchStart.y) < TOUCH_TAP_SLOP) return;
+        touchStart = null;
+        releaseBadgeHold();
+    }, { capture: true, passive: true });
+
     document.addEventListener("click", (e) => {
         const popovers = document.querySelectorAll(".mf-popover");
         if (popovers.length === 0) return;
@@ -3793,6 +4521,21 @@ function setupGlobalHandlers() {
         let outsideAll = true;
         for (const p of popovers) {
             if (p.contains(target)) { outsideAll = false; break; }
+        }
+        // A tap's compatibility click is hit-tested against the layout its own touchstart
+        // produced — and a badge that re-wrapped on the reveal left the vacated end-of-line
+        // space the finger is standing on over no claim box at all. That click names the
+        // bare column, but it is the badge's own tap arriving late, not a dismissal aimed
+        // outside: closing here removes the badge the tap just revealed (and the popover
+        // the first tap opened). What tells the echo from a dismissal is that the click is
+        // where the finger still is, when it still is there, and the hold the tap armed
+        // still covers that point. A click the finger itself aimed outside — or a later one
+        // after the tap's window has passed — still dismisses.
+        if (outsideAll && !target.closest?.(".mf-segment-claim") && touchStart && badgeHold) {
+            const dx = e.clientX - touchStart.x, dy = e.clientY - touchStart.y;
+            if (Math.abs(dx) <= TOUCH_TAP_SLOP && Math.abs(dy) <= TOUCH_TAP_SLOP
+                && Date.now() - touchStart.t <= TOUCH_COMPAT_CLICK_WINDOW
+                && inBadgeHoldArea(badgeHold, touchStart.x, touchStart.y)) return;
         }
         if (outsideAll && !target.closest?.(".mf-segment-claim")) {
             const sel = window.getSelection();
@@ -3878,9 +4621,6 @@ function setupArticleHandlers(articleEl: Element) {
         return el.closest(selector) as HTMLElement | null;
     }
 
-    let hoverTimer: ReturnType<typeof setTimeout> | null = null;
-    let hoveredSegment: HTMLElement | null = null;
-
     function openPinnedPopover(target: HTMLElement) {
         if ((target as any)._mfPopoverOpen) {
             closePopover(target);
@@ -3895,33 +4635,38 @@ function setupArticleHandlers(articleEl: Element) {
         showPopover(target, reasoning, sources, claimText);
     }
 
-    function startHoverPreview(target: HTMLElement) {
-        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
-        hoveredSegment = target;
-        hoverTimer = setTimeout(() => {
-            if (hoveredSegment !== target) return;
-            if ((target as any)._mfPopoverOpen) return;
-            if (target.dataset.reclassifyOnHold === "true") return;
-            if ((target as any)._mfBadgePermanent) return;
-            showPreviewPopover(target);
-        }, 1000);
-    }
-
-    function cancelHoverPreview() {
-        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
-        hoveredSegment = null;
-    }
-
     article.addEventListener("mouseenter", (e) => {
         if (isTouchInput()) return;
         const target = closestEl(e.target as Element, ".mf-segment-claim");
         if (!target) return;
+        // A badge's adjective, its percentage and the verdict word are separate elements,
+        // so crossing between them re-fires mouseenter with the pointer already inside the
+        // claim. Restarting the timer there would push the preview popover back for as long
+        // as the pointer keeps crossing slots.
+        const from = e.relatedTarget as Node | null;
+        if (from && target.contains(from)) { armHoverClaim(target); return; }
+        // The same goes for the gap between two lines of one highlight: re-entering the claim
+        // after a crossing must not restart a wait that is already running, nor count down
+        // again for a preview that is already open. Either way the claim is hover-armed —
+        // arming is idempotent, and it is what lets the mousemove backstop settle a hover
+        // whose departure no boundary event ever names.
+        if ((hoverTimer && hoveredSegment === target) || previewPopoverState?.trigger === target) { armHoverClaim(target); return; }
         startHoverPreview(target);
     }, true);
 
     article.addEventListener("mouseleave", (e) => {
         const target = closestEl(e.target as Element, ".mf-segment-claim");
         if (!target) return;
+        // Same for the way out: moving between slots leaves the slot but not the claim, so
+        // the preview must neither be cancelled nor dismissed.
+        const to = e.relatedTarget as Node | null;
+        if (to && target.contains(to)) return;
+        // And crossing one of the claim's own line gaps is no departure either — measured
+        // from the pointer, since that is the one thing that says where between the lines it
+        // is. Without this, moving down a highlight to its badge dropped the badge unless the
+        // crossing was quick enough to beat the dismissal.
+        if (inClaimHoverArea(target, e.clientX, e.clientY)) return;
+        disarmHoverClaim(target);
         cancelHoverPreview();
         schedulePreviewPopoverDismiss(target);
     }, true);
@@ -3933,7 +4678,18 @@ function setupArticleHandlers(articleEl: Element) {
         const sel = window.getSelection();
         if (sel && !sel.isCollapsed) return;
 
+        // A tap on the verdict badge is what shows its percentages on a touchscreen, where
+        // there is no hover — the browser holds :hover on the tapped element. That only
+        // works if the tap reaches the badge instead of being read as a click on the claim:
+        // toggling the popover here would tear down the badge the tap was aimed at.
+        const badge = closestEl(e.target as Element, `.${VERDICT_BADGE_CLASS}`);
+        if (badge && target.contains(badge)) {
+            e.stopPropagation();
+            return;
+        }
+
         e.stopPropagation();
+        disarmHoverClaim(target);
         cancelHoverPreview();
         dismissPreviewPopover();
 
@@ -4213,6 +4969,9 @@ function showPopover(
         // already removes a non-permanent one, so it's safe to (re)create it here.
         if (!trigger.querySelector(".mf-inline-badge") && (trigger as any)._mfCreateBadge) {
             trigger.appendChild((trigger as any)._mfCreateBadge(trigger.dataset.reclassifyOnHold === "true"));
+            // On touch the badge only ever appears here, after placement — and at the end of
+            // a line it can wrap the trigger's box down under the window just placed.
+            shiftPopoverBelowBadge(trigger);
         }
         refreshInPopoverOnboarding();
     } catch (e) {
@@ -4923,6 +5682,66 @@ function observeTriggerGeometry(popover: HTMLElement, trigger: HTMLElement) {
     } catch { /* unobservable trigger — initial placement still applies */ }
 }
 
+/** Nudge a trigger's open popover(s) straight down just enough to uncover its badge.
+ *
+ *  Placement reads the trigger once, but the badge keeps growing after that: hovering the
+ *  verdict word reveals the percentages, and at the end of a line that carries the badge
+ *  onto the next one — growing the trigger's box downward, under a popover placed against
+ *  the pre-reveal geometry. The ResizeObserver above never reports that growth: on an
+ *  inline trigger it fires once with a 0x0 content rect and then stays silent across the
+ *  whole reveal (probed in-page), so the reveal's own settle in armBadgeHold and the badge
+ *  insertions that can wrap a trigger under an open popover (showPopover, updateOpenPopover's
+ *  re-attach) call here directly, with the post-growth geometry live.
+ *
+ *  Only ever moves DOWN, and only by the live overlap with the badge: a popover above the
+ *  trigger or to its right never intersects the badge, so those placements come back
+ *  untouched — and so does anything the user dragged (_mfManuallyPositioned), which keeps
+ *  working exactly as before. Popovers are fresh elements per open, so the next open
+ *  starts un-dragged. Attached onboarding popovers re-stack from the claim popover and
+ *  travel with it. Pinned and hover-preview popovers both carry _mfTrigger, so one scan
+ *  covers both — a semi-transparent preview covers the badge just as opaquely. The shift
+ *  never reverts when the badge shrinks back: the next streaming re-placement heals it,
+ *  while yanking the window mid-read would fight the user, and re-hovering re-wraps into
+ *  still-clear space. */
+function shiftPopoverBelowBadge(trigger: HTMLElement): void {
+    if (!trigger.isConnected) return;
+    const badge = trigger.querySelector(".mf-inline-badge");
+    if (!(badge instanceof HTMLElement)) return;
+    const badgeRect = badge.getBoundingClientRect();
+    if (badgeRect.width <= 0 || badgeRect.height <= 0) return;
+    const trigRect = getTriggerViewportRect(trigger);
+    const padding = 8;
+    for (const p of Array.from(document.querySelectorAll(".mf-popover"))) {
+        const popover = p as HTMLElement;
+        if ((popover as any)._mfTrigger !== trigger) continue;
+        if (!popover.isConnected) continue;
+        // A dragged window keeps the user's placement — the same freeze positionPopover honours.
+        if ((popover as any)._mfManuallyPositioned) continue;
+        const popRect = popover.getBoundingClientRect();
+        if (popRect.width <= 0 || popRect.height <= 0) continue;
+        const overlaps = popRect.left < badgeRect.right && popRect.right > badgeRect.left
+            && popRect.top < badgeRect.bottom && popRect.bottom > badgeRect.top;
+        if (!overlaps) continue;
+        // Clear the badge and whatever trigger line it sits on, keeping placement's own gap.
+        const need = Math.max(badgeRect.bottom, trigRect.bottom) + padding - popRect.top;
+        if (need <= 0) continue;
+        const currentTop = parseFloat(popover.style.top || "");
+        if (!isFinite(currentTop)) continue;
+        popover.style.top = `${currentTop + need}px`;
+        // Mirror the below-placement clamp: if the nudge itself pushes the window past the
+        // viewport bottom, cap its height rather than spilling offscreen.
+        const maxVTop = window.innerHeight - padding;
+        if (popRect.bottom + need > maxVTop) {
+            const maxH = maxVTop - (popRect.top + need);
+            if (maxH > 60) {
+                popover.style.maxHeight = `${maxH}px`;
+                popover.style.overflowY = "auto";
+            }
+        }
+        repositionAttachedOnboardingFor(popover);
+    }
+}
+
 /** Position an onboarding popover with `position: fixed`, pinned directly to the button's
  *  live VIEWPORT rect — no container/scrollTop math (which mis-placed them ~scroll-offset
  *  px offscreen, previously masked only by positionPopover's viewport clamp). It sits to
@@ -5024,6 +5843,7 @@ const PREVIEW_BASE_OPACITY = 0.75;
 function dismissPreviewPopover() {
     if (!previewPopoverState) return;
     const t = previewPopoverState.trigger;
+    if (t) disarmHoverClaim(t);
     if (t && !(t as any)._mfPopoverOpen) {
         t.style.opacity = "";
         const badge = t.querySelector(".mf-inline-badge");
@@ -5073,6 +5893,7 @@ function closePopover(trigger?: HTMLElement) {
         if (trigger && (p as any)._mfTrigger !== trigger) continue;
         const t = (p as any)._mfTrigger as HTMLElement | undefined;
         if (t) {
+            disarmHoverClaim(t);
             t.style.opacity = "";
             delete (t as any)._mfPopoverOpen;
             const badge = t.querySelector(".mf-inline-badge");
@@ -5160,6 +5981,10 @@ function showPreviewPopover(trigger: HTMLElement) {
 function isHoveringPreviewRelated(trigger: HTMLElement): boolean {
     if (!previewPopoverState) return false;
     if (previewPopoverState.trigger !== trigger) return false;
+    // The pointer can be inside a claim while no part of that claim is under it — in the
+    // leading between two of its lines, or in the space a re-wrapped badge vacated. The
+    // element under the pointer says nothing there, so the pointer's own position decides.
+    if (lastPointer && inClaimHoverArea(trigger, lastPointer.x, lastPointer.y)) return true;
     const hoveredEl = (document as any).querySelector?.(':hover');
     if (!hoveredEl) return false;
     if (trigger.contains(hoveredEl) || hoveredEl === trigger) return true;
@@ -5450,6 +6275,9 @@ function updateOpenPopover() {
                 // one exists so the badge doesn't vanish out from under an open popover.
                 if (!currentTrigger.querySelector(".mf-inline-badge") && (currentTrigger as any)._mfCreateBadge) {
                     currentTrigger.appendChild((currentTrigger as any)._mfCreateBadge(currentTrigger.dataset.reclassifyOnHold === "true"));
+                    // The replacement's badge can wrap on insertion, growing the trigger
+                    // under its own window — same nudge as the reveal's settle.
+                    shiftPopoverBelowBadge(currentTrigger);
                 }
                 trigger = currentTrigger;
             }
