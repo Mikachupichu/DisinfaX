@@ -158,6 +158,18 @@
     "message": "जाँच",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
+  "annotateButton": {
+    "message": "टिप्पणी करें",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "टिप्पणी हो रही है",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "annotationsClean": {
+    "message": "समीक्षा — कोई त्रुटि नहीं मिली।",
+    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
+  },
   "translateFactChecks": {
     "message": "जाँच का अनुवाद करें",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -207,6 +219,10 @@
   "disinfactButton": {
     "message": "जाँच",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "localizeButton": {
+    "message": "स्थानीय करें",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
   },
   "balanceLabel": {
     "message": "शेष राशि"
@@ -305,5 +321,34 @@
   },
   "errNotFound": {
     "message": "वह नहीं मिल सका। कृपया फिर से प्रयास करें।"
+  },
+  "settings": {
+    "message": "सेटिंग्स",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "हमेशा फ़ैक्ट-चेक दिखाएँ यदि:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "सत्यता < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "विश्वास स्तर > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
   }
 }

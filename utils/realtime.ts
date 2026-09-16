@@ -39,6 +39,9 @@ export interface ClaimPayload {
   is_classifying: boolean;
   /** Locale-keyed highlight ranges {"en": [start, end]} — only on tweet-scoped payloads. */
   highlight?: Record<string, [number, number]>;
+  /** Range-keyed annotations {"en": {"start,end": correction}} — only on tweet-scoped
+   *  payloads. Present key (even empty) = annotated; absent key = never annotated. */
+  annotations?: Record<string, Record<string, string>>;
 }
 
 export interface TweetFetchResult {
@@ -63,7 +66,7 @@ function asRows(data: any): any[] {
 /** Normalize a raw claim record (build_claim_payload / get_full_claim shape) into
  *  a ClaimPayload. `claims_localized_reasoning` (Realtime/tweet fetch) and
  *  `reasoning` (get_full_claim) both map to `reasoning`. */
-function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, number]>): ClaimPayload | null {
+function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, number]>, annotations?: Record<string, Record<string, string>>): ClaimPayload | null {
   if (!raw || typeof raw !== 'object' || !raw.id) return null;
   return {
     id: String(raw.id),
@@ -76,6 +79,7 @@ function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, numb
     last_classification: raw.last_classification ?? undefined,
     is_classifying: raw.is_classifying === true,
     highlight: highlight ?? raw.highlight ?? undefined,
+    annotations: annotations ?? raw.annotations ?? undefined,
   };
 }
 
@@ -97,9 +101,10 @@ export async function fetchTweetAndTouchNetwork(hexHash: string): Promise<TweetF
   const claims: ClaimPayload[] = [];
   const tweetClaims = Array.isArray(row.tweet_claims) ? row.tweet_claims : [];
   for (const tweetClaim of tweetClaims) {
-    // Each entry: { highlight, claims: {<claim fields>} }
+    // Each entry: { highlight, annotations, claims: {<claim fields>} }
     const highlight = (tweetClaim?.highlight && typeof tweetClaim.highlight === 'object') ? tweetClaim.highlight : undefined;
-    const parsed = normalizeClaimRecord(tweetClaim?.claims, highlight);
+    const annotations = (tweetClaim?.annotations && typeof tweetClaim.annotations === 'object') ? tweetClaim.annotations : undefined;
+    const parsed = normalizeClaimRecord(tweetClaim?.claims, highlight, annotations);
     if (parsed) claims.push(parsed);
   }
   return {

@@ -125,6 +125,18 @@
     "message": "事实核查",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
+  "annotateButton": {
+    "message": "註解",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "正在加註",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "annotationsClean": {
+    "message": "已覆核 — 未發現錯誤。",
+    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
+  },
   "translateFactChecks": {
     "message": "翻譯事實核查",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -174,6 +186,10 @@
   "disinfactButton": {
     "message": "事實查核",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "localizeButton": {
+    "message": "在地化",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
   },
   "balanceLabel": {
     "message": "餘額"
@@ -305,5 +321,34 @@
   },
   "errNotFound": {
     "message": "找不到相關內容，請再試一次。"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "符合條件時一律顯示事實查核：",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "真實性 < $1：",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "可信度 > $1：",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
   }
 }

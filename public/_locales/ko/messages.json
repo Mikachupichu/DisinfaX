@@ -121,6 +121,18 @@
     "message": "팩트체크",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
+  "annotateButton": {
+    "message": "주석 달기",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "주석 다는 중",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "annotationsClean": {
+    "message": "검토됨 — 오류가 발견되지 않았습니다.",
+    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
+  },
   "translateFactChecks": {
     "message": "팩트체크 번역",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -170,6 +182,10 @@
   "disinfactButton": {
     "message": "팩트체크",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "localizeButton": {
+    "message": "현지화",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
   },
   "balanceLabel": {
     "message": "잔액"
@@ -301,5 +317,34 @@
   },
   "errNotFound": {
     "message": "해당 항목을 찾을 수 없습니다. 다시 시도해 주세요."
+  },
+  "settings": {
+    "message": "설정",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "다음 조건에서 팩트체크 항상 표시:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "진실성 < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "신뢰도 > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
   }
 }

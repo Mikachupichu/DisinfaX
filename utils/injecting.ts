@@ -24,6 +24,7 @@ import { normalizeSources } from "./sources";
 import { breakupTweetText, breakupWithHighlights, resolveHighlightRange } from "./textBreakup";
 import { mfBus } from "./mfBus";
 import { codeToMessageKey } from "./errorCodes";
+import { KALAM_BOLD_LATIN_B64, KALAM_BOLD_LATIN_EXT_B64 } from "./correctionFont";
 import disinfaxMarkRaw from "../public/black.svg?raw";
 
 // ── Input mode (touch vs. pointer) ───────────────────────────────────────────
@@ -110,6 +111,30 @@ const hiddenVisualIds = new Set<string>();
  *  top-of-tweet action button: Disinfact, Fact-Check All, translate, refresh).
  *  Takes precedence over the hidden set. Main tweets only. */
 const revealedVisualIds = new Set<string>();
+/** Popup "show false claims while hidden" setting (per-extension storage.local):
+ *  while a tweet's cached visuals stay hidden behind the Reveal button, claims
+ *  that are classified, need no reclassification, and clear BOTH thresholds —
+ *  confidence at or above the minimum, veracity at or below the maximum — keep
+ *  their highlight, annotations, badge and popover fully interactable. Everything
+ *  else stays stripped until Reveal. Defaults: disabled, confidence 0.2, veracity 0. */
+const BYPASS_STORE_ENABLED = 'mf_bypass_enabled';
+const BYPASS_STORE_CONFIDENCE = 'mf_bypass_min_confidence';
+const BYPASS_STORE_VERACITY = 'mf_bypass_min_veracity';
+const BYPASS_DEFAULT_ENABLED = false;
+const BYPASS_DEFAULT_CONFIDENCE = 0.2;
+const BYPASS_DEFAULT_VERACITY = 0;
+const bypassSettings = {
+    enabled: BYPASS_DEFAULT_ENABLED,
+    minConfidence: BYPASS_DEFAULT_CONFIDENCE,
+    minVeracity: BYPASS_DEFAULT_VERACITY,
+};
+/** Narrow an arbitrary stored value into a threshold range, so a stale or
+ *  hand-edited storage entry can't push a slider somewhere the UI doesn't go. */
+function clampBypassNumber(value: unknown, lo: number, hi: number, fallback: number): number {
+    return typeof value === 'number' && Number.isFinite(value)
+        ? Math.min(hi, Math.max(lo, value))
+        : fallback;
+}
 // Safety net for the (rare) case where a Disinfact/Translate-Fact-Checks backend call fails:
 // its button becomes a spinner and, with no result to re-render it away, would stay stuck. If
 // after this long the button is STILL connected AND still marked processing (i.e. no success
@@ -190,6 +215,33 @@ try {
         if (area === 'local' && 'mfLocale' in changes) {
             localeOverride = normalizeLocaleOverride(changes.mfLocale?.newValue ?? null);
         }
+    });
+    // Load the bypass thresholds, then keep them live: a popup slider move flips
+    // already-rendered tweets on the next inject pass with no reload.
+    browser.storage.local.get([BYPASS_STORE_ENABLED, BYPASS_STORE_CONFIDENCE, BYPASS_STORE_VERACITY]).then((r: any) => {
+        if (typeof r?.[BYPASS_STORE_ENABLED] === 'boolean') bypassSettings.enabled = r[BYPASS_STORE_ENABLED];
+        bypassSettings.minConfidence = clampBypassNumber(r?.[BYPASS_STORE_CONFIDENCE], 0, 1, BYPASS_DEFAULT_CONFIDENCE);
+        bypassSettings.minVeracity = clampBypassNumber(r?.[BYPASS_STORE_VERACITY], -1, 1, BYPASS_DEFAULT_VERACITY);
+    }).catch(() => {});
+    browser.storage.onChanged.addListener((changes: Record<string, any>, area: string) => {
+        if (area !== 'local') return;
+        let touched = false;
+        if (BYPASS_STORE_ENABLED in changes && typeof changes[BYPASS_STORE_ENABLED]?.newValue === 'boolean') {
+            bypassSettings.enabled = changes[BYPASS_STORE_ENABLED].newValue;
+            touched = true;
+        }
+        if (BYPASS_STORE_CONFIDENCE in changes) {
+            bypassSettings.minConfidence = clampBypassNumber(changes[BYPASS_STORE_CONFIDENCE]?.newValue, 0, 1, BYPASS_DEFAULT_CONFIDENCE);
+            touched = true;
+        }
+        if (BYPASS_STORE_VERACITY in changes) {
+            bypassSettings.minVeracity = clampBypassNumber(changes[BYPASS_STORE_VERACITY]?.newValue, -1, 1, BYPASS_DEFAULT_VERACITY);
+            touched = true;
+        }
+        // Re-inject synchronously while still inside the storage event: the user is
+        // staring at the open popup AND the tab behind it, so the highlights must
+        // flip the instant they drag — the next MutationObserver tick is too late.
+        if (touched) classificationInjections(allClassifications);
     });
 } catch {}
 
@@ -327,7 +379,7 @@ function t(key: string, subs?: string[]): string {
     return enEntry ? formatRawMessage(enEntry, subs) : key;
 }
 
-/** Check if two claim arrays differ in text, rewritten, claimLocale, reasoningLocale, or count enough to need fresh segment derivation. */
+/** Check if two claim arrays differ in text, rewritten, claimLocale, reasoningLocale, or count enough to need fresh segment derivation. Annotations are deliberately EXCLUDED: an annotation-only broadcast (Flow A/B key landing, no verdict movement) must keep the cheap in-place repaint path — the dispatcher triages it with its own comparison, and folding annotations in here would promote every such broadcast to a full segment re-derivation. */
 function claimsEqual(a: Claim[] | null | undefined, b: Claim[] | null | undefined): boolean {
     if (!a && !b) return true;
     if (!a || !b) return false;
@@ -428,6 +480,15 @@ if (typeof window !== "undefined") {
         mfSyntheticHoverSpan = null;
         stuck.dispatchEvent(new MouseEvent("mouseleave", { bubbles: false, clientX: e.clientX, clientY: e.clientY }));
     }, true);
+}
+
+/** Whether the last-known pointer position is inside `span` (mouse only — touch
+ *  keeps the coords at -1). Used to decide hover-only badge creation under a
+ *  stationary cursor, where no fresh mouseenter will fire to summon one. */
+function isPointerOverSpan(span: HTMLElement): boolean {
+    if (mfPointerX < 0 || mfPointerY < 0) return false;
+    const atPoint = document.elementFromPoint(mfPointerX, mfPointerY);
+    return !!atPoint && (atPoint === span || span.contains(atPoint));
 }
 
 /** If the pointer is currently sitting inside `span`, re-fire a synthetic mouseenter
@@ -1558,7 +1619,23 @@ export function injectClassifications(classifications: Classification[], tweetTe
             disinfactRunPendingIds.delete(c.id);
             processingOnHoldIds.delete(c.id);
         }
-        if (!c.translateFactChecksOnHold && !c.localizingHighlights) {
+        // A (re)preclassification re-derives the tweet's claim links from
+        // scratch (insert_tweet DELETEs them), so any annotation run left
+        // over from the previous round — Flow A seed or Flow B pending — can
+        // never land: its link row is gone, its persist matches 0 rows and
+        // broadcasts nothing. Drop this tweet's keys so the fresh keyless
+        // claims offer the idle Annotate button instead of a ghost
+        // "Annotating" that only dies at the 1–3 min timeout.
+        if (c.preclassifying) {
+            clearAnnotateStateForTweet(c.id);
+            if (c.quoting?.id && c.quoting.id !== c.id) clearAnnotateStateForTweet(c.quoting.id);
+        }
+        if (!c.localizingHighlights) {
+            // No localization in flight → any click marker is stale. This covers
+            // the failure-restore broadcast (hold back on, localizing off): the
+            // spinner must die with the run, not linger out the 30s click timeout
+            // next to the restored idle button. While a run IS in flight the
+            // marker is redundant anyway (wantsSpinner covers localizingHighlights).
             processingTranslateFactChecksIds.delete(c.id);
         }
 
@@ -1577,8 +1654,12 @@ export function injectClassifications(classifications: Classification[], tweetTe
             const localeChanged = c.translatedLocale !== old.translatedLocale || c.textLocale !== old.textLocale;
             const flagChanged = reclassifyFlagChanged(c.claims, old.claims);
             const needsRedo = claimsChanged || highlightsChanged || localeChanged || flagChanged;
-            if (needsRedo) {
-                console.log(`[misinfo] injectClassifications: change detected for ${c.id} (claims=${claimsChanged}, highlights=${highlightsChanged}, locale=${localeChanged})`);
+            const annotationsChanged = c.claims?.some((cl, i) => {
+                const oldCl = old.claims?.[i];
+                return oldCl && JSON.stringify(cl.annotations ?? {}) !== JSON.stringify(oldCl.annotations ?? {});
+            }) ?? false;
+            if (needsRedo || annotationsChanged) {
+                console.log(`[misinfo] injectClassifications: change detected for ${c.id} (claims=${claimsChanged}, highlights=${highlightsChanged}, locale=${localeChanged}, annotations=${annotationsChanged})`);
             }
 
             if (needsRedo) {
@@ -1594,6 +1675,13 @@ export function injectClassifications(classifications: Classification[], tweetTe
                     c.segments = old.segments;
                 }
             } else if (!c.segments && old.segments) {
+                c.segments = old.segments;
+            }
+            // Annotation-only change (a Flow-A/B broadcast with no verdict movement):
+            // segments stay valid (correction ranges don't move claim spans), so skip
+            // the re-derivation above and let upgradeToSegments sync the dataset
+            // in place, then repaint the popover section below.
+            if (!needsRedo && annotationsChanged && c.segments && old.segments) {
                 c.segments = old.segments;
             }
             if (c.quoting && old.quoting) {
@@ -1920,11 +2008,36 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
 /** Last-resort read of a tweet's text straight from the page, for when the captured XHR
  *  payload has no entry for it. Prefers X's `tweetText` testid and only then falls back to
  *  guessing at language/direction wrappers, since that heuristic can pick up neighbouring
- *  copy. Note the text may be truncated for long tweets. */
+ *  copy. Note the text may be truncated for long tweets.
+ *
+ *  Inline annotation paint (correction text nodes inside our own segments) would corrupt
+ *  this read, which feeds breakup offsets — so our overlay/correction nodes are skipped
+ *  via mfPlainText(). Callers comparing against cached translations already go through
+ *  findXOwnedTweetText (parked originals), which needs no such filter. */
+function mfPlainText(el: Element): string {
+    let out = '';
+    const walk = (node: Node): void => {
+        if (node instanceof HTMLElement) {
+            // Our inline annotation overlays: the strike wrap (its data holds the
+            // original substring) and the correction node (not tweet text at all).
+            if (node.classList.contains("mf-corr")) return;
+            if (node.classList.contains("mf-strike")) {
+                out += node.dataset.mfStrike ?? node.textContent ?? '';
+                return;
+            }
+            if (node.classList.contains("mf-inline-badge") || node.classList.contains("mf-standalone-spinner")) return;
+            for (const child of Array.from(node.childNodes)) walk(child);
+        } else {
+            out += node.textContent ?? '';
+        }
+    };
+    walk(el);
+    return out;
+}
 function findTweetTextInDom(tweetId: string): string | null {
     const tryGetText = (article: Element, bestEffort = false): string | null => {
         const tweetTextEl = article.querySelector('[data-testid="tweetText"]');
-        if (tweetTextEl?.textContent) return tweetTextEl.textContent;
+        if (tweetTextEl?.textContent) return mfPlainText(tweetTextEl);
         if (!bestEffort) return null;
         for (const el of article.querySelectorAll('[lang], div[dir="auto"]')) {
             const text = el.textContent?.trim();
@@ -2609,11 +2722,20 @@ function teardownClaimHover(span: HTMLElement): void {
     const noVerdict = prob === undefined || ver === undefined || prob < 0.2;
     const baseBg = noVerdict ? 'rgba(128, 128, 128, 0.25)' : confidenceRgba(prob, 0.25, ver);
     span.style.backgroundColor = baseBg;
+    // Only the idle Annotate button is permanent (spec) — hover teardown must
+    // not take it. A pending "Annotating" flight is hover-only, like the
+    // classification loading words, so teardown takes it here. Call sites
+    // already skip permanent badges, but teardown is shared, so defend here
+    // too: a stale _mfBadgePermanent marker must never cost the badge when
+    // the live dataset still wants the idle button.
     const badge = span.querySelector(".mf-inline-badge");
-    if (badge) badge.remove();
+    if (badge && !spanWantsIdleAnnotate(span)) badge.remove();
     // Restore the stand-in if this claim is still loading — the badge that was
-    // showing the spinner has just been taken away with the hover.
-    const stillLoading = span.dataset.refreshing === "true" || noVerdict;
+    // showing the spinner has just been taken away with the hover. A live
+    // annotate flight counts: its hover-only badge is gone the same way. Only
+    // the pending set marks a genuine flight (a leftover seed promotes —
+    // never spins — the next reconcile pass, and must not stand in meanwhile).
+    const stillLoading = span.dataset.refreshing === "true" || noVerdict || isAnnotatePending(span);
     if (stillLoading && !span.querySelector(".mf-standalone-spinner")) {
         span.appendChild(createStandaloneSpinner(isRTLLocale(getEffectiveUILocale())));
     }
@@ -2787,6 +2909,26 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
 
 function getInlineStyles(): string {
     return `
+/* Correction handwriting: bundled Kalam Bold (OFL 1.1, upright print — not
+   cursive) as data: URIs, because x.com's CSP (font-src 'self'
+   https://*.twimg.com data:) blocks chrome-extension:// font files. font-display
+   swap keeps corrections readable while the font decodes. */
+@font-face {
+    font-family: "MFKalam";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(data:font/woff2;base64,${KALAM_BOLD_LATIN_EXT_B64}) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: "MFKalam";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(data:font/woff2;base64,${KALAM_BOLD_LATIN_B64}) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 .mf-segment-wrap {
     display: inline;
 }
@@ -2809,6 +2951,43 @@ function getInlineStyles(): string {
 .mf-segment-claim.mf-highlight-reveal {
     background-repeat: no-repeat;
     transition: background-size 0.45s ease-out, background-color 0.15s ease;
+}
+/* Inline annotation overlays: an inner span wraps each erroneous substring so the
+   line draws ON TOP of the claim's highlight background. Longer-than-a-word matches
+   use a per-line horizontal rule (wraps natively); at-most-a-word matches use a
+   diagonal overlay whose slant is stable-random per substring. The correction sits
+   just after the struck substring in fully-opaque false-red, handwritten
+   pencil-style font (bundled Kalam Bold via @font-face below, system
+   handwriting stack as fallback; NOT generic cursive — Kalam is upright
+   print handwriting, unjoined). */
+.mf-strike {
+    position: relative;
+    display: inline;
+}
+.mf-strike-h {
+    text-decoration-line: line-through;
+    text-decoration-thickness: 2px;
+}
+.mf-strike-line {
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    top: 50%;
+    height: 2px;
+    margin-top: -1px;
+    pointer-events: none;
+}
+.mf-strike-line.mf-diag-a {
+    transform: rotate(14deg);
+}
+.mf-strike-line.mf-diag-b {
+    transform: rotate(-14deg);
+}
+.mf-corr {
+    font: inherit;
+    font-family: "MFKalam", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Marker Felt", "Comic Sans MS", cursive;
+    font-weight: 700;
+    font-size: 1.12em;
 }
 .mf-inline-badge {
     display: inline-block;
@@ -3425,7 +3604,7 @@ function onboardingButtonRef(type: string): { label?: string; icon?: string } {
     switch (type) {
         case 'disinfact': return { label: t('disinfactButton') };
         case 'factcheckall': return { label: t('factCheckAllButton') };
-        case 'translate-tweet': return { label: t('disinfactButton') };
+        case 'translate-tweet': return { label: t('localizeButton') };
         case 'factcheck': return { label: t('factCheckButton') };
         case 'translate-inner': return { icon: onboardTranslateIconSvg };
         case 'refresh-inner': return { icon: onboardRefreshIconSvg };
@@ -3626,7 +3805,11 @@ function refreshFactcheckOnboarding() {
     // or is a pipeline claim with a permanent badge, and hasn't been clicked yet.
     const firstByArticle = new Map<Element, HTMLElement>();
     for (const el of Array.from(document.querySelectorAll<HTMLElement>('.mf-segment-claim'))) {
-        const isFactcheck = el.dataset.reclassifyOnHold === 'true' || !!(el as any)._mfBadgePermanent;
+        // An Annotate badge is permanent but is NOT a Fact-Check button: the
+        // "fact-checking will charge" onboarding must neither anchor to it nor
+        // be dismissed by it. spanNeedsAnnotateBadge reads the live dataset, so
+        // a stale _mfBadgePermanent marker can't mistag the claim either.
+        const isFactcheck = el.dataset.reclassifyOnHold === 'true' || (!!(el as any)._mfBadgePermanent && !spanNeedsAnnotateBadge(el));
         if (isFactcheck && el.isConnected) {
             el.dataset.mfCharge = 'factcheck'; // so clicking it marks the type done
             const article = el.closest('article');
@@ -3837,7 +4020,7 @@ function findTweetTextElement(article: Element, isQuoted: boolean = false, tweet
  *  X renders links with display text that differs from the href (shortened URLs, @mentions),
  *  so existing anchors are captured first and restored as the text is rewritten — otherwise
  *  rebuilding the element would turn every link into a raw URL. */
-function renderSegmentedTweet(tweetTextEl: Element, segments: TextSegment[], claims: Claim[], batchId: string, classificationId?: string) {
+function renderSegmentedTweet(tweetTextEl: Element, segments: TextSegment[], claims: Claim[], batchId: string, classificationId?: string, hiddenPlain?: Set<number> | null, textLocale?: string) {
     const urlDisplayMap = new Map<string, string>();
     const existingLinks = tweetTextEl.querySelectorAll('a');
     for (const link of existingLinks) {
@@ -3850,7 +4033,7 @@ function renderSegmentedTweet(tweetTextEl: Element, segments: TextSegment[], cla
 
     console.log(`[misinfo] renderSegmentedTweet ${classificationId ?? '?'}: captured ${urlDisplayMap.size} link(s) from X: ${[...urlDisplayMap].map(([h, t]) => `${t} -> ${h}`).join(' | ') || 'none'}`);
 
-    const wrap = buildSegmentWrap(segments, claims, batchId, urlDisplayMap, classificationId);
+    const wrap = buildSegmentWrap(segments, claims, batchId, urlDisplayMap, classificationId, hiddenPlain, textLocale);
     // Keep X's own child nodes alive. `innerHTML = ""` detaches them, it does not destroy them,
     // and X's renderer still holds references to those exact node objects. Handing the same
     // objects back on teardown is what lets its Show original / Show translation toggle repaint;
@@ -3961,12 +4144,16 @@ function buildPlainSegmentContent(text: string, urlDisplayMap: Map<string, strin
 }
 
 /** Build the segment <span> elements used by renderSegmentedTweet. */
-function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: string, urlDisplayMap: Map<string, string> = new Map(), classificationId?: string): HTMLSpanElement {
+function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: string, urlDisplayMap: Map<string, string> = new Map(), classificationId?: string, hiddenPlain?: Set<number> | null, textLocale?: string): HTMLSpanElement {
     const wrap = document.createElement("span");
     wrap.className = "mf-segment-wrap";
+    // While hidden, non-bypassing claims render as ordinary text — plain-text path
+    // below, no highlight, no listeners. The strip gate already removed anything
+    // that would make bypassed interactivity wrong (buttons, fallbacks).
+    if (hiddenPlain && hiddenPlain.size > 0) wrap.dataset.mfHiddenPlain = hiddenPlainSig(hiddenPlain);
 
     for (const seg of segments) {
-        if (seg.claimIndex === null) {
+        if (seg.claimIndex === null || hiddenPlain?.has(seg.claimIndex)) {
             const span = document.createElement("span");
             span.className = "mf-segment-plain";
             span.appendChild(buildPlainSegmentContent(seg.text, urlDisplayMap));
@@ -4022,6 +4209,13 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
             span.dataset.hoverBg = hoverBgColor;
             span.dataset.sources = JSON.stringify(claim.sources ?? []);
             span.dataset.dbClaimText = claim.dbClaimText ?? '';
+            // Range-keyed annotations, bare-locale keys ({en: {"s,e": correction}}).
+            // Synced in place on updates (see upgradeToSegments) so annotation-only
+            // broadcasts repaint without rebuilding the wrap.
+            span.dataset.annotations = JSON.stringify(claim.annotations ?? {});
+            // Text locale of the displayed tweet — tells the popover which key's
+            // ranges index this span's text (same key rule as highlight breakup).
+            if (textLocale) span.dataset.textLocale = textLocale;
             if (claim.claimLocale) span.dataset.claimLocale = claim.claimLocale;
             if (claim.reasoningLocale) span.dataset.reasoningLocale = claim.reasoningLocale;
             span.dataset.refreshing = claim.refreshing ? "true" : "";
@@ -4035,6 +4229,18 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
             }
             span.style.backgroundColor = bgColor;
             span.textContent = seg.text;
+            // Inline annotation paint (range keys, spec §strikethroughs): red strike
+            // + red correction over the highlight, converted to span-relative via
+            // the segment's tweet offset. The factory below derives the badge from
+            // the same live dataset, so an annotated claim swaps Annotate for the
+            // verdict badge at build time too. The span holds no badge yet, so
+            // nothing is kept back; record the segment offset (in-place repaint
+            // needs it to re-convert) and what was drawn (paint-vs-drift). The
+            // dict choice follows the resolver's locale-ranked resolution (read
+            // off the just-stamped dataset) so the build and in-place paints
+            // never disagree.
+            span.dataset.mfSegStart = String(seg.start ?? 0);
+            span.dataset.mfStrike = repaintInlineAnnotations(span, seg.text, seg.start ?? 0, claim.annotations, [], resolveTriggerAnnotations(span)?.key);
 
             const isRTL = isRTLLocale(getEffectiveUILocale());
             if (isRTL) span.dir = "rtl";
@@ -4062,13 +4268,21 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 const isResearchingNow = isRefreshing || prob === undefined || ver === undefined
                     || (prob < 0.2 && !hasResearchNote);
                 const isPipelineClaim = inPipeline && isResearchingNow && !isOnHoldNow && !isRefreshing;
+                // Flow B: a settled, classified claim with no annotation key carries
+                // the "Annotate" affordance instead of its verdict — the badge
+                // IS the annotation affordance (spec). Only the idle button is
+                // permanent; a pending flight is hover-only, like the
+                // classification loading words (the annotateWorking branch at
+                // the build site never mints one here). Plain grey chrome like
+                // the Fact-Check button; never the verdict badge.
+                const needsAnnotate = spanNeedsAnnotateBadge(span);
                 const plainLabel = isOnHoldNow || isPipelineClaim;
-                const lbl = plainLabel ? t("factCheckButton") : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
-                const txtColor = plainLabel
+                const lbl = plainLabel ? t("factCheckButton") : needsAnnotate ? t("annotateButton") : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
+                const txtColor = (plainLabel || needsAnnotate)
                   ? 'rgb(180, 180, 180)'
                   : confidenceRgba(prob, 1, ver);
                 const badge = document.createElement("span");
-                badge.className = plainLabel ? "mf-inline-badge" : `mf-inline-badge ${VERDICT_BADGE_CLASS}`;
+                badge.className = plainLabel ? "mf-inline-badge" : needsAnnotate ? "mf-inline-badge mf-annotate-badge" : `mf-inline-badge ${VERDICT_BADGE_CLASS}`;
                 badge.style.cssText = `display: inline-flex; align-items: center; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; margin-left: ${isRTL ? '0' : '3px'}; margin-right: ${isRTL ? '3px' : '0'}; color: ${txtColor}; background: rgba(0,0,0,0.7); cursor: pointer;`;
                 if (isRefreshing || (prob === undefined && !isOnHoldNow && !isPipelineClaim)) {
                     const fcSpinner = document.createElement("span");
@@ -4082,23 +4296,76 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                         badge.appendChild(fcSpinner);
                         badge.appendChild(document.createTextNode(lbl));
                     }
+                } else if (needsAnnotate) {
+                    // A tap repaints synchronously, but a REBUILT span would lose
+                    // that — the pending set survives rebuilds, so re-derive the
+                    // spinner here instead of trusting the paint. A Flow A seed
+                    // outstanding promotes the same way (consumed either way).
+                    if (annotateSeededKeys.has(`${classificationId ?? ''}:${claim.text}`)) {
+                        promoteAnnotateSeed(span);
+                    }
+                    paintAnnotateBadgeContent(badge, isAnnotatePending(span));
                 } else {
                     badge.innerHTML = plainLabel
                         ? escapeHtml(lbl)
                         : verdictBadgeHtml(prob, ver, `${classificationId ?? ''}:${claim.text}`);
                     if (isRTL) badge.dir = "rtl";
                 }
-                if (permanent) {
+                // A pending "Annotating" badge is hover-only, never permanent
+                // (like the classification loading words): marking it would pin
+                // a working state with nothing to click. The seed promotes to
+                // pending inside the needsAnnotate branch above, so read the
+                // final state here, not the caller's `permanent` alone.
+                if (permanent && !isAnnotatePending(span)) {
                     (span as any)._mfBadgePermanent = badge;
                 }
                 return badge;
             };
 
             const isInPipeline = classificationId ? processingOnHoldIds.has(classificationId) : false;
-            const showPermanentBadge = isOnHold || (isInPipeline && isResearching && !claim.refreshing);
+            // The idle Annotate badge is permanent by spec (visible without
+            // hovering); its "Annotating" working state is hover-only like the
+            // classification loading words — while it has nothing to click it
+            // must not sit there. A live seed/flight (not yet promoted — the
+            // factory consumes it in the needsAnnotate branch) counts as
+            // working, so read the flight state BEFORE building the badge; the
+            // factory additionally refuses to mark a promoted-pending badge.
+            const annotateWorking = isAnnotateFlight(span);
+            const showPermanentBadge = isOnHold || (isInPipeline && isResearching && !claim.refreshing) || (spanNeedsAnnotateBadge(span) && !annotateWorking);
 
             if (showPermanentBadge) {
                 span.appendChild(createInlineBadge(true));
+            } else if (annotateWorking) {
+                // Working state, armed exactly once here. promoteAnnotateSeed
+                // only arms state — the paint below is this branch's, so a
+                // genuine flight mints hover-only chrome (badge under the
+                // resting pointer, which no promotion can replay-hover for;
+                // stand-in spinner otherwise, like every other loading state).
+                // `!armed` is NOT always a misfire: promote also returns false
+                // when the key is already pending (seed/pending overlap, or a
+                // rebuild mid-refresh) — still a live flight, so it takes the
+                // same hover-or-stand-in paint, never a badge minted straight
+                // into the DOM. Only a stale seed with no pending key means no
+                // run is coming, and only then does idle chrome return: the
+                // permanent button when the affordance gate holds, a
+                // refresh/research's stand-in, and nothing for a settled
+                // verdict (hover summons its badge; never pinned here).
+                // Rebuilds are idempotent: the same live key either lands or
+                // times out, whatever the paint.
+                const seedKey = `${classificationId ?? ''}:${claim.text}`;
+                const armed = annotateSeededKeys.has(seedKey) ? promoteAnnotateSeed(span) : isAnnotatePending(span);
+                const flightNow = armed || isAnnotatePending(span);
+                if (!flightNow) {
+                    if (spanNeedsAnnotateBadge(span)) {
+                        span.appendChild(createInlineBadge(true));
+                    } else if (claim.refreshing || isResearching) {
+                        span.appendChild(createStandaloneSpinner(isRTL));
+                    }
+                } else if (isPointerOverSpan(span)) {
+                    span.appendChild(createInlineBadge(false));
+                } else {
+                    span.appendChild(createStandaloneSpinner(isRTL));
+                }
             } else if (claim.refreshing || isResearching) {
                 // The badge carries the spinner, but the badge itself is only permanent for
                 // on-hold / in-pipeline claims — a RECLASSIFY (claim.refreshing) shows no
@@ -4125,9 +4392,17 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
                 // The hover badge carries its own spinner, so drop the stand-in first —
                 // otherwise a loading claim would briefly show two.
                 span.querySelector(".mf-standalone-spinner")?.remove();
-                // A permanent badge only for a claim that is still on hold in the live
-                // dataset; a classified claim gets a transient hover-only badge.
-                span.appendChild(createInlineBadge(span.dataset.reclassifyOnHold === "true"));
+                // A permanent badge for a claim that is still on hold in the live
+                // dataset — or still awaiting annotation. The factory decides
+                // marking post-promotion (a live seed promotes synchronously
+                // inside it): a genuine flight mints the hover-only pending
+                // badge unmarked, like the classification loading words (see
+                // teardownClaimHover), while a misfired seed (no run coming)
+                // is consumed to idle and KEEPS its permanence. A classified
+                // claim gets a transient hover-only badge. Re-marking here
+                // also heals the marker when a popover close took the element
+                // without clearing it.
+                span.appendChild(createInlineBadge(span.dataset.reclassifyOnHold === "true" || spanNeedsAnnotateBadge(span)));
             });
 
             span.addEventListener("mouseleave", (e) => {
@@ -4162,21 +4437,44 @@ function buildSegmentWrap(segments: TextSegment[], claims: Claim[], batchId: str
 /** Promote one already-injected tweet from the Phase 1 fallback box to Phase 2 inline
  *  highlights, once segments are available. Bails out quietly when there is nothing to
  *  upgrade or the tweet's text element can no longer be found in X's DOM. */
-function upgradeToSegments(article: Element, classification: Classification | QuotedClassification, batchId: string, isQuoted: boolean = false) {
+function upgradeToSegments(article: Element, classification: Classification | QuotedClassification, batchId: string, isQuoted: boolean = false, hiddenPlain?: Set<number> | null, textLocaleOverride?: string) {
     const segments = classification.segments;
     const claims = classification.claims;
     if (!segments || segments.length === 0 || !claims || claims.length === 0) return;
+    // Locale stamped onto spans so the annotation popover knows which key's
+    // ranges index the span text (same rule as highlight breakup). Main reads
+    // its own field; quoted borrows the caller's override.
+    const stampedLocale = textLocaleOverride
+        ?? ('textLocale' in classification ? classification.textLocale : undefined);
 
+    // The hidden-bypass verdict can flip mid-session (settings drag, late verdicts).
+    // The in-place path below can neither build a promoted claim's spans nor strip
+    // a demoted highlight's — `hiddenPlain` only counts non-bypassing claims, so a
+    // changed signature throws the wrap away and rebuilds from scratch. Quoted
+    // passes compute their own set at their call site, never the parent's.
+    const wrapPlain = hiddenPlain === undefined ? null : hiddenPlain;
     const tweetTextEl = findTweetTextElement(article, isQuoted, classification.id);
     if (!tweetTextEl) {
         console.log(`[misinfo] upgradeToSegments: no tweetTextEl found for ${classification.id} (isQuoted=${isQuoted})`);
         return;
     }
 
-    const existingWrap = tweetTextEl.querySelector(".mf-segment-wrap");
-    if (existingWrap) {
+    const existingWrap = tweetTextEl.querySelector<HTMLElement>(".mf-segment-wrap");
+    // `?? ''`: a wrap built with no bypass set carries no marker, and
+    // hiddenPlainSig(null) is '' — without the fallback every ordinary tweet
+    // would look stale and rebuild its wrap on every pass.
+    const stalePlain = !!existingWrap
+        && ((existingWrap as HTMLElement).dataset.mfHiddenPlain ?? '') !== hiddenPlainSig(wrapPlain);
+    if (stalePlain) {
+        // `existingClaimSpans.length === 0 && newHasClaims` below also re-renders,
+        // but only when the wrap is FULLY plain; a bypass flip usually leaves some
+        // claim spans behind, which would take the in-place path and render wrong.
+        console.log(`[misinfo] upgradeToSegments: hidden-bypass set changed for ${classification.id}, re-rendering`);
+        existingWrap.remove();
+    }
+    if (existingWrap && !stalePlain) {
         const existingClaimSpans = existingWrap.querySelectorAll(".mf-segment-claim");
-        const newHasClaims = segments.some(s => s.claimIndex !== null);
+        const newHasClaims = segments.some(s => s.claimIndex !== null && !wrapPlain?.has(s.claimIndex));
 
         if (existingClaimSpans.length === 0 && newHasClaims) {
             console.log(`[misinfo] upgradeToSegments: existing wrap is plain text but new segments have claims for ${classification.id}, re-rendering`);
@@ -4239,7 +4537,13 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 el.dataset.hoverBg = hoverBgColor;
                 el.dataset.sources = JSON.stringify(claim.sources ?? []);
                 el.dataset.dbClaimText = claim.dbClaimText ?? '';
-                if (claim.claimLocale) el.dataset.claimLocale = claim.claimLocale;
+                // Annotation-only broadcasts land here (no segment re-derivation — ranges
+                // don't move text). Deliberately outside `changed`: annotations repaint
+                // inline below, never the badge.
+                el.dataset.annotations = JSON.stringify(claim.annotations ?? {});
+                // Stamps the same value the rebuild path stamps below, so an
+                // annotation-only update never desyncs the locale from the ranges.
+                if (stampedLocale) el.dataset.textLocale = stampedLocale;
                 if (claim.reasoningLocale) el.dataset.reasoningLocale = claim.reasoningLocale;
                 el.dataset.refreshing = isRefreshing ? "true" : "";
                 if (claim.reclassifyOnHold) {
@@ -4256,16 +4560,47 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     delete el.dataset.cachedConfidence;
                     delete el.dataset.cachedVeracity;
                     delete el.dataset.cachedSources;
-                    if ((el as any)._mfBadgePermanent) {
+                    // Never strip a wanted idle Annotate button here — the dataset
+                    // was re-stamped above, so read the same live predicate the
+                    // badge factory uses. (The reconcile block below heals
+                    // anything else.) A pending flight is hover-only, so a stale
+                    // permanent marker for one IS stripped here.
+                    if ((el as any)._mfBadgePermanent && !spanWantsIdleAnnotate(el)) {
                         delete (el as any)._mfBadgePermanent;
                         el.querySelector(".mf-inline-badge")?.remove();
                     }
                 }
                 // When a pipeline claim transitions from researching to classified,
-                // clear the permanent badge marker and remove the stale badge element.
+                // clear the permanent badge marker and remove the stale badge element —
+                // UNLESS the claim now wants the idle Annotate button (a classified
+                // claim with no annotation key and no flight), which replaces the
+                // Fact-Check badge in place. A Flow A seed outstanding here means
+                // the silent post-research run is in flight — promote it to the
+                // hover-only "Annotating" state rather than the idle affordance
+                // (consumed either way; a misfire falls back to idle).
                 if (!isResearching && !claim.reclassifyOnHold && (el as any)._mfBadgePermanent) {
-                    delete (el as any)._mfBadgePermanent;
-                    el.querySelector(".mf-inline-badge")?.remove();
+                    if (spanWantsIdleAnnotate(el)) {
+                        // Untouched: the idle button keeps its marker and element.
+                    } else if (spanNeedsAnnotateBadge(el)) {
+                        // A flight is outstanding — the stale permanent marker
+                        // belongs to the idle button this span no longer shows.
+                        // promote only arms state (marker drop included); the
+                        // paint below owns the chrome. A misfire consumes to
+                        // idle — nothing to strip, keep the button's element
+                        // and marker exactly as they are.
+                        if (promoteAnnotateSeed(el)) {
+                            el.querySelector(".mf-inline-badge")?.remove();
+                            removeAnnotateStandin(el);
+                            ensureAnnotateStandin(el);
+                            // No explicit resync here: promote drops the idle
+                            // button's marker, so the generic marker-flip replay
+                            // at the end of this reconcile summons the pending
+                            // badge when the pointer is resting here.
+                        }
+                    } else {
+                        delete (el as any)._mfBadgePermanent;
+                        el.querySelector(".mf-inline-badge")?.remove();
+                    }
                 }
                 el.style.opacity = "";
 
@@ -4297,12 +4632,113 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     (el as any)._mfBadgePermanent = badge;
                 }
 
+                // Flow B reconcile: an annotation-only broadcast (no verdict movement)
+                // re-stamps the dataset above. When the tapped run's key lands, clear
+                // pending and swap the Annotate badge for the verdict badge; when a
+                // claim first becomes eligible (e.g. classified by refresh), arm it.
+                // A Flow A seed outstanding promotes to "Annotating" the same way.
+                // The idle button is permanent (spec); a pending flight is
+                // hover-only like the classification loading words — hover shows
+                // the badge, a stand-in spinner holds it when idle. Never touch
+                // a hover badge's spinner state — the tap's timer owns that.
+                {
+                    const needsAnnotateNow = spanNeedsAnnotateBadge(el);
+                    if (!needsAnnotateNow) {
+                        annotatePendingClaims.delete(`${classification.id}:${claim.text}`);
+                        clearAnnotateSeedForClaim(classification.id, claim.text);
+                        clearAnnotateTimeout(el);
+                        // The key landed: swap the annotate badge (idle button
+                        // or hover-only pending) for the verdict badge in place,
+                        // like any verdict movement — don't just remove it,
+                        // which would strand a hovering pointer with no badge.
+                        // (`changed` below won't repaint it: an annotation-only
+                        // broadcast moves no verdict/reasoning/refreshing.)
+                        const landed = el.querySelector(".mf-inline-badge.mf-annotate-badge") as HTMLElement | null;
+                        if (landed) {
+                            if ((el as any)._mfBadgePermanent) delete (el as any)._mfBadgePermanent;
+                            const landedPlain = claim.reclassifyOnHold || isPipelineResearching;
+                            const landedLabel = landedPlain ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
+                            landed.classList.remove("mf-annotate-badge");
+                            landed.classList.toggle(VERDICT_BADGE_CLASS, !landedPlain);
+                            landed.style.color = landedPlain ? 'rgb(180, 180, 180)' : confidenceRgba(claim.confidence, 1, claim.veracity);
+                            landed.style.marginLeft = isRTLEl ? '0' : '3px';
+                            landed.style.marginRight = isRTLEl ? '3px' : '0';
+                            landed.innerHTML = '';
+                            if (claim.refreshing || (claim.confidence === undefined && !claim.reclassifyOnHold && !isPipelineResearching)) {
+                                const landedSpinner = document.createElement("span");
+                                landedSpinner.className = "mf-fc-spinner";
+                                if (isRTLEl) {
+                                    landedSpinner.style.marginRight = "0";
+                                    landedSpinner.style.marginLeft = "3px";
+                                    landed.appendChild(document.createTextNode(landedLabel));
+                                    landed.appendChild(landedSpinner);
+                                } else {
+                                    landed.appendChild(landedSpinner);
+                                    landed.appendChild(document.createTextNode(landedLabel));
+                                }
+                            } else {
+                                landed.innerHTML = landedPlain
+                                    ? escapeHtml(landedLabel)
+                                    : verdictBadgeHtml(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
+                                if (isRTLEl) landed.dir = "rtl";
+                            }
+                        }
+                    } else {
+                        promoteAnnotateSeed(el);
+                    }
+                    const pendingNow = isAnnotatePending(el);
+                    const wantsBadge = claim.reclassifyOnHold || isPipelineResearching || (needsAnnotateNow && !pendingNow);
+                    const current = el.querySelector(".mf-inline-badge");
+                    if (wantsBadge && !current) {
+                        const nb = document.createElement("span");
+                        nb.className = "mf-inline-badge";
+                        nb.style.cssText = `display: inline-flex; align-items: center; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; margin-left: ${isRTLEl ? '0' : '3px'}; margin-right: ${isRTLEl ? '3px' : '0'}; color: rgb(180, 180, 180); background: rgba(0,0,0,0.7); cursor: pointer;`;
+                        if (needsAnnotateNow && !claim.reclassifyOnHold && !isPipelineResearching) {
+                            paintAnnotateBadgeContent(nb, false);
+                        } else {
+                            nb.textContent = t("factCheckButton");
+                        }
+                        el.appendChild(nb);
+                        // Only the idle button owns the permanent marker; the
+                        // pending branch can't reach here (excluded from
+                        // wantsBadge), so this is always the idle state.
+                        (el as any)._mfBadgePermanent = nb;
+                    } else if (current && !wantsBadge && pendingNow) {
+                        // A flight is live (the key has NOT landed — that
+                        // branch above already swapped the badge to the
+                        // verdict in place, and pending is clear there): the
+                        // idle button or a stale verdict badge in hand has no
+                        // place. Drop the marker and the element, and stand in
+                        // a spinner when the pointer isn't here to summon the
+                        // hover badge. A pending badge element in hand is the
+                        // HOVER's — the reconcile runs without a hover change,
+                        // so the pointer may be resting here with no fresh
+                        // mouseenter coming: keep that element and repaint it
+                        // as the working state. (`pendingNow` re-checks make
+                        // the key-landed case unreachable — belt and braces
+                        // against a swap the block above just performed.)
+                        if ((el as any)._mfBadgePermanent) delete (el as any)._mfBadgePermanent;
+                        if (current.classList.contains("mf-annotate-badge") && isPointerOverSpan(el)) {
+                            paintAnnotateBadgeContent(current as HTMLElement, true);
+                        } else {
+                            current.remove();
+                            ensureAnnotateStandin(el);
+                            // Nudge an open popover clear of the shrunk trigger —
+                            // the idle button's box is gone, same geometry the
+                            // badge reveal's settle already handles.
+                            shiftPopoverBelowBadge(el);
+                        }
+                    }
+                }
+
                 // Keep the stand-in spinner in sync on the IN-PLACE update path (this runs
                 // without a full re-render, so it is what makes the spinner appear when a
                 // reclassify starts and vanish the moment the result lands). It is only ever
                 // shown when no badge is present, since the badge carries its own spinner.
+                // A live annotate flight counts as loading: its hover-only badge is
+                // gone with the hover, and the stand-in holds the state instead.
                 {
-                    const loadingNow = el.dataset.refreshing === "true" || isResearching;
+                    const loadingNow = el.dataset.refreshing === "true" || isResearching || isAnnotatePending(el);
                     const hasBadge = !!el.querySelector(".mf-inline-badge");
                     const standalone = el.querySelector(".mf-standalone-spinner");
                     if (loadingNow && !hasBadge && !standalone) {
@@ -4312,6 +4748,35 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     }
                 }
 
+                // Inline annotation repaint (range keys, spec §strikethroughs): an
+                // annotation-only broadcast re-stamped the dataset above; repaint
+                // (idempotent strip-first) and, when the painted signature moved,
+                // nudge an open popover clear of the grown trigger (same move-down
+                // logic as the badge reveal's settle). Deliberately outside
+                // `changed`: annotations never move text, so they repaint without
+                // rebuilding the wrap. `mfPlainText` recovers the plain segment
+                // text from the CURRENT span (paint-aware: overlay datasets count
+                // as their original substring, corrections/badges/spinners don't
+                // count). The badge and stand-in spinner are kept back across the
+                // text rebuild, so the paint never eats the affordance; on an
+                // annotated-clean claim this restores the pristine highlight.
+                {
+                    const kept: HTMLElement[] = [];
+                    const badgeNow = el.querySelector(".mf-inline-badge");
+                    if (badgeNow instanceof HTMLElement) { badgeNow.remove(); kept.push(badgeNow); }
+                    const spinNow = el.querySelector(".mf-standalone-spinner");
+                    if (spinNow instanceof HTMLElement) { spinNow.remove(); kept.push(spinNow); }
+                    const segStart = parseInt(el.dataset.mfSegStart ?? "", 10);
+                    const plain = mfPlainText(el);
+                    // Same dict choice as the build path: the dataset was
+                    // re-stamped above, so resolve off it live.
+                    const sig = repaintInlineAnnotations(el, plain, isNaN(segStart) ? 0 : segStart, claim.annotations, kept, resolveTriggerAnnotations(el)?.key);
+                    const prev = el.dataset.mfStrike ?? '';
+                    el.dataset.mfStrike = sig;
+                    if (sig !== prev) shiftPopoverBelowBadge(el);
+                }
+
+
                 if (changed) {
                     updated++;
                     const badge = el.querySelector(".mf-inline-badge");
@@ -4319,33 +4784,59 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         const isOnHold = el.dataset.reclassifyOnHold === "true";
                         const isRefreshingNow = el.dataset.refreshing === "true";
                         const pipelineResearching = inPipeline && isResearching && !isOnHold && !claim.refreshing;
-                        const plainLabel = isOnHold || pipelineResearching;
-                        const newLabel = plainLabel ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
-                        const newColor = plainLabel
-                            ? 'rgb(180, 180, 180)'
-                            : confidenceRgba(claim.confidence, 1, claim.veracity);
-                        (badge as HTMLElement).style.color = newColor;
-                        (badge as HTMLElement).style.marginLeft = isRTLEl ? '0' : '3px';
-                        (badge as HTMLElement).style.marginRight = isRTLEl ? '3px' : '0';
-                        badge.innerHTML = '';
-                        badge.classList.toggle(VERDICT_BADGE_CLASS, !plainLabel);
-                        if (isRefreshingNow || (claim.confidence === undefined && !isOnHold && !pipelineResearching)) {
-                            const fcSpinner = document.createElement("span");
-                            fcSpinner.className = "mf-fc-spinner";
-                            if (isRTLEl) {
-                                fcSpinner.style.marginRight = "0";
-                                fcSpinner.style.marginLeft = "3px";
-                                badge.appendChild(document.createTextNode(newLabel));
-                                badge.appendChild(fcSpinner);
-                            } else {
-                                badge.appendChild(fcSpinner);
-                                badge.appendChild(document.createTextNode(newLabel));
-                            }
+                        // Flow B: a settled classified claim with no annotation key keeps
+                        // its Annotate affordance — never a verdict badge. The idle
+                        // button is permanent (spec); a pending flight is
+                        // hover-only like the classification loading words (the
+                        // reconcile block above already healed missing/stale
+                        // ones); this block only repaints what `changed`
+                        // actually moved.
+                        const needsAnnotateHere = !isOnHold && !pipelineResearching && !isRefreshingNow && spanNeedsAnnotateBadge(el);
+                        // A Flow A seed outstanding promotes the same way
+                        // (consumed either way) — promote only arms state
+                        // (marker drop included); this block owns the badge
+                        // element's repaint. A badge in hand here is the
+                        // HOVER's, not the button's: the flight start dropped
+                        // the button's marker and element (or the span was
+                        // just rebuilt, equally unmarked), so repainting it
+                        // as the working state strands no permanence.
+                        if (annotateSeededKeys.has(`${classification.id}:${claim.text}`)) {
+                            promoteAnnotateSeed(el);
+                        }
+                        if (needsAnnotateHere && !isAnnotatePending(el)) {
+                            paintAnnotateBadgeContent(badge as HTMLElement, false);
+                        } else if (needsAnnotateHere) {
+                            paintAnnotateBadgeContent(badge as HTMLElement, true);
                         } else {
-                            badge.innerHTML = plainLabel
-                                ? escapeHtml(newLabel)
-                                : verdictBadgeHtml(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
-                            if (isRTLEl) (badge as HTMLElement).dir = "rtl";
+                            const plainLabel = isOnHold || pipelineResearching;
+                            const newLabel = plainLabel ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
+                            const newColor = plainLabel
+                                ? 'rgb(180, 180, 180)'
+                                : confidenceRgba(claim.confidence, 1, claim.veracity);
+                            (badge as HTMLElement).style.color = newColor;
+                            (badge as HTMLElement).style.marginLeft = isRTLEl ? '0' : '3px';
+                            (badge as HTMLElement).style.marginRight = isRTLEl ? '3px' : '0';
+                            badge.innerHTML = '';
+                            badge.classList.remove("mf-annotate-badge");
+                            badge.classList.toggle(VERDICT_BADGE_CLASS, !plainLabel);
+                            if (isRefreshingNow || (claim.confidence === undefined && !isOnHold && !pipelineResearching)) {
+                                const fcSpinner = document.createElement("span");
+                                fcSpinner.className = "mf-fc-spinner";
+                                if (isRTLEl) {
+                                    fcSpinner.style.marginRight = "0";
+                                    fcSpinner.style.marginLeft = "3px";
+                                    badge.appendChild(document.createTextNode(newLabel));
+                                    badge.appendChild(fcSpinner);
+                                } else {
+                                    badge.appendChild(fcSpinner);
+                                    badge.appendChild(document.createTextNode(newLabel));
+                                }
+                            } else {
+                                badge.innerHTML = plainLabel
+                                    ? escapeHtml(newLabel)
+                                    : verdictBadgeHtml(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
+                                if (isRTLEl) (badge as HTMLElement).dir = "rtl";
+                            }
                         }
                     }
                 }
@@ -4386,7 +4877,11 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
     // a cached translation still describes the displayed body, so the two cannot disagree
     // about what "the same text" means.
     const segmentsText = segments.map(s => s.text).join('');
-    const domTextNow = tweetTextEl.textContent ?? '';
+    // mfPlainText, not textContent: after the first paint our own correction nodes
+    // live inside the wrap, and comparing segment text against paint would
+    // self-confirm on every later re-derive (same class of bug findXOwnedTweetText
+    // guards against — its parked originals are X's nodes and need no filter).
+    const domTextNow = mfPlainText(tweetTextEl);
     if (!tweetTextsCompatible(segmentsText, domTextNow)) {
         console.warn(`[misinfo] upgradeToSegments: SKIPPING full rebuild for ${classification.id} — segments do not match the text currently in the DOM (probably a host-page translation swap). segments="${normalizeTweetTextForCompare(segmentsText).slice(0, 40)}..." dom="${normalizeTweetTextForCompare(domTextNow).slice(0, 40)}..."`);
         return;
@@ -4411,7 +4906,9 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
         && mfPointerY >= rectAtRebuild.top && mfPointerY <= rectAtRebuild.bottom;
     console.log(`[misinfo] upgradeToSegments: upgrading ${classification.id} with ${segments.length} segments (full rebuild, pointerInsideTweetText=${pointerInsideAtRebuild})`);
     injectStyles();
-    renderSegmentedTweet(tweetTextEl, segments, claims, batchId, classification.id);
+    // Falls back to stamping nothing — the popover then prefers the UI-locale
+    // key, same as before.
+    renderSegmentedTweet(tweetTextEl, segments, claims, batchId, classification.id, wrapPlain, stampedLocale);
 
     // If the pointer was already resting over this tweet (see the diagnostic above),
     // the just-destroyed old span's hover state died with it and the freshly built
@@ -4682,9 +5179,32 @@ function setupArticleHandlers(articleEl: Element) {
         // there is no hover — the browser holds :hover on the tapped element. That only
         // works if the tap reaches the badge instead of being read as a click on the claim:
         // toggling the popover here would tear down the badge the tap was aimed at.
-        const badge = closestEl(e.target as Element, `.${VERDICT_BADGE_CLASS}`);
-        if (badge && target.contains(badge)) {
+        const verdictBadge = closestEl(e.target as Element, `.${VERDICT_BADGE_CLASS}`);
+        if (verdictBadge && target.contains(verdictBadge)) {
             e.stopPropagation();
+            return;
+        }
+
+        // Flow B tap: an idle Annotate button click opens the popover
+        // immediately AND triggers the annotation in the background (spec) —
+        // not one or the other. Runs before the on-hold/pipeline branches
+        // below; the Annotate badge only exists on settled claims, so those
+        // branches never see it. A pending flight's hover-only badge is NOT a
+        // button — tapping it just opens the popover (the second disjunct
+        // requires the idle affordance, so a click on the claim TEXT while a
+        // flight runs falls through to openPinnedPopover below instead of
+        // re-dispatching through triggerAnnotateForSpan's no-op branch).
+        if ((closestEl(e.target as Element, ".mf-annotate-badge") && spanWantsIdleAnnotate(target))
+            || (spanWantsIdleAnnotate(target)
+                && !(target as any)._mfPopoverOpen
+                && !closestEl(e.target as Element, ".mf-inline-badge"))) {
+            e.stopPropagation();
+            disarmHoverClaim(target);
+            cancelHoverPreview();
+            dismissPreviewPopover();
+            triggerAnnotateForSpan(target);
+            openPinnedPopover(target);
+            resyncHoverAtPointer(target);
             return;
         }
 
@@ -4968,7 +5488,12 @@ function showPopover(
         // without this the popover would open with no badge on a touch device. closePopover
         // already removes a non-permanent one, so it's safe to (re)create it here.
         if (!trigger.querySelector(".mf-inline-badge") && (trigger as any)._mfCreateBadge) {
-            trigger.appendChild((trigger as any)._mfCreateBadge(trigger.dataset.reclassifyOnHold === "true"));
+            // Only the idle Annotate button re-creates permanent here: a touch
+            // tap never hovers, so a transient flag would let the next
+            // mouseleave tear down the badge the popover is sitting on. A
+            // pending flight is hover-only like the classification loading
+            // words — nothing to click, so nothing to pin.
+            trigger.appendChild((trigger as any)._mfCreateBadge(trigger.dataset.reclassifyOnHold === "true" || spanWantsIdleAnnotate(trigger)));
             // On touch the badge only ever appears here, after placement — and at the end of
             // a line it can wrap the trigger's box down under the window just placed.
             shiftPopoverBelowBadge(trigger);
@@ -4979,7 +5504,7 @@ function showPopover(
         if (popover && popover.parentElement) popover.remove();
         delete (trigger as any)._mfPopoverOpen;
         const badge = trigger.querySelector(".mf-inline-badge");
-        if (badge) badge.remove();
+        if (badge && !spanWantsIdleAnnotate(trigger)) badge.remove();
         const pVal = parseFloat(trigger.dataset.probability ?? "");
         const prob = isNaN(pVal) ? undefined : pVal;
         const vVal = parseFloat(trigger.dataset.veracity ?? "");
@@ -5846,8 +6371,16 @@ function dismissPreviewPopover() {
     if (t) disarmHoverClaim(t);
     if (t && !(t as any)._mfPopoverOpen) {
         t.style.opacity = "";
+        // Only the idle Annotate button survives a preview dismiss (spec) —
+        // a pending flight is hover-only, like the classification loading
+        // words, so its badge goes with the hover. Only transient hover
+        // chrome is otherwise removed here. A flight still outstanding keeps
+        // its stand-in spinner, mirroring teardownClaimHover.
         const badge = t.querySelector(".mf-inline-badge");
-        if (badge) badge.remove();
+        if (badge && !spanWantsIdleAnnotate(t)) {
+            badge.remove();
+            if (isAnnotatePending(t)) ensureAnnotateStandin(t);
+        }
         const pVal = parseFloat(t.dataset.probability ?? "");
         const prob = isNaN(pVal) ? undefined : pVal;
         const vVal = parseFloat(t.dataset.veracity ?? "");
@@ -5896,8 +6429,17 @@ function closePopover(trigger?: HTMLElement) {
             disarmHoverClaim(t);
             t.style.opacity = "";
             delete (t as any)._mfPopoverOpen;
+            // Only the idle Annotate button is permanent (spec) — a popover
+            // close must not take it. A pending flight is hover-only, like the
+            // classification loading words, so its badge goes with the close —
+            // but the flight is still outstanding, so its stand-in spinner
+            // holds the state, mirroring teardownClaimHover. Every other badge
+            // is transient hover chrome, removed here.
             const badge = t.querySelector(".mf-inline-badge");
-            if (badge) badge.remove();
+            if (badge && !spanWantsIdleAnnotate(t)) {
+                badge.remove();
+                if (isAnnotatePending(t)) ensureAnnotateStandin(t);
+            }
             const pVal = parseFloat(t.dataset.probability ?? "");
             const prob = isNaN(pVal) ? undefined : pVal;
             const vVal = parseFloat(t.dataset.veracity ?? "");
@@ -6216,6 +6758,592 @@ function createSourceLink(src: Source, hoverBg?: string): HTMLAnchorElement {
     return link;
 }
 
+/** How long an "Annotating" badge waits for a key to land before reverting to
+ *  "Annotate" so the user can retry. A failure/skip broadcasts nothing (the
+ *  background returns without painting), so without this the spinner would sit
+ *  forever; a late arrival still reconciles through the normal path. */
+const ANNOTATE_PENDING_TIMEOUT_MS = 60000;
+
+/** How long an auto-seeded "Annotating" badge (Flow A, see injectClassifications'
+ *  newly-settled seed) waits for a key before reverting to the idle Annotate
+ *  affordance. Longer than the tap window: Flow A's run starts only after the
+ *  research stream closes, so the verdict-to-key gap includes the stream tail
+ *  plus the agent run (~20s+ observed). */
+const ANNOTATE_AUTO_PENDING_TIMEOUT_MS = 180000;
+
+/** Classification+claim keys with an annotation run in flight (tapped badge,
+ *  no key yet). Module-level so the pending paint survives a full span
+ *  rebuild, which recreates the dataset from the claim (no pending flag). */
+const annotatePendingClaims = new Set<string>();
+
+/** Stable key for the pending set, from a span's live dataset. */
+function annotateKeyForSpan(span: HTMLElement): string {
+    return `${span.dataset.mfCid ?? ''}:${span.dataset.claimText ?? ''}`;
+}
+
+/** Flow A seeds: claim keys whose silent post-research annotation run is
+ *  presumably in flight (set by the relay from the background's
+ *  `annotateInFlight` marker — see broadcastClassification). A key lands here
+ *  BEFORE its classification's paint (the relay seeds right after
+ *  injectClassifications returns), so the badge factory and reconcile can
+ *  already paint "Annotating" while the verdict is new; consumed when the key
+ *  lands or the span settles (see isAnnotatePending / spanNeedsAnnotateBadge).
+ *  Plain claim-text keys (`${tweetId}:${claimText}`), matching the pending set. */
+const annotateSeededKeys = new Set<string>();
+
+/** Record Flow A seeds arriving with a broadcast (exported for the relay).
+ *  Additive: unknown keys are ignored everywhere they're read. */
+export function setAnnotateSeeded(keys: Set<string>): void {
+    for (const k of keys) {
+        if (!annotatePendingClaims.has(k)) annotateSeededKeys.add(k);
+    }
+}
+
+/** Clear a consumed seed (key landed, claim settled otherwise, timeout). */
+function clearAnnotateSeed(key: string): void {
+    annotateSeededKeys.delete(key);
+}
+
+/** Drop a tweet's Flow A seeds and Flow B pending keys. Called when a
+ *  (re)preclassification resets the tweet's links (see injectClassifications):
+ *  the previous round's runs can never land, so without this the fresh
+ *  keyless claims inherit a ghost "Annotating". Pending timers left on
+ *  spans self-clean (no-op delete + idle repaint) when they fire. */
+function clearAnnotateStateForTweet(tweetId: string): void {
+    const prefix = `${tweetId}:`;
+    for (const k of annotateSeededKeys) if (k.startsWith(prefix)) annotateSeededKeys.delete(k);
+    for (const k of annotatePendingClaims) if (k.startsWith(prefix)) annotatePendingClaims.delete(k);
+}
+
+/** Whether the span's claim has an annotation run in flight. */
+function isAnnotatePending(span: HTMLElement): boolean {
+    return annotatePendingClaims.has(annotateKeyForSpan(span));
+}
+
+/** Whether the span's claim has an annotation run in flight OR seeded to start:
+ *  seeds promote to pending synchronously inside the badge factory/reconcile,
+ *  so permanence decisions taken BEFORE that promotion (build path, mouseenter,
+ *  showPopover) must treat a live seed as a flight — otherwise they'd mint a
+ *  permanent button the promotion then repaints as "Annotating". */
+function isAnnotateFlight(span: HTMLElement): boolean {
+    const key = annotateKeyForSpan(span);
+    return annotatePendingClaims.has(key) || annotateSeededKeys.has(key);
+}
+
+/** Clear a consumed Flow A seed for a claim key: the key landed (annotated),
+ *  so nothing is in flight — or the claim settled another way (clean {},
+ *  failed research) and the seed must not linger. */
+function clearAnnotateSeedForClaim(classificationId: string, text: string): void {
+    clearAnnotateSeed(`${classificationId}:${text}`);
+}
+
+/** Whether a claim span wants the Annotate affordance (Flow B): idle button or
+ *  pending flight. Read live from the dataset, like everything badge-related:
+ *  the span is updated in place as the claim progresses, so render-time
+ *  closures go stale. True only for a settled, classified claim — not on hold,
+ *  not refreshing, carrying reasoning (the same gate the background's
+ *  ANNOTATE_CLAIM handler enforces) — whose annotation object holds no key yet.
+ *  A present key, even an empty dict, means "annotated" and suppresses it. */
+function spanNeedsAnnotateBadge(span: HTMLElement): boolean {
+    if (span.dataset.reclassifyOnHold === "true") return false;
+    if (span.dataset.refreshing === "true") return false;
+    if ((span.dataset.reasoning ?? "").trim() === "") return false;
+    try {
+        const parsed = JSON.parse(span.dataset.annotations ?? "{}");
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            return Object.keys(parsed).length === 0;
+        }
+    } catch { /* corrupt reads as absent — the tap still works off the background's cache */ }
+    return true;
+}
+
+/** Remove the standalone spinner stand-in, if present. */
+function removeAnnotateStandin(span: HTMLElement): void {
+    span.querySelector(".mf-standalone-spinner")?.remove();
+}
+
+/** Ensure a standalone spinner stand-in while an annotation run is in flight
+ *  and no badge is showing it (the hover-only pending state, like the
+ *  classification loading words). No-op when a badge or spinner exists. */
+function ensureAnnotateStandin(span: HTMLElement): void {
+    if (span.querySelector(".mf-inline-badge")) return;
+    if (span.querySelector(".mf-standalone-spinner")) return;
+    span.appendChild(createStandaloneSpinner(isRTLLocale(getEffectiveUILocale())));
+}
+
+/** Whether the span wants the IDLE Annotate button: the affordance gate holds
+ *  and no annotation run is in flight (or seeded). Only this state owns the
+ *  permanent badge — a pending "Annotating" flight is hover-only, like the
+ *  classification loading words, with a stand-in spinner when idle. */
+function spanWantsIdleAnnotate(span: HTMLElement): boolean {
+    return spanNeedsAnnotateBadge(span) && !isAnnotateFlight(span);
+}
+
+/** Clear a span's pending-annotate timeout, if any. */
+function clearAnnotateTimeout(span: HTMLElement): void {
+    const timer = (span as any)._mfAnnotateTimer as ReturnType<typeof setTimeout> | undefined;
+    if (timer !== undefined) {
+        clearTimeout(timer);
+        delete (span as any)._mfAnnotateTimer;
+    }
+}
+
+/** Arm the pending-annotate timer for a claim key WITHOUT dispatching a run:
+ *  shared by the Flow B tap's window and the Flow A newly-settled seed (see
+ *  injectClassifications), which keep their own timeouts. The caller's window
+ *  is stored on the span when connected (reconcile clears it); a late key
+ *  reconciles through the normal in-place path, which clears pending either
+ *  way. A no-op when the key is already pending, so tap and seed never stack
+ *  timers. */
+function armAnnotatePending(key: string, span: HTMLElement | null, timeoutMs: number): void {
+    if (annotatePendingClaims.has(key)) return;
+    annotatePendingClaims.add(key);
+    if (span) {
+        clearAnnotateTimeout(span);
+        const target = span;
+        (target as any)._mfAnnotateTimer = setTimeout(() => {
+            delete (target as any)._mfAnnotateTimer;
+            annotatePendingClaims.delete(key);
+            if (!target.isConnected) return;
+            // No key landed (failure/skip broadcasts nothing): the idle button
+            // returns so a run can be retried. If the pointer is here, summon
+            // it now (no fresh mouseenter will fire under a stationary
+            // cursor); otherwise the teardown that owns the hover-only pending
+            // badge takes it and the spinner stand-in lapses with the flight.
+            // A late key still reconciles through the normal in-place path.
+            if (spanNeedsAnnotateBadge(target)) {
+                const b = target.querySelector(".mf-inline-badge.mf-annotate-badge") as HTMLElement | null;
+                if (b) {
+                    paintAnnotateBadgeContent(b, false);
+                    (target as any)._mfBadgePermanent = b;
+                } else {
+                    // No badge in hand (the hover-only pending badge was torn
+                    // down, or the flight never had one — stand-in only): the
+                    // idle button is permanent by spec, so mint it outright
+                    // rather than waiting for the next hover. Pending is clear
+                    // (just deleted above), so the factory marks it.
+                    target.querySelector(".mf-standalone-spinner")?.remove();
+                    const create = (target as any)._mfCreateBadge as ((permanent: boolean) => HTMLElement) | undefined;
+                    if (create && !target.querySelector(".mf-inline-badge")) target.appendChild(create(true));
+                }
+            }
+            updateOpenPopover();
+        }, timeoutMs);
+    }
+}
+
+/** Promote a claim's Flow A seed to the pending set: the span exists and its
+ *  dataset still wants the Annotate affordance, so Flow A's run is genuinely
+ *  outstanding — "Annotating", not the idle affordance. Same pending set as
+ *  the tap (triggerAnnotateForSpan), minus the dispatch: Flow A needs no
+ *  second run. Consumes the seed either way, so a keyless claim the seed
+ *  misfired on (no run coming) falls back to idle Annotate exactly once
+ *  instead of spinning for three minutes. Pending is hover-only like the
+ *  classification loading words; every caller owns its own paint (badge
+ *  repaint, stand-in, or swap), so this only arms state. A genuine flight
+ *  drops the idle button's permanence here — never permanent, so a
+ *  pre-existing marked button (a reclassified keyless claim's, promoted
+ *  mid-`changed`) can't pin the working state. A misfire returns above with
+ *  the marker untouched, so the idle button keeps its permanence.
+ *  @returns true when a flight was armed, false on misfire/already-pending. */
+function promoteAnnotateSeed(span: HTMLElement): boolean {
+    const key = annotateKeyForSpan(span);
+    const hadSeed = annotateSeededKeys.has(key);
+    clearAnnotateSeed(key);
+    // No seed outstanding means no Flow A run is coming for this claim: a
+    // freshly linked keyless claim must offer the idle Annotate button, not
+    // arm a 3-minute "Annotating" flight. (Two reconcile call sites invoke
+    // this ungated on every keyless claim — without this check they mint a
+    // pending flight out of nothing, which is the immediate-Annotating bug.)
+    if (!hadSeed) return false;
+    if (!spanNeedsAnnotateBadge(span) || annotatePendingClaims.has(key)) return false;
+    armAnnotatePending(key, span, ANNOTATE_AUTO_PENDING_TIMEOUT_MS);
+    delete (span as any)._mfBadgePermanent;
+    return true;
+}
+
+/** Flow B tap: dispatch the annotations-only run and swap the idle button for
+ *  the hover-only pending state (like the classification loading words). The
+ *  caller opens the popover (spec: immediately). Safe to call twice: the
+ *  pending set dedups, and the background dedups again server-side. A tap
+ *  while a Flow A seed is pending opens the popover but launches NOTHING —
+ *  Flow A is already annotating this claim; a concurrent Flow B would double
+ *  the paid hold and race it on the same key. The background enforces the
+ *  same rule (its ongoing-claim marker covers both flows). */
+function triggerAnnotateForSpan(target: HTMLElement): void {
+    const classificationId = mfCidForSpan(target);
+    const claimText = target.dataset.claimText;
+    if (!classificationId || !claimText) return;
+    const key = `${classificationId}:${claimText}`;
+    let badge = target.querySelector(".mf-inline-badge.mf-annotate-badge") as HTMLElement | null;
+    if (!badge) {
+        const create = (target as any)._mfCreateBadge as ((permanent: boolean) => HTMLElement) | undefined;
+        if (create && !target.querySelector(".mf-inline-badge")) {
+            badge = create(true);
+            target.appendChild(badge);
+        }
+    }
+    if (annotatePendingClaims.has(key)) {
+        // Flow A's silent run (or a double tap) is already in flight: keep the
+        // pending paint, open the popover via the caller, launch nothing.
+        // Pending is hover-only (like the classification loading words), so
+        // drop the idle button's permanent marker — the open popover keeps the
+        // element alive, and hover/teardown rules own it from here.
+        delete (target as any)._mfBadgePermanent;
+        if (badge) paintAnnotateBadgeContent(badge, true);
+        return;
+    }
+    armAnnotatePending(key, target, ANNOTATE_PENDING_TIMEOUT_MS);
+    // The idle button becomes the working state: same hover-only rule — the
+    // tap's popover holds the element, teardown/hover own the marker.
+    delete (target as any)._mfBadgePermanent;
+    if (badge) paintAnnotateBadgeContent(badge, true);
+    mfBus.dispatchEvent(new CustomEvent('mf-annotate-claim', {
+        detail: { classificationId, claimText }
+    }));
+}
+
+/** Paint an existing badge element as the Annotate affordance (idle "Annotate"
+ *  or pending "Annotating" + spinner). Grey button chrome like the Fact-Check
+ *  button — never the verdict badge. Shared by the badge factory (fresh spans)
+ *  and the in-place reconcile (the factory is out of scope there). */
+function paintAnnotateBadgeContent(badge: HTMLElement, pending: boolean): void {
+    badge.classList.remove(VERDICT_BADGE_CLASS);
+    badge.classList.add("mf-annotate-badge");
+    badge.style.color = 'rgb(180, 180, 180)';
+    const isRTL = isRTLLocale(getEffectiveUILocale());
+    badge.style.marginLeft = isRTL ? '0' : '3px';
+    badge.style.marginRight = isRTL ? '3px' : '0';
+    badge.innerHTML = '';
+    if (pending) {
+        const sp = document.createElement("span");
+        sp.className = "mf-fc-spinner";
+        if (isRTL) {
+            sp.style.marginRight = "0";
+            sp.style.marginLeft = "3px";
+            badge.appendChild(document.createTextNode(t("annotatingText")));
+            badge.appendChild(sp);
+        } else {
+            badge.appendChild(sp);
+            badge.appendChild(document.createTextNode(t("annotatingText")));
+        }
+    } else {
+        badge.textContent = t("annotateButton");
+    }
+}
+
+/** Words in an erroneous substring: at most one renders a diagonal overlay,
+ *  longer matches get a per-line horizontal rule that wraps natively. */
+function strikethroughWordCount(sub: string): number {
+    return sub.trim().split(/\s+/).filter(Boolean).length;
+}
+
+/** Stable diagonal slant for a substring (its char codes pick one of two),
+ *  so rebuilds don't flip the direction. */
+function strikethroughDiagClass(sub: string): string {
+    let h = 0;
+    for (let i = 0; i < sub.length; i++) h = (h * 31 + sub.charCodeAt(i)) | 0;
+    return (h & 1) === 0 ? "mf-diag-a" : "mf-diag-b";
+}
+
+/** Fully-opaque false-red for the strike line (a fully confident, fully false
+ *  highlight's red without its partial transparency). */
+function strikethroughRed(): string {
+    const [r, g, b] = verdictColorChannels(1, -1);
+    return `rgb(${r},${g},${b})`;
+}
+
+/** Fully-opaque false-red for the correction — same red as the strike line (a
+ *  fully confident, fully false highlight's red without its partial
+ *  transparency). */
+function correctionRed(): string {
+    return strikethroughRed();
+}
+
+/** Parse a bare-locale annotation object into absolute tweet-offset ranges,
+ *  longest-pair-first within the painted dict. Ranges index the FULL tweet text,
+ *  so callers convert to span-relative. A dict name may be passed to PREFER: when
+ *  set, that dict's pairs come first (still longest-first) so the build and
+ *  in-place paints follow the resolver's locale-ranked dict instead of each
+ *  picking their own.
+ *
+ *  Only ONE locale paints: the top-ranked dict (the displayed locale via
+ *  `prefer`) plus its same-base-language retags (en/en-US share a body).
+ *  Ranges from different primary languages index DIFFERENT bodies, so merging
+ *  them paints one locale's offsets onto another's text — e.g. the stale
+ *  English pair striking a fragment of the Spanish body next to the live
+ *  Spanish pair. Dicts for non-displayed languages are never merged in. */
+function annotationRanges(annotations: Record<string, Record<string, string>>, prefer?: string): Array<{ s: number; e: number; corr: string }> {
+    const dicts = Object.entries(annotations);
+    if (dicts.length === 0) return [];
+    const uiLocale = getEffectiveUILocale().split('-')[0];
+    const scored: Array<{ locale: string; dict: Record<string, string>; score: number }> = [];
+    for (const [locale, dict] of dicts) {
+        if (!dict || typeof dict !== 'object') continue;
+        const pairs = Object.entries(dict);
+        const valid = pairs.filter(([k]) => {
+            const m = /^(\d+),(\d+)$/.exec(k.trim());
+            if (!m) return false;
+            const s = Number(m[1]);
+            const e = Number(m[2]);
+            return Number.isInteger(s) && Number.isInteger(e) && s >= 0 && e > s;
+        });
+        if (valid.length === 0) continue;
+        let score = 0;
+        for (const [k] of valid) {
+            const m = /^(\d+),(\d+)$/.exec(k.trim())!;
+            score += Number(m[2]) - Number(m[1]);
+        }
+        scored.push({ locale, dict, score });
+    }
+    scored.sort((a, b) => {
+        if (prefer !== undefined) {
+            if (a.locale === prefer && b.locale !== prefer) return -1;
+            if (b.locale === prefer && a.locale !== prefer) return 1;
+        }
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.locale === uiLocale && b.locale !== uiLocale) return -1;
+        if (b.locale === uiLocale && a.locale !== uiLocale) return 1;
+        return 0;
+    });
+    // Paint ONE locale only: the top-ranked dict plus same-base-language
+    // retags (same body, e.g. en/en-US). Anything else indexes a different
+    // tweet body and must not merge in.
+    const topLocale = scored.length > 0 ? scored[0].locale : null;
+    const topBase = topLocale !== null ? topLocale.split('-')[0].toLowerCase() : null;
+    const out: Array<{ s: number; e: number; corr: string }> = [];
+    for (const { locale, dict } of scored) {
+        if (topBase !== null && locale.split('-')[0].toLowerCase() !== topBase) continue;
+        const pairs: Array<{ s: number; e: number; corr: string }> = [];
+        for (const [k, corr] of Object.entries(dict)) {
+            const m = /^(\d+),(\d+)$/.exec(k.trim());
+            if (!m) continue;
+            const s = Number(m[1]);
+            const e = Number(m[2]);
+            if (!Number.isInteger(s) || !Number.isInteger(e) || s < 0 || e <= s) continue;
+            pairs.push({ s, e, corr: String(corr ?? '') });
+        }
+        pairs.sort((a, b) => ((b.e - b.s) - (a.e - a.s)) || a.s - b.s || a.e - b.e);
+        out.push(...pairs);
+    }
+    // Span-ordered merge against ALL kept ranges: `out` arrives longest-first
+    // (not span-ordered), so testing only the last-kept range misreads a
+    // disjoint earlier-in-text range as an overlap and drops it. On a true
+    // overlap the longer strike still wins, so a shorter correction never
+    // nests inside a longer one.
+    const overlaps = (a: { s: number; e: number }, b: { s: number; e: number }) => a.s < b.e && b.s < a.e;
+    const merged: Array<{ s: number; e: number; corr: string }> = [];
+    const insertOrdered = (r: { s: number; e: number; corr: string }) => {
+        const at = merged.findIndex(m => m.s > r.s);
+        if (at === -1) merged.push(r); else merged.splice(at, 0, r);
+    };
+    for (const r of out) {
+        const clashing = merged.filter(m => overlaps(r, m));
+        if (clashing.length === 0) {
+            insertOrdered(r);
+        } else if (clashing.every(m => (r.e - r.s) > (m.e - m.s))) {
+            for (const m of clashing) merged.splice(merged.indexOf(m), 1);
+            insertOrdered(r);
+        }
+        // else: dropped — a shorter (or equal) range inside a kept strike.
+    }
+    merged.sort((a, b) => a.s - b.s || a.e - b.e);
+    return merged;
+}
+
+/** Signature of what the inline painter drew, for change detection and the
+ *  mfStrike dataset. Span-relative ranges + corrections. */
+function strikeSigForRanges(ranges: Array<{ s: number; e: number; corr: string }>): string {
+    return JSON.stringify(ranges.map(r => [r.s, r.e, r.corr]));
+}
+
+/** Signature of a claim's stored annotations, for claimsEqual. */
+function strikethroughSig(claim: Claim): string {
+    return claim.annotations ? JSON.stringify(claim.annotations) : '';
+}
+
+/** Strip-and-repaint a claim span's inline annotation overlays (range keys, spec
+ *  §strikethroughs): red strike + red correction over the highlight. Single
+ *  entry point for the build and in-place paths — the "strip first" makes it
+ *  idempotent, so no caller tracks whether the span already carries paint.
+ *
+ *  `text` is the span's plain segment text and `segStart` its offset into the
+ *  displayed tweet body; absolute ranges convert to span-relative (pairs fully
+ *  outside the span are skipped). Returns the signature of what was drawn (empty
+ *  string when nothing — plain text restored, no paint), so callers can record
+ *  the mfStrike dataset and detect paint vs. drift. `kept` (badge / stand-in
+ *  spinner) is never touched: detached lively nodes are re-attached after the
+ *  text rebuild, so the paint never eats the affordance. On an annotated-clean
+ *  claim the strip restores the pristine highlight. */
+function repaintInlineAnnotations(
+    span: HTMLElement,
+    text: string,
+    segStart: number,
+    annotations: Record<string, Record<string, string>> | undefined,
+    kept: HTMLElement[],
+    preferDict?: string,
+): string {
+    for (const el of Array.from(span.childNodes)) {
+        if (el instanceof HTMLElement && kept.includes(el)) continue;
+        el.remove();
+    }
+    if (!annotations || typeof annotations !== 'object') {
+        // Append, never insertBefore(kept[0]): callers detach kept nodes first,
+        // and a detached node is not a valid reference (throws NotFoundError).
+        span.appendChild(document.createTextNode(text));
+        for (const k of kept) span.appendChild(k);
+        return '';
+    }
+    const abs = annotationRanges(annotations, preferDict);
+    const rel: Array<{ s: number; e: number; corr: string }> = [];
+    for (const r of abs) {
+        const s = r.s - segStart;
+        const e = r.e - segStart;
+        if (e <= 0 || s >= text.length) continue;
+        rel.push({ s: Math.max(0, s), e: Math.min(text.length, e), corr: r.corr });
+    }
+    const sig = strikeSigForRanges(rel);
+    const red = strikethroughRed();
+    const corrRed = correctionRed();
+    let cursor = 0;
+    const frag = document.createDocumentFragment();
+    for (const r of rel) {
+        if (r.s > cursor) frag.appendChild(document.createTextNode(text.slice(cursor, r.s)));
+        const sub = text.slice(r.s, r.e);
+        if (sub !== '') {
+            const wrap = document.createElement("span");
+            wrap.className = "mf-strike";
+            wrap.dataset.mfStrike = sub;
+            const isWord = strikethroughWordCount(sub) <= 1;
+            if (isWord) {
+                const inner = document.createElement("span");
+                inner.textContent = sub;
+                wrap.appendChild(inner);
+                const line = document.createElement("span");
+                line.className = `mf-strike-line ${strikethroughDiagClass(sub)}`;
+                line.style.backgroundColor = red;
+                wrap.appendChild(line);
+            } else {
+                wrap.classList.add("mf-strike-h");
+                wrap.style.textDecorationColor = red;
+                wrap.textContent = sub;
+            }
+            frag.appendChild(wrap);
+        }
+        cursor = r.e;
+        // Correction sits just after the struck substring (reading order; the
+        // old RTL-before variant is gone — popover rows are also appended).
+        if (r.corr !== '') {
+            const maxLen = Math.max(24, Math.ceil(sub.length * 2.5));
+            const shown = r.corr.length > maxLen ? r.corr.slice(0, maxLen - 1) + "…" : r.corr;
+            const corr = document.createElement("span");
+            corr.className = "mf-corr";
+            corr.style.color = corrRed;
+            corr.textContent = ` ${shown} `;
+            frag.appendChild(corr);
+        }
+    }
+    if (cursor < text.length) frag.appendChild(document.createTextNode(text.slice(cursor)));
+    span.appendChild(frag);
+    for (const k of kept) span.appendChild(k);
+    return sig;
+}
+
+/** Resolve a span's classification id for claim-level actions (annotate):
+ *  the stamped id, else the legacy article-link fallback. */
+function mfCidForSpan(span: HTMLElement): string | null {
+    const stamped = span.dataset.mfCid;
+    if (stamped) return stamped;
+    const article = span.closest('article');
+    if (!article) return null;
+    const link = article.querySelector<HTMLAnchorElement>('a[href*="/status/"]');
+    if (!link) return null;
+    const match = link.href.match(/\/status\/(\d+)/);
+    return match ? match[1] : null;
+}
+
+/** Parse the span's annotation dataset into bare-locale → {range: correction}.
+ *  Never throws — a corrupt dataset reads as no annotations. */
+function triggerAnnotations(trigger: HTMLElement): Record<string, Record<string, string>> {
+    try {
+        const parsed = JSON.parse(trigger.dataset.annotations ?? "{}");
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+    } catch {}
+    return {};
+}
+
+/** Resolve the annotation dict to show for a trigger: the text locale first (its
+ *  ranges index the displayed tweet text), then the UI base language, then the
+ *  rest. Keys here are BARE locale prefixes — the background's RevisionGate
+ *  already stripped the ":<hash>" revision suffix (unknown revisions dropped),
+ *  so the key whose ranges index the displayed body is what's present; the rank
+ *  below only orders same-prefix retags and other held locales (X's source/dest
+ *  tags drift by region subtag — e.g. filed under "en" while displayed as
+ *  "en-US").
+ *
+ *  Ranges are TWEET-absolute, so they convert to span-relative via the segment
+ *  offset the build path stamps (mfSegStart); validation is bounds-checked
+ *  against the span's plain text length. The span's plain text comes from
+ *  mfPlainText (paint-aware), never trigger.textContent — the latter would
+ *  include our own correction nodes and the badge label. Returns the
+ *  span-relative pairs alongside the dict and key. */
+function resolveTriggerAnnotations(trigger: HTMLElement): { dict: Record<string, string>; key: string; spanText: string; rel: Array<{ s: number; e: number; corr: string }> } | null {
+    const all = triggerAnnotations(trigger);
+    const keys = Object.keys(all);
+    if (keys.length === 0) return null;
+    const uiLocale = getEffectiveUILocale();
+    const spanText = mfPlainText(trigger);
+    const segStartRaw = parseInt(trigger.dataset.mfSegStart ?? "", 10);
+    const segStart = isNaN(segStartRaw) ? 0 : segStartRaw;
+    // Candidate keys: exact full-locale match first, then same-prefix retags,
+    // then the UI base language, then the rest.
+    const textLocaleFull = (trigger.dataset.textLocale ?? "").toLowerCase();
+    const textLocaleBase = textLocaleFull.split('-')[0];
+    const uiBase = uiLocale.split('-')[0].toLowerCase();
+    const ordered = [...keys].sort((a, b) => {
+        const rank = (k: string) => {
+            const kl = k.toLowerCase();
+            if (textLocaleFull && kl === textLocaleFull) return 0;
+            if (textLocaleBase && kl.split('-')[0] === textLocaleBase) return 1;
+            if (kl.split('-')[0] === uiBase) return 2;
+            return 3;
+        };
+        return rank(a) - rank(b);
+    });
+    for (const k of ordered) {
+        const dict = all[k];
+        if (!dict || typeof dict !== 'object') continue;
+        const entries = Object.entries(dict);
+        if (entries.length === 0) {
+            // "Annotated, nothing wrong" for a key that addresses this text — keep
+            // looking: a LATER key may still hold corrections for it.
+            continue;
+        }
+        // Convert to span-relative and bounds-check against THIS span's plain
+        // text: a dict whose ranges don't land inside the span addresses a
+        // different revision (or a drifted dataset) and must not paint — the
+        // client-side backstop for same-language retags.
+        const rel: Array<{ s: number; e: number; corr: string }> = [];
+        let ok = true;
+        for (const [range, corr] of entries) {
+            const parts = range.split(',');
+            const s = parseInt(parts[0] ?? "", 10), e = parseInt(parts[1] ?? "", 10);
+            if (isNaN(s) || isNaN(e) || s < 0 || e <= s) { ok = false; break; }
+            const rs = s - segStart, re = e - segStart;
+            if (re <= 0 || rs >= spanText.length) { ok = false; break; }
+            rel.push({ s: Math.max(0, rs), e: Math.min(spanText.length, re), corr: String(corr ?? '') });
+        }
+        if (ok) {
+            rel.sort((a, b) => a.s - b.s || a.e - b.e);
+            return { dict, key: k, spanText, rel };
+        }
+    }
+    // No key holds corrections — but a PRESENT key (even empty) still means
+    // "annotated, clean", which suppresses the Annotate button. Report the
+    // first key's emptiness rather than absence.
+    return keys.length > 0 ? { dict: {}, key: keys[0], spanText, rel: [] } : null;
+}
+
 function addSourcesToPopover(popover: HTMLElement, trigger: HTMLElement) {
     const rawSources = trigger.dataset.sources;
     const previousRaw = (popover as any)._mfSourcesRaw;
@@ -6274,7 +7402,10 @@ function updateOpenPopover() {
                 // the replacement never hovers on its own — same as showPopover, ensure
                 // one exists so the badge doesn't vanish out from under an open popover.
                 if (!currentTrigger.querySelector(".mf-inline-badge") && (currentTrigger as any)._mfCreateBadge) {
-                    currentTrigger.appendChild((currentTrigger as any)._mfCreateBadge(currentTrigger.dataset.reclassifyOnHold === "true"));
+                    // Same permanence rule as showPopover: only the idle
+                    // Annotate button re-attaches permanent; a pending flight
+                    // is hover-only like the classification loading words.
+                    currentTrigger.appendChild((currentTrigger as any)._mfCreateBadge(currentTrigger.dataset.reclassifyOnHold === "true" || spanWantsIdleAnnotate(currentTrigger)));
                     // The replacement's badge can wrap on insertion, growing the trigger
                     // under its own window — same nudge as the reveal's settle.
                     shiftPopoverBelowBadge(currentTrigger);
@@ -7168,6 +8299,64 @@ function markVisualsEngaged(tweetId: string) {
     hiddenVisualIds.delete(tweetId);
 }
 
+/** True when a claim keeps its highlight while the tweet's cached visuals stay
+ *  hidden: classified (a note is the completion signal — see the isResearching
+ *  comment in buildSegmentWrap), not awaiting reclassification, and clearing
+ *  BOTH popup thresholds — confidence at or above the floor, veracity at or
+ *  below the ceiling. */
+function bypassEligibleClaim(cl: Claim): boolean {
+    if (!bypassSettings.enabled) return false;
+    if (cl.reclassifyOnHold) return false;
+    if (cl.confidence === undefined || cl.confidence === null) return false;
+    if (cl.veracity === undefined || cl.veracity === null) return false;
+    if (cl.note === undefined || cl.note === null || String(cl.note).trim() === '') return false;
+    return cl.confidence >= bypassSettings.minConfidence && cl.veracity <= bypassSettings.minVeracity;
+}
+
+/** Subset of a tweet's claims still shown while hidden: those passing the bypass
+ *  gate. The tweet only stays effective-hidden when this comes back empty — so a
+ *  Reveal/Hide button with every claim bypassed still behaves as hidden for gating
+ *  (button label, fallbacks suppressed) while the spans render untouched. */
+function bypassedClaims(claims: Claim[] | null | undefined): Claim[] {
+    return (claims ?? []).filter(bypassEligibleClaim);
+}
+
+/** True when this article shows the tweet's Reveal/Hide button AND its cached
+ *  visuals are currently hidden — the only state where the bypass gate applies.
+ *  Mirrors syncTopButtonBar's wantsVisual conditions that can still be live this
+ *  far down injectClassification (onHold / preclassifying / translate holds
+ *  already returned upstream; the claim-less case too): without the button there
+ *  is nothing to stay hidden behind, so nothing bypasses. Main tweets only. */
+function hiddenBehindToggle(article: Element, classification: Classification | QuotedClassification, isQuoted: boolean): boolean {
+    if (isQuoted) return false;
+    const cls = classification as Classification;
+    if (disinfactRunPendingIds.has(classification.id)) return false;
+    if (cls.localizingHighlights) return false;
+    if (getArticleMainStatusId(article) !== classification.id) return false;
+    return visualsHidden(classification.id);
+}
+
+/** Claim indices to render as plain text while hidden: every claim that fails the
+ *  bypass gate. Null when the tweet isn't hidden behind its toggle (render
+ *  everything, exactly as today); an empty set when hidden with all claims
+ *  bypassed (renders identically to null — the distinction only matters to the
+ *  strip gate in injectClassification, which counts bypassed claims itself). */
+function hiddenPlainIndices(article: Element, classification: Classification | QuotedClassification, isQuoted: boolean): Set<number> | null {
+    if (!hiddenBehindToggle(article, classification, isQuoted)) return null;
+    const claims = classification.claims ?? [];
+    const set = new Set<number>();
+    claims.forEach((cl, i) => { if (!bypassEligibleClaim(cl)) set.add(i); });
+    return set;
+}
+
+/** Change-detection signature for the set above: what the wrap was built with.
+ *  A settings drag that promotes or demotes a claim flips this, forcing a full
+ *  rebuild — the in-place update path only touches existing claim spans, so it
+ *  could neither strip a demoted highlight nor build a promoted one. */
+function hiddenPlainSig(set: Set<number> | null): string {
+    return set && set.size > 0 ? [...set].sort((a, b) => a - b).join(',') : '';
+}
+
 const processingTranslateFactChecksIds = new Set<string>();
 
 /** Build the Reveal (cached visuals hidden) / Hide (cached visuals shown) button. */
@@ -7366,7 +8555,11 @@ function buildDisinfactButton(
     return btn;
 }
 
-/** Build the translate-tweet Disinfact button. */
+/** Build the highlight-localization ("Localize") button: the translate-tweet
+ *  action relabeled — its highlights were made for another language version
+ *  and need repositioning for the current text, not a fresh preclassification.
+ *  Coloured with the average highlight colour when at least one claim is
+ *  fact-checked (tint-eligible), exactly like the Reveal button. */
 function buildTranslateFactChecksButton(
     classification: Classification,
     time: Element,
@@ -7399,12 +8592,19 @@ function buildTranslateFactChecksButton(
         textWrap.appendChild(createDisinfactLogoSvg());
     }
     const text = document.createElement("span");
-    text.textContent = t("disinfactButton");
+    text.textContent = t("localizeButton");
     textWrap.appendChild(text);
     markTopButtonSqueezable(btn, text);
 
     btn.appendChild(textWrap);
-    styleTopTweetButton(btn, false);
+    // Same verdict tint as the Reveal button: the average highlight colour
+    // when at least one claim is fact-checked, standard gray pill otherwise.
+    const localizeTint = averageVerdictTint(classification.claims);
+    const isLocalizeTinted = !!localizeTint;
+    const localizeTextColor = isLocalizeTinted ? (isDarkMode() ? "#fff" : "#000") : "rgb(83, 100, 113)";
+    btn.style.color = localizeTextColor;
+    textWrap.style.color = localizeTextColor;
+    styleTopTweetButton(btn, false, localizeTint ?? undefined, isLocalizeTinted);
 
     btn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -7523,7 +8723,15 @@ function syncTopButtonBar(
     }
 
     const isReveal = wantsVisual && isHidden;
-    const tint = isReveal ? averageVerdictTint(cls.claims) : null;
+    // While hidden, the tint must hint only at claims the user chose to keep
+    // hidden: bypassed claims already show their own colours inline, so tinting
+    // the button by them would double-count, and a tweet whose every claim is
+    // bypassed would paint a coloured button over fully-visible verdicts. Null
+    // (standard gray pill) when everything bypassed.
+    const tintClaims = isReveal
+        ? (claims ?? []).filter(cl => !bypassEligibleClaim(cl))
+        : cls.claims;
+    const tint = isReveal ? averageVerdictTint(tintClaims) : null;
 
     // When the Reveal button is present, all other buttons are hidden
     if (isReveal) {
@@ -7771,6 +8979,8 @@ function maybeSyncDisplayedLocaleFromDom(article: Element, classification: Class
     if (!domLang) return;
     const current = classification.textLocale;
     if (current && sameLanguage(domLang, current)) return;
+    // The background re-decides the same on SET_DISPLAYED_LOCALE; this optimistic
+    // set covers the gap before that broadcast lands.
     if (claims.some(cl => !resolveHighlightRange(cl.highlight, domLang))) {
         classification.translateFactChecksOnHold = true;
     }
@@ -7935,8 +9145,14 @@ function injectClassification(
     // Scoped to this article's MAIN tweet: the strip selectors below match by
     // tweet id only, so without the guard a quoted pass sharing the article
     // would strip the parent's visuals (or vice versa).
-    if (!isQuoted && visualsHidden(classification.id)
-        && getArticleMainStatusId(article) === classification.id) {
+    //
+    // Hidden bypass: claims clearing the popup's confidence/veracity thresholds
+    // keep their highlight, annotations, badge and popover while hidden. The
+    // gate below only fires when NO claim bypasses; otherwise flow continues to
+    // Phase 2, which renders just those claims (the rest as plain text).
+    const behindToggle = hiddenBehindToggle(article, classification, isQuoted);
+    const hiddenBypassed = behindToggle ? bypassedClaims(claims) : [];
+    if (behindToggle && hiddenBypassed.length === 0) {
         for (const wrap of article.querySelectorAll<HTMLElement>('.mf-segment-wrap')) {
             const host = wrap.parentElement as (HTMLElement & { _mfOriginalNodes?: ChildNode[] }) | null;
             const originals = host?._mfOriginalNodes;
@@ -7958,9 +9174,14 @@ function injectClassification(
         console.log(`[misinfo] injectClassification: Phase 2 for ${classification.id} (isQuoted=${isQuoted})`);
         const mainCls = classification as Classification;
         const clBatchId = mainCls.batchId ?? '';
-        upgradeToSegments(article, classification, clBatchId, isQuoted);
+        // While hidden, only the bypassed claims render as highlights; the rest
+        // render as plain text (see buildSegmentWrap). Null everywhere else, so
+        // every non-hidden path builds exactly what it always built.
+        const hiddenPlain = hiddenPlainIndices(article, classification, isQuoted);
+        upgradeToSegments(article, classification, clBatchId, isQuoted, hiddenPlain);
         if (!isQuoted && mainCls.quoting && mainCls.quoting.segments && mainCls.quoting.segments.length > 0) {
-            upgradeToSegments(article, mainCls.quoting, clBatchId, true);
+            upgradeToSegments(article, mainCls.quoting, clBatchId, true, undefined,
+                mainCls.textLocale ?? mainCls.translatedLocale);
         }
 
         // First streamed claims have landed — any optimistic refresh-button run is
@@ -7977,19 +9198,24 @@ function injectClassification(
         settleRefreshSlot(time, classification, article, isQuoted);
         syncTopWheel(article, classification.id, !!mainCls.localizingHighlights);
 
+        // While hidden, only bypassed claims may keep a fallback box: anything
+        // else rendering there would leak a verdict the user chose to keep hidden.
+        // hiddenPlain is null off the hidden path, so every non-hidden tweet
+        // computes exactly what it always computed.
+        const fallbackMasked = (c: Claim, i: number) => hiddenPlain !== null && hiddenPlain.has(i);
         if (!mainCls.localizingHighlights) {
             const segmentClaimTexts = new Set<string>();
             for (const seg of segments) {
-                if (seg.claimIndex !== null && claims[seg.claimIndex]) {
+                if (seg.claimIndex !== null && claims[seg.claimIndex] && !hiddenPlain?.has(seg.claimIndex)) {
                     segmentClaimTexts.add(claims[seg.claimIndex].text);
                 }
             }
             for (const seg of segments) {
-                if (seg.claimIndex !== null && claims[seg.claimIndex]?.rewritten) {
+                if (seg.claimIndex !== null && claims[seg.claimIndex]?.rewritten && !hiddenPlain?.has(seg.claimIndex)) {
                     segmentClaimTexts.add(claims[seg.claimIndex].rewritten!);
                 }
             }
-            const unmatched = claims.filter(c => !segmentClaimTexts.has(c.text) && !segmentClaimTexts.has(c.rewritten ?? ''));
+            const unmatched = claims.filter((c, i) => !fallbackMasked(c, i) && !segmentClaimTexts.has(c.text) && !segmentClaimTexts.has(c.rewritten ?? ''));
             const oldFallback = article.querySelector(`[classification-id="${classification.id}"]`);
             if (oldFallback) oldFallback.remove();
             if (unmatched.length > 0) {
@@ -8029,6 +9255,14 @@ function injectClassification(
     if ((classification as Classification).localizingHighlights) {
         console.log(`[misinfo] injectClassification: suppressing Phase 1 fallback for ${classification.id} while localizing highlights`);
         syncTopWheel(article, classification.id, true);
+        return;
+    }
+    // No Phase 1 fallback while hidden behind the toggle: the whole box is a
+    // verdict leak, and bypassed claims already render inline via Phase 2 above.
+    // BarKey still flips to reveal so the Reveal button takes Phase 2's place.
+    if (hiddenBehindToggle(article, classification, isQuoted)) {
+        article.querySelector(`[classification-id="${classification.id}"]`)?.remove();
+        article.querySelector(`[mf-unmatched="${classification.id}"]`)?.remove();
         return;
     }
     console.log(`[misinfo] injectClassification: Phase 1 (fallback) for ${classification.id}`);

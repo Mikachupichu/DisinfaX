@@ -11,7 +11,7 @@
  *  balance nor read extension state. Everything crossing in from the page — only the
  *  X_DATA_CAPTURED message — is origin-checked before it is trusted.
  */
-import { injectClassifications, showNotification, setExtensionFrozen, hasNonExtensionChange } from '../utils/injecting';
+import { injectClassifications, setAnnotateSeeded, showNotification, setExtensionFrozen, hasNonExtensionChange } from '../utils/injecting';
 import { mfBus } from '../utils/mfBus';
 import { MainTweet } from "../data/Tweets";
 import { reportColorScheme } from '../utils/toolbarIcon';
@@ -266,7 +266,26 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
     port.onMessage.addListener((message) => {
       if (message.type === "CLASSIFICATION") {
         console.log(`[misinfo] relay: received CLASSIFICATION for ${message.data.id}, onHold=${message.data.onHold}, translateFC=${message.data.translateFactChecksOnHold}, claims=${message.data.claims?.length ?? 0}`);
-        injectClassifications([message.data], tweetTextCache, translatedTextCache);
+        // Strip the Flow A marker before render: it is a background→content
+        // control signal (see broadcastClassification), not claim data. Kept
+        // out of Claim so the worker payloads never carry it. Quoted claims
+        // annotate against the QUOTED side (see ensureAnnotationSubscription),
+        // so their seeds key on the quoted id — matching annotateKeyForSpan.
+        const incoming = message.data;
+        const annotating = new Set<string>();
+        const stripList = (claims: any[] | null | undefined, sideId: string) => {
+          for (const cl of claims ?? []) {
+            if (cl.annotateInFlight) { annotating.add(`${sideId}:${cl.text}`); delete cl.annotateInFlight; }
+          }
+        };
+        stripList(incoming.claims, incoming.id);
+        stripList(incoming.quoting?.claims, incoming.quoting?.id ?? incoming.id);
+        // Seed BEFORE render: the badge factory and the in-place reconcile
+        // consume seeds synchronously inside injectClassifications, so seeding
+        // after would leave a fresh span painting idle "Annotate" with the
+        // seed sitting unconsumed until the key itself lands.
+        if (annotating.size > 0) setAnnotateSeeded(annotating);
+        injectClassifications([incoming], tweetTextCache, translatedTextCache);
       } else if (message.type === "MF_NOTIFICATION" && message.data) {
         // 'broke' bypasses showNotification's freeze guard inside injecting.ts: a frozen
         // tab must still hear why it is frozen. The kind union mirrors that function —
@@ -457,6 +476,12 @@ mfBus.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
   const { tweetId } = e.detail;
   console.log(`[misinfo] relay: fact-check-all for ${tweetId}`);
   sendToPort({ type: "FACT_CHECK_ALL", data: { tweetId, locale: localeOverride } });
+}) as EventListener);
+
+mfBus.addEventListener('mf-annotate-claim', ((e: CustomEvent) => {
+  const { classificationId, claimText } = e.detail;
+  console.log(`[misinfo] relay: annotate-claim for ${classificationId} "${claimText?.slice(0, 40)}..."`);
+  sendToPort({ type: "ANNOTATE_CLAIM", data: { classificationId, claimText, locale: localeOverride } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {

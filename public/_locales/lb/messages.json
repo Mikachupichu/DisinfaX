@@ -126,6 +126,18 @@
     "message": "Iwwerpréifung",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
+  "annotateButton": {
+    "message": "Annotéieren",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotatioun",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "annotationsClean": {
+    "message": "Nogepréift — keng Feeler fonnt.",
+    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
+  },
   "translateFactChecks": {
     "message": "Iwwerpréiwungen iwwersetzen",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -175,6 +187,10 @@
   "disinfactButton": {
     "message": "Iwwerpréifung",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "localizeButton": {
+    "message": "Lokaliséieren",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
   },
   "balanceLabel": {
     "message": "Guthaben"
@@ -306,5 +322,34 @@
   },
   "errNotFound": {
     "message": "Dat konnt net fonnt ginn. Probéier w.e.g. nach eng Kéier."
+  },
+  "settings": {
+    "message": "Astellungen",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Weis ëmmer d'Iwwerpréiwungen wann:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Wouerheet < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Vertrauen > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
   }
 }

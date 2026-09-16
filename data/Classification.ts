@@ -38,6 +38,15 @@ export type Claim = {
      *  to bare locales on receipt, so by the time ranges reach this type the
      *  hashes are already gone. */
     highlight?: Record<string, [number, number]>;
+    /** Range-keyed spelling/grammar annotations for the tweet text, e.g.
+     *  {"en": {"12,18": "their"}} — keyed by bare locale, value maps "start,end"
+     *  offsets (into the DISPLAYED tweet body) to the corrected wording. DB rows
+     *  persist keys as "<locale>:<sha256-of-displayed-text>" (same revision binding
+     *  as highlight), but the background strips those back to bare locales on
+     *  receipt, so by the time they reach this type the hashes are already gone.
+     *  Present key (even with an empty dict) = "annotated, nothing wrong"; absent
+     *  key = "never annotated" (the UI shows the Annotate affordance). */
+    annotations?: Record<string, Record<string, string>>;
     /** This claim is flagged for reclassification-on-hold (reclassify trigger).
      *  Highlight should be neutral grey and badge always visible with "Disinfact". */
     reclassifyOnHold?: boolean;
@@ -68,6 +77,10 @@ export type TextSegment = {
     /** 0-based index into the owning classification's `claims`, or null when this
      *  segment is ordinary text covered by no claim. */
     claimIndex: number | null;
+    /** Offset of this segment's first character into the displayed tweet body it
+     *  was sliced from. Set on claim segments; lets range-keyed annotations
+     *  (absolute tweet offsets) paint span-relative. */
+    start?: number;
 };
 
 /** The classification of a quoted tweet, nested inside its quoter's. Carries no

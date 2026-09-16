@@ -125,6 +125,18 @@
     "message": "Fact-Checking",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
+  "annotateButton": {
+    "message": "Annotate",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotating",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "annotationsClean": {
+    "message": "Reviewed — no errors found.",
+    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
+  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -175,8 +187,41 @@
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
+  "localizeButton": {
+    "message": "Localize",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
   "aiDisclaimer": {
     "message": "DisinfaX can make mistakes. Double-check information.",
     "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "settings": {
+    "message": "Settings",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Always show fact-checks if:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Veracity < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Confidence > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
   }
 }

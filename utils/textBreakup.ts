@@ -323,11 +323,11 @@ export type RevisionGate = {
  *  are dropped — the missing-highlight checks downstream then route through the
  *  Translate Fact-Checks flow. Hash equality IS string equality here, so no locale
  *  guessing is involved. */
-export function selectHighlightRevision(
-    highlight: Record<string, [number, number]>,
+export function selectHighlightRevision<T>(
+    highlight: Record<string, T>,
     gate: RevisionGate
-): Record<string, [number, number]> {
-    const best = new Map<string, { tier: number; val: [number, number] }>();
+): Record<string, T> {
+    const best = new Map<string, { tier: number; val: T }>();
     for (const [key, val] of Object.entries(highlight)) {
         const split = splitHighlightKey(key);
         const prefix = split ? split[0] : key;
@@ -335,9 +335,22 @@ export function selectHighlightRevision(
         if (tier < 0) continue;
         if ((best.get(prefix)?.tier ?? -1) <= tier) best.set(prefix, { tier, val });
     }
-    const out: Record<string, [number, number]> = {};
+    const out: Record<string, T> = {};
     for (const [prefix, { val }] of best) out[prefix] = val;
     return out;
+}
+
+/** Strip revision hashes from a DB annotations object, re-emitting survivors under
+ *  their bare locale prefix. Identical tier contract to selectHighlightRevision
+ *  (displayed body wins, other held bodies kept, legacy bare keys kept, unknown
+ *  revisions dropped) — annotations persist under the same "<locale>:<hash>" keys
+ *  as highlights, so the same gate applies. Value type differs (dict of
+ *  "start,end" → correction rather than [start,end]), hence the separate name. */
+export function selectAnnotationRevision(
+    annotations: Record<string, Record<string, string>>,
+    gate: RevisionGate
+): Record<string, Record<string, string>> {
+    return selectHighlightRevision(annotations, gate);
 }
 
 /**
@@ -402,7 +415,7 @@ export function breakupWithHighlights(
         if (start > cursor) {
             segments.push({ text: tweetText.slice(cursor, start), claimIndex: null });
         }
-        segments.push({ text: tweetText.slice(start, m.end), claimIndex: m.claimIndex });
+        segments.push({ text: tweetText.slice(start, m.end), claimIndex: m.claimIndex, start });
         cursor = m.end;
     }
 
@@ -464,7 +477,7 @@ export function breakupTweetText(tweetText: string, claims: Claim[]): TextSegmen
         if (m.start > cursor) {
             segments.push({ text: tweetText.slice(cursor, m.start), claimIndex: null });
         }
-        segments.push({ text: tweetText.slice(m.start, m.end), claimIndex: m.claimIndex });
+        segments.push({ text: tweetText.slice(m.start, m.end), claimIndex: m.claimIndex, start: m.start });
         cursor = m.end;
     }
 

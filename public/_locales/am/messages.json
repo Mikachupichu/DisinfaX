@@ -188,6 +188,18 @@
     "message": "በማጣራት ላይ",
     "description": "Text shown next to the spinner while waiting for analysis results."
   },
+  "annotateButton": {
+    "message": "ማስታወሻ ጨምር",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "ማስታወሻ በመጨመር ላይ",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "annotationsClean": {
+    "message": "ተገምግሟል — ምንም ስህተት አልተገኘም።",
+    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
+  },
   "translateFactChecks": {
     "message": "ማጣራቶችን ተርጉም",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -215,6 +227,10 @@
   "disinfactButton": {
     "message": "አጣራ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "localizeButton": {
+    "message": "አካባቢ አድርግ",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
   },
   "badgeFiller": {
     "message": "የሚሆን",
@@ -305,5 +321,34 @@
   },
   "errNotFound": {
     "message": "ያ ማግኘት አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
+  },
+  "settings": {
+    "message": "ቅንብሮች",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "ሁልጊዜ ማጣራት አሳይ:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "ትክክለኛነት < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "እርግጠኝነት > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
   }
 }
