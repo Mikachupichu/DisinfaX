@@ -10,6 +10,65 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
+/* ── Threshold sliders ("Settings" section) ─────────────────────────────────────
+   Native range styling is per-engine, so both need explicit rules. The track is a
+   two-stop gradient — the shared gate colour up to the value, dark zinc after —
+   driven by --mf-slider-fill (set inline per slider, since the track can't read
+   the input's value). The thumb takes the same --mf-slider-color so bar and knob
+   always agree. appearance: none is required to restyle the track cross-browser.
+   RTL: a horizontal `scaleX(-1)` would flip the thumb's drag mapping in some
+   engines, so the gradient direction flips instead and the thumb stays native. */
+.mf-threshold-slider {
+  --mf-slider-color: rgb(128, 128, 128);
+  --mf-slider-fill: 50%;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--mf-slider-color) 0%,
+    var(--mf-slider-color) var(--mf-slider-fill),
+    #3f3f46 var(--mf-slider-fill),
+    #3f3f46 100%
+  );
+  outline: none;
+}
+[dir="rtl"] .mf-threshold-slider {
+  background: linear-gradient(
+    to left,
+    var(--mf-slider-color) 0%,
+    var(--mf-slider-color) var(--mf-slider-fill),
+    #3f3f46 var(--mf-slider-fill),
+    #3f3f46 100%
+  );
+}
+.mf-threshold-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--mf-slider-color);
+  border: 2px solid #fafafa;
+  cursor: pointer;
+}
+.mf-threshold-slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--mf-slider-color);
+  border: 2px solid #fafafa;
+  cursor: pointer;
+}
+.mf-threshold-slider:disabled {
+  opacity: 0.5;
+}
+.mf-threshold-slider:disabled::-webkit-slider-thumb,
+.mf-threshold-slider:disabled::-moz-range-thumb {
+  cursor: not-allowed;
+}
+
 /* ── Popup sizing ───────────────────────────────────────────────────────────────
    Desktop (Chrome, Firefox, Safari on macOS) renders the popup as a fixed panel that
    sizes itself to the document, so the width must be stated explicitly here — the

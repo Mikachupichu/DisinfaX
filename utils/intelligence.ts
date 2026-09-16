@@ -288,6 +288,22 @@ function normalizePreclassifyVerdicts(c: Classification): Classification {
 /** Re-research a single claim on demand (triggered by the user clicking the refresh button).
  *  Skips all matching/identification — uses the existing claim text (or dbClaimText) directly.
  *  Always streams fresh research regardless of reclassify. */
+/** Locators Flow A needs so classify-tweets can silently annotate a freshly-researched
+ *  claim under the same hold. The client sends ONLY these — the worker plus the
+ *  get_annotation_context RPC re-derive everything trust-sensitive server-side
+ *  (tweet/claim/link rows, the highlight key, the sliced range, freshness). Omitted
+ *  entirely by old callers, in which case the worker simply skips annotation. */
+export type AnnotLocators = {
+    /** Hex tweet hash (with or without \x) of the tweet row the claim links to. */
+    tweetHash: string;
+    /** Exact displayed tweet text the annotation ranges index. */
+    tweetText: string;
+    /** Persisted highlight prefix the key for tweetText is stored under (e.g. "en-US"). */
+    textLocale: string;
+    /** Index of the claim within its own list (main or quoted), echoed on NDJSON lines. */
+    claimIndex: number;
+};
+
 export async function* refreshClaim(
     classification: Classification,
     claimText: string,
@@ -298,7 +314,8 @@ export async function* refreshClaim(
     // it's reported HERE (bound by the caller to THIS claim's gated action) instead of
     // the global interceptor — so a 402 during a concurrent burst (Fact-Check All) is
     // attributed to the exact claim that triggered it.
-    onBalanceError?: () => void
+    onBalanceError?: () => void,
+    annotLocators?: AnnotLocators | null
 ): AsyncGenerator<Classification> {
     const claimObj = classification.claims?.find(c => c.text === claimText)
         ?? classification.quoting?.claims?.find(c => c.text === claimText);
@@ -310,7 +327,9 @@ export async function* refreshClaim(
 
     // The classify-tweets worker now researches, marks the claim is_classifying, and
     // upserts the result to the DB itself. The extension no longer embeds or upserts.
-    for await (const update of streamResearch(searchText, locale, tweetUrls, claimId, onBalanceError)) {
+    // annotLocators (Flow A) ride along so the worker's second agent can silently
+    // annotate the fresh claim under the same hold — locators only, never trusted text.
+    for await (const update of streamResearch(searchText, locale, tweetUrls, claimId, onBalanceError, annotLocators)) {
         if (update.kind === 'partial') {
             // Show partial reasoning progress
             const existing = researchCache.get(claimText);
@@ -732,11 +751,116 @@ export async function backgroundTranslateClaim(
     onPartial(finalTranslated);
 }
 
+/** One streamed annotation hit: a corrected range in the tweet text. */
+export type AnnotationHit = { range: [number, number]; correction: string };
+
+/**
+ * Annotations-only request (Flow B): ask classify-tweets for a single claim's
+ * spelling/grammar annotations on the displayed tweet text, streaming each
+ * range→correction pair to onPartial as it arrives. Sends locators ONLY —
+ * tweet_hash, tweet_text, text_locale, claim id, claim_index — never trusted
+ * verdict text; the worker re-derives everything server-side and persists the
+ * result itself. onPartial receives the accumulating dict (same shape the DB
+ * stores per locale key) so the UI can paint live. Resolves to the final dict,
+ * or null on transport failure. A resolved {} is meaningful ("annotated, nothing
+ * wrong" — the worker persisted the empty key); null means the request itself
+ * failed and the badge must stay.
+ */
+export async function backgroundAnnotate(
+    tweetHash: string,
+    tweetText: string,
+    textLocale: string,
+    claimId: string | undefined,
+    claimIndex: number,
+    locale: string | undefined,
+    onPartial?: (accumulated: Record<string, string>) => void
+): Promise<Record<string, string> | null> {
+    const accumulated: Record<string, string> = {};
+    try {
+        const body: any = {
+            annotations_only: true,
+            claim_index: claimIndex,
+            locale: locale ?? getUILanguage(),
+            tweet_hash: tweetHash,
+            tweet_text: tweetText,
+            text_locale: textLocale,
+        };
+        if (claimId) body.id = claimId;
+        const res = await fetch('https://classify-tweets.michael-pouget01.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok || !res.body) {
+            const errBody = res.ok ? '(no body)' : await res.text();
+            console.error('[backgroundAnnotate] classify-tweets error:', res.status, errBody);
+            if (!res.ok) reportWorkerError(errBody);
+            return null;
+        }
+        // Skip responses are 200-empty: nothing to annotate (stale verdict,
+        // unclassified placeholder, never-localized revision). Null, not {},
+        // so the caller keeps the badge instead of caching a fake "clean".
+        if (res.headers.get('X-Annotate-Skipped')) {
+            console.log(`[backgroundAnnotate] skipped (${res.headers.get('X-Annotate-Skipped')})`);
+            return null;
+        }
+        // NDJSON lines: {"range":[start,end],"correction":"...","claim_index":N}.
+        const handleLine = (line: string) => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            try {
+                const obj = JSON.parse(trimmed);
+                const range = obj.range;
+                const correction = obj.correction;
+                if (!Array.isArray(range) || range.length !== 2
+                    || typeof range[0] !== 'number' || typeof range[1] !== 'number'
+                    || typeof correction !== 'string') return;
+                accumulated[`${range[0]},${range[1]}`] = correction;
+                console.log(`[backgroundAnnotate] range [${range[0]}, ${range[1]}] -> "${correction.slice(0, 40)}"`);
+                try { onPartial?.({ ...accumulated }); } catch (e) { console.error('[backgroundAnnotate] onPartial error:', e); }
+            } catch {
+                // Ignore blank / keep-alive / non-JSON lines.
+            }
+        };
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            let nl: number;
+            while ((nl = buffer.indexOf('\n')) !== -1) {
+                const line = buffer.slice(0, nl);
+                buffer = buffer.slice(nl + 1);
+                handleLine(line);
+            }
+        }
+        if (buffer.trim()) handleLine(buffer);
+        return accumulated;
+    } catch (e: any) {
+        console.error('[backgroundAnnotate] error:', e?.message ?? e);
+        return null;
+    }
+}
+
 /**
  * Fire-and-forget: ask the highlight-claims worker for the highlight ranges of the
  * translated tweet text, then inject them (via callback). The worker computes the
  * ranges and persists them to the DB itself; the extension only injects.
  */
+/** Flow C annotation context for one claim: the worker gates on these (fresh +
+ *  classified) and feeds veracity/reasoning to the agent as data. The span itself
+ *  is the worker's own resolved highlight slice — never client-supplied text. */
+export type HighlightAnnotContext = {
+    veracity?: number;
+    reasoning?: string | null;
+    /** False = unclassified placeholder (no reasoning yet); true/absent = classified. */
+    classified?: boolean;
+    /** True = stale verdict (must be re-researched first, not annotated). */
+    stale?: boolean;
+};
+
 export async function backgroundHighlightRange(
     tweetHash: string,
     tweetText: string,              // tweet text to find highlights in
@@ -744,9 +868,16 @@ export async function backgroundHighlightRange(
     sourceLocale: string,            // fallback locale the canonical claims are stored under
     highlightLocale: string,         // locale of the tweet text (and thus the highlight key)
     classification: Classification,
-    onUpdate?: BackgroundUpdateCallback
-): Promise<void> {
-    if (dbClaims.length === 0) return;
+    onUpdate?: BackgroundUpdateCallback,
+    // 1-based claim_index → context, same indexing as rewritten_claims. Omitted
+    // claims get highlights only (backward compatible — old callers send nothing).
+    annotContexts?: Record<string, HighlightAnnotContext>
+): Promise<number> {
+    // Returns the number of ranges injected (0 on worker failure/empty) so the
+    // caller can tell "localized" apart from "failed" — a 500 or an empty
+    // stream must NOT count as localized (it would poison retries and leave the
+    // localizing spinner stuck, since the merge callback never fires).
+    if (dbClaims.length === 0) return 0;
     console.log(`[backgroundHighlightRange] Finding highlights on translated text for locale ${highlightLocale}, tweetText length=${tweetText.length}`);
     console.log(`[backgroundHighlightRange] Input claims:`, dbClaims.map(dc => ({ claim: dc.claim.slice(0, 50), rewritten: dc.rewritten?.slice(0, 50) })));
 
@@ -773,14 +904,20 @@ export async function backgroundHighlightRange(
                 rewritten_claims: rewrittenClaims,
                 locale: highlightLocale,
                 source_locale: sourceLocale,
-                tweet_hash: tweetHash
+                tweet_hash: tweetHash,
+                // Flow C: only claims with a real verdict + reasoning are implicated —
+                // the worker re-gates server-side; this just avoids pointless agent
+                // calls for placeholders and stale verdicts.
+                ...(annotContexts && Object.keys(annotContexts).length > 0
+                    ? { claim_contexts: annotContexts }
+                    : {})
             })
         });
         if (!res.ok || !res.body) {
             const body = res.ok ? '(no body)' : await res.text();
             console.error('[backgroundHighlightRange] highlight-claims error:', res.status, body);
             if (!res.ok) reportWorkerError(body);
-            return;
+            return 0;
         }
 
         // The worker streams back newline-delimited JSON objects of the form
@@ -820,13 +957,13 @@ export async function backgroundHighlightRange(
         if (buffer.trim()) handleLine(buffer);
     } catch (err) {
         console.error('[backgroundHighlightRange] fetch error:', err);
-        return;
+        return 0;
     }
 
     console.log(`[backgroundHighlightRange] Received ${claimHighlightsByIndex.size} highlight range(s) from worker`);
     if (claimHighlightsByIndex.size === 0) {
         console.warn('[backgroundHighlightRange] No highlight ranges returned');
-        return;
+        return 0;
     }
 
     // Update classification claims with the new highlight ranges.
@@ -844,6 +981,7 @@ export async function backgroundHighlightRange(
         onUpdate({ ...classification, claims: updatedClaims });
     }
     console.log(`[backgroundHighlightRange] Injected ${claimHighlightsByIndex.size} highlight(s) for locale ${highlightLocale}`);
+    return claimHighlightsByIndex.size;
 }
 
 type ResearchUpdate =
@@ -957,7 +1095,7 @@ function extractResearchFromRegex(text: string): { mainResult: any, affectedResu
     return { mainResult, affectedResults: [] };
 }
 
-async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: string[], claimId?: string, onBalanceError?: () => void): AsyncGenerator<ResearchUpdate> {
+async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: string[], claimId?: string, onBalanceError?: () => void, annotLocators?: AnnotLocators | null): AsyncGenerator<ResearchUpdate> {
     // [ttft-ext] Extension-side timer covering the whole call: worker round-trip
     // (auth header + fetch), then the SSE stream from first byte to full drain.
     const tStart = performance.now();
@@ -976,6 +1114,14 @@ async function* streamResearch(mainClaim: string, locale?: string, tweetUrls?: s
     const payload: any = { mainClaim, locale: effectiveLocale };
     if (claimId) payload.id = claimId;
     if (tweetUrls && tweetUrls.length > 0) payload.sources = tweetUrls;
+    // Flow A: locators ONLY (see AnnotLocators) — old worker builds ignore unknown
+    // fields, so sending these before the worker understands them is harmless.
+    if (annotLocators?.tweetHash && annotLocators?.tweetText && annotLocators?.textLocale) {
+        payload.tweet_hash = annotLocators.tweetHash;
+        payload.tweet_text = annotLocators.tweetText;
+        payload.text_locale = annotLocators.textLocale;
+        payload.claim_index = annotLocators.claimIndex;
+    }
     const res = await fetch('https://classify-tweets.michael-pouget01.workers.dev/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(await getAuthHeader()) },

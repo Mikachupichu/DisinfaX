@@ -18,10 +18,10 @@
  *     "already did this" sets declared at the top of the closure — they are the
  *     load-bearing guard against double-spending, not incidental memoization.
  */
-import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText } from "../utils/intelligence";
+import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, backgroundAnnotate, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText, type AnnotLocators, type HighlightAnnotContext } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
 import { supabase } from "../utils/supabase";
-import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision } from "../utils/textBreakup";
+import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
 import { MainTweet, Tweet } from "../data/Tweets";
 import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon, toolbarAction } from "../utils/toolbarIcon";
@@ -186,6 +186,12 @@ export default defineBackground({
   /** Teardown fallbacks if no DELETE arrives from the DB. */
   const PRECLASS_TIMEOUT_MS = 10000;
   const CLASSIFY_TIMEOUT_MS = 25000;
+  /** How long a refresh-path tweet subscription stays open for Flow A's annotation
+   *  persist. Research takes minutes and the annotation agent runs after it, so neither
+   *  of the timeouts above can cover it. Capped at the DB's own close_after (5 min):
+   *  anything still open past that is swept server-side, so a longer timeout would
+   *  only pretend to listen. */
+  const ANNOTATION_TIMEOUT_MS = 5 * 60 * 1000;
   /** How long a research launch waits for a preclassify-origin claim's DB row to be broadcast
    *  before giving up and classifying anyway (see awaitClaimDbRow / pullClaimBeforeClassify).
    *
@@ -229,6 +235,17 @@ export default defineBackground({
         batchIds: new Set([batchId])
       });
     }
+  }
+
+  /** Forget a tweet's DB snapshot so the next batch re-pulls it. Research completion
+   *  (local, or a broadcast from elsewhere) rewrites the claim rows AFTER the snapshot
+   *  cached in dbFetchPromises was taken; without this the next page load re-serves the
+   *  pre-research rows — the old verdict (and its pre-localization highlights) come back
+   *  until the worker restarts, which is the only other thing that clears those maps. */
+  function markTweetDbStale(tweetId: string) {
+    dbFetchPromises.delete(tweetId);
+    dbHitCache.delete(tweetId);
+    reResearchedTweetIds.delete(tweetId);
   }
 
   /** Remove ALL cache entries whose batchIds contain the given batchId,
@@ -371,13 +388,23 @@ export default defineBackground({
   }
 
   /** Revision gate for payloadToClaim covering a main tweet plus its quoted tweet (the
-   *  two bodies any highlight here can address). Null/empty bodies contribute nothing
-   *  — legacy bare-locale keys never need a hash to survive. */
+   *  two bodies any highlight here can address). The ORIGINAL bodies stay held even
+   *  while a translation displays (and vice versa) — highlights bound to them are
+   *  still genuine tier-2 revisions that apply instantly if the user toggles back.
+   *  Null/empty bodies contribute nothing — legacy bare-locale keys never need a
+   *  hash to survive. */
   function revisionGateFor(main: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined, quoted?: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined): RevisionGate {
     const mainBody = displayedTweetText(main);
     const known = new Set<string>();
     for (const body of [mainBody, displayedTweetText(quoted)]) {
       if (body !== null) known.add(sha256HexSync(body));
+    }
+    // Without the originals, the strip drops e.g. en-US ranges while the es
+    // translation shows, so toggling back to English spuriously raises the
+    // Translate Fact-Checks hold (the subscription-merge path below already adds
+    // them for the same reason).
+    for (const body of [main?.text, quoted?.text]) {
+      if (typeof body === 'string' && body.length > 0) known.add(sha256HexSync(body));
     }
     return { displayed: mainBody !== null ? sha256HexSync(mainBody) : null, known };
   }
@@ -444,6 +471,22 @@ export default defineBackground({
       if (Object.keys(highlight).length === 0) highlight = undefined;
     }
 
+    // Range-keyed annotations for this tweet↔claim link: {"<locale>:<hash>": {"s,e": correction}}.
+    // Same revision-keyed contract as highlight — keep only the revision bound to the
+    // displayed text, re-emitted under its bare locale prefix. An empty dict under a kept
+    // key ("annotated, nothing wrong") survives as an empty dict (NOT undefined): absence
+    // of the key downstream is what renders the Annotate badge, so collapsing {} to
+    // undefined here would make "annotated, clean" indistinguishable from "never annotated".
+    let annotations: Record<string, Record<string, string>> | undefined;
+    if (dbClaim.annotations && typeof dbClaim.annotations === 'object') {
+      const rawA: Record<string, Record<string, string>> = {};
+      for (const [key, val] of Object.entries(dbClaim.annotations)) {
+        if (val && typeof val === 'object' && !Array.isArray(val)) rawA[key] = val as Record<string, string>;
+      }
+      const stripped = selectAnnotationRevision(rawA, gate);
+      if (Object.keys(stripped).length > 0) annotations = stripped;
+    }
+
     const reasoningEmpty = isReasoningEmpty(dbClaim.reasoning);
     const noteText = reasoningEmpty ? null : (extractReasoningText(dbClaim.reasoning, locale) || extractReasoningText(dbClaim.reasoning, claimLocale) || null);
     const reasoningLocale = (() => {
@@ -466,6 +509,7 @@ export default defineBackground({
       dbClaimText: extractClaimText(dbClaim.claim),
       dbClaimLocale: getClaimLocale(dbClaim.claim),
       highlight,
+      annotations,
       claimLocale,
       reasoningLocale,
     };
@@ -505,6 +549,61 @@ export default defineBackground({
 
     // Classified.
     return { ...base, verdict, note: noteText, confidence: confidenceScore, veracity: veracityScore, sources: normalizeSources(dbClaim.sources) };
+  }
+
+  /** Locators Flow A needs so classify-tweets can silently annotate a freshly
+   *  researched claim under the same hold (see AnnotLocators in intelligence.ts).
+   *
+   *  `tweetId` is the cached tweet whose claim this is. Quoted claims address the
+   *  QUOTED row — same shape as classificationId (dbHitCache/tweetCache keying):
+   *  the DB-hit path stores quoted tweets under their own id, and tweetCache holds
+   *  the parent whose .quoting IS the quoted MainTweet. Returns null when the tweet
+   *  side can't be resolved, in which case research simply runs un-annotated (old
+   *  behaviour; the worker skips what it isn't sent).
+   *
+   *  tweet_hash is recomputed from the cached tweet (hash = full-context canonical
+   *  serialization — never trust the DOM for it). tweet_text is the EXACT string the
+   *  highlight ranges address: the Grok translation when the tweet displays translated,
+   *  else the captured original — the same displayedTweetText() that gates the strip.
+   *  text_locale is the persisted prefix for that text (destination/source language) —
+   *  the same expression the preclassify worker uses for displayedLocale. claim_index
+   *  counts within the claim's own list (main or quoted), mirroring how the worker
+   *  echoes it on NDJSON lines. */
+  async function annotLocatorsFor(
+    tweetId: string,
+    claims: Claim[] | null | undefined,
+    claimText: string,
+    classification: Classification
+  ): Promise<AnnotLocators | null> {
+    try {
+      const ownList = claims ?? [];
+      let claimIndex = ownList.findIndex(c => c.text === claimText);
+      // Structural subset: quoted tweets are plain Tweets (no References or translation
+      // fields), so this can't be a MainTweet. computeTweetHash takes `any` regardless.
+      type TweetSide = { text?: string; translatedText?: string; destinationLanguage?: string; sourceLanguage?: string; quoting?: { id: string } | null } | null | undefined;
+      let tweet: TweetSide = tweetCache.get(tweetId) ?? dbHitCache.get(tweetId)?.tweet ?? null;
+      // Not the main tweet's claim — look in the quoted side (each side annotates
+      // against its OWN tweet row, text, and hash).
+      if (claimIndex < 0) {
+        const quoted = classification.quoting?.claims;
+        if (!quoted || quoted.findIndex(c => c.text === claimText) < 0) return null;
+        claimIndex = quoted.findIndex(c => c.text === claimText);
+        tweet = tweetCache.get(tweetId)?.quoting ?? dbHitCache.get(tweetId)?.tweet?.quoting ?? null;
+        if (!tweet) {
+          for (const parent of tweetCache.values()) {
+            if (parent.quoting?.id === tweetId || classification.quoting?.id === tweetId) { tweet = parent.quoting; break; }
+          }
+        }
+      }
+      if (!tweet) return null;
+      const tweetText = (tweet.translatedText && tweet.destinationLanguage) ? tweet.translatedText : tweet.text;
+      const textLocale = ((tweet.translatedText && tweet.destinationLanguage) ? tweet.destinationLanguage : tweet.sourceLanguage) ?? null;
+      if (typeof tweetText !== 'string' || tweetText.length === 0 || !textLocale) return null;
+      const tweetHash = await computeTweetHash(tweet);
+      return { tweetHash, tweetText, textLocale, claimIndex: Math.max(0, claimIndex) };
+    } catch {
+      return null;
+    }
   }
 
   /** Convert a pulled/subscribed tweet's claims into a Classification for injection.
@@ -548,6 +647,21 @@ export default defineBackground({
     uiLocale: string,
     onHighlightUpdate?: (classification: Classification) => void
   ): Promise<void> {
+    // Flow C annotation contexts, 1-based to match rewritten_claims indexing.
+    // Only claims with a real verdict + reasoning are implicated: placeholders
+    // (no note) and on-hold stale verdicts carry nothing the agent could
+    // annotate, and the worker re-gates server-side anyway. classification.claims
+    // runs in the same order as dbClaims (localizeHighlights guarantees it).
+    const annotContexts: Record<string, HighlightAnnotContext> = {};
+    (classification.claims ?? []).forEach((cl, idx) => {
+      if (cl.note == null || cl.reclassifyOnHold) return;
+      annotContexts[String(idx + 1)] = {
+        veracity: cl.veracity,
+        reasoning: cl.note,
+        classified: true,
+        stale: false,
+      };
+    });
     let seen = localizedHighlightLocales.get(tweetId);
     if (!seen) {
       seen = new Set<string>();
@@ -584,17 +698,33 @@ export default defineBackground({
     // every match fail (0 rows updated, no error) since claims are never stored under the UI
     // locale. The RPC takes one locale per batch; claims in a batch share a storage locale.
     const claimStorageLocale = allDbClaims[0]?.sourceLocale ?? uiLocale;
-    await backgroundHighlightRange(
+    const injected = await backgroundHighlightRange(
       tweetHash,
       tweetText,
       allDbClaims,
       claimStorageLocale,
       highlightLocale,
       classification,
-      onHighlightUpdate ?? mergeHighlightsFor(classification)
+      onHighlightUpdate ?? mergeHighlightsFor(classification),
+      annotContexts
     );
-    seen.add(highlightLocale);
-    console.log(`[localizeHighlights] ${tweetId}: marked ${highlightLocale} as localized`);
+    if (injected > 0) {
+      seen.add(highlightLocale);
+      console.log(`[localizeHighlights] ${tweetId}: marked ${highlightLocale} as localized (${injected} range(s))`);
+      return;
+    }
+    // Worker failure or empty stream (transient 500s happen): NOT localized —
+    // the next click retries instead of hitting "already localized, skipping".
+    // The merge callback never fired, so localizingHighlights is still set and
+    // would spin forever: clear it and restore the on-hold flag so the
+    // Localize button comes back.
+    console.warn(`[localizeHighlights] ${tweetId}: no ranges for ${highlightLocale} — restoring Translate Fact-Checks button`);
+    const cur = classificationCache.get(tweetId)?.classification;
+    if (cur) {
+      const restored = { ...cur, localizingHighlights: false, translateFactChecksOnHold: true };
+      cacheClassification(restored, classification.batchId);
+      broadcastClassification(restored);
+    }
   }
 
   /** Build a dbClaims-like array from a cached classification for on-demand highlight localization.
@@ -621,6 +751,8 @@ export default defineBackground({
   ): Promise<void> {
     const holdKey = `${classification.id}:${claimText}`;
     try {
+      // Held (unpaid) re-research sends NO locators: annotation costs real money and the
+      // user hasn't agreed to spend anything yet — Flow A runs only on paid research.
       for await (const updated of refreshClaim(classification, claimText, researchCache, locale)) {
         // Buffer result instead of broadcasting
         heldReclassifications.set(holdKey, updated);
@@ -775,7 +907,47 @@ export default defineBackground({
    *  What goes over the wire is not always exactly what gets cached: under Fact-Check
    *  All, claims that are queued or in flight are presented as already fact-checking so
    *  the UI never flashes a button the user has effectively already pressed. */
-  function broadcastClassification(classification: Classification) {
+  /** Stamp the Flow A marker onto the outgoing copy of a settled, classified,
+   *  keyless claim whose research just ran WITH locators (opt.withLocators) —
+   *  its silent post-research annotation run is in flight, so the content
+   *  script shows "Annotating" instead of the idle Annotate affordance. A
+   *  present key (even an empty dict) means annotated: stamps nothing. Claims
+   *  list (main + quoting) mapped, never mutated: the cache keeps the clean
+   *  claim, and the relay strips the marker before render — it never reaches
+   *  the Claim type, the popover, or a worker. Returns null when nothing
+   *  stamped, so the common path skips the copy entirely. */
+  function stampAnnotateInFlight(
+    classification: Classification,
+    opt?: { withLocators?: boolean; claimText?: string }
+  ): Classification | null {
+    if (!opt?.withLocators) return null;
+    const stampList = (claims: Classification["claims"]) => {
+      if (!claims) return { list: claims, stamped: false };
+      let stamped = false;
+      const list = claims.map(cl => {
+        if (opt.claimText !== undefined && cl.text !== opt.claimText) return cl;
+        // Same gate as the background's ANNOTATE_CLAIM handler and the content
+        // script's spanNeedsAnnotateBadge: settled + classified + keyless.
+        if (cl.reclassifyOnHold || cl.note == null) return cl;
+        if (cl.annotations && Object.keys(cl.annotations).length > 0) return cl;
+        stamped = true;
+        return { ...cl, annotateInFlight: true as any };
+      });
+      return { list, stamped };
+    };
+    const main = stampList(classification.claims);
+    const q = classification.quoting
+      ? stampList(classification.quoting.claims)
+      : { list: null as Classification["claims"], stamped: false };
+    if (!main.stamped && !q.stamped) return null;
+    return {
+      ...classification,
+      claims: main.list,
+      quoting: classification.quoting ? { ...classification.quoting, claims: q.list as any } : classification.quoting,
+    };
+  }
+
+  function broadcastClassification(classification: Classification, opt?: { withLocators?: boolean; claimText?: string }) {
     const claimSummary = classification.claims?.map(claim => {
       const shortLabel = (claim.rewritten ?? claim.text).slice(0, 20);
       const notePreview = claim.note ? claim.note.slice(0, 15) : 'none';
@@ -804,6 +976,14 @@ export default defineBackground({
         ),
       };
     }
+    // Stamp the Flow A marker onto the OUTGOING copy only (the cache keeps the
+    // clean claim): a settled, classified claim with no annotation key whose
+    // research ran with locators has a silent post-research annotation run in
+    // flight — the content script shows "Annotating" instead of the idle
+    // Annotate affordance. Refreshed verdicts re-stamp (a reclassification's
+    // Flow A run also re-runs); the relay strips the marker before render.
+    const stamped = stampAnnotateInFlight(outgoing, opt);
+    if (stamped) outgoing = stamped;
     for (const port of activePorts) {
       try { port.postMessage({ type: "CLASSIFICATION", data: outgoing }); } catch { /* port closed mid-broadcast */ }
     }
@@ -878,21 +1058,41 @@ export default defineBackground({
    *  the whole snapshot would overwrite OTHER claims that finished in the meantime,
    *  making already-classified highlights flicker back to grey ("Fact-Checking").
    *  Merging only the target claim into the authoritative cache avoids that. */
+  /** Union two bare-locale annotation maps, the second winning per locale key. Never
+   *  replaces: a payload stripped under a narrower gate (or an older fetch) must not
+   *  clobber keys the cached copy already holds. Returns undefined when both sides are
+   *  empty so "never annotated" stays distinguishable from "annotated, clean" ({}). */
+  function unionAnnotations(
+    a?: Record<string, Record<string, string>>,
+    b?: Record<string, Record<string, string>>
+  ): Record<string, Record<string, string>> | undefined {
+    const merged = { ...(a ?? {}), ...(b ?? {}) };
+    return Object.keys(merged).length > 0 ? merged : undefined;
+  }
+
   function mergeSingleClaimAndBroadcast(
     classificationId: string,
     claimText: string,
     updated: Classification,
-    batchId: string
+    batchId: string,
+    opts?: { withLocators?: boolean }
   ) {
+    const stampOpt = opts?.withLocators ? { withLocators: true, claimText } : undefined;
     const existing = classificationCache.get(classificationId)?.classification;
     const updatedClaim = updated.claims?.find(c => c.text === claimText);
     if (!existing || !existing.claims || !updatedClaim) {
       updated.batchId = batchId;
       cacheClassification(updated, batchId);
-      broadcastClassification(updated);
+      broadcastClassification(updated, stampOpt);
+      // Research rewrote the rows — drop the pre-research fetch snapshot.
+      markTweetDbStale(classificationId);
       return;
     }
-    const mergedClaims = existing.claims.map(c => (c.text === claimText ? updatedClaim : c));
+    // Fresh research rebuilds carry no annotations — union so they never clobber the
+    // cached copy's (the fresh result wins per locale key when it has any).
+    const mergedClaims = existing.claims.map(c => (c.text === claimText
+      ? { ...updatedClaim, annotations: unionAnnotations(c.annotations, updatedClaim.annotations) }
+      : c));
     const anyOnHold = mergedClaims.some(c => c.reclassifyOnHold);
     const merged: Classification = {
       ...existing,
@@ -901,7 +1101,9 @@ export default defineBackground({
     };
     merged.batchId = batchId;
     cacheClassification(merged, batchId);
-    broadcastClassification(merged);
+    broadcastClassification(merged, stampOpt);
+    // Research rewrote the rows — drop the pre-research fetch snapshot.
+    markTweetDbStale(classificationId);
   }
 
   /** Merge a freshly-streamed preclassification snapshot into whatever is already
@@ -935,8 +1137,9 @@ export default defineBackground({
         const prev = prevs.find((p: any) => claimsMatch(p, inc));
         if (!prev) return inc;
         const mergedHl = { ...(inc.highlight ?? {}), ...(prev.highlight ?? {}) };
-        if (isActive(prev)) return { ...prev, highlight: mergedHl };
-        return { ...inc, highlight: mergedHl, dbClaimId: prev.dbClaimId ?? inc.dbClaimId };
+        const mergedAnn = unionAnnotations(prev.annotations, inc.annotations);
+        if (isActive(prev)) return { ...prev, highlight: mergedHl, annotations: mergedAnn };
+        return { ...inc, highlight: mergedHl, annotations: mergedAnn, dbClaimId: prev.dbClaimId ?? inc.dbClaimId };
       });
     };
     const claims = mergeList(incoming.claims as any, (existing?.claims as any) ?? null);
@@ -979,6 +1182,9 @@ export default defineBackground({
         const merged = { ...upd, localizingHighlights: false };
         cacheClassification(merged, classification.batchId);
         broadcastClassification(merged);
+        // Localization persisted new highlight locales — the fetch
+        // snapshot predates them.
+        markTweetDbStale(classification.id);
         return;
       }
 
@@ -995,10 +1201,12 @@ export default defineBackground({
             ...(existingCl.highlight ?? {}),
             ...(updCl.highlight ?? {})
           };
+          const mergedAnnotations = unionAnnotations(existingCl.annotations, updCl.annotations);
           const hlSize = Object.keys(mergedHighlight).length;
-          return hlSize > 0
+          const out = hlSize > 0
             ? { ...existingCl, highlight: mergedHighlight }
             : existingCl;
+          return mergedAnnotations ? { ...out, annotations: mergedAnnotations } : out;
         });
       };
 
@@ -1017,6 +1225,9 @@ export default defineBackground({
       };
       cacheClassification(merged, classification.batchId);
       broadcastClassification(merged);
+      // Localization persisted new highlight locales — the fetch
+      // snapshot predates them.
+      markTweetDbStale(classification.id);
     };
   }
 
@@ -1039,14 +1250,18 @@ export default defineBackground({
             veracity: updCl.veracity ?? existingCl.veracity,
             sources: updCl.sources ?? existingCl.sources,
             verdict: updCl.verdict ?? existingCl.verdict,
+            annotations: unionAnnotations(existingCl.annotations, updCl.annotations),
           };
         });
         const merged = { ...upd, claims: mergedClaims };
         cacheClassification(merged, classification.batchId);
         broadcastClassification(merged);
+        // Buffered research rewrote the rows — drop the pre-research fetch snapshot.
+        markTweetDbStale(classification.id);
       } else {
         cacheClassification(upd, classification.batchId);
         broadcastClassification(upd);
+        markTweetDbStale(classification.id);
       }
     };
   }
@@ -1207,6 +1422,12 @@ export default defineBackground({
     if (idx >= 0) {
       const prev = claims[idx];
       const mergedHl = { ...(prev.highlight ?? {}), ...(incoming.highlight ?? {}) };
+      // Annotations merge the same way: the incoming payload wins per locale key, but a
+      // payload stripped under a narrower gate must never clobber keys it doesn't carry.
+      // On the placeholder branch below this matters most — placeholders carry no verdict
+      // but CAN carry annotations (a fresh link row has its annotation key already), and
+      // ...prev alone would drop them.
+      const mergedAnn = unionAnnotations(prev.annotations, incoming.annotations);
       const prevHasVerdict = prev.note != null && prev.confidence !== undefined && !prev.reclassifyOnHold && !prev.refreshing;
       const incomingPlaceholder = incoming.reclassifyOnHold === true && incoming.confidence === undefined && !incoming.isClassifying;
 
@@ -1222,6 +1443,7 @@ export default defineBackground({
           claimLocale: incoming.claimLocale ?? prev.claimLocale,
           reasoningLocale: incoming.reasoningLocale ?? prev.reasoningLocale,
           highlight: mergedHl,
+          annotations: mergedAnn,
           refreshing: true,
           isClassifying: true,
           reclassifyOnHold: false,
@@ -1247,6 +1469,7 @@ export default defineBackground({
           claimLocale: incoming.claimLocale ?? prev.claimLocale,
           reasoningLocale: incoming.reasoningLocale ?? prev.reasoningLocale,
           highlight: mergedHl,
+          annotations: mergedAnn,
         };
       } else {
         // Diagnostic (error for visibility): a payload with NO verdict (unclassified
@@ -1297,7 +1520,7 @@ export default defineBackground({
         // Nothing is lost by keeping it: the canonical wording still arrives on `rewritten`
         // (what renderClaims displays) and on `dbClaimText` (what DB matching uses), and
         // `dbClaimId` from ...incoming means later merges match by id before text anyway.
-        claims[idx] = { ...incoming, text: prev.text, highlight: mergedHl };
+        claims[idx] = { ...incoming, text: prev.text, highlight: mergedHl, annotations: mergedAnn };
       }
       // The claim now carries (or already carried) its DB id → the embedded row exists.
       // Release any research launch parked in awaitClaimDbRow for this claim.
@@ -1339,6 +1562,13 @@ export default defineBackground({
     merged.batchId = batchId;
     cacheClassification(merged, batchId);
     broadcastClassification(merged);
+    // A finished classification rewrote this tweet's claim rows AFTER the fetchForTweet
+    // snapshot was taken. Forget it so the next page load re-pulls instead of re-serving
+    // the pre-research rows (old verdict, pre-localization highlights). Placeholders and
+    // in-flight spinners carry no verdict, so they never trip this.
+    const deliveredVerdict = incoming.confidence !== undefined && incoming.confidence !== null
+      && incoming.note != null && !incoming.isClassifying && !incoming.reclassifyOnHold;
+    if (deliveredVerdict) markTweetDbStale(tweetId);
 
     if (payload.is_classifying && payload.id) {
       watchClassifyingClaim(tweetId, payload.id, locale);
@@ -1400,6 +1630,49 @@ export default defineBackground({
   /** Fire-and-forget tweet subscription (for callers that don't need to await readiness). */
   function startTweetSubscription(tweetId: string, hash: string, locale: string, timeoutMs: number = PRECLASS_TIMEOUT_MS) {
     ensureTweetSubscription(tweetId, hash, locale, timeoutMs).catch(e => console.error('[startTweetSubscription] error:', e));
+  }
+
+  /** Open the tweet subscription Flow A's annotation persist broadcasts to, so a
+   *  reclassification's fresh annotations repaint inline with no reload.
+   *
+   *  Flow A runs server-side in ctx.waitUntil AFTER the research stream closes, so
+   *  unlike the streamed verdict it has no open connection — its only path to the
+   *  client is the tweet-scoped routing row trg_tweet_claim_annotations_updated writes
+   *  to. Settled tweets open no subscription anywhere (fetchForTweet and
+   *  pullClaimBeforeClassify only subscribe while preclassifying/classifying), so
+   *  without this the persist finds no routing row and the new ranges sit in the DB
+   *  until the next reload pulls them (fetch_tweet_and_touch_network).
+   *
+   *  Mirrors annotLocatorsFor's side resolution: a quoted-side claim annotates against
+   *  the QUOTED tweet's row/hash, so its broadcast needs the quoted subscription
+   *  (same quoting.id + quotedHash pair the preclassification path subscribes).
+   *  Silent no-op when the tweet isn't cached — research then runs un-annotated,
+   *  exactly as before. Call inside `if (!handled)`, just before refreshClaim. */
+  async function ensureAnnotationSubscription(classificationId: string, claimText: string, locale: string): Promise<void> {
+    try {
+      const cls = classificationCache.get(classificationId)?.classification;
+      if (!cls) return;
+      // Which side is this claim on — main list first, then quoted, the same order
+      // annotLocatorsFor uses to derive the hash the worker persists against.
+      let sideTweetId = classificationId;
+      let tweet: any = tweetCache.get(classificationId) ?? dbHitCache.get(classificationId)?.tweet ?? null;
+      if (!(cls.claims ?? []).some(c => c.text === claimText)) {
+        const quoting = cls.quoting;
+        if (!quoting || !(quoting.claims ?? []).some(c => c.text === claimText)) return;
+        sideTweetId = quoting.id;
+        tweet = tweetCache.get(classificationId)?.quoting ?? dbHitCache.get(classificationId)?.tweet?.quoting ?? null;
+        if (!tweet) {
+          for (const parent of tweetCache.values()) {
+            if (parent.quoting?.id === sideTweetId) { tweet = parent.quoting; break; }
+          }
+        }
+      }
+      if (!tweet) return;
+      const hash = await computeTweetHash(tweet);
+      await ensureTweetSubscription(sideTweetId, hash, locale, ANNOTATION_TIMEOUT_MS);
+    } catch (e) {
+      console.error('[ensureAnnotationSubscription] error:', e);
+    }
   }
 
   /** Kick off is_classifying watchers for any pulled claim already being classified. */
@@ -2431,9 +2704,16 @@ export default defineBackground({
           // here would send classify-tweets no id, forcing its fuzzy text-match fallback
           // — which, on a miss, inserts a duplicate claim row instead of updating this one.
           const freshCls = classificationCache.get(classificationId)?.classification ?? restored;
-          for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, () => { hitBalanceError = true; })) {
+          // Flow A's annotation persist broadcasts tweet-scoped, so it needs a
+          // live tweet subscription to reach the client (see helper).
+          await ensureAnnotationSubscription(classificationId, claimText, locale);
+          const annotLoc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+            ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
+          for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, () => { hitBalanceError = true; }, annotLoc)) {
             gotUpdate = true;
-            mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId);
+            // Locators rode along, so the worker's silent post-research run is in
+            // flight — tell the content script to show "Annotating", not idle Annotate.
+            mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId, { withLocators: !!annotLoc });
           }
         }
       } catch (err: any) {
@@ -3144,6 +3424,120 @@ export default defineBackground({
         return;
       }
 
+      // ── Flow B: annotations-only. The Annotate badge sends claim locators; the
+      // annotation agent runs alone (no research, no searches, no verdict race) and
+      // streams {range, correction} NDJSON back. Tracked in ongoingClaimRefreshes
+      // under an "annot:" key so a double-tap can't double-spend; merges go through
+      // mergeClaimPayload so matching/dedup stay in one place. Text NEVER leaves this
+      // function except as hash input — only locators are sent, and the worker plus
+      // get_annotation_context re-derive everything trust-sensitive server-side.
+      if (message.type === "ANNOTATE_CLAIM") {
+        const { classificationId, claimText, locale: msgLocale } = message.data;
+        const hit = classificationCache.get(classificationId);
+        if (!hit) {
+          console.log(`[background] ANNOTATE_CLAIM: no cached classification for ${classificationId}`);
+          return;
+        }
+        const classification = hit.classification;
+        const anyBatchId = hit.batchIds.values().next().value ?? '';
+        const locale = msgLocale ?? getUiLocale();
+
+        const claim = classification.claims?.find(c => c.text === claimText)
+          ?? classification.quoting?.claims?.find(c => c.text === claimText);
+        if (!claim?.dbClaimId) {
+          console.log(`[background] ANNOTATE_CLAIM: no DB id for "${claimText.slice(0, 40)}...", skipping`);
+          return;
+        }
+        // Never annotate a stale or unclassified claim: a stale verdict must be
+        // re-researched first, and a placeholder has no reasoning to annotate yet.
+        // (The worker re-checks this server-side; this is just the cheap client gate
+        // so an obviously pointless tap doesn't spend the hold.)
+        if (claim.reclassifyOnHold || claim.note == null) {
+          console.log(`[background] ANNOTATE_CLAIM: claim not classified (onHold=${!!claim.reclassifyOnHold}, note=${claim.note != null}), skipping`);
+          return;
+        }
+
+        const annotKey = `annot:${classificationId}:${claimText}`;
+        if (ongoingClaimRefreshes.has(annotKey)) {
+          console.log(`[background] ANNOTATE_CLAIM: already annotating "${claimText.slice(0, 40)}...", skipping re-run`);
+          return;
+        }
+        // A Flow A run is already annotating this claim (its research launched
+        // with locators — see the withLocators stamp): a concurrent Flow B
+        // would double the paid hold and race it on the same key. The content
+        // script suppresses the tap the same way; this is the backstop for a
+        // stale tab that never saw the marker.
+        if (ongoingClaimRefreshes.has(`${classificationId}:${claimText}`)) {
+          console.log(`[background] ANNOTATE_CLAIM: Flow A research in flight for "${claimText.slice(0, 40)}...", skipping re-run`);
+          return;
+        }
+        ongoingClaimRefreshes.add(annotKey);
+
+        gatedSpendAttributed(async (onBalanceError) => {
+          try {
+            const freshCls = classificationCache.get(classificationId)?.classification ?? classification;
+            const loc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+              ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
+            if (!loc) {
+              console.log(`[background] ANNOTATE_CLAIM: could not resolve locators for "${claimText.slice(0, 40)}...", skipping`);
+              return;
+            }
+            // Live-paint each streamed pair under this revision's FULL-locale key
+            // (same `${textLocale}:${hash}` shape the worker persists — the DB
+            // broadcast strips to bare prefixes at read time, and painting the
+            // full key lets that strip land on exactly this dict), plus every
+            // existing key (a retag keeps older revisions visible). The badge
+            // flips to corrections without waiting for the broadcast, which
+            // still arrives later via the annotations trigger and merges the
+            // same values — union, never replace.
+            const liveKeys = new Set<string>();
+            for (const k of Object.keys(claim.annotations ?? {})) liveKeys.add(k);
+            liveKeys.add(loc.textLocale);
+            const paintLive = (acc: Record<string, string>) => {
+              const entry = classificationCache.get(classificationId);
+              if (!entry) return;
+              const paint = (list: Claim[] | null): Claim[] | null => {
+                if (!list) return list;
+                return list.map(c => {
+                  if (c.text !== claimText) return c;
+                  const merged = { ...(c.annotations ?? {}) };
+                  for (const k of liveKeys) merged[k] = { ...(merged[k] ?? {}), ...acc };
+                  return { ...c, annotations: merged };
+                });
+              };
+              const painted: Classification = {
+                ...entry.classification,
+                claims: paint(entry.classification.claims),
+                quoting: entry.classification.quoting
+                  ? { ...entry.classification.quoting, claims: paint(entry.classification.quoting.claims) }
+                  : entry.classification.quoting,
+              };
+              painted.batchId = anyBatchId;
+              cacheClassification(painted, anyBatchId);
+              broadcastClassification(painted);
+            };
+            const finalAcc = await backgroundAnnotate(
+              loc.tweetHash, loc.tweetText, loc.textLocale,
+              claim.dbClaimId, loc.claimIndex, locale,
+              paintLive
+            );
+            // null = transport failure or server-side skip (stale/unclassified/forged
+            // revision — the worker returns 200-empty with X-Annotate-Skipped). Either
+            // way the badge stays: a fake "clean" {} would be a lie either way, and a
+            // real {} arrives through finalAcc (persisted + live-painted above).
+            if (finalAcc === null) return;
+            // The authoritative broadcast (annotations trigger) folds the persisted
+            // dict in; paint once more in case any line arrived after the last onPartial.
+            paintLive(finalAcc);
+          } catch (err: any) {
+            console.error("[background] ANNOTATE_CLAIM error:", err);
+          } finally {
+            ongoingClaimRefreshes.delete(annotKey);
+          }
+        });
+        return;
+      }
+
       if (message.type === "REFRESH_CLAIM") {
         const { classificationId, claimText, locale: msgLocale } = message.data;
         const hit = classificationCache.get(classificationId);
@@ -3209,9 +3603,16 @@ export default defineBackground({
               // pullClaimBeforeClassify may have just merged a dbClaimId in that this
               // stale `classification` snapshot doesn't have yet.
               const freshCls = classificationCache.get(classificationId)?.classification ?? classification;
-              for await (const updated of refreshClaim(freshCls, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls, onBalanceError)) {
+              // Flow A's annotation persist broadcasts tweet-scoped, so it needs a
+              // live tweet subscription to reach the client (see helper).
+              await ensureAnnotationSubscription(classificationId, claimText, msgLocale ?? getUiLocale());
+              const annotLoc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+                ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
+              for await (const updated of refreshClaim(freshCls, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls, onBalanceError, annotLoc)) {
                 gotUpdate = true;
-                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+                // Locators rode along, so the worker's silent post-research run is
+                // in flight — "Annotating", not idle Annotate (see call site above).
+                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
               }
             }
           } catch (err: any) {
@@ -3351,9 +3752,16 @@ export default defineBackground({
                 // pullClaimBeforeClassify may have just merged a dbClaimId in that this
                 // stale `pipelineRestored` snapshot doesn't have yet.
                 const freshCls = classificationCache.get(classificationId)?.classification ?? pipelineRestored;
-                for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
+                // Flow A's annotation persist broadcasts tweet-scoped, so it needs a
+                // live tweet subscription to reach the client (see helper).
+                await ensureAnnotationSubscription(classificationId, claimText, locale);
+                const annotLoc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+                  ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
+                for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, onBalanceError, annotLoc)) {
                   gotUpdate = true;
-                  mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+                  // Locators rode along, so the worker's silent post-research run is
+                  // in flight — "Annotating", not idle Annotate (see admit site).
+                  mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
                 }
               }
             } catch (err: any) {
@@ -3429,9 +3837,16 @@ export default defineBackground({
               // pullClaimBeforeClassify may have just merged a dbClaimId in that this
               // stale `restored` snapshot doesn't have yet.
               const freshCls = classificationCache.get(classificationId)?.classification ?? restored;
-              for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, onBalanceError)) {
+              // Flow A's annotation persist broadcasts tweet-scoped, so it needs a
+              // live tweet subscription to reach the client (see helper).
+              await ensureAnnotationSubscription(classificationId, claimText, locale);
+              const annotLoc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+                ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
+              for await (const updated of refreshClaim(freshCls, claimText, researchCache, locale, tweetUrls, onBalanceError, annotLoc)) {
                 gotUpdate = true;
-                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId);
+                // Locators rode along, so the worker's silent post-research run is
+                // in flight — "Annotating", not idle Annotate (see admit site).
+                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
               }
             }
           } catch (err: any) {
@@ -3479,13 +3894,66 @@ export default defineBackground({
           }
         };
 
+        // Flow C persists its annotations AFTER the highlight stream closes, so —
+        // like Flow A — they reach the client only via the tweet-scoped annotation
+        // broadcast (trg_tweet_claim_annotations_updated → routing row → Realtime).
+        // Warm the subscription(s) BEFORE the worker runs so the persist finds a
+        // routing row; without this the new-locale ranges sit in the DB until reload
+        // while the client keeps painting the stale locale's pair.
+        //
+        // Backfill: on a retry the annotations are ALREADY persisted (Flow C's
+        // annotations_present gate skips re-persisting — no UPDATE, no broadcast),
+        // so merge them from the stored dbClaims directly. The gate strips to the
+        // displayed revision (revisionGateFor holds the originals since the
+        // spurious-Localize fix), and the union keeps the freshly-streamed `es`
+        // highlights — both land in one broadcast.
+        const backfillAnnotations = () => {
+          const gate = revisionGateFor(tweet, tweet?.quoting);
+          const cur = classificationCache.get(tweetId)?.classification;
+          if (!cur?.claims) return;
+          const dbByText = new Map<string, any>();
+          for (const d of dbClaims ?? []) {
+            const key = extractClaimText((d as any).claim);
+            if (key && !dbByText.has(key)) dbByText.set(key, d);
+          }
+          let touched = false;
+          const claims = cur.claims.map(cl => {
+            const d = dbByText.get(cl.dbClaimText ?? cl.text) ?? dbByText.get(cl.text);
+            const rawA = d?.annotations;
+            if (!d || !rawA || typeof rawA !== 'object') return cl;
+            const stripped = selectAnnotationRevision(rawA, gate);
+            const merged = unionAnnotations(cl.annotations, Object.keys(stripped).length > 0 ? stripped : undefined);
+            if (JSON.stringify(merged ?? {}) === JSON.stringify(cl.annotations ?? {})) return cl;
+            touched = true;
+            return { ...cl, annotations: merged };
+          });
+          if (touched) {
+            const merged = { ...cur, claims };
+            cacheClassification(merged, anyBatchId);
+            broadcastClassification(merged);
+            console.log(`[background] TRANSLATE_FACT_CHECKS: backfilled persisted annotations for ${tweetId}`);
+          }
+        };
+        const warmAnnotationSubs = async () => {
+          const texts = [
+            ...(unheld.claims ?? []).map(c => c.text),
+            ...(unheld.quoting?.claims ?? []).map(c => c.text),
+          ];
+          for (const ct of texts) await ensureAnnotationSubscription(tweetId, ct, locale);
+        };
+
         if (displayedLocale && tweet) {
           const tweetText = unheld.translatedText ?? tweet.translatedText ?? tweet.text;
           if (dbClaims) {
             // DB hit path: use cached claims for highlight localization
             gatedSpend(async () => {
               try {
+                await warmAnnotationSubs();
                 await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, unheld, locale, mergeHighlightsFor(unheld));
+                // Retry with annotations already persisted: Flow C's
+                // annotations_present gate skips re-writing (no UPDATE → no
+                // broadcast), so pull the stored dicts in directly.
+                backfillAnnotations();
               } catch (e) {
                 console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e);
                 clearLocalizingHighlights();
@@ -3496,7 +3964,9 @@ export default defineBackground({
             const clsDbClaims = claimsToDbClaims(unheld);
             gatedSpend(async () => {
               try {
+                await warmAnnotationSubs();
                 await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, clsDbClaims, unheld, locale, mergeHighlightsFor(unheld));
+                backfillAnnotations();
               } catch (e) {
                 console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e);
                 clearLocalizingHighlights();

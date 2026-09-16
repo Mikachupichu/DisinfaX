@@ -81,6 +81,64 @@ function isSelection(value: unknown): value is Selection {
 const STORE_SELECTION = 'mf_topup_selection';
 const STORE_CUSTOM = 'mf_topup_custom_amount';
 
+/** "Show while hidden" bypass thresholds (per-extension storage.local): while cached
+ *  highlights stay hidden behind the Reveal button, claims that are classified,
+ *  need no reclassification, and clear BOTH thresholds keep their highlight,
+ *  annotations, badge and popover. Confidence is a 0–1 floor (default 0.2);
+ *  veracity a −1–1 ceiling (default 0, i.e. false-leaning claims). */
+const STORE_BYPASS_ENABLED = 'mf_bypass_enabled';
+const STORE_BYPASS_CONFIDENCE = 'mf_bypass_min_confidence';
+const STORE_BYPASS_VERACITY = 'mf_bypass_min_veracity';
+const BYPASS_DEFAULT_ENABLED = false;
+const BYPASS_DEFAULT_CONFIDENCE = 0.2;
+const BYPASS_DEFAULT_VERACITY = 0;
+
+/** Adjective key for a confidence-floor value. Mirrors the likelihood bands in
+ *  verdictBadgeParts() (utils/injecting.ts) so the slider label reads like the
+ *  badge its threshold would produce. Null at 0.9+, where badges show no adjective. */
+function bypassConfidenceAdjKey(confidence: number): string | null {
+  if (confidence >= 0.9) return null;
+  if (confidence >= 0.8) return 'adjVeryLikely';
+  if (confidence >= 0.5) return 'adjLikely';
+  return 'adjPossibly';
+}
+
+/** Adjective key for a veracity-ceiling value, from its magnitude. Mirrors the
+ *  veracity bands in verdictBadgeParts(): null at 0.9+, where badges show none. */
+function bypassVeracityAdjKey(veracity: number): string | null {
+  const abs = Math.abs(veracity);
+  if (abs >= 0.9) return null;
+  if (abs >= 0.8) return 'adjMostly';
+  if (abs >= 0.5) return 'adjArguably';
+  if (abs >= 0.2) return 'adjPartially';
+  return 'adjEquivocally';
+}
+
+/** Shared colour for both threshold sliders: the verdict colour of a claim sitting
+ *  exactly on both thresholds, so the pair reads as a single gate. Mirrors
+ *  verdictColorChannels() in utils/injecting.ts — kept as a local copy because that
+ *  module is a content script and can't be imported into the popup bundle. Grey below
+ *  the 0.2 unknown floor, pure red at full confidence + fully false, pure green at
+ *  full confidence + fully true. */
+function bypassThresholdColor(confidence: number, veracity: number): string {
+  if (!(confidence >= 0.2)) return 'rgb(128, 128, 128)';
+  const truthFraction = (Math.max(-1, Math.min(1, veracity)) + 1) / 2;
+  let r: number, g: number;
+  if (truthFraction <= 0.5) {
+    // Red → yellow across the false half.
+    r = 255;
+    g = Math.round(255 * (truthFraction / 0.5));
+  } else {
+    // Yellow → green across the true half.
+    r = Math.round(255 * (1 - (truthFraction - 0.5) / 0.5));
+    g = 255;
+  }
+  // Rec. 601 luminance, desaturated by the confidence exactly as the badge is.
+  const saturation = Math.max(0, Math.min(1, confidence));
+  const luminance = Math.round(0.299 * r + 0.587 * g);
+  return `rgb(${Math.round(luminance + (r - luminance) * saturation)}, ${Math.round(luminance + (g - luminance) * saturation)}, ${Math.round(luminance + (0 - luminance) * saturation)})`;
+}
+
 function storageGet(keys: string[]): Promise<Record<string, any>> {
   try { return browser.storage.local.get(keys) as Promise<Record<string, any>>; }
   catch { return Promise.resolve({}); }
@@ -150,12 +208,36 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   const [disclaimerExpanded, setDisclaimerExpanded] = useState(false);
   const customRef = useRef<HTMLInputElement>(null);
 
+  // Show-while-hidden bypass: master toggle + minimum confidence + maximum veracity.
+  // Collapsed by default so the popup keeps its height; the settings need their own
+  // scroll room, which a fixed-percentage max-height + overflow provides — but that
+  // only works when the ancestors have a bounded height, hence the min-h-0 below.
+  const [bypassSettingsOpen, setBypassSettingsOpen] = useState(false);
+  const [bypassEnabled, setBypassEnabled] = useState(BYPASS_DEFAULT_ENABLED);
+  const [bypassConfidence, setBypassConfidence] = useState(BYPASS_DEFAULT_CONFIDENCE);
+  const [bypassVeracity, setBypassVeracity] = useState(BYPASS_DEFAULT_VERACITY);
+
+  /** Narrow an arbitrary stored value into a slider range, so a stale or
+   *  hand-edited storage entry can't park a slider somewhere it doesn't go. */
+  const clampBypass = (value: unknown, lo: number, hi: number, fallback: number): number => {
+    return typeof value === 'number' && Number.isFinite(value)
+      ? Math.min(hi, Math.max(lo, value))
+      : fallback;
+  };
+
+  const persistBypassEnabled = useCallback((next: boolean) => { setBypassEnabled(next); storageSet({ [STORE_BYPASS_ENABLED]: next }); }, []);
+  const persistBypassConfidence = useCallback((next: number) => { setBypassConfidence(next); storageSet({ [STORE_BYPASS_CONFIDENCE]: next }); }, []);
+  const persistBypassVeracity = useCallback((next: number) => { setBypassVeracity(next); storageSet({ [STORE_BYPASS_VERACITY]: next }); }, []);
+
   // Load persisted selection + custom amount, current balance, and messages.
   useEffect(() => {
     (async () => {
-      const stored = await storageGet([STORE_SELECTION, STORE_CUSTOM]);
+      const stored = await storageGet([STORE_SELECTION, STORE_CUSTOM, STORE_BYPASS_ENABLED, STORE_BYPASS_CONFIDENCE, STORE_BYPASS_VERACITY]);
       if (isSelection(stored[STORE_SELECTION])) setSelection(stored[STORE_SELECTION]);
       if (typeof stored[STORE_CUSTOM] === 'string' && stored[STORE_CUSTOM].trim()) setCustomInput(stored[STORE_CUSTOM]);
+      if (typeof stored[STORE_BYPASS_ENABLED] === 'boolean') setBypassEnabled(stored[STORE_BYPASS_ENABLED]);
+      setBypassConfidence(clampBypass(stored[STORE_BYPASS_CONFIDENCE], 0, 1, BYPASS_DEFAULT_CONFIDENCE));
+      setBypassVeracity(clampBypass(stored[STORE_BYPASS_VERACITY], -1, 1, BYPASS_DEFAULT_VERACITY));
       setLoaded(true);
     })();
 
@@ -648,6 +730,106 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
             </button>
           )}
         </div>
+      </div>
+
+      {/* ── Settings (collapsed): per-extension thresholds for keeping strong
+          false-claim highlights visible while cached visuals stay hidden behind
+          the Reveal button. Both the confidence floor and the veracity ceiling
+          must hold, and claims needing a re-check never bypass. Content script
+          reads the same storage.local keys live, so a drag flips the tab with no
+          reload. The expanded body scrolls inside a bounded height so opening it
+          never grows the popup window. */}
+      <div className="flex min-h-0 flex-col rounded-lg border border-zinc-800/70 bg-zinc-900/30">
+        <button
+          type="button"
+          onClick={() => setBypassSettingsOpen(v => !v)}
+          aria-expanded={bypassSettingsOpen}
+          className="flex w-full items-center justify-between gap-2 px-2 py-1 text-left cursor-pointer"
+        >
+          <span className="text-[11px] font-medium text-zinc-400">{t('settings')}</span>
+          <svg className={`h-2 w-2 text-zinc-500 transition-transform ${bypassSettingsOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+        </button>
+        {bypassSettingsOpen && (
+          <div className="flex max-h-48 flex-col gap-2 overflow-y-auto border-t border-zinc-800/70 px-2 py-2">
+            {(() => {
+              // One readout + one colour for both sliders: the verdict colour of a
+              // claim sitting exactly on both thresholds, so the pair reads as one
+              // gate. Grey under the 0.2 unknown floor, red at fully false, green at
+              // fully true — exactly the badge ramp, via bypassThresholdColor.
+              const veracityPct = Math.round(bypassVeracity * 100);
+              const confidencePct = Math.round(bypassConfidence * 100);
+              const gateColor = bypassThresholdColor(bypassConfidence, bypassVeracity);
+              const confAdjKey = bypassConfidenceAdjKey(bypassConfidence);
+              const verAdjKey = bypassVeracityAdjKey(bypassVeracity);
+              // "Likely False" style readout through the locale's own badge template
+              // (badgeAdjVerdict is adjective-first in every locale); bare verdict
+              // word where the band carries no adjective.
+              // Both readouts share the veracity slider's verdict word, so the pair
+              // describes one gate ("Arguably False … Possibly False") rather than
+              // the confidence row always reading False on its own.
+              const verdictKey = bypassVeracity > 0 ? 'verdictTrue' : 'verdictFalse';
+              const confidenceReadout = confAdjKey ? t('badgeAdjVerdict', [t(confAdjKey), t(verdictKey)]) : t(verdictKey);
+              const veracityReadout = verAdjKey ? t('badgeAdjVerdict', [t(verAdjKey), t(verdictKey)]) : t(verdictKey);
+              // Track-fill stops: confidence fills from its 0 floor, veracity from its
+              // −1 floor, so the coloured portion always spans min → value.
+              const veracityFill = `${((bypassVeracity + 1) / 2) * 100}%`;
+              const confidenceFill = `${bypassConfidence * 100}%`;
+              const veracitySliderStyle = { '--mf-slider-color': gateColor, '--mf-slider-fill': veracityFill } as React.CSSProperties;
+              const confidenceSliderStyle = { '--mf-slider-color': gateColor, '--mf-slider-fill': confidenceFill } as React.CSSProperties;
+              return (<>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={bypassEnabled}
+                  onClick={() => persistBypassEnabled(!bypassEnabled)}
+                  className="flex items-center justify-between gap-2 text-left cursor-pointer"
+                >
+                  <span className="text-xs font-semibold text-zinc-200">{t('bypassToggleLabel')}</span>
+                  <span
+                    aria-hidden="true"
+                    className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${bypassEnabled ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+                  >
+                    <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${bypassEnabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                  </span>
+                </button>
+                <label className={`flex flex-col gap-1 ${bypassEnabled ? '' : 'opacity-40'}`}>
+                  <span className="text-[11px] font-medium text-zinc-300">
+                    {t('bypassVeracityLabel', [`${veracityPct}%`])} <span style={{ color: gateColor }}>{veracityReadout}</span>
+                  </span>
+                  <input
+                    type="range"
+                    min={-1}
+                    max={1}
+                    step={0.01}
+                    value={bypassVeracity}
+                    disabled={!bypassEnabled}
+                    onChange={(e) => persistBypassVeracity(Number(e.target.value))}
+                    aria-label={t('bypassVeracityLabel', [`${veracityPct}%`])}
+                    style={veracitySliderStyle}
+                    className="mf-threshold-slider w-full cursor-pointer disabled:cursor-not-allowed"
+                  />
+                </label>
+                <label className={`flex flex-col gap-1 ${bypassEnabled ? '' : 'opacity-40'}`}>
+                  <span className="text-[11px] font-medium text-zinc-300">
+                    {t('bypassConfidenceLabel', [`${confidencePct}%`])} <span style={{ color: gateColor }}>{confidenceReadout}</span>
+                  </span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={bypassConfidence}
+                    disabled={!bypassEnabled}
+                    onChange={(e) => persistBypassConfidence(Number(e.target.value))}
+                    aria-label={t('bypassConfidenceLabel', [`${confidencePct}%`])}
+                    style={confidenceSliderStyle}
+                    className="mf-threshold-slider w-full cursor-pointer disabled:cursor-not-allowed"
+                  />
+                </label>
+              </>);
+            })()}
+          </div>
+        )}
       </div>
 
       <button
