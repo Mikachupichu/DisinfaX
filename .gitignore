@@ -59,4 +59,5 @@ DisinfaX/Shared (Extension)/icon/
 DisinfaX/Shared (Extension)/background.js
 DisinfaX/Shared (Extension)/manifest.json
 DisinfaX/Shared (Extension)/popup.html
+DisinfaX/Shared (Extension)/selection.js
 DisinfaX/Shared (Extension)/*.svg

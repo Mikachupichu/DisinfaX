@@ -135,10 +135,6 @@
     "message": "မှတ်ချက်ထည့်နေသည်",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "စစ်ဆေးပြီး — အမှားမတွေ့ပါ။",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "အချက်အလက်စစ်ဆေးမှုများကို ဘာသာပြန်ပါ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "စစ်ဆေးခြင်း",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "စစ်ဆေးခြင်း",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ဒေသီယဖြစ်အောင်လုပ်ပါ",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% ကို တို့လိုက်ပါက ပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ကို နှိပ်ခြင်းဖြင့် ပေါ်လွင်ချက်များကို နေရာချထားပြီး သင့်လက်ကျန်ငွေကို ကောက်ခံပါမည်။"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ကိုနှိပ်ခြင်းဖြင့် အမှားများအတွက် အရေးဆိုမှုကို စစ်ဆေးပြီး သင့်လက်ကျန်ငွေကို ကောက်ခံပါမည်။"
   },
   "onboardWillCharge": {
     "message": "%BTN% ကို နှိပ်လိုက်ပါက သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "အချက်အလက် စစ်ဆေးခြင်း",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "အဆိုတစ်ခု ထည့်ပါ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ရင်းမြစ်များ",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "အကြောင်းပြချက်",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "စာသားရွေးချယ်ပြီး ပေါ့ပ်အပ် ဖွင့်ပါက ထိုရွေးချယ်မှုကို စစ်ဆေးပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်မည်။",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ပယ်ဖျက်",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -6,6 +6,29 @@ type ClaimMatch = {
     end: number;
 };
 
+/** Is this a real span in the text it was computed against?
+ *
+ *  The worker writes `[-1,-1]` when it could not find a claim's verbatim text in the
+ *  input (preclassify-tweets: `const range = loc || [-1, -1]`), and that sentinel is
+ *  persisted verbatim as the claim's highlight row. So every unlocated claim carries the
+ *  SAME range under the same locale key — and a merge that treats an equal range as equal
+ *  claim identity then reads all of them as one claim: the second unlocated payload
+ *  matches the first's local claim and overwrites its text with its own (seen live on a
+ *  selection, where a claim about Linda Hepner turned into a byte-identical second copy of
+ *  the Findlay claim). `[-1,-1]` identifies nothing, so it is never an identity. */
+export function isLocatedRange(range: any): boolean {
+    return Array.isArray(range) && range.length === 2
+        && Number.isInteger(range[0]) && Number.isInteger(range[1])
+        && range[0] >= 0 && range[1] > range[0];
+}
+
+/** Do two ranges denote the same located span? The identity test every claim merge must
+ *  use — `sameLocatedRange` rather than a bare `[start,end]` comparison, because the
+ *  comparison alone is true for two claims that were never located (see above). */
+export function sameLocatedRange(a: any, b: any): boolean {
+    return isLocatedRange(a) && isLocatedRange(b) && a[0] === b[0] && a[1] === b[1];
+}
+
 /** Normalize text for fuzzy comparison: lowercase, collapse whitespace, strip punctuation. */
 function normalizeForMatch(s: string): string {
     return s.toLowerCase().replace(/\s+/g, ' ').replace(/[^\w\s]/g, '').trim();
@@ -23,6 +46,102 @@ function similarity(a: string, b: string): number {
         if (a[i] === b[i]) matches++;
     }
     return matches / len;
+}
+
+/** Normalize for edge-anchored matching: lowercase, collapse whitespace runs to one
+ *  space, drop punctuation — carrying a map from every normalized character back to the
+ *  span of the ORIGINAL string it came from, so an anchored position can be turned back
+ *  into a range the highlight layer can use. */
+function normalizeWithMap(s: string): { norm: string; starts: number[]; ends: number[] } {
+    const starts: number[] = [];
+    const ends: number[] = [];
+    let norm = '';
+    let pendingWs = false, wsStart = 0, wsEnd = 0;
+    const flushWs = () => { if (pendingWs) { norm += ' '; starts.push(wsStart); ends.push(wsEnd); pendingWs = false; } };
+    for (let i = 0; i < s.length; i++) {
+        const c = s[i];
+        if (/\s/.test(c)) { if (!pendingWs) { pendingWs = true; wsStart = i; } wsEnd = i + 1; continue; }
+        if (!/[\w]/.test(c)) continue; // punctuation carries no signal and no span
+        flushWs();
+        norm += c.toLowerCase();
+        starts.push(i);
+        ends.push(i + 1);
+    }
+    return { norm, starts, ends };
+}
+
+/** Probe length for the edge matcher: long enough that a hit is unambiguous, short
+ *  enough to fit inside both the selection and the claim. */
+const EDGE_PROBE = 12;
+/** Under this many normalized characters the probes are too short to anchor reliably,
+ *  so a short selection falls through to the ordinary matchers instead. */
+const MIN_EDGE_LEN = 10;
+
+/** Locate a claim the selection cut off at its start and/or its end.
+ *
+ *  Hand-selecting text routinely begins or stops a character or two inside a claim —
+ *  "ump wants a trade deal with Xi Ji" for a claim reading "Trump wants a trade deal
+ *  with Xi Jinping". The agent returns the CORRECTED wording (that is the point), which
+ *  then appears nowhere in the selection, so plain substring matching fails and the
+ *  claim silently loses its highlight. The truncated characters are exactly at the
+ *  selection's edges, so the claim is anchored by asking where the selection's own head
+ *  and tail sit INSIDE the claim:
+ *
+ *    - head found past the claim's start  → the claim was cut at the front
+ *    - claim continues past the selection's tail → cut at the back
+ *
+ *  Returns the [start, end] range in `text`, or null when neither edge aligns. */
+function findEdgeAnchoredMatch(text: string, claimText: string): { start: number; end: number } | null {
+    const T = normalizeWithMap(text);
+    const C = normalizeWithMap(claimText);
+    const nT = T.norm.length, nC = C.norm.length;
+    if (nT < MIN_EDGE_LEN || nC < MIN_EDGE_LEN) return null;
+    const P = Math.min(EDGE_PROBE, nT, nC);
+    if (P < MIN_EDGE_LEN) return null;
+
+    // Front cut: the selection opens partway into the claim. A prefix match of the
+    // selection's head onto the claim means the claim genuinely starts with it, which is
+    // the contained case the earlier steps already handled — so only a LATER hit counts.
+    const head = T.norm.slice(0, P);
+    const p0 = C.norm.indexOf(head);
+    const startCut = p0 > 0;
+
+    // Back cut: the claim runs past where the selection stops. Anchor on the rightmost
+    // alignment of the selection's tail so a repeated tail substring picks the latest.
+    const tail = T.norm.slice(nT - P);
+    const e0 = C.norm.lastIndexOf(tail);
+    const endCut = e0 >= 0 && nC - e0 - P > 0;
+
+    if (!startCut && !endCut) return null;
+
+    // The claim's extent within the selection. A cut edge is pinned to that edge of the
+    // selection; the opposite edge is where the claim genuinely begins/ends inside it.
+    let normStart: number, normEnd: number;
+    if (startCut && endCut) {
+        normStart = 0; normEnd = nT;
+    } else if (startCut) {
+        normStart = 0; normEnd = Math.min(nT, nC - p0);
+    } else {
+        // C's position e0 corresponds to the selection position nT - P, so walking back
+        // e0 characters from there is where the claim starts.
+        normStart = Math.max(0, (nT - P) - e0);
+        normEnd = nT;
+    }
+    const L = normEnd - normStart;
+    if (L < MIN_EDGE_LEN || L > nT) return null;
+
+    // Both sides are compared over the same normalized length; require a real match so a
+    // coincidental probe hit can't anchor a claim onto unrelated text.
+    const claimStartNorm = startCut ? p0 : 0;
+    const score = similarity(T.norm.slice(normStart, normStart + L), C.norm.slice(claimStartNorm, claimStartNorm + L));
+    if (score < 0.7) return null;
+
+    const start = T.starts[normStart];
+    const end = T.ends[normEnd - 1];
+    if (!(end > start)) return null;
+
+    console.log(`[textBreakup] Edge-anchored match (${(score * 100).toFixed(0)}%, startCut=${startCut}, endCut=${endCut}): "${claimText.slice(0, 50)}..." at [${start}, ${end})`);
+    return { start, end };
 }
 
 /** Find an exact verbatim or whitespace-normalized match of claimText within text.
@@ -88,7 +207,13 @@ export function findExactMatch(
         if (end > start) return { start, end };
     }
 
-    // 3. Fuzzy sliding-window: find the best-matching substring when the model
+    // 3. Edge-anchored: `text` was a hand-cut selection, so the claim's boundary
+    //    characters sit outside it and no substring of the claim matches verbatim
+    //    (see findEdgeAnchoredMatch).
+    const edge = findEdgeAnchoredMatch(decodedText, decodedClaim);
+    if (edge) return edge;
+
+    // 4. Fuzzy sliding-window: find the best-matching substring when the model
     //    slightly rephrases, changes punctuation, or drops/alters small words.
     const normalizedClaim = normalizeForMatch(decodedClaim);
     const normalizedText = normalizeForMatch(decodedText);

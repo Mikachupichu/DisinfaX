@@ -168,10 +168,6 @@
     "message": "O notennañ",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Gwiriad — fazi ebet kavet.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Treiñ ar Gwiriadennoù",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -221,6 +217,10 @@
   "disinfactButton": {
     "message": "Difalsaat",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Gwiriañ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lec'helaat",
@@ -273,6 +273,12 @@
   },
   "onboardDisinfactTap": {
     "message": "O stekiñ war %BTN% e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardLocalize": {
+    "message": "Klikañ war %BTN% a adlec'hio ar poentoù pouezusañ ha kargañ a raio ho sammad"
+  },
+  "onboardAnnotate": {
+    "message": "Klikañ war %BTN% a wirio ar goulenn hag-eñ ez eus fazioù ha kargañ a raio ho sammad"
   },
   "onboardWillCharge": {
     "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Gwiriañ ar fedoù",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Skriv un arguzenn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Mammennoù",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Poelladenn",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Digeriñ ar popup gant test dibabet a wiria ar choaz-se hag a lak eus ho kont.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Nullañ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

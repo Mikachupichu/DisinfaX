@@ -133,10 +133,6 @@
     "message": "Açıklama ekleniyor",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "İncelendi — hata bulunamadı.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Doğrulamaları Çevir",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Doğrula",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Doğrulanıyor",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Yerelleştir",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% simgesine dokunmak iddiaları gösterir ve bakiyenizden ücret düşer"
+  },
+  "onboardLocalize": {
+    "message": "%BTN%'ye tıklamak öne çıkanları yeniden konumlandırır ve bakiyenizden tahsil edilir"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN%'yi tıklattığınızda hak talebinde hatalar olup olmadığı kontrol edilir ve bakiyenizden çekim yapılır"
   },
   "onboardWillCharge": {
     "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Gerçeklik kontrolü",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Bir iddia girin",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Kaynaklar",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Gerekçe",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Metin seçiliyken açılır pencereyi açmak o seçimi denetler ve bakiyenizden düşülür.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "İptal",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

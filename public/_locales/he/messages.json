@@ -133,10 +133,6 @@
     "message": "מוסיף הערות",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "נבדק — לא נמצאו שגיאות.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "תרגם בדיקה",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "בדיקה",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "בדיקה",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "התאם לשפה",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "הקשה על %BTN% תחשוף טענות ותחייב את היתרה שלך"
+  },
+  "onboardLocalize": {
+    "message": "לחיצה על %BTN% ממקמת מחדש את הדגשים ותחייב את היתרה שלך"
+  },
+  "onboardAnnotate": {
+    "message": "לחיצה על %BTN% בודקת את התביעה לאיתור שגיאות ותחייב את היתרה שלך"
   },
   "onboardWillCharge": {
     "message": "לחיצה על %BTN% תחייב את היתרה שלך"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "בדיקת עובדות",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "הזינו טענה",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "מקורות",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "נימוק",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "פתיחת החלון עם טקסט נבחר תבדוק את הבחירה ותחויב מהיתרה שלך.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ביטול",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

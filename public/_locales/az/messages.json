@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "%BTN% düyməsinə toxunmaq iddiaları göstərəcək və balansınızdan pul tutulacaq"
   },
+  "onboardLocalize": {
+    "message": "%BTN% klikləməklə, vurğulanan yerlər dəyişdirilir və balansınız doldurulacaq"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% klikləməklə, səhvlər üçün iddia yoxlanılır və balansınızdan ödəniş tutulacaq"
+  },
   "onboardWillCharge": {
     "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
   },
@@ -198,10 +204,6 @@
     "message": "Annotasiya edilir",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Yoxlanıldı — xəta tapılmadı.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Faktyoxlamaları Tərcümə Et",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Yoxla",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Faktyoxlama",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokallaşdır",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fakt yoxlaması",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "İddia daxil edin",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Mənbələr",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Əsaslandırma",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mətn seçilmiş halda popup açmaq həmin seçimi yoxlayır və balansınızdan çıxılacaq.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ləğv et",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

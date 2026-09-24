@@ -17,7 +17,7 @@
  *  Tweet hashing also lives here (computeTweetHash), because the hash must match what
  *  the workers compute byte-for-byte to hit the same cache row.
  */
-import { MainTweet } from "../data/Tweets";
+import { ClaimInput } from "../data/Tweets";
 import { Classification, Claim, QuotedClassification, Source, formatVerdict } from "../data/Classification";
 import { supabase, ensureFreshSession } from "./supabase";
 import { ERROR_CODES, parseWorkerErrorMessage, type ParsedWorkerError } from "./errorCodes";
@@ -140,7 +140,7 @@ export function extractTweetUrls(text: string): string[] {
  *  @param displayedLocale  locale of displayTweet.text (the highlight range's key).
  *  @param locale        UI locale the rewritten claims are written in. */
 export async function* preClassify(
-    displayTweet: MainTweet,
+    displayTweet: ClaimInput,
     hash: string,
     displayedLocale: string,
     locale?: string
@@ -210,7 +210,7 @@ export async function* preClassify(
  *  verdict/note); we slice the verbatim substring out of the displayed text and store the
  *  range under the displayed-text locale so injection highlights it directly. Every claim
  *  is treated as "research required" (Fact-Check button) with no reasoning. */
-function makePreclassification(tweet: MainTweet, allClaims: any[], displayedLocale: string, uiLocale: string): Classification {
+function makePreclassification(tweet: ClaimInput, allClaims: any[], displayedLocale: string, uiLocale: string): Classification {
     const tweetText = tweet.text ?? '';
     const claims: Claim[] = allClaims.map((raw: any) => {
         const range = Array.isArray(raw.text) && raw.text.length === 2 ? [Number(raw.text[0]), Number(raw.text[1])] as [number, number] : null;
@@ -510,6 +510,21 @@ function canonicalContext(t: any, depth: number = 0): string {
     // recursion so a hostile/deep/cyclic structure can't hang the hash. Real threads
     // are far shallower, so this never changes a legitimate hash.
     if (!t || typeof t !== 'object' || depth > 20) return '';
+
+    // A webpage selection has no tweet identity — it is the selected text PLUS the
+    // context around it, all three of which the user asked to be hashed as one unit
+    // (`${before}${selected}${after}`). Same selection in a different surrounding
+    // paragraph is a different unit, so it must not hit the first one's cached claims.
+    //
+    // Sentinels keep the three parts non-ambiguous: `\x1f` already separates the tweet
+    // fields, and `\x1c` leads the whole thing so a selection can never collide with a
+    // tweet that happens to carry the same text. MUST match the preclassify worker.
+    if (t.contextBefore !== undefined || t.contextAfter !== undefined) {
+        return '\x1c' + normalizeText(String(t.contextBefore ?? ''))
+            + '\x1f' + normalizeText(String(t.fullText ?? ''))
+            + '\x1f' + normalizeText(String(t.contextAfter ?? ''));
+    }
+
     let s = normalizeText(String(t.username ?? '')) + '\x1f' + normalizeText(String(t.fullText ?? ''));
     if (t.quoting && typeof t.quoting === 'object') s += '\x1e' + canonicalContext(t.quoting, depth + 1);
     if (t.replyingTo != null) {

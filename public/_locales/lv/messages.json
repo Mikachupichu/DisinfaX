@@ -132,10 +132,6 @@
     "message": "Anotēšana",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Pārskatīts — kļūdas nav atrastas.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Tulkot faktu pārbaudes",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -185,6 +181,10 @@
   "disinfactButton": {
     "message": "Pārbaudīt",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Pārbaude",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizēt",
@@ -237,6 +237,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Pieskaroties %BTN% tiks atklāti apgalvojumi un no tava atlikuma tiks noņemta maksa"
+  },
+  "onboardLocalize": {
+    "message": "Noklikšķinot uz %BTN%, tiek mainīta svarīgākā vieta un tiek iekasēta maksa par jūsu atlikumu"
+  },
+  "onboardAnnotate": {
+    "message": "Noklikšķinot uz %BTN%, tiek pārbaudīts, vai prasībā nav kļūdu, un tiks iekasēta maksa par jūsu atlikumu"
   },
   "onboardWillCharge": {
     "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
@@ -349,5 +355,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Faktu pārbaude",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Ievadiet apgalvojumu",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Avoti",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Pamatojums",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Atverot uznirstošo logu ar atlasītu tekstu, šī atlase tiks pārbaudīta un no jūsu bilances tiks norakstīts.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Atcelt",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

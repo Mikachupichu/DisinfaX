@@ -104,6 +104,15 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
                     if let userId = message["userId"] as? String, !userId.isEmpty {
                         SharedTopUpStore.setAccount(userId: userId, balance: message["balance"] as? Double)
                     }
+                    // Piggy-backed on the account sync rather than given its own action: both are
+                    // written by the same popup open, and a second action would mean a second
+                    // native round trip for state that is always fresher together anyway.
+                    if let accessToken = message["accessToken"] as? String, !accessToken.isEmpty {
+                        SharedTopUpStore.setSession(
+                            accessToken: accessToken,
+                            expiresAt: (message["accessTokenExpiresAt"] as? Double)
+                                .map { Date(timeIntervalSince1970: $0) })
+                    }
                     self.respond(with: ["synced": SharedTopUpStore.isAvailable], context: context)
 
                 // Sent when the extension knows nobody is signed in. Without it the app kept the

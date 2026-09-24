@@ -166,10 +166,6 @@
     "message": "Σχολιασμός",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ελέγχθηκε — δε βρέθηκαν σφάλματα.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Μετάφραση Ελέγχων",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -219,6 +215,10 @@
   "disinfactButton": {
     "message": "Έλεγχος Γεγονότων",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Έλεγχος",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Τοπικοποίησε",
@@ -271,6 +271,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Το άγγιγμα στο %BTN% εμφανίζει τους ισχυρισμούς και θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardLocalize": {
+    "message": "Κάνοντας κλικ στο %BTN% επανατοποθετούνται οι καλύτερες στιγμές και θα χρεωθεί το υπόλοιπό σας"
+  },
+  "onboardAnnotate": {
+    "message": "Κάνοντας κλικ στο %BTN% ελέγχει την αξίωση για σφάλματα και θα χρεώσει το υπόλοιπό σας"
   },
   "onboardWillCharge": {
     "message": "Το κλικ στο %BTN% θα χρεώσει το υπόλοιπό σας"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Έλεγχος γεγονότων",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Εισαγάγετε έναν ισχυρισμό",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Πηγές",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Συλλογισμός",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Το άνοιγμα του αναδυόμενου παραθύρου με επιλεγμένο κείμενο ελέγχει αυτή την επιλογή και θα χρεώσει το υπόλοιπό σας.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Άκυρο",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

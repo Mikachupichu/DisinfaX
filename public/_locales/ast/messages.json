@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "Tocar %BTN% amuesa les afirmaciones y cobrará del to saldu"
   },
+  "onboardLocalize": {
+    "message": "Faer clic en %BTN% vuelve a asitiar los resaltes y cobrará del to saldu"
+  },
+  "onboardAnnotate": {
+    "message": "Faer clic en %BTN% comprueba l'afirmación pa buscar errores y cobrará del to saldu"
+  },
   "onboardWillCharge": {
     "message": "Faer clic en %BTN% cobrará del to saldu"
   },
@@ -198,10 +204,6 @@
     "message": "Anotando",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Revisáu — nun s'alcontró fallu.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Traducir verificaciones de fechos",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Desinfectando",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Llocalizar",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Comprobación de datos",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Introduz una afirmación",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fontes",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Razonamientu",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Abrir el popup con testu seleicionáu comprueba esa seleición y va cargar nel to saldu.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Encaboxar",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

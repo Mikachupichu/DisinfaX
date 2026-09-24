@@ -129,10 +129,6 @@
     "message": "주석 다는 중",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "검토됨 — 오류가 발견되지 않았습니다.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "팩트체크 번역",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -182,6 +178,10 @@
   "disinfactButton": {
     "message": "팩트체크",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "팩트체크",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "현지화",
@@ -234,6 +234,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN%을(를) 탭하면 주장이 표시되고 잔액에서 요금이 부과됩니다"
+  },
+  "onboardLocalize": {
+    "message": "%BTN%을 클릭하면 하이라이트 위치가 변경되고 잔액이 청구됩니다."
+  },
+  "onboardAnnotate": {
+    "message": "%BTN%을 클릭하면 청구서에 오류가 있는지 확인하고 잔액이 청구됩니다."
   },
   "onboardWillCharge": {
     "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
@@ -346,5 +352,33 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "팩트체크",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "주장을 입력하세요",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "출처",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "근거",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "researchingWords": {
+    "message": "확인 중|팩트체크 중|검증 중|분석 중|조사 중|탐색 중|발굴 중|추적 중|수집 중|정리 중|대조 중|교차 확인 중|심층 분석 중|추론 중|사고 중|고민 중|숙고 중|성찰 중|탐구 중|연구 중|파헤치는 중|뒤지는 중|걸러내는 중|가려내는 중|식별 중|분류 중|판정 중|평가 중|측정 중|계산 중|처리 중|가공 중|정제 중|추출 중|종합 중|요약 중|검토 중|점검 중|감사 중|심사 중|질문 중|심문 중|해부 중|분해 중|해체 중|재구성 중|연결 중|매칭 중|검색 중|수색 중|찾는 중|발견 중|탐지 중|포착 중|노출 중|폭로 중|드러내는 중|밝히는 중|조명 중|해명 중|규명 중|확정 중|입증 중|증명 중|반박 중|논파 중|교정 중|바로잡는 중|정정 중|세척 중|정화 중|해독 중|여과 중|압착 중|짜내는 중|불리는 중|끓이는 중|요리 중|직관 중|논리 중|추리 중|사유 중|명상 중|철학 중|계몽 중|깨우치는 중|해결 중|풀이 중|답하는 중|응답 중|생각 중|고심 중|탐문 중|취재 중|기록 중|보고 중|알리는 중|전하는 중|공유 중|밝혀내는 중",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "selectionConfirmWarning": {
+    "message": "텍스트를 선택한 상태에서 팝업을 열면 해당 선택이 팩트체크되고 잔액에서 차감됩니다.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "취소",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

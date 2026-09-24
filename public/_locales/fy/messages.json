@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "Tikje op %BTN% lit bewearingen sjen en sil jo saldo ôfskriuwe"
   },
+  "onboardLocalize": {
+    "message": "Klikje op %BTN% ferpleatst de hichtepunten en sil jo saldo oplade"
+  },
+  "onboardAnnotate": {
+    "message": "Klikje op %BTN% kontrolearret de claim op flaters en sil jo saldo yn rekken brocht"
+  },
   "onboardWillCharge": {
     "message": "Klikke op %BTN% sil jo saldo ôfskriuwe"
   },
@@ -198,10 +204,6 @@
     "message": "Annotearret",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Neisjoen — gjin flaters fûn.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Kontrôles oersette",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Kontrôle",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontrôle",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalisearje",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Feitekontrôle",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Fier in bewearing yn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Boarnen",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Redenearring",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "It iepenjen fan de popup mei selektearre tekst kontrolearret dy seleksje en sil jo saldo belêste.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Annulearje",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -135,10 +135,6 @@
     "message": "Tab tom tawm tswv yim",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Tshuaj xyuas — tsis pom yuam kev.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Txhais Kev Tshuaj Xyuas",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Tshawb Xyuas",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kev Tshawb Nrhiav",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Hais haiv lus",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Kov %BTN% yuav qhia cov lus thov thiab yuav them nyiaj ntawm koj tus account"
+  },
+  "onboardLocalize": {
+    "message": "Nyem %BTN% repositions qhov tseem ceeb thiab yuav them koj qhov nyiaj tshuav"
+  },
+  "onboardAnnotate": {
+    "message": "Nyem %BTN% txheeb xyuas qhov kev thov kom raug thiab yuav them koj qhov nyiaj tshuav"
   },
   "onboardWillCharge": {
     "message": "Nyem %BTN% yuav them nyiaj ntawm koj tus account"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Tshawb xyuas qhov tseeb",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Sau ib qho lus thov",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Cov chaw",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Kev xav",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Qhib popup nrog cov ntawv xaiv yuav tshawb xyuas qhov kev xaiv ntawd thiab yuav rho koj cov nyiaj seem.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Tshem tawm",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

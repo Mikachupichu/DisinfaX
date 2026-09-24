@@ -135,10 +135,6 @@
     "message": "Po shënohet",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Rishikuar — nuk u gjet asnjë gabim.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Përkthe verifikimet e fakteve",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Disinfakto",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifikim",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizo",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Prekja e %BTN% shfaq pretendimet dhe do të ngarkojë bilancin tënd"
+  },
+  "onboardLocalize": {
+    "message": "Klikimi i %BTN% ripozicionon pikat kryesore dhe do të tarifojë bilancin tuaj"
+  },
+  "onboardAnnotate": {
+    "message": "Klikimi i %BTN% kontrollon pretendimin për gabime dhe do të tarifojë bilancin tuaj"
   },
   "onboardWillCharge": {
     "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tënd"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Verifikimi i fakteve",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Futni një pretendim",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Burimet",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Arsyetimi",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Hapja e dritares me tekst të zgjedhur verifikon atë përzgjedhje dhe do të faturohet nga bilanci juaj.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anulo",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -133,10 +133,6 @@
     "message": "Annoteren",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Nagekeken — geen fouten gevonden.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Factchecks vertalen",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Controleren",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Controleren",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokaliseren",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Tikken op %BTN% toont beweringen en brengt kosten in rekening op je saldo"
+  },
+  "onboardLocalize": {
+    "message": "Als u op %BTN% klikt, worden de hoogtepunten verplaatst en wordt uw saldo in rekening gebracht"
+  },
+  "onboardAnnotate": {
+    "message": "Als u op %BTN% klikt, wordt de claim op fouten gecontroleerd en wordt uw saldo in rekening gebracht"
   },
   "onboardWillCharge": {
     "message": "Klikken op %BTN% brengt kosten in rekening op je saldo"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Factcheck",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Voer een bewering in",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Bronnen",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Redenering",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Het openen van de pop-up met geselecteerde tekst controleert die selectie en er wordt van je saldo afgeschreven.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Annuleren",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

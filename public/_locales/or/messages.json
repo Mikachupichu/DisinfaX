@@ -168,10 +168,6 @@
     "message": "ଟିପ୍ପଣୀ କରାଯାଉଛି",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "ସମୀକ୍ଷା — କୌଣସି ତ୍ରୁଟି ମିଳିଲା ନାହିଁ।",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "ତଥ୍ୟ ଯାଞ୍ଚ ଅନୁବାଦ କରନ୍ତୁ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -221,6 +217,10 @@
   "disinfactButton": {
     "message": "ଯାଞ୍ଚ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ଯାଞ୍ଚ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ସ୍ଥାନୀୟ କରନ୍ତୁ",
@@ -273,6 +273,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% ଟାପ୍ କରିବା ଦାବିଗୁଡ଼ିକୁ ପ୍ରକାଶ କରିବ ଏବଂ ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ଦ୍ୱାରା ହାଇଲାଇଟ୍ ଗୁଡିକ ସ୍ଥାନିତ ହୁଏ ଏବଂ ତୁମର ବାଲାନ୍ସ ଚାର୍ଜ ହେବ |"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% କ୍ଲିକ୍ କରିବା ତ୍ରୁଟି ପାଇଁ ଦାବି ଯାଞ୍ଚ କରେ ଏବଂ ତୁମର ବାଲାନ୍ସ ଚାର୍ଜ କରିବ |"
   },
   "onboardWillCharge": {
     "message": "%BTN% କ୍ଲିକ୍ କରିବା ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "ସତ୍ୟ ଯାଞ୍ଚ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ଏକ ଦାବି ଲେଖନ୍ତୁ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ଉତ୍ସ",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ଯୁକ୍ତି",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ଟେକ୍ସଟ୍ ଚୟନ କରି ପପ୍ଅପ୍ ଖୋଲିଲେ ସେହି ଚୟନ ଯାଞ୍ଚ ହେବ ଏବଂ ଆପଣଙ୍କ ବାଲାନ୍ସରୁ କଟାଯିବ।",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ବାତିଲ୍ କରନ୍ତୁ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

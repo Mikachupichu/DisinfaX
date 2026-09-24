@@ -133,10 +133,6 @@
     "message": "Аннотирование",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Проверено — ошибок не найдено.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Перевести проверки",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Проверить",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Проверка",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Локализовать",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Касание %BTN% раскроет утверждения и спишет средства с вашего баланса"
+  },
+  "onboardLocalize": {
+    "message": "Нажатие кнопки %BTN% изменит положение основных моментов и спишет средства с вашего баланса."
+  },
+  "onboardAnnotate": {
+    "message": "При нажатии %BTN% заявка проверяется на наличие ошибок и списывается с вашего баланса."
   },
   "onboardWillCharge": {
     "message": "Нажатие на %BTN% спишет средства с вашего баланса"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Проверка фактов",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Введите утверждение",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Источники",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Обоснование",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Открытие всплывающего окна с выделенным текстом запускает проверку этого фрагмента и спишет средства с вашего баланса.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Отмена",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

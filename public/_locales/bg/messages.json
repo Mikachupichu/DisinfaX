@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "Докосването на %BTN% разкрива твърденията и ще начисли такса от баланса ви"
   },
+  "onboardLocalize": {
+    "message": "Щракването върху %BTN% препозиционира акцентите и ще таксува вашия баланс"
+  },
+  "onboardAnnotate": {
+    "message": "Щракването върху %BTN% проверява искането за грешки и ще таксува вашия баланс"
+  },
   "onboardWillCharge": {
     "message": "Кликването върху %BTN% ще начисли такса от баланса ви"
   },
@@ -196,10 +202,6 @@
     "message": "Анотиране",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Проверено — не са намерени грешки.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Превод на проверките",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -227,6 +229,10 @@
   "disinfactButton": {
     "message": "Провери",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Проверка",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Локализирай",
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Проверка на фактите",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Въведете твърдение",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Източници",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Обосновка",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Отварянето на изскачащия прозорец с избран текст проверява тази селекция и ще таксува баланса ви.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Отказ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

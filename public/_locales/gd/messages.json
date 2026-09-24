@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "Ma bheanas tu ri %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chothromachadh"
   },
+  "onboardLocalize": {
+    "message": "Ma bhriogas tu air %BTN% ath-shuidhichidh tu na prìomh thachartasan agus cuiridh e cosgais air do chothromachadh"
+  },
+  "onboardAnnotate": {
+    "message": "Ma bhriogas tu air %BTN% seallaidh an tagradh airson mhearachdan agus cuiridh e cosgais air a’ chothromachadh agad"
+  },
   "onboardWillCharge": {
     "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
   },
@@ -198,10 +204,6 @@
     "message": "A' notachadh",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Air ath-sgrùdadh — cha deach mearachd a lorg.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Eadar-theangaich na sgrùdaidhean",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Sgrùd",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sgrùdadh",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Ionadaich",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Dearbhadh fhìrinnean",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Cuir a-steach tagradh",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Stòran",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Reusanachadh",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ma dh'fhuasglas tu am popup le teacsa taghte, thèid an taghadh sin a dhearbhadh agus thèid a chur air a' chothrom agad.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Sguir dheth",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

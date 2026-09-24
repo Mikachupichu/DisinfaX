@@ -134,10 +134,6 @@
     "message": "Şîrove dike",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Hat nirxandin — şaşî nehat dîtin.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Kontrol",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontrol",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Herêmî bike",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Tikandin li ser %BTN% dê angaştan nîşan bide û dê ji balansê te bêt kirin"
+  },
+  "onboardLocalize": {
+    "message": "Bi tikandina %BTN% xalên balkêş ji nû ve cîh dike û dê balansa we bar bike"
+  },
+  "onboardAnnotate": {
+    "message": "Bi tikandina %BTN% îdîaya xeletiyan kontrol dike û dê balansa we bide"
   },
   "onboardWillCharge": {
     "message": "Klîk kirin li ser %BTN% dê ji balansê te bêt kirin"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Piştrastkirina rastiyan",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Daxwazek binivîse",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Çavkanî",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Sedem",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Vekirina popupê bi nivîsa hilbijartî wê hilbijartinê kontrol dike û dê ji balansa te were kêmkirin.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Betal bike",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

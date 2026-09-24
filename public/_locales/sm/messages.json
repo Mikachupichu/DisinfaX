@@ -135,10 +135,6 @@
     "message": "O lo'o fa'amatala",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ua siaki — e le'i maua ni mea sese.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Faaliliu Siakiga",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Fa'aali",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Siaki",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Fa'alotoifale",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "O le tapa i le %BTN% e faʻaalia ai tautinoga ma o le a totogia ai lau paleni"
+  },
+  "onboardLocalize": {
+    "message": "O le kiliki i le %BTN% e toe fa'atulaga mea taua ma o le a totogi ai lau paleni"
+  },
+  "onboardAnnotate": {
+    "message": "O le kiliki %BTN% siaki le tagi mo mea sese ma o le a totogi lau paleni"
   },
   "onboardWillCharge": {
     "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Siaki o mea moni",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tu'u se fa'amatalaga",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Puna'oa",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Mafua'aga",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "O le tatalaina o le popup ma se tusitusiga ua filifilia, o le a siakiina lena filifiliga ma totogi mai lou paleni.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Faaleaogaina",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

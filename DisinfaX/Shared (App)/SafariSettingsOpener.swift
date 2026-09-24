@@ -3,7 +3,7 @@ import Foundation
 import SafariServices
 import AppKit
 
-/// Extracted so TopUpView needs neither SafariServices nor knowledge of the extension's
+/// Extracted so the Safari guide needs neither SafariServices nor knowledge of the extension's
 /// identifier. Mirrors what the old WKWebView UI did from its "open-preferences" message,
 /// deliberately without the `NSApp.terminate` that used to follow it — quitting the app the
 /// moment the user asks for settings would also kill a top-up they are mid-way through.

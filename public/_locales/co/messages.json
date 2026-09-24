@@ -135,10 +135,6 @@
     "message": "Annotazione",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Verificatu — nisciunu errore trovu.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Traduce e verifiche",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Verifica",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Disinfazione",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lucalizà",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Toccà %BTN% mostra l'affirmazioni è caricherà u vostru saldu"
+  },
+  "onboardLocalize": {
+    "message": "Cliccando %BTN% riposiziona i punti salienti e carica il tuo saldo"
+  },
+  "onboardAnnotate": {
+    "message": "Cliccà %BTN% verifica a pretesa per errori è carica u vostru saldo"
   },
   "onboardWillCharge": {
     "message": "Cliccà nant'à %BTN% caricherà u vostru saldu"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Verificazione di i fatti",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Scrivite una affirmatione",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fonti",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ragionamentu",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Apre u popup cù u testu selezziunatu verifica quella selezzione è serà pigliatu da u to saldu.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Annullà",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

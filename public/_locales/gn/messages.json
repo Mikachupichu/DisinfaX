@@ -135,10 +135,6 @@
     "message": "Oñembojehecha",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ojehecha porã — ndaipóri jajavy.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Ombohasa Jehechakuaa",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Jehechakuaa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Jehechakuaa",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Mbohekoha",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Eikutu mbeguekatu ramo %BTN%, ojehechauka umi mba'ekuaa ha ojejapata ne saldo"
+  },
+  "onboardLocalize": {
+    "message": "Emboguapývo %BTN% emohenda jey umi mba’e ojehecharamovéva ha okobráta nde saldo"
+  },
+  "onboardAnnotate": {
+    "message": "Emboguapývo %BTN% rehecha pe reclamo ojejavypa ha okobráta nde saldo"
   },
   "onboardWillCharge": {
     "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Marandu jejapo",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Emoinge peteĩ ñe'ẽ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ypykue",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ñeimo'ã",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Emboty popup ñe'ẽ poravopyre ndive ojesareko upe poravo ha ojepaga nde saldo-gui.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Heja",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

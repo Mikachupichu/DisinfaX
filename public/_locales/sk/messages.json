@@ -133,10 +133,6 @@
     "message": "Anotovanie",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Skontrolované — nenašli sa žiadne chyby.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Preložiť overenia",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Overiť",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontrola",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizovať",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ťuknutím na %BTN% zobrazíte tvrdenia a z vášho zostatku bude strhnutý poplatok"
+  },
+  "onboardLocalize": {
+    "message": "Kliknutím na %BTN% premiestnite zvýraznenia a zaúčtujete váš zostatok"
+  },
+  "onboardAnnotate": {
+    "message": "Kliknutím na %BTN% skontrolujete chyby v nároku a zaúčtujete váš zostatok"
   },
   "onboardWillCharge": {
     "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Overovanie faktov",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Zadajte tvrdenie",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Zdroje",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Odôvodnenie",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Otvorenie vyskakovacieho okna s vybraným textom overí tento výber a bude vám účtované zo zostatku.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Zrušiť",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

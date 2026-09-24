@@ -135,10 +135,6 @@
     "message": "Reyɛ nkyerɛmu",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Yɛahwɛ mu — mfomso nni mu.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Sesa Nhwehwɛmu Nsɛm",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Da Adi",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Nhwehwɛmu",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Fa kasa yi mu",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Sɛ wode wo nsa bɔ %BTN% a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo akontaa mu"
+  },
+  "onboardLocalize": {
+    "message": "Sɛ wobɔ %BTN% a, ɛsan de nsɛntitiriw no si hɔ na ɛbɛbɔ wo sika a aka no ho ka"
+  },
+  "onboardAnnotate": {
+    "message": "Sɛ wobɔ %BTN% a, ɛhwɛ sɛ mfomsoɔ wɔ krataa no mu na ɛbɛgye wo sika a aka no"
   },
   "onboardWillCharge": {
     "message": "Sɛ wode wo nsa ka %BTN% a, wɔbɛtwe sika afi wo akontaa mu"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Nhwehwɛmu",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Kyerɛw asɛm bi",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Beae a efi",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Adwene",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Sɛ wubue popup no na woayi nsɛm bi, wɔbɛhwɛ saa asɛm no na ɛbɛtua wo sika.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Twa mu",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

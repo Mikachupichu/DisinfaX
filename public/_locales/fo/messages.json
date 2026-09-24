@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "At trýsta á %BTN% vísir ásagnir og tekur gjald av saldo tínum"
   },
+  "onboardLocalize": {
+    "message": "Trýst á %BTN% umstillar hæddarpunktini og fer at gjalda tína saldu"
+  },
+  "onboardAnnotate": {
+    "message": "Trýst á %BTN% kannar kravið fyri feilum og verður saldu kravd"
+  },
   "onboardWillCharge": {
     "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
   },
@@ -198,10 +204,6 @@
     "message": "Viðmerkjar",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Gjøgnumgingið — ongar villur funnar.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Umset kanningar",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Kanna",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kanna",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalisera",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Staðfesting",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Skriva eina ásøgn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Keldur",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Grundgeving",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "At lata upp gluggan við valdum teksti verður tann valið kannað og dregið verður frá tínum salt.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Avlýs",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

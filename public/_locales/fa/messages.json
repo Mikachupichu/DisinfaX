@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "ضربه زدن روی %BTN% ادعاها را نمایش می‌دهد و از موجودی شما کسر می‌کند"
   },
+  "onboardLocalize": {
+    "message": "با کلیک بر روی %BTN% نقاط برجسته تغییر مکان داده و موجودی شما شارژ می شود"
+  },
+  "onboardAnnotate": {
+    "message": "با کلیک بر روی %BTN% ادعای خطا را بررسی می‌کند و موجودی شما را شارژ می‌کند"
+  },
   "onboardWillCharge": {
     "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
   },
@@ -196,10 +202,6 @@
     "message": "در حال حاشیه‌نویسی",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "بازبینی شد — خطایی یافت نشد.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "ترجمه راستی‌آزمایی‌ها",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -227,6 +229,10 @@
   "disinfactButton": {
     "message": "راستی‌آزمایی",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "راستی‌آزمایی",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "بومی‌سازی کن",
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "راستی‌آزمایی",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "یک ادعا وارد کنید",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "منابع",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "استدلال",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "باز کردن پنجره با متن انتخاب‌شده، آن انتخاب را بررسی می‌کند و از موجودی شما کسر می‌شود.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "لغو",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

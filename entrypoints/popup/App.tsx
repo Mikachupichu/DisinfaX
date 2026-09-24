@@ -100,6 +100,9 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  /** Set by Dashboard while a webpage-selection fact-check is starting up. Only effect:
+   *  the footer below is not rendered, so the popup reads as the indicator alone. */
+  const [selectionActive, setSelectionActive] = useState(false);
 
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(() => {
     // Guarded because this runs during the first render: a throwing localStorage
@@ -448,10 +451,14 @@ export default function App() {
           </div>
         </div>
       ) : (
-        <Dashboard user={user} onSignOut={handleSignOut} />
+        <Dashboard user={user} onSignOut={handleSignOut} onSelectionActive={setSelectionActive} />
       )}
 
-      {/* Footer sits flush against the content above it, hard on the bottom edge. */}
+      {/* Footer sits flush against the content above it, hard on the bottom edge. Hidden
+          while a webpage selection owns the popup, so the "Disinfacting" indicator is the
+          only thing in it — the shape the loading state at the top of this component
+          already takes. */}
+      {!selectionActive && (
       <div className="text-center space-y-0.5 select-none">
         {/* Read from the manifest, never hardcoded. A literal "v1.0.0" here survived a
             version bump and made a correctly-updated build look stale — it cost a real
@@ -460,6 +467,7 @@ export default function App() {
         {user && <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>}
         {!user && <div className="text-[10px] text-zinc-700">{t('cleanupTagline')}</div>}
       </div>
+      )}
     </div>
   );
 }

@@ -135,10 +135,6 @@
     "message": "Bellik edilýär",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Barlandy — ýalňyş tapylmady.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Barlaglary terjime et",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Barla",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Barlanýar",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Ýerleşdiriň",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN%-e degmek beýanlary ýüze çykarar we balansyňyzdan pul tutar"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% -e bassaňyz, esasy pursatlar ýerleşdiriler we balansyňyzy güýçlendirer"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% basylsa, ýalňyşlyklar baradaky talap barlanýar we balansyňyzy alar"
   },
   "onboardWillCharge": {
     "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fakt barlagy",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Beýany giriziň",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Çeşmeler",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Delillendirme",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Saýlanan tekst bilen popup açmak şol saýlamany barlaýar we balansyňyzdan aýrylýar.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ýatyrmak",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

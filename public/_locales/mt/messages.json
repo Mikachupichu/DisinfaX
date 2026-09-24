@@ -135,10 +135,6 @@
     "message": "Annotazzjoni",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Rivedut — l-ebda żball ma nstab.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Traduċi l-Verifiki tal-Fatti",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Verifika",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifika",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Illokalizza",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Tmiss %BTN% turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardLocalize": {
+    "message": "Meta tikklikkja %BTN% terġa' tpoġġi l-punti ewlenin u tiċċarġja l-bilanċ tiegħek"
+  },
+  "onboardAnnotate": {
+    "message": "Meta tikklikkja %BTN% tiċċekkja t-talba għal żbalji u tiċċarġja l-bilanċ tiegħek"
   },
   "onboardWillCharge": {
     "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Verifika tal-fatti",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Daħħal talba",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sorsi",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Raġunament",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Jekk tiftaħ il-popup b'test magħżul, dik l-għażla tiġi vverifikata u tiġi ċċarġjata mill-bilanċ tiegħek.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ikkanċella",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

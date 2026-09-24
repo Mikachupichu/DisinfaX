@@ -19,7 +19,8 @@ import UIKit
 ///
 /// It is also usable on its own. Someone can open the app directly and top up without touching
 /// the popup, which is why the amount falls back through requested → last used → 5, and why the
-/// Safari instructions below are always visible rather than shown only on first run.
+/// Safari guide is always visible rather than shown only on first run — though that guide is now
+/// `RootView`'s, below both tabs, rather than the tail of this one.
 @available(macOS 13.0, iOS 16.0, *)
 struct TopUpView: View {
 
@@ -68,8 +69,8 @@ struct TopUpView: View {
     // kept showing the figure as it stood at launch — top up, watch the popup credit it, come
     // back, and the app was still displaying the old figure. The extension writes the fresh value
     // into the shared container whenever the popup sees it; the app has to actually re-read it.
-    // (Identity is read live from the store at render and sale time instead: selling must see
-    // the stamp as it is now, not as it was at view creation.)
+    // (Identity is re-read by the same ticker for the same reason, and read live from the store at
+    // sale time: selling must see the stamp as it is now, not as it was when the pane last drew.)
     @State private var balance: Double? = SharedTopUpStore.balance
 
     /// Coming back from Safari is precisely when the shared container has new values in it, and
@@ -95,12 +96,23 @@ struct TopUpView: View {
     private static let pollInterval: TimeInterval = 2
     private let ticker = Timer.publish(every: pollInterval, on: .main, in: .common).autoconnect()
 
-    /// Selling requires a FRESH identity, not just a present one: the stamp must
-    /// be younger than SharedTopUpStore's freshness window. The whole top-up
-    /// card (balance included) renders only on fresh — a stale figure is never
-    /// passed off as current. Failing closed costs at most a trip to the popup,
-    /// which is precisely what re-freshens it.
-    private var freshUserId: String? { SharedTopUpStore.freshUserId }
+    /// Whether the shared container holds an identity fresh enough to sell against: the stamp the
+    /// popup writes, younger than SharedTopUpStore's freshness window.
+    ///
+    /// Selling requires a FRESH identity, not just a present one: the whole top-up card (balance
+    /// included) renders only on fresh — a stale figure is never passed off as current. Failing
+    /// closed costs at most a trip to the popup, which is precisely what re-freshens it.
+    ///
+    /// State, and re-read by the ticker, rather than read from the store where the card renders.
+    /// The store is not observable, so a body that read it directly was only ever as live as its
+    /// last render: a pane drawn while the stamp was stale went on asking the user to open the
+    /// popup after the popup had already re-freshened it, and nothing the ticker writes had
+    /// changed — so switching tabs, which re-renders the tree, was the only thing that made the
+    /// pane appear to correct itself. See `refreshFromStore`.
+    /// Seeded from the store like `balance` above, so the first draw is the state the store is
+    /// actually in: starting at `false` and letting `onAppear` correct it would flash the sign-in
+    /// sentence over a card that then appears.
+    @State private var hasFreshSession = SharedTopUpStore.freshUserId != nil
 
     var body: some View {
         ScrollView {
@@ -114,28 +126,40 @@ struct TopUpView: View {
                 // "Fresh" rather than merely "present": revocation is a best-effort push
                 // that needs a live extension process, while staleness is observable
                 // locally — the moment the stamp goes quiet, selling stops. In that
-                // case the Safari instructions are the whole screen — opening the popup
-                // IS the next step (it re-freshens the stamp), so it is the only thing
-                // worth showing.
-                if SharedTopUpStore.isAvailable && freshUserId != nil {
+                // case opening the popup IS the next step (it re-freshens the stamp), and
+                // the Safari guide RootView keeps below both tabs says so.
+                if SharedTopUpStore.isAvailable && hasFreshSession {
                     topUpCard
-                    Divider()
                 } else if !SharedTopUpStore.isAvailable {
                     misconfiguredNotice
-                    Divider()
+                } else if SharedTopUpStore.userId != nil {
+                    // An account this app has been told about, whose stamp has since gone quiet:
+                    // the popup has not reported in for longer than the freshness window. Its own
+                    // sentence rather than the sign-in one below, which would be wrong about what
+                    // the user has to do — they are signed in, and the popup is what tells this app
+                    // so. Reaches the reader only while it is true, because freshness is what
+                    // decides the branch and the ticker re-reads it. See `hasFreshSession`.
+                    Text("Your session needs refreshing — open the DisinfaX popup in Safari, then try again.")
+                        .font(.callout).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 } else {
                     Text("Sign in from the DisinfaX popup in Safari to add funds.")
                         .font(.callout).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-
-                instructions
             }
             .padding(24)
             .tint(Self.accent)
-            // A fixed content width rather than a flexible one: the window is now sized from this
-            // view's ideal size, so letting it stretch would make the window's width arbitrary.
+            // A fixed content width rather than a flexible one: the window's own width is chosen
+            // to match it (see `PaneHeights`), so letting this stretch would make the two disagree.
             .frame(width: 392, alignment: .leading)
+            // How tall the balance view is when nothing is squeezing it. Measured here, inside
+            // the scroll, because the ScrollView around this reports only the space it was given
+            // and so can never say how much it wanted. Read by `ViewController` to size the
+            // window; see `PaneHeights`.
+            .background(GeometryReader { proxy in
+                Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(topUp: proxy.size.height))
+            })
         }
         .onAppear {
             amountText = String(amount)
@@ -164,24 +188,13 @@ struct TopUpView: View {
     private var topUpCard: some View {
         VStack(alignment: .leading, spacing: 18) {
 
-            // Balance → future balance. The arrow makes the outcome of the purchase explicit
-            // before the payment sheet appears, which is the whole point of confirming here.
-            // While a purchase is unconfirmed the balance shown here is knowably out of date, and
-            // "after top-up" would be arithmetic on a stale figure. Saying so is more use than
-            // displaying two numbers that are both wrong.
+            // Balance → future balance. While a purchase is unconfirmed the balance shown here is
+            // knowably out of date, and "after top-up" would be arithmetic on a stale figure.
+            // Saying so is more use than displaying two numbers that are both wrong.
             if let pendingCredit {
                 awaitingBalanceNotice(amount: pendingCredit)
             } else {
-                HStack(alignment: .center, spacing: 12) {
-                    balanceBlock(label: "BALANCE", value: balance, accented: false)
-                    Image(systemName: "arrow.right")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.tertiary)
-                    balanceBlock(label: "AFTER TOP-UP",
-                                 value: balance.map { $0 + Double(amount) },
-                                 accented: true)
-                }
-                .frame(maxWidth: .infinity)
+                balanceComparison
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -195,7 +208,7 @@ struct TopUpView: View {
                     // what they will be charged. Prefix or suffix following the device locale's own
                     // USD convention (e.g. "US$5" vs "5 US$") — see UsdFormat.
                     if !UsdFormat.symbolAfterAmount {
-                        Text("US$").font(.system(size: 17, weight: .medium)).foregroundStyle(.secondary)
+                        usdSymbol(size: 17, weight: .medium).foregroundStyle(.secondary)
                     }
                     TextField("", text: $amountText)
                         .textFieldStyle(.roundedBorder)
@@ -231,7 +244,7 @@ struct TopUpView: View {
                     // Suffix counterpart to the "US$" prefix above: in suffix locales the
                     // currency group sits after the field (e.g. "5 US$").
                     if UsdFormat.symbolAfterAmount {
-                        Text("US$").font(.system(size: 17, weight: .medium)).foregroundStyle(.secondary)
+                        usdSymbol(size: 17, weight: .medium).foregroundStyle(.secondary)
                     }
 
                     Spacer()
@@ -285,6 +298,49 @@ struct TopUpView: View {
         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.quaternary, lineWidth: 1))
     }
 
+    // MARK: - Balance → future balance
+
+    /// The two figures the purchase moves between, side by side while they fit and stacked when
+    /// they do not.
+    ///
+    /// The arrow is what makes the outcome explicit before the payment sheet appears, which is the
+    /// whole point of confirming here; which way it points is decided by the room there is for it
+    /// rather than by the width of the window. The amounts are the widest thing in the card and
+    /// they grow with the balance — and the labels grow with the language — so a four-figure
+    /// balance, a larger text size or a longer translation is what turns a comfortable row into two
+    /// numbers cut off mid-digit. Stacked, they are short enough for anything.
+    ///
+    /// `ViewThatFits` takes the first candidate that fits, and the row has to be measured by what it
+    /// needs rather than by what it is offered: `usdAmount` pins its own width for exactly this, so
+    /// a row that cannot hold both amounts whole reports the width it required and the stack is
+    /// used instead. An amount left flexible would report whatever it was given, the row would
+    /// always claim to fit, and the second candidate would never be reached.
+    private var balanceComparison: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: 12) {
+                balanceBlock(label: "BALANCE", value: balance, accented: false)
+                arrow("arrow.right")
+                balanceBlock(label: "AFTER TOP-UP", value: futureBalance, accented: true)
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                balanceBlock(label: "BALANCE", value: balance, accented: false)
+                arrow("arrow.down")
+                balanceBlock(label: "AFTER TOP-UP", value: futureBalance, accented: true)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    /// What the balance becomes if the amount in the field is bought. Nil when the popup has never
+    /// reported a balance, which the blocks show as "—" rather than as a figure.
+    private var futureBalance: Double? { balance.map { $0 + Double(amount) } }
+
+    private func arrow(_ name: String) -> some View {
+        Image(systemName: name)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(.tertiary)
+    }
+
     /// The same fine print the popup shows under its own Top Up button, and for the same reason:
     /// this is now a place a purchase is initiated, so the terms have to be in front of the user
     /// here too, not only in the surface they may have come from.
@@ -309,11 +365,69 @@ struct TopUpView: View {
             // "—" when the popup has never reported a balance. Showing 0 would read as a real
             // balance of zero, which is a different and alarming thing. Position follows the
             // device locale's USD convention ("US$3.24" vs "3,24 US$") — see UsdFormat.
-            Text(value.map { UsdFormat.string(from: $0) } ?? "—")
-                .font(.system(size: 22, weight: .semibold)).monospacedDigit()
-                .foregroundStyle(accented ? Self.accent : Color.primary)
+            if let value {
+                usdAmount(value, size: 22)
+                    .foregroundStyle(accented ? Self.accent : Color.primary)
+            } else {
+                Text("—")
+                    .font(.system(size: 22, weight: .semibold)).monospacedDigit()
+                    .foregroundStyle(accented ? Self.accent : Color.primary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - Currency
+
+    /// The "US" that marks the currency, at 60% of the amount's size.
+    ///
+    /// Centered against the number rather than sharing its baseline: an `HStack` centers the two
+    /// runs' own boxes, and because ascent, descent and cap height all scale with the point size,
+    /// the box centers sit at the same fraction of each — which lands this on the digits' midline
+    /// instead of on their feet.
+    ///
+    /// The treatment and the 60% are the popup's own (`Dashboard.tsx`, `Usd`).
+    private func usdQualifier(size: CGFloat) -> some View {
+        Text("US").font(.system(size: size * 0.6, weight: .semibold))
+    }
+
+    /// A USD amount as the popup states one: "US" small, "$" at full size, and the mark on the
+    /// OUTSIDE of the pair so the "$" is always the glyph against the number — "US$3.24" in
+    /// English, "3,24 $US" in French. An app that ordered those its own way would be a second
+    /// convention for the same balance.
+    private func usdAmount(_ value: Double, size: CGFloat, weight: Font.Weight = .semibold) -> some View {
+        let number = UsdFormat.number(from: value)
+        return HStack(alignment: .center, spacing: 0) {
+            if UsdFormat.symbolAfterAmount {
+                Text(number).font(.system(size: size, weight: weight)).monospacedDigit()
+                // The space is inside the run, so the "$" cannot be wrapped away from the number
+                // it belongs to.
+                Text("\u{00A0}$").font(.system(size: size, weight: weight))
+                usdQualifier(size: size)
+            } else {
+                usdQualifier(size: size)
+                Text("$" + number).font(.system(size: size, weight: weight)).monospacedDigit()
+            }
+        }
+        // Pinned rather than flexible, and only this side of the pair: this is the width
+        // `balanceComparison` measures to decide whether a row can hold both amounts. A flexible
+        // one reports whatever it is offered, so the row would claim to fit at any width and the
+        // stacked candidate would never be reached.
+        .fixedSize(horizontal: true, vertical: false)
+    }
+
+    /// The mark alone, for the field that holds the number itself: the same pair `usdAmount` puts
+    /// around an amount, in the locale's own order.
+    private func usdSymbol(size: CGFloat, weight: Font.Weight) -> some View {
+        HStack(alignment: .center, spacing: 0) {
+            if UsdFormat.symbolAfterAmount {
+                Text("$").font(.system(size: size, weight: weight))
+                usdQualifier(size: size)
+            } else {
+                usdQualifier(size: size)
+                Text("$").font(.system(size: size, weight: weight))
+            }
+        }
     }
 
     /// Shown in place of the balance while a purchase is being applied.
@@ -344,8 +458,20 @@ struct TopUpView: View {
     /// success message is cleared once the balance actually moves so a stale "Payment complete"
     /// does not sit above a figure that has already been updated.
     private func refreshFromStore() {
+        // Before the ask below, because what it authenticates with is what this brings in.
         SharedTopUpStore.reloadFromDisk()
+        // Ask for the balance to be pushed rather than waiting to be told it: idempotent and a
+        // no-op once the channel is up. Here rather than in `onAppear` because the token this
+        // needs can be handed over while the tab is already on screen.
+        SupabaseRealtime.shared.ensureFundsChannel()
         let latestBalance = SharedTopUpStore.balance
+
+        // The session is re-read here rather than where the card renders, so the pane's verdict on
+        // it moves with the store instead of with the last re-render the tab switch happened to
+        // cause. Nothing else in this function observes it, and the freshness window is minutes
+        // wide, so this is the transition that matters and not a per-tick flip.
+        let latestFresh = SharedTopUpStore.freshUserId != nil
+        if latestFresh != hasFreshSession { hasFreshSession = latestFresh }
 
         if latestBalance != balance {
             // The balance moved, so the purchase has landed: drop the notice, unblock the button and
@@ -389,49 +515,6 @@ struct TopUpView: View {
         .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 12))
     }
 
-    // MARK: - Always-visible Safari instructions
-
-    private var instructions: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("USING DISINFAX IN SAFARI")
-                .font(.system(size: 10, weight: .semibold)).tracking(0.6)
-                .foregroundStyle(.secondary)
-                .padding(.bottom, 2)
-            step(1, "Open Safari and go to x.com.")
-#if os(macOS)
-            step(2, "Enable DisinfaX in Safari Settings → Extensions.")
-            step(3, "Click the DisinfaX icon in the Safari toolbar to open the popup.")
-            Button("Open Safari Extension Settings…") { openSafariSettings() }
-                .padding(.top, 4)
-#else
-            // The extensions button (puzzle piece), NOT the Aa page-settings menu this used to
-            // name — they are different controls in the address bar and only one of them lists
-            // extensions. Built from three separate Text pieces rather than one interpolated
-            // literal: a single Text("... \(Image(...)) ...") call bundles the icon into one
-            // opaque localization key with no way to translate the surrounding words reliably.
-            // Splitting it means the two text pieces are ordinary, independently-localizable Text
-            // literals, and only the icon's position relative to them stays fixed across languages.
-            step(2, Text("Tap the ") + Text(Image(systemName: "puzzlepiece.extension")) + Text(" icon in the address bar, then Manage Extensions, and turn on DisinfaX."))
-            step(3, "Tap the same icon and choose DisinfaX to open the popup.")
-#endif
-        }
-    }
-
-    private func step(_ n: Int, _ text: Text) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text("\(n).").font(.callout).bold().foregroundStyle(.secondary).frame(width: 18, alignment: .trailing)
-            text.font(.callout).fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    private func step(_ n: Int, _ text: LocalizedStringKey) -> some View { step(n, Text(text)) }
-
-    private func openSafariSettings() {
-#if os(macOS)
-        SafariSettingsOpener.open()
-#endif
-    }
-
     // MARK: - Purchase
 
     private func purchase() async {
@@ -439,10 +522,14 @@ struct TopUpView: View {
         // stamp can age past the window between the view appearing and the user
         // tapping. Re-reads the store rather than trusting @State, and refreshes
         // so the next render shows the signed-out screen instead of a dead button.
+        //
+        // The refresh is the whole of the answer: it moves `hasFreshSession`, which is what the
+        // card and the sentence about the session are chosen by, so the card is replaced by that
+        // sentence as the tap returns rather than by a message set here — a message would outlive
+        // the state it was about, which is exactly the sentence a user could dismiss by leaving
+        // the tab and coming back.
         guard let saleUserId = SharedTopUpStore.freshUserId, !saleUserId.isEmpty else {
             refreshFromStore()
-            message = String(localized: "Your session needs refreshing — open the DisinfaX popup in Safari, then try again.")
-            messageIsError = true
             return
         }
         let userId = saleUserId

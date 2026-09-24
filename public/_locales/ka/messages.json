@@ -167,10 +167,6 @@
     "message": "ანოტირება",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "შემოწმდა — შეცდომები ვერ მოიძებნა.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "შემოწმებების თარგმნა",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -220,6 +216,10 @@
   "disinfactButton": {
     "message": "გამოვლენა",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "შემოწმება",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ლოკალიზება",
@@ -272,6 +272,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN%-ზე შეხება გამოავლენს მტკიცებებს და დაგერიცხებათ საფასური ბალანსიდან"
+  },
+  "onboardLocalize": {
+    "message": "%BTN%–ზე დაწკაპუნება განაახლებს მაჩვენებლებს და დააკისრებს თქვენს ბალანსს"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN%–ზე დაწკაპუნებით ამოწმებს პრეტენზიას შეცდომებზე და დარიცხავს თქვენს ბალანსს"
   },
   "onboardWillCharge": {
     "message": "%BTN%-ზე დაწკაპუნებით დაგერიცხებათ საფასური ბალანსიდან"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "ფაქტების შემოწმება",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "შეიყვანეთ მტკიცება",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "წყაროები",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "დასაბუთება",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "პოპაპის გახსნა მონიშნული ტექსტით შეამოწმებს ამ მონიშვნას და ჩამოგეჭრებათ ბალანსიდან.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "გაუქმება",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

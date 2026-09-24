@@ -133,10 +133,6 @@
     "message": "Anotant",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Revisat — no s'han trobat errors.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Tradueix les verificacions",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Verificar",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Desinfactant",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Localitza",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "En tocar %BTN% es revelen les afirmacions i es cobrarà del teu saldo"
+  },
+  "onboardLocalize": {
+    "message": "Si feu clic a %BTN%, es reposicionarà els elements destacats i es carregarà el vostre saldo"
+  },
+  "onboardAnnotate": {
+    "message": "Si feu clic a %BTN%, comproveu si hi ha errors en la reclamació i es carregarà el vostre saldo"
   },
   "onboardWillCharge": {
     "message": "En fer clic a %BTN% es cobrarà del teu saldo"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Verificació de fets",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Introdueix una afirmació",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fonts",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Raonament",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Obrir la finestra emergent amb text seleccionat verifica aquesta selecció i es cobrarà del teu saldo.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Cancel·la",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

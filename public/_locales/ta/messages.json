@@ -166,10 +166,6 @@
     "message": "குறிப்பெழுதுகிறது",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "மதிப்பாய்வு — பிழைகள் எதுவும் காணப்படவில்லை.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -219,6 +215,10 @@
   "disinfactButton": {
     "message": "உண்மை சரிபார்ப்பு",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "சரிபார்ப்பு",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "உள்ளூர்மயமாக்குக",
@@ -271,6 +271,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% ஐத் தட்டினால் கூற்றுகள் வெளிப்படும், மேலும் உங்கள் இருப்புத்தொகையிலிருந்து கட்டணம் வசூலிக்கப்படும்"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ஐக் கிளிக் செய்வதன் மூலம் ஹைலைட்களை மாற்றியமைத்து, உங்கள் இருப்பை வசூலிக்கும்"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN%ஐக் கிளிக் செய்வதன் மூலம் பிழைகளுக்கான உரிமைகோரலைச் சரிபார்த்து, உங்கள் இருப்புத்தொகை வசூலிக்கப்படும்"
   },
   "onboardWillCharge": {
     "message": "%BTN% ஐக் கிளிக் செய்தால் உங்கள் இருப்புத்தொகையிலிருந்து கட்டணம் வசூலிக்கப்படும்"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "உண்மைச் சரிபார்ப்பு",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ஒரு கூற்றை உள்ளிடவும்",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ஆதாரங்கள்",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "பகுத்தறிவு",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "உரையைத் தேர்ந்தெடுத்து பாப்அப் திறந்தால் அந்தத் தேர்வு சரிபார்க்கப்பட்டு உங்கள் இருப்பிலிருந்து கழிக்கப்படும்.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ரத்து செய்",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

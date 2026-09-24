@@ -55,6 +55,19 @@ export enum Usertype {
     Regular = "None"
 }
 
+/** What the preclassify worker accepts: a tweet, or a claim standing in for one.
+ *
+ *  The two identity fields are empty when no account stands behind the text — a claim typed
+ *  into the popup's Fact-Check tab, or a passage the user selected on a page. X's standings
+ *  have no value for "there is no account", so the empty string means exactly that, and the
+ *  worker's prompt is told to ignore both fields in that case.
+ *
+ *  `fullText` is NOT part of that anonymity: it carries the text the worker hashes and the
+ *  model fact-checks, so it is never empty however anonymous the input is.
+ *
+ *  `MainTweet` is assignable to this, so nothing in the X.com path has to change. */
+export type ClaimInput = Omit<MainTweet, 'usertype'> & { usertype: Usertype | '' };
+
 /** Which X endpoint a batch of tweets came from. Used to pick the right response shape
  *  in utils/parsing.ts and to label parse failures in the logs. */
 export enum TweetType {

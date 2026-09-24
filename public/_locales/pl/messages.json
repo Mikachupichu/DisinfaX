@@ -133,10 +133,6 @@
     "message": "Adnotowanie",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Sprawdzono — nie znaleziono błędów.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Przetłumacz weryfikację faktów",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Weryfikacja",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sprawdzanie",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizuj",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Dotknięcie %BTN% ujawnia twierdzenia i spowoduje obciążenie twojego salda"
+  },
+  "onboardLocalize": {
+    "message": "Kliknięcie %BTN% powoduje zmianę położenia podświetleń i obciążenie salda"
+  },
+  "onboardAnnotate": {
+    "message": "Kliknięcie %BTN% sprawdza roszczenie pod kątem błędów i obciąża saldo"
   },
   "onboardWillCharge": {
     "message": "Kliknięcie %BTN% spowoduje obciążenie twojego salda"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Weryfikacja faktów",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Wpisz twierdzenie",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Źródła",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Uzasadnienie",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Otwarcie okna z zaznaczonym tekstem sprawdzi to zaznaczenie i obciąży Twoje saldo.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anuluj",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -20,13 +20,14 @@
  */
 import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, backgroundAnnotate, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText, type AnnotLocators, type HighlightAnnotContext } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
-import { supabase } from "../utils/supabase";
-import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision } from "../utils/textBreakup";
+import { supabase, ensureFreshSession } from "../utils/supabase";
+import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision, isLocatedRange, sameLocatedRange } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
 import { MainTweet, Tweet } from "../data/Tweets";
 import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon, toolbarAction } from "../utils/toolbarIcon";
 import { ERROR_CODES } from "../utils/errorCodes";
 import { NATIVE_APP_ID, NATIVE_CALLBACK_SCHEME } from "../utils/nativeHost";
+import type { ScriptPublicPath } from "wxt/utils/inject-script";
 
 // [ttft-ext] Fires once per service worker load — if this appears more than once in a
 // single test session, the service worker restarted mid-session (see the MV3 note at
@@ -204,13 +205,91 @@ export default defineBackground({
    *  on top of ~3.4s of actual research). Expiring early only risks the embedding-less
    *  duplicate the wait exists to prevent; stalling costs the user the thing they paid for. */
   const CLAIM_DB_ROW_TIMEOUT_MS = 2000;
+  /** The same wait as CLAIM_DB_ROW_TIMEOUT_MS, for the SELECTION path only.
+   *
+   *  The 2s budget above is calibrated on X, where the claim links to a tweet row that
+   *  already exists. A selection has no tweet row of its own, so the preclassify worker
+   *  creates the routing row and links the claim before its broadcast lands — and that
+   *  measures slower than the comment above assumes. Run 2026-09-21: the payload arrived
+   *  at +2560ms against the 2000ms budget, expiring 560ms short.
+   *
+   *  Expiring there is not free. claimAfterRowLands then hands over the PRECLASSIFY claim
+   *  (verdict "research required", reclassifyOnHold) instead of the DB row, whose settle
+   *  guard refuses it, so a claim the DB already held with a full verdict gets re-researched
+   *  and re-charged — the exact opposite of the "a cached selection stays free" this path
+   *  documents.
+   *
+   *  Signal-driven, so the larger budget does not delay the normal case: the wait resolves
+   *  the moment the row lands, whatever the budget is. This only bounds the case where no
+   *  broadcast is coming at all, where the extra seconds are cheaper than the wasted spend. */
+  const SELECTION_DB_ROW_TIMEOUT_MS = 6000;
   /** How long to coalesce balance writes to the App Group. Long enough that a burst of
    *  classifications is one write, short enough that returning to the app feels immediate. */
   const NATIVE_SYNC_DEBOUNCE_MS = 1500;
   /** Open tweet subscriptions keyed by tweet id. */
   const tweetSubs = new Map<string, SubscriptionHandle>();
+  /** Tweet ids whose leftover preclass handle was already closed and replaced
+   *  with an annotation-timeout subscription. Closing again (a second claim's
+   *  research) LATE-drops the in-flight annotation UPDATE. Cleared when the
+   *  handle actually ends (timeout / forget). */
+  const annotationRoutingReady = new Set<string>();
   /** Open per-claim (is_classifying) subscriptions keyed by `${tweetId}:${claimId}`. */
   const claimSubs = new Map<string, SubscriptionHandle>();
+
+  const SELECTION_CACHE_KEY = 'mf_selection_pipeline';
+  let persistSelectionTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function isSelectionId(id: string | undefined): boolean {
+    return !!id && (id.startsWith('sel_') || id.startsWith('pw_'));
+  }
+
+  function persistSelectionPipeline() {
+    if (persistSelectionTimer) clearTimeout(persistSelectionTimer);
+    persistSelectionTimer = setTimeout(() => {
+      persistSelectionTimer = null;
+      const classifications: Record<string, { classification: Classification; batchIds: string[] }> = {};
+      const tweets: Record<string, MainTweet> = {};
+      for (const [id, entry] of classificationCache) {
+        if (!isSelectionId(id) || !entry.classification.claims?.length) continue;
+        classifications[id] = {
+          classification: entry.classification,
+          batchIds: Array.from(entry.batchIds),
+        };
+      }
+      for (const [id, tweet] of tweetCache) {
+        if (!isSelectionId(id)) continue;
+        tweets[id] = tweet;
+      }
+      try {
+        const area = (browser.storage as any).session ?? browser.storage.local;
+        void area.set({ [SELECTION_CACHE_KEY]: { classifications, tweets } });
+      } catch { /* storage unavailable */ }
+    }, 200);
+  }
+
+  async function restoreSelectionPipeline() {
+    try {
+      const area = browser.storage.session ?? browser.storage.local;
+      const stored = await area.get(SELECTION_CACHE_KEY);
+      const payload = (stored as any)?.[SELECTION_CACHE_KEY];
+      if (!payload || typeof payload !== 'object') return;
+      const classifications = payload.classifications ?? {};
+      const tweets = payload.tweets ?? {};
+      for (const [id, entry] of Object.entries(classifications as Record<string, { classification: Classification; batchIds: string[] }>)) {
+        if (!isSelectionId(id) || !entry?.classification) continue;
+        classificationCache.set(id, {
+          classification: entry.classification,
+          batchIds: new Set(entry.batchIds?.length ? entry.batchIds : [entry.classification.batchId ?? '']),
+        });
+      }
+      for (const [id, tweet] of Object.entries(tweets as Record<string, MainTweet>)) {
+        if (!isSelectionId(id) || !tweet) continue;
+        tweetCache.set(id, tweet);
+      }
+    } catch { /* ignore */ }
+  }
+  const selectionPipelineReady = restoreSelectionPipeline();
+  void selectionPipelineReady;
 
   /** Store a classification under its tweet id, recording the batch that requested it.
    *  A quoted tweet gets its own top-level cache entry too, so a later batch that shows
@@ -235,6 +314,7 @@ export default defineBackground({
         batchIds: new Set([batchId])
       });
     }
+    if (isSelectionId(classification.id)) persistSelectionPipeline();
   }
 
   /** Forget a tweet's DB snapshot so the next batch re-pulls it. Research completion
@@ -403,7 +483,7 @@ export default defineBackground({
     // translation shows, so toggling back to English spuriously raises the
     // Translate Fact-Checks hold (the subscription-merge path below already adds
     // them for the same reason).
-    for (const body of [main?.text, quoted?.text]) {
+    for (const body of [main?.text, quoted?.text, (main as any)?.fullText, (quoted as any)?.fullText]) {
       if (typeof body === 'string' && body.length > 0) known.add(sha256HexSync(body));
     }
     return { displayed: mainBody !== null ? sha256HexSync(mainBody) : null, known };
@@ -481,9 +561,14 @@ export default defineBackground({
     if (dbClaim.annotations && typeof dbClaim.annotations === 'object') {
       const rawA: Record<string, Record<string, string>> = {};
       for (const [key, val] of Object.entries(dbClaim.annotations)) {
-        if (val && typeof val === 'object' && !Array.isArray(val)) rawA[key] = val as Record<string, string>;
+        // Empty dict is a present key ("annotated, clean") — `val &&` would keep
+        // it anyway ({} is truthy) but skip null/arrays explicitly.
+        if (val !== null && typeof val === 'object' && !Array.isArray(val)) rawA[key] = val as Record<string, string>;
       }
       const stripped = selectAnnotationRevision(rawA, gate);
+      // A kept locale key, even with an empty dict ("annotated, nothing wrong"),
+      // must survive: collapsing it to undefined is how the Annotate badge came
+      // back after Flow A persisted {}. Absence of every key is "never annotated".
       if (Object.keys(stripped).length > 0) annotations = stripped;
     }
 
@@ -929,6 +1014,9 @@ export default defineBackground({
         // Same gate as the background's ANNOTATE_CLAIM handler and the content
         // script's spanNeedsAnnotateBadge: settled + classified + keyless.
         if (cl.reclassifyOnHold || cl.note == null) return cl;
+        // A present locale key, even with an empty dict ("annotated, nothing
+        // wrong"), means the run already landed — stamping would keep the
+        // "Annotating" spinner up after Flow A persisted {}.
         if (cl.annotations && Object.keys(cl.annotations).length > 0) return cl;
         stamped = true;
         return { ...cl, annotateInFlight: true as any };
@@ -940,6 +1028,14 @@ export default defineBackground({
       ? stampList(classification.quoting.claims)
       : { list: null as Classification["claims"], stamped: false };
     if (!main.stamped && !q.stamped) return null;
+    // The stamp is what paints "Annotating" on a settled, keyless claim, so it is also the
+    // start of the wait that never ends when the worker's silent run produces nothing. Logged
+    // with the claim text because "the badge is stuck" and "the badge was never raised" look
+    // identical from the page, and only one of them is this path's doing.
+    console.log(
+      '[background] stampAnnotateInFlight:', classification.id,
+      '| claim:', (opt.claimText ?? '').slice(0, 40), '| mainStamped:', main.stamped, '| quotedStamped:', q.stamped
+    );
     return {
       ...classification,
       claims: main.list,
@@ -952,7 +1048,12 @@ export default defineBackground({
       const shortLabel = (claim.rewritten ?? claim.text).slice(0, 20);
       const notePreview = claim.note ? claim.note.slice(0, 15) : 'none';
       const highlightLocales = claim.highlight ? Object.keys(claim.highlight).join(',') : 'none';
-      return `${shortLabel}...=${claim.confidence ?? '?'}(note:${notePreview}...,hl:${highlightLocales})`;
+      // `ann:` is here because an annotation-only update moves nothing else in this
+      // summary, so without it a clean annotation ("annotated, nothing wrong" = an empty
+      // dict under a kept locale key) arriving or NOT arriving looks identical in the log,
+      // and whether it reached the client is exactly what has to be told apart.
+      const annLocales = claim.annotations ? Object.keys(claim.annotations).join(',') : 'none';
+      return `${shortLabel}...=${claim.confidence ?? '?'}(note:${notePreview}...,hl:${highlightLocales},ann:${annLocales})`;
     }).join(' | ') || 'none';
     console.log(`[background] broadcasting ${classification.id} with ${activePorts.size} active port(s), claims: ${claimSummary}`);
 
@@ -1060,14 +1161,32 @@ export default defineBackground({
    *  Merging only the target claim into the authoritative cache avoids that. */
   /** Union two bare-locale annotation maps, the second winning per locale key. Never
    *  replaces: a payload stripped under a narrower gate (or an older fetch) must not
-   *  clobber keys the cached copy already holds. Returns undefined when both sides are
-   *  empty so "never annotated" stays distinguishable from "annotated, clean" ({}). */
+   *  clobber keys the cached copy already holds. A kept locale key with an empty dict
+   *  ("annotated, clean") survives; only a map with no keys at all returns undefined
+   *  so "never annotated" stays distinguishable. */
   function unionAnnotations(
     a?: Record<string, Record<string, string>>,
     b?: Record<string, Record<string, string>>
   ): Record<string, Record<string, string>> | undefined {
+    if (!a && !b) return undefined;
     const merged = { ...(a ?? {}), ...(b ?? {}) };
     return Object.keys(merged).length > 0 ? merged : undefined;
+  }
+
+  /** Flow A has no NDJSON: after research the worker persists (even {}) in
+   *  ctx.waitUntil. The client path is the same as X — the tweet subscription
+   *  (`ensureAnnotationSubscription`) receives `trg_tweet_claim_annotations_updated`.
+   *  Do not invent a locale key here: painting `{locale: {}}` made selection look
+   *  like annotations were disabled, and a pull is not how X gets the ranges. */
+  function settleFlowAAnnotations(
+    _classificationId: string,
+    _claimText: string,
+    _loc: AnnotLocators,
+    _batchId: string
+  ) {
+    // Intentionally empty. stampAnnotateInFlight holds "Annotating" until the
+    // broadcast lands a key (including a real empty dict). The subscription
+    // must still be open — see startSelectionPipeline / ensureAnnotationSubscription.
   }
 
   function mergeSingleClaimAndBroadcast(
@@ -1106,6 +1225,29 @@ export default defineBackground({
     markTweetDbStale(classificationId);
   }
 
+  /** Did this claim arrive with no span in the passage the user selected?
+   *
+   *  A selection can only fact-check what was selected. The run ships the surrounding
+   *  article prose for anchoring (up to 100 words before, 25 after — selection.ts), and the
+   *  model sometimes mines a claim out of THAT instead of the passage. Such a claim comes
+   *  back unlocated, so it has no span to draw and can only ever render as a list entry
+   *  describing text the user never selected. Dropping it is the fix for that; and because
+   *  the sentinel it carries is not an identity (see above), leaving it in is also what
+   *  duplicated a claim.
+   *
+   *  `streamed` separates the two ways an unlocated claim arrives: the preclassify stream
+   *  emits NO highlight at all for one (makePreclassification), while a DB payload carries
+   *  the `[-1,-1]` the worker persisted. A payload with no highlight at all is NOT
+   *  unlocated — the revision gate strips highlights it cannot bind, and those claims are
+   *  real. Gated on the cached tweet being a selection, so tweets (X) are untouched. */
+  const unlocatedSelectionClaim = (tweetId: string, claim: any, streamed: boolean): boolean => {
+    const cached: any = tweetCache.get(tweetId);
+    if (!cached || (cached.contextBefore === undefined && cached.contextAfter === undefined)) return false;
+    const ranges = Object.values(claim?.highlight ?? {});
+    if (ranges.length === 0) return streamed;
+    return !ranges.some(isLocatedRange);
+  };
+
   /** Merge a freshly-streamed preclassification snapshot into whatever is already
    *  cached for the tweet, WITHOUT downgrading a claim that has since become active.
    *  preClassify yields CUMULATIVE snapshots in which every claim is reset to the
@@ -1120,8 +1262,7 @@ export default defineBackground({
     const claimsMatch = (a: any, b: any): boolean => {
       if (a.highlight && b.highlight) {
         for (const k of Object.keys(a.highlight)) {
-          const ar = a.highlight[k], br = b.highlight[k];
-          if (ar && br && ar[0] === br[0] && ar[1] === br[1]) return true;
+          if (sameLocatedRange(a.highlight[k], b.highlight[k])) return true;
         }
       }
       return (!!a.rewritten && a.rewritten === b.rewritten)
@@ -1350,6 +1491,15 @@ export default defineBackground({
       return g;
     })();
     const incoming = payloadToClaim(payload, locale, gate);
+    // A selection's DB row carrying the worker's "not located in the input" sentinel (or a
+    // range outside the passage) describes text the user never selected: the claim pipeline
+    // only ever reaches it by having mined the surrounding context. Ignore it here, before
+    // it can be adopted by a local claim — adopting it is how a sentinel range used to
+    // overwrite a real claim's text with an unrelated claim's.
+    if (unlocatedSelectionClaim(tweetId, incoming, false)) {
+      console.log(`[background] selection ${tweetId}: ignoring claim row ${payload.id ?? 'none'} — not located in the passage`);
+      return;
+    }
     const displayedLocale = cls.textLocale;
     const incomingRange = displayedLocale ? incoming.highlight?.[displayedLocale] : undefined;
 
@@ -1357,10 +1507,7 @@ export default defineBackground({
     let idx = -1;
     if (payload.id) idx = claims.findIndex(c => c.dbClaimId === payload.id);
     if (idx < 0 && incomingRange && displayedLocale) {
-      idx = claims.findIndex(claim => {
-        const range = claim.highlight?.[displayedLocale];
-        return !!range && range[0] === incomingRange[0] && range[1] === incomingRange[1];
-      });
+      idx = claims.findIndex(claim => sameLocatedRange(claim.highlight?.[displayedLocale], incomingRange));
     }
     // Match by highlight range under ANY shared locale key — not just displayedLocale.
     // A [start,end] span in a given locale's text uniquely identifies one claim, so an
@@ -1368,14 +1515,16 @@ export default defineBackground({
     // claim (from the subscription) recognize the agent-produced local claim even when
     // textLocale is unset and the rewritten text drifted (worker stores normalizeText'd
     // rewritten). Without it the DB copy is appended as a duplicate → fallback box.
+    // "A span uniquely identifies one claim" holds only for a REAL span: `[-1,-1]` is the
+    // worker's could-not-locate sentinel and every unlocated claim shares it, so it is
+    // excluded here (sameLocatedRange) or the payloads of two unrelated unlocated claims
+    // collapse onto one local claim.
     if (idx < 0 && incoming.highlight) {
       const incKeys = Object.keys(incoming.highlight);
       idx = claims.findIndex(c => {
         if (!c.highlight) return false;
         for (const k of incKeys) {
-          const ir = incoming.highlight![k];
-          const cr = c.highlight![k];
-          if (ir && cr && ir[0] === cr[0] && ir[1] === cr[1]) return true;
+          if (sameLocatedRange(incoming.highlight![k], c.highlight![k])) return true;
         }
         return false;
       });
@@ -1385,17 +1534,13 @@ export default defineBackground({
     if (idx < 0 && payload.highlight && typeof payload.highlight === 'object') {
       const rawPayloadRanges: [number, number][] = [];
       for (const val of Object.values(payload.highlight)) {
-        if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
-          rawPayloadRanges.push(val as [number, number]);
-        }
+        if (isLocatedRange(val)) rawPayloadRanges.push(val as [number, number]);
       }
       if (rawPayloadRanges.length > 0) {
         idx = claims.findIndex(c => {
           if (!c.highlight) return false;
           for (const range of Object.values(c.highlight)) {
-            if (Array.isArray(range) && range.length === 2) {
-              if (rawPayloadRanges.some(r => r[0] === range[0] && r[1] === range[1])) return true;
-            }
+            if (rawPayloadRanges.some(r => sameLocatedRange(r, range))) return true;
           }
           return false;
         });
@@ -1621,7 +1766,10 @@ export default defineBackground({
     const handle = await subscribeRow({
       kind: 'tweet', hash, timeoutMs,
       onClaim: (payload) => mergeClaimPayload(tweetId, payload, locale),
-      onDone: () => { if (tweetSubs.get(tweetId) === handleRef) tweetSubs.delete(tweetId); },
+      onDone: () => {
+        if (tweetSubs.get(tweetId) === handleRef) tweetSubs.delete(tweetId);
+        annotationRoutingReady.delete(tweetId);
+      },
     });
     handleRef = handle;
     if (handle) { tweetSubs.set(tweetId, handle); await handle.ready; }
@@ -1669,7 +1817,21 @@ export default defineBackground({
       }
       if (!tweet) return;
       const hash = await computeTweetHash(tweet);
+      // Preclass complete deletes internal.broadcasts (not public.subscriptions),
+      // so a client handle can still look live while the routing row is gone.
+      // resetTimeout would then never recreate it, and Flow A's persist would
+      // have nowhere to broadcast — "Annotating" forever. X avoids this because
+      // a settled tweet has no handle, so the first call here inserts a fresh
+      // row. Close that leftover ONCE, then keep the annotation-timeout handle:
+      // closing it again (a second claim's research, a reclassify) LATE-drops
+      // the in-flight annotation UPDATE for the claim that just finished.
+      if (!annotationRoutingReady.has(sideTweetId)) {
+        const existing = tweetSubs.get(sideTweetId);
+        if (existing && !existing.isClosed()) existing.close();
+        tweetSubs.delete(sideTweetId);
+      }
       await ensureTweetSubscription(sideTweetId, hash, locale, ANNOTATION_TIMEOUT_MS);
+      annotationRoutingReady.add(sideTweetId);
     } catch (e) {
       console.error('[ensureAnnotationSubscription] error:', e);
     }
@@ -1933,6 +2095,14 @@ export default defineBackground({
         // Step 3: refresh the Step-0 subscription timer so the routing row stays
         // alive for the worker's link broadcasts (already a no-op reset when open).
         startTweetSubscription(tweetId, hash, locale);
+
+        // Step 4: a tweet that yields exactly one claim is researched without waiting
+        // for a second click. Awaited so the keepAlive interval above spans the
+        // research — otherwise the service worker could be reaped mid-call.
+        const soleClaims = [...(latest.claims ?? []), ...(latest.quoting?.claims ?? [])];
+        if (soleClaims.length === 1) {
+          await autoClassifySoleClaim(tweetId, soleClaims[0], batchId, locale);
+        }
       } catch (err: any) {
         console.error(`[background] ${logTag} error:`, err);
       } finally {
@@ -1947,6 +2117,95 @@ export default defineBackground({
         }
       }
     });
+  }
+
+  /** Research a tweet's only claim without waiting for the user to click Fact-Check.
+   *
+   *  Runs the same DB-first-then-research sequence a claim click runs: pullClaimBeforeClassify
+   *  short-circuits on a row that is already settled, and anything else goes through
+   *  refreshClaim. The claim is flipped to `refreshing` up front so the Fact-Check
+   *  affordance can't be clicked a second time (and billed twice) while the automatic run
+   *  is in flight; any failure reverts it to its on-hold button for a manual retry. */
+  function autoClassifySoleClaim(tweetId: string, claim: Claim, batchId: string, locale: string): Promise<void> {
+    const refreshKey = `${tweetId}:${claim.text}`;
+    if (ongoingClaimRefreshes.has(refreshKey)) return Promise.resolve();
+
+    const hit = classificationCache.get(tweetId);
+    if (!hit) return Promise.resolve();
+
+    // Already carrying a readable verdict → there is nothing to spend on. A change-prone
+    // row (reclassifyOnHold) is deliberately NOT settled, so it falls through to research.
+    const hasNote = claim.note !== undefined && claim.note !== null && String(claim.note).trim() !== "";
+    // Logged because every one of these four can be the reason a claim the DB already holds
+    // is re-researched — the user pays for that, and from the outside "it re-classified" has
+    // no cause. The verdict the settle needs can also be sitting one field away in
+    // `cachedVerdict` (a refresh-path stash), which reads identically to "no verdict" today.
+    console.log(
+      `[background] autoClassifySoleClaim ${tweetId}:`,
+      claim.verdict && claim.verdict !== 'research required' && hasNote && !claim.reclassifyOnHold
+        ? 'already settled — no spend'
+        : `RESEARCHING (verdict=${claim.verdict ?? 'none'}, note=${hasNote}, onHold=${claim.reclassifyOnHold === true}, cachedVerdict=${claim.cachedVerdict ?? 'none'})`
+    );
+    if (claim.verdict && claim.verdict !== 'research required' && hasNote && !claim.reclassifyOnHold) {
+      return Promise.resolve();
+    }
+
+    // Flip to researching, restoring whatever cached values the claim carries so a
+    // change-prone row keeps showing its previous verdict while the new one streams in.
+    const updatedClaims = hit.classification.claims?.map(cl =>
+      cl.text === claim.text
+        ? {
+            ...cl,
+            reclassifyOnHold: false,
+            refreshing: true,
+            verdict: cl.cachedVerdict ?? cl.verdict,
+            note: cl.cachedNote ?? cl.note,
+            confidence: cl.cachedConfidence ?? cl.confidence,
+            veracity: cl.cachedVeracity ?? cl.veracity,
+            sources: cl.cachedSources ?? cl.sources,
+          }
+        : cl
+    ) ?? null;
+    const anyOnHold = updatedClaims?.some(cl => cl.reclassifyOnHold) ?? false;
+    const restored: Classification = { ...hit.classification, claims: updatedClaims, reclassifyOnHold: anyOnHold || undefined };
+    restored.batchId = batchId;
+    cacheClassification(restored, batchId);
+    broadcastClassification(restored);
+
+    ongoingClaimRefreshes.add(refreshKey);
+    const cachedTweet = tweetCache.get(tweetId);
+    const tweetUrls = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
+
+    const promise = gatedSpendAttributed(async (onBalanceError) => {
+      let handled = false, gotUpdate = false;
+      try {
+        handled = await pullClaimBeforeClassify(tweetId, claim.text, locale);
+        if (!handled) {
+          // Re-read fresh: pullClaimBeforeClassify may have just merged a dbClaimId in
+          // that the `restored` snapshot predates.
+          const freshCls = classificationCache.get(tweetId)?.classification ?? restored;
+          // Flow A's annotation persist broadcasts tweet-scoped, so it needs a live
+          // tweet subscription to reach the client (see helper).
+          await ensureAnnotationSubscription(tweetId, claim.text, locale);
+          const annotLoc = await annotLocatorsFor(tweetId, freshCls.claims, claim.text, freshCls)
+            ?? await annotLocatorsFor(tweetId, freshCls.quoting?.claims, claim.text, freshCls);
+          for await (const updated of refreshClaim(freshCls, claim.text, researchCache, locale, tweetUrls, onBalanceError, annotLoc)) {
+            gotUpdate = true;
+            // Locators rode along, so the worker's silent post-research run is in
+            // flight — tell the content script to show "Annotating", not idle Annotate.
+            mergeSingleClaimAndBroadcast(tweetId, claim.text, updated, batchId, { withLocators: !!annotLoc });
+          }
+          if (annotLoc) await settleFlowAAnnotations(tweetId, claim.text, annotLoc, batchId);
+        }
+      } catch (err: any) {
+        console.error(`[background] autoClassifySoleClaim error for "${claim.text.slice(0, 40)}":`, err);
+      } finally {
+        ongoingClaimRefreshes.delete(refreshKey);
+        if (!(handled || gotUpdate)) revertClaimToOnHold(tweetId, claim.text, batchId);
+      }
+    });
+    trackClaimResearch(refreshKey, promise);
+    return promise;
   }
 
   /** True only when a Supabase session exists. The whole pipeline is gated on this so
@@ -2352,6 +2611,45 @@ export default defineBackground({
   }
 
   /**
+   * The expiry of the session this extension last handed the app — see `nativeSessionHandover`.
+   *
+   * Persisted rather than held in memory, because an idle service worker is torn down and rebuilt
+   * constantly: a module-level copy would be gone by the next alarm tick, and every tick would hand
+   * the same token over again — a wake-up a minute to say nothing.
+   */
+  const NATIVE_SESSION_EXPIRES_KEY = 'nativeSessionExpiresAt';
+
+  /**
+   * A Supabase access token for the app to authenticate its own fact-checks with, or nil.
+   *
+   * The app cannot mint one: it is given an access token and no refresh token (see
+   * `SharedTopUpStore.setSession`), so once its copy lapses the Fact-Check tab is dead until the
+   * popup is opened — which was the only thing that ever handed one over. The background can
+   * refresh, so it does, and hands the result on: the app's copy is then never far behind a live
+   * one, and that state goes back to meaning what it says — the browser is not running.
+   *
+   * Nil means there is nothing worth handing over, on any of three counts: nobody is signed in;
+   * the token is at or near its end, which covers a refresh that just failed and which the app
+   * would refuse anyway (`FactCheckClient.liveSession` wants 30 seconds of life left in it); or the
+   * app already holds this same one.
+   */
+  async function nativeSessionHandover(): Promise<{ accessToken: string; expiresAt: number } | null> {
+    await ensureFreshSession();
+    const { data } = await supabase.auth.getSession();
+    const session = data.session;
+    if (!session?.access_token || !session.expires_at) return null;
+    // Wider than the app's own 30-second floor, so what arrives is never borderline.
+    if (session.expires_at <= Date.now() / 1000 + 60) return null;
+
+    const stored = (await browser.storage.local.get(NATIVE_SESSION_EXPIRES_KEY))[NATIVE_SESSION_EXPIRES_KEY];
+    // Expiries only advance — a refresh extends this one, a sign-in issues a later one — so a value
+    // no newer than the last handover means the app is already holding the best we have.
+    if (typeof stored === 'number' && session.expires_at <= stored) return null;
+
+    return { accessToken: session.access_token, expiresAt: session.expires_at };
+  }
+
+  /**
    * Mirror the balance into the shared App Group container so the containing app can show it.
    *
    * Safari only, and it exists because the app has no Supabase session of its own — it cannot ask
@@ -2360,13 +2658,15 @@ export default defineBackground({
    * webhook credits top-ups server-side within seconds, the popup was the only thing left forcing
    * the user to go and open it.
    *
+   * The session rides along, on the same message and for the same reason: it too was the popup's
+   * to hand over, and it is the one the app needs before it can do anything but display a number.
+   *
    * Debounced, because a balance moves on every classification: without this each spend would wake
    * the app extension process just to write four bytes. The trailing edge is the one that matters —
    * intermediate values are of no interest to a screen nobody is looking at yet.
    */
   function syncFundsToNativeApp(total: number) {
     if (!import.meta.env.SAFARI) return;
-    if (total === lastNativeSyncedTotal) return;
 
     if (nativeSyncTimer !== undefined) clearTimeout(nativeSyncTimer);
     nativeSyncTimer = setTimeout(() => {
@@ -2375,11 +2675,23 @@ export default defineBackground({
         try {
           const userId = await currentUserId();
           if (!userId) return; // signed out; nothing to attribute a balance to
+          // Read even when the balance has not moved: a session that has just been refreshed is a
+          // reason to send on its own, and the balance coming along costs nothing.
+          const session = await nativeSessionHandover();
+          // The app already has both halves of this message.
+          if (total === lastNativeSyncedTotal && !session) return;
+
           await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, {
             action: 'SYNC_ACCOUNT',
             userId,
             balance: total,
+            ...(session
+              ? { accessToken: session.accessToken, accessTokenExpiresAt: session.expiresAt }
+              : {}),
           });
+          // Only after the app has it. A send that failed leaves the mark where it was, so the
+          // next tick tries again rather than counting a token as delivered when it was not.
+          if (session) await browser.storage.local.set({ [NATIVE_SESSION_EXPIRES_KEY]: session.expiresAt });
           lastNativeSyncedTotal = total;
           nativeAccountShared = true;
         } catch (e: any) {
@@ -2715,6 +3027,7 @@ export default defineBackground({
             // flight — tell the content script to show "Annotating", not idle Annotate.
             mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId, { withLocators: !!annotLoc });
           }
+          if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, batchId);
         }
       } catch (err: any) {
         console.error("[background] admitFactCheckClaim error:", err);
@@ -2783,6 +3096,7 @@ export default defineBackground({
     dbMissHashes.clear();
     seenInDom.clear();
     domFetchResolvers.clear();
+    persistSelectionPipeline();
   }
 
   // Keep the whole extension in sync with sign-in AND balance. On a transition to
@@ -2913,6 +3227,11 @@ export default defineBackground({
         (async () => {
           try {
             if (!(await isSignedIn())) return;
+            // Before the funds read, not after: `get_funds` authenticates with the same token, so
+            // an expired one fails the read and the sync below never runs at all — which is how a
+            // browser left open on an idle page stopped reporting in. Also what gives
+            // `nativeSessionHandover` a token worth passing on.
+            await ensureFreshSession();
             await initFundsHub();
             const funds = await getFunds();
             if (funds) handleFundsChange(funds);
@@ -2989,6 +3308,967 @@ export default defineBackground({
 
 
   // ─────────────────────────────────────────────────────────────────────────
+  // Fact-checking anywhere: webpage selections.
+  //
+  // The content script is injected on demand into ONE page (see
+  // wxt.config.ts — `activeTab` + `scripting`, deliberately not an <all_urls>
+  // content script), and it can only render: an MV3 content script's fetches are
+  // subject to the host page's CORS, so every worker call and every claim research
+  // must happen here. It is the same pipeline the X.com flow runs, keyed by a
+  // synthetic id instead of a tweet id, so `REFRESH_CLAIM`, `pullClaimBeforeClassify`
+  // and the balance gate all apply unchanged.
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const SELECTION_MENU_ID = 'disinfax-selection';
+  /** No leading slash, and it is not a style choice: `files` takes a path relative to the
+   *  extension root, which is the form Safari's resource lookup is specified against.
+   *  Chrome accepts either, so the slashless path is the one that works on both.
+   *
+   *  Two things about this file are easy to get wrong, and both fail the same way — as
+   *  silence. A path Safari cannot resolve does not throw: Safari *resolves* the promise,
+   *  so a refused injection returns here looking like a successful one. And the script is
+   *  a root-level build output, so it is in the Safari app's bundle only because the Xcode
+   *  project declares it; for a long time it did not, and the extension was shipping
+   *  without the file while every other signal said the injection had worked. See the
+   *  reply logged below, which is the only evidence that reaches the page.
+   *
+   *  The cast answers WXT's typing rather than any API: `ScriptPublicPath` is the union of
+   *  this extension's built entrypoints, whose public paths all carry Chrome's leading
+   *  slash. The value below is deliberately not one of those spellings. */
+  const SELECTION_SCRIPT = 'selection.js' as ScriptPublicPath;
+
+  /** What the isolated world reports back about itself. Read in `readIsolatedWorld` and
+   *  logged next to the reply, because the reply alone cannot say whether a listener was
+   *  there to answer it. */
+  type IsolatedWorld = {
+    href: string;
+    readyState: string;
+    flag: number | null;
+    responder: string;
+    browser: string;
+    onMessage: string;
+    selectionApi: string;
+    /** The extension id the world's `browser` object answers to. Read because every reading
+     *  above can look perfectly healthy in a world that is not ours — a listener installed on
+     *  another extension's runtime answers none of our messages — and this is the one field
+     *  that tells ours apart, by comparing it with `browser.runtime.id` here. */
+    runtimeId: string | null;
+  };
+
+  /** Run `func` in the PAGE's own world and hand its return value back.
+   *
+   *  The selection has to be read here, in the page's world, and not from the page script:
+   *  Safari gives an extension's isolated world a selection object of its own for each
+   *  document, and that one stays empty while the page's holds the whole selection. Chrome
+   *  shares a single selection across worlds, which is why reading it from the content
+   *  script works there — and why the same code did nothing at all on Safari, where the
+   *  read came back "collapsed, length 0" with the text still plainly selected on screen.
+   *
+   *  `func` rather than `files` so a value can come back: an injected file's return value is
+   *  not reported to the injector, and a resolved injection is not a successful one. That
+   *  distinction is the whole reason this feature could look like it was running while it
+   *  was not doing anything.
+   *
+   *  `func` is serialized and run standalone, so it cannot close over anything here — every
+   *  function passed to this is self-contained by necessity, not by style. */
+
+  /** Run an injection in the tab's TOP frame only.
+   *
+   *  The selection and the wrap both live in the top document, and an unscoped
+   *  injection also runs in every third-party iframe — whose domains Safari then
+   *  gates one by one (the id5-sync.com ad-sync prompt on CBC). Scoping to frame 0
+   *  keeps the single prompt for the site the user is actually on, and keeps the
+   *  popup's tabs.sendMessage from being answered by a stale copy in a frame.
+   *
+   *  Fails CLOSED when the scoped injection rejects (older Safari builds predate
+   *  `frameIds` support): falling back to an unscoped injection there re-runs the
+   *  file in every ad iframe and re-summons the per-domain prompts the scoping was
+   *  built to prevent. The callers already treat a throw as "not injected" (the
+   *  world probe logs `injected:false` and the flow declines with a named reason),
+   *  so refusing beats prompting for a tracker. */
+  async function execTopFrame(tabId: number, spec: { files?: any; func?: () => any; world?: any }): Promise<any> {
+    // `allFrames: false` is the documented default, but Safari has been observed
+    // injecting into tracker iframes (id5-sync.com on CBC) when the target is
+    // under-specified. Name both: top frame only, never the ad frames.
+    return await browser.scripting.executeScript({ target: { tabId, frameIds: [0], allFrames: false }, ...spec } as any);
+  }
+
+  async function runInPageWorld(tabId: number, func: () => any): Promise<any> {
+    try {
+      const results = await execTopFrame(tabId, {
+        world: 'MAIN',
+        func,
+      });
+      return (results as any)?.[0]?.result ?? null;
+    } catch (err: any) {
+      // Safari has only supported `world` on executeScript recently, so an older build
+      // refusing it is a fact about the browser rather than a failure of the read.
+      console.log(`[background] page-world script refused in tab ${tabId}:`, err?.message ?? err);
+      return null;
+    }
+  }
+
+  /** The selection as the page's own world sees it, text only. Non-destructive: this is the
+   *  popup's probe, and a popup opened to look at the balance must not eat the selection.
+   *
+   *  No editable-host check, deliberately. A selection inside a `<textarea>` yields no DOM
+   *  text at all, so it cannot arrive here as text in the first place; and a selection in
+   *  rich editable content is one the user can still legitimately want fact-checked, which
+   *  the capture handles by declining to wrap rather than by refusing to read. */
+  async function probeSelectionInPageWorld(tabId: number): Promise<string> {
+    const result = await runInPageWorld(tabId, () => {
+      const sel = window.getSelection();
+      const text = sel ? String(sel) : '';
+      return text.trim() ? text.slice(0, 200) : '';
+    });
+    return typeof result === 'string' ? result : '';
+  }
+
+  /** Take the selection out of the page's hands and into the `.mf-segment-wrap` the claims
+   *  are anchored to, and report the wrap's id for the page script to find through the
+   *  shared DOM.
+   *
+   *  Destructive by design — it re-parents the selected nodes and clears the page's own
+   *  selection — so it is only ever run for a Disinfact the user has actually asked for.
+   *
+   *  Every refusal that still has readable text hands the text back with its reason rather
+   *  than failing flat: extraction legitimately cannot re-parent some ranges, and a
+   *  fact-check with its claims listed beats no fact-check at all. Only "the user has
+   *  nothing selected" is a flat refusal.
+   *
+   *  The host is judged by where the SELECTION is, not by what has focus. `activeElement` is
+   *  whatever the user last clicked into and on a page with any editor on it that is very
+   *  often a field nowhere near the selection — checking it refused every selection on the
+   *  one page this was first tried on. */
+  async function captureSelectionInPageWorld(tabId: number): Promise<any> {
+    return runInPageWorld(tabId, () => {
+      const fail = (why: string, extra: Record<string, any> = {}) => ({ ok: false, why, ...extra });
+      try {
+        const BLOCK = 'p,li,dd,dt,td,th,caption,figcaption,blockquote,pre,article,section,aside,main,div,h1,h2,h3,h4,h5,h6';
+        const isThin = (s: string) => {
+          const t = s.trim();
+          return t.length === 0 || t.length === 1 || !/\s/.test(t);
+        };
+        const skip = (el: Element | null): boolean => {
+          if (!el) return true;
+          const tag = el.tagName;
+          if (/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|HEAD|TITLE|SVG|CANVAS|IFRAME|ASIDE|NAV|FOOTER|HEADER|MENU)$/.test(tag)) return true;
+          if (el.hasAttribute('hidden') || el.getAttribute('aria-hidden') === 'true') return true;
+          const role = (el.getAttribute('role') ?? '').toLowerCase();
+          if (['complementary', 'navigation', 'banner', 'contentinfo', 'search', 'menu'].includes(role)) return true;
+          return false;
+        };
+        const neighbor = (el: Element, dir: 'prev' | 'next'): Element | null => {
+          let n: Element | null = dir === 'prev' ? el.previousElementSibling : el.nextElementSibling;
+          while (n && skip(n)) n = dir === 'prev' ? n.previousElementSibling : n.nextElementSibling;
+          return n;
+        };
+        const expandNeighbors = (r: Range): Range => {
+          const startEl = r.startContainer.nodeType === 1
+            ? (r.startContainer as Element)
+            : r.startContainer.parentElement;
+          const block = startEl?.closest(BLOCK);
+          if (!block || block === document.body || block === document.documentElement) return r;
+          const from = neighbor(block, 'prev') ?? block;
+          const to = neighbor(block, 'next') ?? block;
+          const expanded = document.createRange();
+          try {
+            expanded.setStartBefore(from);
+            expanded.setEndAfter(to);
+            return expanded;
+          } catch {
+            return r;
+          }
+        };
+        const sel = window.getSelection();
+        let range: Range | null = sel && sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+        let text = sel ? String(sel) : '';
+        // Context-menu Disinfact only (the isolated script stamps this). A
+        // popup probe must not swallow neighbouring lines.
+        const expandThin = document.documentElement.dataset.mfSelExpandThin === '1';
+        delete document.documentElement.dataset.mfSelExpandThin;
+        if (expandThin && range && isThin(text)) {
+          const expanded = expandNeighbors(range);
+          const expandedText = expanded.toString();
+          if (expandedText.trim()) {
+            range = expanded;
+            text = expandedText;
+          }
+        }
+        if (!range) return fail('nothing selected');
+        if (!text.trim()) return fail('blank');
+        // `String(sel)` and not the range: in the page's world the selection reports
+        // `isCollapsed` as true while still returning every selected character, so neither
+        // `isCollapsed` nor the range is trustworthy as the source of the text. The string is.
+        // Measured before any decision about wrapping, because the selection is live right
+        // now and whatever happens next it is not going to be live much longer. Under the
+        // selection's last line, which is where the eye is after selecting downwards.
+        const rect = (() => {
+          const rects = range.getClientRects();
+          const last = rects.length ? rects[rects.length - 1] : range.getBoundingClientRect();
+          return last && (last.width || last.height) ? { x: last.left, y: last.bottom + 8 } : null;
+        })();
+        const host: any = range.startContainer.nodeType === 1
+          ? range.startContainer
+          : range.startContainer.parentElement;
+        if (host && (host.tagName === 'INPUT' || host.tagName === 'TEXTAREA' || host.isContentEditable === true)) {
+          // Wrapping here would re-parent the user's own input — and on an editor that owns
+          // its DOM it would also be undone on the next render — so the text is passed on
+          // unanchored instead: fact-checked, with the claims listed at the selection.
+          return fail(`editable host: ${host.tagName}${host.isContentEditable === true ? '[contenteditable]' : ''}`, { text, rect });
+        }
+        if (!range.startContainer.isConnected || !range.endContainer.isConnected) {
+          return fail('detached', { text, rect });
+        }
+        const hostName = location.hostname.replace(/^www\./, '');
+        const onX = hostName === 'x.com' || hostName === 'twitter.com'
+          || hostName.endsWith('.x.com') || hostName.endsWith('.twitter.com');
+        const intersects = (el: Element) => {
+          try {
+            const nr = document.createRange();
+            nr.selectNodeContents(el);
+            return range!.compareBoundaryPoints(Range.START_TO_END, nr) < 0
+              && range!.compareBoundaryPoints(Range.END_TO_START, nr) > 0;
+          } catch {
+            return el.contains(range!.startContainer) || el.contains(range!.endContainer);
+          }
+        };
+        const tweetIdOf = (article: Element): string | null => {
+          const links = article.querySelectorAll('a[href*="/status/"]');
+          for (let i = 0; i < links.length; i++) {
+            const link = links[i] as HTMLAnchorElement;
+            if (link.closest('article') !== article) continue;
+            const m = (link.getAttribute('href') || '').match(/\/status\/(\d+)/);
+            if (m) return m[1];
+          }
+          return null;
+        };
+        const ownEl = (article: Element, selector: string): HTMLElement | null => {
+          const found = article.querySelectorAll(selector);
+          for (let i = 0; i < found.length; i++) {
+            const el = found[i] as HTMLElement;
+            if (el.closest('article') === article) return el;
+          }
+          return null;
+        };
+        const hasButtons = (article: Element) => !!ownEl(
+          article,
+          '[data-mf-charge="disinfact"], [data-mf-charge="refresh-top"], [data-mf-charge="factcheckall"], [data-mf-charge="translate-tweet"], [mf-on-hold-id], [mf-top-bar-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]',
+        );
+        const foldWrap = (wrapEl: HTMLElement) => {
+          const claims = wrapEl.querySelectorAll('.mf-segment-claim');
+          for (let i = 0; i < claims.length; i++) {
+            const span = claims[i];
+            const chrome = span.querySelectorAll('.mf-inline-badge, .mf-standalone-spinner');
+            for (let j = 0; j < chrome.length; j++) chrome[j].remove();
+            if (span.childNodes.length === 0) span.replaceWith(document.createTextNode(span.textContent ?? ''));
+            else span.replaceWith(...Array.from(span.childNodes));
+          }
+          if (!wrapEl.parentNode) { wrapEl.remove(); return; }
+          wrapEl.replaceWith(...Array.from(wrapEl.childNodes));
+        };
+        const overlappingWraps = Array.from(document.querySelectorAll('.mf-segment-wrap[data-mf-sel-wrap="true"]'))
+          .filter((w) => (w as HTMLElement).isConnected && intersects(w as Element));
+        const overlapping = overlappingWraps.length > 0;
+        for (const w of overlappingWraps) foldWrap(w as HTMLElement);
+        if (overlapping && (!range.startContainer?.isConnected || !range.endContainer?.isConnected)) {
+          const live = sel && sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+          if (live && live.startContainer && live.endContainer && live.startContainer.isConnected && live.endContainer.isConnected) {
+            range = live;
+          }
+        }
+        const injected: Element[] = [];
+        if (onX) {
+          const ancestor = range.commonAncestorContainer;
+          const root = ancestor.nodeType === 1 ? (ancestor as Element) : ancestor.parentElement;
+          const scope = root?.closest('article')?.parentElement ?? root;
+          if (scope) {
+            const articles = scope.querySelectorAll('article');
+            for (let i = 0; i < articles.length; i++) {
+              const a = articles[i];
+              if (hasButtons(a) && tweetIdOf(a) && intersects(a)) injected.push(a);
+            }
+          }
+          const startA = (range.startContainer.nodeType === 1
+            ? (range.startContainer as Element)
+            : range.startContainer.parentElement)?.closest('article');
+          const endA = (range.endContainer.nodeType === 1
+            ? (range.endContainer as Element)
+            : range.endContainer.parentElement)?.closest('article');
+          for (const a of [startA, endA]) {
+            if (a && hasButtons(a) && tweetIdOf(a) && intersects(a) && !injected.includes(a)) injected.push(a);
+          }
+          injected.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+        }
+        const fireTweet = (article: Element): string | null => {
+          const disinfact = ownEl(article, 'button[data-mf-charge="disinfact"]');
+          if (disinfact) { disinfact.click(); return null; }
+          const refresh = ownEl(article, 'button[data-mf-charge="refresh-top"]');
+          if (refresh) { refresh.click(); return null; }
+          return tweetIdOf(article);
+        };
+        const leftoverFrom = (src: Range, holes: Element[]): Range[] => {
+          if (holes.length === 0) return [src.cloneRange()];
+          const pieces: Range[] = [];
+          let fromContainer: Node = src.startContainer;
+          let fromOffset = src.startOffset;
+          for (const hole of holes) {
+            try {
+              const piece = document.createRange();
+              piece.setStart(fromContainer, fromOffset);
+              piece.setEndBefore(hole);
+              if (piece.compareBoundaryPoints(Range.START_TO_START, src) < 0) {
+                piece.setStart(src.startContainer, src.startOffset);
+              }
+              if (piece.compareBoundaryPoints(Range.END_TO_END, src) > 0) {
+                piece.setEnd(src.endContainer, src.endOffset);
+              }
+              if (!piece.collapsed && piece.toString().trim()) pieces.push(piece);
+            } catch { /* inverted */ }
+            try {
+              const after = document.createRange();
+              after.setStartAfter(hole);
+              fromContainer = after.startContainer;
+              fromOffset = after.startOffset;
+            } catch {
+              return pieces;
+            }
+          }
+          try {
+            const tail = document.createRange();
+            tail.setStart(fromContainer, fromOffset);
+            tail.setEnd(src.endContainer, src.endOffset);
+            if (!tail.collapsed && tail.toString().trim()) pieces.push(tail);
+          } catch { /* inverted */ }
+          return pieces.filter((p) => !holes.some((h) => {
+            try {
+              const nr = document.createRange();
+              nr.selectNodeContents(h);
+              return p.compareBoundaryPoints(Range.START_TO_END, nr) < 0
+                && p.compareBoundaryPoints(Range.END_TO_START, nr) > 0;
+            } catch {
+              return false;
+            }
+          }));
+        };
+        const wrapOne = (r: Range): string | null => {
+          const wrapId = `pw_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+          const wrap = document.createElement('span');
+          wrap.className = 'mf-segment-wrap';
+          wrap.dataset.mfSelWrap = 'true';
+          wrap.dataset.mfSelId = wrapId;
+          try {
+            wrap.appendChild(r.extractContents());
+            r.insertNode(wrap);
+          } catch {
+            wrap.remove();
+            return null;
+          }
+          if (!(wrap.textContent ?? '').trim()) {
+            wrap.remove();
+            return null;
+          }
+          return wrapId;
+        };
+        const pendingTweetIds: string[] = [];
+        let wrapIds: string[] = [];
+        if (injected.length > 0) {
+          for (const article of injected) {
+            const missed = fireTweet(article);
+            if (missed) pendingTweetIds.push(missed);
+          }
+          const leftovers = leftoverFrom(range, injected);
+          for (let i = leftovers.length - 1; i >= 0; i--) {
+            const wrapId = wrapOne(leftovers[i]);
+            if (wrapId) wrapIds.unshift(wrapId);
+          }
+        } else {
+          const wrapId = wrapOne(range);
+          if (wrapId) wrapIds.push(wrapId);
+        }
+        if (wrapIds.length === 0 && injected.length === 0) {
+          return fail(`range extracted nothing (collapsed=${range.collapsed}, rangeText=${range.toString().length})`, { text, rect });
+        }
+        if (pendingTweetIds.length) document.documentElement.dataset.mfSelTweetIds = pendingTweetIds.join(',');
+        else delete document.documentElement.dataset.mfSelTweetIds;
+        if (overlapping) document.documentElement.dataset.mfSelForce = '1';
+        else delete document.documentElement.dataset.mfSelForce;
+        if (wrapIds.length === 0) {
+          document.documentElement.dataset.mfSelTweetOnly = '1';
+          delete document.documentElement.dataset.mfSelId;
+          delete document.documentElement.dataset.mfSelIds;
+        } else {
+          delete document.documentElement.dataset.mfSelTweetOnly;
+          document.documentElement.dataset.mfSelId = wrapIds[0];
+          document.documentElement.dataset.mfSelIds = wrapIds.join(',');
+        }
+        sel?.removeAllRanges();
+        return { ok: true, id: wrapIds[0] ?? 'tweet-only', len: text.length, tweetOnly: wrapIds.length === 0, leftoverCount: wrapIds.length };
+      } catch (err) {
+        return fail(String(err));
+      }
+    });
+  }
+
+  /** The in-page script file, as built by `entrypoints/selection.ts`. Injected rather
+   *  than declared, so it exists only on pages the user acted on. Re-injection on every
+   *  trigger is intentional — the script guards itself and the injection is what makes
+   *  the *message* that follows deliverable. */
+  async function peekIsolatedWorld(tabId: number): Promise<IsolatedWorld | null> {
+    try {
+      const probe = await execTopFrame(tabId, {
+        func: () => {
+          const g = globalThis as any;
+          return {
+            href: location.href,
+            readyState: document.readyState,
+            flag: g.__mfSelectionInjected ?? null,
+            responder: typeof g.__mfSelectionResponder,
+            runtimeId: g.browser?.runtime?.id ?? null,
+            browser: typeof g.browser,
+            onMessage: typeof g.browser?.runtime?.onMessage?.addListener,
+            selectionApi: typeof document.getSelection,
+          };
+        },
+      });
+      return (probe?.[0]?.result as IsolatedWorld | undefined) ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function injectSelectionScript(tabId: number): Promise<{ injected: boolean; world: IsolatedWorld | null }> {
+    try {
+      // A live copy of this extension's script is enough: start/probe are handed
+      // to `__mfSelectionResponder` in-world, so re-injecting does not make the
+      // message more deliverable — it only stacks copies and gives Safari another
+      // chance to prompt for every iframe on the page. A copy from a previous
+      // extension id (reload of a different build) is not ours; inject then.
+      // One peek, not the 5×100ms wait: a cold tab would otherwise stall every
+      // probe on a world we already know is empty.
+      const existing = await peekIsolatedWorld(tabId);
+      if (existing?.responder === 'function' && existing.runtimeId === browser.runtime.id) {
+        console.log(`[background] selection script already in tab ${tabId}:`, JSON.stringify(existing));
+        return { injected: true, world: existing };
+      }
+      // Safari's executeScript file context often has `browser`/`chrome` as a
+      // content-script local that is NOT on `globalThis`. WXT's polyfill is
+      // `globalThis.browser?.runtime?.id ? browser : chrome`, so that local is
+      // dropped, `Y` is undefined, and selection.js throws on `Y.runtime`
+      // before it can publish `__mfSelectionResponder`. Copy the locals onto
+      // globalThis first. The body is string-eval'd so the background's own
+      // `browser` binding is not what the tab looks up.
+      await execTopFrame(tabId, {
+        func: () => {
+          const g = globalThis as any;
+          try {
+            const b = eval('typeof browser !== "undefined" ? browser : null');
+            if (b?.runtime) g.browser = b;
+          } catch { /* no local browser */ }
+          try {
+            const c = eval('typeof chrome !== "undefined" ? chrome : null');
+            if (c?.runtime) g.chrome = c;
+          } catch { /* no local chrome */ }
+        },
+      });
+      // Logged with its result, because the result is the only evidence the script
+      // actually landed: a resolve is not a success, and an empty one is what a refused
+      // path resolves to. See SELECTION_SCRIPT. The whole array and not its length,
+      // because `[{frameId:0}]` — a resolve with no `result` — is what a file injection
+      // that ran nothing looks like, and it is indistinguishable from a real one by count.
+      const injected = await execTopFrame(tabId, { files: [SELECTION_SCRIPT] });
+      console.log(`[background] selection script injected into tab ${tabId}:`, JSON.stringify(injected));
+      // Then ask the tab what is actually in the world the file was injected into. This is
+      // the only way to tell "the injection was refused" from "the file ran and its
+      // listeners are not answering", and those two need opposite fixes: a refused
+      // injection resolves exactly like a successful one, so the reply that follows a
+      // message is otherwise the only evidence and it cannot say which happened.
+      //
+      // Reported alongside the injection rather than merged into it, and the caller must
+      // keep treating them apart: `files` and `func` are separate injection paths, and a
+      // page whose CSP admits the file can refuse the function. Reading a null world as a
+      // failed injection would then skip the message on pages where it would have worked —
+      // a diagnostic is not allowed to become a gate.
+      return { injected: true, world: await readIsolatedWorld(tabId) };
+    } catch (err: any) {
+      // Chrome refuses injection into chrome:// pages, the Web Store, PDF viewers and
+      // other extension pages. Nothing to do about it — the user cannot fact-check there.
+      console.log(`[background] selection script not injectable into tab ${tabId}:`, err?.message ?? err);
+      return { injected: false, world: null };
+    }
+  }
+
+  /** What the tab's isolated world holds right after the selection script was injected.
+   *
+   *  `responder` is the signal that matters: it is the handler the file publishes
+   *  immediately before it can answer anything, and it is the last thing the entry does
+   *  that a reply depends on. `flag`, by contrast, is the entry's FIRST statement and sits
+   *  some thousand lines earlier, so a number proves only that the file started — reading
+   *  it as "reached its end" hid the one case worth seeing, a file that died in between.
+   *  `flag` set with `responder` absent is therefore a script that never got as far as
+   *  listening; both present with a message still unanswered is delivery, not the script.
+   *  No result at all means even a bare function cannot run there, which is a permission
+   *  problem rather than a script one.
+   *
+   *  Waits (bounded) for `responder` rather than reading once, because a resolve from
+   *  `executeScript` is not a promise that the file's body has finished — the reply this
+   *  feeds is sent by the very handler being waited for. Costs nothing when the file is
+   *  already through: the first read returns and the loop exits. */
+  async function readIsolatedWorld(tabId: number): Promise<IsolatedWorld | null> {
+    let last: IsolatedWorld | null = null;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        const probe = await execTopFrame(tabId, {
+          func: () => {
+            const g = globalThis as any;
+            return {
+              href: location.href,
+              readyState: document.readyState,
+              flag: g.__mfSelectionInjected ?? null,
+              responder: typeof g.__mfSelectionResponder,
+              runtimeId: g.browser?.runtime?.id ?? null,
+              browser: typeof g.browser,
+              onMessage: typeof g.browser?.runtime?.onMessage?.addListener,
+              selectionApi: typeof document.getSelection,
+            };
+          },
+        });
+        last = (probe?.[0]?.result as IsolatedWorld | undefined) ?? null;
+      } catch (err: any) {
+        console.log(`[background] isolated world unreadable in tab ${tabId}:`, err?.message ?? err);
+        return null;
+      }
+      if (last?.responder === 'function') break;
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    // Our own id is printed beside the world's so the two can be compared without a second
+    // log line: they must match, and a world reporting a different one (or none) is a world
+    // whose listener nothing this file sends can ever reach.
+    console.log(
+      `[background] isolated world in tab ${tabId}:`,
+      JSON.stringify(last),
+      '| our runtime id:',
+      browser.runtime.id
+    );
+    return last;
+  }
+
+  /** Hand `kind` to the selection script in `tabId`, and return the answer it gives.
+   *
+   *  Not `browser.tabs.sendMessage`, and that is the point rather than a preference: a script
+   *  injected with `scripting.executeScript` does not receive one. The injection resolves, the
+   *  script runs to the end of its body, it installs its listener and publishes it as
+   *  `__mfSelectionResponder` — every one of which the probe above reads back out of that same
+   *  world on the same click — and the send still resolves `undefined`, because a message with
+   *  no answer is indistinguishable there from a message with no receiver. The reverse
+   *  direction is not affected: the page-world selection read is built on the script's own
+   *  `runtime.sendMessage` calls, and the run in which the pipeline worked proves it.
+   *
+   *  So the message is delivered by calling the published responder, from a function injected
+   *  into the same world — the mechanism this file already reads that world with. There are no
+   *  arguments and no awaited promises in any of the three injections: whether an injected
+   *  function's returned promise is awaited is not something to hang a handshake on, and an
+   *  argument-less function is the one shape every implementation serializes the same way.
+   *
+   *  The reply is parked on a world global by the handler's own `sendResponse` and collected
+   *  afterwards, because the handler is asynchronous — a start answers only after a round trip
+   *  of its own back through this file. */
+  async function askSelection(tabId: number, kind: 'start' | 'probe' | 'popupStart'): Promise<{ delivered: boolean; reply: any }> {
+    // The request is staged in the world rather than passed in, for the reason above: the
+    // literals below are the whole of what distinguishes a start from a probe. `func` is
+    // serialized, so these cannot close over `kind` — each branch is a self-contained
+    // function. Context-menu start is `keepProbe: false` (no earlier probe) and expands
+    // a word/empty click to the neighbouring lines. Popup start omits that so a
+    // selection the popup itself blurred can fall back to the probe.
+    // Argument-less `func` only. Safari has treated `args` as a reason to
+    // inject outside frame 0 (id5-sync.com on CBC). Firefox's click target
+    // is recovered from the page's own contextmenu listener instead.
+    const stage = kind === 'start'
+      ? () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_START', keepProbe: false, expandThin: true }; }
+      : kind === 'popupStart'
+      ? () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_START' }; }
+      : () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_PROBE' }; };
+    try {
+      await execTopFrame(tabId, { func: stage });
+      const invoked = await execTopFrame(tabId, {
+        func: () => {
+          const g = globalThis as any;
+          // The newest copy publishes itself here and retires the one before it, so this is
+          // also the copy that would have answered a delivered message — and the only one.
+          const handler = g.__mfSelectionResponder;
+          if (typeof handler !== 'function') return 'no-responder';
+          g.__mfSelectionOutcome = 'pending';
+          try {
+            handler(g.__mfSelectionRequest, { tab: { id: -1 }, id: g.browser?.runtime?.id ?? null }, (reply: any) => {
+              g.__mfSelectionOutcome = reply === undefined ? 'undefined-reply' : reply;
+            });
+          } catch (err: any) {
+            g.__mfSelectionOutcome = { ok: false, reason: `threw: ${String((err && err.message) || err)}` };
+          }
+          return 'invoked';
+        },
+      });
+      const outcome = invoked?.[0]?.result ?? null;
+      if (outcome !== 'invoked') {
+        console.log(`[background] selection ${kind} not handed over:`, JSON.stringify(outcome));
+        return { delivered: false, reply: null };
+      }
+      // Bounded, and only ever reached while the answer is outstanding: the handler settles
+      // on its own schedule and there is nothing to await it with across the world boundary.
+      for (let attempt = 0; attempt < 25; attempt++) {
+        await new Promise((r) => setTimeout(r, 120));
+        const read = await execTopFrame(tabId, {
+          func: () => (globalThis as any).__mfSelectionOutcome ?? null,
+        });
+        const collected = read?.[0]?.result ?? null;
+        if (collected === 'pending' || collected === null) continue;
+        return { delivered: true, reply: collected };
+      }
+      return { delivered: true, reply: null };
+    } catch (err: any) {
+      console.log(`[background] selection ${kind} could not be handed over:`, err?.message ?? err);
+      return { delivered: false, reply: null };
+    }
+  }
+
+  function registerSelectionMenu(): void {
+    if (!browser.contextMenus?.create) return;
+    // A previous run's item survives a service-worker restart, and create() with a
+    // duplicate id throws, so clear first. removeAll is scoped to this extension.
+    browser.contextMenus.removeAll(() => {
+      try {
+        browser.contextMenus.create({
+          id: SELECTION_MENU_ID,
+          title: browser.i18n.getMessage('disinfactButton') || 'Disinfact',
+          // `page` is Firefox (right-click selects nothing) and the lazy
+          // word-click path; `selection` is Safari/Chrome's word highlight.
+          contexts: ['selection', 'page'],
+        });
+      } catch (err) {
+        console.log('[background] context menu create failed:', err);
+      }
+    });
+  }
+
+  registerSelectionMenu();
+  browser.runtime.onInstalled.addListener(() => registerSelectionMenu());
+
+  /** The browser's own record of the selection, held from the moment the context menu
+   *  opened until the read it belongs to arrives (one turn later, and only from that path).
+   *  A different extent is a different hash and a different claim set, so this is the one
+   *  piece of ground truth that can say whether a read matched what the user selected.
+   *  Consumed on use, so a read can never be judged against an earlier selection. */
+  let browserSelectionText: string | null = null;
+
+  browser.contextMenus?.onClicked.addListener((info: any, tab: any) => {
+    // Logged ahead of every guard, and it is the point of the line: a click that arrives
+    // with an unexpected shape and a click that never arrived are the same silence from
+    // the outside, and this path failing as silence is exactly what it used to do.
+    //
+    // `selectionText` is the browser's own record of what was selected when the menu was
+    // opened, captured before any of this runs. It is the cross-check for the read the page
+    // script reports below: the browser is holding a selection that the extension's own
+    // world may not be able to see at all. Logged in full (up to a legible cap) because a
+    // slice cannot tell a selection from a longer passage that starts the same way — and
+    // telling those two apart is the whole job of this line.
+    const browserText = String(info?.selectionText ?? '');
+    browserSelectionText = browserText;
+    console.log(
+      '[background] context menu clicked:', info?.menuItemId,
+      '| tab id:', tab?.id,
+      '| selectionText:', JSON.stringify(browserText.slice(0, 400)),
+      '| len:', browserText.length
+    );
+    if (info?.menuItemId !== SELECTION_MENU_ID) return;
+    void (async () => {
+      const tabId = tab?.id;
+      if (tabId == null) {
+        console.log('[background] no tab to run the selection script in');
+        return;
+      }
+      const { injected, world } = await injectSelectionScript(tabId);
+      if (!injected) return;
+      // keepProbe: false — this path never ran a probe, so if the page no longer holds a
+      // selection there is nothing to fall back on and the page script must say so rather
+      // than reuse a capture left over from an earlier Disinfact.
+      //
+      // The page script reaches back here for the page-world read if its own comes up
+      // empty, so this one hand-over is all both halves of the read need.
+      const { delivered, reply } = await askSelection(tabId, 'start');
+      // Stringified because the console renders every object as a bare "Object", so a
+      // refusal and a success arrive looking the same. `null` here means the handler was
+      // handed the message and had not answered when it stopped being waited for, which is
+      // a different thing from `delivered: false` — nothing was handed over at all.
+      console.log(
+        '[background] selection start answered:', JSON.stringify(reply),
+        '| delivered:', delivered,
+        '| responder:', world?.responder ?? 'probe failed'
+      );
+    })();
+  });
+
+  type SelectionRequest = { id: string; before: string; selected: string; after: string; locale: string; force?: boolean };
+
+  /** The claim to decide on, once its DB row has landed: the DB's version of it when the row
+   *  arrives, and the claim passed in when nothing can be learned.
+   *
+   *  A lone claim is researched without a second click, and the one question that has to be
+   *  settled first is whether the DB already answers it. That cannot be answered by looking:
+   *  the worker replies by LINKING, and the write that links runs detached from the stream just
+   *  consumed — preclassify-tweets closes the stream (`data: [DONE]`, then `writer.close()`)
+   *  and only afterwards, in the `finally`, embeds, matches and links the claim. So a claim read
+   *  at the end of that stream is about a second and a half early, and a passage the DB has
+   *  already researched arrives looking untouched. Researching on that reading is not a wasted
+   *  round trip: it is a charge for a verdict that already exists.
+   *
+   *  The row that link produces is broadcast to the tweet subscription and merged into the
+   *  cached claim by `mergeClaimPayload` — verdict and all — so waiting is what turns the
+   *  question into an answer, and the wait costs no request. The subscription that carries it
+   *  is opened by the caller before its stream starts (startSelectionPipeline); the call below
+   *  only refreshes that timer, which is the longer window this wait needs, and re-opens it if
+   *  the run reached here without one.
+   *
+   *  Bounded, but a timeout is NOT free: the claim handed back is the one passed in, and the
+   *  one passed in comes off the preclassify stream, so it carries verdict "research required"
+   *  with `reclassifyOnHold` — which is precisely the shape `autoClassifySoleClaim`'s settle
+   *  guard refuses. Timing out therefore re-researches a claim the DB may already hold a
+   *  verdict for. That is why this wait gets the longer SELECTION_DB_ROW_TIMEOUT_MS. A row
+   *  that does arrive settles the claim through that same guard, without spending. */
+  async function claimAfterRowLands(
+    selectionId: string, claim: Claim, hash: string, locale: string
+  ): Promise<Claim> {
+    try {
+      // ANNOTATION_TIMEOUT_MS, not the preclassify window: this is the subscription Flow A's
+      // annotation persist needs to still be open once research runs, and
+      // `ensureAnnotationSubscription` would only reopen the same one.
+      await ensureTweetSubscription(selectionId, hash, locale, ANNOTATION_TIMEOUT_MS);
+      await awaitClaimDbRow(selectionId, claim.text, SELECTION_DB_ROW_TIMEOUT_MS);
+    } catch (err: any) {
+      console.error('[background] claimAfterRowLands error:', err);
+    }
+    const claims = classificationCache.get(selectionId)?.classification.claims;
+    const rowClaim = claims?.find(c => c.text === claim.text) ?? claim;
+    // Whether the bounded wait actually produced a DB-backed claim decides whether the
+    // run settles on the stored verdict or re-researches (and re-spends). `handedBack:
+    // streamed` with a row that exists is the race having been lost, not a missing row.
+    console.log(
+      '[background] claimAfterRowLands', selectionId,
+      '| handed back:', rowClaim === claim ? 'the streamed claim (no row found by text)' : 'the cached claim',
+      '| dbClaimId:', rowClaim.dbClaimId ?? 'none',
+      '| verdict:', rowClaim.verdict ?? 'none',
+      '| note:', rowClaim.note ? `${String(rowClaim.note).slice(0, 30)}…` : 'none',
+      '| onHold:', rowClaim.reclassifyOnHold === true,
+      '| cachedVerdict:', rowClaim.cachedVerdict ?? 'none'
+    );
+    return rowClaim;
+  }
+
+  /** Preclassify a webpage selection and, when it yields exactly one claim, research that
+   *  claim immediately — the same "don't make the user click twice" rule the tweet flow and
+   *  the popup's Fact-Check tab follow.
+   *
+   *  Hash-hit first, like processFullBatch: insert_tweet ON CONFLICT deletes tweet_claims
+   *  (and the annotations on those links), so a reselect of an identical passage must not
+   *  re-preclassify. A miss still streams, then the lone claim waits for its row
+   *  (`claimAfterRowLands`) before auto-research.
+   *
+   *  On a miss the subscription is NOT gated on the claim count: it is how the links
+   *  reach the page at all (see the note at the call). The auto-research below is. */
+  function startSelectionPipeline(req: SelectionRequest): void {
+    const selectionId = req.id;
+    // The cross-check the click log above promises, and the only thing that can answer
+    // "did we fact-check what the user selected?". The browser's record is ground truth —
+    // it is what the context menu was opened on, and nothing in this extension can widen
+    // it. Whitespace is stripped from both sides before comparing because the capture
+    // concatenates block boundaries with no separator while the browser's record carries
+    // one, so a separator-only difference must not read as a difference in extent.
+    //
+    // A read that is WIDER than the browser's record is the answer when a selection turns
+    // out to have been fact-checked with text the user never selected: the hash covers a
+    // different string, so a row that should have hit by hash cannot, and a claim mined
+    // out of the extra text arrives as a second claim.
+    if (browserSelectionText !== null) {
+      const strip = (s: string) => s.replace(/\s+/g, '');
+      const wanted = strip(browserSelectionText);
+      const got = strip(req.selected);
+      // The lengths reported are the raw ones — what a person reading the log will count in
+      // the page — while the comparison itself is on the stripped forms.
+      const verdict = wanted === got
+        ? 'same content'
+        : got.startsWith(wanted)
+          ? `READ IS WIDER by ${req.selected.length - browserSelectionText.length} char(s) — the browser selected a prefix of what was fact-checked`
+          : wanted.startsWith(got)
+            ? `read is narrower by ${browserSelectionText.length - req.selected.length} char(s)`
+            : 'DIFFERENT CONTENT — the read is not the browser selection at all';
+      console.log(
+        '[background] selection cross-check | browser:', JSON.stringify(browserSelectionText.slice(0, 400)),
+        `(${browserSelectionText.length} chars)`,
+        '| read:', JSON.stringify(req.selected.slice(0, 400)), `(${req.selected.length} chars)`,
+        '|', verdict
+      );
+      browserSelectionText = null;
+    }
+    // The worker's security gate re-derives its hash from these exact fields, and the
+    // client's `canonicalContext` hashes `${before}${selected}${after}` for a selection —
+    // see utils/intelligence.ts. `username`/`usertype` are empty: a webpage passage has
+    // no author, and the prompt is told to ignore them for a selection.
+    const tweet = {
+      id: selectionId,
+      text: req.selected,
+      fullText: req.selected,
+      username: '',
+      usertype: 'None',
+      time: new Date().toISOString(),
+      contextBefore: req.before,
+      contextAfter: req.after,
+    } as unknown as MainTweet;
+    console.log(
+      '[background] selection context start | before:',
+      JSON.stringify((req.before || '').slice(0, 500)),
+      `(${(req.before || '').length} chars)`,
+      '| after:',
+      JSON.stringify((req.after || '').slice(0, 200)),
+      `(${(req.after || '').length} chars)`,
+    );
+
+    // The annotate path resolves a claim's locators — its text, its language, its hash —
+    // out of the tweet cache by id (annotLocatorsFor), and the tweet subscription that
+    // carries annotation broadcasts is keyed the same way (ensureAnnotationSubscription).
+    // The tweet flow gets both for free from processFullBatch; a selection is never in
+    // that batch, so without this entry a selection can never be annotated and an
+    // annotation broadcast can never find it.
+    //
+    // The language is the one the run was sent under (a selection has no sourceLanguage
+    // of its own, and annotLocatorsFor needs one), and this is a CLONE: what preClassify
+    // was handed stays exactly as built, so the extraction input is untouched. Neither
+    // field is part of a selection's canonical hash (see canonicalContext — the
+    // contextBefore/contextAfter branch hashes only those three parts), so the row this
+    // run inserts and looks up is unaffected.
+    tweetCache.set(selectionId, { ...tweet, sourceLanguage: req.locale } as unknown as MainTweet);
+    persistSelectionPipeline();
+
+    const keepAlive = setInterval(() => {}, 20000);
+    // Outside the try so the `finally` below can always name the batch, even when the run
+    // threw before it got as far as hashing.
+    const batchId = nextBatchId();
+    void gatedSpend(async () => {
+      try {
+        const hash = await computeTweetHash(tweet);
+
+        // Spinning state first, exactly like the tweet flow: the content script keeps its
+        // "Disinfacting" indicator until the first claims land.
+        const spinning: Classification = { id: selectionId, batchId, claims: null, quoting: null, preclassifying: true };
+        cacheClassification(spinning, batchId);
+        broadcastClassification(spinning);
+
+        // Hash-hit first (same rule as processFullBatch). insert_tweet ON CONFLICT
+        // DELETE's tweet_claims — re-preclassifying a passage the DB already holds
+        // is what wiped the annotation key and brought the Annotate badge back.
+        // A reselect (`force`) is the user's way to re-preclassify without a
+        // button: skip the hit so the worker runs again and the new wrap is
+        // the only highlight left on that passage.
+        const dbResult = req.force ? { success: false as const } : await fetchDbTweet(hash);
+        if (dbResult.success && dbResult.claims && dbResult.claims.length > 0) {
+          const classification = dbClaimsToClassification(
+            tweetCache.get(selectionId) as MainTweet,
+            dbResult.claims,
+            batchId,
+            req.locale
+          );
+          classification.id = selectionId;
+          classification.preclassifying = undefined;
+          if (classification.claims) {
+            classification.claims = classification.claims.filter(
+              (c: any) => !unlocatedSelectionClaim(selectionId, c, false)
+            );
+          }
+          cacheClassification(classification, batchId);
+          dbHitCache.set(selectionId, { tweet: tweetCache.get(selectionId) as MainTweet, dbClaims: dbResult.claims });
+          broadcastClassification(classification);
+          // Same as X's research path: Flow A persists after the stream, and
+          // the only client delivery is trg_tweet_claim_annotations_updated on
+          // this routing row. A settled hash-hit used to skip the sub entirely
+          // (`is_preclassifying` only), so the annotation never arrived.
+          await ensureTweetSubscription(selectionId, hash, req.locale, ANNOTATION_TIMEOUT_MS);
+          watchClassifyingClaims(selectionId, dbResult.claims, req.locale);
+          const sole = classification.claims;
+          if (sole && sole.length === 1) {
+            await autoClassifySoleClaim(selectionId, sole[0], batchId, req.locale);
+          }
+          return;
+        }
+
+        // Miss: subscribe BEFORE streaming starts, exactly like the tweet flow (see
+        // its own note at the same point). link_tweet_claim broadcasts only land on
+        // an existing routing row, and a routing row is written by a NEW subscription
+        // on this hash; the claim pipeline runs mid-stream, so subscribing afterwards
+        // loses the race whenever linking beats the stream drain.
+        //
+        // Fire-and-forget, in parallel with the request below: it must be open before
+        // the worker's insert, and awaiting it would delay the run by however long the
+        // subscription takes to go live.
+        await ensureTweetSubscription(selectionId, hash, req.locale, ANNOTATION_TIMEOUT_MS);
+
+        let latest: Classification | null = null;
+        for await (const cls of preClassify(tweet, hashToBytea(hash), req.locale, req.locale)) {
+          cls.batchId = batchId;
+          // The selection is the only thing that may yield claims: the surrounding prose
+          // this run ships for anchoring is not. The model sometimes extracts a claim from
+          // that context anyway, and such a claim comes back with no span in the passage —
+          // it could never be drawn, only listed. Dropping it here also keeps it out of the
+          // DB's own claim rows (the worker's pipeline sees the same range and skips it).
+          const streamed = cls.claims;
+          if (streamed) {
+            cls.claims = streamed.filter((c: any) => !unlocatedSelectionClaim(selectionId, c, true));
+            if (cls.claims.length !== streamed.length) {
+              console.log(`[background] selection ${selectionId}: dropped ${streamed.length - cls.claims.length} claim(s) not located in the passage`);
+            }
+          }
+          const merged = mergePreclassIntoCache(cls);
+          merged.batchId = batchId;
+          merged.preclassifying = undefined;
+          cacheClassification(merged, batchId);
+          broadcastClassification(merged);
+          latest = merged;
+        }
+
+        if (!latest || !latest.claims || latest.claims.length === 0) {
+          const empty: Classification = latest ?? { id: selectionId, batchId, claims: null, quoting: null };
+          cacheClassification(empty, batchId);
+          broadcastClassification(empty);
+          return;
+        }
+
+        const sole = latest.claims;
+        if (sole.length === 1) {
+          // Decide on the claim the DB has, not on the one the stream stopped at — the
+          // difference is a verdict that already exists (see the helper).
+          const claim = await claimAfterRowLands(selectionId, sole[0], hash, req.locale);
+          // Awaited so keepAlive spans the research, or the worker could be reaped mid-call.
+          await autoClassifySoleClaim(selectionId, claim, batchId, req.locale);
+        }
+      } catch (err: any) {
+        console.error('[background] startSelectionPipeline error:', err);
+      } finally {
+        clearInterval(keepAlive);
+        const cur = classificationCache.get(selectionId)?.classification;
+        // The page's "Disinfacting" indicator and the popup both wait for a terminal,
+        // non-spinning classification before they stand down. A run that threw before it
+        // ever cached the spinner has none to clear, so one is broadcast here — otherwise
+        // the indicator spins on the page forever, which is worse than showing nothing.
+        if (cur?.preclassifying || !cur) {
+          const cleared: Classification = {
+            ...(cur ?? { id: selectionId, batchId, claims: null, quoting: null }),
+            preclassifying: undefined,
+          };
+          cacheClassification(cleared, cur?.batchId ?? batchId);
+          broadcastClassification(cleared);
+        }
+      }
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // Message entry points. One-off requests (popup) arrive on runtime.onMessage;
   // the content-script relay instead holds a long-lived "classify" port, because
   // classification results stream back over time rather than as a single reply.
@@ -2996,6 +4276,87 @@ export default defineBackground({
 
   // Popup ↔ background messaging (balance, messages, checkout).
   browser.runtime.onMessage.addListener((message: any, _sender: any, sendResponse: (r: any) => void) => {
+    // Opening the popup is the user's *second* way to start a selection fact-check, so the
+    // popup needs to know whether the active tab currently has text selected. Injection
+    // lives here, not in the popup, so both trigger paths share one code path — and so the
+    // activeTab grant the toolbar click just produced is used from the context that owns
+    // the injection. Reply shape: { hasSelection, preview }.
+    if (message?.type === 'MF_SELECTION_PREPARE' && typeof message.tabId === 'number') {
+      (async () => {
+        const { injected, world } = await injectSelectionScript(message.tabId);
+        if (!injected) {
+          sendResponse({ hasSelection: false });
+          return;
+        }
+        const { delivered, reply } = await askSelection(message.tabId, 'probe');
+        console.log(
+          '[background] selection probe answered:', JSON.stringify(reply),
+          '| delivered:', delivered,
+          '| responder:', world?.responder ?? 'probe failed'
+        );
+        sendResponse({ hasSelection: !!reply?.hasSelection, preview: reply?.preview ?? '' });
+      })();
+      return true; // async sendResponse
+    }
+    // Popup Fact-Check after the disclosure. Must NOT go through tabs.sendMessage:
+    // Safari delivers that to every iframe on the page and then prompts "would like
+    // to access id5-sync.com" (and every other ad frame). The probe already uses
+    // askSelection in the top frame; start is the same path. Do not re-inject: a
+    // new copy would drop the probe's `pending`, and the popup often already stole
+    // the live selection by taking focus.
+    if (message?.type === 'MF_SELECTION_START_TAB' && typeof message.tabId === 'number') {
+      (async () => {
+        const tabId = message.tabId;
+        let world = await readIsolatedWorld(tabId);
+        if (world?.responder !== 'function') {
+          const inj = await injectSelectionScript(tabId);
+          if (!inj.injected) {
+            sendResponse({ ok: false, reason: 'not-injected' });
+            return;
+          }
+          world = inj.world;
+        }
+        const { delivered, reply } = await askSelection(tabId, 'popupStart');
+        console.log(
+          '[background] selection popup-start answered:', JSON.stringify(reply),
+          '| delivered:', delivered,
+          '| responder:', world?.responder ?? 'probe failed'
+        );
+        sendResponse(reply && typeof reply === 'object' ? reply : { ok: false, reason: delivered ? 'no-reply' : 'not-delivered' });
+      })();
+      return true; // async sendResponse
+    }
+    // The page script's two routes to the page's own world, asked for by name because it
+    // has no way to run code there itself: `scripting` is not an API a content script gets.
+    // The tab is the sender's — the script in question is running in it — so neither of
+    // these can be pointed at a page the user was not acting on.
+    if (message?.type === 'MF_SELECTION_PAGE_WORLD_PROBE') {
+      (async () => {
+        const tabId = _sender?.tab?.id;
+        if (typeof tabId !== 'number') {
+          sendResponse({ text: '' });
+          return;
+        }
+        sendResponse({ text: await probeSelectionInPageWorld(tabId) });
+      })();
+      return true; // async sendResponse
+    }
+    if (message?.type === 'MF_SELECTION_PAGE_WORLD_CAPTURE') {
+      (async () => {
+        const tabId = _sender?.tab?.id;
+        if (typeof tabId !== 'number') {
+          sendResponse({ ok: false, why: 'no tab' });
+          return;
+        }
+        const result = await captureSelectionInPageWorld(tabId);
+        // The only place the outcome of a page-world capture is legible: the page script
+        // gets the same object, but it is the wrap that proves it, and the wrap is drawn
+        // from here.
+        console.log(`[background] page-world capture in tab ${tabId}:`, JSON.stringify(result));
+        sendResponse(result ?? { ok: false, why: 'page world unavailable' });
+      })();
+      return true; // async sendResponse
+    }
     if (message?.type === 'MF_FUNDS_GET') {
       (async () => {
         await initFundsHub();
@@ -3083,7 +4444,8 @@ export default defineBackground({
             : message.type === 'MF_NATIVE_CLEAR_ACCOUNT'
               ? { action: 'CLEAR_ACCOUNT' }
             : message.type === 'MF_NATIVE_SYNC_ACCOUNT'
-              ? { action: 'SYNC_ACCOUNT', userId: message.userId, balance: message.balance }
+              ? { action: 'SYNC_ACCOUNT', userId: message.userId, balance: message.balance,
+                  accessToken: message.accessToken, accessTokenExpiresAt: message.accessTokenExpiresAt }
             : { action: 'PREPARE_TOPUP', amount: message.amount, userId: message.userId, balance: message.balance };
           // The host drives UI the user has to complete (ASWebAuthenticationSession, the
           // StoreKit sheet), so this ceiling is deliberately generous — it is not a
@@ -3266,6 +4628,24 @@ export default defineBackground({
     });
 
     port.onMessage.addListener(message => {
+      // A webpage selection. Unlike CLASSIFY_TWEETS this is not a tweet: it carries the
+      // selected passage plus the text around it, and the content script is the only
+      // client interested — results reach it through the ordinary CLASSIFICATION
+      // broadcasts, matched on this synthetic id.
+      if (message.type === "MF_SELECTION_BEGIN") {
+        const data = message.data;
+        if (!data || typeof data.id !== "string" || typeof data.selected !== "string" || !data.selected) return;
+        startSelectionPipeline({
+          id: data.id,
+          before: typeof data.before === "string" ? data.before : "",
+          selected: data.selected,
+          after: typeof data.after === "string" ? data.after : "",
+          locale: typeof data.locale === "string" && data.locale ? data.locale : getUiLocale(),
+          force: data.force === true,
+        });
+        return;
+      }
+
       if (message.type === "CLASSIFY_TWEETS") {
         const keepAlive = setInterval(() => {
           // Ping service worker to prevent Chrome from terminating it
@@ -3302,7 +4682,21 @@ export default defineBackground({
       // (notably stable Firefox, and Safari's intermittent false "already open"), the
       // user still needs somewhere to go, so fall back to the top-up flow in a tab.
       if (message.type === "MF_OPEN_POPUP") {
-        console.log(`[background] MF_OPEN_POPUP: notification clicked`);
+        console.log(`[background] MF_OPEN_POPUP: notification clicked`, message.data);
+        // Every kind, not just the money ones. An error notification is red because
+        // something refused to pay — a low balance, an expired session, a failed worker —
+        // so the balance is what its reader came to see. Landing them on the Fact-Check
+        // tab would answer a question they did not ask.
+        try { void browser.storage.local.set({ disinfax_popup_tab: 'balance' }); } catch { /* ignore */ }
+        // The popup starts a fact-check on its own when the active page has a selection.
+        // Someone who just clicked a balance notification is not asking for that, so the
+        // origin is marked here and the popup skips the selection flow entirely. A
+        // timestamp rather than a boolean: a mark left behind by a popup that never
+        // opened would otherwise mislabel the next, ordinary toolbar click. Fire-and-
+        // forget — openPopup() below must be reached without awaiting anything.
+        try {
+          void browser.storage.local.set({ mf_popup_origin: { kind: 'notification', at: Date.now() } });
+        } catch { /* ignore */ }
         (async () => {
           try {
             const api = toolbarAction();
@@ -3398,6 +4792,7 @@ export default defineBackground({
           }
           const sub = tweetSubs.get(id);
           if (sub) { sub.close(); tweetSubs.delete(id); }
+          annotationRoutingReady.delete(id);
         };
         for (const t of tweets) {
           forget(t.id);
@@ -3614,6 +5009,7 @@ export default defineBackground({
                 // in flight — "Annotating", not idle Annotate (see call site above).
                 mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
               }
+              if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, anyBatchId);
             }
           } catch (err: any) {
             console.error("[background] REFRESH_CLAIM error:", err);
@@ -3704,6 +5100,8 @@ export default defineBackground({
 
       if (message.type === "RECLASSIFY_ON_HOLD_CLICK") {
         const { classificationId, claimText, locale: msgLocale } = message.data;
+        void (async () => {
+        if (isSelectionId(classificationId)) await selectionPipelineReady;
         const hit = classificationCache.get(classificationId);
         if (!hit) {
           console.log(`[background] RECLASSIFY_ON_HOLD_CLICK: no cached classification for ${classificationId}`);
@@ -3763,6 +5161,7 @@ export default defineBackground({
                   // in flight — "Annotating", not idle Annotate (see admit site).
                   mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
                 }
+                if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, anyBatchId);
               }
             } catch (err: any) {
               console.error("[background] RECLASSIFY_ON_HOLD_CLICK pipeline refresh error:", err);
@@ -3848,6 +5247,7 @@ export default defineBackground({
                 // in flight — "Annotating", not idle Annotate (see admit site).
                 mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
               }
+              if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, anyBatchId);
             }
           } catch (err: any) {
             console.error("[background] RECLASSIFY_ON_HOLD_CLICK refresh error:", err);
@@ -3858,6 +5258,7 @@ export default defineBackground({
           }
         });
         trackClaimResearch(refreshKey, reclassifyResearchPromise);
+        })();
         return;
       }
 

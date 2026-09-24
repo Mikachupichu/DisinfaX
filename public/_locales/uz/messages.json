@@ -135,10 +135,6 @@
     "message": "Annotatsiya qilinmoqda",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ko'rib chiqildi — xatolar topilmadi.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Faktlarni tarjima qilish",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Tekshirish",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Tekshirilmoqda",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Mahalliylashtirish",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% tugmasiga bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% bosish diqqatga sazovor joylarni oʻzgartiradi va balansingizdan toʻlov olinadi"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ni bosish xatoliklarni tekshiradi va balansingizdan undiriladi"
   },
   "onboardWillCharge": {
     "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Faktlarni tekshirish",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Da'voni kiriting",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Manbalar",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Asoslash",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Matn tanlangan holda qalqib chiquvchi oynani ochish shu tanlovni tekshiradi va balansingizdan yechib olinadi.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Bekor qilish",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

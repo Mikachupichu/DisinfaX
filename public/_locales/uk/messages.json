@@ -133,10 +133,6 @@
     "message": "Анотування",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Перевірено — помилок не знайдено.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Перекласти перевірки",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Перевірити",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Перевірка",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Локалізувати",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Дотик до %BTN% показує твердження і спише кошти з вашого балансу"
+  },
+  "onboardLocalize": {
+    "message": "Натискання %BTN% змінює розташування виділень і стягує ваш баланс"
+  },
+  "onboardAnnotate": {
+    "message": "Натискання %BTN% перевіряє претензію на наявність помилок і стягує ваш баланс"
   },
   "onboardWillCharge": {
     "message": "Натискання на %BTN% спише кошти з вашого балансу"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Перевірка фактів",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Введіть твердження",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Джерела",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Обґрунтування",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Відкриття спливного вікна з виділеним текстом перевіряє цей фрагмент і спише кошти з вашого балансу.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Скасувати",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

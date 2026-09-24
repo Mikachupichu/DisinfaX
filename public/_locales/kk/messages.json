@@ -134,10 +134,6 @@
     "message": "Аннотациялануда",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Қаралды — қате табылмады.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Тексеру",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Тексеру",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Жергіліктендіру",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% түймесін түрту мәлімдемелерді ашады және балансыңыздан ақша алады"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% нұқу ерекше нүктелердің орнын ауыстырады және теңгеріміңізді толтырады"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% басу қателер туралы шағымды тексереді және балансыңыздан ақы алынады"
   },
   "onboardWillCharge": {
     "message": "%BTN% түймесін басу балансыңыздан ақша алады"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Фактілерді тексеру",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Тұжырымды енгізіңіз",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Дереккөздер",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Негіздеме",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Мәтінді таңдап қалқымалы терезені ашу сол таңдауды тексереді және балансыңыздан шешіледі.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Болдырмау",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

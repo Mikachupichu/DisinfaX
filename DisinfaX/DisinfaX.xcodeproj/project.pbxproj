@@ -51,6 +51,8 @@
 		9394CF103026AEDA00AE138E /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = 9394CEF83026AEDA00AE138E /* _locales */; };
 		9394CF113026AEDA00AE138E /* icon in Resources */ = {isa = PBXBuildFile; fileRef = 9394CEF93026AEDA00AE138E /* icon */; };
 		9394CF123026AEDA00AE138E /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 9394CEFA3026AEDA00AE138E /* assets */; };
+		93D690F1302AB001009E7A19 /* selection.js in Resources */ = {isa = PBXBuildFile; fileRef = 93D690F0302AB001009E7A19 /* selection.js */; };
+		93D690F2302AB001009E7A19 /* selection.js in Resources */ = {isa = PBXBuildFile; fileRef = 93D690F0302AB001009E7A19 /* selection.js */; };
 		93D690873026AF7A009E7A19 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690863026AF66009E7A19 /* AuthManager.swift */; };
 		93D690883026AF7A009E7A19 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690863026AF66009E7A19 /* AuthManager.swift */; };
 		93D6908A3027EB01009E7A19 /* .storekit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 93D690893027EB01009E7A19 /* .storekit.storekit */; };
@@ -75,6 +77,14 @@
 		93D690A1302A7EC5009E7A19 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
 		93D690A2302A7FE9009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
 		93D690A3302A7FEF009E7A19 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690833026AF42009E7A19 /* StoreKitManager.swift */; };
+		93D690C2302A9001009E7A19 /* FactCheckClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C0302A9001009E7A19 /* FactCheckClient.swift */; };
+		93D690C3302A9001009E7A19 /* FactCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C1302A9001009E7A19 /* FactCheckView.swift */; };
+		93D690C4302A9001009E7A19 /* FactCheckClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C0302A9001009E7A19 /* FactCheckClient.swift */; };
+		93D690C5302A9001009E7A19 /* FactCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C1302A9001009E7A19 /* FactCheckView.swift */; };
+		93D690C6302A9001009E7A19 /* Realtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C7302A9001009E7A19 /* Realtime.swift */; };
+		93D690C8302A9001009E7A19 /* Realtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C7302A9001009E7A19 /* Realtime.swift */; };
+		93D690D1302A9001009E7A19 /* FactCheckNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */; };
+		93D690D2302A9001009E7A19 /* FactCheckNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +162,7 @@
 		9394CEF83026AEDA00AE138E /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = _locales; path = "../../.output/safari-mv2/_locales"; sourceTree = "<group>"; };
 		9394CEF93026AEDA00AE138E /* icon */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icon; path = "../../.output/safari-mv2/icon"; sourceTree = "<group>"; };
 		9394CEFA3026AEDA00AE138E /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = "../../.output/safari-mv2/assets"; sourceTree = "<group>"; };
+		93D690F0302AB001009E7A19 /* selection.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = selection.js; path = "../../.output/safari-mv2/selection.js"; sourceTree = "<group>"; };
 		93D690833026AF42009E7A19 /* StoreKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitManager.swift; sourceTree = "<group>"; };
 		93D690863026AF66009E7A19 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		93D690893027EB01009E7A19 /* .storekit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = .storekit.storekit; sourceTree = "<group>"; };
@@ -165,6 +176,10 @@
 		93D690B1302A8A01009E7A19 /* UsdFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsdFormat.swift; sourceTree = "<group>"; };
 		93D6909D302A7EA7009E7A19 /* TopUpHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUpHandoff.swift; sourceTree = "<group>"; };
 		B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		93D690C0302A9001009E7A19 /* FactCheckClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactCheckClient.swift; sourceTree = "<group>"; };
+		93D690C1302A9001009E7A19 /* FactCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactCheckView.swift; sourceTree = "<group>"; };
+		93D690C7302A9001009E7A19 /* Realtime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime.swift; sourceTree = "<group>"; };
+		93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactCheckNotifications.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +234,10 @@
 		9394CE933026AED900AE138E /* Shared (App) */ = {
 			isa = PBXGroup;
 			children = (
+				93D690C0302A9001009E7A19 /* FactCheckClient.swift */,
+				93D690C1302A9001009E7A19 /* FactCheckView.swift */,
+				93D690C7302A9001009E7A19 /* Realtime.swift */,
+				93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */,
 				93D6909D302A7EA7009E7A19 /* TopUpHandoff.swift */,
 				93D690833026AF42009E7A19 /* StoreKitManager.swift */,
 				93D69092302A7811009E7A19 /* SafariSettingsOpener.swift */,
@@ -318,6 +337,7 @@
 				9394CEF83026AEDA00AE138E /* _locales */,
 				9394CEF93026AEDA00AE138E /* icon */,
 				9394CEFA3026AEDA00AE138E /* assets */,
+				93D690F0302AB001009E7A19 /* selection.js */,
 			);
 			name = Resources;
 			path = "Shared (Extension)";
@@ -500,6 +520,7 @@
 				9394CF123026AEDA00AE138E /* assets in Resources */,
 				9394CF103026AEDA00AE138E /* _locales in Resources */,
 				9394CF0E3026AEDA00AE138E /* content-scripts in Resources */,
+				93D690F1302AB001009E7A19 /* selection.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,6 +540,7 @@
 				9394CF063026AEDA00AE138E /* assets in Resources */,
 				9394CF043026AEDA00AE138E /* _locales in Resources */,
 				9394CF023026AEDA00AE138E /* content-scripts in Resources */,
+				93D690F2302AB001009E7A19 /* selection.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +559,10 @@
 				93D69098302A7811009E7A19 /* SharedTopUpStore.swift in Sources */,
 				93D69099302A7811009E7A19 /* SafariSettingsOpener.swift in Sources */,
 				93D6909A302A7811009E7A19 /* TopUpView.swift in Sources */,
+				93D690C2302A9001009E7A19 /* FactCheckClient.swift in Sources */,
+				93D690C3302A9001009E7A19 /* FactCheckView.swift in Sources */,
+				93D690C6302A9001009E7A19 /* Realtime.swift in Sources */,
+				93D690D1302A9001009E7A19 /* FactCheckNotifications.swift in Sources */,
 				93D690B3302A8A01009E7A19 /* UsdFormat.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -549,6 +575,10 @@
 				93D69095302A7811009E7A19 /* SharedTopUpStore.swift in Sources */,
 				93D69096302A7811009E7A19 /* SafariSettingsOpener.swift in Sources */,
 				93D69097302A7811009E7A19 /* TopUpView.swift in Sources */,
+				93D690C4302A9001009E7A19 /* FactCheckClient.swift in Sources */,
+				93D690C5302A9001009E7A19 /* FactCheckView.swift in Sources */,
+				93D690C8302A9001009E7A19 /* Realtime.swift in Sources */,
+				93D690D2302A9001009E7A19 /* FactCheckNotifications.swift in Sources */,
 				93D690B2302A8A01009E7A19 /* UsdFormat.swift in Sources */,
 				9394CED93026AEDA00AE138E /* ViewController.swift in Sources */,
 				9394CEB73026AEDA00AE138E /* AppDelegate.swift in Sources */,
@@ -848,7 +878,7 @@
 				PRODUCT_NAME = DisinfaX;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -892,7 +922,7 @@
 				PRODUCT_NAME = DisinfaX;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1043,7 +1073,7 @@
 				PRODUCT_NAME = DisinfaX;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1096,7 +1126,7 @@
 				PRODUCT_NAME = DisinfaX;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;

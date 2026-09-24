@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "الضغط على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
   },
+  "onboardLocalize": {
+    "message": "يؤدي النقر على %BTN% إلى إعادة وضع النقاط البارزة وسيتم خصم رصيدك"
+  },
+  "onboardAnnotate": {
+    "message": "يؤدي النقر على %BTN% إلى التحقق من وجود أخطاء في المطالبة وسيخصم من رصيدك"
+  },
   "onboardWillCharge": {
     "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
   },
@@ -196,10 +202,6 @@
     "message": "جارٍ التعليم",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "روجع — لم يُعثر على أخطاء.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "ترجمة نتائج التحقق",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -227,6 +229,10 @@
   "disinfactButton": {
     "message": "تحقق",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "قيد التحقق",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "وطِّن",
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "التحقق من الحقائق",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "أدخل ادعاءً",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "المصادر",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "التعليل",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "فتح النافذة المنبثقة مع تحديد نص يتحقق من ذلك التحديد وسيخصم من رصيدك.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "إلغاء",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

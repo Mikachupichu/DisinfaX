@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "%BTN%ত টেপ কৰিলে দাবীসমূহ দেখুৱাব আৰু আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
   },
+  "onboardLocalize": {
+    "message": "%BTN% ক্লিক কৰিলে হাইলাইটসমূহ পুনৰায় স্থান দিয়া হয় আৰু আপোনাৰ বেলেঞ্চ চাৰ্জ কৰিব"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ক্লিক কৰিলে দাবীটো ভুলৰ বাবে পৰীক্ষা কৰা হয় আৰু আপোনাৰ বেলেঞ্চ চাৰ্জ হ'ব"
+  },
   "onboardWillCharge": {
     "message": "%BTN%ত ক্লিক কৰিলে আপোনাৰ ব্যালেন্সৰ পৰা টকা কাটি লোৱা হ'ব"
   },
@@ -198,10 +204,6 @@
     "message": "টীকা কৰি আছে",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "পৰীক্ষা কৰা হ’ল — কোনো ভুল পোৱা নগ’ল।",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "তথ্য পৰীক্ষণ অনুবাদ কৰক",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "পৰীক্ষা কৰক",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "তথ্য পৰীক্ষণ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "স্থানীয়কৰক",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "তথ্য পৰীক্ষা",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "এটা দাবী লিখক",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "উৎস",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "যুক্তি",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "লিখা বাছনি কৰি পপআপ খুলিলে সেই বাছনি পৰীক্ষা কৰা হ'ব আৰু আপোনাৰ বেলেঞ্চৰ পৰা কটা হ'ব।",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "বাতিল কৰক",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

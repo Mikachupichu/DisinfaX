@@ -133,10 +133,6 @@
     "message": "กำลังใส่คำอธิบายประกอบ",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "ตรวจสอบแล้ว — ไม่พบข้อผิดพลาด",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "แปลตรวจสอบ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "ตรวจสอบข้อเท็จจริง",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "กำลังตรวจสอบ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ปรับให้ตรงภาษา",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "การแตะ %BTN% จะเปิดเผยข้อกล่าวอ้างและจะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardLocalize": {
+    "message": "การคลิก %BTN% จะเป็นการเปลี่ยนตำแหน่งไฮไลท์และจะเรียกเก็บเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardAnnotate": {
+    "message": "การคลิก %BTN% จะตรวจสอบการอ้างสิทธิ์เพื่อหาข้อผิดพลาด และจะเรียกเก็บเงินจากยอดคงเหลือของคุณ"
   },
   "onboardWillCharge": {
     "message": "การคลิก %BTN% จะหักเงินจากยอดคงเหลือของคุณ"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "ตรวจสอบข้อเท็จจริง",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ป้อนคำกล่าวอ้าง",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "แหล่งที่มา",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "เหตุผล",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "การเปิดป๊อปอัปขณะมีข้อความที่เลือกจะตรวจสอบข้อความนั้นและหักจากยอดคงเหลือของคุณ",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ยกเลิก",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

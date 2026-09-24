@@ -135,10 +135,6 @@
     "message": "Komentado",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Reviziita — neniuj eraroj trovitaj.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Traduki faktokontrolojn",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Faktokontrolo",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontrolado",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizu",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Frapeti sur %BTN% malkaŝas asertojn kaj pagigos vian saldon"
+  },
+  "onboardLocalize": {
+    "message": "Klako %BTN% repoziciigas la lumaĵojn kaj ŝargos vian saldon"
+  },
+  "onboardAnnotate": {
+    "message": "Klako %BTN% kontrolas la aserton pri eraroj kaj ŝargos vian saldon"
   },
   "onboardWillCharge": {
     "message": "Klaki sur %BTN% pagigos vian saldon"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Faktokontrolo",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Enigu aserton",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fontoj",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Rezonado",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Malfermi la ŝprucfenestron kun elektita teksto kontrolas tiun elekton kaj pagigos vian saldon.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Nuligi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

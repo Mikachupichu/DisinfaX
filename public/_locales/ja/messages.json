@@ -133,10 +133,6 @@
     "message": "注釈中",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "確認済み — 誤りは見つかりませんでした。",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "ファクトチェックを翻訳",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "ファクトチェック",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ファクトチェック",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ローカライズ",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN%をタップすると主張が表示され、残高が課金されます"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% をクリックするとハイライトの位置が変更され、残高がチャージされます"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% をクリックすると、申し立てにエラーがないかチェックされ、残高が請求されます"
   },
   "onboardWillCharge": {
     "message": "%BTN%をクリックすると残高が課金されます"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "ファクトチェック",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "主張を入力",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "出典",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "根拠",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "テキストを選択した状態でポップアップを開くと、その選択がファクトチェックされ、残高から差し引かれます。",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "キャンセル",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

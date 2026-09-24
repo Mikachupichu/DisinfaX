@@ -135,10 +135,6 @@
     "message": "تشریح کیږي",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "کتل شوي — هېڅ تېروتنه ونه موندل شوه.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "تایید وژباړئ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "تایید",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "تایید",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ځایي کړه",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "پر %BTN% لمس کول ادعاوې ښکاره کوي او ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardLocalize": {
+    "message": "د %BTN% کلیک کول مهم ټکي ځای په ځای کوي او ستاسو بیلانس چارج کوي"
+  },
+  "onboardAnnotate": {
+    "message": "د %BTN% کلیک کول د غلطیو ادعا چک کوي او ستاسو بیلانس چارج کوي"
   },
   "onboardWillCharge": {
     "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "د حقیقت کتنه",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "یوه ادعا ولیکئ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "سرچینې",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "استدلال",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "د ټیکسټ په ټاکلو سره پاپ اپ پرانیستل هغه ټاکل ګوري او ستاسو له بیلانس کمېږي.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "لغوه",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }
