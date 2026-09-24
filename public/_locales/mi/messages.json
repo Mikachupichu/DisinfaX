@@ -135,10 +135,6 @@
     "message": "E tāpiri ana",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Kua arotake — kāore he hapa i kitea.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Whakamāori i ngā Arotake Meka",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Arotake",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Arotake",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Whakamāori ki te reo",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ko te pā i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō toenga"
+  },
+  "onboardLocalize": {
+    "message": "Ma te paato i te %BTN% ka huri i nga mea nui ka utu i to toenga"
+  },
+  "onboardAnnotate": {
+    "message": "Ma te panui i te %BTN% ka tirohia te kereme mo nga hapa ka utu i to toenga"
   },
   "onboardWillCharge": {
     "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Arotake meka",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Whakauruhia he kerēme",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Puna",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Whakaaroaro",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mā te whakatuwhera i te popup me te tuhinga kua tīpakohia ka arotakehia taua tīpakonga, ā, ka utua mai i tō toenga.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Whakakore",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

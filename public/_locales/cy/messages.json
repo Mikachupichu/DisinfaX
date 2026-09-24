@@ -168,10 +168,6 @@
     "message": "Yn anodi",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Wedi adolygu — dim gwallau wedi'u canfod.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Cyfieithu'r Ffeithwiriadau",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -221,6 +217,10 @@
   "disinfactButton": {
     "message": "Ffeithwirio",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Ffeithwirio",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lleoleiddio",
@@ -273,6 +273,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Bydd tapio %BTN% yn dangos honiadau a bydd yn codi tâl ar eich balans"
+  },
+  "onboardLocalize": {
+    "message": "Mae clicio %BTN% yn ail-leoli'r uchafbwyntiau a bydd yn codi tâl ar eich balans"
+  },
+  "onboardAnnotate": {
+    "message": "Mae clicio ar %BTN% yn gwirio'r hawliad am wallau a bydd yn codi tâl ar eich balans"
   },
   "onboardWillCharge": {
     "message": "Bydd clicio %BTN% yn codi tâl ar eich balans"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Gwirio ffeithiau",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Rhowch honiad",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ffynonellau",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Rhesymu",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mae agor y popup gyda thest wedi'i ddewis yn gwirio'r dewis hwnnw ac yn codi ar eich balans.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Canslo",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

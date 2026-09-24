@@ -19,6 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 15.0, *) {
             StoreKitManager.shared.startObservingTransactionUpdates()
         }
+
+        // Before the app is running, because the first thing it can receive is a tap on its own
+        // notification from a previous run's Notification Center. On iOS that tap also brings the
+        // app forward, so the tab is the only thing the delegate has to arrange.
+        FactCheckNotifier.shared.start()
         return true
     }
 

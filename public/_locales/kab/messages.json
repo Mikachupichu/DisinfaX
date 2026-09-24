@@ -134,10 +134,6 @@
     "message": "Yettannoti",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Yettwaceggem — ulac aɣelṭ.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Suqel isenqaden",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Senqed",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Asenqed",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Snuẓẓel",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Anadam ɣef %BTN% ad d-issken tignisin yerna ad iqecc amuḍin-ik"
+  },
+  "onboardLocalize": {
+    "message": "Asiti ɣef %BTN% ad d-yerr imukanen yerna ad iqecc amuḍin-ik"
+  },
+  "onboardAnnotate": {
+    "message": "Asiti ɣef %BTN% ad d-isenqed awal ɣef tuccḍa yerna ad iqecc amuḍin-ik"
   },
   "onboardWillCharge": {
     "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Asenqed n tidett",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Sekcem tukkist",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Iɣbula",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Asteqsi",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ldi tfeggagt s uḍris yettwafernen ad yesselḥu ayagi, ad itwaxelleṣ seg tsidett-ik.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Sefsex",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

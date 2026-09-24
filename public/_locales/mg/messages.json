@@ -135,10 +135,6 @@
     "message": "Manao fanamarihana",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Nojerena — tsy nisy hadisoana hita.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Adikao ny Fanamarinana",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Manamarina",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Fanamarinana",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Ataovy amin'ny teny",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ny fikapohana ny %BTN% dia hampiseho ny filazana ary hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardLocalize": {
+    "message": "Ny fanindriana ny %BTN% dia mamerina mametraka ny zava-nisongadina ary handoa ny fifandanjanao"
+  },
+  "onboardAnnotate": {
+    "message": "Ny fanindriana ny %BTN% dia manamarina ny fitakiana raha misy lesoka ary handoa ny fandanjanao"
   },
   "onboardWillCharge": {
     "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fandinihana ny zava-misy",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Ampidiro ny filazana",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Loharano",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Fanamarinana",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ny manokatra ny popup miaraka amin'ny lahatsoratra voafidy dia hanamarina izany ary halaina amin'ny saldo-nao.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ajanona",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

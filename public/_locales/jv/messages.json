@@ -134,10 +134,6 @@
     "message": "Nganotasi",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ditliti — ora ana kesalahan.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Terjemahake Priksa Fakta",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Priksa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Mriksa…",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalisasi",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Nyentuh %BTN% bakal nampilake klaim lan ngurangi saldomu"
+  },
+  "onboardLocalize": {
+    "message": "Ngeklik %BTN% ngganti posisi sorotan lan bakal ngisi imbangan sampeyan"
+  },
+  "onboardAnnotate": {
+    "message": "Ngeklik %BTN% mriksa pratelan kanggo kesalahan lan bakal ngisi saldo sampeyan"
   },
   "onboardWillCharge": {
     "message": "Nyeklik %BTN% bakal ngurangi saldomu"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Pameriksaan fakta",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Lebokna pratelan",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sumber",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Alesan",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mbukak popup kanthi teks sing dipilih bakal mriksa pilihan kasebut lan bakal nyuda saldo sampeyan.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Batal",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

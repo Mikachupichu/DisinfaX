@@ -133,10 +133,6 @@
     "message": "Se adnotează",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Verificat — nu s-au găsit erori.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Tradu verificările",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Verifică",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verificare",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Localizează",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Atingerea %BTN% dezvăluie afirmațiile și va debita soldul tău"
+  },
+  "onboardLocalize": {
+    "message": "Făcând clic pe %BTN% repoziționează elementele evidențiate și îți va încărca soldul"
+  },
+  "onboardAnnotate": {
+    "message": "Făcând clic pe %BTN%, verificați reclamația pentru erori și vă va încasa soldul"
   },
   "onboardWillCharge": {
     "message": "Apăsarea pe %BTN% va debita soldul tău"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Verificarea faptelor",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Introduceți o afirmație",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Surse",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Raționament",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Deschiderea popup-ului cu text selectat verifică acea selecție și va fi debitată din soldul tău.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anulează",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

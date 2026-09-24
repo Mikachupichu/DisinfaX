@@ -119,3 +119,101 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* ── Inline annotations (strikethroughs & corrections) ───────────────────────── */
+.mf-strike {
+  position: relative;
+  display: inline;
+}
+.mf-strike-h {
+  text-decoration-line: line-through;
+  text-decoration-thickness: 2px;
+}
+.mf-strike-line {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  pointer-events: none;
+}
+.mf-strike-line.mf-diag-a {
+  transform: rotate(14deg);
+}
+.mf-strike-line.mf-diag-b {
+  transform: rotate(-14deg);
+}
+.mf-corr {
+  font: inherit;
+  font-family: "MFKalam", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Marker Felt", "Comic Sans MS", cursive;
+  font-weight: 700;
+  font-size: 1.08em;
+}
+
+/* ── Verdict badge ───────────────────────────────────────────────────────────────
+   The on-page badge's own rules, class names and all (utils/injecting.ts), so the two
+   read and behave identically: an adjective and its percentage share one grid cell, so
+   swapping them on hover moves nothing, and the locale's separator rides inside the slot,
+   so a slot that is out of the layout takes it along. */
+.mf-badge-slot {
+  display: inline-flex;
+  align-items: center;
+}
+.mf-badge-stack {
+  display: inline-grid;
+  grid-template-areas: "stack";
+  align-items: center;
+  justify-items: center;
+}
+.mf-badge-adj,
+.mf-badge-pct {
+  grid-area: stack;
+  white-space: nowrap;
+}
+.mf-badge-glue {
+  white-space: pre;
+}
+.mf-badge-slot:not(.mf-badge-empty) .mf-badge-pct {
+  visibility: hidden;
+}
+/* A score of 0.9 or better gets no adjective, so its slot stays out of the layout until
+   the verdict word is hovered, then takes only the width its percentage needs. */
+.mf-badge-empty {
+  display: none;
+}
+.mf-verdict-badge:has(.mf-badge-verdict:hover) .mf-badge-empty,
+.mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-empty {
+  display: inline-flex;
+}
+/* While the pointer is with a badge whose hover widened it, the empty slots stay in the
+   layout. They are the whole of the badge's width change, so holding them holds the layout
+   still: the widening slides a part of the badge out from under the pointer, and the hover
+   that widened it would otherwise be lost the moment it happened, flickering between the
+   two widths. VerdictBadge.tsx puts the class on for as long as the pointer stays. */
+.mf-verdict-badge.mf-badge-held .mf-badge-empty {
+  display: inline-flex;
+}
+/* What is held is the reveal, not just the width it cost: the percentages stand in whatever
+   shape the widening left the badge. */
+.mf-verdict-badge.mf-badge-held .mf-badge-adj {
+  visibility: hidden;
+}
+.mf-verdict-badge.mf-badge-held .mf-badge-pct {
+  visibility: visible;
+}
+/* Hovering an adjective swaps that one score. The verdict word stands for the whole badge
+   and swaps both; so does an adjective-less slot, which the pointer can only be on after
+   the widening moved it there — that is the verdict word's hover arriving. */
+.mf-verdict-badge .mf-badge-conf:hover .mf-badge-adj,
+.mf-verdict-badge .mf-badge-ver:hover .mf-badge-adj,
+.mf-verdict-badge:has(.mf-badge-verdict:hover) .mf-badge-adj,
+.mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-adj {
+  visibility: hidden;
+}
+.mf-verdict-badge .mf-badge-conf:hover .mf-badge-pct,
+.mf-verdict-badge .mf-badge-ver:hover .mf-badge-pct,
+.mf-verdict-badge:has(.mf-badge-verdict:hover) .mf-badge-pct,
+.mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-pct {
+  visibility: visible;
+}

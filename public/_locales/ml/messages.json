@@ -133,10 +133,6 @@
     "message": "വ്യാഖ്യാനിക്കുന്നു",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "പരിശോധിച്ചു — പിശകുകളൊന്നും കണ്ടെത്തിയില്ല.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "വസ്തുത പരിശോധനകൾ വിവർത്തനം ചെയ്യുക",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "പരിശോധന",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "പരിശോധന",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "പ്രാദേശികമാക്കുക",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% ടാപ്പ് ചെയ്യുന്നത് അവകാശവാദങ്ങൾ വെളിപ്പെടുത്തുകയും നിങ്ങളുടെ ബാലൻസിൽ നിന്ന് ഈടാക്കുകയും ചെയ്യും"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ക്ലിക്കുചെയ്യുന്നത് ഹൈലൈറ്റുകൾ പുനഃസ്ഥാപിക്കുകയും നിങ്ങളുടെ ബാലൻസ് ചാർജ് ചെയ്യുകയും ചെയ്യും"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ക്ലിക്ക് ചെയ്യുന്നത് പിശകുകൾക്കുള്ള ക്ലെയിം പരിശോധിക്കുകയും നിങ്ങളുടെ ബാലൻസ് ചാർജ് ചെയ്യുകയും ചെയ്യും"
   },
   "onboardWillCharge": {
     "message": "%BTN% ക്ലിക്ക് ചെയ്യുന്നത് നിങ്ങളുടെ ബാലൻസിൽ നിന്ന് ഈടാക്കും"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "വസ്തുതാ പരിശോധന",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ഒരു വാദം നൽകുക",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "സ്രോതസ്സുകൾ",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ന്യായീകരണം",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ടെക്സ്റ്റ് തിരഞ്ഞെടുത്ത് പോപ്പപ്പ് തുറന്നാൽ ആ തിരഞ്ഞെടുപ്പ് പരിശോധിക്കുകയും നിങ്ങളുടെ ബാലൻസിൽ നിന്ന് കുറയ്ക്കുകയും ചെയ്യും.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "റദ്ദാക്കുക",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

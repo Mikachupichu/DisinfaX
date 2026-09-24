@@ -135,10 +135,6 @@
     "message": "Ana yi bayani",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "An duba — ba a sami kuskure ba.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Fassara Bincike",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Bincike",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Bincike",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Daidaita da harshen",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Taɓa %BTN% zai bayyana da'awoyi kuma zai cire kudi daga ma'aunin ku"
+  },
+  "onboardLocalize": {
+    "message": "Danna %BTN% yana mayar da abubuwan da suka fi dacewa kuma zai cajin ma'auni"
+  },
+  "onboardAnnotate": {
+    "message": "Danna %BTN% yana bincika da'awar kurakurai kuma zai cajin ma'auni"
   },
   "onboardWillCharge": {
     "message": "Danna %BTN% zai cire kudi daga ma'aunin ku"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Tabbatar da gaskiya",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Shigar da da'awa",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Tushe",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Dalili",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Bude popup da zaɓaɓɓen rubutu yana duba wannan zaɓin kuma za a cire daga ma'auninka.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Soke",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

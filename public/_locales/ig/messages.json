@@ -134,10 +134,6 @@
     "message": "Na-agbakwunye nkọwa",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Enyochala — ahụghị njehie.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Nyochaa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Na-enyocha",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Megharịa n'asụsụ",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ịkwụ aka na %BTN% ga-ekpughe nkwupụta ma gbaa ụgwọ na ngụkọ gị"
+  },
+  "onboardLocalize": {
+    "message": "Ịpị %BTN% na-atụgharị isi ihe na ọ ga-ana gị nguzozi"
+  },
+  "onboardAnnotate": {
+    "message": "Ịpị %BTN% na-enyocha nzọrọ maka mmejọ ma ga-ana gị nguzozi"
   },
   "onboardWillCharge": {
     "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Nlele eziokwu",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tinye nkwupụta",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ebe enwetara",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Echiche",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Imepepụta popup na ederede ahọpụtara ga-enyocha nhọrọ ahụ ma wepụ na ego gị.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Kagbuo",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

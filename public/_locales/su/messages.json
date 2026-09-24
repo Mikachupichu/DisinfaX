@@ -135,10 +135,6 @@
     "message": "Nganotasi",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Dipariksa — teu kapanggih kasalahan.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Tarjamahkeun Pamariksaan Fakta",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Pariksa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Pamariksaan",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalisasi",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Toél %BTN% nembongkeun klaim sarta bakal ngabeban saldo anjeun"
+  },
+  "onboardLocalize": {
+    "message": "Ngaklik%BTN% repositions highlights tur bakal ngecas kasaimbangan Anjeun"
+  },
+  "onboardAnnotate": {
+    "message": "Ngaklik %BTN% pariksa klaim kasalahan sarta bakal ngecas kasaimbangan Anjeun"
   },
   "onboardWillCharge": {
     "message": "Klik %BTN% bakal ngabeban saldo anjeun"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Mariksa fakta",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Lebetkeun klaim",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sumber",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Alesan",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Muka popup kalawan téks nu dipilih bakal mariksa pilihan éta sarta bakal dipotong tina saldo anjeun.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Bolay",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

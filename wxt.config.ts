@@ -79,12 +79,13 @@ export default defineConfig({
         128: 'icon/128-gray.png',
       },
     },
-    web_accessible_resources: [
-      {
-        resources: ['_locales/*/messages.json'],
-        matches: ['<all_urls>']
-      }
-    ],
+    // `_locales/*/messages.json` is NOT listed here. Content scripts already
+    // read copy through chrome.i18n; the fetch fallback in injecting.ts /
+    // popup i18n is only the mfLocale test override. Declaring those files
+    // with `matches: ['<all_urls>']` made Safari treat every iframe origin
+    // as a host the extension wanted — including trackers like id5-sync.com
+    // on CBC — and prompt "would like to access …". chrome.runtime.getURL
+    // from an extension page or a content script does not need WAR.
     permissions: [
       ...(env.browser !== 'safari' ? ['identity'] : []),
       // Safari drives OAuth (ASWebAuthenticationSession) and StoreKit purchases through
@@ -93,7 +94,17 @@ export default defineConfig({
       // there would add a store-listing permission warning for nothing.
       ...(env.browser === 'safari' ? ['nativeMessaging'] : []),
       'storage',
-      'alarms'
+      'alarms',
+      // Fact-check-anywhere. Deliberately NOT a `<all_urls>` content script plus broad
+      // host_permissions: that would run our code on every page the user ever opens and
+      // raise the "Read and change all your data on all websites" install warning — a
+      // real cost on the Web Store and a declared-data change on AMO. `activeTab` instead
+      // grants host access to exactly one page, only after the user invokes us (toolbar
+      // click or the context menu item) which is precisely when a selection flow can
+      // start. `scripting` is what turns that grant into an injected content script.
+      'contextMenus',
+      'activeTab',
+      'scripting'
     ],
     // No host_permissions entry: redirect detection (Stripe return, OAuth callback) now
     // lands on x.com, whose content-script match already grants tabs.onUpdated URL

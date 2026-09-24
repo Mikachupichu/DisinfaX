@@ -135,10 +135,6 @@
     "message": "Iyachaza",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ihloliwe — akukho mpazamo ifunyenweyo.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Guqulela Iziqinisekiso",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Qinisekisa",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Ukujonga",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Yilungelelanise",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ukuchukumisa u-%BTN% kubonisa iimbangela kwaye kuza kukhupha imali kwibhalansi yakho"
+  },
+  "onboardLocalize": {
+    "message": "Ukucofa i-%BTN% kubeka kwakhona amanqaku aphezulu kwaye kuya kuhlawulisa ibhalansi yakho"
+  },
+  "onboardAnnotate": {
+    "message": "Ukucofa i-%BTN% ijonga ibango leempazamo kwaye iya kuhlawulisa ibhalansi yakho"
   },
   "onboardWillCharge": {
     "message": "Ukucofa u-%BTN% kuza kukhupha imali kwibhalansi yakho"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Ukuqinisekisa inyaniso",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Faka ibango",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Imithombo",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ingcinga",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ukuvula i-popup ngombhalo okhethiweyo kuya kuhlola oko kukhethiweyo kwaye kuya kutsalwa kwimali yakho eseleyo.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Rhoxisa",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "%BTN%-painikkeen napauttaminen näyttää väitteet ja veloittaa saldoasi"
   },
+  "onboardLocalize": {
+    "message": "Napsauta %BTN% siirtää kohokohdat uudelleen ja veloittaa saldosi"
+  },
+  "onboardAnnotate": {
+    "message": "Napsauttamalla %BTN% tarkistaa vaatimuksen virheiden varalta ja veloittaa saldosi"
+  },
   "onboardWillCharge": {
     "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
   },
@@ -196,10 +202,6 @@
     "message": "Annotoidaan",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Tarkistettu — virheitä ei löytynyt.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Käännä faktantarkistukset",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -227,6 +229,10 @@
   "disinfactButton": {
     "message": "Paljasta väitteet",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Tarkistus",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokaloi",
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Faktantarkistus",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Syötä väite",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Lähteet",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Perustelut",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ponnahdusikkunan avaaminen teksti valittuna tarkistaa kyseisen valinnan ja veloittaa saldostasi.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Peruuta",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

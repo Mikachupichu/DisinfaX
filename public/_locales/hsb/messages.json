@@ -135,10 +135,6 @@
     "message": "Komentuje so",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Přepruwane — žane zmylki namakane.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Přełožić pruwowanje",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Pruwowanje",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Pruwowanje",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizować",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Dótkńenje %BTN% pokazuje twjerdźenja a wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardLocalize": {
+    "message": "Kliknjenje na %BTN% přeměstni wuzběhnjenja a wotćehnje pjenjezy z wašeho konta"
+  },
+  "onboardAnnotate": {
+    "message": "Kliknjenje na %BTN% přepruwuje twjerdźenje na zmylki a wotćehnje pjenjezy z wašeho konta"
   },
   "onboardWillCharge": {
     "message": "Kliknjenje na %BTN% wotćehnje pjenjezy z wašeho konta"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fakty přepruwowanje",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Zapisaj twjerdźenje",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Žórła",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Zdowodowanje",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Wočinjenje popupa z wubranym tekstom přepruwuje tute wubranje a wotpisa so wot twojeho konta.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Přetorhnyć",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

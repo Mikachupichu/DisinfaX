@@ -67,9 +67,17 @@
     "message": "Tapping %BTN% reveals claims and will charge your balance",
     "description": "Onboarding popover next to the Disinfact button (touch devices). %BTN% is replaced with the button's name."
   },
+  "onboardLocalize": {
+    "message": "Clicking %BTN% repositions the highlights and will charge your balance",
+    "description": "Onboarding popover next to the Localize button, which repositions fact-check highlights made for another language version. %BTN% is replaced with the button's name."
+  },
+  "onboardAnnotate": {
+    "message": "Clicking %BTN% checks the claim for errors and will charge your balance",
+    "description": "Onboarding popover next to a claim's Annotate button, which runs a second AI pass to mark suspected errors in the claim text. %BTN% is replaced with the button's name."
+  },
   "onboardWillCharge": {
     "message": "Clicking %BTN% will charge your balance",
-    "description": "Onboarding popover for the Fact-Check All and tweet-level Translate buttons. %BTN% is replaced with the button's name."
+    "description": "Onboarding popover for the Fact-Check All button. %BTN% is replaced with the button's name."
   },
   "onboardFactcheck": {
     "message": "Clicking %BTN% will charge your balance",
@@ -217,10 +225,6 @@
     "message": "Annotating",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Reviewed — no errors found.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -248,6 +252,10 @@
   "disinfactButton": {
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Disinfacting",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Localize",
@@ -381,5 +389,33 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fact-Check",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Enter a claim",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sources",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Reasoning",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Opening the popup with text selected fact-checks that selection and will charge your balance.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Cancel",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Clear",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
   }
 }

@@ -135,10 +135,6 @@
     "message": "ئىزاھات قوشۇلماقتا",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "تەكشۈرۈلدى — خاتالىق بايقالمىدى.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "پاكىت تەكشۈرۈشلىرىنى تەرجىمە قىلىش",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "ئاشكارىلاش",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "پاكىت تەكشۈرۈش",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "يەرلىكلەشتۈرۈش",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% نى بېسىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% نى باسسىڭىز يارقىن نۇقتىلار ئەسلىگە كېلىدۇ ھەمدە تەڭپۇڭلۇقىڭىزغا توك قاچىلايدۇ"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% نى باسسىڭىز خاتالىق توغرىسىدىكى تەلەپنى تەكشۈرۈپ ، تەڭپۇڭلۇقىڭىزنى ئالىدۇ"
   },
   "onboardWillCharge": {
     "message": "%BTN% نى چېكىش قالدۇقىڭىزدىن پۇل تۇتۇۋالىدۇ"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "پاكىت تەكشۈرۈش",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "بىر دەۋانى كىرگۈزۈڭ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "مەنبەلەر",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ئاساس",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "تېكىست تاللاپ قىستۇرما كۆزنىك ئاچقاندا شۇ تاللاش تەكشۈرۈلىدۇ ۋە قالدۇقىڭىزدىن تۇتۇلىدۇ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "بىكار قىلىش",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

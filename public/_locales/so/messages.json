@@ -135,10 +135,6 @@
     "message": "Faalleynaya",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Dib loo eegay — khaladaad lama helin.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Turjun Xaqiijinnada",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Xaqiiji",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Xaqiijin",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Ku habee luuqadda",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Taabashada %BTN% waxay muujinaysaa sheegashooyinka waxayna ka jareysaa hadhaagaaga"
+  },
+  "onboardLocalize": {
+    "message": "Riixitaanka %BTN% waxay dib u dejisaa waxyaabaha ugu muhiimsan waxayna ku dallaci doontaa dheelitirkaaga"
+  },
+  "onboardAnnotate": {
+    "message": "Riixitaanka %BTN% waxay hubisaa sheegashada khaladaadka waxayna kugu dalaci doontaa baaqigaaga"
   },
   "onboardWillCharge": {
     "message": "Gujinta %BTN% waxay ka jareysaa hadhaagaaga"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Xaqiijinta xaqiiqda",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Geli sheegasho",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ilaha",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Sabab",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Furitaanka popup-ka oo leh qoraal la doortay ayaa la hubinayaa doorashadaas oo laga jari doonaa hadhaagaaga.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Jooji",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

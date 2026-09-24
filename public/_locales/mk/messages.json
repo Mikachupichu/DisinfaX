@@ -135,10 +135,6 @@
     "message": "Анотирање",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Прегледано — не се пронајдени грешки.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Преведи ги проверките",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Проверка",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Проверка",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Локализирај",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Со допир на %BTN% се откриваат тврдења и ќе се наплати од вашето салдо"
+  },
+  "onboardLocalize": {
+    "message": "Со кликнување на %BTN% се репозиционираат главните точки и ќе се наплати вашето салдо"
+  },
+  "onboardAnnotate": {
+    "message": "Со кликнување на %BTN% се проверува барањето за грешки и ќе се наплати вашето салдо"
   },
   "onboardWillCharge": {
     "message": "Со кликнување на %BTN% ќе се наплати од вашето салдо"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Проверка на факти",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Внесете тврдење",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Извори",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Образложение",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Отворањето на скок-прозорецот со избран текст ја проверува таа селекција и ќе се наплати од вашиот баланс.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Откажи",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

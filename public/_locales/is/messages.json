@@ -134,10 +134,6 @@
     "message": "Glósar",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Yfirfarið — engar villur fundust.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Þýða sannprófanir",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Staðfesta",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sannprófar",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Staðfæra",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Að ýta á %BTN% birtir fullyrðingar og dregur af inneigninni þinni"
+  },
+  "onboardLocalize": {
+    "message": "Með því að smella á %BTN% færðu hápunktana aftur og inneignina þína verður gjaldfærður"
+  },
+  "onboardAnnotate": {
+    "message": "Með því að smella á %BTN% athugar krafan fyrir villur og inneign þín verður gjaldfærð"
   },
   "onboardWillCharge": {
     "message": "Að smella á %BTN% dregur af inneigninni þinni"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Staðreyndaskoðun",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Sláðu inn fullyrðingu",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Heimildir",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Rökstuðningur",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Að opna sprettigluggann með valinn texta staðfestir það val og dregur af inneigninni þinni.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Hætta við",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

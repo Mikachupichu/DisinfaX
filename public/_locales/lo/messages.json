@@ -134,10 +134,6 @@
     "message": "ກຳລັງໝາຍເຫດ",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "ກວດສອບແລ້ວ — ບໍ່ພົບຂໍ້ຜິດພາດ.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "ແປຜົນການກວດສອບ",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "ກວດສອບ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ການກວດສອບ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ທ້ອງຖິ່ນ",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "ການແຕະ %BTN% ຈະເປີດເຜີຍຄໍາກ່າວອ້າງ ແລະ ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
+  },
+  "onboardLocalize": {
+    "message": "ການຄລິກ %BTN% repositions ຈຸດເດັ່ນ ແລະຈະຄິດຄ່າຍອດຄົງເຫຼືອຂອງທ່ານ"
+  },
+  "onboardAnnotate": {
+    "message": "ການຄລິກ %BTN% ຈະກວດສອບການອ້າງສິດສໍາລັບຄວາມຜິດພາດ ແລະຈະຮຽກເກັບຍອດເງິນຂອງທ່ານ"
   },
   "onboardWillCharge": {
     "message": "ການຄລິກ %BTN% ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "ກວດສອບຂໍ້ເທັດຈິງ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ໃສ່ຄຳກ່າວອ້າງ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ແຫຼ່ງຂໍ້ມູນ",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ເຫດຜົນ",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ການເປີດປ໊ອບອັບໂດຍມີຂໍ້ຄວາມທີ່ເລືອກຈະກວດສອບການເລືອກນັ້ນ ແລະຈະຫັກຈາກຍອດເງິນຂອງທ່ານ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ຍົກເລິກ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

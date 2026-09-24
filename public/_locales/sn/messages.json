@@ -135,10 +135,6 @@
     "message": "Kurikutsanangura",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Zvaongororwa — hapana zvikanganiso.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Shandura Ongororo Dzechokwadi",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Ongorora chokwadi",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kuongorora",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Chinja kumutauro",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Kubata %BTN% kunoratidza zvirevo uye kuchabvisa mari pabhalansi yako"
+  },
+  "onboardLocalize": {
+    "message": "Kudzvanya %BTN% inoisa zvakare mapeji uye ichachaja yako sare"
+  },
+  "onboardAnnotate": {
+    "message": "Kudzvanya %BTN% kunotarisisa chikumbiro chemhosho uye kuchachaja mari yako"
   },
   "onboardWillCharge": {
     "message": "Kudzvanya %BTN% kuchabvisa mari pabhalansi yako"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Ongorora chokwadi",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Isa chirevo",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Matsime",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Kufunga",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Kuvhura popup uine chinyorwa chakasarudzwa kunoongorora kusarudzwa ikoko uye kucharipirwa kubva musara wako.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Kanzura",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

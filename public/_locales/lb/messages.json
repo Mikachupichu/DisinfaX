@@ -134,10 +134,6 @@
     "message": "Annotatioun",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Nogepréift — keng Feeler fonnt.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Iwwerpréiwungen iwwersetzen",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -187,6 +183,10 @@
   "disinfactButton": {
     "message": "Iwwerpréifung",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Iwwerpréifung",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokaliséieren",
@@ -239,6 +239,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Wann Dir op %BTN% tippt, ginn d'Behaaptungen ugewisen a vun Ärem Saldo ofgezunn"
+  },
+  "onboardLocalize": {
+    "message": "Klickt op %BTN% repositionéiert d'Highlights a wäert Äert Gläichgewiicht laden"
+  },
+  "onboardAnnotate": {
+    "message": "Klickt op %BTN% kontrolléiert d'Fuerderung op Feeler a wäert Äert Gläichgewiicht berechent ginn"
   },
   "onboardWillCharge": {
     "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
@@ -351,5 +357,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Faktencheck",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Eng Behauptung aginn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Quellen",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Begrënnung",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "D'Popup mat markéiertem Text opmaachen iwwerpréift déi Auswiel a belaascht Äert Guthaben.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ofbriechen",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

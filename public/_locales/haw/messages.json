@@ -135,10 +135,6 @@
     "message": "E kākau ana",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Ua nānā ʻia — ʻaʻohe hewa i loaʻa.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Unuhi i ka Hōʻoia",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Hōʻoia",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Hōʻoia",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Hoʻololi ʻōlelo",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ke pā ʻia ʻo %BTN%, e ʻike ʻia nā koi a e uku ʻia kāu kālā"
+  },
+  "onboardLocalize": {
+    "message": "Ke kaomi ʻana i ka %BTN% e hoʻonohonoho hou i nā mea koʻikoʻi a e uku i kāu koena"
+  },
+  "onboardAnnotate": {
+    "message": "Ke kaomi ʻana i ka %BTN% e nānā i ke koi no nā hewa a e uku i kāu koena"
   },
   "onboardWillCharge": {
     "message": "Ke kaomi ʻia ʻo %BTN%, e uku ʻia kāu kālā"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Hōʻoia ʻike",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Hoʻokomo i kahi ʻōlelo",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Nā kumu",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Noʻonoʻo",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ʻO ka wehe ʻana i ka popup me ke kikokikona i koho ʻia e hōʻoia i kēlā koho a e uku ʻia mai kāu koena.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Hoʻopau",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

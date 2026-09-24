@@ -133,10 +133,6 @@
     "message": "Nag-a-annotate",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Sinuri — walang nakitang mali.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Isalin ang pagsusuri",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Suriin",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sinusuri",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "I-localize",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ang pag-tap sa %BTN% ay magpapakita ng mga claim at magbabawas ito sa iyong balanse"
+  },
+  "onboardLocalize": {
+    "message": "Ang pag-click sa %BTN% ay muling iposisyon ang mga highlight at sisingilin ang iyong balanse"
+  },
+  "onboardAnnotate": {
+    "message": "Ang pag-click sa %BTN% ay tumitingin sa claim para sa mga error at sisingilin ang iyong balanse"
   },
   "onboardWillCharge": {
     "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Pagtsek ng katotohanan",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Maglagay ng pahayag",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Mga pinagmulan",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Pangangatwiran",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ang pagbukas ng popup na may piniling teksto ay susuriin ang piniling iyon at sisingilin ang iyong balanse.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Kanselahin",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

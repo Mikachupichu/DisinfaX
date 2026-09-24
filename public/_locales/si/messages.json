@@ -168,10 +168,6 @@
     "message": "විවරණය කරමින්",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "සමාලෝචනය — දෝෂ කිසිවක් හමු නොවිය.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "සත්‍යාපන පරිවර්තනය කරන්න",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -221,6 +217,10 @@
   "disinfactButton": {
     "message": "පරීක්ෂාව",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "පරීක්ෂාව",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "දේශීය කරන්න",
@@ -273,6 +273,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% තට්ටු කිරීමෙන් ප්‍රකාශයන් හෙළි වන අතර ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් උද්දීපනය නැවත ස්ථානගත කර ඔබගේ ශේෂය අය කෙරේ"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ක්ලික් කිරීමෙන් දෝෂ සඳහා හිමිකම් පෑම පරීක්ෂා කරන අතර ඔබේ ශේෂය අය කෙරේ"
   },
   "onboardWillCharge": {
     "message": "%BTN% ක්ලික් කිරීමෙන් ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "සත්‍ය පරීක්ෂාව",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ප්‍රකාශයක් ඇතුළත් කරන්න",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "මූලාශ්‍ර",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "තර්කය",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "පෙළ තෝරා පොප්අප් විවෘත කිරීමෙන් එම තේරීම පරීක්ෂා වන අතර ඔබේ ශේෂයෙන් අඩු කෙරේ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "අවලංගු කරන්න",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -135,10 +135,6 @@
     "message": "Annotating",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Reviewed — no errors found.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -189,6 +185,10 @@
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
   },
+  "disinfacting": {
+    "message": "Disinfacting",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
   "localizeButton": {
     "message": "Localize",
     "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
@@ -225,5 +225,195 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fact-Check",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Enter a claim",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sources",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Reasoning",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "balanceLabel": {
+    "message": "Balance",
+    "description": "Small caption above the large balance amount on the dashboard."
+  },
+  "gifted": {
+    "message": "Gifted",
+    "description": "Word in the top-up bonus line, e.g. 'Bonus: Extra 24% - US$1.20 Gifted'."
+  },
+  "customTopup": {
+    "message": "Custom",
+    "description": "Label for the custom top-up amount button."
+  },
+  "customAmountLabel": {
+    "message": "Custom top-up amount in US dollars",
+    "description": "Accessibility label for the custom top-up input field."
+  },
+  "increase": {
+    "message": "Increase",
+    "description": "Accessibility label for the up-arrow that increases the custom amount."
+  },
+  "decrease": {
+    "message": "Decrease",
+    "description": "Accessibility label for the down-arrow that decreases the custom amount."
+  },
+  "topUpBalance": {
+    "message": "Top Up Balance",
+    "description": "Green button that starts a Stripe checkout to add funds."
+  },
+  "processing": {
+    "message": "Processing…",
+    "description": "Shown on the Top Up button while the checkout session is being created."
+  },
+  "checkoutError": {
+    "message": "Could not start checkout. Please try again.",
+    "description": "Generic error shown when starting a top-up checkout fails."
+  },
+  "termsOfService": {
+    "message": "Terms of Service",
+    "description": "Link text for the terms of service in the top-up disclaimer."
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy",
+    "description": "Link text for the privacy policy in the top-up disclaimer."
+  },
+  "disclaimerAgree": {
+    "message": "By topping up, you agree to our %TOS% and %PRIVACY%.",
+    "description": "Top-up disclaimer. Keep the %TOS% and %PRIVACY% markers exactly — they are replaced with the Terms of Service and Privacy Policy links."
+  },
+  "disclaimerFx": {
+    "message": "Foreign exchange fees may apply if you pay in a currency other than USD.",
+    "description": "Top-up disclaimer about currency conversion costs."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Within the United States, only residents of Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, and Wyoming can use DisinfaX and top up their balance; Washington, D.C., all U.S. territories, and any states not listed are excluded. Outside the United States, it is available in Canada, Australia, New Zealand, Singapore, South Africa, Japan, Taiwan, Indonesia, Thailand, the Philippines, Malaysia, Vietnam, and Switzerland.",
+    "description": "Top-up disclaimer listing supported jurisdictions."
+  },
+  "signOut": {
+    "message": "Sign out",
+    "description": "Button to sign the user out of the extension."
+  },
+  "onboardDisinfactClick": {
+    "message": "Clicking %BTN% reveals claims and will charge your balance",
+    "description": "Onboarding popover next to the Disinfact button (pointer devices). %BTN% is replaced with the button's name."
+  },
+  "onboardDisinfactTap": {
+    "message": "Tapping %BTN% reveals claims and will charge your balance",
+    "description": "Onboarding popover next to the Disinfact button (touch devices). %BTN% is replaced with the button's name."
+  },
+  "onboardLocalize": {
+    "message": "Clicking %BTN% repositions the highlights and will charge your balance",
+    "description": "Onboarding popover next to the Localize button, which repositions fact-check highlights made for another language version. %BTN% is replaced with the button's name."
+  },
+  "onboardAnnotate": {
+    "message": "Clicking %BTN% checks the claim for errors and will charge your balance",
+    "description": "Onboarding popover next to a claim's Annotate button, which runs a second AI pass to mark suspected errors in the claim text. %BTN% is replaced with the button's name."
+  },
+  "onboardWillCharge": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for the Fact-Check All button. %BTN% is replaced with the button's name."
+  },
+  "onboardFactcheck": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for a claim's Fact-Check button. %BTN% is replaced with the button's name."
+  },
+  "onboardTranslations": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for the translation button inside the popover. %BTN% is replaced with the button's icon."
+  },
+  "onboardRefreshes": {
+    "message": "Clicking %BTN% will charge your balance",
+    "description": "Onboarding popover for the refresh button inside the popover. %BTN% is replaced with the button's icon."
+  },
+  "topUp": {
+    "message": "Top Up"
+  },
+  "showMore": {
+    "message": "Show more"
+  },
+  "showLess": {
+    "message": "Show less"
+  },
+  "landingTagline1": {
+    "message": "Reveal the Truth. Find the Lies."
+  },
+  "landingTagline2": {
+    "message": "No more Disinformation. Only Facts."
+  },
+  "continueWithX": {
+    "message": "Continue with X"
+  },
+  "continueWithGoogle": {
+    "message": "Continue with Google"
+  },
+  "continueWithApple": {
+    "message": "Continue with Apple"
+  },
+  "lastUsed": {
+    "message": "Last Used"
+  },
+  "cleanupTagline": {
+    "message": "Clean up your X Feed."
+  },
+  "factCheckAllButton": {
+    "message": "Fact-Check All",
+    "description": "Button that fact-checks every claim in the tweet at once (batch action, distinct from the singular per-claim Fact-Check button)."
+  },
+  "factCheckButton": {
+    "message": "Fact-Check",
+    "description": "Button on a single claim highlight that fact-checks just that claim (singular action, distinct from the batch Fact-Check All button)."
+  },
+  "errBalanceTooLow": {
+    "message": "Your balance is too low. Please top up to continue.",
+    "description": "Shown when a worker rejects an action because the account balance can't cover it (error code 1)."
+  },
+  "balanceEmpty": {
+    "message": "Your balance is empty: please add funds to your balance using the DisinfaX popup",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Your account has been suspended.",
+    "description": "Shown when a worker rejects an action because the account is suspended (error code 2)."
+  },
+  "errNotSignedIn": {
+    "message": "You're not signed in. Please sign in and try again.",
+    "description": "Shown when a worker rejects a request because the user isn't authenticated (error code 3)."
+  },
+  "errInvalidRequest": {
+    "message": "Something about this request wasn't recognized. Please make sure the extension is up to date.",
+    "description": "Shown when a worker rejects a malformed or unrecognized request, usually a version mismatch (error code 4)."
+  },
+  "errServiceUnavailable": {
+    "message": "Something went wrong on our end. Please try again in a moment.",
+    "description": "Generic failure shown when a worker or one of its dependencies (database, AI provider) fails unexpectedly (error code 5)."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX is not yet available in your region due to regulatory requirements.",
+    "description": "Shown when a worker rejects an action because the user's region isn't supported (error code 6)."
+  },
+  "errInvalidAmount": {
+    "message": "That top-up amount isn't valid. Please choose a different amount.",
+    "description": "Shown when a worker rejects a top-up because the requested amount is invalid (error code 7)."
+  },
+  "errNotFound": {
+    "message": "That couldn't be found. Please try again.",
+    "description": "Shown when a worker can't find the data it was asked to look up (error code 8)."
+  },
+  "selectionConfirmWarning": {
+    "message": "Opening the popup with text selected fact-checks that selection and will charge your balance.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Cancel",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

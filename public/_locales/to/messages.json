@@ -135,10 +135,6 @@
     "message": "Oku fakamatala'i",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Kuo vakai'i — ikai ha fehala.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Liliu ʻa e Ngaahi Sivi",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Fakahā",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sivi",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Fakafehanga'i",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Ko hono tuki ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "onboardLocalize": {
+    "message": "Ko hono lomi'i 'o e %BTN% 'oku ne toe fokotu'u 'a e ngaahi me'a mahu'inga pea 'e totongi ho'o paleni ."
+  },
+  "onboardAnnotate": {
+    "message": "Ko hono lomi'i 'o e %BTN% 'oku ne vakai'i 'a e kole ki he ngaahi fehalaaki pea 'e totongi ho'o paleni ."
   },
   "onboardWillCharge": {
     "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Sivi 'o e mo'oni",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Fakahu ha fakamatala",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ngaahi matavai",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "'Uhinga",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ko e fakaava ʻo e popup mo e tohi kuo fili ʻe siviʻi ai ʻa e fili ko iá pea ʻe totongi mei hoʻo paʻanga.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Fakafoki",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

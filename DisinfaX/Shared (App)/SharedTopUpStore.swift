@@ -95,6 +95,8 @@ enum SharedTopUpStore {
         static let lastAmount = "topup.lastAmount"
         static let pendingRecords = "topup.pending.records"
         static let finishable = "topup.finishable"
+        static let accessToken = "topup.accessToken"
+        static let accessTokenExpiresAt = "topup.accessTokenExpiresAt"
     }
 
     /// Field names inside one stored record. A dictionary rather than a Codable struct because
@@ -162,6 +164,44 @@ enum SharedTopUpStore {
         if let balance { d.set(balance, forKey: Key.balance) }
     }
 
+    // MARK: - Session handed over for the app's own fact-checking
+
+    /// A Supabase access token the extension last handed over, with the moment it stops working.
+    struct Session {
+        let accessToken: String
+        let expiresAt: Date
+    }
+
+    /// What the app may authenticate to the workers with, or nil if it cannot.
+    ///
+    /// The workers verify the Supabase JWT directly, so this is the whole of what the app needs
+    /// to fact-check on its own — but only while the token is live. Refreshed by the popup on
+    /// open, so an active user's is minutes old.
+    static var session: Session? {
+        guard let d = defaults,
+              let token = d.string(forKey: Key.accessToken), !token.isEmpty,
+              let expiresAt = d.object(forKey: Key.accessTokenExpiresAt) as? Date else { return nil }
+        return Session(accessToken: token, expiresAt: expiresAt)
+    }
+
+    /// Handed over by the extension on every popup open, alongside the account sync.
+    ///
+    /// Deliberately an ACCESS token only — no refresh token. The extension persists the refresh
+    /// token in its own storage and rotates it on the project's schedule; if the app refreshed
+    /// with the same token, the project's rotation setting would decide whether that silently
+    /// invalidates the extension's copy and signs the user out of the browser. Sharing a token
+    /// that could log someone out of their browser is not worth saving them a trip to the popup,
+    /// so an expired token is reported as "reconnect in the extension" instead. If rotation is
+    /// confirmed to be off for this project, `session` can be extended to carry the refresh token
+    /// and refresh natively — see the FactCheck tab's reconnect state.
+    static func setSession(accessToken: String, expiresAt: Date?) {
+        guard let d = defaults else { return }
+        d.set(accessToken, forKey: Key.accessToken)
+        // A missing expiry is treated as already expired: without it the app cannot tell a live
+        // token from a dead one, and the workers reject a dead one anyway.
+        d.set(expiresAt ?? Date(timeIntervalSince1970: 0), forKey: Key.accessTokenExpiresAt)
+    }
+
     /// Called when the extension reports that nobody is signed in.
     ///
     /// Clears the identity and the displayed balance — but deliberately NOT the pending records or
@@ -174,6 +214,10 @@ enum SharedTopUpStore {
         d.removeObject(forKey: Key.accountSyncedAt)
         d.removeObject(forKey: Key.balance)
         d.removeObject(forKey: Key.requestedAmount)
+        // The session goes with the identity: a token outliving a sign-out would let the app keep
+        // billing a user who has explicitly left.
+        d.removeObject(forKey: Key.accessToken)
+        d.removeObject(forKey: Key.accessTokenExpiresAt)
     }
 
     /// Balance in USD, as last seen by the popup. Display only — the authoritative figure

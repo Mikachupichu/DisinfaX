@@ -135,10 +135,6 @@
     "message": "خەریکە شرۆڤە دەکات",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "پێداچوونەوە کرا — هیچ هەڵەیەک نەدۆزرایەوە.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "وەرگێڕانی ڕاستیپشکنینەکان",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "ئاشکراکردن",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ڕاستیپشکنین",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "جێگیر بکە",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "پەنجە لێدان لە %BTN% بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardLocalize": {
+    "message": "کلیککردن لەسەر %BTN% هێڵکارییەکان دەگۆڕێتەوە و باڵانسەکەت بارگاوی دەکاتەوە"
+  },
+  "onboardAnnotate": {
+    "message": "کلیککردن لەسەر %BTN% پشکنینی داواکارییەکە دەکات بۆ هەڵە و باڵانسەکەت وەردەگرێت"
   },
   "onboardWillCharge": {
     "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "پشکنینی ڕاستی",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "دەقێک بنووسە",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "سەرچاوەکان",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "هۆکار",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "کردنەوەی پەنجەرەکە لەگەڵ هەڵبژاردەی دەق، ئەو هەڵبژاردەیە پشکنین دەکات و لە باڵانسی تۆ کەم دەکرێت.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "هەڵوەشاندنەوە",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

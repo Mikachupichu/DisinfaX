@@ -165,10 +165,6 @@
     "message": "ಟಿಪ್ಪಣಿ ಮಾಡಲಾಗುತ್ತಿದೆ",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "ಪರಿಶೀಲಿಸಲಾಗಿದೆ — ಯಾವುದೇ ದೋಷಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Translate Fact-Checks",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -218,6 +214,10 @@
   "disinfactButton": {
     "message": "ಪರಿಶೀಲಿಸಿ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ಪರಿಶೀಲನೆ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "ಸ್ಥಳೀಕರಿಸಿ",
@@ -270,6 +270,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% ಟ್ಯಾಪ್ ಮಾಡುವುದರಿಂದ ಹೇಳಿಕೆಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ಮುಖ್ಯಾಂಶಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡುತ್ತದೆ"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ದೋಷಗಳಿಗಾಗಿ ಕ್ಲೈಮ್ ಅನ್ನು ಪರಿಶೀಲಿಸುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡುತ್ತದೆ"
   },
   "onboardWillCharge": {
     "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
@@ -349,5 +355,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "ಸತ್ಯ ಪರಿಶೀಲನೆ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ಹೇಳಿಕೆ ನಮೂದಿಸಿ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ಮೂಲಗಳು",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ತಾರ್ಕಿಕತೆ",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ಪಠ್ಯ ಆಯ್ಕೆಮಾಡಿ ಪಾಪ್ಅಪ್ ತೆರೆದರೆ ಆ ಆಯ್ಕೆಯನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ನಿಂದ ಕಡಿತಗೊಳ್ಳುತ್ತದೆ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ರದ್ದುಮಾಡಿ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

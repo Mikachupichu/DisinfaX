@@ -133,10 +133,6 @@
     "message": "Đang chú thích",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Đã soát — không tìm thấy lỗi.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Dịch kiểm tra",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Kiểm Chứng",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Đang kiểm tra",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Bản địa hóa",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Chạm vào %BTN% sẽ hiển thị các tuyên bố và trừ tiền vào số dư của bạn"
+  },
+  "onboardLocalize": {
+    "message": "Nhấp vào %BTN% sẽ định vị lại các điểm nổi bật và sẽ tính số dư của bạn"
+  },
+  "onboardAnnotate": {
+    "message": "Nhấp vào %BTN% sẽ kiểm tra yêu cầu tìm lỗi và sẽ tính phí số dư của bạn"
   },
   "onboardWillCharge": {
     "message": "Nhấp vào %BTN% sẽ trừ tiền vào số dư của bạn"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Kiểm chứng thông tin",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Nhập một tuyên bố",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Nguồn",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Lập luận",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mở cửa sổ bật lên khi đã chọn văn bản sẽ kiểm chứng phần đã chọn và trừ vào số dư của bạn.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Hủy",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

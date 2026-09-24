@@ -506,9 +506,13 @@ mfBus.addEventListener('mf-translate-claim', ((e: CustomEvent) => {
 // Sent over the long-lived port (not runtime.sendMessage) so the click's user gesture
 // reaches the background intact — openPopup() is only legal with one. The background
 // falls back to the top-up flow in a tab where the popup API refuses.
-mfBus.addEventListener('mf-open-popup', (() => {
-  console.log(`[misinfo] relay: notification clicked, requesting popup open`);
-  sendToPort({ type: "MF_OPEN_POPUP" });
+mfBus.addEventListener('mf-open-popup', ((e: CustomEvent) => {
+  console.log(`[misinfo] relay: notification clicked, requesting popup open`, e.detail);
+  // Set here as well as at the background's end of this message, and for every kind: the
+  // background is the half that may fail to run (no openPopup grant, a popup that never
+  // opens), and the tab is worth having right even then. See buildNotification.
+  try { browser.storage.local.set({ disinfax_popup_tab: 'balance' }).catch(() => {}); } catch { /* ignore */ }
+  sendToPort({ type: "MF_OPEN_POPUP", data: e.detail });
 }) as EventListener);
 
 // ---- (Deferred batch processing removed — each tweet is self-contained) ----

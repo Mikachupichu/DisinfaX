@@ -135,10 +135,6 @@
     "message": "Annoterer",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Gjennomgått — ingen feil funnet.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Set om faktasjekkane",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Kontroll",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontroll",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokaliser",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Å trykke på %BTN% viser påstandar og trekk frå saldoen din"
+  },
+  "onboardLocalize": {
+    "message": "Å klikke på %BTN% flyttar høgdepunkta og trekkjer frå saldoen din"
+  },
+  "onboardAnnotate": {
+    "message": "Å klikke på %BTN% sjekkar kravet for feil og trekkjer frå saldoen din"
   },
   "onboardWillCharge": {
     "message": "Å klikke på %BTN% trekk frå saldoen din"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Faktasjekk",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Skriv inn ein påstand",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Kjelder",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Grunngjeving",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Opnar du popupen med markert tekst, vert det markerte sjekka, og saldoen din blir belasta.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Avbryt",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

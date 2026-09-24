@@ -166,10 +166,6 @@
     "message": "వ్యాఖ్యానిస్తోంది",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "సమీక్షించబడింది — ఎలాంటి లోపాలు కనిపించలేదు.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "వాస్తవ తనిఖీలను అనువదించండి",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -219,6 +215,10 @@
   "disinfactButton": {
     "message": "వాస్తవ తనిఖీ",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "తనిఖీ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "స్థానికీకరించండి",
@@ -271,6 +271,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN%ని నొక్కడం వాదనలను చూపిస్తుంది మరియు మీ బ్యాలెన్స్ నుండి రుసుము వసూలు చేస్తుంది"
+  },
+  "onboardLocalize": {
+    "message": "%BTN%ని క్లిక్ చేయడం ద్వారా హైలైట్‌లు రీపోజిషన్ చేయబడతాయి మరియు మీ బ్యాలెన్స్ ఛార్జ్ చేయబడుతుంది"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% క్లిక్ చేయడం వలన లోపాల కోసం దావా తనిఖీ చేయబడుతుంది మరియు మీ బ్యాలెన్స్ ఛార్జ్ చేయబడుతుంది"
   },
   "onboardWillCharge": {
     "message": "%BTN% క్లిక్ చేయడం మీ బ్యాలెన్స్ నుండి రుసుము వసూలు చేస్తుంది"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "వాస్తవ తనిఖీ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "వాదనను నమోదు చేయండి",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "మూలాలు",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "తార్కికత",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "వచనాన్ని ఎంచుకుని పాప్అప్ తెరిస్తే ఆ ఎంపిక తనిఖీ చేయబడుతుంది మరియు మీ నిల్వ నుండి తగ్గించబడుతుంది.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "రద్దు చేయి",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

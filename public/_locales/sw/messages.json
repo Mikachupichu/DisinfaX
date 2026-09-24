@@ -133,10 +133,6 @@
     "message": "Inafafanua",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Imepitilizwa — hakuna makosa yaliyopatikana.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Tafsiri Uhakiki",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Uhakiki",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Halisisha",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Kugusa %BTN% kunaonyesha madai na kutatoza salio lako"
+  },
+  "onboardLocalize": {
+    "message": "Kubofya %BTN% huweka upya vivutio na kutatoza salio lako"
+  },
+  "onboardAnnotate": {
+    "message": "Kubofya %BTN% hukagua dai kwa makosa na kutatoza salio lako"
   },
   "onboardWillCharge": {
     "message": "Kubofya %BTN% kutatoza salio lako"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Ukaguzi wa ukweli",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Weka madai",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Vyanzo",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Sababu",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Kufungua popup na maandishi yaliyochaguliwa kutathmini uteuzi huo na kutatoza kutoka salio lako.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ghairi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

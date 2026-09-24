@@ -133,10 +133,6 @@
     "message": "Jegyzetelés",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Átnézve — nem található hiba.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Ellenőrzés fordítása",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "Ellenőrzés",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Ellenőrzés",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Honosít",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "A(z) %BTN% gombra koppintva megjelennek az állítások, és ez terheli az egyenlegedet"
+  },
+  "onboardLocalize": {
+    "message": "A %BTN% gombra kattintva áthelyezi a kiemeléseket, és megterheli egyenlegét"
+  },
+  "onboardAnnotate": {
+    "message": "A %BTN% lehetőségre kattintva ellenőrzi a követelést, hogy vannak-e hibák, és megterheli egyenlegét"
   },
   "onboardWillCharge": {
     "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Tényellenőrzés",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Adjon meg egy állítást",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Források",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Indoklás",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "A felugró ablak megnyitása kijelölt szöveggel ellenőrzi a kijelölést, és terheli az egyenlegét.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Mégse",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

@@ -135,10 +135,6 @@
     "message": "Ap anote",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Revize — pa gen okenn erè yo jwenn.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Tradui Verifikasyon",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Verifye",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifikasyon",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalize",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Tape sou %BTN% ap devwale reklamasyon yo epi l ap chaje balans ou"
+  },
+  "onboardLocalize": {
+    "message": "Klike %BTN% repositions en yo epi yo pral chaje balans ou"
+  },
+  "onboardAnnotate": {
+    "message": "Klike %BTN% tcheke reklamasyon an pou erè epi yo pral chaje balans ou"
   },
   "onboardWillCharge": {
     "message": "Klike sou %BTN% ap chaje balans ou"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Verifikasyon enfòmasyon",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Antre yon reklamasyon",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sous",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Rezonman",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Louvri popup la ak tèks seleksyone ap verifye seleksyon sa a epi li pral chaje sou balans ou.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anile",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

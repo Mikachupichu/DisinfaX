@@ -166,10 +166,6 @@
     "message": "भाष्य चालू आहे",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "तपासले — कोणतीही त्रुटी आढळली नाही.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "तथ्य-पडताळण्यांचे भाषांतर करा",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -219,6 +215,10 @@
   "disinfactButton": {
     "message": "तपासणी",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "तपासणी",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "स्थानिक करा",
@@ -271,6 +271,12 @@
   },
   "onboardDisinfactTap": {
     "message": "%BTN% टॅप केल्याने दावे उघड होतील आणि तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% वर क्लिक केल्याने हायलाइटचे स्थान बदलले जाईल आणि तुमची शिल्लक चार्ज होईल"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% वर क्लिक केल्याने त्रुटींसाठी दावा तपासला जातो आणि तुमची शिल्लक आकारली जाईल"
   },
   "onboardWillCharge": {
     "message": "%BTN% क्लिक केल्याने तुमच्या शिल्लक रकमेतून पैसे कापले जातील"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "तथ्य तपासणी",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "दावा प्रविष्ट करा",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "स्रोत",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "तर्क",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "मजकूर निवडून पॉपअप उघडल्यास ती निवड तपासली जाईल आणि तुमच्या बॅलन्समधून कापले जाईल.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "रद्द करा",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

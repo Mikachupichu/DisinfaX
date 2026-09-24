@@ -133,10 +133,6 @@
     "message": "正在加註",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "已覆核 — 未發現錯誤。",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "翻譯事實核查",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -186,6 +182,10 @@
   "disinfactButton": {
     "message": "事實查核",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "事实核查",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "在地化",
@@ -238,6 +238,12 @@
   },
   "onboardDisinfactTap": {
     "message": "輕觸%BTN%可顯示論述，並將從您的餘額中扣款"
+  },
+  "onboardLocalize": {
+    "message": "點擊 %BTN% 重新定位突出顯示並將收取您的餘額"
+  },
+  "onboardAnnotate": {
+    "message": "點擊 %BTN% 檢查索賠是否有誤，並將收取您的餘額"
   },
   "onboardWillCharge": {
     "message": "點擊%BTN%將從您的餘額中扣款"
@@ -350,5 +356,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "事實查核",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "輸入一則主張",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "來源",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "推理",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "在選取文字的情況下開啟彈出式視窗會查核該選取範圍，並會從你的餘額中扣款。",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "取消",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

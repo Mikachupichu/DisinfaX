@@ -5,6 +5,7 @@ import { useT, getUiLocale, formatUsdNumber, usdSymbolAfterAmount, giftPercent, 
 import { parseWorkerErrorMessage, codeToMessageKey } from '../../utils/errorCodes';
 import { browser } from 'wxt/browser';
 import { callNativeHost } from '../../utils/nativeHost';
+import { FactCheckTab } from './FactCheckTab';
 
 /** Render a USD amount with a smaller "US" + "$" vertically centered against the
  *  number (rather than baseline-aligned). Symbol size scales with the surrounding
@@ -80,6 +81,18 @@ function isSelection(value: unknown): value is Selection {
 
 const STORE_SELECTION = 'mf_topup_selection';
 const STORE_CUSTOM = 'mf_topup_custom_amount';
+const STORE_TAB = 'disinfax_popup_tab';
+type PopupTab = 'balance' | 'factcheck';
+
+/** Set once the user has agreed to the charge a selection fact-check incurs. Kept
+ *  per-extension, and only written on agreement — declining leaves it unset, so the
+ *  terms are put again next time rather than spending silently on a later open. */
+const STORE_SELECTION_CONFIRM = 'mf_selection_confirm_agreed';
+/** Written by the background immediately before it opens this popup for a notification.
+ *  Any older mark is ignored, so a popup that never actually opened cannot make the
+ *  next toolbar click look like a notification. */
+const STORE_POPUP_ORIGIN = 'mf_popup_origin';
+const POPUP_ORIGIN_MAX_AGE_MS = 5000;
 
 /** "Show while hidden" bypass thresholds (per-extension storage.local): while cached
  *  highlights stay hidden behind the Reveal button, claims that are classified,
@@ -192,11 +205,23 @@ interface DashboardProps {
    *  than from this object, so nothing here reads it yet. */
   user: User;
   onSignOut: () => void;
+  /** Raised while a webpage-selection fact-check owns the popup. App hides its footer on
+   *  this: the indicator is meant to be the entire popup, and the version/disclaimer line
+   *  sitting under it would contradict that. */
+  onSelectionActive?: (active: boolean) => void;
 }
 
-export default function Dashboard({ onSignOut }: DashboardProps) {
+export default function Dashboard({ user, onSignOut, onSelectionActive }: DashboardProps) {
   const t = useT();
   const locale = getUiLocale();
+
+  const [activeTab, setActiveTab] = useState<PopupTab>(() => {
+    try {
+      const v = localStorage.getItem(STORE_TAB);
+      if (v === 'factcheck' || v === 'balance') return v;
+    } catch { /* ignore */ }
+    return 'balance';
+  });
 
   const [total, setTotal] = useState<number | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
@@ -217,6 +242,100 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   const [bypassConfidence, setBypassConfidence] = useState(BYPASS_DEFAULT_CONFIDENCE);
   const [bypassVeracity, setBypassVeracity] = useState(BYPASS_DEFAULT_VERACITY);
 
+  // ── Fact-checking anywhere: "select text → open the popup" ──────────────────
+  // The popup is the user's second way into a selection fact-check. It asks the active
+  // tab whether anything is selected; if so it shows the Disinfacting indicator and
+  // starts the run, then dismisses itself the moment preclassification begins streaming
+  // so the verdicts appear on the page underneath (see entrypoints/selection.ts).
+  const [selectionPending, setSelectionPending] = useState(false);
+  const [selectionConfirm, setSelectionConfirm] = useState(false);
+  const confirmTabId = useRef<number | null>(null);
+
+  /** Start the in-page run for a selection the probe already found. A start that fails —
+   *  the page lost the selection between the probe and now, or the tab navigated — drops
+   *  back to the ordinary popup instead of leaving it on an indicator nothing will clear. */
+  const startSelection = useCallback(async (tabId: number) => {
+    setSelectionPending(true);
+    try {
+      // Top-frame only, via the background — never tabs.sendMessage. Safari treats
+      // an unscoped tab message as a request to every iframe (id5-sync.com and the
+      // rest of CBC's ad frames) and the start never reaches the page script.
+      const started = await browser.runtime.sendMessage({ type: 'MF_SELECTION_START_TAB', tabId });
+      if (!started?.ok) setSelectionPending(false);
+    } catch (err) {
+      console.log('[popup] selection start failed:', err);
+      setSelectionPending(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (!tab?.id) return;
+        // Injection lives in the background so both trigger paths share one code path.
+        const res = await browser.runtime.sendMessage({ type: 'MF_SELECTION_PREPARE', tabId: tab.id });
+        if (cancelled || !res?.hasSelection) return;
+
+        // A notification click opens this same popup, and the page it was clicked from may
+        // well have a selection on it — but that user asked for their balance, not a
+        // fact-check. Read here, after the probe's round trip, so the background's mark
+        // has landed, and age-checked so one left over from a popup that never opened
+        // cannot make an ordinary toolbar click look like a notification.
+        const stored = await storageGet([STORE_POPUP_ORIGIN, STORE_SELECTION_CONFIRM]);
+        if (cancelled) return;
+        const origin = stored[STORE_POPUP_ORIGIN];
+        if (origin?.kind === 'notification' && Date.now() - Number(origin.at ?? 0) < POPUP_ORIGIN_MAX_AGE_MS) {
+          storageSet({ [STORE_POPUP_ORIGIN]: null });
+          return;
+        }
+
+        // The charge is spelled out once, before the first one is incurred.
+        if (!stored[STORE_SELECTION_CONFIRM]) {
+          confirmTabId.current = tab.id;
+          setSelectionConfirm(true);
+          return;
+        }
+
+        // The probe and this read are milliseconds apart, but the page can still lose the
+        // selection between them (a site that clears it on blur, a re-render).
+        await startSelection(tab.id);
+      } catch (err) {
+        // No content script (a restricted page), no selection, or no tab — the ordinary
+        // Balance / Fact-Check UI simply shows instead. The reset also covers a start
+        // whose reply never came: the indicator must never be the popup's last word,
+        // since nothing on the page is waiting to dismiss it in that case.
+        console.log('[popup] selection probe skipped:', err);
+        if (!cancelled) setSelectionPending(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [startSelection]);
+
+  const agreeToSelection = useCallback(() => {
+    const tabId = confirmTabId.current;
+    confirmTabId.current = null;
+    setSelectionConfirm(false);
+    storageSet({ [STORE_SELECTION_CONFIRM]: true });
+    if (tabId != null) void startSelection(tabId);
+  }, [startSelection]);
+
+  const declineSelection = useCallback(() => {
+    confirmTabId.current = null;
+    setSelectionConfirm(false);
+  }, []);
+
+  useEffect(() => {
+    const onMessage = (message: any) => {
+      if (message?.type === 'MF_SELECTION_ARRIVED') window.close();
+    };
+    browser.runtime.onMessage.addListener(onMessage);
+    return () => browser.runtime.onMessage.removeListener(onMessage);
+  }, []);
+
+  useEffect(() => { onSelectionActive?.(selectionPending || selectionConfirm); }, [selectionPending, selectionConfirm, onSelectionActive]);
+
   /** Narrow an arbitrary stored value into a slider range, so a stale or
    *  hand-edited storage entry can't park a slider somewhere it doesn't go. */
   const clampBypass = (value: unknown, lo: number, hi: number, fallback: number): number => {
@@ -225,6 +344,12 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
       : fallback;
   };
 
+  const persistTab = useCallback((tab: PopupTab) => {
+    setActiveTab(tab);
+    storageSet({ [STORE_TAB]: tab });
+    try { localStorage.setItem(STORE_TAB, tab); } catch { /* best effort */ }
+  }, []);
+
   const persistBypassEnabled = useCallback((next: boolean) => { setBypassEnabled(next); storageSet({ [STORE_BYPASS_ENABLED]: next }); }, []);
   const persistBypassConfidence = useCallback((next: number) => { setBypassConfidence(next); storageSet({ [STORE_BYPASS_CONFIDENCE]: next }); }, []);
   const persistBypassVeracity = useCallback((next: number) => { setBypassVeracity(next); storageSet({ [STORE_BYPASS_VERACITY]: next }); }, []);
@@ -232,7 +357,10 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   // Load persisted selection + custom amount, current balance, and messages.
   useEffect(() => {
     (async () => {
-      const stored = await storageGet([STORE_SELECTION, STORE_CUSTOM, STORE_BYPASS_ENABLED, STORE_BYPASS_CONFIDENCE, STORE_BYPASS_VERACITY]);
+      const stored = await storageGet([STORE_TAB, STORE_SELECTION, STORE_CUSTOM, STORE_BYPASS_ENABLED, STORE_BYPASS_CONFIDENCE, STORE_BYPASS_VERACITY]);
+      if (stored[STORE_TAB] === 'factcheck' || stored[STORE_TAB] === 'balance') {
+        setActiveTab(stored[STORE_TAB]);
+      }
       if (isSelection(stored[STORE_SELECTION])) setSelection(stored[STORE_SELECTION]);
       if (typeof stored[STORE_CUSTOM] === 'string' && stored[STORE_CUSTOM].trim()) setCustomInput(stored[STORE_CUSTOM]);
       if (typeof stored[STORE_BYPASS_ENABLED] === 'boolean') setBypassEnabled(stored[STORE_BYPASS_ENABLED]);
@@ -262,7 +390,21 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
       }
     };
     browser.runtime.onMessage.addListener(listener);
-    return () => { try { browser.runtime.onMessage.removeListener(listener); } catch { /* ignore */ } };
+
+    const storageListener = (changes: any, areaName: string) => {
+      if (areaName === 'local' && changes[STORE_TAB]?.newValue) {
+        const next = changes[STORE_TAB].newValue;
+        if (next === 'balance' || next === 'factcheck') {
+          setActiveTab(next);
+        }
+      }
+    };
+    try { browser.storage.onChanged.addListener(storageListener); } catch { /* ignore */ }
+
+    return () => {
+      try { browser.runtime.onMessage.removeListener(listener); } catch { /* ignore */ }
+      try { browser.storage.onChanged.removeListener(storageListener); } catch { /* ignore */ }
+    };
   }, [locale]);
 
   const persistSelection = useCallback((sel: Selection) => { setSelection(sel); storageSet({ [STORE_SELECTION]: sel }); }, []);
@@ -444,9 +586,25 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         const { data } = await supabase.auth.getSession();
         const userId = data.session?.user?.id;
         if (!userId) return;
+        // The token goes out on both transports, the relayed message as well as the direct one.
+        // `callNativeHost` only uses the relay where the direct call is not answered — iOS, by its
+        // own account — and the relay drops whatever the message does not carry, so a field left
+        // off it is a handover that works on one platform and silently does not on the other.
         await callNativeHost(
-          { action: 'SYNC_ACCOUNT', userId, balance: typeof total === 'number' ? total : undefined },
-          { type: 'MF_NATIVE_SYNC_ACCOUNT', userId, balance: typeof total === 'number' ? total : undefined },
+          {
+            action: 'SYNC_ACCOUNT',
+            userId,
+            balance: typeof total === 'number' ? total : undefined,
+            accessToken: data.session?.access_token,
+            accessTokenExpiresAt: data.session?.expires_at,
+          },
+          {
+            type: 'MF_NATIVE_SYNC_ACCOUNT',
+            userId,
+            balance: typeof total === 'number' ? total : undefined,
+            accessToken: data.session?.access_token,
+            accessTokenExpiresAt: data.session?.expires_at,
+          },
         );
       } catch { /* native host unavailable — the app falls back to its own stored values */ }
     })();
@@ -461,7 +619,7 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
       const userId = data.session?.user?.id;
 
       if (!token || !userId) {
-        throw new Error(t('signInRequired') || "3 - Sign in required.");
+        throw new Error(t('errNotSignedIn'));
       }
 
       if (import.meta.env.SAFARI) {
@@ -586,6 +744,44 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
   const disclaimerRestPreview = disclaimerRest.slice(0, disclaimerRestBudget).trimEnd();
   const disclaimerNeedsTruncate = disclaimerRestPreview.length < disclaimerRest.length;
 
+  // Disclosed once, before the first selection fact-check: opening the popup with text
+  // selected spends money, and that should never be a surprise. Owns the popup like the
+  // indicator below, since answering it is the only thing to do here.
+  if (selectionConfirm) {
+    return (
+      <div className="flex flex-1 flex-col justify-center gap-3 min-h-[160px] select-none">
+        <p className="text-sm leading-relaxed text-zinc-300">{t('selectionConfirmWarning')}</p>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={agreeToSelection}
+            className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold transition-colors cursor-pointer"
+          >
+            {t('factCheckButton')}
+          </button>
+          <button
+            type="button"
+            onClick={declineSelection}
+            className="flex-1 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-300 hover:border-zinc-700 text-sm font-semibold transition-colors cursor-pointer"
+          >
+            {t('selectionConfirmCancel')}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // A selection fact-check in flight owns the whole popup: the user is about to watch the
+  // verdicts appear on the page, so the tabs and balance would only be in the way.
+  if (selectionPending) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 min-h-[160px] select-none">
+        <span className="h-7 w-7 rounded-full border-2 border-zinc-700 border-t-zinc-200 animate-spin" aria-hidden="true" />
+        <div className="text-sm font-semibold text-zinc-200">{t('disinfacting') || 'Disinfacting'}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1 gap-4">
       {/* ── Messages (usually none) ── */}
@@ -600,13 +796,42 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
         </div>
       )}
 
-      {/* ── Balance ── */}
-      <div className="text-center pt-1">
-        <div className="text-[10px] uppercase tracking-widest text-zinc-500">{t('balanceLabel')}</div>
-        <div className="text-4xl font-black tracking-tight text-white tabular-nums break-all">
-          {total === null ? '—' : <Usd value={total} locale={locale} />}
-        </div>
+      {/* ── Tabs: [ Balance | Fact-Check ] ── */}
+      <div className="flex rounded-xl bg-zinc-900/60 p-1 border border-zinc-800 select-none">
+        <button
+          type="button"
+          onClick={() => persistTab('balance')}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            activeTab === 'balance'
+              ? 'bg-zinc-800 text-white shadow-sm'
+              : 'text-zinc-400 hover:text-zinc-200'
+          }`}
+        >
+          {t('balanceLabel') || 'Balance'}
+        </button>
+        <button
+          type="button"
+          onClick={() => persistTab('factcheck')}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            activeTab === 'factcheck'
+              ? 'bg-zinc-800 text-white shadow-sm'
+              : 'text-zinc-400 hover:text-zinc-200'
+          }`}
+        >
+          {t('factCheckTab') || 'Fact-Check'}
+        </button>
       </div>
+
+      {activeTab === 'factcheck' ? (
+        <FactCheckTab user={user} />
+      ) : (
+        <>
+          {/* ── Balance ── */}
+          <div className="text-center pt-1">
+            <div className="text-4xl font-black tracking-tight text-white tabular-nums break-all">
+              {total === null ? '—' : <Usd value={total} locale={locale} />}
+            </div>
+          </div>
 
       {/* ── Top-up options ── */}
       {/* 2-column grid with a corner badge: the short "+X%: US$X.XX Gifted" bonus
@@ -831,6 +1056,8 @@ export default function Dashboard({ onSignOut }: DashboardProps) {
           </div>
         )}
       </div>
+        </>
+      )}
 
       <button
         onClick={onSignOut}

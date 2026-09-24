@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "%BTN% sakatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du"
   },
+  "onboardLocalize": {
+    "message": "%BTN% klikatuz gero, nabarmenenak berriro kokatuko dira eta zure saldoa kobratuko da"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% klik eginez gero, erreklamazioa akatsik dagoen egiaztatzen da eta zure saldoa kobratuko da"
+  },
   "onboardWillCharge": {
     "message": "%BTN% klikatzeak zure saldua kobratuko du"
   },
@@ -198,10 +204,6 @@
     "message": "Anotatzen",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Berrikusita — ez da akatsik aurkitu.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Itzuli egiaztapenak",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Desinfaktatu",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Egiaztatzen",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Lokalizatu",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Egiaztapena",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Idatzi baieztapen bat",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Iturriak",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Arrazoibidea",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Testua hautatuta popupa irekitzeak hautapen hori egiaztatuko du eta zure saldoa kargatuko da.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Utzi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

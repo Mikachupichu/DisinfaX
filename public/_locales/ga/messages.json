@@ -50,6 +50,12 @@
   "onboardDisinfactTap": {
     "message": "Nuair a thapálann tú %BTN%, nochtar éilimh agus gearrfar ar d'iarmhéid"
   },
+  "onboardLocalize": {
+    "message": "Má chliceálann tú ar %BTN% athshuífear na buaicphointí agus gearrfar d'iarmhéid"
+  },
+  "onboardAnnotate": {
+    "message": "Má chliceáiltear ar %BTN% seiceálann sé an t-éileamh earráidí agus gearrfar d’iarmhéid"
+  },
   "onboardWillCharge": {
     "message": "Nuair a chliceálann tú %BTN%, gearrfar ar d'iarmhéid"
   },
@@ -198,10 +204,6 @@
     "message": "Ag anótáil",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "Athbhreithnithe — níor aimsíodh earráidí.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Aistrigh na Seiceálacha",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -229,6 +231,10 @@
   "disinfactButton": {
     "message": "Seiceáil",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Seiceáil",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Logánaigh",
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Fíorú fíricí",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Iontráil éileamh",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Foinsí",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Réasúnaíocht",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Má osclaíonn tú an popup le téacs roghnaithe, seiceáilfear an roghnú sin agus muirearófar do chomhardú.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Cealaigh",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

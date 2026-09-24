@@ -135,10 +135,6 @@
     "message": "Go tshwaelwa",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "E tlhatlhobilwe — ga go na le diphoso.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "Ranola Ditlhatlhobo",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Tlhatlhoba",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Go tlhatlhoba",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "Fetolela puong",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "Go ama %BTN% go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardLocalize": {
+    "message": "Go tobetsa %BTN% go baya dintlhakgolo mme go tla duedisa madi a a setseng"
+  },
+  "onboardAnnotate": {
+    "message": "Go tobetsa %BTN% go tlhola tleleimi gore a ga go na diphoso mme go tla go duedisa madi a a setseng"
   },
   "onboardWillCharge": {
     "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "Tlholo ya boammaaruri",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tsenya maipolelo",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Metswedi",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Mabaka",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Go bula popup ka mokwalo o o tlhophilweng go tlhatlhoba thopho eo mme go tla ntshiwa mo balanseng ya gago.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Khansela",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }

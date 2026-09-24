@@ -135,10 +135,6 @@
     "message": "לייגט צו הערה",
     "description": "Text shown on the Annotate button while the annotation pass is running."
   },
-  "annotationsClean": {
-    "message": "איבערגעקוקט — קיין טעותן נישט געפֿונען.",
-    "description": "Line shown in the claim popover when the annotation pass reviewed the claim text and found nothing to correct."
-  },
   "translateFactChecks": {
     "message": "איבערזעצן פֿאַקט־קאָנטראָלן",
     "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
@@ -188,6 +184,10 @@
   "disinfactButton": {
     "message": "Disinfact",
     "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "פֿאַקט־קאָנטראָל",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
   },
   "localizeButton": {
     "message": "לאָקאַליזיר",
@@ -240,6 +240,12 @@
   },
   "onboardDisinfactTap": {
     "message": "אַ טאַפּ אויף %BTN% אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "onboardLocalize": {
+    "message": "קליקינג %BTN% ריפּאַזישאַנז די כיילייץ און וועט באַשולדיקן דיין וואָג"
+  },
+  "onboardAnnotate": {
+    "message": "קליקינג %BTN% טשעק די פאָדערן פֿאַר ערראָרס און וועט באַשולדיקן דיין וואָג"
   },
   "onboardWillCharge": {
     "message": "אַ קליק אויף %BTN% וועט אָפּרעכענען פֿון אײַער באַלאַנס"
@@ -352,5 +358,29 @@
         "example": "20%"
       }
     }
+  },
+  "factCheckTab": {
+    "message": "פאקטן־טשעק",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "אַרייַן אַ טענה",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "מקורות",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "סברה",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "עפֿענען דעם פּאָפּ־אַפּ מיט אויסגעקליבענעם טעקסט פֿאַרלאַנגט אַ פּרופֿונג און וועט אַראָפּרעכענען פֿון דיין באַלאַנס.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "אַנולירן",
+    "description": "Declines the selection fact-check in the first-open confirmation."
   }
 }
