@@ -182,6 +182,16 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
     /// change — otherwise every run would announce its own hold as a charge.
     private var lastTotal: Double?
 
+    /// That total, for a caller deciding whether it can afford the next run — nil when no watch is
+    /// open, and there is then no balance this process is entitled to an opinion about.
+    ///
+    /// Nil outside a watch deliberately: `lastTotal` outlives one (the grace window, and the pass
+    /// queue behind it), and a figure carried over from a run that has ended is not the balance a
+    /// later one starts from. Balance + hold rather than balance is what makes it usable for that
+    /// decision at all — a hold moves money between the two and leaves the sum where it was, so a
+    /// run already in flight does not read as money that has gone.
+    var visibleTotal: Double? { poll == nil ? nil : lastTotal }
+
     /// Set when a notification is tapped, cleared by whichever surface acts on it. Exists for the
     /// tap that launches the app: `didReceive` can run before any view is on screen, and a
     /// notification posted into a NotificationCenter with no observers reaches nobody.
@@ -259,6 +269,11 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
 
     private func startPolling() {
         guard poll == nil else { return }
+        // Only a notifier the app's delegates started has anything to announce: `start()` runs at
+        // launch, and an app extension never calls it. This watch reads `get_funds` — a **billed**
+        // RPC — on a fixed cadence, so without this a share sheet would open a second poller for
+        // charges already on the screen in front of the user. See `post`.
+        guard started else { return }
         // A watch is exactly when a live balance is worth a subscription, and asking for it here is
         // what makes the socket available to shorten this poll and to post a charge the moment it
         // is written. Idempotent, and silent without a live token — and then the poll below is the
@@ -415,6 +430,10 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
     // MARK: - Posting
 
     private func post(_ kind: Kind, amount: Double = 0, reason: String = "", title: String? = nil) {
+        // Nothing to announce from an app extension: it is not the app, its one surface is the
+        // sheet the user is already looking at, and it is gone by the time a charge lands. See
+        // `startPolling`.
+        guard started else { return }
         let content = UNMutableNotificationContent()
         content.sound = .default
 
