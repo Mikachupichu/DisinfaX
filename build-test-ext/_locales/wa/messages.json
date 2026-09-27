@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Detecte eyet mete e vedete li disinformåcion dins les tweets, avou l' analize IA.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Vrai",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Fås",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Nén cnoxhou",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verifiaedje",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Verifiaedje|Rcweraedje|Netiaedje|Dismentaedje|Discovraedje|Sondjaedje|Sclérixhaedje|Fouyaedje|Bourixhaedje|Comparaedje|Mostraedje|Ramassaedje|Cwestionaedje|Analijhaedje|Disbrouyaedje|Precijhaedje|Purifiaedje|Ademaskaedje|Apurfondixhaedje|Situdiaedje|Dislumaedje|Dispistaedje|Sipiaedje|Sicrutaedje|Cûjhinaedje|Mitonaedje|Pinsaedje|Rêvasaedje|Meditaedje|Rassemblaedje|Dizabuzaedje|Dinetiaedje|Rinetiaedje|Purdjaedje|Trijaedje|Criblaedje|Fultraedje|Lorgnaedje|Niflaedje|Grujhaedje|Racsegnaedje|Veyaedje|Dischifraedje|Dismontaedje|Pizaedje|Djudjaedje|Riwaitaedje|Loupaedje|Sicanaedje|Testaedje|Validaedje|Rilijhaedje|Waitaedje|Trovaedje|Lijhaedje|Sicrijhaedje|Sayaedje|Studiaedje|Notaedje|Distilaedje|Sintezaedje|Crontchaedje|Tamisaedje|Rayonaedje|Dizombraedje|Ronjaedje|Dismaskaedje|Sipoûssetaedje|Rilûjhaedje|Dispakaedje|Arivaedje|Voyaedje|Bourdonaedje|Adjovaedje|Pårlaedje|Kidjåsaedje|Magnaedje|Bouyaedje|Håstaedje|Toûrnaedje|Rôlaedje|Môlaedje|Forjaedje|Bastixhaedje|Promoenaedje|Dijhaedje|Sûvaedje|Rotaedje|Adjåsaedje|Riflechixhaedje|Adjustaedje|Kimincaedje|Finixhaedje|Rissatchaedje|Sipandaedje|Poirsûvaedje|Dischaufaedje|Sopesaedje|Rimontaedje|Avisaedje|Codaedje",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Foirt probåblumint",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Probåblumint",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Possibmint",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Po l'pus par",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Discutåvlumint",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Pårtielmint",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ecwivokmint",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Copyî",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Rimostrer co les afirmåcions di ç' tweet ci",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ricweri ciste afirmåcion",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verifiaedje",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anoter",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotaedje",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Translater les verifiaedjes",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Translater",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "d' esse",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ d' esse $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Verifyî",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Rivni",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Mostrer",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Catchî",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Verifyî",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifiaedje",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Localijhî",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Solde"
+  },
+  "gifted": {
+    "message": "Cadô"
+  },
+  "customTopup": {
+    "message": "Ôte"
+  },
+  "customAmountLabel": {
+    "message": "Montant di ricoirdjaedje da vosse e dolårs amerikins"
+  },
+  "increase": {
+    "message": "Ôgmenter"
+  },
+  "decrease": {
+    "message": "Diminuwer"
+  },
+  "topUpBalance": {
+    "message": "Ricoirdjî l' solde"
+  },
+  "processing": {
+    "message": "Traitmint en cours…"
+  },
+  "checkoutError": {
+    "message": "Nos n' avans nén savou ataker l' payemint. Rissayîz, s' i vs plait."
+  },
+  "termsOfService": {
+    "message": "Conditions do siervice"
+  },
+  "privacyPolicy": {
+    "message": "Politike di privaceye"
+  },
+  "disclaimerAgree": {
+    "message": "En ricoirdjant, vos acceptez nos %TOS% eyet %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Des frais di candje di manoye si polèt aplitchî si vos payîz dins ene ôte manoye ki l' USD."
+  },
+  "signOut": {
+    "message": "Si disloguer"
+  },
+  "onboardDisinfactClick": {
+    "message": "Cliker so %BTN% mostere les afirmåcions eyet cotêyerè vosse solde"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tuchî so %BTN% mostere les afirmåcions eyet cotêyerè vosse solde"
+  },
+  "onboardLocalize": {
+    "message": "Cliker so %BTN% rimetrè les passaedjes ebele et cotêyerè vosse solde"
+  },
+  "onboardAnnotate": {
+    "message": "Cliker so %BTN% verifyerè l'afirmåcion po des flotches et cotêyerè vosse solde"
+  },
+  "onboardWillCharge": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "onboardFactcheck": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "onboardTranslations": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "onboardRefreshes": {
+    "message": "Cliker so %BTN% cotêyerè vosse solde"
+  },
+  "topUp": {
+    "message": "Ricoirdjî"
+  },
+  "showMore": {
+    "message": "Mostrer di pus"
+  },
+  "showLess": {
+    "message": "Mostrer moens"
+  },
+  "landingTagline1": {
+    "message": "Dischovrez li vraiy. Trovez les mintes."
+  },
+  "landingTagline2": {
+    "message": "Pupont d' disinformåcion. Rén ki des faits."
+  },
+  "continueWithX": {
+    "message": "Continuwer avou X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuwer avou Google"
+  },
+  "continueWithApple": {
+    "message": "Continuwer avou Apple"
+  },
+  "lastUsed": {
+    "message": "Dièrin eployî"
+  },
+  "cleanupTagline": {
+    "message": "Rnetyîz vosse fil X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ås Estats-Unis, seulmint les cîtoyéns d' l'Alabama, di l'Arizona, di l' Californeye, do Colorado, do Connecticut, do Delaware, di l' Floride, di l'Idaho, di l'Illinois, di l'Indiana, di l'Iowa, do Kansas, do Kentucky, di l' Louisiane, do Maine, do Massachusetts, do Mississippi, do Missouri, do Montana, do New Hampshire, do Nouvea-Mèxike, di New York, di l' Caroline do Nôr, do Dakota do Nôr, di l'Oklahoma, di l'Oregon, di l' Pensilvaneye, di l' Caroline do Sud, do Dakota do Sud, do Tennessee, do Texas, di l'Utah, di Washington, do Wisconsin eyet do Wyoming polèt eployî DisinfaX eyet ristoker leu solde ; Washington, D.C., tos les teritwaires amerikins eyet tos les Estats nén lîstés sont exclus. Foû des Estats-Unis, c' est disponibe å Canada, e l'Australeye, e l' Nouvele-Zelande, a Singapour, e l' Afrike do Sud, å Djapon, a Taiwan, e l'Indonezeye, e l' Tayilande, ås Filipenes, e l' Malèzeye, å Vietnam eyet e l' Suisse."
+  },
+  "factCheckAllButton": {
+    "message": "Verifyî tot"
+  },
+  "factCheckButton": {
+    "message": "Verifyî"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX pout si mesprinde. Verifyîz tocôps l' informåcion.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Vosse solde est trop bas. S' i vs plait, ricoirdjîz vosse solde po continouwer."
+  },
+  "balanceEmpty": {
+    "message": "Vosse solde est vude. S' i vs plait, radjoutez des liårds a vosse solde avou l' pop-up DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Vosse conte a stî sospindou."
+  },
+  "errNotSignedIn": {
+    "message": "Vos n' estez nén loguî. S' i vs plait, loguîz vos eyet rissayîz."
+  },
+  "errInvalidRequest": {
+    "message": "Ene pårt di ç' dimande ci n' a nén stî riconoxhowe. S' i vs plait, verifyîz ki l' ecstinsion est bén metowe a djoû."
+  },
+  "errServiceUnavailable": {
+    "message": "Ene aroke a arivé di nosse costé. S' i vs plait, rissayîz dins on moumint."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX n' est nén co disponibe dins vosse redjon a cåze des egzijances reglementaires."
+  },
+  "errInvalidAmount": {
+    "message": "Ci monteu la di ricoirdjaedje n' est nén valide. S' i vs plait, tchoezixhoz on ôte monteu."
+  },
+  "errNotFound": {
+    "message": "Çoula n' a nén stî trové. Rissayîz, s' i vs plait."
+  },
+  "settings": {
+    "message": "Reglaedjes",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Mostrer todi les verifiaedjes se:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Veristé < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Confiance > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Verifyî les fets",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Intrez ene afirmåcion",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sourdants",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Råjhonmint",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Drovî l' popup avou do tecse seleccioné verifye cisse seleccion la et serè prins so vos solde.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Rinoncî",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

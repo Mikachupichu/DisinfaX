@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "ʻOku ʻiloʻi mo fakahaaʻi ʻa e ngaahi fakamatala hala ʻi he ngaahi tweet ʻaki ʻa e sivi AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Mo'oni",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Loi",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Taʻeʻiloa",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Sivi",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Sivi|Kumi|Fakamaʻa|Fakahaaʻi|Fifili|Sivisivi|Fakamoʻoni|Keli|ʻIlo|Vakai|Fakatotolo|Faʻu lea|Fakaava|Tānaki|Fakamahino|Fetuʻutaki|Fakaʻilonga|Sivi Fakaikiiki|Fehuʻi|Fakatonuʻi|Toe Vakai|Fakaʻilo|Fakafuofua|Fakamatala|Filifili|Fakalelei",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Faingamālie lahi",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Faingamālie",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Mahalo pē",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Konga lahi",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Kehekehe",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Konga si'i",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ta'e faingofua",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopi",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Toe fakahā ʻa e ngaahi fakamatala kotoa pē ʻi he tuita ko ʻeni",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Toe siviʻi ʻa e fakamatala ni",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Sivi",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Fakamatala'i",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Oku fakamatala'i",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Liliu ʻa e Ngaahi Sivi",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Liliu",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ke",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ke $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Kuo Sivi",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Foki Ki Mui",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Faka'ali",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Fufuu",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Fakahā",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sivi",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Fakafehanga'i",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Toenga paʻanga"
+  },
+  "gifted": {
+    "message": "Meʻaʻofa"
+  },
+  "customTopup": {
+    "message": "Fili"
+  },
+  "customAmountLabel": {
+    "message": "Lahi ʻo e fakakakato ʻoku ke fili ʻi he paʻanga fakaʻamelika"
+  },
+  "increase": {
+    "message": "Fakalahi"
+  },
+  "decrease": {
+    "message": "Fakasiʻisiʻi"
+  },
+  "topUpBalance": {
+    "message": "Fakakakato e toenga paʻanga"
+  },
+  "processing": {
+    "message": "ʻOku fakahoko…"
+  },
+  "checkoutError": {
+    "message": "Naʻe ʻikai lava ʻo kamata e totongi. Kātaki ʻo toe ʻahiʻahi."
+  },
+  "termsOfService": {
+    "message": "Ngaahi Tuʻutuʻuni ʻo e Ngāue"
+  },
+  "privacyPolicy": {
+    "message": "Tuʻutuʻuni Fakapulipuli"
+  },
+  "disclaimerAgree": {
+    "message": "ʻI hoʻo fakakakato, ʻoku ke loto-tatau ki heʻemau %TOS% mo e %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "ʻE lava ke hoko ha totongi liliu paʻanga kapau ʻoku ke totongi ʻi ha paʻanga kehe mei he USD."
+  },
+  "signOut": {
+    "message": "Hū kituʻa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ko hono tuki ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "onboardLocalize": {
+    "message": "Ko hono lomi'i 'o e %BTN% 'oku ne toe fokotu'u 'a e ngaahi me'a mahu'inga pea 'e totongi ho'o paleni ."
+  },
+  "onboardAnnotate": {
+    "message": "Ko hono lomi'i 'o e %BTN% 'oku ne vakai'i 'a e kole ki he ngaahi fehalaaki pea 'e totongi ho'o paleni ."
+  },
+  "onboardWillCharge": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "onboardFactcheck": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "onboardTranslations": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "onboardRefreshes": {
+    "message": "Ko hono lomi ʻo e %BTN% ʻe utu ai hoʻo toenga paʻanga"
+  },
+  "topUp": {
+    "message": "Fakakakato Paʻanga"
+  },
+  "showMore": {
+    "message": "Fakahā lahi ange"
+  },
+  "showLess": {
+    "message": "Fakahā siʻi ange"
+  },
+  "landingTagline1": {
+    "message": "Fakahaaʻi ʻa e Moʻoni. Kumi ʻa e Ngaahi Loi."
+  },
+  "landingTagline2": {
+    "message": "ʻIkai toe Fakamatala Hala. Ko e Ngaahi Moʻoni pē."
+  },
+  "continueWithX": {
+    "message": "Hoko atu ʻaki ʻa X"
+  },
+  "continueWithGoogle": {
+    "message": "Hoko atu ʻaki ʻa Google"
+  },
+  "continueWithApple": {
+    "message": "Hoko atu ʻaki ʻa Apple"
+  },
+  "lastUsed": {
+    "message": "Ngāueʻaki Fakaʻosi"
+  },
+  "cleanupTagline": {
+    "message": "Fakamaʻa hoʻo X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "ʻI loto ʻi he Puleʻanga Fakatahataha ʻAmelika, ko e kau nofoʻanga pē ʻo Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, mo Wyoming ʻe lava ke ngāueʻaki ʻa DisinfaX pea fakakakato ʻenau toenga paʻanga; ʻoku ʻikai kau ai ʻa Washington, D.C., mo e ngaahi feituʻu kotoa ʻo ʻAmelika, mo ha ngaahi siteiti ʻoku ʻikai lisi. ʻI tuʻa mei he Puleʻanga Fakatahataha ʻAmelika, ʻoku maʻu ia ʻi Kānata, ʻAositelēlia, Nuʻusila, Singapoa, ʻAfilika Tonga, Siapani, Taiuani, ʻInitonēsia, Tailani, Filipaine, Malēsia, Vietinami, mo Suisilani."
+  },
+  "factCheckAllButton": {
+    "message": "Sivi Kotoa"
+  },
+  "factCheckButton": {
+    "message": "Sivi"
+  },
+  "aiDisclaimer": {
+    "message": "ʻE lava ke fai hala ʻa e DisinfaX. Toe siviʻi ʻa e fakamatala.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "ʻOku siʻisiʻi ʻaupito hoʻo toenga paʻanga. Kātaki fakakakato ke hoko atu."
+  },
+  "balanceEmpty": {
+    "message": "Kuo ʻosi hoʻo toenga paʻanga. Kātaki tānaki paʻanga ki hoʻo toenga paʻanga ʻaki ʻa e popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Kuo taʻofi ho ʻakauni."
+  },
+  "errNotSignedIn": {
+    "message": "ʻOku ʻikai te ke hū ki loto. Kātaki hū ki loto ʻo toe feinga."
+  },
+  "errInvalidRequest": {
+    "message": "Naʻe ʻikai ʻiloʻi ha konga ʻo e kole ni. Kātaki fakapapauʻi kuo fakaʻāʻonga taimi lelei ʻa e extension."
+  },
+  "errServiceUnavailable": {
+    "message": "Naʻe hoko ha fehalaaki ʻi hotau tafaʻaki. Kātaki toe feinga ʻi ha taimi siʻi."
+  },
+  "errRegionNotSupported": {
+    "message": "ʻOku teʻeki ala maʻu ʻa DisinfaX ʻi ho fonua koeʻuhi ko e ngaahi fiemaʻu fakalao."
+  },
+  "errInvalidAmount": {
+    "message": "ʻOku ʻikai lelei ʻa e lahi ʻo e fakakakato ko ia. Kātaki fili ha lahi paʻanga kehe."
+  },
+  "errNotFound": {
+    "message": "Naʻe ʻikai lava ʻo ʻilo ia. Kātaki ke toe feinga."
+  },
+  "settings": {
+    "message": "Ngaahi Fokotuʻutuʻu",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Fakaʻaliʻali maʻu pē ʻa e siví kapau:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Mooni < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Falala > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Sivi 'o e mo'oni",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Fakahu ha fakamatala",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ngaahi matavai",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "'Uhinga",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ko e fakaava ʻo e popup mo e tohi kuo fili ʻe siviʻi ai ʻa e fili ko iá pea ʻe totongi mei hoʻo paʻanga.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Fakafoki",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

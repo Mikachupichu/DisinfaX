@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI анализы ярдәмендә твитларда ялган мәгълүматны ачыклый һәм аерып күрсәтә.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Дөрес",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Ялган",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Билгесез",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Тикшерелә",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Тикшерү|Эзләнү|Чистарту|Фаш итү|Ачыклау|Уйлану|Яктырту|Казу|Иләү|Чагыштыру|Ачу|Җыю|Сорау алу|Анализлау|Тәфсилләү|Ачыклык кертү|Сафлау|Эзләп табу|Раслау|Тирәнәйтү|Билгеләү|Яктылык бирү|Хакыйкать эзләү|Чагыштырып тикшерү|Аеру|Ялганны фаш итү|Дезинформациядән арыну|Дәлилләү|Тикшереп чыгу|Дәлил эзләү|Хакыйкатьне ачу|Күзәтү|Фикер йөртү|Сынау|Тестлау|Барлау|Өйрәнү|Ачыш ясау|Хакыйкатьне казу|Ялганны табу|Нык карап тикшерү|Тәфсилләп өйрәнү|Төпләү|Бәяләү|Мәгълүматны тикшерү|Фактларны тикшерү|Чыганакны тикшерү|Ялганны юу|Ялганны себерү|Дәлилләрне җыю|Дәлилләрне барлау|Хакыйкатьне ачыклау|Ялганны эзләү|Ялганны аеру|Хакыйкать белән ялганны аеру|Тирәнгә чуму|Тәфсилләп чагыштыру|Юллар эзләү|Җаваплар эзләү|Сорауларга җавап табу|Ялган хәбәрне ачыклау|Ялган хәбәрне фаш итү|Дәлилләрне үлчәү|Ялганны сафлау|Мәгълүматны сафлау|Мәгълүматны чистарту|Хакыйкатьне яктырту|Караңгылыкны яктырту|Пәрдәне ачу|Йомгак ясау|Нәтиҗә чыгару|Уйланып йөрү|Баш ватыру|Фикер йомгаклау|Ваклап тикшерү|Барлап чыгу|Дәлилләрне чагыштыру|Чыганакларны чагыштыру|Хәбәрне сафлау|Ялганны бетерү|Дөреслекне эзләү|Дөреслекне ачыклау|Дөреслеккә якынаю|Ялган эзләрен куу|Эзләрен куу|Тамырына төшү|Тамырда эзләү|Асылын ачу|Мәгънәсен ачыклау|Тәфсилләрне барлау|Барысын үлчәү|Барысын санау|Барысын тикшерү|Йомгаклап чыгару|Нәтиҗәгә килү|Раслык эзләү|Ышанычлылыкны тикшерү|Дәлиллелекне тикшерү|Соңгы нөктәне кую|Хакыйкатьне барлау|Ялганнан арыну",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Бик ихтимал",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ихтимал",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Мөмкин",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Күбесенчә",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Бәхәсле",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Өлешчә",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Икеле",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Күчерү",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Бу твиттагы барлык дәгъвәләрне яңадан ачу",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Бу дәгъвәне яңадан тикшерү",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Тикшерелә",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Аннотацияләү",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Аннотацияләнә",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Тикшерүләрне тәрҗемә итү",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Тәрҗемә итү",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "булырга",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ булырга $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Тикшерелгән",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Кире кайту",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Күрсәтү",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Яшерү",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Ачыклау",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Тикшерелә",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Җирлеләштерү",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Баланс"
+  },
+  "gifted": {
+    "message": "Бүләк"
+  },
+  "customTopup": {
+    "message": "Башка"
+  },
+  "customAmountLabel": {
+    "message": "АКШ долларында үзегез сайлаган тулыландыру суммасы"
+  },
+  "increase": {
+    "message": "Арттыру"
+  },
+  "decrease": {
+    "message": "Киметү"
+  },
+  "topUpBalance": {
+    "message": "Балансны тулыландыру"
+  },
+  "processing": {
+    "message": "Эшкәртелә…"
+  },
+  "checkoutError": {
+    "message": "Түләүне башлап булмады. Зинһар, кабат карагыз."
+  },
+  "termsOfService": {
+    "message": "Хезмәт күрсәтү шартлары"
+  },
+  "privacyPolicy": {
+    "message": "Хосусыйлык сәясәте"
+  },
+  "disclaimerAgree": {
+    "message": "Балансны тулыландырып, сез безнең %TOS% һәм %PRIVACY% белән килешәсез."
+  },
+  "disclaimerFx": {
+    "message": "Әгәр сез USD дан башка валютада түләсәгез, валюта алмаштыру түләүләре кулланылырга мөмкин."
+  },
+  "signOut": {
+    "message": "Хисаптан чыгу"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% төймәсенә басу дәгъвәләрне күрсәтә һәм балансыгыздан акча алыначак"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% төймәсенә кагылу дәгъвәләрне күрсәтә һәм балансыгыздан акча алыначак"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% төймәсенә басыгыз, төп вакыйгаларны урнаштыра һәм сезнең балансны зарарлый"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% басыгыз, хаталар турындагы дәгъваны тикшерә һәм сезнең балансны алачак"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% төймәсенә басу балансыгыздан акча алыначак"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% төймәсенә басу балансыгыздан акча алыначак"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% төймәсенә басу балансыгыздан акча алыначак"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% төймәсенә басу балансыгыздан акча алыначак"
+  },
+  "topUp": {
+    "message": "Тулыландыру"
+  },
+  "showMore": {
+    "message": "Күбрәк күрсәтү"
+  },
+  "showLess": {
+    "message": "Азрак күрсәтү"
+  },
+  "landingTagline1": {
+    "message": "Хакыйкатьне ач. Ялганнарны тап."
+  },
+  "landingTagline2": {
+    "message": "Дезинформация бетте. Фактлар гына."
+  },
+  "continueWithX": {
+    "message": "X белән дәвам итү"
+  },
+  "continueWithGoogle": {
+    "message": "Google белән дәвам итү"
+  },
+  "continueWithApple": {
+    "message": "Apple белән дәвам итү"
+  },
+  "lastUsed": {
+    "message": "Соңгы кулланылган"
+  },
+  "cleanupTagline": {
+    "message": "X тасмагызны чистартыгыз."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Америка Кушма Штатлары эчендә DisinfaX кулланырга һәм балансны тулыландырырга бары тик Алабама, Аризона, Калифорния, Колорадо, Коннектикут, Делавэр, Флорида, Айдахо, Иллинойс, Индиана, Айова, Канзас, Кентукки, Луизиана, Мэн, Массачусетс, Миссисипи, Миссури, Монтана, Нью-Гэмпшир, Нью-Мексико, Нью-Йорк, Төньяк Каролина, Төньяк Дакота, Оклахома, Орегон, Пенсильвания, Көньяк Каролина, Көньяк Дакота, Теннесси, Техас, Юта, Вашингтон, Висконсин һәм Вайоминг штатлары кешеләре генә мөмкин; Вашингтон, D.C., барлык АКШ территорияләре һәм исемлектә күрсәтелмәгән теләсә нинди штатлар кертелми. Америка Кушма Штатларыннан читтә ул Канада, Австралия, Яңа Зеландия, Сингапур, Көньяк Африка, Япония, Тайвань, Индонезия, Тайланд, Филиппин, Малайзия, Вьетнам һәм Швейцариядә бар."
+  },
+  "factCheckAllButton": {
+    "message": "Барысын тикшерү"
+  },
+  "factCheckButton": {
+    "message": "Тикшерү"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX хата җибәрергә мөмкин. Мәгълүматны кабат тикшерегез.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Балансыгыз бик түбән. Дәвам итү өчен тулыландырыгыз."
+  },
+  "balanceEmpty": {
+    "message": "Балансыгыз буш. DisinfaX popup-тәрәзәсе аша балансыгызга акча өстәгез.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Хисабыгыз туктатылды."
+  },
+  "errNotSignedIn": {
+    "message": "Сез хисапка кермәгәнсез. Зинһар, керегез һәм тагын бер тапкыр сынап карагыз."
+  },
+  "errInvalidRequest": {
+    "message": "Бу сорауның бер өлеше танылмады. Кушымтаның яңартылганлыгын тикшерегез."
+  },
+  "errServiceUnavailable": {
+    "message": "Безнең тарафта хата килеп чыкты. Бераздан тагын бер тапкыр сынап карагыз."
+  },
+  "errRegionNotSupported": {
+    "message": "Җайга салу таләпләре аркасында DisinfaX сезнең төбәктә әле дә юк."
+  },
+  "errInvalidAmount": {
+    "message": "Ул тулыландыру суммасы дөрес түгел. Башка сумма сайлагыз."
+  },
+  "errNotFound": {
+    "message": "Ул табылмады. Тагын бер тапкыр сынап карагыз."
+  },
+  "settings": {
+    "message": "Көйләүләр",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Һәрвакыт фактчекинг күрсәт, әгәр:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Дөреслек < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Ышаныч > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Фактларны тикшерү",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Расламаны кертегез",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Чыганаклар",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Нигезләмә",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Сайланган текст белән popup ачу шул сайлауны тикшерә һәм балансыгыздан алына.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Кире кагу",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

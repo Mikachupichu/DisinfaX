@@ -1,0 +1,384 @@
+{
+  "topUp": {
+    "message": "Ανανέωση"
+  },
+  "showMore": {
+    "message": "Εμφάνιση περισσότερων"
+  },
+  "showLess": {
+    "message": "Εμφάνιση λιγότερων"
+  },
+  "landingTagline1": {
+    "message": "Αποκαλύψτε την αλήθεια. Βρείτε τα ψέματα."
+  },
+  "landingTagline2": {
+    "message": "Τέλος στην παραπληροφόρηση. Μόνο γεγονότα."
+  },
+  "continueWithX": {
+    "message": "Συνέχεια με X"
+  },
+  "continueWithGoogle": {
+    "message": "Συνέχεια με Google"
+  },
+  "continueWithApple": {
+    "message": "Συνέχεια με Apple"
+  },
+  "lastUsed": {
+    "message": "Τελευταία χρήση"
+  },
+  "cleanupTagline": {
+    "message": "Καθαρίστε τη ροή σας στο X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Εντός των Ηνωμένων Πολιτειών, μόνο οι κάτοικοι των πολιτειών Αλαμπάμα, Αριζόνα, Καλιφόρνια, Κολοράντο, Κονέκτικατ, Ντέλαγουερ, Φλόριντα, Αϊντάχο, Ιλινόις, Ιντιάνα, Αϊόβα, Κάνσας, Κεντάκι, Λουιζιάνα, Μέιν, Μασαχουσέτη, Μισισίπι, Μιζούρι, Μοντάνα, Νιου Χάμσαϊρ, Νέο Μεξικό, Νέα Υόρκη, Βόρεια Καρολίνα, Βόρεια Ντακότα, Οκλαχόμα, Όρεγκον, Πενσιλβάνια, Νότια Καρολίνα, Νότια Ντακότα, Τενεσί, Τέξας, Γιούτα, Ουάσιγκτον, Ουισκόνσιν και Ουαϊόμινγκ μπορούν να χρησιμοποιήσουν το DisinfaX και να προσθέσουν χρήματα στο υπόλοιπό τους· η Ουάσιγκτον D.C., όλες οι εδαφικές περιοχές των Η.Π.Α. και οποιεσδήποτε πολιτείες δεν αναφέρονται εξαιρούνται. Εκτός των Ηνωμένων Πολιτειών, είναι διαθέσιμο στον Καναδά, την Αυστραλία, τη Νέα Ζηλανδία, τη Σιγκαπούρη, τη Νότια Αφρική, την Ιαπωνία, την Ταϊβάν, την Ινδονησία, την Ταϊλάνδη, τις Φιλιππίνες, τη Μαλαισία, το Βιετνάμ και την Ελβετία."
+  },
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Εντοπίζει και επισημαίνει παραπληροφόρηση σε tweets με ανάλυση AI."
+  },
+  "verdictTrue": {
+    "message": "Αληθές",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Ψευδές",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Άγνωστο",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Έλεγχος",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Έλεγχος|Έρευνα|Καθαρισμός|Αποκάλυψη|Διάψευση|Σκέψη|Διαφώτιση|Σκάψιμο|Κοσκίνισμα|Ξεσκέπασμα|Επαλήθευση|Ανάλυση|Διασταύρωση|Διερεύνηση|Αποσαφήνιση|Ανακάλυψη|Αναζήτηση|Επιβεβαίωση|Ξετρύπωμα|Απομυθοποίηση|Στοχασμός|Διαλογισμός|Συλλογή|Φιλτράρισμα|Ξεσκόνισμα|Ξεμπούρδισμα|Ξεσκαρτάρισμα|Αλήθευση|Ξεψεύτισμα|Γεγονοτολόγηση|Ξεθόλωμα|Φωτισμός|Διαφανοποίηση|Αποκρυπτογράφηση|Ταξινόμηση|Κατηγοριοποίηση|Ετυμηγορία|Άντληση στοιχείων|Ενημέρωση|Στριφογύρισμα|Φόρτωση|Κύκλισμα|Περιστροφή|Επεξεργασία|Ξεθεαματοποίηση|Σκάλισμα|Αληθολόγηση|Αποψευδοποίηση|Ξεψευδοποίηση|Επικύρωση|Παραγωγή|Συγγραφή|Γνωσιολόγηση|Προβληματισμός|Περισυλλογή|Εξέταση|Ενδοσκόπηση|Περιπλάνηση|Μαγείρεμα|Σεφάρισμα|Διαίσθηση|Λογικοποίηση|Συλλογισμός|Φιλοσόφημα|Διασαφήνιση|Επίλυση|Φωταγώγηση|Συνεπαγωγή|Περιμάζεμα|Ξεσκατοποίηση|Κατάρριψη|Ξεμύθευση|Αποπροκατάληψη|Αποπροπαγανδισμός|Ευθύτητα|Απολύμανση|Αποτοξίνωση|Στύψιμο γεγονότων|Επιθεώρηση|Διαλογή|Αντεξέταση|Ανάκριση|Ξεμασκάρεμα|Ανατομή|Ξεδιάλυμα|Ξεκάπνισμα|Ξερίζωμα|Αποδόμηση|Διεξέταση|Τριγωνοποίηση|Διασταύρωση πηγών|Τεκμηρίωση|Απόσταξη|Σύνθεση|Ζύμωμα δεδομένων|Σκίσιμο της ομίχλης|Ακτινοσκόπηση|Έκθεση αλήθειας|Διαφωτισμός|Ξεχώρισμα ήρας από στάρι",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Πολύ πιθανόν",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Πιθανόν",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Πιθανώς",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Κατά κύριο λόγο",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Αμφισβητήσιμα",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Μερικώς",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Αμφίσημα",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Αντιγραφή",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Εκ νέου εμφάνιση των ισχυρισμών αυτού του tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Εκ νέου έρευνα αυτού του ισχυρισμού",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Έλεγχος",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Σχολίασε",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Σχολιασμός",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Μετάφραση Ελέγχων",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Μετάφραση",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "να είναι",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ να είναι $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ελέγχθηκε",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Επιστροφή",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Αποκάλυψη",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Απόκρυψη",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Έλεγχος Γεγονότων",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Έλεγχος",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Τοπικοποίησε",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Υπόλοιπο"
+  },
+  "gifted": {
+    "message": "Δώρο"
+  },
+  "customTopup": {
+    "message": "Προσαρμοσμένο"
+  },
+  "customAmountLabel": {
+    "message": "Προσαρμοσμένο ποσό ανανέωσης σε δολάρια ΗΠΑ"
+  },
+  "increase": {
+    "message": "Αύξηση"
+  },
+  "decrease": {
+    "message": "Μείωση"
+  },
+  "topUpBalance": {
+    "message": "Ανανέωση υπολοίπου"
+  },
+  "processing": {
+    "message": "Επεξεργασία…"
+  },
+  "checkoutError": {
+    "message": "Δεν ήταν δυνατή η έναρξη της πληρωμής. Δοκιμάστε ξανά."
+  },
+  "termsOfService": {
+    "message": "Όροι Παροχής Υπηρεσιών"
+  },
+  "privacyPolicy": {
+    "message": "Πολιτική Απορρήτου"
+  },
+  "disclaimerAgree": {
+    "message": "Με την ανανέωση, αποδέχεστε τους %TOS% και την %PRIVACY% μας."
+  },
+  "disclaimerFx": {
+    "message": "Ενδέχεται να ισχύουν χρεώσεις συναλλάγματος εάν πληρώσετε σε νόμισμα διαφορετικό από το USD."
+  },
+  "signOut": {
+    "message": "Αποσύνδεση"
+  },
+  "onboardDisinfactClick": {
+    "message": "Το κλικ στο %BTN% εμφανίζει τους ισχυρισμούς και θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardDisinfactTap": {
+    "message": "Το άγγιγμα στο %BTN% εμφανίζει τους ισχυρισμούς και θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardLocalize": {
+    "message": "Κάνοντας κλικ στο %BTN% επανατοποθετούνται οι καλύτερες στιγμές και θα χρεωθεί το υπόλοιπό σας"
+  },
+  "onboardAnnotate": {
+    "message": "Κάνοντας κλικ στο %BTN% ελέγχει την αξίωση για σφάλματα και θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardWillCharge": {
+    "message": "Το κλικ στο %BTN% θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardFactcheck": {
+    "message": "Το κλικ στο %BTN% θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardTranslations": {
+    "message": "Το κλικ στο %BTN% θα χρεώσει το υπόλοιπό σας"
+  },
+  "onboardRefreshes": {
+    "message": "Το κλικ στο %BTN% θα χρεώσει το υπόλοιπό σας"
+  },
+  "factCheckAllButton": {
+    "message": "Έλεγχος όλων"
+  },
+  "factCheckButton": {
+    "message": "Έλεγχος"
+  },
+  "aiDisclaimer": {
+    "message": "Το DisinfaX μπορεί να κάνει λάθη. Επιβεβαιώστε τις πληροφορίες.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Το υπόλοιπό σας είναι πολύ χαμηλό. Κάντε ανανέωση για να συνεχίσετε."
+  },
+  "balanceEmpty": {
+    "message": "Το υπόλοιπό σας είναι άδειο. Προσθέστε χρήματα στο υπόλοιπό σας χρησιμοποιώντας το αναδυόμενο παράθυρο του DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ο λογαριασμός σας έχει ανασταλεί."
+  },
+  "errNotSignedIn": {
+    "message": "Δεν έχετε συνδεθεί. Συνδεθείτε και δοκιμάστε ξανά."
+  },
+  "errInvalidRequest": {
+    "message": "Κάποιο μέρος αυτού του αιτήματος δεν αναγνωρίστηκε. Βεβαιωθείτε ότι η επέκταση είναι ενημερωμένη."
+  },
+  "errServiceUnavailable": {
+    "message": "Παρουσιάστηκε σφάλμα από την πλευρά μας. Δοκιμάστε ξανά σε λίγο."
+  },
+  "errRegionNotSupported": {
+    "message": "Το DisinfaX δεν είναι ακόμη διαθέσιμο στην περιοχή σας λόγω κανονιστικών απαιτήσεων."
+  },
+  "errInvalidAmount": {
+    "message": "Αυτό το ποσό ανανέωσης δεν είναι έγκυρο. Επιλέξτε διαφορετικό ποσό."
+  },
+  "errNotFound": {
+    "message": "Δεν ήταν δυνατή η εύρεσή του. Δοκιμάστε ξανά."
+  },
+  "settings": {
+    "message": "Ρυθμίσεις",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Να εμφανίζονται πάντα οι έλεγχοι εάν:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Εγκυρότητα < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Εμπιστοσύνη > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Έλεγχος γεγονότων",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Εισαγάγετε έναν ισχυρισμό",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Πηγές",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Συλλογισμός",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Το άνοιγμα του αναδυόμενου παραθύρου με επιλεγμένο κείμενο ελέγχει αυτή την επιλογή και θα χρεώσει το υπόλοιπό σας.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Άκυρο",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

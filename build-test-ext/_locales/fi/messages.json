@@ -1,0 +1,384 @@
+{
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Lahjana"
+  },
+  "customTopup": {
+    "message": "Mukautettu"
+  },
+  "customAmountLabel": {
+    "message": "Mukautettu latausmäärä Yhdysvaltain dollareina"
+  },
+  "increase": {
+    "message": "Lisää"
+  },
+  "decrease": {
+    "message": "Vähennä"
+  },
+  "topUpBalance": {
+    "message": "Lataa saldoa"
+  },
+  "processing": {
+    "message": "Käsitellään…"
+  },
+  "checkoutError": {
+    "message": "Kassalle siirtymistä ei voitu aloittaa. Yritä uudelleen."
+  },
+  "termsOfService": {
+    "message": "Käyttöehdot"
+  },
+  "privacyPolicy": {
+    "message": "Tietosuojakäytäntö"
+  },
+  "disclaimerAgree": {
+    "message": "Lataamalla saldoa hyväksyt %TOS% ja %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Valuutanvaihtomaksuja voidaan periä, jos maksat muussa valuutassa kuin USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Yhdysvalloissa vain seuraavien osavaltioiden asukkaat voivat käyttää DisinfaX-palvelua ja ladata saldoaan: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Pohjois-Carolina, Pohjois-Dakota, Oklahoma, Oregon, Pennsylvania, Etelä-Carolina, Etelä-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ja Wyoming; Washington, D.C., kaikki Yhdysvaltain alueet ja kaikki luettelemattomat osavaltiot on suljettu pois. Yhdysvaltain ulkopuolella se on saatavilla Kanadassa, Australiassa, Uudessa-Seelannissa, Singaporessa, Etelä-Afrikassa, Japanissa, Taiwanissa, Indonesiassa, Thaimaassa, Filippiineillä, Malesiassa, Vietnamissa ja Sveitsissä."
+  },
+  "signOut": {
+    "message": "Kirjaudu ulos"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%-painikkeen napsauttaminen näyttää väitteet ja veloittaa saldoasi"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%-painikkeen napauttaminen näyttää väitteet ja veloittaa saldoasi"
+  },
+  "onboardLocalize": {
+    "message": "Napsauta %BTN% siirtää kohokohdat uudelleen ja veloittaa saldosi"
+  },
+  "onboardAnnotate": {
+    "message": "Napsauttamalla %BTN% tarkistaa vaatimuksen virheiden varalta ja veloittaa saldosi"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%-painikkeen napsauttaminen veloittaa saldoasi"
+  },
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Tunnistaa ja korostaa väärää tietoa twiiteissä tekoälyanalyysin avulla."
+  },
+  "verdictTrue": {
+    "message": "Totta",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Epätotta",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Tuntematon",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Tarkistus",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Tarkistus|Tutkimus|Puhdistus|Paljastus|Kumoaminen|Pohdinta|Valaiseminen|Kaivaminen|Seulonta|Analysointi|Vahvistus|Vertailu|Selvittäminen|Purkaminen|Löytäminen|Etsintä|Kerääminen|Suodatus|Ristiintarkistus|Todentaminen|Läpivalaisu|Jäljittäminen|Erittely|Harkinta|Todistelu",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Erittäin todennäköisesti",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Todennäköisesti",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Mahdollisesti",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Enimmäkseen",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Perustellusti",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Osittain",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Monitulkintaisesti",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopioi",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Paljasta tämän twiitin väitteet uudelleen",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Tutki tämä väite uudelleen",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Tarkistus",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotoi",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotoidaan",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Käännä faktantarkistukset",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Käännä",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Tarkistettu",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Takaisin",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Näytä",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Piilota",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Paljasta väitteet",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Tarkistus",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokaloi",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "olevan",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ olevan $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "Lataa"
+  },
+  "showMore": {
+    "message": "Näytä lisää"
+  },
+  "showLess": {
+    "message": "Näytä vähemmän"
+  },
+  "landingTagline1": {
+    "message": "Paljasta totuus. Löydä valheet."
+  },
+  "landingTagline2": {
+    "message": "Ei enää disinformaatiota. Vain faktoja."
+  },
+  "continueWithX": {
+    "message": "Jatka X:llä"
+  },
+  "continueWithGoogle": {
+    "message": "Jatka Googlella"
+  },
+  "continueWithApple": {
+    "message": "Jatka Applella"
+  },
+  "lastUsed": {
+    "message": "Viimeksi käytetty"
+  },
+  "cleanupTagline": {
+    "message": "Siisti X-syötteesi."
+  },
+  "factCheckAllButton": {
+    "message": "Tarkista kaikki"
+  },
+  "factCheckButton": {
+    "message": "Tarkista"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX voi tehdä virheitä. Tarkista tiedot huolella.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Saldosi on liian pieni. Lataa saldoa jatkaaksesi."
+  },
+  "balanceEmpty": {
+    "message": "Saldosi on tyhjä. Lisää saldoosi varoja DisinfaX-ponnahdusikkunan kautta.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Tilisi on jäädytetty."
+  },
+  "errNotSignedIn": {
+    "message": "Et ole kirjautunut sisään. Kirjaudu sisään ja yritä uudelleen."
+  },
+  "errInvalidRequest": {
+    "message": "Osaa tästä pyynnöstä ei tunnistettu. Varmista, että laajennus on ajan tasalla."
+  },
+  "errServiceUnavailable": {
+    "message": "Tapahtui virhe meidän päässämme. Yritä hetken kuluttua uudelleen."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ei ole vielä käytettävissä alueellasi sääntelyvaatimusten vuoksi."
+  },
+  "errInvalidAmount": {
+    "message": "Tämä latausmäärä ei kelpaa. Valitse toinen määrä."
+  },
+  "errNotFound": {
+    "message": "Sitä ei löytynyt. Yritä uudelleen."
+  },
+  "settings": {
+    "message": "Asetukset",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Näytä faktantarkistukset aina jos:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Todenmukaisuus < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Varmuus > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktantarkistus",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Syötä väite",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Lähteet",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Perustelut",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ponnahdusikkunan avaaminen teksti valittuna tarkistaa kyseisen valinnan ja veloittaa saldostasi.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Peruuta",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

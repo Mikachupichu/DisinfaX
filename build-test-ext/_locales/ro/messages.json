@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Detectează și evidențiază dezinformarea în tweet-uri folosind analiza AI."
+  },
+  "verdictTrue": {
+    "message": "Adevărat",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Fals",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Necunoscut",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verificare",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Verificare|Cercetare|Curățare|Demascare|Descoperire|Reflectare|Iluminare|Săpare|Cernere|Analizare|Urmărire|Dezvăluire|Clarificare|Filtrare|Căutare|Descâlcire|Demistificare|Corectare|Scanare|Dezgropare|Explicare|Luminare|Detectare|Adulmecare|Decodare|Demontare|Stabilirea faptelor|Verificare încrucișată|Triangulare|Sintetizare",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Foarte probabil",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Probabil",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Posibil",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "În mare parte",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Discutabil",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Parțial",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Echivoc",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Copiază",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Dezvăluie din nou toate afirmațiile din acest tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Cercetează din nou această afirmație",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verificare",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Adnotează",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Se adnotează",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Tradu verificările",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Tradu",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "să fie",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ să fie $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Verificat",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Înapoi",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Arată",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Ascunde",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Verifică",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verificare",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Localizează",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Sold"
+  },
+  "gifted": {
+    "message": "Cadou"
+  },
+  "customTopup": {
+    "message": "Personalizat"
+  },
+  "customAmountLabel": {
+    "message": "Sumă de realimentare personalizată în dolari americani"
+  },
+  "increase": {
+    "message": "Crește"
+  },
+  "decrease": {
+    "message": "Scade"
+  },
+  "topUpBalance": {
+    "message": "Alimentează soldul"
+  },
+  "processing": {
+    "message": "Se procesează…"
+  },
+  "checkoutError": {
+    "message": "Nu s-a putut începe plata. Încearcă din nou."
+  },
+  "termsOfService": {
+    "message": "Termeni și condiții"
+  },
+  "privacyPolicy": {
+    "message": "Politica de confidențialitate"
+  },
+  "disclaimerAgree": {
+    "message": "Prin alimentare, ești de acord cu %TOS% și %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Se pot aplica comisioane de schimb valutar dacă plătești într-o altă monedă decât USD."
+  },
+  "signOut": {
+    "message": "Deconectare"
+  },
+  "onboardDisinfactClick": {
+    "message": "Apăsarea pe %BTN% dezvăluie afirmațiile și va debita soldul tău"
+  },
+  "onboardDisinfactTap": {
+    "message": "Atingerea %BTN% dezvăluie afirmațiile și va debita soldul tău"
+  },
+  "onboardLocalize": {
+    "message": "Făcând clic pe %BTN% repoziționează elementele evidențiate și îți va încărca soldul"
+  },
+  "onboardAnnotate": {
+    "message": "Făcând clic pe %BTN%, verificați reclamația pentru erori și vă va încasa soldul"
+  },
+  "onboardWillCharge": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "onboardFactcheck": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "onboardTranslations": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "onboardRefreshes": {
+    "message": "Apăsarea pe %BTN% va debita soldul tău"
+  },
+  "topUp": {
+    "message": "Adaugă fonduri"
+  },
+  "showMore": {
+    "message": "Arată mai mult"
+  },
+  "showLess": {
+    "message": "Arată mai puțin"
+  },
+  "landingTagline1": {
+    "message": "Dezvăluie adevărul. Găsește minciunile."
+  },
+  "landingTagline2": {
+    "message": "Gata cu dezinformarea. Doar fapte."
+  },
+  "continueWithX": {
+    "message": "Continuă cu X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuă cu Google"
+  },
+  "continueWithApple": {
+    "message": "Continuă cu Apple"
+  },
+  "lastUsed": {
+    "message": "Ultima utilizare"
+  },
+  "cleanupTagline": {
+    "message": "Curăță-ți fluxul X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "În Statele Unite, doar rezidenții din Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina de Nord, Dakota de Nord, Oklahoma, Oregon, Pennsylvania, Carolina de Sud, Dakota de Sud, Tennessee, Texas, Utah, Washington, Wisconsin și Wyoming pot folosi DisinfaX și își pot alimenta soldul; Washington, D.C., toate teritoriile SUA și orice state care nu sunt enumerate sunt excluse. În afara Statelor Unite, este disponibil în Canada, Australia, Noua Zeelandă, Singapore, Africa de Sud, Japonia, Taiwan, Indonezia, Thailanda, Filipine, Malaezia, Vietnam și Elveția."
+  },
+  "factCheckAllButton": {
+    "message": "Verifică tot"
+  },
+  "factCheckButton": {
+    "message": "Verifică"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX poate face greșeli. Verifică informațiile din nou.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Soldul tău este prea mic. Reîncarcă pentru a continua."
+  },
+  "balanceEmpty": {
+    "message": "Soldul tău este gol. Adaugă fonduri în soldul tău folosind fereastra popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Contul tău a fost suspendat."
+  },
+  "errNotSignedIn": {
+    "message": "Nu ești conectat. Conectează-te și încearcă din nou."
+  },
+  "errInvalidRequest": {
+    "message": "O parte din această cerere nu a fost recunoscută. Asigură-te că extensia este actualizată."
+  },
+  "errServiceUnavailable": {
+    "message": "A apărut o eroare din partea noastră. Încearcă din nou peste puțin timp."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nu este încă disponibil în regiunea ta din cauza cerințelor de reglementare."
+  },
+  "errInvalidAmount": {
+    "message": "Suma de reîncărcare nu este validă. Alege o altă sumă."
+  },
+  "errNotFound": {
+    "message": "Nu s-a putut găsi. Încearcă din nou."
+  },
+  "settings": {
+    "message": "Setări",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Afișează întotdeauna verificările dacă:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Veridicitate < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Încredere > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Verificarea faptelor",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Introduceți o afirmație",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Surse",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Raționament",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Deschiderea popup-ului cu text selectat verifică acea selecție și va fi debitată din soldul tău.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anulează",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

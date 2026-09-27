@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "E iloa ma faailoa faamatalaga sese i tweets e ala i le auiliiliga a le AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "E Moni",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Sō",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Lē iloa",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Siaki",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Siaki|Su'esu'e|Fa'amamā|Su'e mea moni|Mafaufau|Fa'amalamalama|Eli|Fa'amaonia|Fa'ailoa|Iloa|Fa'ailoa pepelo|Iloiloina|Su'esu'ega|Fa'aaliga|Va'ai loloto|Fa'amaoni|Fa'asa'oina|Su'eina|Fa'ailoaina|Fa'amamāina|Su'esu'e loloto|Fa'ailoa mea moni|Tapenapena|Fa'atulagaina|Fa'amaonia mea moni",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Manino lava",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Masani",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Atonu",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Tele",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Felafolafoa'i",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Vaega",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Le manino",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopi",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Toe fa'aalia tautinoga uma i lenei tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Toe su'esu'e le tautinoga lea",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Siaki",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Fa'amatala",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "O lo'o fa'amatala",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Faaliliu Siakiga",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Faaliliu",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "e",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ua Siakiina",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Toe Fo'i",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Fa'aalia",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Natia",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Fa'aali",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Siaki",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Fa'alotoifale",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Paleni"
+  },
+  "gifted": {
+    "message": "Meaalofa"
+  },
+  "customTopup": {
+    "message": "Fa'apitoa"
+  },
+  "customAmountLabel": {
+    "message": "Aofa'i fa'apitoa e fa'atumu ai, i tala Amerika"
+  },
+  "increase": {
+    "message": "Fa'ateleina"
+  },
+  "decrease": {
+    "message": "Fa'aitiitia"
+  },
+  "topUpBalance": {
+    "message": "Fa'atumu le Paleni"
+  },
+  "processing": {
+    "message": "O lo'o fa'agasolo…"
+  },
+  "checkoutError": {
+    "message": "E le'i mafai ona amata le totogi. Fa'amolemole toe taumafai."
+  },
+  "termsOfService": {
+    "message": "Tu'utu'uga o le Auaunaga"
+  },
+  "privacyPolicy": {
+    "message": "Faiga Fa'avae mo le Faalilolilo"
+  },
+  "disclaimerAgree": {
+    "message": "E ala i le fa'atumuina o lau paleni, e te malie ai i le %TOS% ma le %PRIVACY% a matou."
+  },
+  "disclaimerFx": {
+    "message": "E ono fa'aaogaina totogi o fesuia'iga tupe pe a e totogi i se isi tupe e ese mai le USD."
+  },
+  "signOut": {
+    "message": "Saini ese"
+  },
+  "onboardDisinfactClick": {
+    "message": "O le kiliki i le %BTN% e faʻaalia ai tautinoga ma o le a totogia ai lau paleni"
+  },
+  "onboardDisinfactTap": {
+    "message": "O le tapa i le %BTN% e faʻaalia ai tautinoga ma o le a totogia ai lau paleni"
+  },
+  "onboardLocalize": {
+    "message": "O le kiliki i le %BTN% e toe fa'atulaga mea taua ma o le a totogi ai lau paleni"
+  },
+  "onboardAnnotate": {
+    "message": "O le kiliki %BTN% siaki le tagi mo mea sese ma o le a totogi lau paleni"
+  },
+  "onboardWillCharge": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
+  },
+  "onboardFactcheck": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
+  },
+  "onboardTranslations": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
+  },
+  "onboardRefreshes": {
+    "message": "O le kiliki i le %BTN% o le a totogia ai lau paleni"
+  },
+  "topUp": {
+    "message": "Faatumu"
+  },
+  "showMore": {
+    "message": "Faʻaali atili"
+  },
+  "showLess": {
+    "message": "Faʻaali itiiti"
+  },
+  "landingTagline1": {
+    "message": "Faʻaali le Mea Moni. Suʻe Pepelo."
+  },
+  "landingTagline2": {
+    "message": "Leai se Faʻamatalaga Sese. Naʻo Mea Moni."
+  },
+  "continueWithX": {
+    "message": "Faʻaauau ma X"
+  },
+  "continueWithGoogle": {
+    "message": "Faʻaauau ma Google"
+  },
+  "continueWithApple": {
+    "message": "Faʻaauau ma Apple"
+  },
+  "lastUsed": {
+    "message": "Faʻaaogaina mulimuli"
+  },
+  "cleanupTagline": {
+    "message": "Faʻamamā lau X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "I totonu o le Iunaite Setete, naʻo tagata nofoia o Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ma Wyoming e mafai ona faʻaaogaina DisinfaX ma faatumu a latou paleni; o Washington, D.C., o teritori uma a le US, ma soo se setete e leʻi lisiina e le aofia ai. I fafo atu o le Iunaite Setete, e maua i Kanata, Ausetalia, Niu Sila, Singapore, Aferika i Saute, Iapani, Taiuana, Initonesia, Taielani, Filipaina, Meleisia, Vietename, ma Suiselani."
+  },
+  "factCheckAllButton": {
+    "message": "Siaki uma"
+  },
+  "factCheckButton": {
+    "message": "Siaki"
+  },
+  "aiDisclaimer": {
+    "message": "E mafai e le DisinfaX ona sese. Toe siaki fa'amatalaga.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "E maualalo tele lau paleni. Faamolemole faʻatumu ina ia mafai ai ona faaauau."
+  },
+  "balanceEmpty": {
+    "message": "Ua uma lau paleni. Faamolemole faʻaopoopo tupe i lau paleni e ala i le popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ua faamotu lou tautusi."
+  },
+  "errNotSignedIn": {
+    "message": "Ete lei saini ulufale. Faamolemole saini ulufale ma toe taumafai."
+  },
+  "errInvalidRequest": {
+    "message": "E leʻi iloa se vaega o lenei talosaga. Faamolemole mautinoa ua faafouina le faaopoopoga."
+  },
+  "errServiceUnavailable": {
+    "message": "Na tupu se faʻafitauli i le itu o matou. Faamolemole toe taumafai i se taimi laititi."
+  },
+  "errRegionNotSupported": {
+    "message": "E leʻi avanoa le DisinfaX i lou itulagi ona o manaoga faatonutonu."
+  },
+  "errInvalidAmount": {
+    "message": "E le aoga lena aofaʻi o le faʻatumuina. Faamolemole filifili se aofaʻi eseese."
+  },
+  "errNotFound": {
+    "message": "E leʻi mafai ona maua lena. Faʻamolemole toe taumafai."
+  },
+  "settings": {
+    "message": "Faatulagaga",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Faaali pea siaki mea moni pe a:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Moni < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Talitonu > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Siaki o mea moni",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tu'u se fa'amatalaga",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Puna'oa",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Mafua'aga",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "O le tatalaina o le popup ma se tusitusiga ua filifilia, o le a siakiina lena filifiliga ma totogi mai lou paleni.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Faaleaogaina",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Hutambua na kuangazia taarifa potofu kwenye tweet kwa kutumia uchambuzi wa AI."
+  },
+  "verdictTrue": {
+    "message": "Kweli",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Si Kweli",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Haijulikani",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Uhakiki",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Ukaguzi|Usafishaji|Utafutaji|Ufichuzi|Kufikiri|Uangazaji|Uchimbaji|Uchujaji|Uchambuzi|Upelelezi|Ukusanyaji wa ukweli|Ufafanuzi|Uthibitishaji|Ubainishaji|Utambuzi|Uchunguzi|Ufunuaji wa uongo|Ulinganishaji|Utenganishaji|Utaftaji wa ukweli|Uangalizi|Uchujaji wa habari|Ung'amuzi|Kazi ya upelelezi|Ufumbuzi",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Inawezekana Sana",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Inawezekana",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Labda",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Kwa Kiasi Kikubwa",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Kwa Hoja",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Kwa Sehemu",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Kwa Utata",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Nakili",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Onyesha tena madai yote katika tweet hii",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Tafiti upya dai hili",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Uhakiki",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Fafanua",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Inafafanua",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Tafsiri Uhakiki",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Tafsiri",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "kuwa",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ kuwa $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Imehakikiwa",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Rudi Nyuma",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Onyesha",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Ficha",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Disinfact",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Uhakiki",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Halisisha",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Salio"
+  },
+  "gifted": {
+    "message": "Zawadi"
+  },
+  "customTopup": {
+    "message": "Maalum"
+  },
+  "customAmountLabel": {
+    "message": "Kiasi maalum cha kuongeza kwa dola za Marekani"
+  },
+  "increase": {
+    "message": "Ongeza"
+  },
+  "decrease": {
+    "message": "Punguza"
+  },
+  "topUpBalance": {
+    "message": "Ongeza Salio"
+  },
+  "processing": {
+    "message": "Inachakata…"
+  },
+  "checkoutError": {
+    "message": "Imeshindwa kuanzisha malipo. Tafadhali jaribu tena."
+  },
+  "termsOfService": {
+    "message": "Masharti ya Huduma"
+  },
+  "privacyPolicy": {
+    "message": "Sera ya Faragha"
+  },
+  "disclaimerAgree": {
+    "message": "Kwa kuongeza salio, unakubali %TOS% na %PRIVACY% yetu."
+  },
+  "disclaimerFx": {
+    "message": "Ada za kubadilisha fedha zinaweza kutozwa ukilipa kwa sarafu isiyokuwa dola za Marekani."
+  },
+  "signOut": {
+    "message": "Ondoka"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kubofya %BTN% kunaonyesha madai na kutatoza salio lako"
+  },
+  "onboardDisinfactTap": {
+    "message": "Kugusa %BTN% kunaonyesha madai na kutatoza salio lako"
+  },
+  "onboardLocalize": {
+    "message": "Kubofya %BTN% huweka upya vivutio na kutatoza salio lako"
+  },
+  "onboardAnnotate": {
+    "message": "Kubofya %BTN% hukagua dai kwa makosa na kutatoza salio lako"
+  },
+  "onboardWillCharge": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "onboardFactcheck": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "onboardTranslations": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "onboardRefreshes": {
+    "message": "Kubofya %BTN% kutatoza salio lako"
+  },
+  "topUp": {
+    "message": "Ongeza salio"
+  },
+  "showMore": {
+    "message": "Onyesha zaidi"
+  },
+  "showLess": {
+    "message": "Onyesha kidogo"
+  },
+  "landingTagline1": {
+    "message": "Fichua ukweli. Gundua uongo."
+  },
+  "landingTagline2": {
+    "message": "Hakuna tena upotoshaji. Ukweli pekee."
+  },
+  "continueWithX": {
+    "message": "Endelea na X"
+  },
+  "continueWithGoogle": {
+    "message": "Endelea na Google"
+  },
+  "continueWithApple": {
+    "message": "Endelea na Apple"
+  },
+  "lastUsed": {
+    "message": "Ilitumika mwisho"
+  },
+  "cleanupTagline": {
+    "message": "Safisha mlisho wako wa X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ndani ya Marekani, DisinfaX inaweza kutumiwa na kuongezewa salio na wakazi wa Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kaskazini, Dakota Kaskazini, Oklahoma, Oregon, Pennsylvania, Carolina Kusini, Dakota Kusini, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming pekee; Washington, D.C., maeneo yote ya ng'ambo ya Marekani, na majimbo yoyote ambayo hayajaorodheshwa hayajumuishwi. Nje ya Marekani, inapatikana nchini Kanada, Australia, New Zealand, Singapore, Afrika Kusini, Japani, Taiwan, Indonesia, Thailand, Ufilipino, Malaysia, Vietnam, na Uswisi."
+  },
+  "factCheckAllButton": {
+    "message": "Hakiki Madai Yote"
+  },
+  "factCheckButton": {
+    "message": "Hakiki"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX inaweza kufanya makosa. Hakiki taarifa kwa uangalifu.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Salio lako halitoshi. Tafadhali ongeza salio ili kuendelea."
+  },
+  "balanceEmpty": {
+    "message": "Salio lako limekwisha. Tafadhali ongeza pesa kwenye salio lako kwa kutumia popup ya DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Akaunti yako imesimamishwa."
+  },
+  "errNotSignedIn": {
+    "message": "Hujaingia. Tafadhali ingia na ujaribu tena."
+  },
+  "errInvalidRequest": {
+    "message": "Sehemu ya ombi hili haikutambulika. Tafadhali hakikisha kiendelezi kimesasishwa."
+  },
+  "errServiceUnavailable": {
+    "message": "Hitilafu ilitokea kwa upande wetu. Tafadhali jaribu tena baada ya muda mfupi."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX haijapatikana bado katika eneo lako kutokana na mahitaji ya udhibiti."
+  },
+  "errInvalidAmount": {
+    "message": "Kiwango hicho cha kuongeza salio si sahihi. Tafadhali chagua kiwango kingine."
+  },
+  "errNotFound": {
+    "message": "Hilo halikupatikana. Tafadhali jaribu tena."
+  },
+  "settings": {
+    "message": "Mipangilio",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Onyesha ukaguzi wa ukweli kila mara ikiwa:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Ukweli < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Uhakika > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Ukaguzi wa ukweli",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Weka madai",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Vyanzo",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Sababu",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Kufungua popup na maandishi yaliyochaguliwa kutathmini uteuzi huo na kutatoza kutoka salio lako.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ghairi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

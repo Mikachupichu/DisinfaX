@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI дүн шинжилгээ ашиглан твитүүдэд хуурамч мэдээллийг илрүүлж, тодруулдаг.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Үнэн",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Худал",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Тодорхойгүй",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Шалгалт",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Шалгалт|Судалгаа|Цэвэрлэгээ|Илчлэлт|Нээлт|Бодол|Гэрэлтүүлэг|Ухалт|Шүүлт|Хөндлөнгийн Шалгалт|Дүн Шинжилгээ|Няцаалт|Эрэл Хайгуул|Тайлбар|Шүүн Ялгалт|Эргэцүүлэл|Нарийвчлал|Задлан Шинжилгээ|Цуглуулга|Баталгаажуулалт|Тодруулга|Үнэн Хайлт|Хуурмаг Илрүүлэлт|Баримтжуулалт|Нягтлан Үзэлт|Ялган Шүүлт",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Маш магадлалтай",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Магадлалтай",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Магадгүй",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Ихэнхдээ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Маргаантай",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Хэсэгчлэн",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Тодорхой бус",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Хуулах",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Энэ твит дэх бүх мэдэгдлийг дахин илчлэх",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Энэ мэдэгдлийг дахин судлах",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Шалгалт",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Тайлбарлах",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Тайлбарлаж байна",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Шалгалтыг Орчуулах",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Орчуулах",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "байх",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Шалгагдсан",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Буцах",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Харуулах",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Нуух",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Шалгалт",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Шалгалт",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Нутагшуулах",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Үлдэгдэл"
+  },
+  "gifted": {
+    "message": "Бэлэг"
+  },
+  "customTopup": {
+    "message": "Тусгай"
+  },
+  "customAmountLabel": {
+    "message": "АНУ-ын доллараар цэнэглэх тусгай дүн"
+  },
+  "increase": {
+    "message": "Нэмэх"
+  },
+  "decrease": {
+    "message": "Хасах"
+  },
+  "topUpBalance": {
+    "message": "Үлдэгдэл цэнэглэх"
+  },
+  "processing": {
+    "message": "Боловсруулж байна…"
+  },
+  "checkoutError": {
+    "message": "Төлбөрийг эхлүүлж чадсангүй. Дахин оролдоно уу."
+  },
+  "termsOfService": {
+    "message": "Үйлчилгээний нөхцөл"
+  },
+  "privacyPolicy": {
+    "message": "Нууцлалын бодлого"
+  },
+  "disclaimerAgree": {
+    "message": "Цэнэглэснээр та бидний %TOS% болон %PRIVACY%-г зөвшөөрч байна."
+  },
+  "disclaimerFx": {
+    "message": "Хэрэв та USD-ээс өөр валютаар төлбөл валют хөрвүүлэлтийн шимтгэл нэмэгдэж болзошгүй."
+  },
+  "signOut": {
+    "message": "Гарах"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% дээр дарахад мэдэгдлүүд харагдах бөгөөд таны балансаас мөнгө шимтгэгдэнэ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% дээр товшихад мэдэгдлүүд харагдах бөгөөд таны балансаас мөнгө шимтгэгдэнэ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% дээр дарснаар онцлох хэсгүүдийн байршлыг өөрчлөх бөгөөд таны үлдэгдлийг цэнэглэнэ"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% дээр дарснаар нэхэмжлэлийн алдааг шалгах бөгөөд таны үлдэгдлийг тооцох болно"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% дээр дарахад таны балансаас мөнгө шимтгэгдэнэ"
+  },
+  "topUp": {
+    "message": "Цэнэглэх"
+  },
+  "showMore": {
+    "message": "Илүү ихийг харуулах"
+  },
+  "showLess": {
+    "message": "Бага харуулах"
+  },
+  "landingTagline1": {
+    "message": "Үнэнийг ил гарга. Худал хуурмагийг ол."
+  },
+  "landingTagline2": {
+    "message": "Дезинформаци дуусав. Зөвхөн баримт."
+  },
+  "continueWithX": {
+    "message": "X-ээр үргэлжлүүлэх"
+  },
+  "continueWithGoogle": {
+    "message": "Google-ээр үргэлжлүүлэх"
+  },
+  "continueWithApple": {
+    "message": "Apple-ээр үргэлжлүүлэх"
+  },
+  "lastUsed": {
+    "message": "Сүүлд ашигласан"
+  },
+  "cleanupTagline": {
+    "message": "X мэдээллийн урсгалаа цэвэрлэ."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Америкийн Нэгдсэн Улсын дотор зөвхөн Алабама, Аризона, Калифорни, Колорадо, Коннектикут, Делавэр, Флорида, Айдахо, Иллинойс, Индиана, Айова, Канзас, Кентукки, Луизиана, Мэн, Массачусетс, Миссисипи, Миссури, Монтана, Нью-Хэмпшир, Нью-Мексико, Нью-Йорк, Хойд Каролина, Хойд Дакота, Оклахома, Орегон, Пенсильвани, Өмнөд Каролина, Өмнөд Дакота, Теннесси, Техас, Юта, Вашингтон, Висконсин болон Вайоминг мужийн оршин суугчид DisinfaX-ийг ашиглаж, үлдэгдлээ цэнэглэх боломжтой; Вашингтон, D.C., АНУ-ын бүх нутаг дэвсгэр болон жагсаалтад ороогүй аливаа муж хамаарахгүй. Америкийн Нэгдсэн Улсаас гадна энэ нь Канад, Австрали, Шинэ Зеланд, Сингапур, Өмнөд Африка, Япон, Тайвань, Индонез, Тайланд, Филиппин, Малайз, Вьетнам болон Швейцарьт ашиглах боломжтой."
+  },
+  "factCheckAllButton": {
+    "message": "Бүгдийг шалгах"
+  },
+  "factCheckButton": {
+    "message": "Шалгах"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX алдаа гаргаж болно. Мэдээллийг дахин шалгаарай.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Таны үлдэгдэл хэтэрхий бага байна. Үргэлжлүүлэхийн тулд цэнэглэнэ үү."
+  },
+  "balanceEmpty": {
+    "message": "Таны үлдэгдэл дуусчээ. DisinfaX-ийн гарч ирэх цонхоор дамжуулан үлдэгдэлдээ мөнгө нэмнэ үү.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Таны бүртгэл түр хаагдсан байна."
+  },
+  "errNotSignedIn": {
+    "message": "Та нэвтрээгүй байна. Нэвтэрч дахин оролдоно уу."
+  },
+  "errInvalidRequest": {
+    "message": "Энэ хүсэлтийн зарим хэсэг танигдсангүй. Өргөтгөл шинэчлэгдсэн эсэхийг шалгана уу."
+  },
+  "errServiceUnavailable": {
+    "message": "Бидний талд алдаа гарлаа. Хэсэг хугацааны дараа дахин оролдоно уу."
+  },
+  "errRegionNotSupported": {
+    "message": "Зохицуулалтын шаардлагаас шалтгаалан DisinfaX танай бүс нутагт одоогоор боломжгүй байна."
+  },
+  "errInvalidAmount": {
+    "message": "Тухайн цэнэглэлтийн дүн хүчингүй байна. Өөр дүн сонгоно уу."
+  },
+  "errNotFound": {
+    "message": "Үүнийг олох боломжгүй байна. Дахин оролдоно уу."
+  },
+  "settings": {
+    "message": "Тохиргоо",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Үргэлж баримт шалгалтыг харуул, хэрэв:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Үнэн байдал < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Итгэл > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Баримт шалгалт",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Мэдэгдэл оруулна уу",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Эх сурвалж",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Үндэслэл",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Текст сонгосон үед попап нээвэл тэр сонголтыг шалгаж, үлдэгдлээс татагдана.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Цуцлах",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

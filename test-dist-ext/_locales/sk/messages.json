@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Detekuje a zvýrazňuje dezinformácie v tweetoch pomocou AI analýzy."
+  },
+  "verdictTrue": {
+    "message": "Pravda",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Nepravda",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Neznáme",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Kontrola",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Overovanie|Pátranie|Čistenie|Odhaľovanie|Rozmýšľanie|Osvetľovanie|Kopanie|Preosievanie|Filtrovanie|Vyšetrovanie|Skúmanie|Demaskovanie|Prečesávanie|Rozplietanie|Bádanie|Dolovanie|Rozkrývanie|Lúštenie|Triedenie|Krížová kontrola|Očisťovanie|Zbieranie faktov|Preverovanie|Analyzovanie|Zisťovanie|Vyhodnocovanie|Rozsvecovanie pravdy|Detektívčenie",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Veľmi pravdepodobné",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Pravdepodobné",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Možné",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Väčšinou",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Diskutabilné",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Čiastočne",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Nejednoznačné",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopírovať",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Znova odhaliť všetky tvrdenia v tomto tweete",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Znovu preskúmať toto tvrdenie",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Kontrola",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotovať",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotovanie",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Preložiť overenia",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Preložiť",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "že je",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$, že je $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Overené",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Späť",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Odhaliť",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Skryť",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Overiť",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontrola",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizovať",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Zostatok"
+  },
+  "gifted": {
+    "message": "Darované"
+  },
+  "customTopup": {
+    "message": "Vlastné"
+  },
+  "customAmountLabel": {
+    "message": "Vlastná suma dobitia v amerických dolároch"
+  },
+  "increase": {
+    "message": "Zvýšiť"
+  },
+  "decrease": {
+    "message": "Znížiť"
+  },
+  "topUpBalance": {
+    "message": "Dobiť zostatok"
+  },
+  "processing": {
+    "message": "Spracúva sa…"
+  },
+  "checkoutError": {
+    "message": "Pokladnicu sa nepodarilo spustiť. Skúste to znova."
+  },
+  "termsOfService": {
+    "message": "Podmienky používania"
+  },
+  "privacyPolicy": {
+    "message": "Zásady ochrany osobných údajov"
+  },
+  "disclaimerAgree": {
+    "message": "Dobitím súhlasíte s našimi %TOS% a %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ak platíte v inej mene než USD, môžu sa účtovať poplatky za výmenu meny."
+  },
+  "signOut": {
+    "message": "Odhlásiť sa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kliknutím na %BTN% zobrazíte tvrdenia a z vášho zostatku bude strhnutý poplatok"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ťuknutím na %BTN% zobrazíte tvrdenia a z vášho zostatku bude strhnutý poplatok"
+  },
+  "onboardLocalize": {
+    "message": "Kliknutím na %BTN% premiestnite zvýraznenia a zaúčtujete váš zostatok"
+  },
+  "onboardAnnotate": {
+    "message": "Kliknutím na %BTN% skontrolujete chyby v nároku a zaúčtujete váš zostatok"
+  },
+  "onboardWillCharge": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "onboardFactcheck": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "onboardTranslations": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "onboardRefreshes": {
+    "message": "Kliknutím na %BTN% bude z vášho zostatku strhnutý poplatok"
+  },
+  "topUp": {
+    "message": "Dobiť"
+  },
+  "showMore": {
+    "message": "Zobraziť viac"
+  },
+  "showLess": {
+    "message": "Zobraziť menej"
+  },
+  "landingTagline1": {
+    "message": "Odhaľte pravdu. Nájdite lži."
+  },
+  "landingTagline2": {
+    "message": "Koniec dezinformáciám. Len fakty."
+  },
+  "continueWithX": {
+    "message": "Pokračovať s X"
+  },
+  "continueWithGoogle": {
+    "message": "Pokračovať s Google"
+  },
+  "continueWithApple": {
+    "message": "Pokračovať s Apple"
+  },
+  "lastUsed": {
+    "message": "Naposledy použité"
+  },
+  "cleanupTagline": {
+    "message": "Upracte si svoj kanál na X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "V Spojených štátoch môžu DisinfaX používať a dobíjať si zostatok iba obyvatelia štátov Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nové Mexiko, New York, Severná Karolína, Severná Dakota, Oklahoma, Oregon, Pensylvánia, Južná Karolína, Južná Dakota, Tennessee, Texas, Utah, Washington, Wisconsin a Wyoming; Washington, D.C., všetky územia USA a akékoľvek neuvedené štáty sú vylúčené. Mimo Spojených štátov je služba dostupná v Kanade, Austrálii, na Novom Zélande, v Singapure, Juhoafrickej republike, Japonsku, na Taiwane, v Indonézii, Thajsku, na Filipínach, v Malajzii, Vietname a Švajčiarsku."
+  },
+  "factCheckAllButton": {
+    "message": "Overiť všetko"
+  },
+  "factCheckButton": {
+    "message": "Overiť"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX môže robiť chyby. Informácie si vždy overte.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Váš zostatok je príliš nízky. Dobite si kredit a pokračujte."
+  },
+  "balanceEmpty": {
+    "message": "Váš zostatok je prázdny. Pridajte si prostriedky pomocou vyskakovacieho okna DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Váš účet bol pozastavený."
+  },
+  "errNotSignedIn": {
+    "message": "Nie ste prihlásení. Prihláste sa a skúste to znova."
+  },
+  "errInvalidRequest": {
+    "message": "Časť tejto požiadavky nebola rozpoznaná. Uistite sa, že máte aktuálnu verziu rozšírenia."
+  },
+  "errServiceUnavailable": {
+    "message": "Na našej strane nastala chyba. Skúste to znova za chvíľu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX zatiaľ nie je vo vašom regióne k dispozícii z dôvodu regulačných požiadaviek."
+  },
+  "errInvalidAmount": {
+    "message": "Táto suma dobitia nie je platná. Vyberte inú sumu."
+  },
+  "errNotFound": {
+    "message": "To sa nepodarilo nájsť. Skúste to znova."
+  },
+  "settings": {
+    "message": "Nastavenia",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Vždy zobraziť overenia, ak:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Pravdivosť < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Istota > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Overovanie faktov",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Zadajte tvrdenie",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Zdroje",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Odôvodnenie",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Otvorenie vyskakovacieho okna s vybraným textom overí tento výber a bude vám účtované zo zostatku.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Zrušiť",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

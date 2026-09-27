@@ -1,0 +1,386 @@
+{
+  "topUp": {
+    "message": "Kargañ"
+  },
+  "showMore": {
+    "message": "Diskouez muioc'h"
+  },
+  "showLess": {
+    "message": "Diskouez nebeutoc'h"
+  },
+  "landingTagline1": {
+    "message": "Diskuliañ ar Wirionez. Kavout ar Gevier."
+  },
+  "landingTagline2": {
+    "message": "Disinformadur ebet ken. Nemet Fedoù."
+  },
+  "continueWithX": {
+    "message": "Kenderc'hel gant X"
+  },
+  "continueWithGoogle": {
+    "message": "Kenderc'hel gant Google"
+  },
+  "continueWithApple": {
+    "message": "Kenderc'hel gant Apple"
+  },
+  "lastUsed": {
+    "message": "Implijet da ziwezhañ"
+  },
+  "cleanupTagline": {
+    "message": "Naetaat ho red X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "E-barzh ar Stadoù-Unanet, ne c'hall nemet annezidi Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina an Norzh, Dakota an Norzh, Oklahoma, Oregon, Pennsylvania, Karolina ar Su, Dakota ar Su, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming implijout DisinfaX hag ouzhpennañ arc'hant d'o c'hont; ezlakaet eo Washington, D.C., holl dachennoù ar Stadoù-Unanet, hag ar stadoù n'int ket rollet. Er-maez eus ar Stadoù-Unanet, ez eo hegerz e Kanada, Aostralia, Zeland-Nevez, Singapour, Suafrika, Japan, Taiwan, Indonezia, Thailand, ar Filipinez, Malaysia, Vietnam, ha Suis."
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Dinoiñ ha lakaat war wel an dizinformadur er postoù, dre zielfennadur gant AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Gwir",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Gaou",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Dianav",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Gwiriañ",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Naetaat|Dic'hlanaat|Gwiriekaat|Gwiriañ|Furchal|Klask|Enklask|Studiañ|Dielfennañ|Soñjal|Prederiañ|Meizañ|Displegañ|Sklaeraat|Dinoiñ|Dizoleiñ|Merzhiñ|Renkañ|Barnañ|Kelaouiñ|Treiñ|Kargañ|Troiñ|Krouiñ|Skrivañ|Furnisañ|Aventuriñ|Keginañ|Poazhat|Santiñ|Rezonañ|Filosofiañ|Sklerijennañ|Diskoulmañ|Dastum|Distruj mojennoù|Diframmañ|Dispenn|Kizellañ ar wirionez|Kadarnaat|Kempouezañ|Goulennata|Diskleriañ|Silañ|Furchal don|Sellet don|Prederiañ don|Klask ar wirionez|Naetaat ar fatrazh|Berrañ|Kempenn|Sevel ar wirionez|Dizoueriñ ar gevier|Distagañ ar gaou|Diskuliañ|Furchal en teuliadoù|Dastum stlennoù|Kempenn ar stlennoù|Klask an dro|Dizoueriñ ar mojennoù|Diskrivañ|Digeriñ daoulagad|Sellet a-dost|Anaout ar wir|Dilezel ar fals|Diskuliañ ar gwir|Klask ar gaou|Furchal don en traoù|Prederiañ war ar gaou|Merzhiñ ar fazioù|Sioulaat an dud|Aozañ ar stlennoù",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Moarvat-tre",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Moarvat",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Marteze",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Peurliesañ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Tabutus",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Darnel",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "A-zivseurt",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Eilañ",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Diskouez adarre holl afirmadennoù an tweet-mañ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Adklask an afirmadenn-mañ",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Gwiriañ",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Notennañ",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "O notennañ",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Treiñ ar Gwiriadennoù",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Treiñ",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "da vezañ",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ da vezañ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Gwiriet",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Distreiñ",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Diskouez",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Kuzhat",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Difalsaat",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Gwiriañ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lec'helaat",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Soum"
+  },
+  "gifted": {
+    "message": "Prof"
+  },
+  "customTopup": {
+    "message": "Personelaet"
+  },
+  "customAmountLabel": {
+    "message": "Sammad karg personelaet e dollars SU"
+  },
+  "increase": {
+    "message": "Kreskiñ"
+  },
+  "decrease": {
+    "message": "Digreskiñ"
+  },
+  "topUpBalance": {
+    "message": "Kargañ ar soum"
+  },
+  "processing": {
+    "message": "O treiñ…"
+  },
+  "checkoutError": {
+    "message": "N'eus ket bet gallet kregiñ gant ar paeamant. Klaskit en-dro, mar plij."
+  },
+  "termsOfService": {
+    "message": "Termenoù ar Servij"
+  },
+  "privacyPolicy": {
+    "message": "Reolennoù prevezded"
+  },
+  "disclaimerAgree": {
+    "message": "En ur gargañ, e asantit d'hor %TOS% ha d'hor %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Tailhoù eskemm moneiz a c'hall bezañ arloet ma paeit e ur voneiz all eget an USD."
+  },
+  "signOut": {
+    "message": "Digevreañ"
+  },
+  "onboardDisinfactClick": {
+    "message": "O klikañ war %BTN% e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardDisinfactTap": {
+    "message": "O stekiñ war %BTN% e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardLocalize": {
+    "message": "Klikañ war %BTN% a adlec'hio ar poentoù pouezusañ ha kargañ a raio ho sammad"
+  },
+  "onboardAnnotate": {
+    "message": "Klikañ war %BTN% a wirio ar goulenn hag-eñ ez eus fazioù ha kargañ a raio ho sammad"
+  },
+  "onboardWillCharge": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardFactcheck": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardTranslations": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "onboardRefreshes": {
+    "message": "O klikañ war %BTN% e vo tennet arc'hant diwar ho kont"
+  },
+  "factCheckAllButton": {
+    "message": "Gwiriañ pep tra"
+  },
+  "factCheckButton": {
+    "message": "Gwiriañ"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX a c'hall ober fazioù. Gwiriit an titouroù div wech.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Re izel eo ho soum. Marplij lakait arc'hant evit kenderc'hel."
+  },
+  "balanceEmpty": {
+    "message": "Goullo eo ho soum. Marplij lakit arc'hant en ho soum gant popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Harzet eo bet ho kont."
+  },
+  "errNotSignedIn": {
+    "message": "N'oc'h ket kevreet. Kevreit ha klaskit en-dro, mar plij."
+  },
+  "errInvalidRequest": {
+    "message": "N'eo ket bet anavezet un darn eus ar goulenn-mañ. Marplij gwiriañ ma'z eo hizivaet an astenn."
+  },
+  "errServiceUnavailable": {
+    "message": "Ur fazi zo bet war hor tu. Marplij klaskit en-dro a-benn ur pennadig."
+  },
+  "errRegionNotSupported": {
+    "message": "N'eo ket hegerz c'hoazh DisinfaX en ho rannvro abalamour da rekizadurioù reoliadel."
+  },
+  "errInvalidAmount": {
+    "message": "N'eo ket talvoudek ar sammad-se. Marplij dibab ur sammad all."
+  },
+  "errNotFound": {
+    "message": "N'eo ket bet kavet an dra-se. Marplij klaskit en-dro."
+  },
+  "settings": {
+    "message": "Arventennoù",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Diskouez bepred ar gwiriadennoù ma:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Gwirionez < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Fizïañs > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Gwiriañ ar fedoù",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Skriv un arguzenn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Mammennoù",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Poelladenn",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Digeriñ ar popup gant test dibabet a wiria ar choaz-se hag a lak eus ho kont.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Nullañ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

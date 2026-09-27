@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "AI विश्लेषण के माध्यम से ट्वीट्स में गलत सूचना का पता लगाता है और उसे हाइलाइट करता है।"
+  },
+  "topUp": {
+    "message": "टॉप अप करें"
+  },
+  "showMore": {
+    "message": "और दिखाएं"
+  },
+  "showLess": {
+    "message": "कम दिखाएं"
+  },
+  "landingTagline1": {
+    "message": "सच्चाई उजागर करें। झूठ का पता लगाएं।"
+  },
+  "landingTagline2": {
+    "message": "अब कोई गलत सूचना नहीं। केवल तथ्य।"
+  },
+  "continueWithX": {
+    "message": "X के साथ जारी रखें"
+  },
+  "continueWithGoogle": {
+    "message": "Google के साथ जारी रखें"
+  },
+  "continueWithApple": {
+    "message": "Apple के साथ जारी रखें"
+  },
+  "lastUsed": {
+    "message": "अंतिम बार उपयोग किया गया"
+  },
+  "cleanupTagline": {
+    "message": "अपनी X फ़ीड साफ़ करें।"
+  },
+  "disclaimerJurisdiction": {
+    "message": "संयुक्त राज्य अमेरिका के भीतर, केवल अलबामा, एरिज़ोना, कैलिफ़ोर्निया, कोलोराडो, कनेक्टिकट, डेलावेयर, फ़्लोरिडा, आइडाहो, इलिनोइस, इंडियाना, आयोवा, कंसास, केंटकी, लुइज़ियाना, मेन, मैसाचुसेट्स, मिसिसिपी, मिज़ूरी, मोंटाना, न्यू हैम्पशायर, न्यू मैक्सिको, न्यूयॉर्क, नॉर्थ कैरोलिना, नॉर्थ डकोटा, ओक्लाहोमा, ओरेगन, पेंसिल्वेनिया, साउथ कैरोलिना, साउथ डकोटा, टेनेसी, टेक्सास, यूटा, वॉशिंगटन, विस्कॉन्सिन और वायोमिंग के निवासी DisinfaX का उपयोग कर सकते हैं और अपना बैलेंस टॉप अप कर सकते हैं; वॉशिंगटन, D.C., सभी अमेरिकी क्षेत्र, और सूचीबद्ध न किए गए कोई भी राज्य शामिल नहीं हैं। संयुक्त राज्य अमेरिका के बाहर, यह कनाडा, ऑस्ट्रेलिया, न्यूज़ीलैंड, सिंगापुर, दक्षिण अफ़्रीका, जापान, ताइवान, इंडोनेशिया, थाईलैंड, फ़िलीपींस, मलेशिया, वियतनाम और स्विट्ज़रलैंड में उपलब्ध है।"
+  },
+  "verdictTrue": {
+    "message": "सत्य",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "असत्य",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "अज्ञात",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "जाँच",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "जाँच|खोज|शोध|सफाई|पर्दाफाश|अन्वेषण|मनन|उजागर|खुदाई|छानबीन|पुष्टि|विश्लेषण|सत्यापन|मंथन|विचार-विमर्श|रहस्योद्घाटन|सुलझाव|तह तक जाना|प्रकाशन|तुलना|स्पष्टीकरण|छानना|गहराई से जांच|तथ्य जांच|पड़ताल|निरीक्षण|मूल्यांकन|खंगालना",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "अत्यधिक संभावित",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "संभावित",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "संभवतः",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "अधिकांशतः",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "तर्कसंगत रूप से",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "आंशिक रूप से",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "अस्पष्ट रूप से",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "कॉपी करें",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "इस ट्वीट के सभी दावों को फिर से उजागर करें",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "इस दावे की पुनः जाँच करें",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "जाँच",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "टिप्पणी करें",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "टिप्पणी हो रही है",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "जाँच का अनुवाद करें",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "अनुवाद करें",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "होना",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "जाँचा गया",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "वापस जाएं",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "दिखाएँ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "छिपाएँ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "जाँच",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "जाँच",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "स्थानीय करें",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "शेष राशि"
+  },
+  "gifted": {
+    "message": "उपहार"
+  },
+  "customTopup": {
+    "message": "कस्टम"
+  },
+  "customAmountLabel": {
+    "message": "अमेरिकी डॉलर में कस्टम टॉप-अप राशि"
+  },
+  "increase": {
+    "message": "बढ़ाएँ"
+  },
+  "decrease": {
+    "message": "घटाएँ"
+  },
+  "topUpBalance": {
+    "message": "बैलेंस टॉप अप करें"
+  },
+  "processing": {
+    "message": "प्रोसेस हो रहा है…"
+  },
+  "checkoutError": {
+    "message": "चेकआउट शुरू नहीं हो सका। कृपया पुनः प्रयास करें।"
+  },
+  "termsOfService": {
+    "message": "सेवा की शर्तें"
+  },
+  "privacyPolicy": {
+    "message": "गोपनीयता नीति"
+  },
+  "disclaimerAgree": {
+    "message": "टॉप अप करके, आप हमारी %TOS% और %PRIVACY% से सहमत होते हैं।"
+  },
+  "disclaimerFx": {
+    "message": "यदि आप USD के अलावा किसी अन्य मुद्रा में भुगतान करते हैं तो विदेशी मुद्रा शुल्क लागू हो सकते हैं।"
+  },
+  "signOut": {
+    "message": "साइन आउट"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% पर क्लिक करने से दावे दिखेंगे और आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% पर टैप करने से दावे दिखेंगे और आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% पर क्लिक करने से हाइलाइट्स का स्थान बदल जाता है और आपका बैलेंस चार्ज हो जाएगा"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% पर क्लिक करने से त्रुटियों के दावे की जांच हो जाएगी और आपसे शेष राशि वसूल कर ली जाएगी"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% पर क्लिक करने से आपके बैलेंस से शुल्क लिया जाएगा"
+  },
+  "factCheckAllButton": {
+    "message": "सभी जाँचें"
+  },
+  "factCheckButton": {
+    "message": "जाँचें"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX गलतियाँ कर सकता है। जानकारी की दोबारा जांच करें।",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "आपका बैलेंस बहुत कम है। जारी रखने के लिए कृपया टॉप अप करें।"
+  },
+  "balanceEmpty": {
+    "message": "आपका बैलेंस खाली है। कृपया DisinfaX पॉपअप का उपयोग करके अपने बैलेंस में पैसे जोड़ें।",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "आपका खाता सस्पेंड कर दिया गया है।"
+  },
+  "errNotSignedIn": {
+    "message": "आपने साइन इन नहीं किया है। कृपया साइन इन करें और फिर से प्रयास करें।"
+  },
+  "errInvalidRequest": {
+    "message": "इस रिक्वेस्ट का कुछ हिस्सा पहचाना नहीं जा सका। कृपया सुनिश्चित करें कि एक्सटेंशन अपडेटेड है।"
+  },
+  "errServiceUnavailable": {
+    "message": "हमारी तरफ़ से कोई गड़बड़ी हुई। कृपया कुछ समय बाद फिर से प्रयास करें।"
+  },
+  "errRegionNotSupported": {
+    "message": "नियामक आवश्यकताओं के कारण DisinfaX अभी आपके क्षेत्र में उपलब्ध नहीं है।"
+  },
+  "errInvalidAmount": {
+    "message": "वह टॉप-अप राशि मान्य नहीं है। कृपया कोई दूसरी राशि चुनें।"
+  },
+  "errNotFound": {
+    "message": "वह नहीं मिल सका। कृपया फिर से प्रयास करें।"
+  },
+  "settings": {
+    "message": "सेटिंग्स",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "हमेशा फ़ैक्ट-चेक दिखाएँ यदि:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "सत्यता < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "विश्वास स्तर > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "तथ्य-जाँच",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "कोई दावा दर्ज करें",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "स्रोत",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "तर्क",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "टेक्स्ट चुनकर पॉपअप खोलने पर वह चयन जाँचा जाएगा और आपके बैलेंस से शुल्क कटेगा।",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "रद्द करें",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Mendeteksi dan menyoroti misinformasi dalam tweet menggunakan analisis AI."
+  },
+  "verdictTrue": {
+    "message": "Benar",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Salah",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Tidak Diketahui",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Pemeriksaan",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Pemeriksaan|Penelitian|Pembersihan|Pengungkapan|Penemuan|Perenungan|Pencerahan|Penggalian|Penyaringan|Analisis|Interogasi|Klarifikasi|Perbandingan|Validasi|Audit|Pendeteksian|Pembongkaran|Penyelidikan|Verifikasi|Pemurnian|Pembedahan|Penelusuran|Pengujian|Pemecahan Misteri|Pencarian Fakta|Perincian",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Sangat Mungkin",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Mungkin",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Barangkali",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Sebagian Besar",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Bisa Diperdebatkan",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Sebagian",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Samar",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Salin",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Mengungkap ulang semua klaim dalam tweet ini",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Meneliti ulang klaim ini",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Pemeriksaan",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotasi",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Menganotasi",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Terjemahkan pemeriksaan",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Terjemahkan",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Tampilkan",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Sembunyikan",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Cek Fakta",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Pemeriksaan",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalisasi",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "bonus"
+  },
+  "customTopup": {
+    "message": "Kustom"
+  },
+  "customAmountLabel": {
+    "message": "Jumlah isi ulang kustom dalam dolar AS"
+  },
+  "increase": {
+    "message": "Tambah"
+  },
+  "decrease": {
+    "message": "Kurangi"
+  },
+  "topUpBalance": {
+    "message": "Isi Ulang Saldo"
+  },
+  "processing": {
+    "message": "Memproses…"
+  },
+  "checkoutError": {
+    "message": "Tidak dapat memulai pembayaran. Silakan coba lagi."
+  },
+  "termsOfService": {
+    "message": "Ketentuan Layanan"
+  },
+  "privacyPolicy": {
+    "message": "Kebijakan Privasi"
+  },
+  "disclaimerAgree": {
+    "message": "Dengan mengisi ulang, Anda menyetujui %TOS% dan %PRIVACY% kami."
+  },
+  "disclaimerFx": {
+    "message": "Biaya penukaran mata uang mungkin berlaku jika Anda membayar dalam mata uang selain USD."
+  },
+  "signOut": {
+    "message": "Keluar"
+  },
+  "onboardDisinfactClick": {
+    "message": "Mengeklik %BTN% menampilkan klaim dan akan membebankan biaya ke saldo Anda"
+  },
+  "onboardDisinfactTap": {
+    "message": "Mengetuk %BTN% menampilkan klaim dan akan membebankan biaya ke saldo Anda"
+  },
+  "onboardLocalize": {
+    "message": "Mengklik %BTN% akan mengubah posisi sorotan dan akan menagih saldo Anda"
+  },
+  "onboardAnnotate": {
+    "message": "Mengklik %BTN% akan memeriksa kesalahan klaim dan akan menagih saldo Anda"
+  },
+  "onboardWillCharge": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "onboardFactcheck": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "onboardTranslations": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "onboardRefreshes": {
+    "message": "Mengeklik %BTN% akan membebankan biaya ke saldo Anda"
+  },
+  "topUp": {
+    "message": "Isi Ulang"
+  },
+  "showMore": {
+    "message": "Tampilkan lebih banyak"
+  },
+  "showLess": {
+    "message": "Tampilkan lebih sedikit"
+  },
+  "landingTagline1": {
+    "message": "Ungkap Kebenaran. Temukan Kebohongan."
+  },
+  "landingTagline2": {
+    "message": "Tidak ada lagi Disinformasi. Hanya Fakta."
+  },
+  "continueWithX": {
+    "message": "Lanjutkan dengan X"
+  },
+  "continueWithGoogle": {
+    "message": "Lanjutkan dengan Google"
+  },
+  "continueWithApple": {
+    "message": "Lanjutkan dengan Apple"
+  },
+  "lastUsed": {
+    "message": "Terakhir Digunakan"
+  },
+  "cleanupTagline": {
+    "message": "Bersihkan Beranda X Anda."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Di dalam Amerika Serikat, hanya penduduk negara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Utara, Dakota Utara, Oklahoma, Oregon, Pennsylvania, Carolina Selatan, Dakota Selatan, Tennessee, Texas, Utah, Washington, Wisconsin, dan Wyoming yang dapat menggunakan DisinfaX dan mengisi ulang saldo mereka; Washington, D.C., semua teritori A.S., dan negara bagian mana pun yang tidak tercantum tidak termasuk. Di luar Amerika Serikat, tersedia di Kanada, Australia, Selandia Baru, Singapura, Afrika Selatan, Jepang, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, dan Swiss."
+  },
+  "factCheckAllButton": {
+    "message": "Cek Semua Fakta"
+  },
+  "factCheckButton": {
+    "message": "Cek Fakta"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX dapat membuat kesalahan. Selalu periksa kembali informasi penting.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Saldo Anda terlalu rendah. Silakan isi ulang untuk melanjutkan."
+  },
+  "balanceEmpty": {
+    "message": "Saldo Anda kosong. Silakan tambahkan dana ke saldo Anda menggunakan popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Akun Anda telah ditangguhkan."
+  },
+  "errNotSignedIn": {
+    "message": "Anda belum masuk. Silakan masuk dan coba lagi."
+  },
+  "errInvalidRequest": {
+    "message": "Ada bagian dari permintaan ini yang tidak dikenali. Pastikan ekstensi sudah versi terbaru."
+  },
+  "errServiceUnavailable": {
+    "message": "Terjadi kesalahan di pihak kami. Silakan coba lagi sebentar lagi."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX belum tersedia di wilayah Anda karena persyaratan regulasi."
+  },
+  "errInvalidAmount": {
+    "message": "Jumlah isi ulang tersebut tidak valid. Silakan pilih jumlah lain."
+  },
+  "errNotFound": {
+    "message": "Hal tersebut tidak dapat ditemukan. Silakan coba lagi."
+  },
+  "settings": {
+    "message": "Pengaturan",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Selalu tampilkan cek fakta jika:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Kebenaran < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Keyakinan > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Pemeriksaan fakta",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Masukkan klaim",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sumber",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Penalaran",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Membuka popup dengan teks terpilih akan memeriksa pilihan itu dan memotong saldo Anda.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Batal",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

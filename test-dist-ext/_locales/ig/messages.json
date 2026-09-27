@@ -1,0 +1,385 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Na-achọpụta ma na-egosipụta ozi ụgha na tweets site na nyocha AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Eziokwu",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Ụgha",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Amaghị",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Na-enyocha",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Na-enyocha|Na-achọpụta|Na-eleba anya|Na-ahazi|Na-edozi|Na-akọwapụta|Na-atụle|Na-echepụta|Na-ekpughe eziokwu|Na-asachapụta ụgha|Na-achịkọta ozi|Na-egbochi ụgha|Na-atụgharị uche|Na-achọpụta akaebe|Na-eme nchọpụta|Na-eme ntule|Na-achọpụta eziokwu|Na-eweta ihe ọma|Na-eleba anya nke ọma|Na-asachapụta|Na-akwado eziokwu|Na-enyocha ọzọ|Na-achọ eziokwu|Na-edozi ozi|Na-akọwa ihe|Na-eme nyocha ọzọ|Na-elele akụkọ|Na-enyocha isi ihe"
+  },
+  "adjVeryLikely": {
+    "message": "O yikarịrị",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "O yikarị",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Ikekwe",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Ọtụtụ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Arụmụka",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Akụkụ ụfọdụ",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Edoghị anya",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Detuo",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Kpughee ọzọ nkwupụta niile nke tweet a",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Nyochaa nzọrọ a ọzọ",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Na-enyocha",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Tinye nkọwa",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Na-agbakwunye nkọwa",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Translate Fact-Checks",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Translate",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Gosi",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Zoo",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Nyochaa",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Na-enyocha",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Megharịa n'asụsụ",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Ego fọdụrụ"
+  },
+  "gifted": {
+    "message": "Onyinye"
+  },
+  "customTopup": {
+    "message": "Ahaziri onwe"
+  },
+  "customAmountLabel": {
+    "message": "Ọnụọgụ ntinye ego ahaziri onwe na dollar US"
+  },
+  "increase": {
+    "message": "Mụba"
+  },
+  "decrease": {
+    "message": "Belata"
+  },
+  "topUpBalance": {
+    "message": "Tinye ego"
+  },
+  "processing": {
+    "message": "Na-ahazi…"
+  },
+  "checkoutError": {
+    "message": "Enweghị ike ịmalite ịkwụ ụgwọ. Biko nwaa ọzọ."
+  },
+  "termsOfService": {
+    "message": "Usoro Ọrụ"
+  },
+  "privacyPolicy": {
+    "message": "Amụma Nzuzo"
+  },
+  "disclaimerAgree": {
+    "message": "Site n'ịtinye ego, ị kwenyere na %TOS% na %PRIVACY% anyị."
+  },
+  "disclaimerFx": {
+    "message": "Ụgwọ mgbanwe ego mba ọzọ nwere ike ịdị ma ọ bụrụ na ị kwụ ụgwọ n'ego na-abụghị USD."
+  },
+  "signOut": {
+    "message": "Pụọ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ịpị %BTN% ga-ekpughe nkwupụta ma gbaa ụgwọ na ngụkọ gị"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ịkwụ aka na %BTN% ga-ekpughe nkwupụta ma gbaa ụgwọ na ngụkọ gị"
+  },
+  "onboardLocalize": {
+    "message": "Ịpị %BTN% na-atụgharị isi ihe na ọ ga-ana gị nguzozi"
+  },
+  "onboardAnnotate": {
+    "message": "Ịpị %BTN% na-enyocha nzọrọ maka mmejọ ma ga-ana gị nguzozi"
+  },
+  "onboardWillCharge": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "onboardFactcheck": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "onboardTranslations": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "onboardRefreshes": {
+    "message": "Ịpị %BTN% ga-agbara ụgwọ na ngụkọ gị"
+  },
+  "topUp": {
+    "message": "Tinye Ego"
+  },
+  "showMore": {
+    "message": "Gosi ihe ọzọ"
+  },
+  "showLess": {
+    "message": "Gosi ntakịrị"
+  },
+  "landingTagline1": {
+    "message": "Kpughee Eziokwu. Chọta Ụgha."
+  },
+  "landingTagline2": {
+    "message": "Enweghịzi Ụgha. Naanị Eziokwu."
+  },
+  "continueWithX": {
+    "message": "Gaa n'ihu na X"
+  },
+  "continueWithGoogle": {
+    "message": "Gaa n'ihu na Google"
+  },
+  "continueWithApple": {
+    "message": "Gaa n'ihu na Apple"
+  },
+  "lastUsed": {
+    "message": "Nke Ejiri Ikpeazụ"
+  },
+  "cleanupTagline": {
+    "message": "Hichaa X Feed gị."
+  },
+  "disclaimerJurisdiction": {
+    "message": "N'ime United States, naanị ndị bi na Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, na Wyoming nwere ike iji DisinfaX ma tinye ego ha; Washington, D.C., mpaghara U.S. niile, na steeti ọ bụla a na-edeghị edepụta anaghị agụnye ha. Na mpụga United States, ọ dị na Canada, Australia, New Zealand, Singapore, South Africa, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, na Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Nyochaa Ihe Niile"
+  },
+  "factCheckButton": {
+    "message": "Nyochaa"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX nwere ike ime mmejọ. Lelee ozi ahụ ọzọ.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ego gị dị ala nke ukwuu. Biko gbakwunye ego iji gaa n'ihu."
+  },
+  "balanceEmpty": {
+    "message": "Ego gị agwụla. Biko tinye ego na ego gị site na DisinfaX popup.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Akaụntụ gị ka akwụsịtụrụ."
+  },
+  "errNotSignedIn": {
+    "message": "Ị banyeghị. Biko banye ma nwaa ọzọ."
+  },
+  "errInvalidRequest": {
+    "message": "E ghọtaghị akụkụ ụfọdụ nke arịrịọ a. Biko gbaa mbọ hụ na ngbakwunye ahụ dị ọhụrụ."
+  },
+  "errServiceUnavailable": {
+    "message": "Njehie mere n'akụkụ anyị. Biko nwaa ọzọ n'oge na-adịghị anya."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX adịghị na mpaghara gị ugbu a n'ihi iwu ndozi."
+  },
+  "errInvalidAmount": {
+    "message": "Ọnụ ahịa ntinye ego ahụ ezighi ezi. Biko họrọ ọnụ ahịa ọzọ."
+  },
+  "errNotFound": {
+    "message": "Achọtaghị nke ahụ. Nwaa ọzọ."
+  },
+  "settings": {
+    "message": "Ntọala",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Gosi nyocha mgbe niile ma:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Eziokwu < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Ntukwasị obi > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Nlele eziokwu",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tinye nkwupụta",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ebe enwetara",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Echiche",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Imepepụta popup na ederede ahọpụtara ga-enyocha nhọrọ ahụ ma wepụ na ego gị.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Kagbuo",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Detektas kaj elstarigas malinformojn en tvitoj per AI-analizo.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Vera",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Falsa",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Nekonata",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Kontrolado",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Malsensencigado|Malinformumado|Purigado|Malfalsnovaĵigado|Riparado|Purlavado|Serĉado|Esplorado|Faktokontrolado|Malcerbolavado|Verigado|Konfirmado|Pensado|Malkovrado|Eltrovado|Kontrolado|Traserĉado|Verserĉado|Travidebligado|Verecigado|Malfalsigado|Lumigado|Klasigado|Verdiktado|Alportado|Informado|Turnado|Ŝargado|Cirklado|Rondirado|Faktigado|Faktecigado|Faktumado|Malmistifikado|Prilaborado|Malklaklogigado|Fosado|Verumado|Defalsigado|Nefalsigado|Refalsigado|Malŝajnigado|Generado|Skribado|Sciigado|Pripensado|Meditado|Konsiderado|Kontemplado|Animserĉado|Aventurado|Kuirado|Ĉefkuirado|Intuicado|Logikado|Rezonado|Filozofumado|Klarigado|Solvado|Klerigado|Konkludado|Kolektado|Amasigado|Malaĉigado|Malkredigado|Mitrompado|Malantaŭjuĝigado|Malpropagandigado|Rektparolado|Sanigado|Maltoksigado|Faktopremado|Kvalifikado|Kribrado|Kruckontrolado|Pridemandado|Senmaskigado|Sekcado|Malimplikado|Analizado|Elfumigado|Elradikigado|Malkonstruado|Ekzamenado|Triangulado|Krucreferencado|Kunkonfirmado|Validigado|Distilado|Sintezado|Maĉado|Malklarigado|Malnebuligado|Nebuldispelado|Filtrado|Rentgenumado|Malkaŝigado|Prilumado|Kribrelektado",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Tre verŝajne",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Verŝajne",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Eble",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Plejparte",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Diskuteble",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Parte",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ambigue",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopii",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Remalkaŝi la asertojn de ĉi tiu tvito",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Reesplori ĉi tiun aserton",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Kontrolado",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Komenti",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Komentado",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Traduki faktokontrolojn",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Traduki",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "esti",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ esti $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Faktokontrolita",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Reiri",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Malkaŝi",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Kaŝi",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Faktokontrolo",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kontrolado",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizu",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Donacita"
+  },
+  "customTopup": {
+    "message": "Propra"
+  },
+  "customAmountLabel": {
+    "message": "Propra reŝargosumo en usonaj dolaroj"
+  },
+  "increase": {
+    "message": "Pligrandigi"
+  },
+  "decrease": {
+    "message": "Malpligrandigi"
+  },
+  "topUpBalance": {
+    "message": "Reŝargi saldon"
+  },
+  "processing": {
+    "message": "Prilaborado…"
+  },
+  "checkoutError": {
+    "message": "Ne eblis komenci pagon. Bonvolu reprovi."
+  },
+  "termsOfService": {
+    "message": "Uzkondiĉoj"
+  },
+  "privacyPolicy": {
+    "message": "Privateca politiko"
+  },
+  "disclaimerAgree": {
+    "message": "Reŝargante, vi konsentas al niaj %TOS% kaj %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Se vi pagas en valuto krom USD, eble validos valutŝanĝaj kotizoj."
+  },
+  "signOut": {
+    "message": "Elsaluti"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klaki sur %BTN% malkaŝas asertojn kaj pagigos vian saldon"
+  },
+  "onboardDisinfactTap": {
+    "message": "Frapeti sur %BTN% malkaŝas asertojn kaj pagigos vian saldon"
+  },
+  "onboardLocalize": {
+    "message": "Klako %BTN% repoziciigas la lumaĵojn kaj ŝargos vian saldon"
+  },
+  "onboardAnnotate": {
+    "message": "Klako %BTN% kontrolas la aserton pri eraroj kaj ŝargos vian saldon"
+  },
+  "onboardWillCharge": {
+    "message": "Klaki sur %BTN% pagigos vian saldon"
+  },
+  "onboardFactcheck": {
+    "message": "Klaki sur %BTN% pagigos vian saldon"
+  },
+  "onboardTranslations": {
+    "message": "Klaki sur %BTN% pagigos vian saldon"
+  },
+  "onboardRefreshes": {
+    "message": "Klaki sur %BTN% pagigos vian saldon"
+  },
+  "topUp": {
+    "message": "Reŝargi"
+  },
+  "showMore": {
+    "message": "Montri pli"
+  },
+  "showLess": {
+    "message": "Montri malpli"
+  },
+  "landingTagline1": {
+    "message": "Malkaŝu la veron. Trovu la mensogojn."
+  },
+  "landingTagline2": {
+    "message": "Ne plu malinformado. Nur faktoj."
+  },
+  "continueWithX": {
+    "message": "Daŭrigi per X"
+  },
+  "continueWithGoogle": {
+    "message": "Daŭrigi per Google"
+  },
+  "continueWithApple": {
+    "message": "Daŭrigi per Apple"
+  },
+  "lastUsed": {
+    "message": "Laste uzita"
+  },
+  "cleanupTagline": {
+    "message": "Purigu vian X-fluon."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ene de Usono, nur loĝantoj de Alabamo, Arizono, Kalifornio, Kolorado, Konektikuto, Delavaro, Florido, Idaho, Ilinojso, Indianao, Iovao, Kansaso, Kentukio, Luiziano, Majno, Masaĉuseco, Misisipo, Misurio, Montano, Nov-Hampŝiro, Nov-Meksiko, Nov-Jorko, Norda Karolino, Norda Dakoto, Oklahomo, Oregono, Pensilvanio, Suda Karolino, Suda Dakoto, Tenesio, Teksaso, Utaho, Vaŝingtono, Viskonsino kaj Vajomingo povas uzi DisinfaX kaj reŝargi sian saldon; Vaŝingtono, D.C., ĉiuj usonaj teritorioj kaj ĉiuj ne listigitaj ŝtatoj estas ekskluditaj. Ekster Usono, ĝi disponeblas en Kanado, Aŭstralio, Nov-Zelando, Singapuro, Sud-Afriko, Japanio, Tajvano, Indonezio, Tajlando, Filipinoj, Malajzio, Vjetnamio kaj Svislando."
+  },
+  "factCheckAllButton": {
+    "message": "Faktokontroli ĉion"
+  },
+  "factCheckButton": {
+    "message": "Faktokontroli"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX povas fari erarojn. Duoble kontrolu la informojn.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Via saldo estas tro malalta. Bonvolu reŝargi por daŭrigi."
+  },
+  "balanceEmpty": {
+    "message": "Via saldo estas malplena. Bonvolu aldoni monon al via saldo per la ŝprucfenestro de DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Via konto estas suspendita."
+  },
+  "errNotSignedIn": {
+    "message": "Vi ne estas ensalutinta. Bonvolu ensaluti kaj reprovi."
+  },
+  "errInvalidRequest": {
+    "message": "Parto de ĉi tiu peto ne estis rekonita. Bonvolu certigi, ke la kromprogramo estas ĝisdatigita."
+  },
+  "errServiceUnavailable": {
+    "message": "Eraro okazis ĉe nia flanko. Bonvolu reprovi post momento."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ankoraŭ ne estas disponebla en via regiono pro reguligaj postuloj."
+  },
+  "errInvalidAmount": {
+    "message": "Tiu reŝargsumo ne estas valida. Bonvolu elekti alian sumon."
+  },
+  "errNotFound": {
+    "message": "Tio ne povis esti trovita. Bonvolu reprovi."
+  },
+  "settings": {
+    "message": "Agordoj",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Ĉiam montri faktokontrolojn se:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Vereco < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Fido > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktokontrolo",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Enigu aserton",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fontoj",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Rezonado",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Malfermi la ŝprucfenestron kun elektita teksto kontrolas tiun elekton kaj pagigos vian saldon.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Nuligi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

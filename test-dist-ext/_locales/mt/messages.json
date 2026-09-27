@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Jiskopri u jenfasizza informazzjoni ħażina fit-tweets permezz ta' analiżi tal-AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Veru",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Falz",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Mhux magħruf",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verifika",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Verifika|Riċerka|Tindif|Kxif|Skoperta|Ħsieb|Illuminazzjoni|Tħaffir|Iffiltrar|Analiżi|Riflessjoni|Konfutazzjoni|Investigazzjoni|Purifikazzjoni|Spjegazzjoni|Ġbir|Żvelar|Kjarifikazzjoni|Eżaminazzjoni|Skrutinju|Valutazzjoni|Verifika Doppja|Tfittxija tal-Verità|Tikxif tal-Miti|Distillazzjoni|Ġenerazzjoni",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Probabbli ħafna",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Probabbli",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Possibilment",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Fil-biċċa l-kbira",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Diskutibbli",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Parzjalment",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ekwivoku",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Ikkopja",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Uri mill-ġdid l-allegazzjonijiet kollha f'dan it-tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Irriċerka din l-allegazzjoni",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verifika",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotta",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotazzjoni",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Traduċi l-Verifiki tal-Fatti",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Traduċi",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "li jkun",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ivverifikat",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Lura",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Uri",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Aħbi",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Verifika",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifika",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Illokalizza",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Bilanċ"
+  },
+  "gifted": {
+    "message": "Rigal"
+  },
+  "customTopup": {
+    "message": "Personalizzat"
+  },
+  "customAmountLabel": {
+    "message": "Ammont ta' rikarga personalizzat f'dollari Amerikani"
+  },
+  "increase": {
+    "message": "Żid"
+  },
+  "decrease": {
+    "message": "Naqqas"
+  },
+  "topUpBalance": {
+    "message": "Irrikarga l-Bilanċ"
+  },
+  "processing": {
+    "message": "Qed jipproċessa…"
+  },
+  "checkoutError": {
+    "message": "Ma setax jibda l-ħlas. Jekk jogħġbok erġa' pprova."
+  },
+  "termsOfService": {
+    "message": "Termini tas-Servizz"
+  },
+  "privacyPolicy": {
+    "message": "Politika tal-Privatezza"
+  },
+  "disclaimerAgree": {
+    "message": "Billi tirrikarga, taqbel mat-%TOS% u l-%PRIVACY% tagħna."
+  },
+  "disclaimerFx": {
+    "message": "Jistgħu japplikaw tariffi tal-kambju jekk tħallas b'munita differenti mid-USD."
+  },
+  "signOut": {
+    "message": "Oħroġ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Tikklikkja %BTN% turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tmiss %BTN% turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardLocalize": {
+    "message": "Meta tikklikkja %BTN% terġa' tpoġġi l-punti ewlenin u tiċċarġja l-bilanċ tiegħek"
+  },
+  "onboardAnnotate": {
+    "message": "Meta tikklikkja %BTN% tiċċekkja t-talba għal żbalji u tiċċarġja l-bilanċ tiegħek"
+  },
+  "onboardWillCharge": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardFactcheck": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardTranslations": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "onboardRefreshes": {
+    "message": "Tikklikkja %BTN% titnaqqas somma mill-bilanċ tiegħek"
+  },
+  "topUp": {
+    "message": "Irrikarga"
+  },
+  "showMore": {
+    "message": "Uri aktar"
+  },
+  "showLess": {
+    "message": "Uri inqas"
+  },
+  "landingTagline1": {
+    "message": "Skopri l-verità. Sib il-gideb."
+  },
+  "landingTagline2": {
+    "message": "M'hemmx aktar diżinformazzjoni. Fatti biss."
+  },
+  "continueWithX": {
+    "message": "Kompli b'X"
+  },
+  "continueWithGoogle": {
+    "message": "Kompli bi Google"
+  },
+  "continueWithApple": {
+    "message": "Kompli b'Apple"
+  },
+  "lastUsed": {
+    "message": "L-aħħar użat"
+  },
+  "cleanupTagline": {
+    "message": "Naddaf il-feed tiegħek fuq X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Fl-Istati Uniti, huma biss ir-residenti ta' Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, il-Karolina ta' Fuq, id-Dakota ta' Fuq, Oklahoma, Oregon, Pennsylvania, il-Karolina t'Isfel, id-Dakota t'Isfel, Tennessee, Texas, Utah, Washington, Wisconsin, u Wyoming li jistgħu jużaw DisinfaX u jiċċarġjaw il-bilanċ tagħhom; Washington, D.C., it-territorji Amerikani kollha, u kwalunkwe stat mhux elenkat huma esklużi. Barra mill-Istati Uniti, huwa disponibbli fil-Kanada, l-Awstralja, iż-Żelanda l-Ġdida, Singapor, l-Afrika t'Isfel, il-Ġappun, it-Tajwan, l-Indoneżja, it-Tajlandja, il-Filippini, il-Malasja, il-Vjetnam, u l-Iżvizzera."
+  },
+  "factCheckAllButton": {
+    "message": "Ivverifika kollox"
+  },
+  "factCheckButton": {
+    "message": "Ivverifika"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX jista' jagħmel żbalji. Iċċekkja l-informazzjoni darbtejn.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Il-bilanċ tiegħek huwa baxx wisq. Jekk jogħġbok irrikarga biex tkompli."
+  },
+  "balanceEmpty": {
+    "message": "Il-bilanċ tiegħek huwa vojt. Jekk jogħġbok żid fondi mal-bilanċ tiegħek bill-popup ta' DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Il-kont tiegħek ġie sospiż."
+  },
+  "errNotSignedIn": {
+    "message": "Ma intix illoggjat. Jekk jogħġbok idħol u erġa' pprova."
+  },
+  "errInvalidRequest": {
+    "message": "Parti minn din it-talba ma ġietx rikonoxxuta. Iċċekkja li l-estensjoni hija aġġornata."
+  },
+  "errServiceUnavailable": {
+    "message": "Seħħ żball min-naħa tagħna. Jekk jogħġbok erġa' pprova wara ftit."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX għadu mhux disponibbli fir-reġjun tiegħek minħabba rekwiżiti regolatorji."
+  },
+  "errInvalidAmount": {
+    "message": "Dak l-ammont ta' rikarga mhux validu. Jekk jogħġbok agħżel ammont ieħor."
+  },
+  "errNotFound": {
+    "message": "Dan ma setax jinstab. Jekk jogħġbok erġa' pprova."
+  },
+  "settings": {
+    "message": "Issettjar",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Uri l-verifiki dejjem jekk:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Verità < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Fiduċja > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Verifika tal-fatti",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Daħħal talba",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sorsi",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Raġunament",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Jekk tiftaħ il-popup b'test magħżul, dik l-għażla tiġi vverifikata u tiġi ċċarġjata mill-bilanċ tiegħek.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ikkanċella",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Бо истифода аз таҳлили AI иттилооти бардурӯғро дар твитҳо муайян ва қайд мекунад.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Дуруст",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Нодуруст",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Номаълум",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Тафтиш",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Тафтиш|Тозакунӣ|Ҷустуҷӯ|Ошкоркунӣ|Фикркунӣ|Равшанкунӣ|Кофтуков|Ғарболкунӣ|Таҳлил|Тафаккур|Санҷиш|Ошкор кардани дурӯғ|Ҷамъоварии далелҳо|Муқоиса|Баҳодиҳӣ|Кушодани сир|Кори детективӣ|Тасдиқ|Ҷудокунӣ|Равшансозии ҳақиқат|Тафтиши мутақобила|Гурӯҳбандӣ|Омӯзиш|Кофтуковкунии ҳақиқат|Тозакунии иттилоот",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Хеле эҳтимол",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Эҳтимол",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Эҳтимолан",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Аксаран",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Баҳсталаб",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Қисман",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Номуайян",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Нусхабардорӣ",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Аз нав ошкор кардани ҳамаи даъвоҳо дар ин твит",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Аз нав тафтиш кардани ин даъво",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Тафтиш",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Шарҳ додан",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Шарҳ дода истодааст",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Тарҷумаи натиҷаҳои тафтиш",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Тарҷума",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ки",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ки $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Тафтиш шуд",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Бозгашт",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Нишон додан",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Пинҳон кардан",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Ошкор кардан",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Тафтиш",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Маҳаллисозӣ кардан",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Бақия"
+  },
+  "gifted": {
+    "message": "Тӯҳфа"
+  },
+  "customTopup": {
+    "message": "Дилхоҳ"
+  },
+  "customAmountLabel": {
+    "message": "Маблағи дилхоҳи пуркунӣ бо доллари ИМА"
+  },
+  "increase": {
+    "message": "Зиёд кардан"
+  },
+  "decrease": {
+    "message": "Кам кардан"
+  },
+  "topUpBalance": {
+    "message": "Пур кардани бақия"
+  },
+  "processing": {
+    "message": "Коркард шуда истодааст…"
+  },
+  "checkoutError": {
+    "message": "Пардохтро оғоз кардан имконнопазир буд. Лутфан аз нав кӯшиш кунед."
+  },
+  "termsOfService": {
+    "message": "Шартҳои хизматрасонӣ"
+  },
+  "privacyPolicy": {
+    "message": "Сиёсати махфият"
+  },
+  "disclaimerAgree": {
+    "message": "Бо пур кардани бақия, шумо бо %TOS% ва %PRIVACY%-и мо розӣ мешавед."
+  },
+  "disclaimerFx": {
+    "message": "Агар шумо бо асъори ғайр аз USD пардохт кунед, метавонад ҳаққи мубодилаи асъор ситонида шавад."
+  },
+  "signOut": {
+    "message": "Баромадан"
+  },
+  "onboardDisinfactClick": {
+    "message": "Клик кардан ба %BTN% даъвоҳоро ошкор мекунад ва аз бақияи шумо маблағ гирифта мешавад"
+  },
+  "onboardDisinfactTap": {
+    "message": "Зер кардани %BTN% даъвоҳоро ошкор мекунад ва аз бақияи шумо маблағ гирифта мешавад"
+  },
+  "onboardLocalize": {
+    "message": "Ангуштзании %BTN% мавқеъи барҷастаро иваз мекунад ва тавозуни шуморо пур мекунад"
+  },
+  "onboardAnnotate": {
+    "message": "Ангуштзании %BTN% даъворо барои хатогиҳо тафтиш мекунад ва бақияи шумо ситонида мешавад"
+  },
+  "onboardWillCharge": {
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
+  },
+  "onboardFactcheck": {
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
+  },
+  "onboardTranslations": {
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
+  },
+  "onboardRefreshes": {
+    "message": "Клик кардан ба %BTN% аз бақияи шумо маблағ мегирад"
+  },
+  "topUp": {
+    "message": "Пур кардан"
+  },
+  "showMore": {
+    "message": "Бештар нишон додан"
+  },
+  "showLess": {
+    "message": "Камтар нишон додан"
+  },
+  "landingTagline1": {
+    "message": "Ҳақиқатро ошкор кун. Дурӯғҳоро ёб."
+  },
+  "landingTagline2": {
+    "message": "Дигар иттилооти бардурӯғ нест. Танҳо далелҳо."
+  },
+  "continueWithX": {
+    "message": "Бо X идома додан"
+  },
+  "continueWithGoogle": {
+    "message": "Бо Google идома додан"
+  },
+  "continueWithApple": {
+    "message": "Бо Apple идома додан"
+  },
+  "lastUsed": {
+    "message": "Охирин истифодашуда"
+  },
+  "cleanupTagline": {
+    "message": "Лентаи X-и худро тоза кунед."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Дар дохили Иёлоти Муттаҳидаи Америка танҳо сокинони Алабама, Аризона, Калифорния, Колорадо, Коннектикут, Делавэр, Флорида, Айдахо, Иллинойс, Индиана, Айова, Канзас, Кентуккӣ, Луизиана, Мэн, Массачусетс, Миссисипи, Миссурӣ, Монтана, Ню-Гемпшир, Ню-Мексико, Ню-Йорк, Каролинаи Шимолӣ, Дакотаи Шимолӣ, Оклахома, Орегон, Пенсилвания, Каролинаи Ҷанубӣ, Дакотаи Ҷанубӣ, Теннесси, Техас, Юта, Вашингтон, Висконсин ва Вайоминг метавонанд DisinfaX-ро истифода баранд ва бақияи худро пур кунанд; Вашингтон, D.C., ҳамаи қаламравҳои ИМА ва ҳар гуна иёлотҳое, ки номбар нашудаанд, истисно мебошанд. Берун аз Иёлоти Муттаҳидаи Америка он дар Канада, Австралия, Зеландияи Нав, Сингапур, Африкаи Ҷанубӣ, Ҷопон, Тайван, Индонезия, Таиланд, Филиппин, Малайзия, Ветнам ва Швейтсария дастрас аст."
+  },
+  "factCheckAllButton": {
+    "message": "Ҳамаро тафтиш кардан"
+  },
+  "factCheckButton": {
+    "message": "Тафтиш кардан"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX метавонад хато кунад. Маълумотро дубора санҷед.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Бақияи шумо хеле кам аст. Барои идома додан, лутфан онро пур кунед."
+  },
+  "balanceEmpty": {
+    "message": "Бақияи шумо холӣ аст. Лутфан тавассути равзанаи popup-и DisinfaX ба бақияи худ маблағ илова кунед.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ҳисоби шумо боздошта шудааст."
+  },
+  "errNotSignedIn": {
+    "message": "Шумо ворид нашудаед. Лутфан ворид шавед ва боз кӯшиш кунед."
+  },
+  "errInvalidRequest": {
+    "message": "Қисме аз ин дархост шинохта нашуд. Лутфан мутмаин шавед, ки барнома навсозӣ шудааст."
+  },
+  "errServiceUnavailable": {
+    "message": "Дар тарафи мо хатогӣ рух дод. Лутфан пас аз лаҳзае боз кӯшиш кунед."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ҳоло дар минтақаи шумо аз сабаби талаботи қонунгузорӣ дастрас нест."
+  },
+  "errInvalidAmount": {
+    "message": "Ин маблағи пуркунӣ дуруст нест. Лутфан маблағи дигар интихоб кунед."
+  },
+  "errNotFound": {
+    "message": "Он ёфт нашуд. Лутфан боз кӯшиш кунед."
+  },
+  "settings": {
+    "message": "Танзимот",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Ҳамеша фактчекингро нишон деҳ, агар:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Ҳақиқат < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Эътимод > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Тафтиши далелҳо",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Даъворо ворид кунед",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Сарчашмаҳо",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Асоснокӣ",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Кушодани равзанаи шинокунанда бо матни интихобшуда он интихобро тафтиш мекунад ва аз тавозуни шумо кам мешавад.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Бекор кардан",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

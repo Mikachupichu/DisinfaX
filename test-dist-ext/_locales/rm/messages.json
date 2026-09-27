@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Identifitgescha e metta en evidienza la disinformaziun en tweets cun agid d'analisa IA.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Vair",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Fals",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Enconuschent",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verificaziun",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Verificaziun|Retschertga|Nettegiaziun|Smaschraziun|Scuverta|Reflexiun|Illuminaziun|Excavaziun|Tschernida|Analisa|Persequitaziun|Revelaziun|Clarificaziun|Filtraziun|Tschertga|Descumbugliaziun|Demistificaziun|Correcziun|Scansiun|Explicaziun|Detecziun|Decodaziun|Deconstrucziun|Verificaziun crusada|Sintesa|Meditaziun|Consideraziun|Contemplaziun",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Fitg probabel",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Probabel",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Pussiblamain",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Per gronda part",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Discussionevel",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Parzialmain",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Equivoc",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Copiar",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Revelar danovamain tuttas las affermaziuns da quest tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Tschertgar novamein questa affermaziun",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verificaziun",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotar",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotaziun",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Translate Fact-Checks",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Translate",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Mussar",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Zuppar",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Verificaziun",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verificaziun",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Localisar",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Bilantscha"
+  },
+  "gifted": {
+    "message": "Regal"
+  },
+  "customTopup": {
+    "message": "Persunalisà"
+  },
+  "customAmountLabel": {
+    "message": "Import da recarga persunalisà en dollars americans"
+  },
+  "increase": {
+    "message": "Augmentar"
+  },
+  "decrease": {
+    "message": "Reducir"
+  },
+  "topUpBalance": {
+    "message": "Recartgar la bilantscha"
+  },
+  "processing": {
+    "message": "Elavurar…"
+  },
+  "checkoutError": {
+    "message": "Impussibel da cumenzar il pajament. Empruvai per plaschair anc ina giada."
+  },
+  "termsOfService": {
+    "message": "Cundiziuns d'utilisaziun"
+  },
+  "privacyPolicy": {
+    "message": "Directiva da protecziun da datas"
+  },
+  "disclaimerAgree": {
+    "message": "Cun recartgar acceptais Vus noss %TOS% e %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Taxas da barat da valuta pon vegnir applitgadas sche Vus pajais en in'autra valuta che USD."
+  },
+  "signOut": {
+    "message": "Sortir"
+  },
+  "onboardDisinfactClick": {
+    "message": "Cliccar sin %BTN% mussa las affirmaziuns e chargia il conto"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tuccar %BTN% mussa las affirmaziuns e chargia il conto"
+  },
+  "onboardLocalize": {
+    "message": "Cliccar sin %BTN% po repostar ils passaschs evidenziai e chargia il conto"
+  },
+  "onboardAnnotate": {
+    "message": "Cliccar sin %BTN% controllescha l'affermaziun sin errurs e chargia il conto"
+  },
+  "onboardWillCharge": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "onboardFactcheck": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "onboardTranslations": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "onboardRefreshes": {
+    "message": "Cliccar sin %BTN% chargia il conto"
+  },
+  "topUp": {
+    "message": "Augmentar la bilantscha"
+  },
+  "showMore": {
+    "message": "Mussar dapli"
+  },
+  "showLess": {
+    "message": "Mussar main"
+  },
+  "landingTagline1": {
+    "message": "Revelai la vardad. Chattai las manzegnas."
+  },
+  "landingTagline2": {
+    "message": "Nagina disinfurmaziun pli. Mo fatgs."
+  },
+  "continueWithX": {
+    "message": "Cuntinuar cun X"
+  },
+  "continueWithGoogle": {
+    "message": "Cuntinuar cun Google"
+  },
+  "continueWithApple": {
+    "message": "Cuntinuar cun Apple"
+  },
+  "lastUsed": {
+    "message": "Ultima utilisaziun"
+  },
+  "cleanupTagline": {
+    "message": "Nettegiai Voss feed da X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Entaifer ils Stadis Unids pon mo abitants da Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina dal Nord, Dakota dal Nord, Oklahoma, Oregon, Pennsylvania, Carolina dal Sid, Dakota dal Sid, Tennessee, Texas, Utah, Washington, Wisconsin e Wyoming utilisar DisinfaX ed augmentar lur bilantscha; Washington, D.C., tut ils territoris dals Stadis Unids e mintga stadi betg numnà èn exclus. Ordaifer ils Stadis Unids è el disponibel en Canada, Australia, Nova Zelanda, Singapur, Africa dal Sid, Giapun, Taiwan, Indonesia, Tailanda, ils Filippins, Malaisia, Vietnam e Svizra."
+  },
+  "factCheckAllButton": {
+    "message": "Verifitgar tut"
+  },
+  "factCheckButton": {
+    "message": "Verifitgar"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX po far errurs. Controllar l'infurmaziun anc'ina giada.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Tia bilantscha è memia bassa. Per plaschair recarga per cuntinuar."
+  },
+  "balanceEmpty": {
+    "message": "Tia bilantscha è vida. Per plaschair agiunscha daners a tia bilantscha cun il popup da DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Tes conto è vegnì suspendì."
+  },
+  "errNotSignedIn": {
+    "message": "Ti n'es betg annunzià. Annunzia tai per plaschair e emprova anc ina giada."
+  },
+  "errInvalidRequest": {
+    "message": "Ina part da questa dumonda n'è betg vegnida renconuschida. Controllescha per plaschair sche l'extensiun è actualisada."
+  },
+  "errServiceUnavailable": {
+    "message": "Sin nossa vart è succedì in error. Emprova per plaschair anc ina giada après in mument."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX n'è anc betg disponibel en tia regiun pervi da pretensiuns regulatoricas."
+  },
+  "errInvalidAmount": {
+    "message": "Quest import da recarghientar n'è betg valid. Tscherna per plaschair in auter import."
+  },
+  "errNotFound": {
+    "message": "Quai n'ha betg pudì vegnir chattà. Emprova anc ina giada."
+  },
+  "settings": {
+    "message": "Configuraziun",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Mussa adina las verificaziuns sche:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Veracitad < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Confidonza > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Controlla fatgs",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Endatescha ina pretensiun",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Funtaunas",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ragiunament",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "L'averir il popup cun text selecziunà controllescha quella selecziun e vegn a debitar tia bilantscha.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Interrumper",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

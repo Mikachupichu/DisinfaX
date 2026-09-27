@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "بە بەکارهێنانی شیکاریکردنی AI، زانیاری هەڵە لە تویتەکاندا دەدۆزێتەوە و ڕووناکیدەکاتەوە.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "ڕاست",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "هەڵە",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "نەزانراو",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "ڕاستیپشکنین",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "پشکنین|لێکۆڵینەوە|پاکژکردن|پووچەڵکردنەوە|ئاشکراکردنەوە|بیرکردنەوە|ڕووناککردنەوە|هەڵکۆڵین|پاڵاوتن|سەلماندن|لێکدانەوە|گەڕان|کۆکردنەوە|تاوتوێکردن|ڕوونکردنەوە|بەراوردکردن|دەستنیشانکردن|هەڵسەنگاندن|دۆزینەوە|پشتڕاستکردنەوە|پرسیارکردن|شیکردنەوە|دەرخستن|لێپرسینەوە|خوێندنەوە|کاولکردنی درۆ|تیشکخستنەسەر|وردبینیکردن|کوورکردنەوە|هەڵوەشاندنەوە|پارچەپارچەکردن|چێشتلێنان|سرینەوەی درۆ|تیشکدان|یەکلاکردنەوە|پێداچوونەوە|ڕاستاندن|بەڵگەکۆکردنەوە|چاوگدۆزینەوە|شرۆڤەکردن|قوڵبوونەوە|ڕوخاندنی هەڵە|ڕاستیدۆزینەوە|پاکتاوکردن|توێژینەوە|بۆنکردنی درۆ|بەربووژینەوە|چاودێریکردن|ڕوونبۆکردنەوە|دەستکاریکردن|کۆتاییلێهێنان",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "زۆر ئەگەری هەیە",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "ئەگەری هەیە",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "لەوانەیە",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "زۆربەی کات",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "بەگفتوگۆوە",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "بەشێکی",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "نادیار",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "کۆپی بکە",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "هەموو بانگەشەکانی ئەم تویتە دووبارە ئاشکرا بکە",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "دووبارە لێکۆڵینەوە لەم بانگەشەیە",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "ڕاستیپشکنین",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "شرۆڤە بکە",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "خەریکە شرۆڤە دەکات",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "وەرگێڕانی ڕاستیپشکنینەکان",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "وەرگێڕان",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "بێت",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$ بێت",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "پشکنرا",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "بگەرێوە",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "نیشان بدە",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "بیشارەوە",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "ئاشکراکردن",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ڕاستیپشکنین",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "جێگیر بکە",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "باڵانس"
+  },
+  "gifted": {
+    "message": "دیاری"
+  },
+  "customTopup": {
+    "message": "دڵخواز"
+  },
+  "customAmountLabel": {
+    "message": "بڕی پڕکردنەوەی دڵخواز بە دۆلاری ئەمریکی"
+  },
+  "increase": {
+    "message": "زیادکردن"
+  },
+  "decrease": {
+    "message": "کەمکردنەوە"
+  },
+  "topUpBalance": {
+    "message": "پڕکردنەوەی باڵانس"
+  },
+  "processing": {
+    "message": "لە پرۆسەدایە…"
+  },
+  "checkoutError": {
+    "message": "نەتوانرا پرۆسەی پارەدان دەستپێ بکرێت. تکایە دووبارە هەوڵبدەرەوە."
+  },
+  "termsOfService": {
+    "message": "مەرجەکانی خزمەتگوزاری"
+  },
+  "privacyPolicy": {
+    "message": "سیاسەتی تایبەتێتی"
+  },
+  "disclaimerAgree": {
+    "message": "بە پڕکردنەوە، تۆ ڕازی دەبیت بە %TOS% و %PRIVACY%ی ئێمە."
+  },
+  "disclaimerFx": {
+    "message": "ئەگەر بە دراوێکی جیاواز لە USD پارە بدەیت، لەوانەیە کرێی گۆڕینی دراو زیاد بکرێت."
+  },
+  "signOut": {
+    "message": "چوونەدەرەوە"
+  },
+  "onboardDisinfactClick": {
+    "message": "کرتەکردن لەسەر %BTN% بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardDisinfactTap": {
+    "message": "پەنجە لێدان لە %BTN% بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardLocalize": {
+    "message": "کلیککردن لەسەر %BTN% هێڵکارییەکان دەگۆڕێتەوە و باڵانسەکەت بارگاوی دەکاتەوە"
+  },
+  "onboardAnnotate": {
+    "message": "کلیککردن لەسەر %BTN% پشکنینی داواکارییەکە دەکات بۆ هەڵە و باڵانسەکەت وەردەگرێت"
+  },
+  "onboardWillCharge": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardFactcheck": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardTranslations": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "onboardRefreshes": {
+    "message": "کرتەکردن لەسەر %BTN% لە باڵانسەکەت کەم دەکاتەوە"
+  },
+  "topUp": {
+    "message": "پڕکردنەوە"
+  },
+  "showMore": {
+    "message": "زیاتر پیشان بدە"
+  },
+  "showLess": {
+    "message": "کەمتر پیشان بدە"
+  },
+  "landingTagline1": {
+    "message": "ڕاستی ئاشکرا بکە. درۆکان بدۆزەرەوە."
+  },
+  "landingTagline2": {
+    "message": "چیتر زانیاری هەڵە نییە. تەنها ڕاستییەکان."
+  },
+  "continueWithX": {
+    "message": "بەردەوامبە بە X"
+  },
+  "continueWithGoogle": {
+    "message": "بەردەوامبە بە Google"
+  },
+  "continueWithApple": {
+    "message": "بەردەوامبە بە Apple"
+  },
+  "lastUsed": {
+    "message": "دواجار بەکارهاتوو"
+  },
+  "cleanupTagline": {
+    "message": "فیدی X خۆت پاک بکەرەوە."
+  },
+  "disclaimerJurisdiction": {
+    "message": "لە ناو ویلایەتە یەکگرتووەکاندا، تەنها دانیشتووانی ئالاباما، ئەریزۆنا، کالیفۆرنیا، کۆلۆرادۆ، کۆنێکتیکەت، دێلاوێر، فلۆریدا، ئایداهۆ، ئیلینۆی، ئیندیانا، ئایۆوا، کانزاس، کێنتەکی، لویزیانا، مەین، ماساچوسێتس، میسیسیپی، میسووری، مۆنتانا، نیو هامپشایەر، نیو مێکسیکۆ، نیویۆرک، کارۆلینای باکوور، داکۆتای باکوور، ئۆکلاهۆما، ئۆریگۆن، پێنسیلڤانیا، کارۆلینای باشوور، داکۆتای باشوور، تێنێسی، تێکساس، یوتا، واشنتۆن، ویسکۆنسن، و وایۆمینگ دەتوانن DisinfaX بەکاربهێنن و باڵانسەکەیان پڕ بکەنەوە؛ واشنتۆن، D.C.، هەموو ناوچەکانی ئەمریکا، و هەر ویلایەتێک کە لە لیستەکەدا نەبێت، دەرخراون. لە دەرەوەی ویلایەتە یەکگرتووەکان، لە کەنەدا، ئوستڕالیا، نیوزیلاند، سینگاپور، ئەفریقای باشوور، ژاپۆن، تایوان، ئەندۆنیزیا، تایلاند، فیلیپین، مالیزیا، ڤیەتنام، و سویسرا بەردەستە."
+  },
+  "factCheckAllButton": {
+    "message": "هەمووی ڕاستی پشکنین بکە"
+  },
+  "factCheckButton": {
+    "message": "ڕاستی پشکنین بکە"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX دەتوانێت هەڵە بکات. زانیارییەکان دووبارە پشکنین بکە.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "باڵانسەکەت زۆر کەمە. تکایە بۆ بەردەوامبوون باڵانسەکەت پڕ بکەرەوە."
+  },
+  "balanceEmpty": {
+    "message": "باڵانسەکەت بەتاڵە. تکایە لە ڕێگەی پۆپئەپی DisinfaX پارە زیاد بکە بۆ باڵانسەکەت.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "هەژماری تۆ ڕاگیراوە."
+  },
+  "errNotSignedIn": {
+    "message": "تۆ نەچوویتەتە ژوورەوە. تکایە بچۆ ژوورەوە و دووبارە هەوڵبدەرەوە."
+  },
+  "errInvalidRequest": {
+    "message": "بەشێک لەم داواکارییە نەناسرا. تکایە دڵنیابەرەوە کە زیادکراوەکە نوێکراوەتەوە."
+  },
+  "errServiceUnavailable": {
+    "message": "هەڵەیەک لە لایەن ئێمەوە ڕوویدا. تکایە دووبارە هەوڵبدەرەوە دوای کەمێک."
+  },
+  "errRegionNotSupported": {
+    "message": "لەبەر داواکارییەکانی ڕێکخستن، DisinfaX هێشتا لە ناوچەکەتدا بەردەست نییە."
+  },
+  "errInvalidAmount": {
+    "message": "ئەو بڕە بۆ پڕکردنەوە دروست نییە. تکایە بڕێکی تر هەڵبژێرە."
+  },
+  "errNotFound": {
+    "message": "ئەوە نەدۆزرایەوە. تکایە دووبارە هەوڵبدەرەوە."
+  },
+  "settings": {
+    "message": "ڕێکخستنەکان",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "ھەمیشە پشکنینەکان پیشان بدە ئەگەر:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "ڕاستی < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "متمانە > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "پشکنینی ڕاستی",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "دەقێک بنووسە",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "سەرچاوەکان",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "هۆکار",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "کردنەوەی پەنجەرەکە لەگەڵ هەڵبژاردەی دەق، ئەو هەڵبژاردەیە پشکنین دەکات و لە باڵانسی تۆ کەم دەکرێت.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "هەڵوەشاندنەوە",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

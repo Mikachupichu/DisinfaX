@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Detekte ak mete aksan sou dezinfòmasyon nan tweet lè l sèvi ak analiz AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Vre",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Fo",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Enkoni",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verifikasyon",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Verifikasyon|Rechèch|Netwayaj|Dekouvèt|Refleksyon|Ilimine|Fouye|Filtraj|Ekspozisyon|Konfimasyon|Analiz|Egzamen|Kesyonman|Klarifikasyon|Konparezon|Chèche Laverite|Dechifraj|Demaskaj|Dezenfeksyon|Pirifikasyon|Kontwòl|Envestigasyon|Sondaj|Detektasyon|Klasifikasyon|Verifye Fè",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Trè posib",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Posib",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Petèt",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Pifò",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Diskitab",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Pasyèlman",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ekwivòk",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopye",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Revele ankò tout deklarasyon nan tweet sa a",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Re-recherch deklarasyon sa a",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verifikasyon",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anote",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Ap anote",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Tradui Verifikasyon",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Tradui",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "se",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Deja Verifye",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Retounen",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Montre",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Kache",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Verifye",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifikasyon",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalize",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Kado"
+  },
+  "customTopup": {
+    "message": "Pèsonalize"
+  },
+  "customAmountLabel": {
+    "message": "Montan rechaj pèsonalize an dola ameriken"
+  },
+  "increase": {
+    "message": "Ogmante"
+  },
+  "decrease": {
+    "message": "Diminye"
+  },
+  "topUpBalance": {
+    "message": "Rechaje balans"
+  },
+  "processing": {
+    "message": "N ap trete…"
+  },
+  "checkoutError": {
+    "message": "Nou pa t kapab kòmanse peman an. Tanpri eseye ankò."
+  },
+  "termsOfService": {
+    "message": "Kondisyon Sèvis"
+  },
+  "privacyPolicy": {
+    "message": "Politik Konfidansyalite"
+  },
+  "disclaimerAgree": {
+    "message": "Lè ou rechaje, ou dakò ak %TOS% ak %PRIVACY% nou yo."
+  },
+  "disclaimerFx": {
+    "message": "Frè chanj lajan ka aplike si ou peye nan yon lòt lajan ki pa USD."
+  },
+  "signOut": {
+    "message": "Dekonekte"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klike sou %BTN% ap devwale reklamasyon yo epi l ap chaje balans ou"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tape sou %BTN% ap devwale reklamasyon yo epi l ap chaje balans ou"
+  },
+  "onboardLocalize": {
+    "message": "Klike %BTN% repositions en yo epi yo pral chaje balans ou"
+  },
+  "onboardAnnotate": {
+    "message": "Klike %BTN% tcheke reklamasyon an pou erè epi yo pral chaje balans ou"
+  },
+  "onboardWillCharge": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "onboardFactcheck": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "onboardTranslations": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "onboardRefreshes": {
+    "message": "Klike sou %BTN% ap chaje balans ou"
+  },
+  "topUp": {
+    "message": "Mete lajan"
+  },
+  "showMore": {
+    "message": "Montre plis"
+  },
+  "showLess": {
+    "message": "Montre mwens"
+  },
+  "landingTagline1": {
+    "message": "Revele verite a. Jwenn manti yo."
+  },
+  "landingTagline2": {
+    "message": "Pa gen dezenfòmasyon ankò. Se sèlman reyalite."
+  },
+  "continueWithX": {
+    "message": "Kontinye ak X"
+  },
+  "continueWithGoogle": {
+    "message": "Kontinye ak Google"
+  },
+  "continueWithApple": {
+    "message": "Kontinye ak Apple"
+  },
+  "lastUsed": {
+    "message": "Dènye itilize"
+  },
+  "cleanupTagline": {
+    "message": "Netwaye fil X ou a."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Nan peyi Etazini, se sèlman rezidan Alabama, Arizona, Kalifòni, Kolorado, Connecticut, Delaware, Florid, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Lwizyàn, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nouvo Meksik, New York, Kawolin di Nò, Dakota di Nò, Oklahoma, Oregon, Pennsilvani, Kawolin di Sid, Dakota di Sid, Tennessee, Texas, Utah, Washington, Wisconsin, ak Wyoming ki ka itilize DisinfaX epi mete lajan nan balans yo ; Washington, D.C., tout teritwa Etazini yo, ak nenpòt eta ki pa nan lis la eskli. Andeyò Etazini, li disponib nan Kanada, Ostrali, Nouvèl Zeland, Singapou, Afrik di Sid, Japon, Taywan, Endonezi, Tayland, Filipin yo, Malezi, Vyetnam, ak Swis."
+  },
+  "factCheckAllButton": {
+    "message": "Verifye tout"
+  },
+  "factCheckButton": {
+    "message": "Verifye"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX ka fè erè. Tcheke enfòmasyon an de fwa.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Balans ou tou ba. Tanpri rechaje pou kontinye."
+  },
+  "balanceEmpty": {
+    "message": "Balans ou vid. Tanpri ajoute lajan nan balans ou ak popup DisinfaX la.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Kont ou sispann."
+  },
+  "errNotSignedIn": {
+    "message": "Ou pa konekte. Tanpri konekte epi eseye ankò."
+  },
+  "errInvalidRequest": {
+    "message": "Yon pati nan demand sa a pa t rekonèt. Tanpri asire w ekstansyon an ajou."
+  },
+  "errServiceUnavailable": {
+    "message": "Gen yon erè ki fèt bò kote nou. Tanpri eseye ankò nan yon ti moman."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX poko disponib nan zòn ou akoz egzijans regilasyon."
+  },
+  "errInvalidAmount": {
+    "message": "Kantite rechaj sa a pa valab. Tanpri chwazi yon lòt kantite."
+  },
+  "errNotFound": {
+    "message": "Nou pa jwenn sa a. Eseye ankò."
+  },
+  "settings": {
+    "message": "Paramèt",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Toujou montre verifikasyon yo si:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Verite < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Konfyans > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Verifikasyon enfòmasyon",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Antre yon reklamasyon",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Sous",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Rezonman",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Louvri popup la ak tèks seleksyone ap verifye seleksyon sa a epi li pral chaje sou balans ou.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anile",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

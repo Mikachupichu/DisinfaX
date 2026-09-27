@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "ตรวจจับและเน้นข้อมูลบิดเบือนในทวีตโดยใช้การวิเคราะห์ด้วย AI"
+  },
+  "verdictTrue": {
+    "message": "จริง",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "เท็จ",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "ไม่ทราบ",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "กำลังตรวจสอบ",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "กำลังตรวจสอบ|กำลังยืนยัน|กำลังพิสูจน์|กำลังค้นคว้า|กำลังค้นหา|กำลังสืบสวน|กำลังสำรวจ|กำลังตามหาความจริง|กำลังวิเคราะห์|กำลังชำแหละ|กำลังถอดรหัส|กำลังคลี่คลาย|กำลังเปิดโปง|กำลังล้าง|กำลังฆ่าเชื้อ|กำลังชำระล้าง|กำลังล้างพิษ|กำลังไตร่ตรอง|กำลังทำสมาธิ|กำลังครุ่นคิด|กำลังให้เหตุผล|กำลังตีความ|กำลังแก้ปัญหา|กำลังส่องสว่าง|กำลังขุดคุ้ย|กำลังขุดค้น|กำลังคัดกรอง|กำลังกรอง|กำลังกลั่นกรอง|กำลังสังเคราะห์|กำลังประมวลผล|กำลังสร้าง|กำลังรวบรวม|กำลังสืบหาที่มา|กำลังตรวจบัญชี|กำลังเปรียบเทียบ|กำลังไต่สวน|กำลังตรวจทาน|กำลังเปิดเผย|กำลังจัดระเบียบ",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "เป็นไปได้มาก",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "น่าจะเป็น",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "อาจเป็น",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "ส่วนใหญ่",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "พอโต้แย้งได้",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "บางส่วน",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "คลุมเครือ",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$$VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$$VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$$ADJ$$VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "คัดลอก",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "เปิดเผยข้อกล่าวหาทั้งหมดในทวีตนี้อีกครั้ง",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "ค้นคว้าข้อกล่าวหานี้ใหม่",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "กำลังตรวจสอบ",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "ใส่คำอธิบายประกอบ",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "กำลังใส่คำอธิบายประกอบ",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "แปลตรวจสอบ",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "แปล",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ที่เป็น",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ที่เป็น$ADJ$$VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "แสดง",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "ซ่อน",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "ตรวจสอบข้อเท็จจริง",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "กำลังตรวจสอบ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "ปรับให้ตรงภาษา",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "ยอดคงเหลือ"
+  },
+  "gifted": {
+    "message": "แถม"
+  },
+  "customTopup": {
+    "message": "กำหนดเอง"
+  },
+  "customAmountLabel": {
+    "message": "จำนวนเงินเติมที่กำหนดเองเป็นดอลลาร์สหรัฐ"
+  },
+  "increase": {
+    "message": "เพิ่ม"
+  },
+  "decrease": {
+    "message": "ลด"
+  },
+  "topUpBalance": {
+    "message": "เติมยอดคงเหลือ"
+  },
+  "processing": {
+    "message": "กำลังดำเนินการ…"
+  },
+  "checkoutError": {
+    "message": "ไม่สามารถเริ่มการชำระเงินได้ โปรดลองอีกครั้ง"
+  },
+  "termsOfService": {
+    "message": "ข้อกำหนดในการให้บริการ"
+  },
+  "privacyPolicy": {
+    "message": "นโยบายความเป็นส่วนตัว"
+  },
+  "disclaimerAgree": {
+    "message": "การเติมเงินถือว่าคุณยอมรับ %TOS% และ %PRIVACY% ของเรา"
+  },
+  "disclaimerFx": {
+    "message": "อาจมีค่าธรรมเนียมการแปลงสกุลเงินหากคุณชำระด้วยสกุลเงินอื่นที่ไม่ใช่ USD"
+  },
+  "signOut": {
+    "message": "ออกจากระบบ"
+  },
+  "onboardDisinfactClick": {
+    "message": "การคลิก %BTN% จะเปิดเผยข้อกล่าวอ้างและจะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardDisinfactTap": {
+    "message": "การแตะ %BTN% จะเปิดเผยข้อกล่าวอ้างและจะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardLocalize": {
+    "message": "การคลิก %BTN% จะเป็นการเปลี่ยนตำแหน่งไฮไลท์และจะเรียกเก็บเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardAnnotate": {
+    "message": "การคลิก %BTN% จะตรวจสอบการอ้างสิทธิ์เพื่อหาข้อผิดพลาด และจะเรียกเก็บเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardWillCharge": {
+    "message": "การคลิก %BTN% จะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardFactcheck": {
+    "message": "การคลิก %BTN% จะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardTranslations": {
+    "message": "การคลิก %BTN% จะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "onboardRefreshes": {
+    "message": "การคลิก %BTN% จะหักเงินจากยอดคงเหลือของคุณ"
+  },
+  "topUp": {
+    "message": "เติมเงิน"
+  },
+  "showMore": {
+    "message": "แสดงเพิ่มเติม"
+  },
+  "showLess": {
+    "message": "แสดงน้อยลง"
+  },
+  "landingTagline1": {
+    "message": "เผยความจริง ค้นพบคำโกหก"
+  },
+  "landingTagline2": {
+    "message": "ไม่มีข้อมูลบิดเบือนอีกต่อไป มีเพียงความจริง"
+  },
+  "continueWithX": {
+    "message": "ดำเนินการต่อด้วย X"
+  },
+  "continueWithGoogle": {
+    "message": "ดำเนินการต่อด้วย Google"
+  },
+  "continueWithApple": {
+    "message": "ดำเนินการต่อด้วย Apple"
+  },
+  "lastUsed": {
+    "message": "ใช้ล่าสุด"
+  },
+  "cleanupTagline": {
+    "message": "จัดระเบียบฟีด X ของคุณ"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ภายในสหรัฐอเมริกา เฉพาะผู้ที่อาศัยอยู่ในรัฐแอละแบมา แอริโซนา แคลิฟอร์เนีย โคโลราโด คอนเนตทิคัต เดลาแวร์ ฟลอริดา ไอดาโฮ อิลลินอยส์ อินดีแอนา ไอโอวา แคนซัส เคนทักกี ลุยเซียนา เมน แมสซาชูเซตส์ มิสซิสซิปปี มิสซูรี มอนแทนา นิวแฮมป์เชียร์ นิวเม็กซิโก นิวยอร์ก นอร์ทแคโรไลนา นอร์ทดาโคตา โอคลาโฮมา ออริกอน เพนซิลเวเนีย เซาท์แคโรไลนา เซาท์ดาโคตา เทนเนสซี เท็กซัส ยูทาห์ วอชิงตัน วิสคอนซิน และไวโอมิง เท่านั้นที่สามารถใช้ DisinfaX และเติมเงินในยอดคงเหลือได้ วอชิงตัน ดี.ซี. ดินแดนของสหรัฐฯ ทั้งหมด และรัฐใด ๆ ที่ไม่ได้ระบุไว้จะไม่รวมอยู่ด้วย ภายนอกสหรัฐอเมริกา สามารถใช้งานได้ในแคนาดา ออสเตรเลีย นิวซีแลนด์ สิงคโปร์ แอฟริกาใต้ ญี่ปุ่น ไต้หวัน อินโดนีเซีย ไทย ฟิลิปปินส์ มาเลเซีย เวียดนาม และสวิตเซอร์แลนด์"
+  },
+  "factCheckAllButton": {
+    "message": "ตรวจสอบข้อเท็จจริงทั้งหมด"
+  },
+  "factCheckButton": {
+    "message": "ตรวจสอบข้อเท็จจริง"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX อาจผิดพลาดได้ กรุณาตรวจสอบข้อมูลสำคัญอีกครั้งเสมอ",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "ยอดเงินของคุณต่ำเกินไป กรุณาเติมเงินเพื่อดำเนินการต่อ"
+  },
+  "balanceEmpty": {
+    "message": "ยอดเงินของคุณหมดแล้ว กรุณาเพิ่มเงินในยอดเงินของคุณโดยใช้ป๊อปอัปของ DisinfaX",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "บัญชีของคุณถูกระงับ"
+  },
+  "errNotSignedIn": {
+    "message": "คุณยังไม่ได้เข้าสู่ระบบ กรุณาเข้าสู่ระบบแล้วลองใหม่"
+  },
+  "errInvalidRequest": {
+    "message": "มีบางอย่างในคำขอนี้ที่ไม่รู้จัก กรุณาตรวจสอบว่าส่วนขยายเป็นเวอร์ชันล่าสุด"
+  },
+  "errServiceUnavailable": {
+    "message": "เกิดข้อผิดพลาดในระบบของเรา กรุณาลองใหม่อีกครั้งในอีกสักครู่"
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ยังไม่พร้อมให้บริการในภูมิภาคของคุณเนื่องจากข้อกำหนดด้านกฎระเบียบ"
+  },
+  "errInvalidAmount": {
+    "message": "จำนวนเงินเติมนั้นไม่ถูกต้อง กรุณาเลือกจำนวนอื่น"
+  },
+  "errNotFound": {
+    "message": "ไม่พบสิ่งนั้น กรุณาลองใหม่อีกครั้ง"
+  },
+  "settings": {
+    "message": "การตั้งค่า",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "แสดงการตรวจสอบข้อเท็จจริงเสมอหาก:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "ความถูกต้อง < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "ความมั่นใจ > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "ตรวจสอบข้อเท็จจริง",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ป้อนคำกล่าวอ้าง",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "แหล่งที่มา",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "เหตุผล",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "การเปิดป๊อปอัปขณะมีข้อความที่เลือกจะตรวจสอบข้อความนั้นและหักจากยอดคงเหลือของคุณ",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ยกเลิก",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

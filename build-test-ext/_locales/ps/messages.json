@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "د AI تحلیل څخه په کار اخیستو سره په ټویټونو کې غلط معلومات کشف او روښانه کوي.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "ریښتیا",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "دروغ",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "نامعلومه",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "تایید",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "تایید|پلټنه|پاکول|رسوا کول|کشف|فکر کول|رڼا کول|کیندنه|چاڼول|شننه|لټون|افشا کول|روښانول|فلټر کول|پرانستل|اصلاح|سکن کول|بياکتنه|کوډ ايستل|ماتول|حقیقت پلټنه|پرتله کول|لنډیز کول|پوهیدنه|رازونه ښکاره کول",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "ډېر احتمالي",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "احتمالي",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "شاید",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "اکثره",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "د بحث وړ",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "یو څه",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "مبهم",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "کاپي کول",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "د دې ټویټ ټولې ادعاوې بیا افشا کړئ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "دا ادعا بیا وپلټئ",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "تایید",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "تشریح کړه",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "تشریح کیږي",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "تایید وژباړئ",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "ژباړه",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "چې",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ چې $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "تایید شوی",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "بیرته",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "ښکاره کړئ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "پټ کړئ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "تایید",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "تایید",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "ځایي کړه",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "بیلانس"
+  },
+  "gifted": {
+    "message": "ډالۍ"
+  },
+  "customTopup": {
+    "message": "ځانګړی"
+  },
+  "customAmountLabel": {
+    "message": "د امریکا په ډالرو کې ځانګړې د بیلانس د زیاتولو اندازه"
+  },
+  "increase": {
+    "message": "زیاتول"
+  },
+  "decrease": {
+    "message": "کمول"
+  },
+  "topUpBalance": {
+    "message": "بیلانس زیاتول"
+  },
+  "processing": {
+    "message": "پروسس کیږي…"
+  },
+  "checkoutError": {
+    "message": "پیسې نه شوې پیل کیدی. مهرباني وکړئ بیا هڅه وکړئ."
+  },
+  "termsOfService": {
+    "message": "د خدمت شرایط"
+  },
+  "privacyPolicy": {
+    "message": "د محرمیت پالیسي"
+  },
+  "disclaimerAgree": {
+    "message": "د بیلانس په زیاتولو سره، تاسو زموږ له %TOS% او %PRIVACY% سره موافقه کوئ."
+  },
+  "disclaimerFx": {
+    "message": "که تاسو د USD پرته په بله اسعارو کې تادیه وکړئ، د بهرنیو اسعارو د تبادلې فیس ممکن پلي شي."
+  },
+  "signOut": {
+    "message": "وتل"
+  },
+  "onboardDisinfactClick": {
+    "message": "پر %BTN% کلیک کول ادعاوې ښکاره کوي او ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardDisinfactTap": {
+    "message": "پر %BTN% لمس کول ادعاوې ښکاره کوي او ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardLocalize": {
+    "message": "د %BTN% کلیک کول مهم ټکي ځای په ځای کوي او ستاسو بیلانس چارج کوي"
+  },
+  "onboardAnnotate": {
+    "message": "د %BTN% کلیک کول د غلطیو ادعا چک کوي او ستاسو بیلانس چارج کوي"
+  },
+  "onboardWillCharge": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardFactcheck": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardTranslations": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "onboardRefreshes": {
+    "message": "پر %BTN% کلیک کول ستاسو له بیلانس څخه به مصرف وشي"
+  },
+  "topUp": {
+    "message": "زیاتول"
+  },
+  "showMore": {
+    "message": "نور وښایاست"
+  },
+  "showLess": {
+    "message": "لږ وښایاست"
+  },
+  "landingTagline1": {
+    "message": "حقیقت څرګند کړئ. دروغ ومومئ."
+  },
+  "landingTagline2": {
+    "message": "نور غلط معلومات نشته. یوازې حقایق."
+  },
+  "continueWithX": {
+    "message": "د X سره دوام ورکړئ"
+  },
+  "continueWithGoogle": {
+    "message": "د Google سره دوام ورکړئ"
+  },
+  "continueWithApple": {
+    "message": "د Apple سره دوام ورکړئ"
+  },
+  "lastUsed": {
+    "message": "وروستی کارول شوی"
+  },
+  "cleanupTagline": {
+    "message": "خپل د X فیډ پاک کړئ."
+  },
+  "disclaimerJurisdiction": {
+    "message": "د متحده ایالاتو دننه، یوازې د الاباما، اریزونا، کالیفورنیا، کولوراډو، کنیکټیکټ، ډیلاویر، فلوریډا، آیداهو، ایلینوی، انډیانا، آیووا، کانزاس، کنټکي، لویزیانا، مین، ماساچوسټس، میسیسیپي، میسوري، مونټانا، نیو همپشایر، نیو مکسیکو، نیویارک، شمالي کارولینا، شمالي داکوټا، اوکلاهوما، اوریګون، پنسلوانیا، سویلي کارولینا، سویلي داکوټا، ټینیسي، ټیکساس، یوټا، واشنګټن، ویسکانسن، او وایومینګ اوسیدونکي کولی شي DisinfaX وکاروي او خپل بیلانس زیات کړي؛ واشنګټن، D.C.، ټولې امریکایي سیمې، او هر هغه ایالت چې نوملړ کې نه وي، مستثنی دي. د متحده ایالاتو دباندې، دا په کاناډا، آسټرالیا، نیوزیلنډ، سینګاپور، سویلي افریقا، جاپان، تایوان، اندونیزیا، تایلنډ، فلیپین، مالیزیا، ویتنام، او سویس کې شتون لري."
+  },
+  "factCheckAllButton": {
+    "message": "ټول تایید کړئ"
+  },
+  "factCheckButton": {
+    "message": "تایید کړئ"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX کیدای شي تیروتنه وکړي. معلومات بیا وګورئ.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "ستاسو بیلانس ډېر ټیټ دی. د دوام لپاره مهرباني وکړئ چارج کړئ."
+  },
+  "balanceEmpty": {
+    "message": "ستاسو بیلانس خالي دی. مهرباني وکړئ د DisinfaX پاپ اپ له لارې خپل بیلانس ته پیسې ورزیاتې کړئ.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "ستاسو حساب ځنډول شوی دی."
+  },
+  "errNotSignedIn": {
+    "message": "تاسو نه یاست ننوتلي. مهرباني وکړئ ننوځئ او بیا هڅه وکړئ."
+  },
+  "errInvalidRequest": {
+    "message": "د دې غوښتنې یوه برخه نه پیژندل شوه. ډاډ ترلاسه کړئ چې توسیع تازه ده."
+  },
+  "errServiceUnavailable": {
+    "message": "زموږ په لور کې یوه ستونزه رامنځته شوه. لږ وروسته بیا هڅه وکړئ."
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX د تنظیمي غوښتنو له امله لا هم په ستاسو سیمه کې شتون نلري."
+  },
+  "errInvalidAmount": {
+    "message": "دا د چارج مقدار سم نه دی. مهرباني وکړئ بل مقدار غوره کړئ."
+  },
+  "errNotFound": {
+    "message": "دا ونه موندل شو. بیا هڅه وکړئ."
+  },
+  "settings": {
+    "message": "ترتیبات",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "تل حقیقت پلټنې وښایه که:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "رښتینولي < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "باور > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "د حقیقت کتنه",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "یوه ادعا ولیکئ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "سرچینې",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "استدلال",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "د ټیکسټ په ټاکلو سره پاپ اپ پرانیستل هغه ټاکل ګوري او ستاسو له بیلانس کمېږي.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "لغوه",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

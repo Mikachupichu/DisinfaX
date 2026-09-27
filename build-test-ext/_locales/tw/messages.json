@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Ɛhwehwɛ na ɛkyerɛ atorɔsɛm a ɛwɔ tweets mu denam AI nhwehwɛmu so.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Nokware",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Nkontompo",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Wɔnnim",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Nhwehwɛmu",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Nhwehwɛmu|Nkontompo Yi Adi|Ahodwira|Nsɛm Twetwe|Nsiesie|Adesua|Nyansa Dwene|Adwene Sesa|Nteɛmu|Nhwɛ Mu|Nkyerɛkyerɛmu|Nsɛmmisa|Adi Da|Nhyehyɛmu|Nokware Hwehwɛ|Amanneɛbɔ|Nkabom|Nsusuw|Nyansahu|Adaka Mu Hwɛ|Nkɔso|Nkyekyɛmu|Nokware Pɛ|Nsɛm Boaboa Ano",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Ɛbɛtumi Paa",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ɛbɛtumi",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Ebia",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Fa Kɛseɛ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Ɛyɛ Akyinnyeɛ",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Fa Bi",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ɛnyɛ Pefee",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Copy",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "San yi nsɛm a ɛwɔ saa tweet yi mu no adi bio",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "San hwehwɛ asɛm yi mu bio",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Nhwehwɛmu",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Nkyerɛkyerɛ",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Reyɛ nkyerɛkyerɛ",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Kyerɛ Nhwehwɛmu No Ase",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Kyerɛ Ase",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "sɛ",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ sɛ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Nhwehwɛmu Awie",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "San Kɔ",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Kyerɛ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Hunta",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Da Adi",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Nhwehwɛmu",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Fa kasa yi mu",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Sika a Aka"
+  },
+  "gifted": {
+    "message": "Akyɛde"
+  },
+  "customTopup": {
+    "message": "Deɛ Wopɛ"
+  },
+  "customAmountLabel": {
+    "message": "Sika dodoɔ a wopɛ sɛ wode bɛka ho, wɔ Amerika dɔla mu"
+  },
+  "increase": {
+    "message": "Ma Ɛnkɔ Soro"
+  },
+  "decrease": {
+    "message": "Tew So"
+  },
+  "topUpBalance": {
+    "message": "Fa Sika Ka Wo Balance Ho"
+  },
+  "processing": {
+    "message": "Ɛreyɛ adwuma…"
+  },
+  "checkoutError": {
+    "message": "Yɛantumi mfiri adetɔ ase. Yɛsrɛ wo, sɔ hwɛ bio."
+  },
+  "termsOfService": {
+    "message": "Adwuma Ho Mmara"
+  },
+  "privacyPolicy": {
+    "message": "Kokoamsɛm Ho Nhyehyɛeɛ"
+  },
+  "disclaimerAgree": {
+    "message": "Sɛ wode sika ka ho a, na woapene yɛn %TOS% ne %PRIVACY% so."
+  },
+  "disclaimerFx": {
+    "message": "Sɛ wutua ka wɔ sika foforɔ a ɛnyɛ USD mu a, sika sesa ho ka bɛtumi aba."
+  },
+  "signOut": {
+    "message": "Fi Adi"
+  },
+  "onboardDisinfactClick": {
+    "message": "Sɛ wopia %BTN% no, ɛbɛda nsɛm a wɔaka no adi na wobɛtwa sika afi wo balance mu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Sɛ wode wo nsa ka %BTN% no, ɛbɛda nsɛm a wɔaka no adi na wobɛtwa sika afi wo balance mu"
+  },
+  "onboardLocalize": {
+    "message": "Sɛ wobɔ %BTN% a, ɛsan de nsɛntitiriw no si hɔ na ɛbɛbɔ wo sika a aka no ho ka"
+  },
+  "onboardAnnotate": {
+    "message": "Sɛ wobɔ %BTN% a, ɛhwɛ sɛ mfomsoɔ wɔ krataa no mu na ɛbɛgye wo sika a aka no"
+  },
+  "onboardWillCharge": {
+    "message": "Sɛ wopia %BTN% no, wobɛtwa sika afi wo balance mu"
+  },
+  "onboardFactcheck": {
+    "message": "Sɛ wopia %BTN% no, wobɛtwa sika afi wo balance mu"
+  },
+  "onboardTranslations": {
+    "message": "Sɛ wopia %BTN% no, wobɛtwa sika afi wo balance mu"
+  },
+  "onboardRefreshes": {
+    "message": "Sɛ wopia %BTN% no, wobɛtwa sika afi wo balance mu"
+  },
+  "topUp": {
+    "message": "Fa Sika Gu Mu"
+  },
+  "showMore": {
+    "message": "Kyerɛ Pii"
+  },
+  "showLess": {
+    "message": "Kyerɛ Kakra"
+  },
+  "landingTagline1": {
+    "message": "Da Nokware Adi. Hwehwɛ Atorɔsɛm No."
+  },
+  "landingTagline2": {
+    "message": "Atorɔsɛm Nni Hɔ Bio. Nokwasɛm Nko Ara."
+  },
+  "continueWithX": {
+    "message": "Fa X Kɔ So"
+  },
+  "continueWithGoogle": {
+    "message": "Fa Google Kɔ So"
+  },
+  "continueWithApple": {
+    "message": "Fa Apple Kɔ So"
+  },
+  "lastUsed": {
+    "message": "Deɛ Wode Dii Dwuma Akyiri"
+  },
+  "cleanupTagline": {
+    "message": "Siesie Wo X Feed No."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Wɔ Amerika Nkabom Aman no mu no, Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne Wyoming amanfoɔ nko ara na wɔbɛtumi de DisinfaX adi dwuma na wɔde sika agu wɔn balance mu; Washington, D.C., Amerika nsase nyinaa, ne aman biara a wɔanka ho asɛm no nni mu. Wɔ Amerika Nkabom Aman no akyi no, ɛwɔ hɔ wɔ Kanada, Australia, New Zealand, Singapore, Anafoɔ Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Hwehwɛ Nyinaa"
+  },
+  "factCheckButton": {
+    "message": "Hwehwɛ"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX bɛtumi ayɛ mfomsoɔ. Hwɛ nsɛm no mu bio.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Wo balance no sua dodo. Yɛsrɛ wo, fa sika ka ho na woatoa so."
+  },
+  "balanceEmpty": {
+    "message": "Wo balance no asa. Yɛsrɛ wo, fa sika ka ho wɔ DisinfaX popup no mu.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Wɔatwa wo akontaa ho dwuma."
+  },
+  "errNotSignedIn": {
+    "message": "Wonkɔɔ wo akontaa mu. Yɛsrɛ wo, kɔ akontaa mu na sɔ hwɛ bio."
+  },
+  "errInvalidRequest": {
+    "message": "Yɛnhu saa abisadeɛ yi fa bi. Yɛsrɛ wo, hwɛ sɛ extension no yɛ foforɔ."
+  },
+  "errServiceUnavailable": {
+    "message": "Mfomsoɔ bi asi wɔ yɛn afa. Yɛsrɛ wo, sɔ hwɛ bio wɔ bere tiaa bi mu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nnya nkɔɔ wo mantam mu esiane mmara ho ahyɛdeɛ."
+  },
+  "errInvalidAmount": {
+    "message": "Saa sika a wode koto no nyɛ deɛ ɛfata. Yɛsrɛ wo, paw sika foforɔ."
+  },
+  "errNotFound": {
+    "message": "Wɔanhu no. Yɛsrɛ wo, sɔ hwɛ bio."
+  },
+  "settings": {
+    "message": "Nhyehyɛɛ",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Daa kyerɛ nhwehwɛmu sɛ:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Nokware < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Ahoto > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Nhwehwɛmu",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Kyerɛw asɛm bi",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Beae a efi",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Adwene",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Sɛ wubue popup no na woayi nsɛm bi, wɔbɛhwɛ saa asɛm no na ɛbɛtua wo sika.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Twa mu",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

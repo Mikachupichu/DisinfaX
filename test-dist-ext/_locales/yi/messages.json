@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "דעטעקטירט און הייבט אַרויס פֿאַלשע אינפֿאָרמאַציע אין טוויטס מיט אַ AI-אַנאַליז.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "אמת",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "פֿאַלש",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "אומבאַקאַנט",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "פֿאַקט־קאָנטראָל",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "אַנטבלאָפֿירן|דיסאינפֿאַקטירן|רייניקן|אַנטפֿאַלשניוזן|פֿאַרריכטן|וואַשן|זוכן|פֿאָרשן|פֿאַקט־קאָנטראָלירן|אַנטמוחוואַשן|אמתדיקן|באַשטעטיקן|טראַכטן|אַנטדעקן|אַנטפּלעקן|קאָנטראָלירן|אַרומפֿאָרשן|זוכן דעם אמת|טראַנספּאַרענטירן|אמתפֿולעווען|אַנטפֿאַלשן|באַלויכטן|קלאַסיפֿיצירן|פּסקענען|אָפּהאָלן|אינפֿאָרמירן|דרייען|לאָדן|קרייזלען|קײַקלען זיך|פֿאַקטירן|פֿאַקטואַליזירן|פֿאַקטן|אַנטמיסטיפֿיצירן|באַאַרבעטן|אַנטקליקבייטן|גראָבן|אמתן|דעפֿאַלשירן|אַנטפֿאַלשירן|אַנטפֿאַלסיפֿיצירן|דעפֿאַלסיפֿיצירן|דעפֿייקן|גענערירן|שרייבן|באַוויסיקן|רעפֿלעקטירן|זיך באַטראַכטן|קאָנטעמפּלירן|באַטראַכטן|מעדיטירן|זוכן אין דער נשמה|אַוואַנטורירן|קאָכן|שעפֿירן|אינטויִרן|לאָגיקירן|רעזאָנירן|פֿילאָסאָפֿירן|קלאָרמאַכן|לייזן|אויפֿקלערן|פֿאָלגערן|קלייבן|זאַמלען|אַנטדרעקן|אַנטלאַרוון|מיטאָס־צעשלאָגן|אַנטנגיעהן|אַנטפּראָפּאַגאַנדירן|גלײַך רעדן|דיזאינפֿעקטירן|דעטאָקסיפֿיצירן|אויסקוועטשן פֿאַקטן|רעוויזירן|זיפֿן|קרייץ־אויספֿרעגן|אויספֿרעגן|אַראָפּנעמען די מאַסקע|צעשנײַדן|אַנטפּלאָנטערן|צעלייגן|אַרויסרייכערן|אויסוואָרצלען|דעקאָנסטרוירן|אָפּקלײַבן|טריאַנגולירן|קרייץ־פֿאַרגלייכן|באַקרעפֿטיקן|וואַלידירן|דיסטילירן|סינטעטיזירן|קנאַקן|אַנטבלוירן|אַנטוואָלקענען|דורכשטעכן דעם נעפּל|פֿילטרירן|רענטגענירן|אַרויסשטעלן|אויפֿהעלן|אויסקלייבן",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "זייער וואַרשיינלעך",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "וואַרשיינלעך",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "מעגלעך",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "מערסטנס",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "טענהדיק",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "טיילווײַז",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "צווייפֿלהאַפֿט",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "קאָפּירן",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "אַנטפּלעקן ווידער די טענות פֿון דעם טוויט",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "פֿאָרשן ווידער די טענה",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "פֿאַקט־קאָנטראָל",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "לייג צו הערה",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "לייגט צו הערה",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "איבערזעצן פֿאַקט־קאָנטראָלן",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "איבערזעצן",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "צו זײַן",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ צו זײַן $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "פֿאַקט־קאָנטראָלירט",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "גיי צוריק",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "ווײַז",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "באַהאַלט",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Disinfact",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "פֿאַקט־קאָנטראָל",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "לאָקאַליזיר",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "באַלאַנס"
+  },
+  "gifted": {
+    "message": "געשאָנקען"
+  },
+  "customTopup": {
+    "message": "אייגענע"
+  },
+  "customAmountLabel": {
+    "message": "אייגענע סומע פֿאַר אָנפֿילן, אין אַמעריקאַנער דאָלאַר"
+  },
+  "increase": {
+    "message": "פֿאַרגרעסערן"
+  },
+  "decrease": {
+    "message": "פֿאַרקלענערן"
+  },
+  "topUpBalance": {
+    "message": "פֿיל אָן דעם באַלאַנס"
+  },
+  "processing": {
+    "message": "באַאַרבעטן…"
+  },
+  "checkoutError": {
+    "message": "מען האָט נישט געקענט אָנהייבן דעם צאָלפּראָצעס. ביטע פּרוּווט נאָך אַ מאָל."
+  },
+  "termsOfService": {
+    "message": "תּנאָים פֿון סערוויס"
+  },
+  "privacyPolicy": {
+    "message": "פּריוואַטקייט־פּאָליסי"
+  },
+  "disclaimerAgree": {
+    "message": "ווען איר פֿילט אָן דעם באַלאַנס, שטימט איר צו אונדזערע %TOS% און %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "אויב איר צאָלט אין אַן אַנדער וואַלוטע ווי USD, קען מען אײַך רעכענען אויסטויש־אָפּצאָלונגען."
+  },
+  "signOut": {
+    "message": "אַרויסלאָגירן"
+  },
+  "onboardDisinfactClick": {
+    "message": "אַ קליק אויף %BTN% אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "onboardDisinfactTap": {
+    "message": "אַ טאַפּ אויף %BTN% אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "onboardLocalize": {
+    "message": "קליקינג %BTN% ריפּאַזישאַנז די כיילייץ און וועט באַשולדיקן דיין וואָג"
+  },
+  "onboardAnnotate": {
+    "message": "קליקינג %BTN% טשעק די פאָדערן פֿאַר ערראָרס און וועט באַשולדיקן דיין וואָג"
+  },
+  "onboardWillCharge": {
+    "message": "אַ קליק אויף %BTN% וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "onboardFactcheck": {
+    "message": "אַ קליק אויף %BTN% וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "onboardTranslations": {
+    "message": "אַ קליק אויף %BTN% וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "onboardRefreshes": {
+    "message": "אַ קליק אויף %BTN% וועט אָפּרעכענען פֿון אײַער באַלאַנס"
+  },
+  "topUp": {
+    "message": "אָנפֿילן"
+  },
+  "showMore": {
+    "message": "ווײַז מער"
+  },
+  "showLess": {
+    "message": "ווײַז ווייניקער"
+  },
+  "landingTagline1": {
+    "message": "אַנטפּלעק דעם אמת. געפֿין די ליגנס."
+  },
+  "landingTagline2": {
+    "message": "נישט מער דיסאינפֿאָרמאַציע. נאָר פֿאַקטן."
+  },
+  "continueWithX": {
+    "message": "פֿאָרזעץ מיט X"
+  },
+  "continueWithGoogle": {
+    "message": "פֿאָרזעץ מיט Google"
+  },
+  "continueWithApple": {
+    "message": "פֿאָרזעץ מיט Apple"
+  },
+  "lastUsed": {
+    "message": "צולעצט גענוצט"
+  },
+  "cleanupTagline": {
+    "message": "רייניק אײַער X פֿיד."
+  },
+  "disclaimerJurisdiction": {
+    "message": "אין די פֿאַראייניקטע שטאַטן, נאָר תושבֿים פֿון אַלאַבאַמאַ, אַריזאָנאַ, קאַליפֿאָרניע, קאָלאָראַדאָ, קאָנעטיקאָט, דעלאַוער, פֿלאָרידאַ, איידאַהאָ, אילינוי, אינדיאַנאַ, אייאָוואַ, קאַנזאַס, קענטאָקי, לואיזיאַנאַ, מיין, מאַסאַטשוסעטס, מיסיסיפּי, מיזורי, מאָנטאַנאַ, ניו העמפּשיר, ניו מעקסיקאָ, ניו יאָרק, צפֿון קאַראָלינאַ, צפֿון דאַקאָטאַ, אָקלאַהאָמאַ, אָרעגאָן, פּענסילוועיניע, דרום קאַראָלינאַ, דרום דאַקאָטאַ, טענעסי, טעקסאַס, יוטאַ, וואַשינגטאָן, וויסקאָנסין, און וויאָמינג קענען ניצן DisinfaX און אָנפֿילן זייער באַלאַנס; וואַשינגטאָן, D.C., אַלע אַמעריקאַנער טעריטאָריעס, און אַלע שטאַטן וואָס זענען נישט דערמאָנט זענען אויסגעשלאָסן. אינדרויסן פֿון די פֿאַראייניקטע שטאַטן, איז עס פֿאַראַן אין קאַנאַדע, אויסטראַליע, ניו זילאַנד, סינגאַפּור, דרום־אַפֿריקע, יאַפּאַן, טײַוואַן, אינדאָנעזיע, טײַלאַנד, די פֿיליפּינען, מאַלייזיע, וויעטנאַם, און שווייץ."
+  },
+  "factCheckAllButton": {
+    "message": "פֿאַקט־קאָנטראָלירן אַלע טענות"
+  },
+  "factCheckButton": {
+    "message": "פֿאַקט־קאָנטראָלירן"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX קען מאַכן גרייזן. קאָנטראָלירט די אינפֿאָרמאַציע נאָך אַ מאָל.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "אײַער באַלאַנס איז צו נידעריק. ביטע פֿילט אים אָן כּדי פֿאָרצוזעצן."
+  },
+  "balanceEmpty": {
+    "message": "אײַער באַלאַנס איז ליידיק. ביטע לייגט צו געלט צו אײַער באַלאַנס מיטן DisinfaX-פּאָפּאַפּ.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "אײַער חשבון איז סוספּענדירט געוואָרן."
+  },
+  "errNotSignedIn": {
+    "message": "איר זענט נישט אַרײַנגעלאָגירט. ביטע לאָגירט זיך אַרײַן און פּרוּווט נאָך אַ מאָל."
+  },
+  "errInvalidRequest": {
+    "message": "עפּעס אין דער בקשה איז נישט דערקענט געוואָרן. ביטע זיכערט זיך אַז די עקסטענזיע איז אַקטועל."
+  },
+  "errServiceUnavailable": {
+    "message": "אַ טעות איז געשען אויף אונדזער זײַט. ביטע פּרוּווט נאָך אַ מאָל אין אַ מינוט."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX איז נאָך נישט צוגענגלעך אין אײַער געגנט צוליב רעגולאַטאָרישע פֿאָדערונגען."
+  },
+  "errInvalidAmount": {
+    "message": "די סומע פֿאַר אָנפֿילן איז נישט גילטיק. ביטע קלײַבט אַן אַנדער סומע."
+  },
+  "errNotFound": {
+    "message": "דאָס האָט מען נישט געפֿונען. ביטע פּרוּווט נאָך אַ מאָל."
+  },
+  "settings": {
+    "message": "איינשטעלונגען",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "וויַז שטענדיק פֿאַקט־טשעקס אויב:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "אמת < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "בטחון > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "פאקטן־טשעק",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "אַרייַן אַ טענה",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "מקורות",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "סברה",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "עפֿענען דעם פּאָפּ־אַפּ מיט אויסגעקליבענעם טעקסט פֿאַרלאַנגט אַ פּרופֿונג און וועט אַראָפּרעכענען פֿון דיין באַלאַנס.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "אַנולירן",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Mamarika sy manasongadina ny fampitam-baovao diso ao amin'ny tweets amin'ny alalan'ny famakafakana AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Marina",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Diso",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Tsy fantatra",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Fanamarinana",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Fanamarinana|Fikarohana|Fanadiovana|Famoahana ny Marina|Fahitana|Fisainana|Fanazavana|Fihadiana|Fisavana|Fanaraha-maso Mifandanja|Famakafakana|Fandavana Lainga|Fitadiavana ny Marina|Fieritreretana|Fanangonan-kevitra|Famahana Mistery|Fanatsoahan-kevitra|Fandinihana|Fanadihadiana|Fitsikarana|Fanentanana ny Marina|Fisafoana|Fikarohana Lalindalina|Fanadiovana Lalina|Famerenana Marina|Fanovana Lainga ho Marina",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Tena mety",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Mety",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Angamba",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Ny ankamaroany",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Azo iadian-kevitra",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Ampahany",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Tsy mazava",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopia",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Aseho indray ny filazana rehetra ao amin'ity tweet ity",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Adihadio indray ity filazana ity",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Fanamarinana",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Fanamario",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Manao fanamarihana",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Adikao ny Fanamarinana",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Adikao",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ho",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ho $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Voamarina",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Miverina",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Asehoy",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Afeno",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Manamarina",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Fanamarinana",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Ataovy amin'ny teny",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Vola sisa"
+  },
+  "gifted": {
+    "message": "Natolotra"
+  },
+  "customTopup": {
+    "message": "Manokana"
+  },
+  "customAmountLabel": {
+    "message": "Vola fanampiana manokana amin'ny dolara amerikana"
+  },
+  "increase": {
+    "message": "Ampitomboy"
+  },
+  "decrease": {
+    "message": "Ahenoy"
+  },
+  "topUpBalance": {
+    "message": "Ampio ny vola sisa"
+  },
+  "processing": {
+    "message": "Eo am-panodinana…"
+  },
+  "checkoutError": {
+    "message": "Tsy afaka nanomboka ny fandoavam-bola. Andramo indray azafady."
+  },
+  "termsOfService": {
+    "message": "Fepetran'ny serivisy"
+  },
+  "privacyPolicy": {
+    "message": "Politikan'ny fiainana manokana"
+  },
+  "disclaimerAgree": {
+    "message": "Amin'ny fampiana vola, dia manaiky ny %TOS% sy %PRIVACY% anay ianao."
+  },
+  "disclaimerFx": {
+    "message": "Mety hampiharina ny saran'ny fanakalozam-bola vahiny raha mandoa amin'ny vola hafa ankoatra ny USD ianao."
+  },
+  "signOut": {
+    "message": "Hiala"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ny fanindriana ny %BTN% dia hampiseho ny filazana ary hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ny fikapohana ny %BTN% dia hampiseho ny filazana ary hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardLocalize": {
+    "message": "Ny fanindriana ny %BTN% dia mamerina mametraka ny zava-nisongadina ary handoa ny fifandanjanao"
+  },
+  "onboardAnnotate": {
+    "message": "Ny fanindriana ny %BTN% dia manamarina ny fitakiana raha misy lesoka ary handoa ny fandanjanao"
+  },
+  "onboardWillCharge": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardFactcheck": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardTranslations": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "onboardRefreshes": {
+    "message": "Ny fanindriana ny %BTN% dia hisy sarany hesorina amin'ny volanao"
+  },
+  "topUp": {
+    "message": "Fenoy"
+  },
+  "showMore": {
+    "message": "Asehoy bebe kokoa"
+  },
+  "showLess": {
+    "message": "Asehoy kely kokoa"
+  },
+  "landingTagline1": {
+    "message": "Ampisehoy ny Marina. Tadiavo ny Lainga."
+  },
+  "landingTagline2": {
+    "message": "Tsy misy fampitam-baovao diso intsony. Zava-misy ihany."
+  },
+  "continueWithX": {
+    "message": "Tohizo amin'ny X"
+  },
+  "continueWithGoogle": {
+    "message": "Tohizo amin'ny Google"
+  },
+  "continueWithApple": {
+    "message": "Tohizo amin'ny Apple"
+  },
+  "lastUsed": {
+    "message": "Nampiasaina farany"
+  },
+  "cleanupTagline": {
+    "message": "Diovy ny fandraisam-baovao X anao."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Ao anatin'i Etazonia, ny mponin'i Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ary Wyoming ihany no afaka mampiasa DisinfaX sy mameno ny volany; Washington, D.C., ny faritany amerikana rehetra, ary ny fanjakana rehetra tsy voatanisa dia tsy tafiditra. Any ivelan'i Etazonia, dia misy any Kanada, Aostralia, Nouvelle-Zélande, Singapore, Afrika Atsimo, Japana, Taiwan, Indonezia, Thailandy, Filipina, Malezia, Vietnam, ary Soisa."
+  },
+  "factCheckAllButton": {
+    "message": "Manamarina daholo"
+  },
+  "factCheckButton": {
+    "message": "Manamarina"
+  },
+  "aiDisclaimer": {
+    "message": "Mety manao fahadisoana ny DisinfaX. Jereo indray ny fampahalalana.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Latsaka loatra ny volanao. Azafady ampio ny volanao mba hanohizana."
+  },
+  "balanceEmpty": {
+    "message": "Lany ny volanao. Azafady ampio vola ny volanao amin'ny alalan'ny popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Voahantona ny kaontinao."
+  },
+  "errNotSignedIn": {
+    "message": "Tsy tafiditra ianao. Azafady midira ary andramo indray."
+  },
+  "errInvalidRequest": {
+    "message": "Tsy fantatra ny ampahany amin'ity fangatahana ity. Azafady amarino fa efa nohavaozina ny fanitarana."
+  },
+  "errServiceUnavailable": {
+    "message": "Nisy hadisoana teo amin'ny lafinay. Azafady andramo indray afaka kelikely."
+  },
+  "errRegionNotSupported": {
+    "message": "Mbola tsy misy amin'ny faritaninao ny DisinfaX noho ny fepetra ara-lalàna."
+  },
+  "errInvalidAmount": {
+    "message": "Tsy manan-kery io vola nampiana io. Azafady safidio vola hafa."
+  },
+  "errNotFound": {
+    "message": "Tsy hita izany. Andramo indray."
+  },
+  "settings": {
+    "message": "Fikirana",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Asehoy foana ny fanamarinana raha:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Fahamarinana < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Fatokisana > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Fandinihana ny zava-misy",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Ampidiro ny filazana",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Loharano",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Fanamarinana",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ny manokatra ny popup miaraka amin'ny lahatsoratra voafidy dia hanamarina izany ary halaina amin'ny saldo-nao.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ajanona",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

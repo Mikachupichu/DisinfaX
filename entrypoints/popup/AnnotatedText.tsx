@@ -59,11 +59,15 @@ function extractRanges(
     if (!m) continue;
     const absStart = parseInt(m[1], 10);
     const absEnd = parseInt(m[2], 10);
-    if (isNaN(absStart) || isNaN(absEnd) || absEnd <= absStart) continue;
+    // `absEnd === absStart` is a zero-width insertion point — the claim-leading insertion the
+    // agent emits under an empty-string key. Nothing is struck for it, so it needs no width.
+    if (isNaN(absStart) || isNaN(absEnd) || absEnd < absStart) continue;
 
     const s = absStart - segStart;
     const e = absEnd - segStart;
-    if (e <= 0 || s >= textLength) continue;
+    // A zero-width range has no width that could fall outside the text, so only its own bounds
+    // can disqualify it. Every other non-positive end belongs to text before this claim.
+    if (s === e ? s < 0 || s > textLength : e <= 0 || s >= textLength) continue;
 
     valid.push({
       s: Math.max(0, s),
@@ -72,8 +76,10 @@ function extractRanges(
     });
   }
 
-  // Sort by start position
-  valid.sort((a, b) => a.s - b.s);
+  // By end as well as start: two ranges sharing a start are ordered by width, so an insertion
+  // point sorts ahead of a strike opening on the same character — the same tiebreak the page's
+  // `annotationRanges` uses.
+  valid.sort((a, b) => a.s - b.s || a.e - b.e);
   return valid;
 }
 

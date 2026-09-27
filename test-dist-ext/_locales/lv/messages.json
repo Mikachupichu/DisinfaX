@@ -1,0 +1,383 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Atklāj un izceļ dezinformāciju tvītos, izmantojot MI analīzi."
+  },
+  "verdictTrue": {
+    "message": "Patiess",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Nepatiess",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Nezināms",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Pārbaude",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Pārbaude|Izpēte|Tīrīšana|Atklāšana|Pārdomas|Apgaismošana|Rakšana|Sijāšana|Analīze|Izsekošana|Skaidrošana|Demaskošana|Salīdzināšana|Patiesības Meklēšana|Apstiprināšana|Vākšana|Melu Atklāšana|Padziļināta Izpēte|Faktu Pārbaude|Filtrēšana|Izmeklēšana|Precizēšana|Pārskatīšana|Izvērtēšana|Pierādīšana"
+  },
+  "adjVeryLikely": {
+    "message": "Ļoti ticams",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ticams",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Iespējams",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Pārsvarā",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Apstrīdami",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Daļēji",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Neviennozīmīgi",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopēt",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Vēlreiz atklāt visus šī tvīta apgalvojumus",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Atkārtoti izpētīt šo apgalvojumu",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Pārbaude",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotēt",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotēšana",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Tulkot faktu pārbaudes",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Tulkot",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "būt",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ būt $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Pārbaudīts",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Atgriezties",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Rādīt",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Slēpt",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Pārbaudīt",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Pārbaude",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizēt",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Atlikums"
+  },
+  "gifted": {
+    "message": "Dāvināts"
+  },
+  "customTopup": {
+    "message": "Pielāgots"
+  },
+  "customAmountLabel": {
+    "message": "Pielāgota papildināšanas summa ASV dolāros"
+  },
+  "increase": {
+    "message": "Palielināt"
+  },
+  "decrease": {
+    "message": "Samazināt"
+  },
+  "topUpBalance": {
+    "message": "Papildināt atlikumu"
+  },
+  "processing": {
+    "message": "Notiek apstrāde…"
+  },
+  "checkoutError": {
+    "message": "Neizdevās sākt maksājumu. Lūdzu, mēģiniet vēlreiz."
+  },
+  "termsOfService": {
+    "message": "Pakalpojumu noteikumi"
+  },
+  "privacyPolicy": {
+    "message": "Privātuma politika"
+  },
+  "disclaimerAgree": {
+    "message": "Papildinot, jūs piekrītat mūsu %TOS% un %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ja maksājat citā valūtā, nevis USD, var tikt piemērota valūtas maiņas maksa."
+  },
+  "signOut": {
+    "message": "Izrakstīties"
+  },
+  "onboardDisinfactClick": {
+    "message": "Noklikšķinot uz %BTN% tiks atklāti apgalvojumi un no tava atlikuma tiks noņemta maksa"
+  },
+  "onboardDisinfactTap": {
+    "message": "Pieskaroties %BTN% tiks atklāti apgalvojumi un no tava atlikuma tiks noņemta maksa"
+  },
+  "onboardLocalize": {
+    "message": "Noklikšķinot uz %BTN%, tiek mainīta svarīgākā vieta un tiek iekasēta maksa par jūsu atlikumu"
+  },
+  "onboardAnnotate": {
+    "message": "Noklikšķinot uz %BTN%, tiek pārbaudīts, vai prasībā nav kļūdu, un tiks iekasēta maksa par jūsu atlikumu"
+  },
+  "onboardWillCharge": {
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
+  },
+  "onboardFactcheck": {
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
+  },
+  "onboardTranslations": {
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
+  },
+  "onboardRefreshes": {
+    "message": "Noklikšķinot uz %BTN% no tava atlikuma tiks noņemta maksa"
+  },
+  "topUp": {
+    "message": "Papildināt"
+  },
+  "showMore": {
+    "message": "Rādīt vairāk"
+  },
+  "showLess": {
+    "message": "Rādīt mazāk"
+  },
+  "landingTagline1": {
+    "message": "Atklāj patiesību. Atrodi melus."
+  },
+  "landingTagline2": {
+    "message": "Nekādas dezinformācijas. Tikai fakti."
+  },
+  "continueWithX": {
+    "message": "Turpināt ar X"
+  },
+  "continueWithGoogle": {
+    "message": "Turpināt ar Google"
+  },
+  "continueWithApple": {
+    "message": "Turpināt ar Apple"
+  },
+  "lastUsed": {
+    "message": "Pēdējoreiz izmantots"
+  },
+  "cleanupTagline": {
+    "message": "Sakārto savu X plūsmu."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerikas Savienotajās Valstīs DisinfaX izmantot un papildināt savu bilanci var tikai šo štatu iedzīvotāji: Alabama, Arizona, Kalifornija, Kolorado, Konektikuta, Delavēra, Florida, Aidaho, Ilinoisa, Indiana, Aiova, Kanzasa, Kentuki, Luiziāna, Meina, Masačūsetsa, Misisipi, Misūri, Montana, Ņūhempšīra, Ņūmeksika, Ņujorka, Ziemeļkarolīna, Ziemeļdakota, Oklahoma, Oregona, Pensilvānija, Dienvidkarolīna, Dienviddakota, Tenesī, Teksasa, Jūta, Vašingtona, Viskonsina un Vaiominga; Vašingtona, D.C., visas ASV teritorijas un jebkuri neuzskaitītie štati ir izslēgti. Ārpus Amerikas Savienotajām Valstīm tas ir pieejams Kanādā, Austrālijā, Jaunzēlandē, Singapūrā, Dienvidāfrikā, Japānā, Taivānā, Indonēzijā, Taizemē, Filipīnās, Malaizijā, Vjetnamā un Šveicē."
+  },
+  "factCheckAllButton": {
+    "message": "Pārbaudīt visu"
+  },
+  "factCheckButton": {
+    "message": "Pārbaudīt"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX var kļūdīties. Vēlreiz pārbaudiet informāciju.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Tava atlikuma summa ir pārāk maza. Papildini atlikumu, lai turpinātu."
+  },
+  "balanceEmpty": {
+    "message": "Tavs atlikums ir tukšs. Pievieno līdzekļus savam atlikumam, izmantojot DisinfaX uznirstošo logu.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Tavs konts ir apturēts."
+  },
+  "errNotSignedIn": {
+    "message": "Tu neesi pieteicies. Pieteicies un mēģini vēlreiz."
+  },
+  "errInvalidRequest": {
+    "message": "Daļa no šī pieprasījuma netika atpazīta. Pārbaudi, vai pievienojumprogramma ir atjaunināta."
+  },
+  "errServiceUnavailable": {
+    "message": "No mūsu puses radās kļūda. Mēģini vēlreiz pēc brīža."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX pagaidām nav pieejams tavā reģionā normatīvo prasību dēļ."
+  },
+  "errInvalidAmount": {
+    "message": "Šī papildinājuma summa nav derīga. Izvēlies citu summu."
+  },
+  "errNotFound": {
+    "message": "To neizdevās atrast. Mēģini vēlreiz."
+  },
+  "settings": {
+    "message": "Iestatījumi",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Vienmēr rādīt pārbaudes, ja:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Patiesums < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Uzticēšanās > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktu pārbaude",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Ievadiet apgalvojumu",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Avoti",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Pamatojums",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Atverot uznirstošo logu ar atlasītu tekstu, šī atlase tiks pārbaudīta un no jūsu bilances tiks norakstīts.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Atcelt",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Nakakatuklas at nagha-highlight ng maling impormasyon sa mga tweet gamit ang AI analysis."
+  },
+  "verdictTrue": {
+    "message": "Totoo",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Mali",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Hindi Alam",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Sinusuri",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Sinisiyasat|Nililinis|Binubunyag|Pinabubulaanan|Iniisip|Nililiwanag|Hinuhukay|Sinasala|Inilalantad|Kinukumpirma|Tinutuklas|Hinahanap|Kinokolekta|Inaanalisa|Inihahambing|Nilulutas|Pinag-aaralan|Tinatanong|Iniimbestigahan|Pinatutunayan|Binabalikan|Pinag-iisipan|Dinudukal|Sinisipat|Inuusisa",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Malamang na malamang",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Malamang",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Posible",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Karamihan",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Mapagdedebatehan",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Bahagyang",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Malabo",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopyahin",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Ipakita muli ang lahat ng pahayag sa tweet na ito",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Muling saliksikin ang pahayag na ito",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Sinusuri",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "I-annotate",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Nag-a-annotate",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Isalin ang pagsusuri",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Isalin",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Ipakita",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Itago",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Suriin",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sinusuri",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "I-localize",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Balanse"
+  },
+  "gifted": {
+    "message": "regalo"
+  },
+  "customTopup": {
+    "message": "Custom"
+  },
+  "customAmountLabel": {
+    "message": "Custom na halaga ng top-up sa US dollars"
+  },
+  "increase": {
+    "message": "Dagdagan"
+  },
+  "decrease": {
+    "message": "Bawasan"
+  },
+  "topUpBalance": {
+    "message": "Mag-top Up ng Balanse"
+  },
+  "processing": {
+    "message": "Pinoproseso…"
+  },
+  "checkoutError": {
+    "message": "Hindi masimulan ang checkout. Pakisubukang muli."
+  },
+  "termsOfService": {
+    "message": "Mga Tuntunin ng Serbisyo"
+  },
+  "privacyPolicy": {
+    "message": "Patakaran sa Privacy"
+  },
+  "disclaimerAgree": {
+    "message": "Sa pag-top up, sumasang-ayon ka sa aming %TOS% at %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Maaaring magkaroon ng bayarin sa palitan ng pera kung magbabayad ka sa currency maliban sa USD."
+  },
+  "signOut": {
+    "message": "Mag-sign out"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ang pag-click sa %BTN% ay magpapakita ng mga claim at magbabawas ito sa iyong balanse"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ang pag-tap sa %BTN% ay magpapakita ng mga claim at magbabawas ito sa iyong balanse"
+  },
+  "onboardLocalize": {
+    "message": "Ang pag-click sa %BTN% ay muling iposisyon ang mga highlight at sisingilin ang iyong balanse"
+  },
+  "onboardAnnotate": {
+    "message": "Ang pag-click sa %BTN% ay tumitingin sa claim para sa mga error at sisingilin ang iyong balanse"
+  },
+  "onboardWillCharge": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "onboardFactcheck": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "onboardTranslations": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "onboardRefreshes": {
+    "message": "Ang pag-click sa %BTN% ay magbabawas sa iyong balanse"
+  },
+  "topUp": {
+    "message": "Mag-top Up"
+  },
+  "showMore": {
+    "message": "Magpakita pa"
+  },
+  "showLess": {
+    "message": "Magpakita ng mas kaunti"
+  },
+  "landingTagline1": {
+    "message": "Ibunyag ang Katotohanan. Tuklasin ang mga Kasinungalingan."
+  },
+  "landingTagline2": {
+    "message": "Wala nang Disimpormasyon. Puro Katotohanan lang."
+  },
+  "continueWithX": {
+    "message": "Magpatuloy gamit ang X"
+  },
+  "continueWithGoogle": {
+    "message": "Magpatuloy gamit ang Google"
+  },
+  "continueWithApple": {
+    "message": "Magpatuloy gamit ang Apple"
+  },
+  "lastUsed": {
+    "message": "Huling Ginamit"
+  },
+  "cleanupTagline": {
+    "message": "Linisin ang iyong X Feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Sa loob ng Estados Unidos, ang mga residente lamang ng Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Hilagang Carolina, Hilagang Dakota, Oklahoma, Oregon, Pennsylvania, Timog Carolina, Timog Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, at Wyoming ang maaaring gumamit ng DisinfaX at mag-top up ng kanilang balanse; ang Washington, D.C., lahat ng mga teritoryo ng U.S., at anumang estado na hindi nakalista ay hindi kasama. Sa labas ng Estados Unidos, available ito sa Canada, Australia, New Zealand, Singapore, Timog Aprika, Hapon, Taiwan, Indonesia, Thailand, Pilipinas, Malaysia, Vietnam, at Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Suriin Lahat"
+  },
+  "factCheckButton": {
+    "message": "Suriin"
+  },
+  "aiDisclaimer": {
+    "message": "Posibleng magkamali ang DisinfaX. I-double-check ang impormasyon.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Masyadong mababa ang balanse mo. Mag-top up para magpatuloy."
+  },
+  "balanceEmpty": {
+    "message": "Ubos na ang balanse mo. Magdagdag ng pondo sa balanse mo gamit ang DisinfaX popup.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Na-suspend ang account mo."
+  },
+  "errNotSignedIn": {
+    "message": "Hindi ka naka-sign in. Mag-sign in at subukan ulit."
+  },
+  "errInvalidRequest": {
+    "message": "May bahagi ng request na hindi na-recognize. Paki-siguraduhin na updated ang extension."
+  },
+  "errServiceUnavailable": {
+    "message": "Nagkaroon ng problema sa aming panig. Subukan ulit sandali."
+  },
+  "errRegionNotSupported": {
+    "message": "Hindi pa available ang DisinfaX sa inyong rehiyon dahil sa mga regulatory requirement."
+  },
+  "errInvalidAmount": {
+    "message": "Hindi valid ang top-up amount na iyon. Pumili ng ibang amount."
+  },
+  "errNotFound": {
+    "message": "Hindi mahanap iyon. Subukan ulit."
+  },
+  "settings": {
+    "message": "Mga Setting",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Laging ipakita ang fact-check kung:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Katotohanan < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Katiyakan > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Pagtsek ng katotohanan",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Maglagay ng pahayag",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Mga pinagmulan",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Pangangatwiran",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ang pagbukas ng popup na may piniling teksto ay susuriin ang piniling iyon at sisingilin ang iyong balanse.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Kanselahin",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

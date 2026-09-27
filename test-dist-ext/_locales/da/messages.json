@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Opdager og fremhæver misinformation i tweets ved hjælp af AI-analyse."
+  },
+  "verdictTrue": {
+    "message": "Sandt",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Falsk",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ukendt",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Faktatjekker",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Kontrollerer|Undersøger|Renser|Afslører|Tænker|Oplyser|Graver|Sorterer|Afkoder|Analyserer|Verificerer|Bekræfter|Sammenligner|Optrevler|Afdækker|Gennemgår|Efterforsker|Rydder ud|Myteknuser|Sandhedssøger|Grubler|Ransager|Filtrerer|Klarlægger|Gennemlyser|Faktatjekker|Detektiverer|Snuser|Nusser|Piller ved|Vasker|Skrubber|Polerer|Renskurer|Desinficerer|Klargør|Belyser|Fremlægger|Fremviser|Åbenbarer|Blotlægger|Gransker|Løser gåden|Knækker koden|Nulstiller|Rydder op|Sigter|Sier|Sorterer skidt fra kanel|Vejer beviserne|Vurderer|Krydsforhører|Afprøver|Tester|Dobbeltchecker|Trippelchecker|Krydsreferer|Sammenholder|Destillerer|Sammenfatter|Behandler|Fordøjer|Fordyber sig|Spekulerer|Filosoferer|Ræsonnerer|Overvejer|Reflekterer|Mediterer|Sjælesøger|Eventyrer|Koger sagen|Intuiterer|Belyser mørket|Renser luften|Punkterer myter|Afmystificerer|Debunker|Afprogrammerer|Detoxer",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Meget sandsynligt",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Sandsynligt",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Muligvis",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "For det meste",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Diskutabelt",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Delvist",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Tvetydigt",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopiér",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Afslør igen alle påstande i dette tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Genundersøg denne påstand",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Faktatjekker",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotér",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annoterer",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Oversæt faktatjek",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Oversæt",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "til at være",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ til at være $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Faktatjekket",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Gå tilbage",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Vis",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Skjul",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Faktatjek",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Desinficerer",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokaliser",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Foræret"
+  },
+  "customTopup": {
+    "message": "Tilpasset"
+  },
+  "customAmountLabel": {
+    "message": "Tilpasset optankningsbeløb i amerikanske dollars"
+  },
+  "increase": {
+    "message": "Forøg"
+  },
+  "decrease": {
+    "message": "Formindsk"
+  },
+  "topUpBalance": {
+    "message": "Optank saldo"
+  },
+  "processing": {
+    "message": "Behandler…"
+  },
+  "checkoutError": {
+    "message": "Betalingen kunne ikke startes. Prøv venligst igen."
+  },
+  "termsOfService": {
+    "message": "Servicevilkår"
+  },
+  "privacyPolicy": {
+    "message": "Privatlivspolitik"
+  },
+  "disclaimerAgree": {
+    "message": "Ved at tanke op accepterer du vores %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Der kan påløbe valutavekslingsgebyrer, hvis du betaler i en anden valuta end USD."
+  },
+  "signOut": {
+    "message": "Log ud"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klik på %BTN% viser påstande og trækker penge fra din saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tryk på %BTN% viser påstande og trækker penge fra din saldo"
+  },
+  "onboardLocalize": {
+    "message": "Hvis du klikker på %BTN%, omplaceres højdepunkterne og opkræver din saldo"
+  },
+  "onboardAnnotate": {
+    "message": "Ved at klikke på %BTN% kontrolleres kravet for fejl, og din saldo debiteres"
+  },
+  "onboardWillCharge": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "onboardTranslations": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Klik på %BTN% trækker penge fra din saldo"
+  },
+  "topUp": {
+    "message": "Optank"
+  },
+  "showMore": {
+    "message": "Vis mere"
+  },
+  "showLess": {
+    "message": "Vis mindre"
+  },
+  "landingTagline1": {
+    "message": "Afslør sandheden. Find løgnene."
+  },
+  "landingTagline2": {
+    "message": "Ikke mere desinformation. Kun fakta."
+  },
+  "continueWithX": {
+    "message": "Fortsæt med X"
+  },
+  "continueWithGoogle": {
+    "message": "Fortsæt med Google"
+  },
+  "continueWithApple": {
+    "message": "Fortsæt med Apple"
+  },
+  "lastUsed": {
+    "message": "Sidst brugt"
+  },
+  "cleanupTagline": {
+    "message": "Ryd op i dit X-feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Inden for USA kan kun indbyggere i Alabama, Arizona, Californien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming bruge DisinfaX og optanke deres saldo; Washington, D.C., alle amerikanske territorier og alle stater, der ikke er nævnt, er udelukket. Uden for USA er tjenesten tilgængelig i Canada, Australien, New Zealand, Singapore, Sydafrika, Japan, Taiwan, Indonesien, Thailand, Filippinerne, Malaysia, Vietnam og Schweiz."
+  },
+  "factCheckAllButton": {
+    "message": "Faktatjek alt"
+  },
+  "factCheckButton": {
+    "message": "Faktatjek"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX kan lave fejl. Dobbeltcheck oplysningerne.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Din saldo er for lav. Optank for at fortsætte."
+  },
+  "balanceEmpty": {
+    "message": "Din saldo er tom. Tilføj penge til din saldo via popup-vinduet i DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Din konto er blevet suspenderet."
+  },
+  "errNotSignedIn": {
+    "message": "Du er ikke logget ind. Log ind, og prøv igen."
+  },
+  "errInvalidRequest": {
+    "message": "En del af denne anmodning blev ikke genkendt. Sørg for, at udvidelsen er opdateret."
+  },
+  "errServiceUnavailable": {
+    "message": "Der opstod en fejl i vores ende. Prøv igen om et øjeblik."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX er endnu ikke tilgængelig i din region på grund af lovkrav."
+  },
+  "errInvalidAmount": {
+    "message": "Det optankningsbeløb er ikke gyldigt. Vælg et andet beløb."
+  },
+  "errNotFound": {
+    "message": "Det kunne ikke findes. Prøv igen."
+  },
+  "settings": {
+    "message": "Indstillinger",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Vis altid faktatjek hvis:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Sandhed < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Sikkerhed > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktatjek",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Indtast en påstand",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Kilder",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Begrundelse",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Åbner du pop op med markeret tekst, tjekkes det markerede, og din saldo belastes.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Annuller",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

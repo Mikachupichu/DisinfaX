@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Ka kitea, ka whakaatuhia hoki ngā kōrero hē i roto i ngā tweets mā te tātari AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Pono",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Tepe",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Kāore i te mōhiotia",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Arotake",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Arotake|Rangahau|Horoi|Whakaatu|Kitenga|Whakaaro|Whakamārama|Keri|Tātari|Whakataurite|Wetewete|Whakakore|Whakaū|Kohikohi|Rapu|Whakaputa|Aromatawai|Whakaaroaro|Hōpara|Whakamana|Kimi|Ata Tirotiro|Wetewete Kōrero|Whakamātau|Rapurapu",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Tino tūpono",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Tūpono",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Tērā pea",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Te nuinga",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Ka taea te tautohe",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Wāhanga",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Mārangaranga",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Tārua",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Whakaatu anō i ngā kerēme katoa i tēnei tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Rangahau anō i tēnei kerēme",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Arotake",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Tāpiri",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "E tāpiri ana",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Whakamāori i ngā Arotake Meka",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Whakamāori",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Kua Arotakehia",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Hoki Whakamuri",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Whakaatu",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Huna",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Arotake",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Arotake",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Whakamāori ki te reo",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Toenga"
+  },
+  "gifted": {
+    "message": "Koha"
+  },
+  "customTopup": {
+    "message": "Ritenga"
+  },
+  "customAmountLabel": {
+    "message": "Te nui o te whakakī ritenga ki te tāra US"
+  },
+  "increase": {
+    "message": "Whakapiki"
+  },
+  "decrease": {
+    "message": "Whakaheke"
+  },
+  "topUpBalance": {
+    "message": "Whakakī Toenga"
+  },
+  "processing": {
+    "message": "E tukatuka ana…"
+  },
+  "checkoutError": {
+    "message": "Kāore i taea te tīmata i te utu. Tēnā, ngana anō."
+  },
+  "termsOfService": {
+    "message": "Ngā Tikanga Ratonga"
+  },
+  "privacyPolicy": {
+    "message": "Kaupapahere Tūmataiti"
+  },
+  "disclaimerAgree": {
+    "message": "Mā te whakakī, ka whakaae koe ki ā mātou %TOS% me %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Ka pā pea ngā utu whakawhiti moni tāwāhi ki te utu koe ki tētahi moni i tua atu i te USD."
+  },
+  "signOut": {
+    "message": "Takiputa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ko te pāwhiri i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō toenga"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ko te pā i te %BTN% ka whakaatu i ngā kerēme, ā, ka utua tō toenga"
+  },
+  "onboardLocalize": {
+    "message": "Ma te paato i te %BTN% ka huri i nga mea nui ka utu i to toenga"
+  },
+  "onboardAnnotate": {
+    "message": "Ma te panui i te %BTN% ka tirohia te kereme mo nga hapa ka utu i to toenga"
+  },
+  "onboardWillCharge": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
+  },
+  "onboardFactcheck": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
+  },
+  "onboardTranslations": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
+  },
+  "onboardRefreshes": {
+    "message": "Ko te pāwhiri i te %BTN% ka utua tō toenga"
+  },
+  "topUp": {
+    "message": "Whakakī"
+  },
+  "showMore": {
+    "message": "Whakaatu atu anō"
+  },
+  "showLess": {
+    "message": "Whakaatu iti iho"
+  },
+  "landingTagline1": {
+    "message": "Whakaatuhia te Pono. Kimihia ngā Teka."
+  },
+  "landingTagline2": {
+    "message": "Kāore he Kōrero Tinihanga anō. Ko ngā Meka anake."
+  },
+  "continueWithX": {
+    "message": "Haere tonu me X"
+  },
+  "continueWithGoogle": {
+    "message": "Haere tonu me Google"
+  },
+  "continueWithApple": {
+    "message": "Haere tonu me Apple"
+  },
+  "lastUsed": {
+    "message": "Whakamahia whakamutunga"
+  },
+  "cleanupTagline": {
+    "message": "Whakapaia tō whāngai X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "I roto i te United States, ko ngā kainoho o Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, me Wyoming anake ka taea te whakamahi i a DisinfaX me te whakakī i ō rātou toenga; ko Washington, D.C., ngā rohe katoa o te US, me ngā whenua kāore i whakarārangihia ka whakakorehia. I waho o te United States, kei te wātea i Kanata, Ahitereiria, Aotearoa Hou, Singapore, Awherika ki te Tonga, Hapani, Taiwan, Initonīhia, Tairana, Piripini, Mareia, Whitināmu, me Huitorerangi."
+  },
+  "factCheckAllButton": {
+    "message": "Tirohia katoatia"
+  },
+  "factCheckButton": {
+    "message": "Tirohia"
+  },
+  "aiDisclaimer": {
+    "message": "Ka taea e DisinfaX te hapa. Tirohia anō te mōhiohio.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "He iti rawa tō nama toenga. Tāuru mai kia taea ai te haere tonu."
+  },
+  "balanceEmpty": {
+    "message": "Kua pau tō nama toenga. Tāuru mai he moni ki tō nama toenga mā te popup DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Kua aukatia tō pūkete."
+  },
+  "errNotSignedIn": {
+    "message": "Kāore koe i te takiuru. Takiuru mai ka whakamātau anō."
+  },
+  "errInvalidRequest": {
+    "message": "Kāore i mōhiotia tētahi wāhanga o tēnei tono. Whakaūhia kua whakahoutia te extension."
+  },
+  "errServiceUnavailable": {
+    "message": "I puta he hapa i tā mātou taha. Whakamātau anō i muri iho i tētahi wā poto."
+  },
+  "errRegionNotSupported": {
+    "message": "Kāore anō a DisinfaX kia wātea i tō rohe nā te mea he whakaritenga ture."
+  },
+  "errInvalidAmount": {
+    "message": "Ehara i te mea whaimana taua moni tāuru. Kōwhiria tētahi atu moni."
+  },
+  "errNotFound": {
+    "message": "Kāore i kitea tēnā. Whakamātau anō."
+  },
+  "settings": {
+    "message": "Tautuhinga",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Whakaatu i ngā tirohanga i nga wā katoa mēnā:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Pono < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Māia > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Arotake meka",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Whakauruhia he kerēme",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Puna",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Whakaaroaro",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mā te whakatuwhera i te popup me te tuhinga kua tīpakohia ka arotakehia taua tīpakonga, ā, ka utua mai i tō toenga.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Whakakore",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

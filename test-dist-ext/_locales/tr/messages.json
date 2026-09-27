@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "AI analizi kullanarak tweetlerdeki yanlış bilgileri tespit eder ve vurgular."
+  },
+  "verdictTrue": {
+    "message": "Doğru",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Yanlış",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Bilinmiyor",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Doğrulanıyor",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Doğrulama|Araştırma|Temizleme|Çürütme|Ortaya Çıkarma|Düşünme|Aydınlatma|Kazma|Eleme|Karşılaştırma|İfşa Etme|Damıtma|Toplama|Sorgulama|Maskesini Düşürme|Çözümleme|Didikleme|Netleştirme|Süzme|Avlanma|Kanıtlama|Derinleşme|Tespit Etme|Arındırma|Işık Tutma|Gerçeği Arama|Kıyaslama|Doğrulatma|Yalan Avcılığı|Gerçek Avcılığı|Arıtma|Süzgeçten Geçirme|Kurcalama|Kanıt Ayıklama|Elekten Geçirme|Yalan Temizliği|Zihin Açma|Bulanıklık Giderme|Sisi Dağıtma|Duman Perdesini Kaldırma|Efsane Avcılığı|Palavra Ayıklama|Saçmalık Ayıklama|Özünü Çıkarma|Pişirme|Kaynatma|Damardan Yakalama|İz Sürme|Delil Toplama|Delil Tartma|Delil Süzme|Kanıt Kazıma|Kanıt Avcılığı|Kanıt Elemesi|Doğruyu Ayıklama|Yalanı Kovalama|Kökünü Kazıma|Röntgen Çekme|Mikroskopla İnceleme|Büyüteçle Bakma|Dedektiflik Oynama|İpuçlarını Toplama|Bağlantıları Kurma|Noktaları Birleştirme|Bulmaca Çözme|Ruh Arayışı|Düşünceye Dalma|Kafa Yorma|Beyin Fırtınası|İçe Dönme|Meditasyona Girme|Mantık Yürütme|Felsefe Yapma|Akıl Yürütme|Fikir Damıtma|Bilgi Süzme|Bilgi Toplama|Bilgi Kazıma|Kaynak Tarama|Kaynak Karşılaştırma|Kaynak Doğrulama|Çapraz Kontrol|Çapraz Sorgulama|Teyit Etme|Doğrulukla Yüzleştirme|Yalanla Yüzleşme|Şüpheyle Yaklaşma|Şüpheleri Giderme|Gerçeği Süzme|Hakikat Arayışı|Hakikati Kazıma|Sır Çözme|Perdeyi Kaldırma|Sırrı Aydınlatma|Karanlığı Aydınlatma|Tozunu Alma|Kılıfını Çıkarma|Kartları Masaya Yatırma|Yalanın İzini Sürme|Doğrunun İzini Sürme|Hakikati Ayıklama",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Çok Muhtemel",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Muhtemel",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Olası",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Çoğunlukla",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Tartışmalı",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Kısmen",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Belirsiz",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopyala",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Bu tweetteki tüm iddiaları yeniden ortaya çıkar",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Bu iddiayı yeniden araştır",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Doğrulanıyor",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Açıklama Ekle",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Açıklama ekleniyor",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Doğrulamaları Çevir",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Çevir",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ki",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ki $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Doğrulandı",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Geri Dön",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Göster",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Gizle",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Doğrula",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Doğrulanıyor",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Yerelleştir",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Bakiye"
+  },
+  "gifted": {
+    "message": "Hediye"
+  },
+  "customTopup": {
+    "message": "Özel"
+  },
+  "customAmountLabel": {
+    "message": "ABD doları cinsinden özel yükleme tutarı"
+  },
+  "increase": {
+    "message": "Artır"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Bakiye Yükle"
+  },
+  "processing": {
+    "message": "İşleniyor…"
+  },
+  "checkoutError": {
+    "message": "Ödeme başlatılamadı. Lütfen tekrar deneyin."
+  },
+  "termsOfService": {
+    "message": "Hizmet Şartları"
+  },
+  "privacyPolicy": {
+    "message": "Gizlilik Politikası"
+  },
+  "disclaimerAgree": {
+    "message": "Bakiye yükleyerek %TOS% ve %PRIVACY% belgelerimizi kabul etmiş olursunuz."
+  },
+  "disclaimerFx": {
+    "message": "USD dışında bir para biriminde ödeme yaparsanız döviz ücretleri uygulanabilir."
+  },
+  "signOut": {
+    "message": "Çıkış yap"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% simgesine tıklamak iddiaları gösterir ve bakiyenizden ücret düşer"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% simgesine dokunmak iddiaları gösterir ve bakiyenizden ücret düşer"
+  },
+  "onboardLocalize": {
+    "message": "%BTN%'ye tıklamak öne çıkanları yeniden konumlandırır ve bakiyenizden tahsil edilir"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN%'yi tıklattığınızda hak talebinde hatalar olup olmadığı kontrol edilir ve bakiyenizden çekim yapılır"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% simgesine tıklamak bakiyenizden ücret düşer"
+  },
+  "topUp": {
+    "message": "Yükle"
+  },
+  "showMore": {
+    "message": "Daha fazla göster"
+  },
+  "showLess": {
+    "message": "Daha az göster"
+  },
+  "landingTagline1": {
+    "message": "Gerçeği Ortaya Çıkarın. Yalanları Bulun."
+  },
+  "landingTagline2": {
+    "message": "Artık Dezenformasyon Yok. Sadece Gerçekler."
+  },
+  "continueWithX": {
+    "message": "X ile devam et"
+  },
+  "continueWithGoogle": {
+    "message": "Google ile devam et"
+  },
+  "continueWithApple": {
+    "message": "Apple ile devam et"
+  },
+  "lastUsed": {
+    "message": "Son Kullanılan"
+  },
+  "cleanupTagline": {
+    "message": "X Akışınızı temizleyin."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Birleşik Devletleri'nde yalnızca Alabama, Arizona, Kaliforniya, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Kuzey Karolina, Kuzey Dakota, Oklahoma, Oregon, Pennsylvania, Güney Karolina, Güney Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin ve Wyoming sakinleri DisinfaX'i kullanabilir ve bakiyelerini yükleyebilir; Washington, D.C., tüm ABD toprakları ve listede yer almayan tüm eyaletler hariçtir. Amerika Birleşik Devletleri dışında Kanada, Avustralya, Yeni Zelanda, Singapur, Güney Afrika, Japonya, Tayvan, Endonezya, Tayland, Filipinler, Malezya, Vietnam ve İsviçre'de kullanılabilir."
+  },
+  "factCheckAllButton": {
+    "message": "Tümünü Doğrula"
+  },
+  "factCheckButton": {
+    "message": "Doğrula"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX hata yapabilir. Bilgileri tekrar kontrol edin.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Bakiyeniz çok düşük. Devam etmek için lütfen bakiye yükleyin."
+  },
+  "balanceEmpty": {
+    "message": "Bakiyeniz bitti. Lütfen DisinfaX açılır penceresi üzerinden bakiyenize para ekleyin.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Hesabınız askıya alındı."
+  },
+  "errNotSignedIn": {
+    "message": "Oturum açmadınız. Lütfen oturum açıp tekrar deneyin."
+  },
+  "errInvalidRequest": {
+    "message": "Bu isteğin bir kısmı tanınamadı. Lütfen uzantının güncel olduğundan emin olun."
+  },
+  "errServiceUnavailable": {
+    "message": "Bizim tarafımızda bir hata oluştu. Lütfen bir süre sonra tekrar deneyin."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX, düzenleyici gereklilikler nedeniyle bölgenizde henüz kullanılamıyor."
+  },
+  "errInvalidAmount": {
+    "message": "Bu bakiye yükleme tutarı geçerli değil. Lütfen farklı bir tutar seçin."
+  },
+  "errNotFound": {
+    "message": "Bu bulunamadı. Lütfen tekrar deneyin."
+  },
+  "settings": {
+    "message": "Ayarlar",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Şu durumda fact-check'leri her zaman göster:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Doğruluk < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Güven > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Gerçeklik kontrolü",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Bir iddia girin",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Kaynaklar",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Gerekçe",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Metin seçiliyken açılır pencereyi açmak o seçimi denetler ve bakiyenizden düşülür.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "İptal",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

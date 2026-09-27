@@ -1,0 +1,385 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Informationes falsas in tweets, analytica AI adhibita, detegit et notat.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Verum",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Falsum",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ignotum",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Recognitio",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Investigatio|Inquisitio|Purgatio|Detectio|Revelatio|Cogitatio|Illuminatio|Effossio|Cribratio|Perscrutatio|Indagatio|Excussio|Comparatio|Confirmatio|Verificatio|Collectio|Distillatio|Elucidatio|Mendacii Detectio|Veritatis Inventio|Examinatio|Discussio|Enucleatio|Depuratio|Emundatio|Scrutinium|Confutatio"
+  },
+  "adjVeryLikely": {
+    "message": "Valde probabile",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Probabile",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Fortasse",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Maxime",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Disputabile",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Partim",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Aequivocum",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Exscribe",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Iterum revela omnes assertiones huius tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Hanc affirmationem denuo investiga",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Recognitio",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Adnota",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Adnotatur",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Verte Recognitiones",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Verte",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "esse",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ esse $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Recognitum",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Redi",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Ostende",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Absconde",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Recognosce",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Recognitio",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Localiza",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Reliquum"
+  },
+  "gifted": {
+    "message": "Donatum"
+  },
+  "customTopup": {
+    "message": "Proprium"
+  },
+  "customAmountLabel": {
+    "message": "Summa repletionis propria in dollariis Americanis"
+  },
+  "increase": {
+    "message": "Augere"
+  },
+  "decrease": {
+    "message": "Minuere"
+  },
+  "topUpBalance": {
+    "message": "Reliquum supplere"
+  },
+  "processing": {
+    "message": "Tractatur…"
+  },
+  "checkoutError": {
+    "message": "Solutio incipi non potuit. Quaeso iterum conare."
+  },
+  "termsOfService": {
+    "message": "Condiciones servitii"
+  },
+  "privacyPolicy": {
+    "message": "Ratio privatae vitae"
+  },
+  "disclaimerAgree": {
+    "message": "Supplendo, %TOS% et %PRIVACY% nostris consentis."
+  },
+  "disclaimerFx": {
+    "message": "Mercedes permutationis monetae applicari possunt si moneta alia quam USD solvis."
+  },
+  "signOut": {
+    "message": "Exire"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% premendo assertiones revelabuntur et saldum tuum onerabitur"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% tangendo assertiones revelabuntur et saldum tuum onerabitur"
+  },
+  "onboardLocalize": {
+    "message": "Clicking%BTN% repositiones elucidat et arguere statera"
+  },
+  "onboardAnnotate": {
+    "message": "Clicking%BTN% compescit vindicationem errorum et arguere statera"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% premendo saldum tuum onerabitur"
+  },
+  "topUp": {
+    "message": "Reple"
+  },
+  "showMore": {
+    "message": "Plura monstrare"
+  },
+  "showLess": {
+    "message": "Pauciora monstrare"
+  },
+  "landingTagline1": {
+    "message": "Verum revela. Mendacia inveni."
+  },
+  "landingTagline2": {
+    "message": "Nulla amplius disinformatio. Sola facta."
+  },
+  "continueWithX": {
+    "message": "Pergere cum X"
+  },
+  "continueWithGoogle": {
+    "message": "Pergere cum Google"
+  },
+  "continueWithApple": {
+    "message": "Pergere cum Apple"
+  },
+  "lastUsed": {
+    "message": "Ultimo adhibitum"
+  },
+  "cleanupTagline": {
+    "message": "Purga tuum X feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Intra Civitates Foederatas, soli incolae Alabamae, Arizonae, Californiae, Coloradi, Connecticutae, Delavariae, Floridae, Idahonis, Illinoesiae, Indianae, Iowae, Kansae, Kentukiae, Ludovicianae, Mainae, Massachusettae, Mississippiae, Missuriae, Montanae, Novae Hantoniae, Novi Mexici, Novi Eboraci, Carolinae Septentrionalis, Dacotae Septentrionalis, Oklahomae, Oregoniae, Pennsylvaniae, Carolinae Meridionalis, Dacotae Meridionalis, Tennesiae, Texiae, Utahi, Vasingtoniae, Visconsiniae et Viomingiae DisinfaX uti et pecuniam suam augere possunt; Vasingtonia, D.C., omnia Civitatum Foederatarum territoria et quaevis civitas non enumerata excluduntur. Extra Civitates Foederatas, in Canada, Australia, Nova Zelandia, Singapura, Africa Australi, Iaponia, Taivania, Indonesia, Thailandia, Philippinis, Malaesia, Vietnamia et Helvetia praesto est."
+  },
+  "factCheckAllButton": {
+    "message": "Omnia Recognosce"
+  },
+  "factCheckButton": {
+    "message": "Recognosce"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX errare potest. Informationem iterum verifica.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ratio tua nimis parva est. Quaeso adde pecuniam ut pergas."
+  },
+  "balanceEmpty": {
+    "message": "Ratio tua inanis est. Quaeso adde pecuniam ad rationem tuam per fenestram emergentem DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ratio tua suspensa est."
+  },
+  "errNotSignedIn": {
+    "message": "Non inscriptus es. Quaeso inscribe et itera."
+  },
+  "errInvalidRequest": {
+    "message": "Pars huius postulationis non cognita est. Quaeso confirma additamentum recens esse."
+  },
+  "errServiceUnavailable": {
+    "message": "Error apud nos accidit. Quaeso itera post breve tempus."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nondum in regione tua propter necessitates ordinationis praesto est."
+  },
+  "errInvalidAmount": {
+    "message": "Summa illa additionis non valida est. Quaeso aliam summam selige."
+  },
+  "errNotFound": {
+    "message": "Id inveniri non potuit. Quaeso itera."
+  },
+  "settings": {
+    "message": "Praeferentiae",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Semper monstra probationes si:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Veritas < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Fiducia > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Exploratio factorum",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Affirmationem insere",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fontes",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ratio",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Aperire popup cum texto selecto illam selectionem explorat et e tuo saldo detrahetur.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Abrogare",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,383 @@
+{
+  "topUp": {
+    "message": "ಟಾಪ್ ಅಪ್"
+  },
+  "showMore": {
+    "message": "ಇನ್ನಷ್ಟು ತೋರಿಸಿ"
+  },
+  "showLess": {
+    "message": "ಕಡಿಮೆ ತೋರಿಸಿ"
+  },
+  "landingTagline1": {
+    "message": "ಸತ್ಯವನ್ನು ಬಹಿರಂಗಪಡಿಸಿ. ಸುಳ್ಳುಗಳನ್ನು ಕಂಡುಹಿಡಿಯಿರಿ."
+  },
+  "landingTagline2": {
+    "message": "ಇನ್ನು ಮುಂದೆ ತಪ್ಪು ಮಾಹಿತಿ ಇಲ್ಲ. ಕೇವಲ ಸತ್ಯಗಳು ಮಾತ್ರ."
+  },
+  "continueWithX": {
+    "message": "X ನೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ"
+  },
+  "continueWithGoogle": {
+    "message": "Google ನೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ"
+  },
+  "continueWithApple": {
+    "message": "Apple ನೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ"
+  },
+  "lastUsed": {
+    "message": "ಕೊನೆಯ ಬಾರಿ ಬಳಸಲಾಗಿದೆ"
+  },
+  "cleanupTagline": {
+    "message": "ನಿಮ್ಮ X ಫೀಡ್ ಅನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸಿ."
+  },
+  "disclaimerJurisdiction": {
+    "message": "ಯುನೈಟೆಡ್ ಸ್ಟೇಟ್ಸ್‌ನ ಒಳಗೆ, ಕೇವಲ ಅಲಬಾಮಾ, ಅರಿಜೋನಾ, ಕ್ಯಾಲಿಫೋರ್ನಿಯಾ, ಕೊಲೊರಾಡೊ, ಕನೆಕ್ಟಿಕಟ್, ಡೆಲವೇರ್, ಫ್ಲೋರಿಡಾ, ಐಡಹೊ, ಇಲಿನಾಯ್, ಇಂಡಿಯಾನಾ, ಅಯೋವಾ, ಕಾನ್ಸಾಸ್, ಕೆಂಟಕಿ, ಲೂಯಿಸಿಯಾನಾ, ಮೈನೆ, ಮ್ಯಾಸಚೂಸೆಟ್ಸ್, ಮಿಸ್ಸಿಸಿಪ್ಪಿ, ಮಿಸ್ಸೌರಿ, ಮೊಂಟಾನಾ, ನ್ಯೂ ಹ್ಯಾಂಪ್‌ಶೈರ್, ನ್ಯೂ ಮೆಕ್ಸಿಕೊ, ನ್ಯೂಯಾರ್ಕ್, ನಾರ್ತ್ ಕೆರೊಲಿನಾ, ನಾರ್ತ್ ಡಕೋಟಾ, ಒಕ್ಲಹೋಮಾ, ಒರೆಗಾನ್, ಪೆನ್ಸಿಲ್ವೇನಿಯಾ, ಸೌತ್ ಕೆರೊಲಿನಾ, ಸೌತ್ ಡಕೋಟಾ, ಟೆನ್ನೆಸ್ಸೀ, ಟೆಕ್ಸಾಸ್, ಯುಟಾ, ವಾಷಿಂಗ್ಟನ್, ವಿಸ್ಕಾನ್ಸಿನ್ ಮತ್ತು ವ್ಯೋಮಿಂಗ್‌ನ ನಿವಾಸಿಗಳು ಮಾತ್ರ DisinfaX ಅನ್ನು ಬಳಸಬಹುದು ಮತ್ತು ತಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಅನ್ನು ಟಾಪ್ ಅಪ್ ಮಾಡಬಹುದು; ವಾಷಿಂಗ್ಟನ್, D.C., ಎಲ್ಲಾ U.S. ಪ್ರದೇಶಗಳು ಮತ್ತು ಪಟ್ಟಿಯಲ್ಲಿ ಇಲ್ಲದ ಯಾವುದೇ ರಾಜ್ಯಗಳನ್ನು ಹೊರತುಪಡಿಸಲಾಗಿದೆ. ಯುನೈಟೆಡ್ ಸ್ಟೇಟ್ಸ್‌ನ ಹೊರಗೆ, ಇದು ಕೆನಡಾ, ಆಸ್ಟ್ರೇಲಿಯಾ, ನ್ಯೂಜಿಲೆಂಡ್, ಸಿಂಗಾಪುರ, ದಕ್ಷಿಣ ಆಫ್ರಿಕಾ, ಜಪಾನ್, ತೈವಾನ್, ಇಂಡೋನೇಷ್ಯಾ, ಥೈಲೆಂಡ್, ಫಿಲಿಪ್ಪೈನ್ಸ್, ಮಲೇಷ್ಯಾ, ವಿಯೆಟ್ನಾಂ ಮತ್ತು ಸ್ವಿಟ್ಜರ್ಲೆಂಡ್‌ನಲ್ಲಿ ಲಭ್ಯವಿದೆ."
+  },
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "AI ವಿಶ್ಲೇಷಣೆಯ ಮೂಲಕ ಟ್ವೀಟ್‌ಗಳಲ್ಲಿ ತಪ್ಪು ಮಾಹಿತಿಯನ್ನು ಪತ್ತೆಹಚ್ಚಿ ಮತ್ತು ಹೈಲೈಟ್ ಮಾಡುತ್ತದೆ."
+  },
+  "verdictTrue": {
+    "message": "ಸತ್ಯ",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "ಸುಳ್ಳು",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "ತಿಳಿದಿಲ್ಲ",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "ಪರಿಶೀಲನೆ",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "ಪರಿಶೀಲನೆ|ಸಂಶೋಧನೆ|ಶುದ್ಧೀಕರಣ|ಶೋಧನೆ|ವಿಶ್ಲೇಷಣೆ|ಅಗೆಯುವಿಕೆ|ಹುಡುಕಾಟ|ಪತ್ತೆಹಚ್ಚುವಿಕೆ|ದೃಢೀಕರಣ|ಸೋಸುವಿಕೆ|ಚಿಂತನೆ|ಪರಿಗಣನೆ|ತರ್ಕ|ಬಹಿರಂಗಪಡಿಸುವಿಕೆ|ಬೆಳಕು ಚೆಲ್ಲುವಿಕೆ|ವಿಭಜನೆ|ಹೋಲಿಕೆ|ಅಧ್ಯಯನ|ಸಂಗ್ರಹಣೆ|ಮೌಲ್ಯಮಾಪನ|ವರ್ಗೀಕರಣ|ಸತ್ಯಶೋಧನೆ|ಮರುಪರಿಶೀಲನೆ|ಸುಳ್ಳು ಬಹಿರಂಗ|ಆಳವಾದ ಶೋಧನೆ|ಸಾಕ್ಷ್ಯ ಸಂಗ್ರಹ|ಪುರಾವೆ ಪರಿಶೀಲನೆ"
+  },
+  "adjVeryLikely": {
+    "message": "ಅತ್ಯಂತ ಸಂಭವನೀಯ",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "ಸಂಭವನೀಯ",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "ಬಹುಶಃ",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "ಹೆಚ್ಚಾಗಿ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "ವಾದಯೋಗ್ಯವಾಗಿ",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "ಭಾಗಶಃ",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "ಅಸ್ಪಷ್ಟವಾಗಿ",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "ನಕಲಿಸಿ",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "ಈ ಟ್ವೀಟ್‌ನ ಎಲ್ಲಾ ಹೇಳಿಕೆಗಳನ್ನು ಮತ್ತೆ ಬಹಿರಂಗಪಡಿಸಿ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "ಈ ಹೇಳಿಕೆಯನ್ನು ಮರುಸಂಶೋಧಿಸಿ",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "ಪರಿಶೀಲನೆ",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "ಟಿಪ್ಪಣಿ ಮಾಡಿ",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "ಟಿಪ್ಪಣಿ ಮಾಡಲಾಗುತ್ತಿದೆ",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Translate Fact-Checks",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Translate",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "ತೋರಿಸಿ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "ಮರೆಮಾಡಿ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "ಪರಿಶೀಲಿಸಿ",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ಪರಿಶೀಲನೆ",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "ಸ್ಥಳೀಕರಿಸಿ",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "ಬ್ಯಾಲೆನ್ಸ್"
+  },
+  "gifted": {
+    "message": "ಉಡುಗೊರೆ"
+  },
+  "customTopup": {
+    "message": "ಕಸ್ಟಮ್"
+  },
+  "customAmountLabel": {
+    "message": "US ಡಾಲರ್‌ಗಳಲ್ಲಿ ಕಸ್ಟಮ್ ಟಾಪ್-ಅಪ್ ಮೊತ್ತ"
+  },
+  "increase": {
+    "message": "ಹೆಚ್ಚಿಸಿ"
+  },
+  "decrease": {
+    "message": "ಕಡಿಮೆ ಮಾಡಿ"
+  },
+  "topUpBalance": {
+    "message": "ಬ್ಯಾಲೆನ್ಸ್ ಟಾಪ್ ಅಪ್ ಮಾಡಿ"
+  },
+  "processing": {
+    "message": "ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುತ್ತಿದೆ…"
+  },
+  "checkoutError": {
+    "message": "ಪಾವತಿಯನ್ನು ಪ್ರಾರಂಭಿಸಲಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "termsOfService": {
+    "message": "ಸೇವಾ ನಿಯಮಗಳು"
+  },
+  "privacyPolicy": {
+    "message": "ಗೌಪ್ಯತಾ ನೀತಿ"
+  },
+  "disclaimerAgree": {
+    "message": "ಟಾಪ್ ಅಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %TOS% ಮತ್ತು %PRIVACY% ಗೆ ಸಮ್ಮತಿಸುತ್ತೀರಿ."
+  },
+  "disclaimerFx": {
+    "message": "ನೀವು USD ಹೊರತುಪಡಿಸಿ ಬೇರೆ ಕರೆನ್ಸಿಯಲ್ಲಿ ಪಾವತಿಸಿದರೆ ವಿದೇಶಿ ವಿನಿಮಯ ಶುಲ್ಕಗಳು ಅನ್ವಯವಾಗಬಹುದು."
+  },
+  "signOut": {
+    "message": "ಸೈನ್ ಔಟ್"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ಹೇಳಿಕೆಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% ಟ್ಯಾಪ್ ಮಾಡುವುದರಿಂದ ಹೇಳಿಕೆಗಳು ಬಹಿರಂಗಗೊಳ್ಳುತ್ತವೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ಮುಖ್ಯಾಂಶಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡುತ್ತದೆ"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ದೋಷಗಳಿಗಾಗಿ ಕ್ಲೈಮ್ ಅನ್ನು ಪರಿಶೀಲಿಸುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡುತ್ತದೆ"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% ಕ್ಲಿಕ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ"
+  },
+  "factCheckAllButton": {
+    "message": "ಎಲ್ಲವನ್ನೂ ಪರಿಶೀಲಿಸಿ"
+  },
+  "factCheckButton": {
+    "message": "ಪರಿಶೀಲಿಸಿ"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX ತಪ್ಪುಗಳನ್ನು ಮಾಡಬಹುದು. ಮಾಹಿತಿಯನ್ನು ಮತ್ತೊಮ್ಮೆ ಪರಿಶೀಲಿಸಿ.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಬಹಳ ಕಡಿಮೆಯಾಗಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಟಾಪ್ ಅಪ್ ಮಾಡಿ."
+  },
+  "balanceEmpty": {
+    "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಖಾಲಿಯಾಗಿದೆ. ದಯವಿಟ್ಟು DisinfaX ಪಾಪ್ಅಪ್ ಬಳಸಿ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ಗೆ ಹಣ ಸೇರಿಸಿ.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸ್ಥಗಿತಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "errNotSignedIn": {
+    "message": "ನೀವು ಸೈನ್ ಇನ್ ಆಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಸೈನ್ ಇನ್ ಮಾಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "errInvalidRequest": {
+    "message": "ಈ ಮನವಿಯ ಕೆಲ ಭಾಗ ಗುರುತಿಸಲಾಗಲಿಲ್ಲ. ವಿಸ್ತರಣೆ ಅಪ್‌ಡೇಟ್ ಆಗಿದೆಯೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
+  },
+  "errServiceUnavailable": {
+    "message": "ನಮ್ಮ ಕಡೆಯಿಂದ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "errRegionNotSupported": {
+    "message": "ನಿಯಂತ್ರಣ ಅಗತ್ಯತೆಗಳ ಕಾರಣ DisinfaX ಇನ್ನೂ ನಿಮ್ಮ ಪ್ರದೇಶದಲ್ಲಿ ಲಭ್ಯವಿಲ್ಲ."
+  },
+  "errInvalidAmount": {
+    "message": "ಆ ಟಾಪ್-ಅಪ್ ಮೊತ್ತ ಮಾನ್ಯವಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಬೇರೆ ಮೊತ್ತವನ್ನು ಆಯ್ಕೆಮಾಡಿ."
+  },
+  "errNotFound": {
+    "message": "ಅದನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "settings": {
+    "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "ಯಾವಾಗಲೂ fact-check ತೋರಿಸಿ:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "ಸತ್ಯತೆ < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "ವಿಶ್ವಾಸ > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "ಸತ್ಯ ಪರಿಶೀಲನೆ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ಹೇಳಿಕೆ ನಮೂದಿಸಿ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ಮೂಲಗಳು",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ತಾರ್ಕಿಕತೆ",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ಪಠ್ಯ ಆಯ್ಕೆಮಾಡಿ ಪಾಪ್ಅಪ್ ತೆರೆದರೆ ಆ ಆಯ್ಕೆಯನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ನಿಂದ ಕಡಿತಗೊಳ್ಳುತ್ತದೆ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ರದ್ದುಮಾಡಿ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

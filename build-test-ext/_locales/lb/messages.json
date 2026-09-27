@@ -1,0 +1,385 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Erkennt a markéiert Desinformatioun an Tweeten mat Hëllef vun AI-Analyse.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Wouer",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Falsch",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Onbekannt",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Iwwerpréifung",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Iwwerpréifung|Recherche|Sichen|Ausgruewen|Nodenken|Erliichtung|Botzen|Entdeckung|Enttarnung|Verifizéierung|Analyse|Duerchliichten|Vergläichen|Ausriedelen|Filteren|Opklärung|Bestätegung|Sammelen|Iwwerpréiwen vu Fakten|Ligen Entlarven|Nofuerschung|Auswäertung|Kucken no der Wourecht|Zesummesetzen|Verglach|Nokucken|Ënnersichung|Kontroll"
+  },
+  "adjVeryLikely": {
+    "message": "Ganz wahrscheinlech",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Wahrscheinlech",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Méiglecherweis",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Haaptsächlech",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Diskutéierbar",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Deelweis",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Endeiteg",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopéieren",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Weis nach eng Kéier all Behaaptungen an dësem Tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Dës Behaptung nei recherchéieren",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Iwwerpréifung",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotéieren",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotatioun",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Iwwerpréiwungen iwwersetzen",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Iwwersetzen",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ze sinn",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ze sinn $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Iwwerpréift",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Zréckgoen",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Weisen",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Verstoppen",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Iwwerpréifung",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Iwwerpréifung",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokaliséieren",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Guthaben"
+  },
+  "gifted": {
+    "message": "Geschenkt"
+  },
+  "customTopup": {
+    "message": "Personaliséiert"
+  },
+  "customAmountLabel": {
+    "message": "Personaliséierten Openluede-Betrag an US-Dollar"
+  },
+  "increase": {
+    "message": "Erhéijen"
+  },
+  "decrease": {
+    "message": "Reduzéieren"
+  },
+  "topUpBalance": {
+    "message": "Guthaben oplueden"
+  },
+  "processing": {
+    "message": "Gëtt veraarbecht…"
+  },
+  "checkoutError": {
+    "message": "D'Bezuelung konnt net gestart ginn. Probéiert w.e.g. nach eng Kéier."
+  },
+  "termsOfService": {
+    "message": "Notzungsbedéngungen"
+  },
+  "privacyPolicy": {
+    "message": "Dateschutzrichtlinn"
+  },
+  "disclaimerAgree": {
+    "message": "Duerch d'Oplueden akzeptéiert Dir eis %TOS% an %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Devisegebühren kënnen ufalen, wann Dir an enger anerer Währung wéi USD bezuelt."
+  },
+  "signOut": {
+    "message": "Ofmellen"
+  },
+  "onboardDisinfactClick": {
+    "message": "Wann Dir op %BTN% klickt, ginn d'Behaaptungen ugewisen a vun Ärem Saldo ofgezunn"
+  },
+  "onboardDisinfactTap": {
+    "message": "Wann Dir op %BTN% tippt, ginn d'Behaaptungen ugewisen a vun Ärem Saldo ofgezunn"
+  },
+  "onboardLocalize": {
+    "message": "Klickt op %BTN% repositionéiert d'Highlights a wäert Äert Gläichgewiicht laden"
+  },
+  "onboardAnnotate": {
+    "message": "Klickt op %BTN% kontrolléiert d'Fuerderung op Feeler a wäert Äert Gläichgewiicht berechent ginn"
+  },
+  "onboardWillCharge": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "onboardFactcheck": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "onboardTranslations": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "onboardRefreshes": {
+    "message": "Wann Dir op %BTN% klickt, gëtt vun Ärem Saldo ofgezunn"
+  },
+  "topUp": {
+    "message": "Oplueden"
+  },
+  "showMore": {
+    "message": "Méi weisen"
+  },
+  "showLess": {
+    "message": "Manner weisen"
+  },
+  "landingTagline1": {
+    "message": "Weis d'Wourecht op. Fann d'Ligen."
+  },
+  "landingTagline2": {
+    "message": "Keng Desinformatioun méi. Nëmme Fakten."
+  },
+  "continueWithX": {
+    "message": "Weider mat X"
+  },
+  "continueWithGoogle": {
+    "message": "Weider mat Google"
+  },
+  "continueWithApple": {
+    "message": "Weider mat Apple"
+  },
+  "lastUsed": {
+    "message": "Fir d'lescht benotzt"
+  },
+  "cleanupTagline": {
+    "message": "Raum däi X-Feed op."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Bannent den USA kënnen nëmmen Awunner vun Alabama, Arizona, Kalifornien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Nordkarolina, Norddakota, Oklahoma, Oregon, Pennsylvania, Südkarolina, Süddakota, Tennessee, Texas, Utah, Washington, Wisconsin a Wyoming DisinfaX benotzen an hire Solde oplueden; Washington, D.C., all US-Territoirë an all net opgezielte Staaten sinn ausgeschloss. Ausserhalb vun den USA ass et verfügbar zu Kanada, Australien, Neiséiland, Singapur, Südafrika, Japan, Taiwan, Indonesien, Thailand, de Philippinen, Malaysia, Vietnam an der Schwäiz."
+  },
+  "factCheckAllButton": {
+    "message": "Alles iwwerpréiwen"
+  },
+  "factCheckButton": {
+    "message": "Iwwerpréiwen"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX kann Feeler maachen. Kontrolléier d'Informatiounen nach eng Kéier.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Däin Kontostand ass ze niddreg. Luef w.e.g. op fir weiderzemaachen."
+  },
+  "balanceEmpty": {
+    "message": "Däin Kontostand ass eidel. Luet w.e.g. mam DisinfaX-Popup Suen op Däi Kontostand.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Däin Kont gouf gespaart."
+  },
+  "errNotSignedIn": {
+    "message": "Du bass net ugemellt. Mell dech w.e.g. un a probéier nach eng Kéier."
+  },
+  "errInvalidRequest": {
+    "message": "En Deel vun dëser Ufro gouf net erkannt. Kontrolléier w.e.g. datt d'Erweiderung aktuell ass."
+  },
+  "errServiceUnavailable": {
+    "message": "Op eiser Säit ass e Feeler opgetrueden. Probéier w.e.g. an engem Moment nach eng Kéier."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ass an denger Regioun nach net verfügbar wéinst regulatoresche Vireschrëften."
+  },
+  "errInvalidAmount": {
+    "message": "Dee Luef-Betrag ass net valabel. Wielt w.e.g. en anere Betrag."
+  },
+  "errNotFound": {
+    "message": "Dat konnt net fonnt ginn. Probéier w.e.g. nach eng Kéier."
+  },
+  "settings": {
+    "message": "Astellungen",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Weis ëmmer d'Iwwerpréiwungen wann:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Wouerheet < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Vertrauen > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktencheck",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Eng Behauptung aginn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Quellen",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Begrënnung",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "D'Popup mat markéiertem Text opmaachen iwwerpréift déi Auswiel a belaascht Äert Guthaben.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ofbriechen",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

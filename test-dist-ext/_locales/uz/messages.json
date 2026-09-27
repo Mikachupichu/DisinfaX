@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI tahlilidan foydalanib, tvitlardagi noto'g'ri ma'lumotni aniqlaydi va ajratib ko'rsatadi.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Haqiqat",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Yolg'on",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Noma'lum",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Tekshirilmoqda",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Tekshirish|Tadqiq qilish|Tozalash|Fosh qilish|Ochish|Mulohaza qilish|Yoritish|Qazish|Saralash|Solishtirish|Yig'ish|So'roq qilish|Tahlil qilish|Aniqlash|Haqiqatni izlash|Poklash|Izlanish|Niqobini ochish|Chuqur qazish|Yorug'lik sochish|Filtrlash|Tekshirib chiqish|Ajratish|Isbotlash|Kuzatish|Yolg'onni fosh qilish|Haqiqatni qidirish|Detektiv o'ynash|Iz kuzatish|Dalil izlash|Manbalarni tekshirish|Chalkashlikni yechish|Tumanni tarqatish|Changni artish|Tubiga yetish|Sirni ochish|Ipini tortish|Rostini bilish|Elakdan o'tkazish|Mikroskop ostiga qo'yish|Faktlarni terish|Chuqur o'ylash|Miya ishlatish|Xulosa chiqarish|Dalil to'plash|Haqiqatga intilish|Yolg'onni ushlash|Ipni yechish|Tinimsiz qidirish|Puxta tekshirish|Har tomonlama o'rganish|Sabr bilan tekshirish|Detallarni ko'rib chiqish|Skanerlash|Jumboqni yechish|Sirlarni fosh qilish|Asl holatni bilish|Xato qidirish|Rost-yolg'onni ajratish|Ishonchni tekshirish|Manbani qazish|Faktlarni yaxlitlash|Sinash|Baholash|Kuzatib borish|Detektivona izlanish|Chinligini sinash|Asliga yetkazish|Gap tubiga tushish|Fikrlarni tartiblash|Xayolga cho'mish|O'ylab topish|Kashf qilish|Sinovdan o'tkazish|Sharhlash|Tafsilotlarga chuqurlashish|Yashiringan haqiqatni topish|Zamirini anglash|Chigalni yozish|Rostgo'ylikni sinash|Manba izlash|Chuqur kovlash|Yashirin gaplarni ochish|Aql bilan tahlil qilish|Tafakkur qilish|Haqiqat izidan borish|Belgilarni kuzatish|Yechim izlash|Asosini tekshirish|Chinakamligini aniqlash|Ip uchini topish|Pishirish|Osh damlash|Qozon qaynatish|Bosh qotirish|Ko'z yugurtirish|Varaqlab chiqish|G'alvirdan o'tkazish|Naq o'ziga yetish|Aniqlik kiritish|Chuqur mushohada qilish",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Juda ehtimoliy",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ehtimoliy",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Mumkin",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Ko'pincha",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Bahsli",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Qisman",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Noaniq",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Nusxa olish",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Ushbu tvitdagi barcha da'volarni qayta ochish",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ushbu da'voni qayta tadqiq qilish",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Tekshirilmoqda",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotatsiya",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotatsiya qilinmoqda",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Faktlarni tarjima qilish",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Tarjima qilish",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "bo'lib",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Tekshirildi",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Ortga qaytish",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Ko'rsatish",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Yashirish",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Tekshirish",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Tekshirilmoqda",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Mahalliylashtirish",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Sovg'a"
+  },
+  "customTopup": {
+    "message": "Maxsus"
+  },
+  "customAmountLabel": {
+    "message": "AQSh dollarida maxsus to'ldirish miqdori"
+  },
+  "increase": {
+    "message": "Oshirish"
+  },
+  "decrease": {
+    "message": "Kamaytirish"
+  },
+  "topUpBalance": {
+    "message": "Balansni to'ldirish"
+  },
+  "processing": {
+    "message": "Amalga oshirilmoqda…"
+  },
+  "checkoutError": {
+    "message": "To'lovni boshlab bo'lmadi. Iltimos, qayta urinib ko'ring."
+  },
+  "termsOfService": {
+    "message": "Xizmat shartlari"
+  },
+  "privacyPolicy": {
+    "message": "Maxfiylik siyosati"
+  },
+  "disclaimerAgree": {
+    "message": "Balansni to'ldirish orqali siz bizning %TOS% va %PRIVACY% hujjatlarimizga rozilik bildirasiz."
+  },
+  "disclaimerFx": {
+    "message": "Agar siz USD dan boshqa valyutada to'lasangiz, valyuta ayirboshlash to'lovlari qo'llanilishi mumkin."
+  },
+  "signOut": {
+    "message": "Chiqish"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% tugmasini bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% tugmasiga bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% bosish diqqatga sazovor joylarni oʻzgartiradi va balansingizdan toʻlov olinadi"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ni bosish xatoliklarni tekshiradi va balansingizdan undiriladi"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% tugmasini bosish balansingizdan pul yechadi"
+  },
+  "topUp": {
+    "message": "To'ldirish"
+  },
+  "showMore": {
+    "message": "Ko'proq ko'rsatish"
+  },
+  "showLess": {
+    "message": "Kamroq ko'rsatish"
+  },
+  "landingTagline1": {
+    "message": "Haqiqatni oching. Yolg'onlarni toping."
+  },
+  "landingTagline2": {
+    "message": "Boshqa dezinformatsiya yo'q. Faqat faktlar."
+  },
+  "continueWithX": {
+    "message": "X bilan davom etish"
+  },
+  "continueWithGoogle": {
+    "message": "Google bilan davom etish"
+  },
+  "continueWithApple": {
+    "message": "Apple bilan davom etish"
+  },
+  "lastUsed": {
+    "message": "Oxirgi ishlatilgan"
+  },
+  "cleanupTagline": {
+    "message": "X tasmangizni tozalang."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Qo'shma Shtatlari ichida DisinfaX'dan foydalanish va balansni to'ldirish faqat Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaxo, Illinoys, Indiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massachusets, Missisipi, Missuri, Montana, Nyu-Gempshir, Nyu-Meksiko, Nyu-York, Shimoliy Karolina, Shimoliy Dakota, Oklaxoma, Oregon, Pensilvaniya, Janubiy Karolina, Janubiy Dakota, Tennessi, Texas, Yuta, Vashington, Viskonsin va Vayoming aholisi uchun mumkin; Vashington, D.C., barcha AQSh hududlari va ro'yxatda ko'rsatilmagan har qanday shtatlar bundan mustasno. Amerika Qo'shma Shtatlaridan tashqarida u Kanada, Avstraliya, Yangi Zelandiya, Singapur, Janubiy Afrika, Yaponiya, Tayvan, Indoneziya, Tailand, Filippin, Malayziya, Vyetnam va Shveytsariyada mavjud."
+  },
+  "factCheckAllButton": {
+    "message": "Barchasini tekshirish"
+  },
+  "factCheckButton": {
+    "message": "Tekshirish"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX xato qilishi mumkin. Ma'lumotni qayta tekshiring.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Balansingiz juda past. Davom etish uchun balansni to'ldiring."
+  },
+  "balanceEmpty": {
+    "message": "Balansingiz bo'sh. Iltimos, DisinfaX qalqib chiquvchi oynasi orqali balancingizga mablag' qo'shing.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Hisobingiz to'xtatib qo'yilgan."
+  },
+  "errNotSignedIn": {
+    "message": "Siz tizimga kirmagansiz. Tizimga kiring va qayta urinib ko'ring."
+  },
+  "errInvalidRequest": {
+    "message": "Ushbu so'rovning bir qismi aniqlanmadi. Kengaytmaning yangilanganligiga ishonch hosil qiling."
+  },
+  "errServiceUnavailable": {
+    "message": "Bizning tomonimizda xatolik yuz berdi. Bir oz vaqtdan so'ng qayta urinib ko'ring."
+  },
+  "errRegionNotSupported": {
+    "message": "Tartibga solish talablari sababli DisinfaX hozircha mintaqangizda mavjud emas."
+  },
+  "errInvalidAmount": {
+    "message": "Ushbu to'ldirish summasi yaroqsiz. Boshqa summani tanlang."
+  },
+  "errNotFound": {
+    "message": "Bu topilmadi. Qayta urinib ko'ring."
+  },
+  "settings": {
+    "message": "Sozlamalar",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Har doim faktchekingni ko'rsat, agar:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Haqqoniylik < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Ishonch > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktlarni tekshirish",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Da'voni kiriting",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Manbalar",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Asoslash",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Matn tanlangan holda qalqib chiquvchi oynani ochish shu tanlovni tekshiradi va balansingizdan yechib olinadi.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Bekor qilish",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

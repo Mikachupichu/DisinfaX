@@ -1,0 +1,386 @@
+{
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Í gávu"
+  },
+  "customTopup": {
+    "message": "Serskikkað"
+  },
+  "customAmountLabel": {
+    "message": "Serskikkað áfyllingarupphædd í USD"
+  },
+  "increase": {
+    "message": "Øk"
+  },
+  "decrease": {
+    "message": "Minka"
+  },
+  "topUpBalance": {
+    "message": "Fyll upp saldo"
+  },
+  "processing": {
+    "message": "Viðgerð…"
+  },
+  "checkoutError": {
+    "message": "Kundi ikki byrja keypsgongdina. Vinarliga royn aftur."
+  },
+  "termsOfService": {
+    "message": "Tænastutreytir"
+  },
+  "privacyPolicy": {
+    "message": "Privatlívspolitikkur"
+  },
+  "disclaimerAgree": {
+    "message": "Við at fylla upp, samtykkir tú okkara %TOS% og %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Gjøld fyri gjaldoyraskifti kunnu galda, um tú rindar í øðrum gjaldoyra enn USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Innan fyri Sambandsríki Amerika kunnu bert íbúgvar í Alabama, Arizona, Kaliforniu, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Norður-Karolina, Norður-Dakota, Oklahoma, Oregon, Pennsylvania, Suður-Karolina, Suður-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming brúka DisinfaX og fylla upp saldo sín; Washington, D.C., øll amerikonsk øki og allir statir, sum ikki eru nevndir, eru undantiknir. Uttan fyri Sambandsríki Amerika er tað tøkt í Kanada, Avstralia, Nýsælandi, Singapor, Suðurafrika, Japan, Taivan, Indonesia, Tailandi, Filipsoyggjum, Malaisia, Vjetnam og Sveis."
+  },
+  "signOut": {
+    "message": "Logga út"
+  },
+  "onboardDisinfactClick": {
+    "message": "At klikkja á %BTN% vísir ásagnir og tekur gjald av saldo tínum"
+  },
+  "onboardDisinfactTap": {
+    "message": "At trýsta á %BTN% vísir ásagnir og tekur gjald av saldo tínum"
+  },
+  "onboardLocalize": {
+    "message": "Trýst á %BTN% umstillar hæddarpunktini og fer at gjalda tína saldu"
+  },
+  "onboardAnnotate": {
+    "message": "Trýst á %BTN% kannar kravið fyri feilum og verður saldu kravd"
+  },
+  "onboardWillCharge": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "onboardFactcheck": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "onboardTranslations": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "onboardRefreshes": {
+    "message": "At klikkja á %BTN% tekur gjald av saldo tínum"
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Finnur og markar misupplýsingar í tweetum við hjálp av AI-greining.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Satt",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Ósatt",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ókent",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Kanna",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Kanna|Rannsaka|Reinsa|Avdúka|Kollvelta|Hugsa|Lýsa|Grava|Sálda|Avhjúpa|Staðfesta|Meta|Samanbera|Loysa|Finna|Leita|Savna|Vátta|Grunda|Kryvja|Hugleiða|Grava fram|Kanna nærri|Greina|Kanna til botns",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Ógvuliga líkligt",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Líkligt",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Møguliga",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Fyri tað mesta",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Umstrítt",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Partvíst",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Tvírætt",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Avrita",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Sýn ásagnirnar í hesum tweetinum aftur",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Kanna hesa ásøgn aftur",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Kanna",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Viðmerkja",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Viðmerkjar",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Umset kanningar",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Umset",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Kannað",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Far aftur",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Vís",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Fjal",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Kanna",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kanna",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalisera",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "at vera",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ at vera $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "Fyll upp"
+  },
+  "showMore": {
+    "message": "Vís meira"
+  },
+  "showLess": {
+    "message": "Vís minni"
+  },
+  "landingTagline1": {
+    "message": "Avdúka sannleikan. Finn lygnirnar."
+  },
+  "landingTagline2": {
+    "message": "Ikki meira misupplýsing. Bara staðreyndir."
+  },
+  "continueWithX": {
+    "message": "Halt fram við X"
+  },
+  "continueWithGoogle": {
+    "message": "Halt fram við Google"
+  },
+  "continueWithApple": {
+    "message": "Halt fram við Apple"
+  },
+  "lastUsed": {
+    "message": "Seinast brúkt"
+  },
+  "cleanupTagline": {
+    "message": "Reinsa tína X-rás."
+  },
+  "factCheckAllButton": {
+    "message": "Kanna alt"
+  },
+  "factCheckButton": {
+    "message": "Kanna"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX kann gera mistøk. Kanna upplýsingarnar tvær ferðir.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Saldo tín er ov lágur. Vinarliga fyll upp fyri at halda áfram."
+  },
+  "balanceEmpty": {
+    "message": "Saldo tín er tóm. Vinarliga legg pening afturat salduna við DisinfaX-popup'en.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Konta tín er steðgað."
+  },
+  "errNotSignedIn": {
+    "message": "Tú ert ikki loggað inn. Vinarliga logga inn og royn aftur."
+  },
+  "errInvalidRequest": {
+    "message": "Ein partur av hesi umbøn varð ikki kendur. Vinarliga eftirse um víðkanin er dagført."
+  },
+  "errServiceUnavailable": {
+    "message": "Ein villa hendi á okkara síðu. Vinarliga royn aftur eftir eina løtu."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX er ikki enn tøkt á tínum svæði orsakað av myndugleikakrøvum."
+  },
+  "errInvalidAmount": {
+    "message": "Tann áfyllingarupphædd er ikki galdandi. Vinarliga vel eina aðra upphædd."
+  },
+  "errNotFound": {
+    "message": "Hetta kundi ikki finnast. Vinarliga royn aftur."
+  },
+  "settings": {
+    "message": "Innstillingar",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Vís altíð kanningar, um:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Sannleiki < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Álit > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Staðfesting",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Skriva eina ásøgn",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Keldur",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Grundgeving",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "At lata upp gluggan við valdum teksti verður tann valið kannað og dregið verður frá tínum salt.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Avlýs",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

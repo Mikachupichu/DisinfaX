@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Ń ṣàwárí àti ṣàfihàn ìròyìn èké nínú tweets nípa lílo ìtúpalẹ̀ AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Òtítọ́",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Irọ́",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Àìmọ̀",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Ń Ṣàyẹ̀wò",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Ṣàyẹ̀wò|Ṣèwádìí|Ìwẹ̀nùmọ́|Tú ìtànjẹ jáde|Ṣàwárí|Ṣàrò|Ìtànmọ́lẹ̀|Wàláwàlà|Fiwé wíwo|Ìkójọpọ̀|Ìbéèrè bíbéèrè|Ṣàyẹ̀wò jinlẹ̀|Ṣàlàyé|Wíwá òtítọ́|Yíyọ èérí kúrò|Ìwádìí jíjinlẹ̀|Ìṣípayá|Ìṣàyẹ̀wò-àfiwé|Rírí ìdí ọ̀rọ̀|Ìjẹ́rìí sí i|Wíwo dáadáa|Yíyan àwọn òtítọ́|Ṣíṣí ìkọ̀kọ̀ payá|Ronú jinlẹ̀|Ṣíṣàyẹ̀wò pẹ̀lẹ́pẹ̀lẹ́|Ṣíṣàwárí ẹ̀rí|Wíwádìí|Yíyọ irọ́ kúrò|Ṣíṣí àṣírí|Kíkó ẹ̀rí jọ|Bíbéèrè|Dídán mọ́lẹ̀|Fífiwé|Ṣíṣàtúnṣe|Yíyanjú|Wíwo jinlẹ̀|Sísè|Yíyọ àbùkù|Ṣíṣàyẹ̀wò-méjì|Kíkọ́ ẹ̀kọ́|Ṣíṣàyẹ̀wò orísun|Wíwá ìdáhùn|Yíyọ ẹ̀tàn|Ṣíṣàyẹ̀wò àkọsílẹ̀|Rírò kánkán|Ṣíṣàwárí àṣírí|Wíwádìí gbòǹgbò|Yíyọ àbùmọ́|Ṣíṣàyẹ̀wò gbogbo ìhà|Kíkó àwọn àmì jọ|Sísọ dí kékeré|Yíyan òtítọ́|Ṣíṣàyẹ̀wò pẹ̀lú ọgbọ́n|Wíwádìí orísun|Dídojúkọ ọ̀rọ̀|Ṣíṣàyẹ̀wò àwòrán|Yíyọ ìdàníyàn|Kíkọjá ẹ̀rí|Ṣíṣàyẹ̀wò ìtàn|Wíwo padà|Yíyọ àṣírí payá|Ṣíṣàyẹ̀wò agbasọ|Rírò jinlẹ̀|Ṣíṣàwárí ojútùú|Kíkàwé àkọsílẹ̀|Yíyọ ọ̀rọ̀ èké|Ṣíṣàyẹ̀wò ìjẹ́rìí|Wíwádìí ìpìlẹ̀|Ṣíṣàyẹ̀wò nọ́mbà|Dídán ẹ̀rí mọ́lẹ̀|Yíyọ ìríra|Kíkó àlàyé jọ|Ṣíṣàyẹ̀wò ìwọ̀n òtítọ́|Wíwádìí àwòkọ́ṣe|Ṣíṣàtúnṣe àṣìṣe|Yíyọ ẹ̀gún ọ̀rọ̀|Ṣíṣàyẹ̀wò ìdí|Rírí ìjìnlẹ̀|Ṣíṣàwárí ìtọ́sọ́nà|Wíwo àwòrán|Ṣíṣàyẹ̀wò padà|Yíyọ àkọsílẹ̀ èké|Kíkó ẹ̀rí papọ̀|Ṣíṣàyẹ̀wò ìtẹ̀jáde|Sísè ẹ̀rí|Ṣíṣàyẹ̀wò òdodo|Yíyọ ìtànjẹ|Wíwádìí ẹ̀rí tuntun|Ṣíṣàyẹ̀wò ìjìnlẹ̀ ọ̀rọ̀|Rírò lórí ẹ̀rí|Ṣíṣàwárí ìdí|Kíkó ìsọfúnni|Yíyọ àwọn àṣìṣe|Ṣíṣàyẹ̀wò ìkéde|Wíwádìí ìtàn ìsẹ̀yìn|Ṣíṣàyẹ̀wò àwọn ìjẹ́rìí|Rírò kíákíá|Ṣíṣàyẹ̀wò ìkẹyìn|Wíwo pẹ̀lẹ́pẹ̀lẹ́|Ṣíṣetán fún ìdájọ́|Rírò kí a tó dájọ́",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Ó ṣeéṣe gidigidi",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ó ṣeéṣe",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Bóyá",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Púpọ̀ jùlọ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Àríyànjiyàn",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Apakan",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Àìdájú",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Dakọ",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Tún fi àwọn ẹ̀sùn nínú tweet yìí hàn",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Tún ṣe ìwádìí ẹ̀sùn yìí",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Ń Ṣàyẹ̀wò",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Ṣàlàyé",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Ń ṣàlàyé",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Túmọ̀ Àwọn Àyẹ̀wò Òtítọ́",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Túmọ̀",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "láti jẹ́",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ láti jẹ́ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ti Ṣàyẹ̀wò",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Padà Sẹ́yìn",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Fihàn",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Fi pamọ́",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Ṣàyẹ̀wò",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Ń Ṣàyẹ̀wò",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Mu bá èdè mu",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Ìyókù owó"
+  },
+  "gifted": {
+    "message": "Ẹ̀bùn"
+  },
+  "customTopup": {
+    "message": "Àkànṣe"
+  },
+  "customAmountLabel": {
+    "message": "Iye àfikún àkànṣe ní dọ́là Amẹ́ríkà"
+  },
+  "increase": {
+    "message": "Mú pọ̀ sí"
+  },
+  "decrease": {
+    "message": "Dín kù"
+  },
+  "topUpBalance": {
+    "message": "Fi kún ìyókù owó"
+  },
+  "processing": {
+    "message": "Ń ṣiṣẹ́…"
+  },
+  "checkoutError": {
+    "message": "Kò lè bẹ̀rẹ̀ ìsanwó. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansi."
+  },
+  "termsOfService": {
+    "message": "Àwọn Òfin Iṣẹ́"
+  },
+  "privacyPolicy": {
+    "message": "Ìlànà Àṣírí"
+  },
+  "disclaimerAgree": {
+    "message": "Nípa fífi owó kún un, o gbà pẹ̀lú %TOS% àti %PRIVACY% wa."
+  },
+  "disclaimerFx": {
+    "message": "Owó ìpààrọ̀ owó ilẹ̀ òkèèrè lè wà tí o bá san ní owó mìíràn yàtọ̀ sí USD."
+  },
+  "signOut": {
+    "message": "Jáde"
+  },
+  "onboardDisinfactClick": {
+    "message": "Títẹ %BTN% yóò ṣí àwọn ẹ̀sùn payá, yóò sì gba owó lára ìyókù owó rẹ"
+  },
+  "onboardDisinfactTap": {
+    "message": "Fífọwọ́kàn %BTN% yóò ṣí àwọn ẹ̀sùn payá, yóò sì gba owó lára ìyókù owó rẹ"
+  },
+  "onboardLocalize": {
+    "message": "Tite%BTN% ṣe atunṣe awọn ifojusi ati pe yoo gba agbara idiyele rẹ"
+  },
+  "onboardAnnotate": {
+    "message": "Tite%BTN% ṣayẹwo ẹtọ fun awọn aṣiṣe ati pe yoo gba idiyele rẹ"
+  },
+  "onboardWillCharge": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
+  },
+  "onboardFactcheck": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
+  },
+  "onboardTranslations": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
+  },
+  "onboardRefreshes": {
+    "message": "Títẹ %BTN% yóò gba owó lára ìyókù owó rẹ"
+  },
+  "topUp": {
+    "message": "Fi Owó Kún"
+  },
+  "showMore": {
+    "message": "Fi síwájú hàn"
+  },
+  "showLess": {
+    "message": "Fi díẹ̀ hàn"
+  },
+  "landingTagline1": {
+    "message": "Ṣàfihàn Òtítọ́. Rí Irọ́."
+  },
+  "landingTagline2": {
+    "message": "Kò sí Irọ́ mọ́. Òtítọ́ nìkan."
+  },
+  "continueWithX": {
+    "message": "Tẹ̀síwájú pẹ̀lú X"
+  },
+  "continueWithGoogle": {
+    "message": "Tẹ̀síwájú pẹ̀lú Google"
+  },
+  "continueWithApple": {
+    "message": "Tẹ̀síwájú pẹ̀lú Apple"
+  },
+  "lastUsed": {
+    "message": "Èyí tí a Lò Kẹ́yìn"
+  },
+  "cleanupTagline": {
+    "message": "Nu X Feed rẹ mọ́."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Nínú United States, àwọn olùgbé Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, àti Wyoming nìkan ni wọ́n lè lo DisinfaX kí wọ́n sì fi owó kún ìwọ̀ntúnwọ̀nsì wọn; Washington, D.C., gbogbo àwọn agbègbè U.S., àti ìpínlẹ̀ èyíkéyìí tí a kò tò sílẹ̀ ni a yọ kúrò. Níta United States, ó wà ní Canada, Australia, New Zealand, Singapore, Gúúsù Áfríkà, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, àti Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Ṣàyẹ̀wò Gbogbo"
+  },
+  "factCheckButton": {
+    "message": "Ṣàyẹ̀wò"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX lè ṣe àṣìṣe. Ṣàyẹ̀wò àlàyé náà lẹ́ẹ̀kejì.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ìyókù owó rẹ kéré jù. Jọ̀wọ́ fi owó kún un láti tẹ̀ síwájú."
+  },
+  "balanceEmpty": {
+    "message": "Ìyókù owó rẹ ti tán. Jọ̀wọ́ fi owó kún ìyókù owó rẹ nípa lílo DisinfaX popup.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "A ti dá àkọọ́lẹ̀ rẹ dúró."
+  },
+  "errNotSignedIn": {
+    "message": "O kò ti wọlé. Jọ̀wọ́ wọlé kí o sì tún gbìyànjú."
+  },
+  "errInvalidRequest": {
+    "message": "A kò dá apá kan nínú ìbéèrè yìí mọ̀. Jọ̀wọ́ rí i dájú pé ìfikún náà ti ní ìmúdójúìwọ̀n tuntun."
+  },
+  "errServiceUnavailable": {
+    "message": "Àṣìṣe kan ṣẹlẹ̀ ní ẹ̀gbẹ́ wa. Jọ̀wọ́ tún gbìyànjú láìpẹ́."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX kò tí ì wà ní àgbègbè rẹ nítorí àwọn ìlànà òfin."
+  },
+  "errInvalidAmount": {
+    "message": "Iye ìsanwó yẹn kò tọ̀nà. Jọ̀wọ́ yan iye míì."
+  },
+  "errNotFound": {
+    "message": "A kò rí i. Jọ̀wọ́ tún gbìyànjú."
+  },
+  "settings": {
+    "message": "Ètò",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Máa fi àyẹ̀wò òtítọ́ hàn nígbàgbogbo tí:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Òtítọ́ < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Ìgbàgbọ́ > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Ìjẹ́rìí òtítọ́",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tẹ ẹ̀sùn kan",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Àwọn orísun",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ìrònú",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ṣíṣí popup pẹ̀lú ọ̀rọ̀ tí a yàn yóò ṣàyẹ̀wò yíyan yẹn yóò sì gbé láti inú ìwọ̀ntúnwọ̀nsì rẹ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Fagilé",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

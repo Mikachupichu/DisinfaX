@@ -23,7 +23,7 @@ import { Classification, QuotedClassification, Claim, TextSegment, Source, sameL
 import { normalizeSources } from "./sources";
 import { breakupTweetText, breakupWithHighlights, resolveHighlightRange } from "./textBreakup";
 import { mfBus } from "./mfBus";
-import { codeToMessageKey } from "./errorCodes";
+import { codeToMessageKey, ERROR_CODES } from "./errorCodes";
 import { KALAM_BOLD_LATIN_B64, KALAM_BOLD_LATIN_EXT_B64 } from "./correctionFont";
 import disinfaxMarkRaw from "../public/black.svg?raw";
 
@@ -505,14 +505,49 @@ export function highlightBgColor(claim: Claim, hover: boolean, surface?: Element
     return confidenceRgba(claim.confidence, hover ? 0.5 : 0.25, claim.veracity);
 }
 
+/** Set while a rebuild replays the hover it took away (see `resyncHoverAtPointer`). The
+ *  replay repaints spans the pointer never left, and a span the rebuild has just made has no
+ *  committed background-color for the browser to animate *from* — so the repaint reads as a
+ *  change and the `.mf-segment-claim` transition ramps the tint up from the resting colour
+ *  over 150ms. A streaming run rebuilds at ~10Hz, so it never reaches the hover colour and
+ *  visibly sawtooths for as long as the run lasts — the flicker. A replay is not a colour
+ *  change the user ever saw; commit it outright, the same dance `animateHighlightReveal`
+ *  already uses for the reveal's own blink. */
+let mfTintCommitsInstantly = false;
+
 /** Pin the claim tint as both a CSS variable and an inline `!important` background.
  *  Host pages (Substack) set `p span { background: transparent !important }` at
  *  (0,2,1) — a stylesheet rule cannot beat that, but an inline `!important` can.
  *  A 1×1 repeating gradient is a second paint path hosts that only zero
  *  `background-color` cannot wipe. */
 function paintClaimBg(el: HTMLElement, color: string) {
+    // Replayed hover: commit with transitions off, then force a reflow so the new colour lands
+    // as the before-change style before the transition — the caller's own, if it set one —
+    // comes back.
+    const prevTransition = mfTintCommitsInstantly ? el.style.transition : null;
+    if (prevTransition !== null) el.style.transition = "none";
     el.style.setProperty("--mf-hl", color);
     el.style.setProperty("background-color", color, "important");
+    if (prevTransition !== null) {
+        // eslint-disable-next-line no-unused-expressions
+        void el.offsetHeight;
+        el.style.transition = prevTransition;
+    }
+}
+
+/** Wraps an inline badge in a curved pill cap that smoothly terminates the claim highlight
+ *  without rounding previous multiline wrap edges. */
+function wrapBadgeInCap(badge: HTMLElement, _bg?: string): HTMLElement {
+    pinBadgeLayout(badge);
+    const cap = document.createElement("span");
+    cap.className = "mf-badge-cap";
+    const origRemove = badge.remove.bind(badge);
+    badge.remove = () => {
+        if (cap.isConnected) cap.remove();
+        else origRemove();
+    };
+    cap.appendChild(badge);
+    return cap;
 }
 
 /** Resting highlight tint from a span's live dataset. A reclassify keeps the
@@ -546,16 +581,56 @@ function pinInline(el: HTMLElement, props: Record<string, string>) {
     for (const [k, v] of Object.entries(props)) el.style.setProperty(k, v, "important");
 }
 
+function syncClaimBadgeLayout(claim: HTMLElement | null) {
+    if (!claim) return;
+    claim.style.removeProperty("border-top-left-radius");
+    claim.style.removeProperty("border-bottom-left-radius");
+    claim.style.removeProperty("border-top-right-radius");
+    claim.style.removeProperty("border-bottom-right-radius");
+    claim.style.removeProperty("padding-top");
+    claim.style.removeProperty("padding-bottom");
+    claim.style.removeProperty("padding-left");
+    claim.style.removeProperty("padding-right");
+    claim.style.setProperty("-webkit-box-decoration-break", "slice", "important");
+    claim.style.setProperty("box-decoration-break", "slice", "important");
+
+    const hasBadge = !!claim.querySelector(".mf-inline-badge, .mf-standalone-spinner");
+    const isRTL = isRTLLocale(getEffectiveUILocale()) || document.dir === "rtl" || !!claim.closest?.('[dir="rtl"]');
+    if (hasBadge) {
+        if (isRTL) {
+            claim.style.setProperty("border-top-right-radius", "3px", "important");
+            claim.style.setProperty("border-bottom-right-radius", "3px", "important");
+            claim.style.setProperty("border-top-left-radius", "999px", "important");
+            claim.style.setProperty("border-bottom-left-radius", "999px", "important");
+            claim.style.setProperty("padding-top", "1px", "important");
+            claim.style.setProperty("padding-bottom", "1px", "important");
+            claim.style.setProperty("padding-right", "3px", "important");
+            claim.style.setProperty("padding-left", "1px", "important");
+        } else {
+            claim.style.setProperty("border-top-left-radius", "3px", "important");
+            claim.style.setProperty("border-bottom-left-radius", "3px", "important");
+            claim.style.setProperty("border-top-right-radius", "999px", "important");
+            claim.style.setProperty("border-bottom-right-radius", "999px", "important");
+            claim.style.setProperty("padding-top", "1px", "important");
+            claim.style.setProperty("padding-bottom", "1px", "important");
+            claim.style.setProperty("padding-left", "3px", "important");
+            claim.style.setProperty("padding-right", "1px", "important");
+        }
+    } else {
+        claim.style.setProperty("border-radius", "3px", "important");
+        claim.style.setProperty("padding", "1px 3px", "important");
+    }
+}
+
 function pinClaimLayout(el: HTMLElement) {
+    // `white-space: inherit` for the same reason as the sheet's rule: a claim holds the
+    // host's own text, so the host's collapsing is the layout it was rendered at.
     pinInline(el, {
         display: "inline",
-        "white-space": "pre-wrap",
+        "white-space": "inherit",
         position: "relative",
-        "border-radius": "3px",
-        padding: "1px 0",
-        "box-decoration-break": "clone",
-        "-webkit-box-decoration-break": "clone",
     });
+    syncClaimBadgeLayout(el);
 }
 
 
@@ -569,6 +644,7 @@ function onXFeedHost(): boolean {
 function pinBadgeLayout(badge: HTMLElement) {
     const onX = onXFeedHost();
     badge.classList.toggle("mf-web-badge", !onX);
+    const isRTL = isRTLLocale(getEffectiveUILocale());
     // Safari shrink-to-fits inline-flex to leftover line width and then wraps
     // inner items (95% 100% / True). inline-block's shrink-to-fit is the
     // nowrap content width, so the whole pill jumps to the next line instead.
@@ -578,8 +654,11 @@ function pinBadgeLayout(badge: HTMLElement) {
         "flex-direction": "row",
         "flex-wrap": "nowrap",
         "align-items": "center",
-        "vertical-align": "0.14em",
-        "line-height": "1",
+        "justify-content": "center",
+        "vertical-align": "middle",
+        position: "relative",
+        top: "-0.142em",
+        "line-height": "1.15",
         "white-space": "nowrap",
         width: "max-content",
         "min-width": "max-content",
@@ -587,24 +666,45 @@ function pinBadgeLayout(badge: HTMLElement) {
         "flex-shrink": "0",
         "word-break": "keep-all",
         "overflow-wrap": "normal",
-        padding: "0.10em 0.45em",
+        padding: "0.12em 0.52em",
         "border-radius": "999px",
         "font-weight": "600",
         "box-sizing": "border-box",
         "font-style": "normal",
+        "font-size": "0.75em",
+        color: "#ffffff",
+        "margin-left": isRTL ? "0" : "0.22em",
+        "margin-right": isRTL ? "0.22em" : "0",
+        // The pill is one line tall and nothing in it wants space above or
+        // below. A host that margins inline <b> (Substack Notes: 8px) sizes
+        // the line the pill sits in from the child's margin box, so the pill
+        // grows by a margin that is invisible to every other probe.
+        "margin-top": "0",
+        "margin-bottom": "0",
     };
     const uiSans = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
     if (!onX) props["font-family"] = uiSans;
     pinInline(badge, props);
     for (const child of Array.from(badge.querySelectorAll("span, b"))) {
         const c = child as HTMLElement;
-        if (!onX) pinInline(c, {
-            "font-family": uiSans,
-            "font-weight": "600",
-            "font-style": "normal",
-            "white-space": "nowrap",
-            "line-height": "1",
-        });
+        // Margin, unlike the rest of the pin, is never ours to inherit: the
+        // badge parts are laid out relative to each other, so a host's
+        // vertical margin on a part sizes the line the pill sits in and the
+        // pill grows (Substack Notes put 8px on b). Pinned here rather than in
+        // the per-part branches so no part is left out.
+        pinInline(c, { "margin-top": "0", "margin-bottom": "0" });
+        if (!c.classList.contains("mf-fc-spinner")) {
+            pinInline(c, {
+                color: "#ffffff",
+                ...(onX ? {} : {
+                    "font-family": uiSans,
+                    "font-weight": "600",
+                    "font-style": "normal",
+                    "white-space": "nowrap",
+                    "line-height": "1",
+                }),
+            });
+        }
         if (c.classList.contains("mf-badge-stack")) {
             // Sizer for the adjective. The percentage is painted on top of it,
             // not as a second line — grid overlay was dropping 80% in WebKit.
@@ -714,65 +814,30 @@ function applyBadgeToLine(badge: HTMLElement) {
     if (!badge.isConnected) return;
     const claim = badge.closest(".mf-segment-claim") as HTMLElement | null;
     if (!claim) return;
+    const cs = getComputedStyle(claim);
+    const fs = parseFloat(cs.fontSize) || 16;
+    const badgeFs = Math.max(9, Math.round(fs * 0.75 * 10) / 10);
     const lh = claimLineBoxPx(claim);
-    if (!isFinite(lh) || lh < 8) return;
-    // Pill is 75% of the green strip. Type fills the inner box.
-    const height = Math.max(12, lh * 0.75);
-    const padY = Math.max(2, Math.round(height * 0.11));
-    const type = Math.max(10, height - 2 * padY);
-    const padX = Math.max(6, Math.round(type * 0.42));
-    claim.style.setProperty("--mf-line", `${lh}px`);
-    badge.style.setProperty("--mf-line", `${lh}px`);
-    // Gap after the pill lives on the badge, not claim padding — clone would
-    // copy claim padding onto every wrap fragment.
-    pinInline(badge, {
-        "font-size": `${type}px`,
-        height: `${height}px`,
-        padding: `${padY}px ${padX}px`,
-        "vertical-align": "0.14em",
-        "box-sizing": "border-box",
-        "line-height": "1",
-        "margin-right": `${Math.max(4, Math.round(lh * 0.14))}px`,
-    });
-}
-
-/** Scan the painted pixels of `sample` in `cs`'s font. CSS Range / SVG getBBox
- *  both report the em-box in Safari, so they cannot see Substack's high "True".
- *  A 2d canvas with the page font does. `top`/`bottom` are distances from the
- *  top of the em-box to the first/last inked row. */
-function canvasGlyphInk(cs: CSSStyleDeclaration, sample: string): { top: number; bottom: number } | null {
-    const fs = parseFloat(cs.fontSize);
-    if (!fs || !sample) return null;
-    try {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
-        if (!ctx) return null;
-        ctx.font = cs.font || `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-        const w = Math.ceil(Math.max(ctx.measureText(sample).width, fs) + 4);
-        const h = Math.ceil(fs * 3);
-        canvas.width = w;
-        canvas.height = h;
-        ctx.font = cs.font || `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-        ctx.fillStyle = "#000";
-        ctx.textBaseline = "top";
-        ctx.fillText(sample, 2, 0);
-        const data = ctx.getImageData(0, 0, w, h).data;
-        let top = -1, bottom = -1;
-        for (let y = 0; y < h; y++) {
-            const row = y * w * 4;
-            for (let x = 0; x < w; x++) {
-                if (data[row + x * 4 + 3] > 16) {
-                    if (top < 0) top = y;
-                    bottom = y;
-                    break;
-                }
-            }
-        }
-        if (top < 0 || bottom < top) return null;
-        return { top, bottom: bottom + 1 };
-    } catch {
-        return null;
+    if (isFinite(lh) && lh >= 8) {
+        claim.style.setProperty("--mf-line", `${lh}px`);
+        badge.style.setProperty("--mf-line", `${lh}px`);
     }
+    const isRTL = isRTLLocale(getEffectiveUILocale());
+    pinInline(badge, {
+        color: "#ffffff",
+        "font-size": `${badgeFs}px`,
+        height: "auto",
+        "min-height": "auto",
+        padding: "0.12em 0.52em",
+        "vertical-align": "middle",
+        position: "relative",
+        top: "-0.142em",
+        "box-sizing": "border-box",
+        "line-height": "1.15",
+        "margin-left": isRTL ? "0" : "0.25em",
+        "margin-right": isRTL ? "0.25em" : "0",
+    });
+    syncClaimBadgeLayout(claim);
 }
 
 function visibleBadgeSample(badge: HTMLElement): string {
@@ -811,20 +876,6 @@ function applyBadgeHostFont(badge: HTMLElement) {
     });
 }
 
-function applyStrikeOptical(wrap: HTMLElement, inner: HTMLElement | null, line: HTMLElement | null) {
-    if (!line || !inner || !wrap.isConnected) return;
-    const sample = (inner.textContent ?? "").trim();
-    if (!sample) return;
-    const cs = getComputedStyle(inner);
-    const fs = parseFloat(cs.fontSize);
-    const ink = canvasGlyphInk(cs, sample);
-    if (!ink || !fs) return;
-    const y = (ink.top + ink.bottom) / 2;
-    const mid = fs / 2;
-    if (!isFinite(y) || Math.abs(y - mid) < 0.5) return;
-    pinInline(line, { top: `${y}px`, "margin-top": "-1px" });
-}
-
 function afterLayout(el: HTMLElement, fn: () => void) {
     let frames = 0;
     const run = () => {
@@ -838,22 +889,97 @@ function afterLayout(el: HTMLElement, fn: () => void) {
     requestAnimationFrame(run);
 }
 
-function pinStrikeLayout(wrap: HTMLElement, inner?: HTMLElement | null, line?: HTMLElement | null) {
-    // inline-block + line-height 1 makes the containing block the glyph box, so
-    // a 50% slash sits on the letters instead of the host's 1.6 leading.
-    pinInline(wrap, {
-        display: "inline-block",
-        position: "relative",
-        "line-height": "1",
-        "vertical-align": "baseline",
-    });
-    if (!wrap.classList.contains("mf-strike-h")) {
-        pinInline(wrap, { "white-space": "nowrap" });
+function renderMultiStrikeSvg(wrap: HTMLElement) {
+    if (!wrap.isConnected) return;
+    const rects = wrap.getClientRects();
+    if (rects.length === 0) return;
+    const origin = rects[0];
+    let svg = wrap.querySelector(":scope > svg.mf-strike-svg") as SVGSVGElement | null;
+    if (!svg) {
+        svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("class", "mf-strike-svg");
+        // margin/padding/border are pinned because this box is placed by `top: 0`, and an
+        // absolutely positioned box sits at `top + margin-top`: a host rule on `svg`
+        // (Substack: 8px) moves the whole rule down by that much, and padding or a border
+        // moves the viewport the <line> coordinates are drawn in. Every offset in this
+        // function is relative, so none of it shows up in the geometry below.
+        svg.style.cssText = "position: absolute !important; left: 0px !important; top: 0px !important; margin: 0px !important; padding: 0px !important; border: 0px !important; width: 1px !important; height: 1px !important; overflow: visible !important; pointer-events: none !important; z-index: 2 !important;";
+        wrap.appendChild(svg);
     }
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    // Not `wrap.style.textDecorationColor`: pinStrikeLayout pins the SHORTHAND
+    // `text-decoration: none` after the colour was set as a longhand, which resets it —
+    // reading it back yields the string "initial", truthy enough to defeat a fallback and
+    // invalid as a stroke, so the line painted nothing at all.
+    const red = strikethroughRed();
+    for (let i = 0; i < rects.length; i++) {
+        const r = rects[i];
+        if (r.width <= 0) continue;
+        const x1 = r.left - origin.left;
+        const x2 = r.right - origin.left;
+        // 0.59 of the fragment's font box (ascent + descent) is its x-band middle
+        // (baseline - xHeight/2) — the same target as the diagonal overlay's
+        // `calc(50% + 0.1em)`, expressed as a ratio because a wrapped strike has no
+        // single box to size a percentage against. At 0.52 the rule sat a line-width
+        // of ink too high on every wrapped strike.
+        const y = (r.top - origin.top) + (r.height * 0.59);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", String(x1));
+        line.setAttribute("y1", String(y));
+        line.setAttribute("x2", String(x2));
+        line.setAttribute("y2", String(y));
+        line.setAttribute("stroke", red);
+        line.setAttribute("stroke-width", "2.2");
+        line.setAttribute("stroke-linecap", "round");
+        svg.appendChild(line);
+    }
+}
+
+function pinStrikeLayout(wrap: HTMLElement, inner?: HTMLElement | null, line?: HTMLElement | null) {
+    if (wrap.classList.contains("mf-strike-h")) {
+        // Multi-word strikethroughs wrap natively across lines.
+        // MUST be display: inline to avoid breaking the claim's highlight background.
+        // Rounded line ends are rendered via per-rect SVG lines with stroke-linecap: round on each wrapped line.
+        pinInline(wrap, {
+            display: "inline",
+            position: "relative",
+            "text-decoration": "none",
+            "white-space": "normal",
+            "line-height": "inherit",
+            "vertical-align": "baseline",
+        });
+        if (inner) {
+            pinInline(inner, {
+                display: "inline",
+                "line-height": "inherit",
+            });
+        }
+        if (line) {
+            line.remove();
+        }
+        afterLayout(wrap, () => renderMultiStrikeSvg(wrap));
+        if (typeof ResizeObserver !== "undefined") {
+            const ro = new ResizeObserver(() => {
+                if (wrap.isConnected) renderMultiStrikeSvg(wrap);
+            });
+            ro.observe(wrap);
+        }
+        return;
+    }
+    // Single-word strikethrough (diagonal slash overlay):
+    // Display inline with position relative keeps the claim background continuous
+    // while providing the containing block for the diagonal slash overlay.
+    pinInline(wrap, {
+        display: "inline",
+        position: "relative",
+        "line-height": "inherit",
+        "vertical-align": "baseline",
+        "white-space": "nowrap",
+    });
     if (inner) {
         pinInline(inner, {
             display: "inline",
-            "line-height": "1",
+            "line-height": "inherit",
             position: "relative",
         });
     }
@@ -861,16 +987,25 @@ function pinStrikeLayout(wrap: HTMLElement, inner?: HTMLElement | null, line?: H
         pinInline(line, {
             display: "block",
             position: "absolute",
-            left: "-2%",
-            right: "-2%",
-            top: "50%",
+            left: "0px",
+            right: "0px",
+            // The x-band middle of the wrap's own box — see the .mf-strike-line rule.
+            // Pinned inline as well as styled, because a page's own `style` attribute
+            // outranks any !important rule we can inject, and this is the one value the
+            // strike cannot lose: at 50% it sits 1.4px high at 16px and 3px at display sizes.
+            top: "calc(50% + 0.1em)",
             height: "2px",
             "border-radius": "999px",
             "margin-top": "-1px",
+            // The other three sides only ever shrink or shift the bar if the host margins
+            // `span`; `left`/`right` alone do not carry it, since a used margin is subtracted
+            // from the auto width between them.
+            "margin-left": "0px",
+            "margin-right": "0px",
+            "margin-bottom": "0px",
             "pointer-events": "none",
         });
     }
-    afterLayout(wrap, () => applyStrikeOptical(wrap, inner ?? null, line ?? null));
 }
 
 // Last known mouse-pointer position (viewport coords). Tracked so a highlight whose
@@ -936,24 +1071,103 @@ function isPointerOverSpan(span: HTMLElement): boolean {
     return claimHoverSiblings(span).some(s => atPoint === s || s.contains(atPoint));
 }
 
-/** If the pointer is currently sitting inside `span`, re-fire a synthetic mouseenter
+/** Whether the pointer is still on `span` by the measure every leave guard uses — the claim's
+ *  padded silhouette, the leading between its line boxes included — rather than by the strict
+ *  hit-test, which a wrapped claim's line gaps fail even though the pointer never left the claim.
+ *  Anything the guards call hovering has to be able to come back after a rebuild for the same
+ *  reason the guards keep it: otherwise the highlight the guards refused to drop is dropped by the
+ *  rebuild that follows, and the pointer sitting in a gap gets a resting tint it cannot shake. */
+function isPointerInClaimHoverArea(span: HTMLElement): boolean {
+    if (mfPointerX < 0 || mfPointerY < 0) return false;
+    return inClaimHoverArea(span, mfPointerX, mfPointerY);
+}
+
+/** If the pointer is currently on `span` — by the hit-test or, failing that, by the
+ *  silhouette the leave guards use — re-fire a synthetic mouseenter
  *  so both hover layers (the span's own inline-badge listener AND the article-level
  *  preview-popover trigger) react as if the user had just entered it. This replicates
  *  the manual "move the mouse out and back in" the user otherwise has to do after an
  *  in-place transition the browser doesn't treat as a hover change (the cursor never
  *  moved). Because it just replays a real mouseenter, every existing guard (on-hold,
  *  permanent badge, already-open popover) is honoured unchanged. No-op if the pointer
- *  isn't over the span (or on touch, where the coords stay -1). */
+ *  isn't on the span (or on touch, where the coords stay -1). */
 function resyncHoverAtPointer(span: HTMLElement) {
     if (mfPointerX < 0 || mfPointerY < 0) return;
     const atPoint = mfElementFromPoint(mfPointerX, mfPointerY);
     if (!atPoint) return;
-    const over = claimHoverSiblings(span).find(s => atPoint === s || s.contains(atPoint));
+    // Strict hit first, then the measure every leave guard uses. The two disagree in a wrapped
+    // claim's line gaps and past a short line's end — positions the guards count as still
+    // hovering, because the pointer has not left the claim's silhouette — and a pointer resting
+    // there is exactly the case this replay exists for: a claim whose state changed, or whose span
+    // was rebuilt, under a hand that is not going to move. Declining to replay there leaves the
+    // fresh span with no hover and no way to earn one back, which is the flicker.
+    const over = claimHoverSiblings(span).find(s => atPoint === s || s.contains(atPoint))
+        ?? (isPointerInClaimHoverArea(span) ? span : undefined);
     if (over) {
-        over.dispatchEvent(new MouseEvent("mouseenter", { bubbles: false, clientX: mfPointerX, clientY: mfPointerY }));
+        // The user never moved, so the hover this replays was never lost as far as they are
+        // concerned: the tint it paints is not a colour change to animate. The dispatch is what
+        // is bracketed, not the paint — the span's own mouseenter handler walks the claim's
+        // siblings and repaints every one of them.
+        mfTintCommitsInstantly = true;
+        try {
+            over.dispatchEvent(new MouseEvent("mouseenter", { bubbles: false, clientX: mfPointerX, clientY: mfPointerY }));
+        } finally {
+            mfTintCommitsInstantly = false;
+        }
         // Track it so the next real mouse move can undo this if the coords were stale.
         mfSyntheticHoverSpan = over;
     }
+}
+
+/** Give back the hover a claim rebuild took away.
+ *
+ *  A rebuild replaces the span the pointer is resting on, and a fresh element is never
+ *  *entered*: the hover tint, the hover badge and the pending preview wait all belonged to
+ *  the node that just went away. With the pointer held still — a claim being read while its
+ *  reasoning streams — the highlight under it drops back to the resting colour on every
+ *  update the run broadcasts, which is the flicker. Replay the real mouseenter on whichever
+ *  new span the pointer is over, exactly as the tweet path does after its own full rebuild,
+ *  so every existing guard (on-hold, permanent badge, already-open popover) is honoured
+ *  unchanged.
+ *
+ *  Deferred by one microtask on purpose. The span factory paints from a microtask of its
+ *  own: `makeClaimSegmentNodes` stamps `dataset.hoverBg` and repaints the resting colour
+ *  inside `reveal`, which it queues whenever the span is not yet connected — and a wrapping
+ *  rebuild hands it a detached span. A tint painted before that reveal is painted over by
+ *  it. Microtasks run in the order they were queued, so this lands after every reveal the
+ *  rebuild scheduled, and still before the frame is painted: the passage never shows the
+ *  resting colour at all. */
+export function restoreHoverAfterClaimRebuild(container: Element) {
+    if (mfPointerX < 0 || mfPointerY < 0) return;
+    queueMicrotask(() => {
+        if (!container.isConnected) return;
+        const atPoint = mfElementFromPoint(mfPointerX, mfPointerY);
+        if (!atPoint) return;
+        // The container is the rebuilt passage (not the popover), so a hit outside every
+        // claim here means the pointer is over something else — an open popover it may have
+        // summoned — and nothing is owed back.
+        const spans = Array.from(container.querySelectorAll<HTMLElement>(".mf-segment-claim"));
+        // Falling back to the guards' own measure, because a pointer can be on a claim without
+        // being on any part of it: the leading between two of its lines, or the space past a short
+        // line's end, is inside the claim's silhouette and nowhere near a line box. Those are the
+        // positions where the tint would otherwise drop to resting and stay there — no fresh
+        // mouseenter fires while the pointer is between lines — which is the flicker.
+        const under = spans.find(s => atPoint === s || s.contains(atPoint))
+            // But never over a popover: a window flipped above a claim near the bottom of the
+            // viewport sits inside that claim's silhouette, and a hit on it is the "something
+            // else" above, not a hover.
+            ?? (atPoint.closest && atPoint.closest(".mf-popover") ? undefined : spans.find(isPointerInClaimHoverArea));
+        if (!under) return;
+        // A semi-transparent preview open over this claim has just lost the span it hangs from.
+        // Hand it to the replacement BEFORE the replay: the replay's own guard keeps an open
+        // preview alive by recognising its trigger among the claim's pieces, and a trigger left
+        // detached would instead start a fresh one-second dwell — the window would go away and
+        // come back, which is the blink the user sees. (Not every surface calls
+        // updateOpenPopover after its rebuild, so this is not redundant with the hand-off
+        // there.)
+        adoptDetachedPreviewTrigger();
+        resyncHoverAtPointer(under);
+    });
 }
 
 /** Animate a claim highlight background wiping in. LTR wipes left-to-right;
@@ -983,13 +1197,26 @@ function animateHighlightReveal(span: HTMLElement, bgColor: string) {
     if (animKey) animatedHighlightKeys.add(animKey); else animatedHighlights.add(span);
 
     if (alreadyHighlighted) {
-        // Color-only change: skip the wipe animation entirely.
+        // Color-only change: skip the wipe animation entirely — EXCEPT when a wipe is
+        // actually in flight. Killing one here leaves background-color at the
+        // 'transparent' the wipe set, and the base .mf-segment-claim transition then
+        // fades the new colour up from nothing over 150ms: the highlight blinks nearly
+        // away and fills back in, once per reconcile for as long as the run keeps
+        // moving. Commit instantly instead, exactly as onEnd does. With no wipe in
+        // flight this stays the plain, fading colour-only change it always was.
+        const wasWiping = span.classList.contains('mf-highlight-reveal');
         span.classList.remove('mf-highlight-reveal');
+        if (wasWiping) span.style.transition = 'none';
         span.style.removeProperty('background-image');
         span.style.removeProperty('background-size');
         span.style.removeProperty('background-position');
         span.style.removeProperty('background-repeat');
         paintClaimBg(span, bgColor);
+        if (wasWiping) {
+            // eslint-disable-next-line no-unused-expressions
+            span.offsetHeight; // force reflow so the instant swap commits before transition is restored
+            span.style.transition = '';
+        }
         return;
     }
 
@@ -1311,7 +1538,7 @@ function scrollToTweet(tweetId: string, durationMs: number = 1000): Promise<void
         const target = article ?? classificationRoots(tweetId)[0];
         if (!target) { resolve(); return; }
         const startY = window.scrollY;
-        const targetY = target.getBoundingClientRect().top + window.scrollY - 80; // leave room for header
+        const targetY = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 80); // leave room for header
         const startTime = performance.now();
         const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
@@ -1366,20 +1593,36 @@ function averageClaimColor(classification: Classification): { r: number; g: numb
     const finished = allClaims.filter(cl =>
         cl.verdict !== "research required" &&
         !cl.refreshing &&
-        cl.note !== null && cl.note !== undefined &&
-        cl.confidence !== undefined && cl.confidence !== null && cl.confidence >= 0.2 &&
+        cl.confidence !== undefined && cl.confidence !== null &&
         cl.veracity !== undefined && cl.veracity !== null
     );
-    if (finished.length === 0) return null;
+    if (finished.length === 0) {
+        // Fallback for any claims with veracity and confidence
+        const withVeracity = allClaims.filter(cl =>
+            cl.confidence !== undefined && cl.confidence !== null &&
+            cl.veracity !== undefined && cl.veracity !== null
+        );
+        if (withVeracity.length === 0) return null;
+        let rSum = 0, gSum = 0, bSum = 0;
+        for (const cl of withVeracity) {
+            const [r, g, b] = verdictColorChannels(cl.confidence, cl.veracity);
+            rSum += r;
+            gSum += g;
+            bSum += b;
+        }
+        return {
+            r: Math.round(rSum / withVeracity.length),
+            g: Math.round(gSum / withVeracity.length),
+            b: Math.round(bSum / withVeracity.length)
+        };
+    }
 
     let rSum = 0, gSum = 0, bSum = 0;
     for (const cl of finished) {
-        const rgba = confidenceRgba(cl.confidence, 1, cl.veracity);
-        const match = rgba.match(/rgba\((\d+),\s*(\d+),\s*(\d+)/);
-        if (!match) continue;
-        rSum += parseInt(match[1], 10);
-        gSum += parseInt(match[2], 10);
-        bSum += parseInt(match[3], 10);
+        const [r, g, b] = verdictColorChannels(cl.confidence, cl.veracity);
+        rSum += r;
+        gSum += g;
+        bSum += b;
     }
     return {
         r: Math.round(rSum / finished.length),
@@ -1441,8 +1684,14 @@ function clearFloatingButtonForPath(path: string, force = false) {
     if (state.hoverLeaveTimer) { clearTimeout(state.hoverLeaveTimer); state.hoverLeaveTimer = null; }
     if (state.visibilityCheck) { clearInterval(state.visibilityCheck); state.visibilityCheck = null; }
 
-    if (state.btn && state.btn.isConnected) {
-        state.btn.remove();
+    if (state.btn) {
+        if ((state.btn as any)._mfResizeListener) {
+            window.removeEventListener('resize', (state.btn as any)._mfResizeListener);
+            delete (state.btn as any)._mfResizeListener;
+        }
+        if (state.btn.isConnected) {
+            state.btn.remove();
+        }
     }
     floatingButtonRegistry.delete(path);
 }
@@ -1546,21 +1795,40 @@ function setupNavigationListener() {
     setInterval(checkPathChange, 200);
 }
 
-/** Compute the center X coordinate of the timeline column on screen. */
+/** Whether the classification target is solely within a tweet on X.com (first-class tweet
+ *  integration or a selection made exclusively inside tweet articles). If the selection
+ *  was on an X article, UI chrome, or non-tweet container, or on a general webpage, this
+ *  returns false. */
+function isTweetTargetOnX(tweetId: string): boolean {
+    const isX = /^(www\.)?(twitter|x)\.com$/i.test(window.location.hostname);
+    if (!isX) return false;
+
+    // Check status links on the page (first-class tweet or status anchor)
+    const statusLinks = document.querySelectorAll(`a[href*="/status/${tweetId}"]`);
+    if (statusLinks.length > 0) {
+        for (const link of statusLinks) {
+            if (link.closest('article[data-testid="tweet"]')) return true;
+        }
+    }
+
+    const roots = classificationRoots(tweetId);
+    if (roots.length > 0) {
+        // Every root must be inside an article[data-testid="tweet"]
+        return roots.every(root => !!root.closest('article[data-testid="tweet"]'));
+    }
+
+    // If roots are not in DOM right now but tweetId is a numeric status ID (first-class tweet)
+    return /^\d+$/.test(tweetId);
+}
+
+/** Compute the center X coordinate of the timeline column on X. */
 function getTimelineColumnCenter(): number | null {
     const primaryCol = document.querySelector<HTMLElement>('[data-testid="primaryColumn"]');
     if (primaryCol) {
         const rect = primaryCol.getBoundingClientRect();
-        return rect.left + rect.width / 2;
-    }
-    let current: Element | null = document.body;
-    while (current) {
-        const style = getComputedStyle(current as HTMLElement);
-        if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
-            const rect = (current as HTMLElement).getBoundingClientRect();
+        if (rect.width > 0) {
             return rect.left + rect.width / 2;
         }
-        current = current.parentElement;
     }
     return null;
 }
@@ -1581,15 +1849,25 @@ function createFloatingButton(
 
     const isRTL = isRTLLocale(getEffectiveUILocale());
     const avgColor = classification ? averageClaimColor(classification) : null;
-    const darkened = avgColor ? darkenColor(avgColor, 0.25) : null;
-    const baseRgb = darkened ? `${darkened.r}, ${darkened.g}, ${darkened.b}` : "29, 155, 240";
+    const baseRgb = avgColor ? `${avgColor.r}, ${avgColor.g}, ${avgColor.b}` : "29, 155, 240";
 
-    const timelineCenter = getTimelineColumnCenter();
+    const shouldCenterOnTimeline = isTweetTargetOnX(tweetId);
+    const timelineCenter = shouldCenterOnTimeline ? getTimelineColumnCenter() : null;
     const left = timelineCenter !== null ? `${timelineCenter}px` : '50%';
     const transform = 'translateX(-50%)';
 
     const btn = document.createElement("button");
     btn.className = "mf-floating-scroll-btn";
+    if (shouldCenterOnTimeline) {
+        const onResize = () => {
+            const center = getTimelineColumnCenter();
+            if (center !== null) {
+                btn.style.left = `${center}px`;
+            }
+        };
+        window.addEventListener('resize', onResize);
+        (btn as any)._mfResizeListener = onResize;
+    }
     btn.style.cssText = `
         position: fixed;
         ${position}: 80px;
@@ -1694,9 +1972,7 @@ function factCheckedButtonClaimsHtml(classification: Classification, isRTL: bool
     const rows = claims.map(cl => {
         const display = (cl.rewritten && cl.rewritten !== cl.text) ? cl.rewritten : `${q.open}${cl.text}${q.close}`;
         const escaped = escapeHtml(display);
-        const badgeColor = cl.confidence !== undefined && cl.veracity !== undefined
-            ? confidenceRgba(cl.confidence, 1, cl.veracity)
-            : 'rgb(180,180,180)';
+        const badgeColor = '#ffffff';
         const badgeHtml = (cl.confidence !== undefined && cl.veracity !== undefined)
             ? verdictBadgeHtml(cl.confidence, cl.veracity)
             : escapeHtml(pickResearchingWord(`${classification.id}:${cl.text}`));
@@ -1731,25 +2007,25 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     const tweetText = findTweetTextInDom(tweetId) ?? selectionPassageText(tweetId);
     const isRTL = isRTLLocale(getEffectiveUILocale());
     const avgColor = averageClaimColor(classification);
-    const darkened = avgColor ? darkenColor(avgColor, 0.25) : null;
     // 0.15 (not higher): the claim text stays white, so a strong brighten washes it
     // out and makes the hover list unreadable. A subtle lift keeps contrast intact.
     const brightened = avgColor ? brightenColor(avgColor, 0.15) : null;
-    const normalRgb = darkened ? `${darkened.r}, ${darkened.g}, ${darkened.b}` : "29, 155, 240";
+    const normalRgb = avgColor ? `${avgColor.r}, ${avgColor.g}, ${avgColor.b}` : "29, 155, 240";
     const hoverRgb = brightened ? `${brightened.r}, ${brightened.g}, ${brightened.b}` : "29, 155, 240";
 
-    const article = document.querySelector(`a[href*="/status/${tweetId}"]`)?.closest('article');
-    const tweetRect = article?.getBoundingClientRect();
+    const targetEl = document.querySelector(`a[href*="/status/${tweetId}"]`)?.closest('article')
+        ?? classificationRoots(tweetId)[0];
+    const targetRect = targetEl?.getBoundingClientRect();
 
     // Point at whatever the user actually has to scroll towards. The off-screen highlight is
     // the reason this button exists, so it — not the article's midpoint — decides the side and
-    // the arrow. Only when no highlight is laid out do we fall back to the old article-rect
+    // the arrow. Only when no highlight is laid out do we fall back to the target-rect
     // inference: content above viewport => position 'top', arrow UP; below => 'bottom', DOWN.
     const highlightDirection = offScreenHighlightDirection(tweetId);
-    const isTweetAbove = highlightDirection !== null
+    const isTargetAbove = highlightDirection !== null
         ? highlightDirection === 'above'
-        : (tweetRect ? tweetRect.bottom <= window.innerHeight / 2 : true);
-    const position: 'top' | 'bottom' = isTweetAbove ? 'top' : 'bottom';
+        : (targetRect ? targetRect.bottom <= window.innerHeight / 2 : true);
+    const position: 'top' | 'bottom' = isTargetAbove ? 'top' : 'bottom';
     const factCheckedIcon = position === 'top' ? upArrowSvg : downArrowSvg;
 
     const path = window.location.pathname;
@@ -1993,18 +2269,12 @@ export function trackSelectionFloatingButtons(classification: Classification): v
     const visible = areTweetHighlightsVisible(id);
     if (settled) {
         // The run has finished. If its highlights are on screen, the user watched the
-        // verdicts land — there is nothing to offer, now or on any later scroll. Retire
-        // the id so a scroll past the (long since classified) passage stays quiet.
-        // If they are off screen AND the run settled while off screen (armed below),
-        // this is the moment the button is for.
+        // verdicts land — there is nothing to offer.
+        // If they are off screen (the user scrolled away while the text was being classified),
+        // offer the button to return to the fact-checked claims.
         if (visible) {
             selectionButtonShown.add(id);
-            return;
-        }
-        if (!selectionButtonArmed.has(id)) {
-            // Settled while on screen (or before any off-screen observation) — the
-            // verdicts did not land onto an absent reader. Stay quiet.
-            selectionButtonShown.add(id);
+            selectionButtonArmed.delete(id);
             return;
         }
         selectionButtonShown.add(id);
@@ -3326,6 +3596,20 @@ function updateBadgeHold(x: number, y: number): void {
     releaseBadgeHold();
 }
 
+/** Put the resting tint back on every piece of a claim, and touch nothing else.
+ *
+ *  The tint is hover-only; the rest of a claim's hover state is not. A permanent badge (the
+ *  idle Annotate button, an on-hold Fact-Check pill) and an open popover both outlive the
+ *  pointer by design — and the one teardown that keeps them is also the only thing that
+ *  repainted the background. Skipping it for them therefore left every claim carrying one
+ *  wearing its held colour for the rest of the session: a highlight that never comes back
+ *  from a hover. Where something has to outlive the pointer, this restores the background
+ *  alone. */
+function restoreClaimTint(span: HTMLElement): void {
+    const base = restHighlightColor(span);
+    for (const piece of claimHoverSiblings(span)) paintClaimBg(piece, base);
+}
+
 /** Undo a claim span's hover visuals: base background back, hover badge gone, loading
  *  spinner restored if the claim is still waiting on its verdict. Shared by the span's own
  *  mouseleave and the mousemove backstop below — one teardown, two triggers. */
@@ -3352,7 +3636,10 @@ function teardownClaimHover(span: HTMLElement): void {
     // the live dataset still wants the idle button.
     const keepBadge = spanWantsIdleAnnotate(span) || siblings.some(s => (s as any)._mfBadgePermanent);
     if (!keepBadge) {
-        for (const piece of siblings) piece.querySelector(".mf-inline-badge")?.remove();
+        for (const piece of siblings) {
+            piece.querySelector(".mf-inline-badge")?.remove();
+            syncClaimBadgeLayout(piece);
+        }
     }
     // Restore the stand-in if this claim is still loading — the badge that was
     // showing the spinner has just been taken away with the hover. A live
@@ -3407,6 +3694,10 @@ function inPreviewRelatedArea(trigger: HTMLElement, x: number, y: number): boole
     }
     const anchorEl = (trigger as any)._mfAnchorEl as HTMLElement | undefined;
     if (covers(anchorEl)) return true;
+    // A preview opened from the Fact-Checked button belongs to the whole button: between claim
+    // rows, or over its label, the pointer is still on what the preview came from, and the
+    // button's own leave is what dismisses it.
+    if (covers((trigger as any)._mfButtonEl as HTMLElement | undefined)) return true;
     return false;
 }
 
@@ -3428,9 +3719,120 @@ function settleHoverClaims(x: number, y: number): void {
         if (spanTeardownStandsDown(span, x, y)) continue;
         const siblings = claimHoverSiblings(span);
         for (const piece of siblings) hoverArmedClaims.delete(piece);
-        if (!siblings.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) teardownClaimHover(span);
+        if (siblings.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) restoreClaimTint(span);
+        else teardownClaimHover(span);
         cancelHoverPreview();
         schedulePreviewPopoverDismiss(span);
+    }
+}
+
+/** The preview's dismissal for the departures its own events never name: the pointer is
+ *  observably clear of the popover, its trigger and everything attached to it, so the countdown
+ *  starts from here.
+ *
+ *  A preview is taken down by a countdown armed from `mouseleave` of the claim and of the
+ *  popover, and that countdown stands down — leaving nothing armed behind it — if the pointer is
+ *  back on the preview when it fires. Either event can therefore be spent while the pointer is
+ *  still inside: the pointer quits the window over the popover and the single countdown stands
+ *  down, or the claim is rebuilt under an open preview so the trigger the event would have come
+ *  from is detached and fires nothing at all. From there the popover outlives every later
+ *  mousemove: there is no armed claim left for settleHoverClaims to settle, and only hovering
+ *  another claim or a click would ever take it down. The pointer's own position is the authority
+ *  those boundary events lost. */
+function settlePreviewPopover(x: number, y: number): void {
+    if (!previewPopoverState) return;
+    const trigger = previewPopoverState.trigger;
+    if (!trigger.isConnected) {
+        // The span went away, which is not the same as the pointer leaving it: if a rebuild
+        // replaced it under the pointer, the window belongs to the replacement now and only a
+        // pointer that is genuinely off the claim takes it down.
+        if (!adoptDetachedPreviewTrigger()) dismissPreviewPopover();
+        return;
+    }
+    if (inPreviewRelatedArea(trigger, x, y)) return;
+    // A countdown already running will re-read the pointer when it fires; starting a fresh one
+    // on every mousemove would push the dismissal out for as long as the pointer keeps moving.
+    if (previewPopoverState.leaveTimer) return;
+    schedulePreviewPopoverDismiss(trigger);
+}
+
+/** Clear badges no live state wants, from the same pointer backstop the tint uses.
+ *
+ *  A badge leaves by its own claim's hover teardown, so one that an in-place path left standing —
+ *  an annotate run landing and swapping the element where it stood, a popover closed after
+ *  keeping it — outlives the pointer with nothing left to look at it: the claim is never hovered
+ *  again, so the teardown that would have taken it never runs. What the spec keeps is marked
+ *  (_mfBadgePermanent), held by a popover, or held by the pointer's own hover; everything else
+ *  here is a leftover, and it goes. */
+let lastStraySweep = 0;
+function sweepStrayBadges(x: number, y: number): void {
+    // Print mode badges every highlight on purpose and afterprint takes them back.
+    if (printBadgesAdded.size > 0) return;
+    if (previewPopoverState) return;
+    const now = Date.now();
+    if (now - lastStraySweep < 200) return;
+    lastStraySweep = now;
+    for (const badge of Array.from(document.querySelectorAll<HTMLElement>(".mf-inline-badge"))) {
+        const span = badge.closest<HTMLElement>(".mf-segment-claim");
+        if (!span) continue;
+        const siblings = claimHoverSiblings(span);
+        if (siblings.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) continue;
+        if (hoverArmedClaims.has(span)) continue;
+        if (inClaimHoverArea(span, x, y)) continue;
+        if (spanTeardownStandsDown(span, x, y)) continue;
+        if (badgeHold?.badge === badge && inBadgeHoldArea(badgeHold, x, y)) continue;
+        // A claim that wants the idle Annotate button keeps the affordance — as the button, never
+        // as the verdict badge a swap left standing in its place.
+        if (spanWantsIdleAnnotate(span) && !badge.classList.contains("mf-annotate-badge")) {
+            const create = (span as any)._mfCreateBadge as ((permanent: boolean) => HTMLElement) | undefined;
+            if (create) {
+                badge.remove();
+                span.appendChild(create(true));
+                syncClaimBadgeLayout(span);
+            }
+            continue;
+        }
+        badge.remove();
+        syncClaimBadgeLayout(span);
+        // A run still in flight keeps its progress visible: its badge was hover-only, so the
+        // stand-in spinner takes over, exactly as the in-place reconcile does.
+        if (isAnnotateFlight(span) || span.dataset.refreshing === "true") ensureAnnotateStandin(span);
+    }
+}
+
+/** Clear tints no live hover wants, from the same pointer backstop the badges use.
+ *
+ *  The tint leaves by the claim's own hover teardown, so a departure that the boundary events
+ *  name on one layer but not the other leaves it hot with nothing armed to settle it:
+ *  `startHoverPreview` disarms the claim the pointer left, and the leave that would have
+ *  repainted the tint stands down as a crossing of the claim's own line gap — so the highlight
+ *  keeps its hover colour until that claim is hovered and left again. The pointer's own position
+ *  is the authority those boundary events lost. What counts as still hovered is the whole
+ *  claim: every piece of a multi-piece highlight wears the tint, so the pointer on any one of
+ *  them is a live hover for all of them. */
+let lastTintSweep = 0;
+function sweepStrayTints(x: number, y: number): void {
+    // A visible preview owns the hover that produced its tint: the pointer is often resting
+    // inside the popover window, off the claim, which reads as a departure from the pointer's
+    // position alone. The preview's own countdown settles that hover; this backstop stays out
+    // until it has — same stand-down sweepStrayBadges takes for the badge it would take down.
+    if (previewPopoverState) return;
+    const now = Date.now();
+    if (now - lastTintSweep < 200) return;
+    lastTintSweep = now;
+    for (const span of Array.from(document.querySelectorAll<HTMLElement>(".mf-segment-claim"))) {
+        const hoverBg = span.dataset.hoverBg;
+        if (!hoverBg) continue;
+        // A reveal wipe paints its own gradient — never a hover tint to take back.
+        if (span.classList.contains("mf-highlight-reveal")) continue;
+        const inlineBg = span.style.getPropertyValue("background-color");
+        if (!inlineBg || inlineBg.replace(/\s+/g, "") !== hoverBg.replace(/\s+/g, "")) continue;
+        const siblings = claimHoverSiblings(span);
+        if (siblings.some(s => inClaimHoverArea(s, x, y))) continue;
+        if (spanTeardownStandsDown(span, x, y)) continue;
+        for (const piece of siblings) hoverArmedClaims.delete(piece);
+        if (siblings.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) restoreClaimTint(span);
+        else teardownClaimHover(span);
     }
 }
 
@@ -3455,7 +3857,15 @@ function startHoverPreview(target: HTMLElement) {
             hoveredSegment = null;
             disarmHoverClaim(target);
             const sibs = claimHoverSiblings(target);
-            if (!sibs.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) teardownClaimHover(target);
+            // A permanent badge (the idle Annotate button, an on-hold Fact-Check pill) and
+            // an open popover outlive the pointer, so the teardown stands down for them —
+            // but the TINT does not outlive it, and this was the one exit that left it hot.
+            // The span's own mouseleave and the mousemove backstop both restore the tint on
+            // this branch; here the claim was disarmed and the pointer's absence confirmed,
+            // so returning without a repaint left the highlight wearing its held colour
+            // until some later hover-and-leave happened to put it back.
+            if (sibs.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) restoreClaimTint(target);
+            else teardownClaimHover(target);
             return;
         }
         showPreviewPopover(target);
@@ -3515,7 +3925,7 @@ function verdictColorChannels(probability: number | undefined, veracity?: number
 /** Inline `background` + `color` declarations for a verdict badge. */
 export function factCheckColor(probability: number | undefined, veracity?: number, bgOpacity = 0.15): string {
     const [r, g, b] = verdictColorChannels(probability, veracity);
-    return `background: rgba(${r}, ${g}, ${b}, ${bgOpacity}); color: rgb(${r}, ${g}, ${b})`;
+    return `background: rgba(${r}, ${g}, ${b}, ${bgOpacity}); color: #ffffff`;
 }
 
 /** A verdict's colour as a bare `rgba(...)` value, for callers composing their own CSS. */
@@ -3556,7 +3966,7 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
             <div style="margin-bottom: 8px; line-height: 1.4;">
                 <div style="font-size: 13px; color: inherit; margin-bottom: 3px;">${escapeHtml(String(claim.rewritten ?? claim.text))}</div>
                 <div>
-                    <span${slotBadge ? ` class="${VERDICT_BADGE_CLASS}"` : ''} style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${showSpinner ? '<span class="mf-fc-spinner"></span>' : ''}${slotBadge ? verdictBadgeHtml(claim.confidence, claim.veracity, `${c.id}:${claim.text}`) : escapeHtml(label)}</span>
+                    <span${slotBadge ? ` class="${VERDICT_BADGE_CLASS}"` : ''} style="display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; ${isOnHold ? 'color: #ffffff; background: rgba(128, 128, 128, 0.25);' : factCheckColor(claim.confidence, claim.veracity)}">${showSpinner ? '<span class="mf-fc-spinner"></span>' : ''}${slotBadge ? verdictBadgeHtml(claim.confidence, claim.veracity, `${c.id}:${claim.text}`) : escapeHtml(label)}</span>
                     <span style="font-size: 13px; color: inherit;"> ${escapeHtml(reasoning)}</span>
                 </div>
             </div>
@@ -3595,24 +4005,86 @@ export function getInlineStyles(): string {
 .mf-segment-wrap {
     display: inline !important;
 }
+.mf-segment-wrap[data-mf-sel-loading="true"] {
+    background-color: rgba(29, 155, 240, 0.14) !important;
+    padding: 1px 5px 1px 3px !important;
+    -webkit-box-decoration-break: slice !important;
+    box-decoration-break: slice !important;
+    transition: background-color 0.2s ease !important;
+}
+.mf-sel-spinner {
+    display: inline-block !important;
+    width: 12px !important;
+    height: 12px !important;
+    border: 2px solid rgba(29, 155, 240, 0.28) !important;
+    border-top-color: #1d9bf0 !important;
+    border-radius: 50% !important;
+    animation: mf-spin 0.6s linear infinite !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -0.08em !important;
+    margin-left: 6px !important;
+    margin-right: 2px !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+}
+[dir="rtl"] .mf-sel-spinner {
+    margin-left: 2px !important;
+    margin-right: 6px !important;
+}
+/* Inherit, not pre-wrap: these spans hold the PAGE's own text, and the page's own
+   white-space is what its layout was laid out at. Forcing pre-wrap made every newline and
+   tab carried inside a wrap render literally — a tab is a tab-stop advance at the host's
+   font size, so a selection whose span opened on the page's layout whitespace showed a
+   blank gap where the page itself collapses one. Inheriting keeps a paragraph on
+   Wikipedia collapsed and a tweet's line breaks on X intact. */
 .mf-segment-plain {
     display: inline !important;
-    white-space: pre-wrap;
+    white-space: inherit;
 }
 .mf-segment-plain a:hover {
     text-decoration: underline;
 }
 .mf-segment-claim {
     display: inline !important;
-    white-space: pre-wrap;
+    white-space: inherit;
     cursor: pointer;
     position: relative;
     border-radius: 3px;
-    padding: 1px 0;
+    padding: 1px 3px;
     transition: background-color 0.15s ease;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
+    -webkit-box-decoration-break: slice;
+    box-decoration-break: slice;
     --mf-line: 1lh;
+}
+.mf-badge-cap {
+    display: inline-flex !important;
+    align-items: center !important;
+    vertical-align: middle !important;
+    background-color: transparent !important;
+    background: transparent !important;
+    padding: 0 1.2px 0 0 !important;
+    margin: 0 !important;
+    position: relative !important;
+    top: 0 !important;
+}
+[dir="rtl"] .mf-badge-cap,
+.mf-badge-cap[dir="rtl"] {
+    padding: 0 0 0 1.2px !important;
+    margin: 0 !important;
+}
+.mf-badge-cap .mf-inline-badge,
+.mf-badge-cap .mf-inline-badge.mf-web-badge {
+    top: -0.142em !important;
+    margin-left: 0.22em !important;
+    margin-right: 0 !important;
+}
+[dir="rtl"] .mf-badge-cap .mf-inline-badge,
+[dir="rtl"] .mf-badge-cap .mf-inline-badge.mf-web-badge,
+.mf-badge-cap[dir="rtl"] .mf-inline-badge,
+.mf-badge-cap[dir="rtl"] .mf-inline-badge.mf-web-badge {
+    margin-left: 0 !important;
+    margin-right: 0.22em !important;
 }
 /* Host pages (Substack) set p span { background: transparent !important }
    at (0, 2, 1). Wrap + claim beats that so the tint always paints. */
@@ -3639,8 +4111,8 @@ h3 span.mf-segment-claim,
    print handwriting, unjoined). */
 .mf-strike {
     position: relative !important;
-    display: inline-block !important;
-    line-height: 1 !important;
+    display: inline !important;
+    line-height: inherit !important;
     vertical-align: baseline !important;
 }
 .mf-strike:not(.mf-strike-h) {
@@ -3648,24 +4120,35 @@ h3 span.mf-segment-claim,
 }
 .mf-strike > span {
     display: inline !important;
-    line-height: 1 !important;
+    line-height: inherit !important;
 }
 .mf-strike-h {
-    text-decoration-line: line-through !important;
-    text-decoration-thickness: 2px;
+    display: inline !important;
+    text-decoration: none !important;
+    white-space: normal !important;
 }
 .mf-strike-line {
     position: absolute !important;
     display: block !important;
-    left: -2%;
-    right: -2%;
-    /* 50% of this inline-block (line-height:1), i.e. the glyph box, not the
-       host paragraph's leading. */
-    top: 50%;
-    height: 2px;
-    margin-top: -1px;
-    border-radius: 999px;
-    pointer-events: none;
+    left: 0 !important;
+    right: 0 !important;
+    /* The containing block is the wrap's own box — the font box, whose height is
+       ascent + descent, NOT the host paragraph's line box (measured: top: 0 lands
+       on the wrap's rect top at every host leading). Its centre is
+       baseline - (ascent - descent)/2, which is above the middle of the text the
+       eye reads: prose is centred on its x-band, baseline - xHeight/2. That
+       difference is what made every strike sit high, worst at display sizes.
+       + 0.1em closes it: the residual against a measured x-band middle is under
+       0.2px for Arial/Helvetica (0.088em), Georgia (0.107), Times New Roman
+       (0.12) and Linux Libertine (0.107) — the spans this has to work across.
+       Kept as a ratio rather than a measured value because the same rule has to
+       hold in the popup's React paint, which has no measurement pass, and because
+       the box's own height is the only geometry both surfaces share. */
+    top: calc(50% + 0.1em) !important;
+    height: 2px !important;
+    margin-top: -1px !important;
+    border-radius: 999px !important;
+    pointer-events: none !important;
 }
 .mf-strike-line.mf-diag-a {
     transform: rotate(14deg);
@@ -3691,44 +4174,75 @@ b.mf-badge-pct,
 b.mf-badge-glue {
     font-weight: 600 !important;
     font-style: normal !important;
+    color: #ffffff !important;
+}
+.mf-inline-badge,
+.mf-inline-badge *,
+.mf-web-badge,
+.mf-web-badge *,
+.mf-verdict-badge,
+.mf-verdict-badge *,
+.mf-annotate-badge,
+.mf-annotate-badge *,
+.mf-badge-cap .mf-inline-badge,
+.mf-badge-cap .mf-inline-badge * {
+    color: #ffffff !important;
 }
 .mf-inline-badge {
     display: inline-flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
-    /* 0.15em above the baseline sits on the optical centre of the
-       surrounding glyphs; middle tracks x-height and reads low on
-       titles (and on X's 15px body). Same rule on every surface. */
-    vertical-align: 0.14em !important;
-    padding: 0.12em 0.55em;
-    line-height: 1 !important;
-    border-radius: 999px;
-    height: calc(0.75 * var(--mf-line, 1.6em));
-    box-sizing: border-box;
-    font-size: calc(0.58 * var(--mf-line, 1.6em));
-    font-weight: 600;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -0.142em !important;
+    padding: 0.12em 0.52em !important;
+    line-height: 1.15 !important;
+    border-radius: 999px !important;
+    height: auto !important;
+    min-height: auto !important;
+    box-sizing: border-box !important;
+    font-size: 0.75em !important;
+    font-weight: 600 !important;
     white-space: nowrap !important;
     min-width: max-content !important;
     max-width: none !important;
     flex-wrap: nowrap !important;
     word-break: keep-all !important;
-    margin-left: 0.27em;
+    margin-left: 0.25em !important;
+    margin-right: 0 !important;
+}
+[dir="rtl"] .mf-inline-badge {
+    margin-left: 0 !important;
+    margin-right: 0.25em !important;
 }
 .mf-inline-badge.mf-badge-loading {
-    vertical-align: 0.14em !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -0.142em !important;
 }
 .mf-inline-badge.mf-web-badge {
     display: inline-block !important;
-    vertical-align: 0.14em !important;
-    height: calc(0.75 * var(--mf-line, 1.6em)) !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -0.142em !important;
+    height: auto !important;
     box-sizing: border-box !important;
-    font-size: calc(0.58 * var(--mf-line, 1.6em)) !important;
-    padding: 0.1em 0.42em !important;
-    line-height: 1 !important;
+    font-size: 0.75em !important;
+    padding: 0.12em 0.52em !important;
+    line-height: 1.15 !important;
+    margin-left: 0.25em !important;
+    margin-right: 0 !important;
+}
+[dir="rtl"] .mf-inline-badge.mf-web-badge {
+    margin-left: 0 !important;
+    margin-right: 0.25em !important;
 }
 .mf-inline-badge.mf-web-badge.mf-badge-loading {
-    vertical-align: 0.14em !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -0.142em !important;
 }
 /* Verdict badge: an adjective and its percentage share one grid cell, so the slot is as
    wide as the wider of the two and swapping them on hover moves nothing. The locale's
@@ -4270,7 +4784,8 @@ export function showNotification(kind: 'increase' | 'decrease' | 'error' | 'brok
         showBrokeNotification();
         return;
     }
-    if (extensionFrozen) return;
+    // A signed-out error must be visible even when the extension is frozen.
+    if (extensionFrozen && !(kind === 'error' && opts.code === ERROR_CODES.NOT_SIGNED_IN)) return;
     if (!document.body) return;
     // One charge must never paint twice on the same page. The background fans
     // MF_NOTIFICATION to every live `classify` port, and this file is bundled into
@@ -5168,12 +5683,10 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
             const needsAnnotate = spanNeedsAnnotateBadge(span);
             const plainLabel = isOnHoldNow || isPipelineClaim;
             const lbl = plainLabel ? t("factCheckButton") : needsAnnotate ? t("annotateButton") : verdictLabel(prob, ver, `${classificationId ?? ''}:${claim.text}`);
-            const txtColor = (plainLabel || needsAnnotate)
-              ? 'rgb(180, 180, 180)'
-              : confidenceRgba(prob, 1, ver);
+            const txtColor = '#ffffff';
             const badge = document.createElement("b");
             badge.className = plainLabel ? "mf-inline-badge" : needsAnnotate ? "mf-inline-badge mf-annotate-badge" : `mf-inline-badge ${VERDICT_BADGE_CLASS}`;
-            badge.style.cssText = `display: inline-flex; align-items: center; line-height: 1.15; padding: 0.12em 0.55em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTL ? '0' : '0.27em'}; margin-right: ${isRTL ? '0.27em' : '0'}; color: ${txtColor}; background: rgba(0,0,0,0.7); cursor: pointer;`;
+            badge.style.cssText = `display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; position: relative; top: -0.142em; line-height: 1.15; padding: 0.12em 0.52em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTL ? '0' : '0.25em'}; margin-right: ${isRTL ? '0.25em' : '0'}; color: ${txtColor}; background: rgba(0,0,0,0.7); cursor: pointer;`;
             if (isRefreshing || (prob === undefined && !isOnHoldNow && !isPipelineClaim)) {
                 const fcSpinner = document.createElement("span");
                 fcSpinner.className = "mf-fc-spinner";
@@ -5194,7 +5707,7 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
                 if (annotateSeededKeys.has(`${classificationId ?? ''}:${claim.text}`)) {
                     promoteAnnotateSeed(span);
                 }
-                paintAnnotateBadgeContent(badge, isAnnotatePending(span));
+                paintAnnotateBadgeContent(badge, isAnnotatePending(span), span);
             } else {
                 badge.innerHTML = plainLabel
                     ? escapeHtml(lbl)
@@ -5210,7 +5723,8 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
                 (span as any)._mfBadgePermanent = badge;
             }
             syncBadgeLoadingClass(badge);
-            return badge;
+            const currentBg = span.style.getPropertyValue("--mf-hl") || span.style.backgroundColor || (span.dataset.hoverBg ?? undefined);
+            return wrapBadgeInCap(badge, currentBg);
         };
 
         const isInPipeline = withBadge && classificationId ? processingOnHoldIds.has(classificationId) : false;
@@ -5226,6 +5740,7 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
 
         if (showPermanentBadge) {
             span.appendChild(createInlineBadge(true));
+            syncClaimBadgeLayout(span);
         } else if (annotateWorking) {
             // Working state, armed exactly once here. promoteAnnotateSeed
             // only arms state — the paint below is this branch's, so a
@@ -5249,11 +5764,13 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
             if (!flightNow) {
                 if (spanNeedsAnnotateBadge(span)) {
                     span.appendChild(createInlineBadge(true));
+                    syncClaimBadgeLayout(span);
                 } else if (claim.refreshing || isResearching) {
                     span.appendChild(createStandaloneSpinner(isRTL));
                 }
             } else if (isPointerOverSpan(span)) {
                 span.appendChild(createInlineBadge(false));
+                syncClaimBadgeLayout(span);
             } else {
                 span.appendChild(createStandaloneSpinner(isRTL));
             }
@@ -5288,6 +5805,7 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
                 if (piece.dataset.hoverBg) paintClaimBg(piece, piece.dataset.hoverBg);
                 if (piece !== last && !(piece as any)._mfBadgePermanent) {
                     piece.querySelector(".mf-inline-badge")?.remove();
+                    syncClaimBadgeLayout(piece);
                 }
             }
             if (last.querySelector(".mf-inline-badge")) {
@@ -5314,11 +5832,11 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
             // across a block boundary, or leftover formatting splits) so the
             // same highlight never shows three identical verdicts.
             last.appendChild(createInlineBadge(span.dataset.reclassifyOnHold === "true" || spanNeedsAnnotateBadge(span)));
+            syncClaimBadgeLayout(last);
         });
 
         span.addEventListener("mouseleave", (e) => {
             const siblings = claimHoverSiblings(span);
-            if (siblings.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) return;
             // Crossing one of the claim's own line gaps is no departure either —
             // measured from the pointer, since that is the one thing that says where
             // between the lines it is. Without this, moving down a highlight to its
@@ -5326,7 +5844,8 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
             // through, and only a crossing quick enough to re-enter and rebuild it
             // before anyone noticed ever worked. The same guard keeps a held badge
             // that re-wrapped off the pointer's line, which would otherwise be torn
-            // down on the move its own hover caused.
+            // down on the move its own hover caused. Both guards run before anything
+            // is undone — the tint included.
             if (inClaimHoverArea(span, e.clientX, e.clientY)) return;
             // And the verdict word's own hover widening the badge onto the next line
             // is no departure either: the pointer it carried the badge out from under
@@ -5334,6 +5853,13 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
             // stand down for exactly that — the frame the hold armed in has not yet
             // measured the reveal, so the positional guard above cannot see it.
             if (spanTeardownStandsDown(span, e.clientX, e.clientY)) return;
+            if (siblings.some(s => (s as any)._mfPopoverOpen || (s as any)._mfBadgePermanent)) {
+                // A permanent badge and an open popover are meant to outlive the pointer.
+                // The tint is not: it is the hover state itself, and returning here without
+                // repainting left these highlights hot for good.
+                restoreClaimTint(span);
+                return;
+            }
             disarmHoverClaim(span);
             teardownClaimHover(span);
         });
@@ -5711,7 +6237,8 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 el.dataset.mfCid = classification.id;
                 const oldRewritten = el.dataset.claimRewritten;
                 const oldVerdict = el.dataset.verdict;
-                const oldReasoning = el.dataset.reasoning;
+                const oldProbability = el.dataset.probability;
+                const oldVeracity = el.dataset.veracity;
                 const oldRefreshing = el.dataset.refreshing;
                 const isRefreshing = claim.refreshing;
                 // Whether this span carries the "always show the badge regardless of
@@ -5723,9 +6250,19 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 // (below) stays false, or the hover tint/badge can stick until the span
                 // is rebuilt from scratch (e.g. by scrolling away and back).
                 const hadPermanentBadge = !!(el as any)._mfBadgePermanent;
+                // The badge's own inputs — deliberately NOT the reasoning text. A streamed
+                // reasoning chunk changes nothing this block or the hover replay below
+                // paints, and counting it as a change rebuilt the badge and replayed the
+                // hover once per chunk: with the pointer resting on a streaming claim that
+                // re-fires the claim's own mouseenter, repainting the hover tint and
+                // re-summoning its badge over and over for as long as the stream ran. That
+                // is the flicker, and the tint it kept re-painting is what stayed hot on the
+                // way out. The reasoning still lands: it is stamped into the dataset below,
+                // and an open popover re-reads it on every update.
                 const changed =
                     oldVerdict !== label ||
-                    oldReasoning !== reasoning ||
+                    oldProbability !== String(claim.confidence ?? "") ||
+                    oldVeracity !== String(claim.veracity ?? "") ||
                     oldRefreshing !== (isRefreshing ? "true" : "") ||
                     oldRewritten !== (claim.rewritten ?? claim.text);
                 el.dataset.verdict = label;
@@ -5791,6 +6328,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         // and marker exactly as they are.
                         if (promoteAnnotateSeed(el)) {
                             el.querySelector(".mf-inline-badge")?.remove();
+                            syncClaimBadgeLayout(el);
                             removeAnnotateStandin(el);
                             ensureAnnotateStandin(el);
                             // No explicit resync here: promote drops the idle
@@ -5801,6 +6339,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     } else {
                         delete (el as any)._mfBadgePermanent;
                         el.querySelector(".mf-inline-badge")?.remove();
+                        syncClaimBadgeLayout(el);
                     }
                 }
                 el.style.opacity = "";
@@ -5827,10 +6366,12 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 if ((claim.reclassifyOnHold || isPipelineResearching) && !el.querySelector(".mf-inline-badge")) {
                     const badge = document.createElement("b");
                     badge.className = "mf-inline-badge";
-                    badge.style.cssText = `display: inline-flex; align-items: center; line-height: 1.15; padding: 0.12em 0.55em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTLEl ? '0' : '0.27em'}; margin-right: ${isRTLEl ? '0.27em' : '0'}; color: rgb(180, 180, 180); background: rgba(0,0,0,0.7); cursor: pointer;`;
+                    badge.style.cssText = `display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; position: relative; top: -0.142em; line-height: 1.15; padding: 0.12em 0.52em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTLEl ? '0' : '0.25em'}; margin-right: ${isRTLEl ? '0.25em' : '0'}; color: #ffffff; background: rgba(0,0,0,0.7); cursor: pointer;`;
                     badge.textContent = t("factCheckButton");
-                    el.appendChild(badge);
+                    const currentBg = el.style.getPropertyValue("--mf-hl") || el.style.backgroundColor;
+                    el.appendChild(wrapBadgeInCap(badge, currentBg));
                     pinBadgeLayout(badge);
+                    syncClaimBadgeLayout(el);
                     (el as any)._mfBadgePermanent = badge;
                 }
 
@@ -5862,7 +6403,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                             const landedLabel = landedPlain ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
                             landed.classList.remove("mf-annotate-badge");
                             landed.classList.toggle(VERDICT_BADGE_CLASS, !landedPlain);
-                            landed.style.color = landedPlain ? 'rgb(180, 180, 180)' : confidenceRgba(claim.confidence, 1, claim.veracity);
+                            landed.style.color = '#ffffff';
                             landed.style.marginLeft = isRTLEl ? '0' : '0.27em';
                             landed.style.marginRight = isRTLEl ? '0.27em' : '0';
                             landed.innerHTML = '';
@@ -5895,14 +6436,16 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     if (wantsBadge && !current) {
                         const nb = document.createElement("b");
                         nb.className = "mf-inline-badge";
-                        nb.style.cssText = `display: inline-flex; align-items: center; line-height: 1.15; padding: 0.12em 0.55em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTLEl ? '0' : '0.27em'}; margin-right: ${isRTLEl ? '0.27em' : '0'}; color: rgb(180, 180, 180); background: rgba(0,0,0,0.7); cursor: pointer;`;
+                        nb.style.cssText = `display: inline-flex; align-items: center; line-height: 1.15; padding: 0.12em 0.55em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTLEl ? '0' : '0.27em'}; margin-right: ${isRTLEl ? '0.27em' : '0'}; color: #ffffff; background: rgba(0,0,0,0.7); cursor: pointer;`;
                         if (needsAnnotateNow && !claim.reclassifyOnHold && !isPipelineResearching) {
                             paintAnnotateBadgeContent(nb, false);
                         } else {
                             nb.textContent = t("factCheckButton");
                             pinBadgeLayout(nb);
                         }
-                        el.appendChild(nb);
+                        const currentBg = el.style.getPropertyValue("--mf-hl") || el.style.backgroundColor;
+                        el.appendChild(wrapBadgeInCap(nb, currentBg));
+                        syncClaimBadgeLayout(el);
                         // Only the idle button owns the permanent marker; the
                         // pending branch can't reach here (excluded from
                         // wantsBadge), so this is always the idle state.
@@ -5923,9 +6466,10 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         // against a swap the block above just performed.)
                         if ((el as any)._mfBadgePermanent) delete (el as any)._mfBadgePermanent;
                         if (current.classList.contains("mf-annotate-badge") && isPointerOverSpan(el)) {
-                            paintAnnotateBadgeContent(current as HTMLElement, true);
+                            paintAnnotateBadgeContent(current as HTMLElement, true, el);
                         } else {
                             current.remove();
+                            syncClaimBadgeLayout(el);
                             ensureAnnotateStandin(el);
                             // Nudge an open popover clear of the shrunk trigger —
                             // the idle button's box is gone, same geometry the
@@ -5947,8 +6491,10 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     const standalone = el.querySelector(".mf-standalone-spinner");
                     if (loadingNow && !hasBadge && !standalone) {
                         el.appendChild(createStandaloneSpinner(isRTLEl));
+                        syncClaimBadgeLayout(el);
                     } else if ((!loadingNow || hasBadge) && standalone) {
                         standalone.remove();
+                        syncClaimBadgeLayout(el);
                     }
                 }
 
@@ -6010,13 +6556,11 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                         if (needsAnnotateHere && !isAnnotatePending(el)) {
                             paintAnnotateBadgeContent(badge as HTMLElement, false);
                         } else if (needsAnnotateHere) {
-                            paintAnnotateBadgeContent(badge as HTMLElement, true);
+                            paintAnnotateBadgeContent(badge as HTMLElement, true, el);
                         } else {
                             const plainLabel = isOnHold || pipelineResearching;
                             const newLabel = plainLabel ? t("factCheckButton") : verdictLabel(claim.confidence, claim.veracity, `${classification.id}:${claim.text}`);
-                            const newColor = plainLabel
-                                ? 'rgb(180, 180, 180)'
-                                : confidenceRgba(claim.confidence, 1, claim.veracity);
+                            const newColor = '#ffffff';
                             (badge as HTMLElement).style.color = newColor;
                             (badge as HTMLElement).style.marginLeft = isRTLEl ? '0' : '0.27em';
                             (badge as HTMLElement).style.marginRight = isRTLEl ? '0.27em' : '0';
@@ -6061,13 +6605,12 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
         }
     }
 
-    // Diagnostic for the hover-freeze bug: a full rebuild (as opposed to the in-place
-    // update path above, which explicitly calls resyncHoverAtPointer for exactly this
-    // reason) never re-syncs hover state for the freshly created spans. If the pointer
-    // is sitting over this tweet's text right when a rebuild fires — most likely because
-    // the host page's own re-render replaced our injected markup out from under us —
-    // that's a real candidate for the freeze, since the old span's real mouseenter state
-    // dies with the removed node and the new span never gets an equivalent one.
+    // Hover state does not survive a full rebuild: unlike the in-place update path above,
+    // these spans are new, so the old span's real mouseenter state dies with the removed
+    // node. The pointer resting over this tweet's text right when a rebuild fires — most
+    // likely because the host page's own re-render replaced our injected markup out from
+    // under us — is what the resync below exists for, and it has to land after the fresh
+    // spans' own deferred reveal to stick (see restoreHoverAfterClaimRebuild).
     // SAFETY: a full rebuild does `tweetTextEl.innerHTML = ""` and writes OUR segment text,
     // destroying whatever the host page currently has there. That is only ever correct when
     // our segments were derived from the same text the page is showing. If they weren't, we
@@ -6115,15 +6658,11 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
     // key, same as before.
     renderSegmentedTweet(tweetTextEl, segments, claims, batchId, classification.id, wrapPlain, stampedLocale);
 
-    // If the pointer was already resting over this tweet (see the diagnostic above),
-    // the just-destroyed old span's hover state died with it and the freshly built
-    // replacement never got an equivalent mouseenter — resync it now, same as the
-    // in-place update path does for its own state-changed-under-cursor case.
-    if (pointerInsideAtRebuild) {
-        for (const freshSpan of tweetTextEl.querySelectorAll<HTMLElement>(".mf-segment-claim")) {
-            resyncHoverAtPointer(freshSpan);
-        }
-    }
+    // If the pointer was already resting over this tweet (see the note above), the
+    // just-destroyed old span's hover state died with it and the freshly built replacement
+    // never got an equivalent mouseenter — resync it, same as the in-place update path does
+    // for its own state-changed-under-cursor case.
+    if (pointerInsideAtRebuild) restoreHoverAfterClaimRebuild(tweetTextEl);
 
     const fallbackDiv = article.querySelector(`[classification-id="${classification.id}"]`);
     if (fallbackDiv) fallbackDiv.remove();
@@ -6142,9 +6681,62 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
 
 let globalHandlersSetup = false;
 
+/** A wheel node — every spinner class in this file, and not the containers that merely hold one
+ *  (`.mf-spinner-slot` runs no animation). The two forms are the same set: the regex tests a
+ *  className we already hold, the list is what a subtree has to be searched with. */
+const MF_SPIN_SELECTOR = /(^|\s)mf-(fc-|sel-|refresh-)?spinner(\s|$)/;
+const MF_SPIN_QUERY = ".mf-fc-spinner, .mf-spinner, .mf-refresh-spinner, .mf-sel-spinner";
+/** The `mf-spin` keyframes' period, in ms. Kept beside the rule so the two move together. */
+const MF_SPIN_PERIOD_MS = 600;
+
+/** Point a wheel at the document-wide rotation phase for right now, so a wheel that replaced
+ *  another carries on from where that one was instead of restarting at the top. See the
+ *  observer in setupGlobalHandlers for why every wheel gets this. */
+function stampWheelPhase(el: HTMLElement): void {
+    // !important because the stylesheet's own `animation` shorthand is important for some wheels
+    // (`.mf-sel-spinner`) and would otherwise reset the longhand this sets.
+    el.style.setProperty("animation-delay", `-${((performance.now() % MF_SPIN_PERIOD_MS) / 1000).toFixed(3)}s`, "important");
+}
+
 function setupGlobalHandlers() {
     if (globalHandlersSetup) return;
     globalHandlersSetup = true;
+
+    // A wheel is a CSS animation, and one restarts from 0deg whenever its node is replaced —
+    // which this codebase does constantly: a hover mints a fresh badge with a fresh wheel in
+    // it, the hover teardown stands in another, a reconcile or an innerHTML repaint mints the
+    // popover's. Every one of those restarts snapped the wheel back to the top mid-turn, so a
+    // wheel rebuilt under a moving pointer visibly reset and span up again.
+    //
+    // Anchor them all to one document-wide clock instead: a negative delay puts a wheel at the
+    // phase that clock says it should be at, so a replacement picks up where the node it replaced
+    // left off and the rotation never restarts (and every wheel on screen turns in step). Stamped
+    // the moment a wheel enters the document, so no frame is ever painted at the wrong phase —
+    // the delay is in place before the animation is created, and a node re-inserted later is
+    // re-stamped to the phase it should be at now rather than the one it was born with.
+    //
+    // One observer for every creation site rather than a call at each: the wheels are minted in
+    // fifteen-odd places (badge factories, reconciles, popover rows, an innerHTML template), and
+    // anything that rebuilds one would otherwise silently reintroduce the reset. Both filters
+    // below are per-element and O(1), so the host pages' own churn is rejected without a tree
+    // walk — a wheel is only ever added to one of our own containers, or arrives inside one.
+    const couldHoldWheel = (el: Element): boolean => {
+        const cls = el.className;
+        return (typeof cls === "string" && cls.indexOf("mf-") !== -1)
+            || el.hasAttribute("mf-unmatched") || el.hasAttribute("classification-id");
+    };
+    const wheelObserver = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+            if (m.type !== "childList" || m.addedNodes.length === 0) continue;
+            for (const node of Array.from(m.addedNodes)) {
+                if (node.nodeType !== 1) continue;
+                const el = node as Element;
+                if (MF_SPIN_SELECTOR.test(typeof el.className === "string" ? el.className : "")) stampWheelPhase(el as HTMLElement);
+                else if (couldHoldWheel(el)) for (const wheel of Array.from(el.querySelectorAll<HTMLElement>(MF_SPIN_QUERY))) stampWheelPhase(wheel);
+            }
+        }
+    });
+    wheelObserver.observe(document.body, { childList: true, subtree: true });
 
     // A badge that grows on hover can wrap away from the pointer that grew it; these two keep
     // it open across that move. mouseover arms the watch, mousemove finds out whether the
@@ -6165,7 +6757,21 @@ function setupGlobalHandlers() {
     document.addEventListener("mousemove", (e) => {
         lastPointer = { x: e.clientX, y: e.clientY };
         updateBadgeHold(e.clientX, e.clientY);
-        if (!isTouchInput()) settleHoverClaims(e.clientX, e.clientY);
+        if (!isTouchInput()) {
+            settleHoverClaims(e.clientX, e.clientY);
+            settlePreviewPopover(e.clientX, e.clientY);
+            sweepStrayTints(e.clientX, e.clientY);
+            sweepStrayBadges(e.clientX, e.clientY);
+        }
+    });
+
+    // The pointer leaving the document is the one departure no element-level boundary can name:
+    // the element it was over may sit flush against the edge, and a preview's countdown reading
+    // the last inside position would stand down as if the pointer had never left. It has left the
+    // document, so the reading is dropped — nothing here is under the pointer any more.
+    document.documentElement.addEventListener("mouseleave", () => {
+        lastPointer = null;
+        if (previewPopoverState) schedulePreviewPopoverDismiss(previewPopoverState.trigger);
     });
 
     // A tap is a hover the browser holds on what it landed on, but the two are read at
@@ -6451,7 +7057,7 @@ export function setupArticleHandlers(articleEl: Element) {
           const badge = target.querySelector(".mf-inline-badge");
           if (badge) {
             const isRTL = isRTLLocale(getEffectiveUILocale());
-            (badge as HTMLElement).style.color = 'rgb(180, 180, 180)';
+            (badge as HTMLElement).style.color = '#ffffff';
             (badge as HTMLElement).style.marginLeft = isRTL ? '0' : '0.27em';
             (badge as HTMLElement).style.marginRight = isRTL ? '0.27em' : '0';
             badge.innerHTML = '';
@@ -6472,6 +7078,16 @@ export function setupArticleHandlers(articleEl: Element) {
           if (classificationId) {
             const ct = target.dataset.claimText;
             individuallyClickedOnHoldClaims.add(`${classificationId}:${ct}`);
+            selectionButtonShown.delete(classificationId);
+            selectionButtonArmed.delete(classificationId);
+            if (!onHoldScrollStates.has(classificationId) && ct) {
+              onHoldScrollStates.set(classificationId, {
+                originalScrollY: window.scrollY,
+                pendingClaimTexts: new Set([ct])
+              });
+            } else if (onHoldScrollStates.has(classificationId) && ct) {
+              onHoldScrollStates.get(classificationId)!.pendingClaimTexts.add(ct);
+            }
             mfBus.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
               detail: { classificationId, claimText: ct }
             }));
@@ -6507,7 +7123,7 @@ export function setupArticleHandlers(articleEl: Element) {
           const badge = target.querySelector(".mf-inline-badge") as HTMLElement | null;
           if (badge) {
             const isRTL = isRTLLocale(getEffectiveUILocale());
-            badge.style.color = 'rgb(180, 180, 180)';
+            badge.style.color = '#ffffff';
             badge.style.marginLeft = isRTL ? '0' : '0.27em';
             badge.style.marginRight = isRTL ? '0.27em' : '0';
             badge.innerHTML = '';
@@ -6528,6 +7144,16 @@ export function setupArticleHandlers(articleEl: Element) {
           if (classificationId) {
             const ct = target.dataset.claimText!;
             individuallyClickedOnHoldClaims.add(`${classificationId}:${ct}`);
+            selectionButtonShown.delete(classificationId);
+            selectionButtonArmed.delete(classificationId);
+            if (!onHoldScrollStates.has(classificationId) && ct) {
+              onHoldScrollStates.set(classificationId, {
+                originalScrollY: window.scrollY,
+                pendingClaimTexts: new Set([ct])
+              });
+            } else if (onHoldScrollStates.has(classificationId) && ct) {
+              onHoldScrollStates.get(classificationId)!.pendingClaimTexts.add(ct);
+            }
             mfBus.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
               detail: { classificationId, claimText: ct }
             }));
@@ -6620,8 +7246,11 @@ function buildPopoverShell(trigger: HTMLElement, isPreview: boolean): { popover:
         targetTrigger.style.opacity = "";
         delete (targetTrigger as any)._mfPopoverOpen;
         const badge = targetTrigger.querySelector(".mf-inline-badge");
-        if (badge) badge.remove();
-        paintClaimBg(targetTrigger, restHighlightColor(targetTrigger));
+        if (badge) {
+            badge.remove();
+            syncClaimBadgeLayout(targetTrigger);
+        }
+        restoreClaimTint(targetTrigger);
         console.log(`[misinfo] onClose: bgAfter=${targetTrigger.style.backgroundColor}, stillHasBadge=${!!targetTrigger.querySelector(".mf-inline-badge")}`);
         removeAttachedOnboardingFor(popover);
         popover.remove();
@@ -6697,6 +7326,7 @@ function showPopover(
             // words — nothing to click, so nothing to pin.
             trigger.querySelector(".mf-standalone-spinner")?.remove();
             trigger.appendChild((trigger as any)._mfCreateBadge(trigger.dataset.reclassifyOnHold === "true" || spanWantsIdleAnnotate(trigger)));
+            syncClaimBadgeLayout(trigger);
             // On touch the badge only ever appears here, after placement — and at the end of
             // a line it can wrap the trigger's box down under the window just placed.
             shiftPopoverBelowBadge(trigger);
@@ -6707,8 +7337,11 @@ function showPopover(
         if (popover && popover.parentElement) popover.remove();
         delete (trigger as any)._mfPopoverOpen;
         const badge = trigger.querySelector(".mf-inline-badge");
-        if (badge && !spanWantsIdleAnnotate(trigger)) badge.remove();
-        paintClaimBg(trigger, restHighlightColor(trigger));
+        if (badge && !spanWantsIdleAnnotate(trigger)) {
+            badge.remove();
+            syncClaimBadgeLayout(trigger);
+        }
+        restoreClaimTint(trigger);
     }
 }
 
@@ -7564,6 +8197,12 @@ const PREVIEW_BASE_OPACITY = 0.75;
 
 function dismissPreviewPopover() {
     if (!previewPopoverState) return;
+    // A dismissed state leaves no countdown behind it: the timer would otherwise fire against
+    // whatever preview the same trigger holds next.
+    if (previewPopoverState.leaveTimer) {
+        clearTimeout(previewPopoverState.leaveTimer);
+        previewPopoverState.leaveTimer = null;
+    }
     const t = previewPopoverState.trigger;
     if (t) disarmHoverClaim(t);
     if (t && !(t as any)._mfPopoverOpen) {
@@ -7578,7 +8217,7 @@ function dismissPreviewPopover() {
             badge.remove();
             if (isAnnotatePending(t)) ensureAnnotateStandin(t);
         }
-        paintClaimBg(t, restHighlightColor(t));
+        restoreClaimTint(t);
     }
     const popover = previewPopoverState.popover;
     // Remove the attached onboarding popovers along with their preview.
@@ -7596,6 +8235,58 @@ function dismissPreviewPopover() {
         popover.removeEventListener("transitionend", onTransitionEnd);
         popover.remove();
     }, 250);
+}
+
+/** Hand a hover preview to the claim span that replaced the one it was hung on.
+ *
+ *  A rebuild is not a departure: it replaces the span under a stationary pointer several times
+ *  through a single run — the verdict landing, every reasoning chunk, the annotation — while
+ *  the claim itself never moves out from under the pointer. Taking the detached trigger as the
+ *  end of the hover dismissed the semi-transparent window each time, and the fresh dwell
+ *  re-opened it a second later, so the window blinked out and back exactly while the run was
+ *  streaming. The replacement carries the same claim text, so re-point the window at it and let
+ *  the pointer's own position decide the rest — the leave machinery takes it down as usual once
+ *  the pointer really is off the claim.
+ *
+ *  Returns the span it adopted, or null when there is nothing to adopt: no preview, a preview
+ *  hanging off the Fact-Checked button (its stand-in is no claim, and that window belongs to the
+ *  button's own hover), a trigger that is still connected, no live replacement, or a pointer
+ *  that is no longer on the claim at all. */
+function adoptDetachedPreviewTrigger(only?: HTMLElement): HTMLElement | null {
+    const state = previewPopoverState;
+    if (!state) return null;
+    if (only && state.popover !== only) return null;
+    const trigger = state.trigger;
+    if (!trigger || trigger.isConnected) return null;
+    if ((trigger as any)._mfButtonPreview || (trigger as any)._mfVirtualLeft) return null;
+    const dbClaimText = trigger.dataset.dbClaimText;
+    const claimText = trigger.dataset.claimText;
+    if (!dbClaimText && !claimText) return null;
+    // The pointer is the authority: a claim's text can appear more than once on a page, and only
+    // the replacement actually under the pointer is this window's. Two passes over the same
+    // text-matched set, because "under the pointer" has two measures and they disagree exactly
+    // where this matters: a pointer resting in the leading between a wrapped claim's lines — the
+    // position a reader holds while reading the window this function exists to keep alive — is on
+    // the claim by the guards' silhouette and off it by the strict hit-test. Only fall back when
+    // the strict pass finds nothing, so a pointer genuinely on the text still resolves first.
+    const candidates = Array.from(document.querySelectorAll<HTMLElement>(".mf-segment-claim")).filter(el =>
+        dbClaimText ? el.dataset.dbClaimText === dbClaimText : el.dataset.claimText === claimText);
+    const live = candidates.find(isPointerOverSpan) ?? candidates.find(isPointerInClaimHoverArea);
+    if (!live) return null;
+    (state.popover as any)._mfTrigger = live;
+    state.trigger = live;
+    // The replacement never hovered on its own, so the badge the window sits over has to be
+    // minted here — the same hand-off the pinned path makes in updateOpenPopover. (The dwelling
+    // hover that follows mints it too, but only when the pointer re-enters, which it does not.)
+    if (!live.querySelector(".mf-inline-badge") && (live as any)._mfCreateBadge) {
+        live.querySelector(".mf-standalone-spinner")?.remove();
+        live.appendChild((live as any)._mfCreateBadge(live.dataset.reclassifyOnHold === "true" || spanWantsIdleAnnotate(live)));
+        shiftPopoverBelowBadge(live);
+    }
+    // Deliberately no _mfPopoverOpen: a preview never carries it (showPreviewPopover refuses a
+    // trigger that does), and dismissPreviewPopover's cleanup hangs off its absence.
+    armHoverClaim(live);
+    return live;
 }
 
 function setPreviewPopoverOpacity(opacity: number) {
@@ -7632,7 +8323,7 @@ export function closePopover(trigger?: HTMLElement) {
                 badge.remove();
                 if (isAnnotatePending(t)) ensureAnnotateStandin(t);
             }
-            paintClaimBg(t, restHighlightColor(t));
+            restoreClaimTint(t);
         }
         removeAttachedOnboardingFor(p as HTMLElement);
         p.remove();
@@ -7727,10 +8418,21 @@ function schedulePreviewPopoverDismiss(trigger: HTMLElement) {
     }
     if (previewPopoverState.leaveTimer) clearTimeout(previewPopoverState.leaveTimer);
     previewPopoverState.leaveTimer = setTimeout(() => {
+        if (!previewPopoverState) return;
+        // Another preview can take over while this countdown runs — the next claim's hover, or
+        // the Fact-Checked button's list. The countdown belongs to the trigger that armed it,
+        // and `isHoveringPreviewRelated` answers "not hovering" for any other owner, so without
+        // this check it would dismiss a preview the pointer is sitting on.
+        if (previewPopoverState.trigger !== trigger) return;
+        // The countdown is spent whether or not it dismisses. Standing down with the timer still
+        // recorded as pending would bar every later re-arm — the backstop refuses to start a
+        // countdown while one is "running" — and leave the popover with no way down.
+        previewPopoverState.leaveTimer = null;
         if (isHoveringPreviewRelated(trigger)) return;
         dismissPreviewPopover();
     }, 1000);
 }
+
 
 /** Show a preview popover anchored to the Fact-Checked button for a given claim.
  *  The preview follows the same hover rules as highlight previews: opaque while
@@ -7747,6 +8449,7 @@ function showPreviewPopoverFromButton(anchorBtn: HTMLElement, claim: Claim, clas
     const trigger = document.createElement("span");
     (trigger as any)._mfButtonPreview = true;
     (trigger as any)._mfAnchorEl = claimEl;
+    (trigger as any)._mfButtonEl = anchorBtn;
     trigger.style.cssText = "position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;";
     trigger.dataset.claimRewritten = (claim.rewritten && claim.rewritten !== claim.text) ? claim.rewritten : claim.text;
     trigger.dataset.claimText = claim.text;
@@ -7955,6 +8658,7 @@ const ANNOTATE_AUTO_PENDING_TIMEOUT_MS = 180000;
  *  no key yet). Module-level so the pending paint survives a full span
  *  rebuild, which recreates the dataset from the claim (no pending flag). */
 const annotatePendingClaims = new Set<string>();
+const annotatePendingTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 /** Stable key for the pending set, from a span's live dataset. */
 function annotateKeyForSpan(span: HTMLElement): string {
@@ -7992,7 +8696,12 @@ function clearAnnotateSeed(key: string): void {
 function clearAnnotateStateForTweet(tweetId: string): void {
     const prefix = `${tweetId}:`;
     for (const k of annotateSeededKeys) if (k.startsWith(prefix)) annotateSeededKeys.delete(k);
-    for (const k of annotatePendingClaims) if (k.startsWith(prefix)) annotatePendingClaims.delete(k);
+    for (const k of annotatePendingClaims) {
+        if (k.startsWith(prefix)) {
+            annotatePendingClaims.delete(k);
+            clearAnnotateTimeoutForKey(k);
+        }
+    }
 }
 
 /** Whether the span's claim has an annotation run in flight. */
@@ -8127,14 +8836,70 @@ function spanWantsIdleAnnotate(span: HTMLElement): boolean {
     return spanNeedsAnnotateBadge(span) && !isAnnotateFlight(span);
 }
 
+/** Clear a claim key's pending-annotate timeout, if any. */
+function clearAnnotateTimeoutForKey(key: string): void {
+    const timer = annotatePendingTimers.get(key);
+    if (timer !== undefined) {
+        clearTimeout(timer);
+        annotatePendingTimers.delete(key);
+    }
+}
+
 /** Clear a span's pending-annotate timeout, if any. */
 function clearAnnotateTimeout(span: HTMLElement): void {
+    const key = annotateKeyForSpan(span);
+    clearAnnotateTimeoutForKey(key);
     const timer = (span as any)._mfAnnotateTimer as ReturnType<typeof setTimeout> | undefined;
     if (timer !== undefined) {
         clearTimeout(timer);
         delete (span as any)._mfAnnotateTimer;
     }
 }
+
+/** Reset the pending-annotate state for a claim key immediately (e.g. on timeout or failure). */
+function resetAnnotatePendingForKey(key: string): void {
+    clearAnnotateTimeoutForKey(key);
+    annotatePendingClaims.delete(key);
+
+    const colonIdx = key.indexOf(":");
+    const cid = colonIdx !== -1 ? key.slice(0, colonIdx) : "";
+    const claimText = colonIdx !== -1 ? key.slice(colonIdx + 1) : "";
+    const matchingSpans = Array.from(document.querySelectorAll<HTMLElement>('.mf-segment-claim')).filter(s => {
+        return (!cid || s.dataset.mfCid === cid) && (!claimText || s.dataset.claimText === claimText);
+    });
+
+    for (const target of matchingSpans) {
+        delete (target as any)._mfAnnotateTimer;
+        if (spanNeedsAnnotateBadge(target)) {
+            const b = target.querySelector(".mf-inline-badge.mf-annotate-badge") as HTMLElement | null;
+            if (b) {
+                paintAnnotateBadgeContent(b, false);
+                (target as any)._mfBadgePermanent = b;
+                pinBadgeLayout(b);
+                syncClaimBadgeLayout(target);
+            } else {
+                target.querySelector(".mf-standalone-spinner")?.remove();
+                const create = (target as any)._mfCreateBadge as ((permanent: boolean) => HTMLElement) | undefined;
+                if (create && !target.querySelector(".mf-inline-badge")) {
+                    const newBadge = create(true);
+                    target.appendChild(newBadge);
+                    pinBadgeLayout(newBadge);
+                    syncClaimBadgeLayout(target);
+                }
+            }
+        }
+    }
+    updateOpenPopover();
+}
+
+mfBus.addEventListener('mf-annotate-failed', ((e: CustomEvent) => {
+    const detail = e.detail;
+    if (!detail) return;
+    const key = detail.key || (detail.classificationId && detail.claimText ? `${detail.classificationId}:${detail.claimText}` : null);
+    if (key) {
+        resetAnnotatePendingForKey(key);
+    }
+}) as EventListener);
 
 /** Arm the pending-annotate timer for a claim key WITHOUT dispatching a run:
  *  shared by the Flow B tap's window and the Flow A newly-settled seed (see
@@ -8146,37 +8911,15 @@ function clearAnnotateTimeout(span: HTMLElement): void {
 function armAnnotatePending(key: string, span: HTMLElement | null, timeoutMs: number): void {
     if (annotatePendingClaims.has(key)) return;
     annotatePendingClaims.add(key);
+    clearAnnotateTimeoutForKey(key);
+
+    const timer = setTimeout(() => {
+        resetAnnotatePendingForKey(key);
+    }, timeoutMs);
+
+    annotatePendingTimers.set(key, timer);
     if (span) {
-        clearAnnotateTimeout(span);
-        const target = span;
-        (target as any)._mfAnnotateTimer = setTimeout(() => {
-            delete (target as any)._mfAnnotateTimer;
-            annotatePendingClaims.delete(key);
-            if (!target.isConnected) return;
-            // No key landed (failure/skip broadcasts nothing): the idle button
-            // returns so a run can be retried. If the pointer is here, summon
-            // it now (no fresh mouseenter will fire under a stationary
-            // cursor); otherwise the teardown that owns the hover-only pending
-            // badge takes it and the spinner stand-in lapses with the flight.
-            // A late key still reconciles through the normal in-place path.
-            if (spanNeedsAnnotateBadge(target)) {
-                const b = target.querySelector(".mf-inline-badge.mf-annotate-badge") as HTMLElement | null;
-                if (b) {
-                    paintAnnotateBadgeContent(b, false);
-                    (target as any)._mfBadgePermanent = b;
-                } else {
-                    // No badge in hand (the hover-only pending badge was torn
-                    // down, or the flight never had one — stand-in only): the
-                    // idle button is permanent by spec, so mint it outright
-                    // rather than waiting for the next hover. Pending is clear
-                    // (just deleted above), so the factory marks it.
-                    target.querySelector(".mf-standalone-spinner")?.remove();
-                    const create = (target as any)._mfCreateBadge as ((permanent: boolean) => HTMLElement) | undefined;
-                    if (create && !target.querySelector(".mf-inline-badge")) target.appendChild(create(true));
-                }
-            }
-            updateOpenPopover();
-        }, timeoutMs);
+        (span as any)._mfAnnotateTimer = timer;
     }
 }
 
@@ -8238,32 +8981,52 @@ function triggerAnnotateForSpan(target: HTMLElement): void {
         // drop the idle button's permanent marker — the open popover keeps the
         // element alive, and hover/teardown rules own it from here.
         delete (target as any)._mfBadgePermanent;
-        if (badge) paintAnnotateBadgeContent(badge, true);
+        if (badge) paintAnnotateBadgeContent(badge, true, target);
         return;
     }
     armAnnotatePending(key, target, ANNOTATE_PENDING_TIMEOUT_MS);
     // The idle button becomes the working state: same hover-only rule — the
     // tap's popover holds the element, teardown/hover own the marker.
     delete (target as any)._mfBadgePermanent;
-    if (badge) paintAnnotateBadgeContent(badge, true);
+    if (badge) paintAnnotateBadgeContent(badge, true, target);
     mfBus.dispatchEvent(new CustomEvent('mf-annotate-claim', {
         detail: { classificationId, claimText }
     }));
 }
 
 /** Paint an existing badge element as the Annotate affordance (idle "Annotate"
- *  or pending "Annotating" + spinner). Grey button chrome like the Fact-Check
- *  button — never the verdict badge. Shared by the badge factory (fresh spans)
- *  and the in-place reconcile (the factory is out of scope there). */
-function paintAnnotateBadgeContent(badge: HTMLElement, pending: boolean): void {
+ *  or the pending flight). Shared by the badge factory (fresh spans) and the
+ *  in-place reconcile (the factory is out of scope there).
+ *
+ *  A pending flight shows the claim's own verdict with the spinner on it rather
+ *  than the word "Annotating": the verdict is already known — it is why the claim
+ *  carries an Annotate affordance at all — so the run only has to add the wheel
+ *  and settling only has to take it away again. The `mf-annotate-badge` class
+ *  stays on (four call sites look the flight up by it); `VERDICT_BADGE_CLASS`
+ *  joins it so the percentage slots keep their hover reveal.
+ *
+ *  Falls back to the word when the badge is painted without its span. */
+function paintAnnotateBadgeContent(badge: HTMLElement, pending: boolean, span?: HTMLElement): void {
     badge.classList.remove(VERDICT_BADGE_CLASS);
     badge.classList.add("mf-annotate-badge");
-    badge.style.color = 'rgb(180, 180, 180)';
+    badge.style.color = '#ffffff';
     const isRTL = isRTLLocale(getEffectiveUILocale());
     badge.style.marginLeft = isRTL ? '0' : '0.27em';
     badge.style.marginRight = isRTL ? '0.27em' : '0';
     badge.innerHTML = '';
-    if (pending) {
+    const s = span;
+    const pendingProb = s ? parseFloat(s.dataset.probability ?? "") : NaN;
+    if (pending && s && !isNaN(pendingProb)) {
+        const rawVer = parseFloat(s.dataset.veracity ?? "");
+        badge.classList.add(VERDICT_BADGE_CLASS);
+        badge.innerHTML = verdictBadgeHtml(pendingProb, isNaN(rawVer) ? undefined : rawVer, annotateKeyForSpan(s));
+        const sp = document.createElement("span");
+        sp.className = "mf-fc-spinner";
+        sp.style.marginLeft = isRTL ? "0" : "0.27em";
+        sp.style.marginRight = isRTL ? "0.27em" : "0";
+        if (isRTL) badge.appendChild(sp);
+        else badge.insertBefore(sp, badge.firstChild);
+    } else if (pending) {
         const sp = document.createElement("span");
         sp.className = "mf-fc-spinner";
         if (isRTL) {
@@ -8279,6 +9042,7 @@ function paintAnnotateBadgeContent(badge: HTMLElement, pending: boolean): void {
         badge.textContent = t("annotateButton");
     }
     syncBadgeLoadingClass(badge);
+    pinBadgeLayout(badge);
 }
 
 /** Loading badges (spinner inside) drop the settled 0.15em optical nudge. */
@@ -8341,7 +9105,10 @@ function annotationRanges(annotations: Record<string, Record<string, string>>, p
             if (!m) return false;
             const s = Number(m[1]);
             const e = Number(m[2]);
-            return Number.isInteger(s) && Number.isInteger(e) && s >= 0 && e > s;
+            // `e === s` is a zero-width insertion point — the claim-leading insertion the agent
+            // emits under an empty-string key. No renderer draws a strike for it, so it needs no
+            // width to survive.
+            return Number.isInteger(s) && Number.isInteger(e) && s >= 0 && e >= s;
         });
         if (valid.length === 0) continue;
         let score = 0;
@@ -8375,7 +9142,7 @@ function annotationRanges(annotations: Record<string, Record<string, string>>, p
             if (!m) continue;
             const s = Number(m[1]);
             const e = Number(m[2]);
-            if (!Number.isInteger(s) || !Number.isInteger(e) || s < 0 || e <= s) continue;
+            if (!Number.isInteger(s) || !Number.isInteger(e) || s < 0 || e < s) continue;
             pairs.push({ s, e, corr: String(corr ?? '') });
         }
         pairs.sort((a, b) => ((b.e - b.s) - (a.e - a.s)) || a.s - b.s || a.e - b.e);
@@ -8464,7 +9231,10 @@ export function repaintInlineAnnotations(
     for (const r of abs) {
         const s = r.s - segStart;
         const e = r.e - segStart;
-        if (e <= 0 || s >= text.length) continue;
+        // A zero-width range is an insertion point: it has no width to strike and no width
+        // that could fall outside the segment, so only its own bounds can disqualify it. Every
+        // other non-positive end is a range belonging to text before this segment.
+        if (s === e ? s < 0 || s > text.length : e <= 0 || s >= text.length) continue;
         rel.push({ s: Math.max(0, s), e: Math.min(text.length, e), corr: r.corr });
     }
     const sig = strikeSigForRanges(rel);
@@ -8500,12 +9270,7 @@ export function repaintInlineAnnotations(
                     const inner = document.createElement("span");
                     inner.textContent = sub;
                     wrap.appendChild(inner);
-                    const line = document.createElement("span");
-                    line.className = "mf-strike-line";
-                    line.style.backgroundColor = red;
-                    wrap.appendChild(line);
-                    pinStrikeLayout(wrap, inner, line);
-                    pinInline(wrap, { "white-space": "pre-wrap" });
+                    pinStrikeLayout(wrap, inner);
                 }
                 frag.appendChild(wrap);
             }
@@ -8530,6 +9295,8 @@ export function repaintInlineAnnotations(
                 "line-height": "1",
                 "vertical-align": "baseline",
                 "font-weight": "700",
+                "font-family": '"MFKalam", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Marker Felt", "Comic Sans MS", cursive',
+                "font-size": "1.12em",
             });
             corr.textContent = `${padBefore ? " " : ""}${shown}${padAfter ? " " : ""}`;
             frag.appendChild(corr);
@@ -8620,9 +9387,12 @@ function resolveTriggerAnnotations(trigger: HTMLElement): { dict: Record<string,
         for (const [range, corr] of entries) {
             const parts = range.split(',');
             const s = parseInt(parts[0] ?? "", 10), e = parseInt(parts[1] ?? "", 10);
-            if (isNaN(s) || isNaN(e) || s < 0 || e <= s) { ok = false; break; }
+            if (isNaN(s) || isNaN(e) || s < 0 || e < s) { ok = false; break; }
             const rs = s - segStart, re = e - segStart;
-            if (re <= 0 || rs >= spanText.length) { ok = false; break; }
+            // Zero-width = an insertion point, as in repaintInlineAnnotations. This resolver
+            // fails the WHOLE dict on one range that does not land inside the span, so a
+            // claim-leading insertion rejected here would blank every correction the dict has.
+            if (rs === re ? rs < 0 || rs > spanText.length : re <= 0 || rs >= spanText.length) { ok = false; break; }
             rel.push({ s: Math.max(0, rs), e: Math.min(spanText.length, re), corr: String(corr ?? '') });
         }
         if (ok) {
@@ -8677,7 +9447,27 @@ export function updateOpenPopover() {
         let trigger = (popover as any)._mfTrigger as HTMLElement | undefined;
         if (!trigger) return;
 
-        if (!trigger.isConnected) {
+        if (popover.dataset.preview === "true") {
+            // A preview's trigger is transient by nature: the claim span a rebuild threw away,
+            // or the stand-in span the Fact-Checked button's hover list parks on the claim's
+            // rect. A rebuilt-away span is not a departure, though — the pointer is still on
+            // the claim it was on, and dismissing here is what made the semi-transparent window
+            // blink out as the verdict landed and again when the annotation did. So hand the
+            // window to the replacement where there is one. (No `_mfPopoverOpen` goes with it:
+            // a preview never carries that flag, and it is the flag's absence that lets
+            // dismissPreviewPopover clean the claim up when the pointer finally leaves.)
+            if (!trigger.isConnected) {
+                const adopted = adoptDetachedPreviewTrigger(popover);
+                if (!adopted) {
+                    // Nothing to hand it to: the button's stand-in trigger, whose window belongs
+                    // to the button's own hover, or a pointer that has left the claim. Only
+                    // dismiss what this popover owns — another path's preview is not ours.
+                    if (previewPopoverState?.popover === popover) dismissPreviewPopover();
+                    return;
+                }
+                trigger = adopted;
+            }
+        } else if (!trigger.isConnected) {
             const dbClaimText = trigger.dataset.dbClaimText;
             const claimText = trigger.dataset.claimText;
             const currentTrigger = Array.from(document.querySelectorAll<HTMLElement>(".mf-segment-claim")).find(el => {

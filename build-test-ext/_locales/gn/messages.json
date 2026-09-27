@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Ohecha ha omomba'eguasu marandu japu tweets-pe AI análisis rupive.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Añete",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Japu",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ndojeikuaái",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Jehechakuaa",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Jehechakuaa|Jeporeka|Jeporandu|Ñemyesakã|Ñemopotĩ|Jehesa'ỹijo|Py'amongeta|Jeikuaa|Jehesape'a|Jetopa|Ñemongeta|Jehupyty|Jeikũmby|Ñemomarandu|Jehecha|Jeporavo|Ñemboguata|Jepy'apy|Ñemoag̃uĩ|Jehechauka|Jesarekokuaa|Ñemyatyrõ|Ñembohovái|Jekuaauka|Jehesarekokuaa",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Ikatúva asy",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ikatúva",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Ikatu",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Hetakue",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Oñembohováiva",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Peteĩchante",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ndatuicháiva",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Monde",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Ehechauka jey opaite mba'e he'i ko tweet-pe",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ehesaʼỹijo jey ko mba'e",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Jehechakuaa",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Mbojehecha",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Oñembojehecha",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Ombohasa Jehechakuaa",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Ombohasa",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ha'e",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ojehechakuaáma",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Ejevy",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Ehechauka",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Eñomi",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Jehechakuaa",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Jehechakuaa",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Mbohekoha",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Saldo"
+  },
+  "gifted": {
+    "message": "Ojeme’ẽva’ekue"
+  },
+  "customTopup": {
+    "message": "Nemba’etee"
+  },
+  "customAmountLabel": {
+    "message": "Nerecarga repykue tee dólar estadounidense-pe"
+  },
+  "increase": {
+    "message": "Mbotuichave"
+  },
+  "decrease": {
+    "message": "Mbomichĩ"
+  },
+  "topUpBalance": {
+    "message": "Emyenyhẽ ne saldo"
+  },
+  "processing": {
+    "message": "Ojejapo hína…"
+  },
+  "checkoutError": {
+    "message": "Ndaikatúi oñepyrũ pago. Eha’ã jey."
+  },
+  "termsOfService": {
+    "message": "Servicio Rembiapoukapy"
+  },
+  "privacyPolicy": {
+    "message": "Ñemigua Política"
+  },
+  "disclaimerAgree": {
+    "message": "Emyenyhẽvo, eñe’ẽme’ẽ ore %TOS% ha %PRIVACY% rehe."
+  },
+  "disclaimerFx": {
+    "message": "Ikatu ojeporu costo cambio de moneda USD’ỹ moneda-pe reipagase."
+  },
+  "signOut": {
+    "message": "Ejesẽ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Eikutu ramo %BTN%, ojehechauka umi mba'ekuaa ha ojejapata ne saldo"
+  },
+  "onboardDisinfactTap": {
+    "message": "Eikutu mbeguekatu ramo %BTN%, ojehechauka umi mba'ekuaa ha ojejapata ne saldo"
+  },
+  "onboardLocalize": {
+    "message": "Emboguapývo %BTN% emohenda jey umi mba’e ojehecharamovéva ha okobráta nde saldo"
+  },
+  "onboardAnnotate": {
+    "message": "Emboguapývo %BTN% rehecha pe reclamo ojejavypa ha okobráta nde saldo"
+  },
+  "onboardWillCharge": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "onboardFactcheck": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "onboardTranslations": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "onboardRefreshes": {
+    "message": "Eikutu ramo %BTN%, ojejapata ne saldo"
+  },
+  "topUp": {
+    "message": "Myanyhẽ"
+  },
+  "showMore": {
+    "message": "Ehechauka hetave"
+  },
+  "showLess": {
+    "message": "Ehechauka sa'ive"
+  },
+  "landingTagline1": {
+    "message": "Ehechauka añetegua. Ejuhu japu."
+  },
+  "landingTagline2": {
+    "message": "Ndaipóri vema japu. Añetegua añónte."
+  },
+  "continueWithX": {
+    "message": "Eku'e X ndive"
+  },
+  "continueWithGoogle": {
+    "message": "Eku'e Google ndive"
+  },
+  "continueWithApple": {
+    "message": "Eku'e Apple ndive"
+  },
+  "lastUsed": {
+    "message": "Ojeporu paha"
+  },
+  "cleanupTagline": {
+    "message": "Emopotĩ ne feed X-pe."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Estados Unidos ryepýpe, umi oikóva Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina del Norte, Dakota del Norte, Oklahoma, Oregon, Pennsylvania, Carolina del Sur, Dakota del Sur, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming-pe añoite ikatu oiporu DisinfaX ha omyanyhẽ ipirapire; Washington, D.C., opa umi tetã'i Estados Unidos mba'éva, ha opa estado ndojeheróiva oñemboyke. Estados Unidos okápe, oĩ Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Japón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam, ha Suiza-pe."
+  },
+  "factCheckAllButton": {
+    "message": "Ejehechakuaa opavavéva"
+  },
+  "factCheckButton": {
+    "message": "Ejehechakuaa"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX ikatu ojapo javy. Ehecha porã umi marandu.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ne saldo ipyahu'i eterei. Ikatu emyenyhẽ jey ojoko hag̃ua."
+  },
+  "balanceEmpty": {
+    "message": "Ne saldo ipa'ãma. Ikatu emoinge viru ne saldo-pe DisinfaX popup rupive.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ne kuenta ojejoko."
+  },
+  "errNotSignedIn": {
+    "message": "Ndeike'ỹi. Ikatu eike ha ejapyhy jey."
+  },
+  "errInvalidRequest": {
+    "message": "Peteĩ hendáicha ko jerure ndojekuaái porãi. Ikatu ehecha kuaa upe extensión oĩ pyahu."
+  },
+  "errServiceUnavailable": {
+    "message": "Oiko peteĩ jejavy ore rembiapópe. Ikatu ejapyhy jey mbovymi aja."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ndaipóri gueteri nde rregión-pe umi léi rembiechauka rupive."
+  },
+  "errInvalidAmount": {
+    "message": "Upe víra jehepyme'ẽ ndoikói porã. Ikatu eiporavo ambue viru."
+  },
+  "errNotFound": {
+    "message": "Ndojejuhúi upéva. Ejapyhy jey."
+  },
+  "settings": {
+    "message": "Ñemboheko",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Ehechauka tapia ojehechakuaáva:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Añetegua < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Jerovia > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Marandu jejapo",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Emoinge peteĩ ñe'ẽ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Ypykue",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Ñeimo'ã",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Emboty popup ñe'ẽ poravopyre ndive ojesareko upe poravo ha ojepaga nde saldo-gui.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Heja",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

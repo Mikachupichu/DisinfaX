@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Zbulon dhe nxjerr në pah dezinformimin në tweet-e duke përdorur analizën e AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "E vërtetë",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "E rremë",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "E panjohur",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verifikim",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Verifikim|Pastrim|Kërkim|Zbulim|Mendim|Ndriçim|Gërmim|Sitje|Filtrim|Hetim|Analizim|Zbulim gënjeshtrash|Krahasim|Vlerësim|Konfirmim|Zbardhje|Thellim|Kontroll i kryqëzuar|Grumbullim faktesh|Zbërthim|Çmontim|Deshifrim|Klasifikim|Sqarim|Ndriçim i së vërtetës|Punë detektive",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Shumë e mundshme",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "E mundshme",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Ndoshta",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Kryesisht",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "E diskutueshme",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Pjesërisht",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "E paqartë",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopjo",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Zbulo sërish të gjitha pretendimet në këtë tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Rihulumto këtë pretendim",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verifikim",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Shëno",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Po shënohet",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Përkthe verifikimet e fakteve",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Përkthe",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "që të jetë",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ që të jetë $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "E verifikuar",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Kthehu",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Zbulo",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Fshih",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Disinfakto",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Verifikim",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizo",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Bilanci"
+  },
+  "gifted": {
+    "message": "Dhuruar"
+  },
+  "customTopup": {
+    "message": "E personalizuar"
+  },
+  "customAmountLabel": {
+    "message": "Shuma e personalizuar e rimbushjes në dollarë amerikanë"
+  },
+  "increase": {
+    "message": "Rrit"
+  },
+  "decrease": {
+    "message": "Ul"
+  },
+  "topUpBalance": {
+    "message": "Rimbush bilancin"
+  },
+  "processing": {
+    "message": "Duke përpunuar…"
+  },
+  "checkoutError": {
+    "message": "Nuk u arrit të nisej pagesa. Provo përsëri."
+  },
+  "termsOfService": {
+    "message": "Kushtet e shërbimit"
+  },
+  "privacyPolicy": {
+    "message": "Politika e privatësisë"
+  },
+  "disclaimerAgree": {
+    "message": "Kur bën një rimbushje, pranon %TOS% dhe %PRIVACY% tona."
+  },
+  "disclaimerFx": {
+    "message": "Mund të zbatohen tarifa këmbimi valutor nëse paguani në një monedhë tjetër përveç USD."
+  },
+  "signOut": {
+    "message": "Dil"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikimi mbi %BTN% shfaq pretendimet dhe do të ngarkojë bilancin tënd"
+  },
+  "onboardDisinfactTap": {
+    "message": "Prekja e %BTN% shfaq pretendimet dhe do të ngarkojë bilancin tënd"
+  },
+  "onboardLocalize": {
+    "message": "Klikimi i %BTN% ripozicionon pikat kryesore dhe do të tarifojë bilancin tuaj"
+  },
+  "onboardAnnotate": {
+    "message": "Klikimi i %BTN% kontrollon pretendimin për gabime dhe do të tarifojë bilancin tuaj"
+  },
+  "onboardWillCharge": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tënd"
+  },
+  "onboardFactcheck": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tënd"
+  },
+  "onboardTranslations": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tënd"
+  },
+  "onboardRefreshes": {
+    "message": "Klikimi mbi %BTN% do të ngarkojë bilancin tënd"
+  },
+  "topUp": {
+    "message": "Rimbush"
+  },
+  "showMore": {
+    "message": "Shfaq më shumë"
+  },
+  "showLess": {
+    "message": "Shfaq më pak"
+  },
+  "landingTagline1": {
+    "message": "Zbulo të vërtetën. Gjej gënjeshtrat."
+  },
+  "landingTagline2": {
+    "message": "Jo më dezinformim. Vetëm fakte."
+  },
+  "continueWithX": {
+    "message": "Vazhdo me X"
+  },
+  "continueWithGoogle": {
+    "message": "Vazhdo me Google"
+  },
+  "continueWithApple": {
+    "message": "Vazhdo me Apple"
+  },
+  "lastUsed": {
+    "message": "Përdorur së fundmi"
+  },
+  "cleanupTagline": {
+    "message": "Pastro feed-in tënd në X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Brenda Shteteve të Bashkuara, vetëm banorët e Alabamës, Arizonës, Kalifornisë, Kolorados, Konektikatit, Delawares, Floridës, Ajdahos, Ilinoisit, Indianës, Ajovës, Kanzasit, Kentakit, Luizianës, Mejnit, Masaçusetsit, Misisipit, Misurit, Montanës, Nju Hempshërit, Nju Meksikos, Nju Jorkut, Karolinës së Veriut, Dakotës së Veriut, Oklahomës, Oregonit, Pensilvanisë, Karolinës së Jugut, Dakotës së Jugut, Tenesit, Teksasit, Jutës, Uashingtonit, Uiskonsinit dhe Uajomingut mund të përdorin DisinfaX dhe të rimbushin bilancin e tyre; Uashington, D.C., të gjitha territoret amerikane dhe çdo shtet i palistuar përjashtohen. Jashtë Shteteve të Bashkuara, ai është i disponueshëm në Kanada, Australi, Zelandën e Re, Singapor, Afrikën e Jugut, Japoni, Tajvan, Indonezi, Tajlandë, Filipine, Malajzi, Vietnam dhe Zvicër."
+  },
+  "factCheckAllButton": {
+    "message": "Verifiko gjithçka"
+  },
+  "factCheckButton": {
+    "message": "Verifiko"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX mund të bëjë gabime. Kontrollo informacionin edhe një herë.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Bilanci yt është shumë i ulët. Rimbushe atë për të vazhduar."
+  },
+  "balanceEmpty": {
+    "message": "Bilanci yt është bosh. Shto fonde në bilancin tënd duke përdorur dritaren popup të DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Llogaria jote është pezulluar."
+  },
+  "errNotSignedIn": {
+    "message": "Nuk je i identifikuar. Identifikohu dhe provo përsëri."
+  },
+  "errInvalidRequest": {
+    "message": "Diçka në këtë kërkesë nuk u njoh. Sigurohu që shtesa është e përditësuar."
+  },
+  "errServiceUnavailable": {
+    "message": "Ndodhi një gabim nga ana jonë. Provo përsëri pas pak."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX nuk është ende i disponueshëm në rajonin tënd për shkak të kërkesave rregullatore."
+  },
+  "errInvalidAmount": {
+    "message": "Kjo shumë rimbushjeje nuk është e vlefshme. Zgjidh një shumë tjetër."
+  },
+  "errNotFound": {
+    "message": "Kjo nuk u gjet. Provo përsëri."
+  },
+  "settings": {
+    "message": "Cilësimet",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Shfaq gjithmonë verifikimet nëse:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Vërtetësia < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Besimi > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Verifikimi i fakteve",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Futni një pretendim",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Burimet",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Arsyetimi",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Hapja e dritares me tekst të zgjedhur verifikon atë përzgjedhje dhe do të faturohet nga bilanci juaj.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Anulo",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

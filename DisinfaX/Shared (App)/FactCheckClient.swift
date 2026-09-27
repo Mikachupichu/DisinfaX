@@ -814,15 +814,25 @@ enum FactCheckClient {
                 let parts = key.split(separator: ",")
                 guard parts.count == 2,
                       let absoluteStart = Int(parts[0]), let absoluteEnd = Int(parts[1]),
-                      absoluteEnd > absoluteStart else { continue }
+                      absoluteEnd >= absoluteStart else { continue }
 
                 let start = absoluteStart - segStart
                 let end = absoluteEnd - segStart
-                guard end > 0, start < textLength else { continue }
+                // A zero-width range is an insertion point — the claim-leading insertion the agent
+                // emits under an empty-string key. No strike is drawn for it, and it has no width
+                // that could fall outside the claim, so only its own bounds can disqualify it.
+                // Every other non-positive end belongs to text before this claim.
+                let insideClaim = start == end
+                    ? (start >= 0 && end <= textLength)
+                    : (end > 0 && start < textLength)
+                guard insideClaim else { continue }
                 valid.append((max(0, start), min(textLength, end), correction))
             }
         }
-        return valid.sorted { $0.start < $1.start }
+        // By end as well as start: two ranges sharing a start are ordered by width, so an
+        // insertion point sorts ahead of a strike opening on the same character — the same
+        // tiebreak the page's `annotationRanges` and the popup's `extractRanges` use.
+        return valid.sorted { ($0.start, $0.end) < ($1.start, $1.end) }
     }
 
     /// Whether a row describes this claim.

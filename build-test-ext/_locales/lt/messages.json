@@ -1,0 +1,383 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Aptinka ir paryškina dezinformaciją tweet'uose naudodamas DI analizę."
+  },
+  "verdictTrue": {
+    "message": "Tiesa",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Netiesa",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Nežinoma",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Tikrinama",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Tikrinimas|Tyrimas|Valymas|Atskleidimas|Aptikimas|Mąstymas|Nušvitimas|Kasimas|Sijojimas|Analizė|Sekimas|Aiškinimas|Demaskavimas|Palyginimas|Tikrumo Nustatymas|Patvirtinimas|Rinkimas|Skaidrinimas|Melo Atskleidimas|Tiesos Ieškojimas|Nagrinėjimas|Filtravimas|Faktų Tikrinimas|Peržiūra|Vertinimas|Gilinimasis|Sklaidymas|Įrodymas"
+  },
+  "adjVeryLikely": {
+    "message": "Labai tikėtina",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Tikėtina",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Galbūt",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Dažniausiai",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Ginčytinai",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Iš dalies",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Dviprasmiškai",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopijuoti",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Iš naujo atskleisti visus šio tweet'o teiginius",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ištirti šį teiginį iš naujo",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Tikrinama",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotuoti",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotuojama",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Versti faktų patikrinimus",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Versti",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "būti",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ būti $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Patikrinta",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Grįžti atgal",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Rodyti",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Slėpti",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Tikrinti",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Tikrinama",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizuoti",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Balansas"
+  },
+  "gifted": {
+    "message": "Padovanota"
+  },
+  "customTopup": {
+    "message": "Pasirinktinis"
+  },
+  "customAmountLabel": {
+    "message": "Pasirinktinė papildymo suma JAV doleriais"
+  },
+  "increase": {
+    "message": "Padidinti"
+  },
+  "decrease": {
+    "message": "Sumažinti"
+  },
+  "topUpBalance": {
+    "message": "Papildyti balansą"
+  },
+  "processing": {
+    "message": "Apdorojama…"
+  },
+  "checkoutError": {
+    "message": "Nepavyko pradėti apmokėjimo. Bandykite dar kartą."
+  },
+  "termsOfService": {
+    "message": "Paslaugų teikimo sąlygos"
+  },
+  "privacyPolicy": {
+    "message": "Privatumo politika"
+  },
+  "disclaimerAgree": {
+    "message": "Papildydami sutinkate su mūsų %TOS% ir %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Jei mokate kita valiuta nei USD, gali būti taikomi valiutos keitimo mokesčiai."
+  },
+  "signOut": {
+    "message": "Atsijungti"
+  },
+  "onboardDisinfactClick": {
+    "message": "Spustelėjus %BTN% atskleidžiami teiginiai ir bus nuskaičiuota nuo tavo balanso"
+  },
+  "onboardDisinfactTap": {
+    "message": "Bakstelėjus %BTN% atskleidžiami teiginiai ir bus nuskaičiuota nuo tavo balanso"
+  },
+  "onboardLocalize": {
+    "message": "Spustelėjus %BTN%, pakeičiami svarbiausi elementai ir apmokestinamas jūsų likutis"
+  },
+  "onboardAnnotate": {
+    "message": "Spustelėjus %BTN% patikrinama, ar pretenzijoje nėra klaidų, ir bus apmokestintas jūsų likutis"
+  },
+  "onboardWillCharge": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo tavo balanso"
+  },
+  "onboardFactcheck": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo tavo balanso"
+  },
+  "onboardTranslations": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo tavo balanso"
+  },
+  "onboardRefreshes": {
+    "message": "Spustelėjus %BTN% bus nuskaičiuota nuo tavo balanso"
+  },
+  "topUp": {
+    "message": "Papildyti"
+  },
+  "showMore": {
+    "message": "Rodyti daugiau"
+  },
+  "showLess": {
+    "message": "Rodyti mažiau"
+  },
+  "landingTagline1": {
+    "message": "Atskleisk tiesą. Rask melą."
+  },
+  "landingTagline2": {
+    "message": "Jokios dezinformacijos. Tik faktai."
+  },
+  "continueWithX": {
+    "message": "Tęsti su X"
+  },
+  "continueWithGoogle": {
+    "message": "Tęsti su Google"
+  },
+  "continueWithApple": {
+    "message": "Tęsti su Apple"
+  },
+  "lastUsed": {
+    "message": "Paskutinį kartą naudota"
+  },
+  "cleanupTagline": {
+    "message": "Sutvarkyk savo X sklaidos kanalą."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Jungtinėse Valstijose DisinfaX naudotis ir papildyti savo balansą gali tik šių valstijų gyventojai: Alabama, Arizona, Kalifornija, Koloradas, Konektikutas, Delaveras, Florida, Aidahas, Ilinojus, Indiana, Ajova, Kanzasas, Kentukis, Luiziana, Meinas, Masačusetsas, Misisipė, Misūris, Montana, Naujasis Hampšyras, Naujoji Meksika, Niujorkas, Šiaurės Karolina, Šiaurės Dakota, Oklahoma, Oregonas, Pensilvanija, Pietų Karolina, Pietų Dakota, Tenesis, Teksasas, Juta, Vašingtonas, Viskonsinas ir Vajomingas; Vašingtonas, D.C., visos JAV teritorijos ir bet kurios nenurodytos valstijos yra išbrauktos. Už Jungtinių Valstijų ribų jis prieinamas Kanadoje, Australijoje, Naujojoje Zelandijoje, Singapūre, Pietų Afrikoje, Japonijoje, Taivane, Indonezijoje, Tailande, Filipinuose, Malaizijoje, Vietname ir Šveicarijoje."
+  },
+  "factCheckAllButton": {
+    "message": "Patikrinti viską"
+  },
+  "factCheckButton": {
+    "message": "Patikrinti"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX gali suklysti. Dar kartą patikrinkite informaciją.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Tavo balansas yra pernelyg mažas. Papildyk balansą, kad galėtum tęsti."
+  },
+  "balanceEmpty": {
+    "message": "Tavo balansas yra tuščias. Pridėk lėšų prie savo balanso naudodamas DisinfaX iššokantį langą.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Tavo paskyra buvo sustabdyta."
+  },
+  "errNotSignedIn": {
+    "message": "Tu neprisijungęs. Prisijunk ir bandyk dar kartą."
+  },
+  "errInvalidRequest": {
+    "message": "Dalis šio prašymo nebuvo atpažinta. Įsitikink, kad plėtinys yra atnaujintas."
+  },
+  "errServiceUnavailable": {
+    "message": "Mūsų pusėje įvyko klaida. Bandyk dar kartą po kurio laiko."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX dėl reguliavimo reikalavimų kol kas nepasiekiamas tavo regione."
+  },
+  "errInvalidAmount": {
+    "message": "Ši papildymo suma negalioja. Pasirink kitą sumą."
+  },
+  "errNotFound": {
+    "message": "To nepavyko rasti. Bandyk dar kartą."
+  },
+  "settings": {
+    "message": "Nustatymai",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Visada rodyti patikras, jei:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Teisingumas < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Pasitikėjimas > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Faktų tikrinimas",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Įveskite teiginį",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Šaltiniai",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Pagrindimas",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Atidarius iškylantį langą su pažymėtu tekstu bus patikrintas tas pasirinkimas ir nuskaičiuota nuo jūsų balanso.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Atšaukti",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

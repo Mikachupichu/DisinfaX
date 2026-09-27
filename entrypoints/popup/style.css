@@ -126,16 +126,23 @@ body {
   display: inline;
 }
 .mf-strike-h {
-  text-decoration-line: line-through;
+  display: inline;
+  text-decoration: line-through;
   text-decoration-thickness: 2px;
+  text-decoration-skip-ink: none;
 }
 .mf-strike-line {
   position: absolute;
-  left: -2%;
-  right: -2%;
-  top: 50%;
+  left: 0;
+  right: 0;
+  /* The x-band middle of the wrap's own box (ascent + descent), i.e.
+     baseline - xHeight/2, which is where a strikethrough reads as centred. Plain
+     50% is the box's centre, `baseline - (ascent - descent)/2`, and sits high.
+     Same value as the page's paint in utils/injecting.ts. */
+  top: calc(50% + 0.1em);
   height: 2px;
   margin-top: -1px;
+  border-radius: 999px;
   pointer-events: none;
 }
 .mf-strike-line.mf-diag-a {
@@ -217,3 +224,21 @@ body {
 .mf-verdict-badge:has(.mf-badge-empty:hover) .mf-badge-pct {
   visibility: visible;
 }
+
+.mf-verdict-badge,
+.mf-verdict-badge *,
+.mf-inline-badge,
+.mf-inline-badge *,
+.mf-web-badge,
+.mf-web-badge *,
+.mf-annotate-badge,
+.mf-annotate-badge *,
+.mf-badge-slot,
+.mf-badge-stack,
+.mf-badge-adj,
+.mf-badge-pct,
+.mf-badge-glue,
+.mf-badge-verdict {
+  color: #ffffff !important;
+}
+

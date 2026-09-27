@@ -1,0 +1,385 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Yettwaf yerna d-ițbeggin tanguri deg tweets s tesleḍt n AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "D tideț",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "D tikerkas",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ur yettwassen ara",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Asenqed",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Asenqed|Anadi|Asizdeg|Askan|Tasleḍt|Afham|Asefru|Asegzi|Anadi ɣef tidet|Askan n tidet|Asizdeg n tikerkas|Asenqed n telɣut|Asefru n wugur|Afham n tidet"
+  },
+  "adjVeryLikely": {
+    "message": "Yezmer aṭas",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Yezmer",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Ahat",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "S waṭas",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "S wawal",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "S waḥric",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "S ttḥiṛa",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Nɣel",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Ales askan n tignisin n tweet-agi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ales anadi ɣef tignist-agi",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Asenqed",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annoti",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Yettannoti",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Suqel isenqaden",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Suqel",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ad yili",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ad yili $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Yettwasenqed",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Uɣal ɣer deffir",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Ssken",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Ffer",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Senqed",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Asenqed",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Snuẓẓel",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Amuḍin"
+  },
+  "gifted": {
+    "message": "Tikci"
+  },
+  "customTopup": {
+    "message": "Udmawan"
+  },
+  "customAmountLabel": {
+    "message": "Azal n uɛemmer udmawan s idularen imarikaniyen"
+  },
+  "increase": {
+    "message": "Simɣur"
+  },
+  "decrease": {
+    "message": "Senqes"
+  },
+  "topUpBalance": {
+    "message": "Ɛemmer amuḍin"
+  },
+  "processing": {
+    "message": "Iteddu…"
+  },
+  "checkoutError": {
+    "message": "Ur nezmir ara ad nebdu lexlaṣ. Ttxil-k ɛreḍ tikkelt-nniḍen."
+  },
+  "termsOfService": {
+    "message": "Tiwtilin n useqdec"
+  },
+  "privacyPolicy": {
+    "message": "Tasertit n tbaḍnit"
+  },
+  "disclaimerAgree": {
+    "message": "S uɛemmer, tqebleḍ %TOS% akked %PRIVACY% nneɣ."
+  },
+  "disclaimerFx": {
+    "message": "Zemren ad d-ilin lexlaṣat n ubeddel n tedrimt ma yella txelṣeḍ s tedrimt ur nelli ara d USD."
+  },
+  "signOut": {
+    "message": "Ffeɣ"
+  },
+  "onboardDisinfactClick": {
+    "message": "Asiti ɣef %BTN% ad d-issken tignisin yerna ad iqecc amuḍin-ik"
+  },
+  "onboardDisinfactTap": {
+    "message": "Anadam ɣef %BTN% ad d-issken tignisin yerna ad iqecc amuḍin-ik"
+  },
+  "onboardLocalize": {
+    "message": "Asiti ɣef %BTN% ad d-yerr imukanen yerna ad iqecc amuḍin-ik"
+  },
+  "onboardAnnotate": {
+    "message": "Asiti ɣef %BTN% ad d-isenqed awal ɣef tuccḍa yerna ad iqecc amuḍin-ik"
+  },
+  "onboardWillCharge": {
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
+  },
+  "onboardFactcheck": {
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
+  },
+  "onboardTranslations": {
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
+  },
+  "onboardRefreshes": {
+    "message": "Asiti ɣef %BTN% ad iqecc amuḍin-ik"
+  },
+  "topUp": {
+    "message": "Ɛemmer"
+  },
+  "showMore": {
+    "message": "Ssken-d ugar"
+  },
+  "showLess": {
+    "message": "Ssken-d drus"
+  },
+  "landingTagline1": {
+    "message": "Ssken-d tidet. Af-d tikerkas."
+  },
+  "landingTagline2": {
+    "message": "Ulac tanguri. Ala tidyanin."
+  },
+  "continueWithX": {
+    "message": "Kemmel s X"
+  },
+  "continueWithGoogle": {
+    "message": "Kemmel s Google"
+  },
+  "continueWithApple": {
+    "message": "Kemmel s Apple"
+  },
+  "lastUsed": {
+    "message": "Aseqdec aneggaru"
+  },
+  "cleanupTagline": {
+    "message": "Zdig asuddem-ik n X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Deg Iwunak Yedduklen, d imezdaɣ n Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina Ugafa, Dakota Ugafa, Oklahoma, Oregon, Pennsylvania, Karolina Unẓul, Dakota Unẓul, Tennessee, Texas, Utah, Washington, Wisconsin, akked Wyoming kan i izemren ad sqedcen DisinfaX yerna ad ɛemmren amuḍin-nsen; Washington, D.C., akk tamnaḍin n Marikan, akked yal awank ur d-nettwabder ttwakksen. Beṛṛa n Iwunak Yedduklen, yella deg Kanada, Ustralya, Ziland Tamaynut, Singabur, Tafriqt n Wadda, Japun, Taywan, Indunizya, Tayland, Filipin, Malizya, Vyetnam, akked Swis."
+  },
+  "factCheckAllButton": {
+    "message": "Senqed kullec"
+  },
+  "factCheckButton": {
+    "message": "Senqed"
+  },
+  "aiDisclaimer": {
+    "message": "Yezmer DisinfaX ad yeɛreq. Senqed talɣut snat n tikkal.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Amuḍin-ik yedrus aṭas. Ttxil-k ɛemmer-it akken ad tkemmleḍ."
+  },
+  "balanceEmpty": {
+    "message": "Amuḍin-ik yexwa. Ttxil-k rnu-d idrimen ɣer umuḍin-ik s popup n DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Amiḍan-ik yettwaḥbas."
+  },
+  "errNotSignedIn": {
+    "message": "Ur teqqneḍ ara. Ttxil-k qqen sakin ɛreḍ tikkelt-nniḍen."
+  },
+  "errInvalidRequest": {
+    "message": "Kra deg ssuter-agi ur yettwassen ara. Ttxil-k senqed ma yella usnas-ik d amaynut."
+  },
+  "errServiceUnavailable": {
+    "message": "Yella wugur deg tama-nneɣ. Ttxil-k ɛreḍ tikkelt-nniḍen ɣef kra n wakud."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX urɛad yelli ara di temnaḍt-ik, ilmend n tuttriwin n usebḥer."
+  },
+  "errInvalidAmount": {
+    "message": "Azal-agi n uɛemmer mačči d aṣeḥḥi. Ttxil-k fren azal nniḍen."
+  },
+  "errNotFound": {
+    "message": "Ayen-nni ur d-ittwaf ara. Ttxil-k ɛreḍ tikkelt-nniḍen."
+  },
+  "settings": {
+    "message": "Iɣewwaren",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Ssken-dima isenqaden ma:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Tidet < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Aman > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Asenqed n tidett",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Sekcem tukkist",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Iɣbula",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Asteqsi",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ldi tfeggagt s uḍris yettwafernen ad yesselḥu ayagi, ad itwaxelleṣ seg tsidett-ik.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Sefsex",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

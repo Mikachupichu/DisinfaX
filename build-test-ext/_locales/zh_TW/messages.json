@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "透過AI分析偵測並突顯推文中的虛假資訊。"
+  },
+  "verdictTrue": {
+    "message": "真實",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "虛假",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "未知",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "事实核查",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "打假|闢謠|求真|核實|查證|調查|搜索|事實核查|淨化|消毒|解密|解析|剖析|拆解|梳理|挖掘|深挖|追蹤|溯源|求證|思考|沉思|冥想|推理|論證|破解|照亮|篩選|過濾|提煉|整合|處理|生成|收集|匯總|審計|核對|佐證|驗證|揭秘|揭穿|起底|抽絲剝繭|去偽存真|正本清源|順藤摸瓜",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "非常可能",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "可能",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "或許",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "大致上",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "有爭議",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "部分",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "模稜兩可",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$$VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$$VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$$ADJ$$VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "複製",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "重新顯示此推文中的所有論斷",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "重新研究此聲明",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "事实核查",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "註解",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "正在加註",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "翻譯事實核查",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "翻譯",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "為",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$為$ADJ$$VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "查核完成",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "返回",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "顯示",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "隱藏",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "事實查核",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "事实核查",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "在地化",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "餘額"
+  },
+  "gifted": {
+    "message": "贈送"
+  },
+  "customTopup": {
+    "message": "自訂"
+  },
+  "customAmountLabel": {
+    "message": "以美元計的自訂儲值金額"
+  },
+  "increase": {
+    "message": "增加"
+  },
+  "decrease": {
+    "message": "減少"
+  },
+  "topUpBalance": {
+    "message": "儲值餘額"
+  },
+  "processing": {
+    "message": "處理中…"
+  },
+  "checkoutError": {
+    "message": "無法開始結帳，請重試。"
+  },
+  "termsOfService": {
+    "message": "服務條款"
+  },
+  "privacyPolicy": {
+    "message": "隱私權政策"
+  },
+  "disclaimerAgree": {
+    "message": "儲值即表示您同意我們的%TOS%和%PRIVACY%。"
+  },
+  "disclaimerFx": {
+    "message": "若您以美元以外的貨幣付款，可能會產生外幣兌換費用。"
+  },
+  "signOut": {
+    "message": "登出"
+  },
+  "onboardDisinfactClick": {
+    "message": "點擊%BTN%可顯示論述，並將從您的餘額中扣款"
+  },
+  "onboardDisinfactTap": {
+    "message": "輕觸%BTN%可顯示論述，並將從您的餘額中扣款"
+  },
+  "onboardLocalize": {
+    "message": "點擊 %BTN% 重新定位突出顯示並將收取您的餘額"
+  },
+  "onboardAnnotate": {
+    "message": "點擊 %BTN% 檢查索賠是否有誤，並將收取您的餘額"
+  },
+  "onboardWillCharge": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "onboardFactcheck": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "onboardTranslations": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "onboardRefreshes": {
+    "message": "點擊%BTN%將從您的餘額中扣款"
+  },
+  "topUp": {
+    "message": "儲值"
+  },
+  "showMore": {
+    "message": "顯示更多"
+  },
+  "showLess": {
+    "message": "顯示較少"
+  },
+  "landingTagline1": {
+    "message": "揭示真相，識破謊言。"
+  },
+  "landingTagline2": {
+    "message": "不再有虛假資訊，只有事實。"
+  },
+  "continueWithX": {
+    "message": "使用 X 繼續"
+  },
+  "continueWithGoogle": {
+    "message": "使用 Google 繼續"
+  },
+  "continueWithApple": {
+    "message": "使用 Apple 繼續"
+  },
+  "lastUsed": {
+    "message": "上次使用"
+  },
+  "cleanupTagline": {
+    "message": "清理你的 X 動態消息。"
+  },
+  "disclaimerJurisdiction": {
+    "message": "在美國境內，僅阿拉巴馬州、亞利桑那州、加利福尼亞州、科羅拉多州、康乃狄克州、德拉瓦州、佛羅里達州、愛達荷州、伊利諾州、印第安納州、愛荷華州、堪薩斯州、肯塔基州、路易斯安那州、緬因州、麻薩諸塞州、密西西比州、密蘇里州、蒙大拿州、新罕布夏州、新墨西哥州、紐約州、北卡羅來納州、北達科他州、奧克拉荷馬州、奧勒岡州、賓夕法尼亞州、南卡羅來納州、南達科他州、田納西州、德克薩斯州、猶他州、華盛頓州、威斯康辛州和懷俄明州的居民可以使用 DisinfaX 並儲值餘額；華盛頓 D.C.、所有美國領地以及未列出的任何州均被排除在外。在美國境外，可在加拿大、澳洲、紐西蘭、新加坡、南非、日本、台灣、印尼、泰國、菲律賓、馬來西亞、越南和瑞士使用。"
+  },
+  "factCheckAllButton": {
+    "message": "全部查核"
+  },
+  "factCheckButton": {
+    "message": "查核"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX 可能會出錯，請仔細核實相關資訊。",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "您的餘額不足，請儲值後再繼續。"
+  },
+  "balanceEmpty": {
+    "message": "您的餘額已用完，請使用 DisinfaX 彈出視窗向餘額儲值。",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "您的帳戶已被停用。"
+  },
+  "errNotSignedIn": {
+    "message": "您尚未登入，請登入後再試一次。"
+  },
+  "errInvalidRequest": {
+    "message": "此請求的部分內容無法辨識，請確認擴充功能為最新版本。"
+  },
+  "errServiceUnavailable": {
+    "message": "我們這邊發生了問題，請稍後再試一次。"
+  },
+  "errRegionNotSupported": {
+    "message": "由於法規要求，DisinfaX 目前尚未在您所在地區提供服務。"
+  },
+  "errInvalidAmount": {
+    "message": "儲值金額無效，請選擇其他金額。"
+  },
+  "errNotFound": {
+    "message": "找不到相關內容，請再試一次。"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "符合條件時一律顯示事實查核：",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "真實性 < $1：",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "可信度 > $1：",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "事實查核",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "輸入一則主張",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "來源",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "推理",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "在選取文字的情況下開啟彈出式視窗會查核該選取範圍，並會從你的餘額中扣款。",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "取消",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

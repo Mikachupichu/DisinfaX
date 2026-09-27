@@ -1,0 +1,384 @@
+{
+  "balanceLabel": {
+    "message": "الرصيد"
+  },
+  "gifted": {
+    "message": "هدية"
+  },
+  "customTopup": {
+    "message": "مخصص"
+  },
+  "customAmountLabel": {
+    "message": "مبلغ شحن مخصص بالدولار الأمريكي"
+  },
+  "increase": {
+    "message": "زيادة"
+  },
+  "decrease": {
+    "message": "تقليل"
+  },
+  "topUpBalance": {
+    "message": "شحن الرصيد"
+  },
+  "processing": {
+    "message": "جارٍ المعالجة…"
+  },
+  "checkoutError": {
+    "message": "تعذّر بدء الدفع. يُرجى المحاولة مرة أخرى."
+  },
+  "termsOfService": {
+    "message": "شروط الخدمة"
+  },
+  "privacyPolicy": {
+    "message": "سياسة الخصوصية"
+  },
+  "disclaimerAgree": {
+    "message": "بشحن رصيدك، فإنك توافق على %TOS% و%PRIVACY% الخاصة بنا."
+  },
+  "disclaimerFx": {
+    "message": "قد تُطبَّق رسوم صرف العملات إذا دفعت بعملة غير الدولار الأمريكي."
+  },
+  "disclaimerJurisdiction": {
+    "message": "داخل الولايات المتحدة، يمكن فقط لسكان ألاباما وأريزونا وكاليفورنيا وكولورادو وكونيتيكت وديلاوير وفلوريدا وأيداهو وإلينوي وإنديانا وآيوا وكانساس وكنتاكي ولويزيانا ومين وماساتشوستس وميسيسيبي وميزوري ومونتانا ونيوهامبشير ونيومكسيكو ونيويورك وكارولينا الشمالية وداكوتا الشمالية وأوكلاهوما وأوريغون وبنسلفانيا وكارولينا الجنوبية وداكوتا الجنوبية وتينيسي وتكساس ويوتا وواشنطن وويسكونسن ووايومنغ استخدام DisinfaX وشحن رصيدهم؛ وتُستثنى واشنطن D.C. وجميع الأقاليم الأمريكية وأي ولايات غير مدرجة. خارج الولايات المتحدة، يتوفر في كندا وأستراليا ونيوزيلندا وسنغافورة وجنوب أفريقيا واليابان وتايوان وإندونيسيا وتايلاند والفلبين وماليزيا وفيتنام وسويسرا."
+  },
+  "signOut": {
+    "message": "تسجيل الخروج"
+  },
+  "onboardDisinfactClick": {
+    "message": "النقر على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardDisinfactTap": {
+    "message": "الضغط على %BTN% يعرض الادعاءات وسيخصم مبلغًا من رصيدك"
+  },
+  "onboardLocalize": {
+    "message": "يؤدي النقر على %BTN% إلى إعادة وضع النقاط البارزة وسيتم خصم رصيدك"
+  },
+  "onboardAnnotate": {
+    "message": "يؤدي النقر على %BTN% إلى التحقق من وجود أخطاء في المطالبة وسيخصم من رصيدك"
+  },
+  "onboardWillCharge": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardFactcheck": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardTranslations": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "onboardRefreshes": {
+    "message": "النقر على %BTN% سيخصم مبلغًا من رصيدك"
+  },
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "يكتشف التضليل في التغريدات ويسلّط الضوء عليه باستخدام تحليل الذكاء الاصطناعي."
+  },
+  "verdictTrue": {
+    "message": "صحيح",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "خاطئ",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "غير معروف",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "قيد التحقق",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "تطهير الأكاذيب|تعقيم المعلومات|تنظيف|تفنيد الأخبار الزائفة|تصحيح|غسل الأوساخ الرقمية|بحث|تقصي|تدقيق الحقائق|تحرير العقول|تحقيق الحقيقة|التحقق من الصحة|تفكير|كشف|اكتشاف|فحص|استكشاف|البحث عن الحقيقة|الشفافية|كشف الزيف|تسليط الضوء|تصنيف|إصدار الحكم|جلب البيانات|إعلام|الدوران|التحميل|التنقيب|فضح الأكاذيب|الإضاءة على الحقيقة|التصفية|المقارنة والتدقيق|الفضح|التمحيص|الغربلة",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "محتمل جدًا",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "محتمل",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "ربما",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "في الغالب",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "جدلاً",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "جزئيًا",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "ملتبس",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "نسخ",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "إعادة الكشف عن ادعاءات هذه التغريدة",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "إعادة البحث في هذا الادعاء",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "قيد التحقق",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "علِّم",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "جارٍ التعليم",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "ترجمة نتائج التحقق",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "ترجمة",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "تم التحقق",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "رجوع",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "أظهر",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "أخفِ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "تحقق",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "قيد التحقق",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "وطِّن",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "أن يكون",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ أن يكون $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "شحن"
+  },
+  "showMore": {
+    "message": "عرض المزيد"
+  },
+  "showLess": {
+    "message": "عرض أقل"
+  },
+  "landingTagline1": {
+    "message": "اكشف الحقيقة. اعثر على الأكاذيب."
+  },
+  "landingTagline2": {
+    "message": "لا مزيد من التضليل. حقائق فقط."
+  },
+  "continueWithX": {
+    "message": "المتابعة باستخدام X"
+  },
+  "continueWithGoogle": {
+    "message": "المتابعة باستخدام Google"
+  },
+  "continueWithApple": {
+    "message": "المتابعة باستخدام Apple"
+  },
+  "lastUsed": {
+    "message": "آخر استخدام"
+  },
+  "cleanupTagline": {
+    "message": "نظّف خلاصتك على X."
+  },
+  "factCheckAllButton": {
+    "message": "تحقق من الكل"
+  },
+  "factCheckButton": {
+    "message": "تحقق"
+  },
+  "aiDisclaimer": {
+    "message": "قد يرتكب DisinfaX أخطاء. يُرجى التحقق من المعلومات.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "رصيدك منخفض جدًا. يُرجى شحن الرصيد للمتابعة."
+  },
+  "balanceEmpty": {
+    "message": "رصيدك فارغ. يُرجى إضافة الأموال إلى رصيدك باستخدام نافذة DisinfaX المنبثقة.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "تم تعليق حسابك."
+  },
+  "errNotSignedIn": {
+    "message": "لم تُسجّل الدخول. يُرجى تسجيل الدخول والمحاولة مرة أخرى."
+  },
+  "errInvalidRequest": {
+    "message": "لم يتم التعرّف على جزء من هذا الطلب. يُرجى التأكد من أن الإضافة محدّثة."
+  },
+  "errServiceUnavailable": {
+    "message": "حدث خطأ من جانبنا. يُرجى المحاولة مرة أخرى بعد قليل."
+  },
+  "errRegionNotSupported": {
+    "message": "لا تتوفّر خدمة DisinfaX بعد في منطقتك بسبب المتطلبات التنظيمية."
+  },
+  "errInvalidAmount": {
+    "message": "مبلغ الشحن هذا غير صالح. يُرجى اختيار مبلغ آخر."
+  },
+  "errNotFound": {
+    "message": "تعذّر العثور على ذلك. يُرجى المحاولة مرة أخرى."
+  },
+  "settings": {
+    "message": "الإعدادات",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "إظهار تدقيق الحقائق دائمًا إذا:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "المصداقية < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "الثقة > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "التحقق من الحقائق",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "أدخل ادعاءً",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "المصادر",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "التعليل",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "فتح النافذة المنبثقة مع تحديد نص يتحقق من ذلك التحديد وسيخصم من رصيدك.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "إلغاء",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

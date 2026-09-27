@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "AI 분석을 사용하여 트윗의 허위 정보를 감지하고 강조 표시합니다."
+  },
+  "verdictTrue": {
+    "message": "사실",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "허위",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "알 수 없음",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "팩트체크",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "adjVeryLikely": {
+    "message": "매우 가능성이 높은",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "가능성이 높은",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "가능성이 있는",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "대체로",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "논란의 여지가 있는",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "부분적으로",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "모호한",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "복사",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "이 트윗의 주장을 다시 표시",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "이 주장 재조사",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "팩트체크",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "주석 달기",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "주석 다는 중",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "팩트체크 번역",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "번역",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Fact-Checked",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Go Back",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "표시",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "숨기기",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "팩트체크",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "팩트체크",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "현지화",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "잔액"
+  },
+  "gifted": {
+    "message": "증정"
+  },
+  "customTopup": {
+    "message": "직접 입력"
+  },
+  "customAmountLabel": {
+    "message": "미국 달러 기준 사용자 지정 충전 금액"
+  },
+  "increase": {
+    "message": "증가"
+  },
+  "decrease": {
+    "message": "감소"
+  },
+  "topUpBalance": {
+    "message": "잔액 충전"
+  },
+  "processing": {
+    "message": "처리 중…"
+  },
+  "checkoutError": {
+    "message": "결제를 시작할 수 없습니다. 다시 시도해 주세요."
+  },
+  "termsOfService": {
+    "message": "이용약관"
+  },
+  "privacyPolicy": {
+    "message": "개인정보 처리방침"
+  },
+  "disclaimerAgree": {
+    "message": "충전하면 %TOS% 및 %PRIVACY%에 동의하는 것으로 간주됩니다."
+  },
+  "disclaimerFx": {
+    "message": "USD 이외의 통화로 결제하면 환전 수수료가 부과될 수 있습니다."
+  },
+  "signOut": {
+    "message": "로그아웃"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%을(를) 클릭하면 주장이 표시되고 잔액에서 요금이 부과됩니다"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%을(를) 탭하면 주장이 표시되고 잔액에서 요금이 부과됩니다"
+  },
+  "onboardLocalize": {
+    "message": "%BTN%을 클릭하면 하이라이트 위치가 변경되고 잔액이 청구됩니다."
+  },
+  "onboardAnnotate": {
+    "message": "%BTN%을 클릭하면 청구서에 오류가 있는지 확인하고 잔액이 청구됩니다."
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%을(를) 클릭하면 잔액에서 요금이 부과됩니다"
+  },
+  "topUp": {
+    "message": "충전"
+  },
+  "showMore": {
+    "message": "더 보기"
+  },
+  "showLess": {
+    "message": "간략히 보기"
+  },
+  "landingTagline1": {
+    "message": "진실을 밝히세요. 거짓을 찾아내세요."
+  },
+  "landingTagline2": {
+    "message": "더 이상의 허위 정보는 없습니다. 오직 사실만."
+  },
+  "continueWithX": {
+    "message": "X로 계속하기"
+  },
+  "continueWithGoogle": {
+    "message": "Google로 계속하기"
+  },
+  "continueWithApple": {
+    "message": "Apple로 계속하기"
+  },
+  "lastUsed": {
+    "message": "최근 사용"
+  },
+  "cleanupTagline": {
+    "message": "당신의 X 피드를 정리하세요."
+  },
+  "disclaimerJurisdiction": {
+    "message": "미국 내에서는 앨라배마주, 애리조나주, 캘리포니아주, 콜로라도주, 코네티컷주, 델라웨어주, 플로리다주, 아이다호주, 일리노이주, 인디애나주, 아이오와주, 캔자스주, 켄터키주, 루이지애나주, 메인주, 매사추세츠주, 미시시피주, 미주리주, 몬태나주, 뉴햄프셔주, 뉴멕시코주, 뉴욕주, 노스캐롤라이나주, 노스다코타주, 오클라호마주, 오리건주, 펜실베이니아주, 사우스캐롤라이나주, 사우스다코타주, 테네시주, 텍사스주, 유타주, 워싱턴주, 위스콘신주, 와이오밍주의 거주자만 DisinfaX를 사용하고 잔액을 충전할 수 있습니다. 워싱턴 D.C., 모든 미국 영토 및 위에 나열되지 않은 주는 제외됩니다. 미국 외에서는 캐나다, 오스트레일리아, 뉴질랜드, 싱가포르, 남아프리카 공화국, 일본, 대만, 인도네시아, 태국, 필리핀, 말레이시아, 베트남, 스위스에서 이용할 수 있습니다."
+  },
+  "factCheckAllButton": {
+    "message": "모두 팩트체크"
+  },
+  "factCheckButton": {
+    "message": "팩트체크"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX는 실수를 할 수 있습니다. 정보를 다시 확인해 주세요.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "잔액이 부족합니다. 계속하려면 충전해 주세요."
+  },
+  "balanceEmpty": {
+    "message": "잔액이 비어 있습니다. DisinfaX 팝업을 이용해 잔액에 자금을 추가해 주세요.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "계정이 정지되었습니다."
+  },
+  "errNotSignedIn": {
+    "message": "로그인되어 있지 않습니다. 로그인 후 다시 시도해 주세요."
+  },
+  "errInvalidRequest": {
+    "message": "이 요청의 일부를 인식할 수 없습니다. 확장 프로그램이 최신 버전인지 확인해 주세요."
+  },
+  "errServiceUnavailable": {
+    "message": "저희 쪽에서 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "errRegionNotSupported": {
+    "message": "규제 요건으로 인해 DisinfaX는 아직 해당 지역에서 제공되지 않습니다."
+  },
+  "errInvalidAmount": {
+    "message": "해당 충전 금액이 올바르지 않습니다. 다른 금액을 선택해 주세요."
+  },
+  "errNotFound": {
+    "message": "해당 항목을 찾을 수 없습니다. 다시 시도해 주세요."
+  },
+  "settings": {
+    "message": "설정",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "다음 조건에서 팩트체크 항상 표시:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "진실성 < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "신뢰도 > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "팩트체크",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "주장을 입력하세요",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "출처",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "근거",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "researchingWords": {
+    "message": "확인 중|팩트체크 중|검증 중|분석 중|조사 중|탐색 중|발굴 중|추적 중|수집 중|정리 중|대조 중|교차 확인 중|심층 분석 중|추론 중|사고 중|고민 중|숙고 중|성찰 중|탐구 중|연구 중|파헤치는 중|뒤지는 중|걸러내는 중|가려내는 중|식별 중|분류 중|판정 중|평가 중|측정 중|계산 중|처리 중|가공 중|정제 중|추출 중|종합 중|요약 중|검토 중|점검 중|감사 중|심사 중|질문 중|심문 중|해부 중|분해 중|해체 중|재구성 중|연결 중|매칭 중|검색 중|수색 중|찾는 중|발견 중|탐지 중|포착 중|노출 중|폭로 중|드러내는 중|밝히는 중|조명 중|해명 중|규명 중|확정 중|입증 중|증명 중|반박 중|논파 중|교정 중|바로잡는 중|정정 중|세척 중|정화 중|해독 중|여과 중|압착 중|짜내는 중|불리는 중|끓이는 중|요리 중|직관 중|논리 중|추리 중|사유 중|명상 중|철학 중|계몽 중|깨우치는 중|해결 중|풀이 중|답하는 중|응답 중|생각 중|고심 중|탐문 중|취재 중|기록 중|보고 중|알리는 중|전하는 중|공유 중|밝혀내는 중",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "selectionConfirmWarning": {
+    "message": "텍스트를 선택한 상태에서 팝업을 열면 해당 선택이 팩트체크되고 잔액에서 차감됩니다.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "취소",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

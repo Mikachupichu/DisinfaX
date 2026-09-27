@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "Виявляє та виділяє дезінформацію в твітах за допомогою ШІ-аналізу."
+  },
+  "verdictTrue": {
+    "message": "Правда",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Неправда",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Невідомо",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Перевірка",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Перевіряємо|Досліджуємо|Наводимо лад|Спростовуємо|Викриваємо|Розмірковуємо|Проливаємо світло|Копаємо глибше|Просіюємо факти|Звіряємо дані|Виводимо на чисту воду|Збираємо докази|Допитуємо факти|Аналізуємо|Розбираємось|Уточнюємо деталі|Демаскуємо|Заглиблюємось|З'ясовуємо правду|Розвіюємо міфи|Шукаємо істину|Фільтруємо інфо|Зіставляємо факти|Розслідуємо|Перевіряємо факти|Розплутуємо клубок|Верифікуємо|Ловимо брехню",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Дуже ймовірно",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ймовірно",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Можливо",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Здебільшого",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Спірно",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Частково",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Неоднозначно",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Копіювати",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Знову розкрити всі твердження в цьому твіті",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Дослідити це твердження ще раз",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Перевірка",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Анотувати",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Анотування",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Перекласти перевірки",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Перекласти",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Перевірено",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Повернутися",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Показати",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Сховати",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Перевірити",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Перевірка",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Локалізувати",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Баланс"
+  },
+  "gifted": {
+    "message": "У подарунок"
+  },
+  "customTopup": {
+    "message": "Інша сума"
+  },
+  "customAmountLabel": {
+    "message": "Довільна сума поповнення в доларах США"
+  },
+  "increase": {
+    "message": "Збільшити"
+  },
+  "decrease": {
+    "message": "Зменшити"
+  },
+  "topUpBalance": {
+    "message": "Поповнити баланс"
+  },
+  "processing": {
+    "message": "Обробка…"
+  },
+  "checkoutError": {
+    "message": "Не вдалося розпочати оплату. Спробуйте ще раз."
+  },
+  "termsOfService": {
+    "message": "Умови надання послуг"
+  },
+  "privacyPolicy": {
+    "message": "Політика конфіденційності"
+  },
+  "disclaimerAgree": {
+    "message": "Поповнюючи баланс, ви погоджуєтеся з нашими %TOS% та %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Якщо ви платите у валюті, відмінній від USD, може стягуватися комісія за конвертацію."
+  },
+  "signOut": {
+    "message": "Вийти"
+  },
+  "onboardDisinfactClick": {
+    "message": "Натискання на %BTN% показує твердження і спише кошти з вашого балансу"
+  },
+  "onboardDisinfactTap": {
+    "message": "Дотик до %BTN% показує твердження і спише кошти з вашого балансу"
+  },
+  "onboardLocalize": {
+    "message": "Натискання %BTN% змінює розташування виділень і стягує ваш баланс"
+  },
+  "onboardAnnotate": {
+    "message": "Натискання %BTN% перевіряє претензію на наявність помилок і стягує ваш баланс"
+  },
+  "onboardWillCharge": {
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
+  },
+  "onboardFactcheck": {
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
+  },
+  "onboardTranslations": {
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
+  },
+  "onboardRefreshes": {
+    "message": "Натискання на %BTN% спише кошти з вашого балансу"
+  },
+  "topUp": {
+    "message": "Поповнити"
+  },
+  "showMore": {
+    "message": "Показати більше"
+  },
+  "showLess": {
+    "message": "Показати менше"
+  },
+  "landingTagline1": {
+    "message": "Розкрийте правду. Знайдіть брехню."
+  },
+  "landingTagline2": {
+    "message": "Ніякої дезінформації. Лише факти."
+  },
+  "continueWithX": {
+    "message": "Продовжити з X"
+  },
+  "continueWithGoogle": {
+    "message": "Продовжити з Google"
+  },
+  "continueWithApple": {
+    "message": "Продовжити з Apple"
+  },
+  "lastUsed": {
+    "message": "Востаннє використано"
+  },
+  "cleanupTagline": {
+    "message": "Очистіть свою стрічку X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "На території Сполучених Штатів користуватися DisinfaX і поповнювати баланс можуть лише жителі штатів Алабама, Аризона, Каліфорнія, Колорадо, Коннектикут, Делавер, Флорида, Айдахо, Іллінойс, Індіана, Айова, Канзас, Кентуккі, Луїзіана, Мен, Массачусетс, Міссісіпі, Міссурі, Монтана, Нью-Гемпшир, Нью-Мексико, Нью-Йорк, Північна Кароліна, Північна Дакота, Оклахома, Орегон, Пенсільванія, Південна Кароліна, Південна Дакота, Теннессі, Техас, Юта, Вашингтон, Вісконсин і Вайомінг; округ Колумбія, усі території США та будь-які штати, не зазначені в списку, виключено. За межами Сполучених Штатів сервіс доступний у Канаді, Австралії, Новій Зеландії, Сінгапурі, Південно-Африканській Республіці, Японії, Тайвані, Індонезії, Таїланді, на Філіппінах, у Малайзії, В'єтнамі та Швейцарії."
+  },
+  "factCheckAllButton": {
+    "message": "Перевірити все"
+  },
+  "factCheckButton": {
+    "message": "Перевірити"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX може помилятися. Завжди перевіряйте інформацію.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ваш баланс занадто низький. Поповніть баланс, щоб продовжити."
+  },
+  "balanceEmpty": {
+    "message": "Ваш баланс порожній. Будь ласка, додайте кошти на свій баланс через спливаюче вікно DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ваш обліковий запис призупинено."
+  },
+  "errNotSignedIn": {
+    "message": "Ви не увійшли в систему. Увійдіть і спробуйте ще раз."
+  },
+  "errInvalidRequest": {
+    "message": "Частину цього запиту не розпізнано. Переконайтеся, що розширення оновлено."
+  },
+  "errServiceUnavailable": {
+    "message": "На нашому боці сталася помилка. Спробуйте ще раз трохи згодом."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ще не доступний у вашому регіоні через нормативні вимоги."
+  },
+  "errInvalidAmount": {
+    "message": "Ця сума поповнення недійсна. Виберіть іншу суму."
+  },
+  "errNotFound": {
+    "message": "Не вдалося це знайти. Спробуйте ще раз."
+  },
+  "settings": {
+    "message": "Налаштування",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Завжди показувати перевірки, якщо:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Достовірність < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Впевненість > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Перевірка фактів",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Введіть твердження",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Джерела",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Обґрунтування",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Відкриття спливного вікна з виділеним текстом перевіряє цей фрагмент і спише кошти з вашого балансу.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Скасувати",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "balanceLabel": {
+    "message": "موجودی"
+  },
+  "gifted": {
+    "message": "هدیه"
+  },
+  "customTopup": {
+    "message": "دلخواه"
+  },
+  "customAmountLabel": {
+    "message": "مبلغ شارژ دلخواه به دلار آمریکا"
+  },
+  "increase": {
+    "message": "افزایش"
+  },
+  "decrease": {
+    "message": "کاهش"
+  },
+  "topUpBalance": {
+    "message": "شارژ موجودی"
+  },
+  "processing": {
+    "message": "در حال پردازش…"
+  },
+  "checkoutError": {
+    "message": "شروع پرداخت ممکن نشد. لطفاً دوباره تلاش کنید."
+  },
+  "termsOfService": {
+    "message": "شرایط خدمات"
+  },
+  "privacyPolicy": {
+    "message": "سیاست حریم خصوصی"
+  },
+  "disclaimerAgree": {
+    "message": "با شارژ کردن، %TOS% و %PRIVACY% ما را می‌پذیرید."
+  },
+  "disclaimerFx": {
+    "message": "در صورت پرداخت با ارزی غیر از دلار آمریکا ممکن است کارمزد تبدیل ارز اعمال شود."
+  },
+  "disclaimerJurisdiction": {
+    "message": "در داخل ایالات متحده، فقط ساکنان آلاباما، آریزونا، کالیفرنیا، کلرادو، کانکتیکت، دلاور، فلوریدا، آیداهو، ایلینوی، ایندیانا، آیووا، کانزاس، کنتاکی، لوئیزیانا، مین، ماساچوست، می‌سی‌سی‌پی، میزوری، مونتانا، نیوهمپشایر، نیومکزیکو، نیویورک، کارولینای شمالی، داکوتای شمالی، اوکلاهما، اورگن، پنسیلوانیا، کارولینای جنوبی، داکوتای جنوبی، تنسی، تگزاس، یوتا، واشنگتن، ویسکانسین و وایومینگ می‌توانند از DisinfaX استفاده کرده و موجودی خود را شارژ کنند؛ واشنگتن دی‌سی، همهٔ سرزمین‌های ایالات متحده و هر ایالتی که فهرست نشده مستثنا هستند. خارج از ایالات متحده، در کانادا، استرالیا، نیوزیلند، سنگاپور، آفریقای جنوبی، ژاپن، تایوان، اندونزی، تایلند، فیلیپین، مالزی، ویتنام و سوئیس در دسترس است."
+  },
+  "signOut": {
+    "message": "خروج"
+  },
+  "onboardDisinfactClick": {
+    "message": "کلیک روی %BTN% ادعاها را نمایش می‌دهد و از موجودی شما کسر می‌کند"
+  },
+  "onboardDisinfactTap": {
+    "message": "ضربه زدن روی %BTN% ادعاها را نمایش می‌دهد و از موجودی شما کسر می‌کند"
+  },
+  "onboardLocalize": {
+    "message": "با کلیک بر روی %BTN% نقاط برجسته تغییر مکان داده و موجودی شما شارژ می شود"
+  },
+  "onboardAnnotate": {
+    "message": "با کلیک بر روی %BTN% ادعای خطا را بررسی می‌کند و موجودی شما را شارژ می‌کند"
+  },
+  "onboardWillCharge": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "onboardFactcheck": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "onboardTranslations": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "onboardRefreshes": {
+    "message": "کلیک روی %BTN% از موجودی شما کسر می‌کند"
+  },
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "اطلاعات نادرست در توییت‌ها را با استفاده از تحلیل هوش مصنوعی شناسایی و برجسته می‌کند."
+  },
+  "verdictTrue": {
+    "message": "درست",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "نادرست",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "نامشخص",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "راستی‌آزمایی",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "بررسی|تحقیق|پاکسازی|افشاگری|ابطال|تفکر|روشنگری|کاوش|غربالگری|تأیید|تحلیل|مقایسه|رمزگشایی|کشف|جست‌وجو|جمع‌آوری|پالایش|صحت‌سنجی|ریشه‌یابی|شفاف‌سازی|تجزیه‌وتحلیل|تعمق|اثبات|کنکاش|نورافشانی",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "بسیار محتمل",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "محتمل",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "احتمالاً",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "عمدتاً",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "قابل بحث",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "تا حدی",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "مبهم",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "کپی",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "آشکارسازی مجدد همهٔ ادعاهای این توییت",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "تحقیق مجدد این ادعا",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "راستی‌آزمایی",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "حاشیه‌نویسی کن",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "در حال حاشیه‌نویسی",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "ترجمه راستی‌آزمایی‌ها",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "ترجمه",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "راستی‌آزمایی شد",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "بازگشت",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "نمایش بده",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "پنهان کن",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "راستی‌آزمایی",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "راستی‌آزمایی",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "بومی‌سازی کن",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "که",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ که $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "شارژ"
+  },
+  "showMore": {
+    "message": "نمایش بیشتر"
+  },
+  "showLess": {
+    "message": "نمایش کمتر"
+  },
+  "landingTagline1": {
+    "message": "حقیقت را آشکار کن. دروغ‌ها را بیاب."
+  },
+  "landingTagline2": {
+    "message": "دیگر اطلاعات نادرست نیست. فقط حقایق."
+  },
+  "continueWithX": {
+    "message": "ادامه با X"
+  },
+  "continueWithGoogle": {
+    "message": "ادامه با Google"
+  },
+  "continueWithApple": {
+    "message": "ادامه با Apple"
+  },
+  "lastUsed": {
+    "message": "آخرین استفاده"
+  },
+  "cleanupTagline": {
+    "message": "فید X خود را پاک‌سازی کنید."
+  },
+  "factCheckAllButton": {
+    "message": "همه را راستی‌آزمایی کن"
+  },
+  "factCheckButton": {
+    "message": "راستی‌آزمایی کن"
+  },
+  "aiDisclaimer": {
+    "message": "‏DisinfaX ممکن است اشتباه کند. اطلاعات را دوباره بررسی کنید.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "موجودی شما بسیار کم است. لطفاً برای ادامه شارژ کنید."
+  },
+  "balanceEmpty": {
+    "message": "موجودی شما خالی است. لطفاً با استفاده از پاپ‌آپ DisinfaX به موجودی خود پول اضافه کنید.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "حساب شما تعلیق شده است."
+  },
+  "errNotSignedIn": {
+    "message": "شما وارد نشده‌اید. لطفاً وارد شوید و دوباره تلاش کنید."
+  },
+  "errInvalidRequest": {
+    "message": "بخشی از این درخواست شناسایی نشد. لطفاً بررسی کنید که افزونه به‌روز باشد."
+  },
+  "errServiceUnavailable": {
+    "message": "در سمت ما خطایی رخ داد. لطفاً کمی بعد دوباره تلاش کنید."
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX هنوز به دلیل الزامات نظارتی در منطقه شما در دسترس نیست."
+  },
+  "errInvalidAmount": {
+    "message": "مقدار شارژ واردشده معتبر نیست. لطفاً مقدار دیگری انتخاب کنید."
+  },
+  "errNotFound": {
+    "message": "موردی پیدا نشد. لطفاً دوباره تلاش کنید."
+  },
+  "settings": {
+    "message": "تنظیمات",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "همیشه راستی‌آزمایی‌ها را نشان بده اگر:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "درستی < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "اطمینان > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "راستی‌آزمایی",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "یک ادعا وارد کنید",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "منابع",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "استدلال",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "باز کردن پنجره با متن انتخاب‌شده، آن انتخاب را بررسی می‌کند و از موجودی شما کسر می‌شود.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "لغو",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

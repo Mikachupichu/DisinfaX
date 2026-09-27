@@ -1,0 +1,386 @@
+{
+  "topUp": {
+    "message": "Լիցքավորել"
+  },
+  "showMore": {
+    "message": "Ցույց տալ ավելին"
+  },
+  "showLess": {
+    "message": "Ցույց տալ քիչ"
+  },
+  "landingTagline1": {
+    "message": "Բացահայտի՛ր ճշմարտությունը։ Գտի՛ր ստերը։"
+  },
+  "landingTagline2": {
+    "message": "Այլևս ապատեղեկատվություն չկա։ Միայն փաստեր։"
+  },
+  "continueWithX": {
+    "message": "Շարունակել X-ով"
+  },
+  "continueWithGoogle": {
+    "message": "Շարունակել Google-ով"
+  },
+  "continueWithApple": {
+    "message": "Շարունակել Apple-ով"
+  },
+  "lastUsed": {
+    "message": "Վերջին անգամ օգտագործված"
+  },
+  "cleanupTagline": {
+    "message": "Մաքրի՛ր քո X հոսքը։"
+  },
+  "disclaimerJurisdiction": {
+    "message": "Միացյալ Նահանգների ներսում DisinfaX-ից օգտվել և իրենց հաշվեկշիռը լիցքավորել կարող են միայն Ալաբամայի, Արիզոնայի, Կալիֆոռնիայի, Կոլորադոյի, Կոնեկտիկուտի, Դելավերի, Ֆլորիդայի, Այդահոյի, Իլինոյսի, Ինդիանայի, Այովայի, Կանզասի, Կենտուկիի, Լուիզիանայի, Մենի, Մասաչուսեթսի, Միսիսիպիի, Միսուրիի, Մոնտանայի, Նյու Հեմփշիրի, Նյու Մեքսիկոյի, Նյու Յորքի, Հյուսիսային Կարոլինայի, Հյուսիսային Դակոտայի, Օկլահոմայի, Օրեգոնի, Փենսիլվանիայի, Հարավային Կարոլինայի, Հարավային Դակոտայի, Թենեսիի, Տեխասի, Յուտայի, Վաշինգտոնի, Վիսկոնսինի և Վայոմինգի բնակիչները. Վաշինգտոն D.C.-ն, ԱՄՆ-ի բոլոր տարածքները և չնշված ցանկացած նահանգ բացառվում են։ Միացյալ Նահանգներից դուրս այն հասանելի է Կանադայում, Ավստրալիայում, Նոր Զելանդիայում, Սինգապուրում, Հարավաֆրիկյան Հանրապետությունում, Ճապոնիայում, Թայվանում, Ինդոնեզիայում, Թաիլանդում, Ֆիլիպիններում, Մալայզիայում, Վիետնամում և Շվեյցարիայում։"
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI վերլուծության միջոցով հայտնաբերում և ընդգծում է ապատեղեկատվությունը թվիթներում։",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Ճիշտ",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Կեղծ",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Անհայտ",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Ստուգում",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Ստուգում|Հետազոտություն|Մաքրում|Բացահայտում|Հայտնաբերում|Մտածում|Լուսավորում|Փորում|Զտում|Վերլուծություն|Հարցաքննում|Պարզաբանում|Համեմատում|Քննություն|Հետազոտում|Խորհրդածում|Զննում|Ուսումնասիրում|Վավերացում|Ապացուցում|Մեկնաբանում|Քրքրում|Որոնում|Ուսումնասիրություն|Բացահայտագրում",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Շատ հավանական",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Հավանական",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Հնարավոր է",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Հիմնականում",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Վիճելի",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Մասամբ",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Երկիմաստ",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Պատճենել",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Կրկին բացահայտել այս թվիթի բոլոր պնդումները",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Վերահետազոտել այս պնդումը",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Ստուգում",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Ծանոթագրել",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Ծանոթագրվում է",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Թարգմանել ստուգումը",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Թարգմանել",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "լինել",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ստուգված է",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Վերադառնալ",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Ցույց տալ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Թաքցնել",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Ստուգում",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Ստուգում",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Տեղայնացնել",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Մնացորդ"
+  },
+  "gifted": {
+    "message": "Նվիրված"
+  },
+  "customTopup": {
+    "message": "Հատուկ"
+  },
+  "customAmountLabel": {
+    "message": "Հատուկ լիցքավորման գումարը ԱՄՆ դոլարով"
+  },
+  "increase": {
+    "message": "Ավելացնել"
+  },
+  "decrease": {
+    "message": "Նվազեցնել"
+  },
+  "topUpBalance": {
+    "message": "Համալրել մնացորդը"
+  },
+  "processing": {
+    "message": "Մշակվում է…"
+  },
+  "checkoutError": {
+    "message": "Չհաջողվեց սկսել վճարումը։ Խնդրում ենք նորից փորձել։"
+  },
+  "termsOfService": {
+    "message": "Ծառայության պայմաններ"
+  },
+  "privacyPolicy": {
+    "message": "Գաղտնիության քաղաքականություն"
+  },
+  "disclaimerAgree": {
+    "message": "Համալրելով՝ դուք համաձայնում եք մեր %TOS%-ին և %PRIVACY%-ին։"
+  },
+  "disclaimerFx": {
+    "message": "Արտարժույթի փոխանակման վճարներ կարող են կիրառվել, եթե վճարում եք USD-ից տարբեր արժույթով։"
+  },
+  "signOut": {
+    "message": "Դուրս գալ"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN%-ի վրա սեղմելը կբացահայտի պնդումները և կգանձի գումար ձեր հաշվեկշռից"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%-ի վրա հպելը կբացահայտի պնդումները և կգանձի գումար ձեր հաշվեկշռից"
+  },
+  "onboardLocalize": {
+    "message": "Սեղմելով %BTN%՝ կվերաբացվի կարևորագույն կետերը և կգանձվի ձեր հաշվեկշիռը"
+  },
+  "onboardAnnotate": {
+    "message": "Սեղմելով %BTN%՝ ստուգվում է հայցը սխալների համար և ձեր հաշվեկշիռը կգանձվի"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN%-ի վրա սեղմելը գումար կգանձի ձեր հաշվեկշռից"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN%-ի վրա սեղմելը գումար կգանձի ձեր հաշվեկշռից"
+  },
+  "onboardTranslations": {
+    "message": "%BTN%-ի վրա սեղմելը գումար կգանձի ձեր հաշվեկշռից"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN%-ի վրա սեղմելը գումար կգանձի ձեր հաշվեկշռից"
+  },
+  "factCheckAllButton": {
+    "message": "Ստուգել բոլորը"
+  },
+  "factCheckButton": {
+    "message": "Ստուգել"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX-ը կարող է սխալվել։ Կրկնակի ստուգեք տեղեկությունը։",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ձեր հաշվեկշիռը շատ ցածր է: Խնդրում ենք համալրել՝ շարունակելու համար:"
+  },
+  "balanceEmpty": {
+    "message": "Ձեր հաշվեկշիռը դատարկ է: Խնդրում ենք համալրել այն DisinfaX-ի թռուցիկ պատուհանի միջոցով:",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Ձեր հաշիվը կասեցվել է:"
+  },
+  "errNotSignedIn": {
+    "message": "Դուք մուտք չեք գործել: Խնդրում ենք մուտք գործել և կրկին փորձել:"
+  },
+  "errInvalidRequest": {
+    "message": "Այս հարցման մի մասը չհասկացվեց: Համոզվեք, որ ընդլայնումը թարմացված է:"
+  },
+  "errServiceUnavailable": {
+    "message": "Մեր կողմից սխալ առաջացավ: Խնդրում ենք մի փոքր ուշ նորից փորձել:"
+  },
+  "errRegionNotSupported": {
+    "message": "Կանոնակարգային պահանջների պատճառով DisinfaX-ը դեռ հասանելի չէ ձեր տարածաշրջանում:"
+  },
+  "errInvalidAmount": {
+    "message": "Այդ համալրման գումարը վավեր չէ: Խնդրում ենք ընտրել այլ գումար:"
+  },
+  "errNotFound": {
+    "message": "Դա հնարավոր չեղավ գտնել: Կրկին փորձեք:"
+  },
+  "settings": {
+    "message": "Կարգավորումներ",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Միշտ ցույց տալ ստուգումները, եթե:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Ճշմարտացիություն < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Վստահություն > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Փաստերի ստուգում",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Մուտքագրեք պնդում",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Աղբյուրներ",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Հիմնավորում",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ընտրված տեքստով պատուհանը բացելը ստուգում է այդ ընտրությունը և կգանձվի ձեր հաշվեկշռից։",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Չեղարկել",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

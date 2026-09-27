@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Otkriva i ističe dezinformacije u tvitovima koristeći AI analizu.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Istinito",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Lažno",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Nepoznato",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Provera",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Provera|Istraga|Čišćenje|Razotkrivanje|Otkrivanje|Razmišljanje|Osvetljavanje|Kopanje|Prosejavanje|Analiziranje|Praćenje|Razjašnjavanje|Filtriranje|Traganje|Odgonetanje|Demistifikacija|Ispravljanje|Skeniranje|Njuškanje|Dekodiranje|Rasklapanje|Utvrđivanje činjenica|Unakrsna provera|Sintetizovanje|Razmatranje|Preispitivanje|Zaključivanje|Provera izvora|Poređenje|Raščlanjivanje",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Veoma verovatno",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Verovatno",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Moguće",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Uglavnom",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Sporno",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Delimično",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Dvosmisleno",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopiraj",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Ponovo otkrij sve tvrdnje u ovom tvitu",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ponovo istraži ovu tvrdnju",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Provera",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotiraj",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotiranje",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Prevedi provere",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Prevedi",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "da je",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ da je $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Provereno",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Nazad",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Prikaži",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Sakrij",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Provera",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Provera",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizuj",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Stanje"
+  },
+  "gifted": {
+    "message": "Poklonjeno"
+  },
+  "customTopup": {
+    "message": "Prilagođeno"
+  },
+  "customAmountLabel": {
+    "message": "Prilagođeni iznos dopune u američkim dolarima"
+  },
+  "increase": {
+    "message": "Povećaj"
+  },
+  "decrease": {
+    "message": "Smanji"
+  },
+  "topUpBalance": {
+    "message": "Dopuni stanje"
+  },
+  "processing": {
+    "message": "Obrada…"
+  },
+  "checkoutError": {
+    "message": "Nije moguće pokrenuti naplatu. Pokušajte ponovo."
+  },
+  "termsOfService": {
+    "message": "Uslovi korišćenja"
+  },
+  "privacyPolicy": {
+    "message": "Politika privatnosti"
+  },
+  "disclaimerAgree": {
+    "message": "Dopunom prihvatate naše %TOS% i %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Mogu se primeniti naknade za deviznu konverziju ako plaćate u valuti koja nije USD."
+  },
+  "signOut": {
+    "message": "Odjava"
+  },
+  "onboardDisinfactClick": {
+    "message": "Klikom na %BTN% prikazuju se tvrdnje i naplatiće se sa vašeg salda"
+  },
+  "onboardDisinfactTap": {
+    "message": "Dodirom na %BTN% prikazuju se tvrdnje i naplatiće se sa vašeg salda"
+  },
+  "onboardLocalize": {
+    "message": "Кликом на %BTN% премештате истакнуте делове и наплатиће ваше стање"
+  },
+  "onboardAnnotate": {
+    "message": "Кликом на %BTN% проверава се грешка у захтеву и наплаћује вам се стање"
+  },
+  "onboardWillCharge": {
+    "message": "Klikom na %BTN% naplatiće se sa vašeg salda"
+  },
+  "onboardFactcheck": {
+    "message": "Klikom na %BTN% naplatiće se sa vašeg salda"
+  },
+  "onboardTranslations": {
+    "message": "Klikom na %BTN% naplatiće se sa vašeg salda"
+  },
+  "onboardRefreshes": {
+    "message": "Klikom na %BTN% naplatiće se sa vašeg salda"
+  },
+  "topUp": {
+    "message": "Dopuni"
+  },
+  "showMore": {
+    "message": "Prikaži više"
+  },
+  "showLess": {
+    "message": "Prikaži manje"
+  },
+  "landingTagline1": {
+    "message": "Otkrijte istinu. Pronađite laži."
+  },
+  "landingTagline2": {
+    "message": "Nema više dezinformacija. Samo činjenice."
+  },
+  "continueWithX": {
+    "message": "Nastavi s X"
+  },
+  "continueWithGoogle": {
+    "message": "Nastavi s Google"
+  },
+  "continueWithApple": {
+    "message": "Nastavi s Apple"
+  },
+  "lastUsed": {
+    "message": "Poslednje korišćeno"
+  },
+  "cleanupTagline": {
+    "message": "Očistite svoj X feed."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Unutar Sjedinjenih Američkih Država DisinfaX mogu koristiti i nadopunjavati saldo samo stanovnici saveznih država Alabama, Arizona, Kalifornija, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Novi Meksiko, New York, Sjeverna Karolina, Sjeverna Dakota, Oklahoma, Oregon, Pennsylvania, Južna Karolina, Južna Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin i Wyoming; Washington, D.C., svi teritoriji SAD-a i sve savezne države koje nisu navedene isključene su. Izvan Sjedinjenih Američkih Država usluga je dostupna u Kanadi, Australiji, Novom Zelandu, Singapuru, Južnoafričkoj Republici, Japanu, na Tajvanu, u Indoneziji, na Tajlandu, Filipinima, u Maleziji, Vijetnamu i Švicarskoj."
+  },
+  "factCheckAllButton": {
+    "message": "Proveri sve"
+  },
+  "factCheckButton": {
+    "message": "Proveri"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX može pogrešiti. Proverite informacije dva puta.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Vaše stanje je previše nisko. Dopunite ga da biste nastavili."
+  },
+  "balanceEmpty": {
+    "message": "Vaše stanje je prazno. Dodajte sredstva na svoje stanje putem DisinfaX popup-a.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Vaš račun je suspendiran."
+  },
+  "errNotSignedIn": {
+    "message": "Niste prijavljeni. Prijavite se i pokušajte ponovo."
+  },
+  "errInvalidRequest": {
+    "message": "Deo ovog zahteva nije prepoznat. Proverite da li je ekstenzija ažurirana."
+  },
+  "errServiceUnavailable": {
+    "message": "Došlo je do greške s naše strane. Pokušajte ponovo za trenutak."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX još nije dostupan u vašoj regiji zbog regulatornih zahtjeva."
+  },
+  "errInvalidAmount": {
+    "message": "Taj iznos dopune nije valjan. Odaberite drugi iznos."
+  },
+  "errNotFound": {
+    "message": "To se nije moglo pronaći. Pokušajte ponovno."
+  },
+  "settings": {
+    "message": "Postavke",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Uvijek prikaži provjere ako:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Istinitost < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Pouzdanost > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Provjera činjenica",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Unesite tvrdnju",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Izvori",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Obrazloženje",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Otvaranje iskačućeg prozora s odabranim tekstom provjerava taj odabir i naplatit će se s vašeg stanja.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Otkaži",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

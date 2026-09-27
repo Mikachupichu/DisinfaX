@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "ብምጥቃም ናይ AI ትንተና፡ ኣብ ትዊታት ዘሎ ጌጋ ሓበሬታ ይልልን ብሩህ ይገብሮን።",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "ሓቂ",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "ሓሰት",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "ዘይፍለጥ",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "ምርምር",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "ምርምር|ምጽራይ|ምንጻር|ምድላይ|ምግላጽ|ምምርማር|ምብራህ|ምንጻል ሓቂ ካብ ሓሶት|ምግምጋም|ምቅላዕ|ምጥርናፍ|ምድህሳስ|ምቁጽጻር|ምጽራይ ሓቂ|ምድላይ ሓቂ|ምግላጽ ሓሶት|ምንጻር ሓቂ|ብርሃን ምብራህ|ናይ መርማሪ ስራሕ|ምውህሃድ ሓበሬታ|ምንጻል ሓሶት|ምስትብሃል|ምጽራይ ሓበሬታ|ምድላይ ሓቂ ብዕምቆት|ምንጻል ሓበሬታ",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "ኣዝዩ ክኸውን ዝኽእል",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "ክኸውን ዝኽእል",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "ምናልባት",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "ብዝበዝሐ",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "ብክርክር",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "ብኸፊል",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "ዘይንጹር",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "ቅዳሕ",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "ኣብዚ ትዊት ዘለዉ ኩሎም መግለጺታት ዳግም ግለጽ",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "ነዚ መግለጺ ደጊም መርምር",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "ምርምር",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "ማብራሪያ ጨምር",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "ማብራሪያ ይወሰኻል",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "ምርመራታት ተርጉም",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "ተርጉም",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ክኸውን",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ክኸውን $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "ተመርመረ",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "ተመለስ",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "ኣርእይ",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "ሕብእ",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "ግለጽ",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "ምርምር",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "ኣመቻች",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "ቀሪ ሒሳብ"
+  },
+  "gifted": {
+    "message": "ህያብ"
+  },
+  "customTopup": {
+    "message": "ብሕታዊ"
+  },
+  "customAmountLabel": {
+    "message": "ብሕታዊ መጠን መሙላእታ ብ US ዶላር"
+  },
+  "increase": {
+    "message": "ወስኽ"
+  },
+  "decrease": {
+    "message": "ኣጉድል"
+  },
+  "topUpBalance": {
+    "message": "ቀሪ ሒሳብ ምላእ"
+  },
+  "processing": {
+    "message": "ይሰላሰል ኣሎ…"
+  },
+  "checkoutError": {
+    "message": "ክፍሊት ክጅምር ኣይከኣለን። በጃኻ ደጊምካ ፈትን።"
+  },
+  "termsOfService": {
+    "message": "ውዕላት ኣገልግሎት"
+  },
+  "privacyPolicy": {
+    "message": "ፖሊሲ ውልቃውነት"
+  },
+  "disclaimerAgree": {
+    "message": "ብምምላእ ሒሳብካ፡ ነቶም ናትና %TOS% ከምኡ'ውን %PRIVACY% ትሰማማዕ ኣለኻ ማለት እዩ።"
+  },
+  "disclaimerFx": {
+    "message": "ብዘይ USD ብኻልእ ባጤራ እንተኸፊልካ ናይ ወጻኢ ምልውዋጥ ክፍሊት ክውሰኽ ይኽእል እዩ።"
+  },
+  "signOut": {
+    "message": "ውጻእ"
+  },
+  "onboardDisinfactClick": {
+    "message": "ኣብ %BTN% ምጥዋቕ ነቶም መግለጺታት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardDisinfactTap": {
+    "message": "ኣብ %BTN% ምንካይ ነቶም መግለጺታት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% ጠውቕካ ነቶም ድምቀት ዳግማይ የቐምጦምን ሚዛንካ ክኸፍልን እዩ።"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% ጠውቕካ ነቲ ክሲ ጌጋታት እንተሃልዩ ይምርምርን ሚዛንካ ክኸፍልን እዩ።"
+  },
+  "onboardWillCharge": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardFactcheck": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardTranslations": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "onboardRefreshes": {
+    "message": "ኣብ %BTN% ምጥዋቕ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ"
+  },
+  "topUp": {
+    "message": "ምላእ"
+  },
+  "showMore": {
+    "message": "ተወሳኺ ኣርኢ"
+  },
+  "showLess": {
+    "message": "ውሑድ ኣርኢ"
+  },
+  "landingTagline1": {
+    "message": "ሓቂ ግለጽ። ሓሶታት ርኸብ።"
+  },
+  "landingTagline2": {
+    "message": "ደጊም ጌጋ ሓበሬታ የለን። ሓቅታት ጥራይ።"
+  },
+  "continueWithX": {
+    "message": "ብX ቀጽል"
+  },
+  "continueWithGoogle": {
+    "message": "ብGoogle ቀጽል"
+  },
+  "continueWithApple": {
+    "message": "ብApple ቀጽል"
+  },
+  "lastUsed": {
+    "message": "ናይ መወዳእታ እተጠቐምካሉ"
+  },
+  "cleanupTagline": {
+    "message": "ናይ X ፊድካ ኣጽርይ።"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ኣብ ውሽጢ እቲ ሕቡራት መንግስታት፡ ነበርቲ Alabama፡ Arizona፡ California፡ Colorado፡ Connecticut፡ Delaware፡ Florida፡ Idaho፡ Illinois፡ Indiana፡ Iowa፡ Kansas፡ Kentucky፡ Louisiana፡ Maine፡ Massachusetts፡ Mississippi፡ Missouri፡ Montana፡ New Hampshire፡ New Mexico፡ New York፡ North Carolina፡ North Dakota፡ Oklahoma፡ Oregon፡ Pennsylvania፡ South Carolina፡ South Dakota፡ Tennessee፡ Texas፡ Utah፡ Washington፡ Wisconsin፡ ከምኡውን Wyoming ጥራይ እዮም DisinfaX ክጥቀሙን ቀሪ ሒሳቦም ክመልኡን ዝኽእሉ፤ Washington, D.C.፡ ኩሎም ግዝኣታት ኣመሪካ፡ ከምኡውን ዘይተዘርዘሩ ዝኾኑ ግዝኣታት ኣይካተቱን። ኣብ ወጻኢ እቲ ሕቡራት መንግስታት፡ ኣብ ካናዳ፡ ኣውስትራልያ፡ ኒው ዚላንድ፡ ሲንጋፖር፡ ደቡብ ኣፍሪቃ፡ ጃፓን፡ ታይዋን፡ ኢንዶነዥያ፡ ታይላንድ፡ ፊሊፒንስ፡ ማለዥያ፡ ቬትናም፡ ከምኡውን ስዊዘርላንድ ይርከብ።"
+  },
+  "factCheckAllButton": {
+    "message": "ኩሉ መርምር"
+  },
+  "factCheckButton": {
+    "message": "መርምር"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX ጌጋታት ክፍጠር ይኽእል እዩ። ሓበሬታ ደጊምካ ኣረጋግጽ።",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "ቀሪ ሒሳብካ ትሑት እዩ። ንምቕጻል በጃኻ መልእ።"
+  },
+  "balanceEmpty": {
+    "message": "ቀሪ ሒሳብካ ጾፊ እዩ። በ DisinfaX popup በጃኻ ሒሳብካ መልእ።",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "ኣካውንትካ ተኣጊዱ ኣሎ።"
+  },
+  "errNotSignedIn": {
+    "message": "ኣይኣተውካን። በጃኻ እቶ እሞ ደጊምካ ፈትን።"
+  },
+  "errInvalidRequest": {
+    "message": "ገለ ካብዚ ጠለብ ኣይተፈለጠን። በጃኻ እቲ ኤክስተንሽን ዘመናዊ ምዃኑ ኣረጋግጽ።"
+  },
+  "errServiceUnavailable": {
+    "message": "ካብ ወገንና ጌጋ ተፈጢሩ። በጃኻ ድሕሪ ሓጺር ግዜ ደጊምካ ፈትን።"
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ብሰንኪ ቁጽጽራዊ ጠለባት ኣብ ከባቢኻ ገና የለን።"
+  },
+  "errInvalidAmount": {
+    "message": "እቲ ናይ ምምላእ መጠን ግቡእ ኣይኮነን። በጃኻ ካልእ መጠን ምረጽ።"
+  },
+  "errNotFound": {
+    "message": "እዚ ክርከብ ኣይተኻእለን። በጃኻ ደጊምካ ፈትን።"
+  },
+  "settings": {
+    "message": "ቅንብሮች",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "ኩሉ ግዜ ምርመራታት ኣርእይ እንተኾይኑ:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "ሓቂነት < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "እምነት > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "ምርግጋጽ ሓበሬታ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "ሕቶ ኣእቱ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ምንጭታት",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ምኽንያት",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "ጽሑፍ መሪጽካ ፖፕኣፕ ምኽፋት ነቲ ምርጫ ይምርምሮ ካብ ሒሳብካ ይቀንስ።",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "ሰርዝ",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

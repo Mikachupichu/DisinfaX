@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Открива и истакнува дезинформации во твитови користејќи AI анализа.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Вистинито",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Лажно",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Непознато",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Проверка",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Проверка|Истражување|Чистење|Разобличување|Откривање|Размислување|Осветлување|Копање|Филтрирање|Вкрстена Проверка|Анализа|Расчистување|Демистифицирање|Собирање Докази|Расплетување|Разоткривање|Согледување|Проникнување|Прочистување|Демантирање|Обелоденување|Претресување|Средување|Отфрлање Митови|Длабинско Копање|Расветлување|Испитување|Верификација|Синтетизирање|Дешифрирање",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Многу веројатно",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Веројатно",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Можно",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Најчесто",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Спорно",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Делумно",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Двосмислено",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Копирај",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Откријте ги повторно сите тврдења во овој твит",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Истражете го повторно ова тврдење",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Проверка",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Анотирај",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Анотирање",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Преведи ги проверките",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Преведи",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "to be",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Проверено",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Врати се",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Прикажи",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Сокриј",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Проверка",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Проверка",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Локализирај",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Салдо"
+  },
+  "gifted": {
+    "message": "Подарено"
+  },
+  "customTopup": {
+    "message": "Приспособено"
+  },
+  "customAmountLabel": {
+    "message": "Приспособена сума за дополнување во американски долари"
+  },
+  "increase": {
+    "message": "Зголеми"
+  },
+  "decrease": {
+    "message": "Намали"
+  },
+  "topUpBalance": {
+    "message": "Дополни салдо"
+  },
+  "processing": {
+    "message": "Се обработува…"
+  },
+  "checkoutError": {
+    "message": "Не можеше да се започне плаќањето. Обидете се повторно."
+  },
+  "termsOfService": {
+    "message": "Услови за користење"
+  },
+  "privacyPolicy": {
+    "message": "Политика за приватност"
+  },
+  "disclaimerAgree": {
+    "message": "Со дополнувањето се согласувате со нашите %TOS% и %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Може да се применат такси за девизна размена ако плаќате во валута различна од USD."
+  },
+  "signOut": {
+    "message": "Одјави се"
+  },
+  "onboardDisinfactClick": {
+    "message": "Со кликнување на %BTN% се откриваат тврдења и ќе се наплати од вашето салдо"
+  },
+  "onboardDisinfactTap": {
+    "message": "Со допир на %BTN% се откриваат тврдења и ќе се наплати од вашето салдо"
+  },
+  "onboardLocalize": {
+    "message": "Со кликнување на %BTN% се репозиционираат главните точки и ќе се наплати вашето салдо"
+  },
+  "onboardAnnotate": {
+    "message": "Со кликнување на %BTN% се проверува барањето за грешки и ќе се наплати вашето салдо"
+  },
+  "onboardWillCharge": {
+    "message": "Со кликнување на %BTN% ќе се наплати од вашето салдо"
+  },
+  "onboardFactcheck": {
+    "message": "Со кликнување на %BTN% ќе се наплати од вашето салдо"
+  },
+  "onboardTranslations": {
+    "message": "Со кликнување на %BTN% ќе се наплати од вашето салдо"
+  },
+  "onboardRefreshes": {
+    "message": "Со кликнување на %BTN% ќе се наплати од вашето салдо"
+  },
+  "topUp": {
+    "message": "Дополни"
+  },
+  "showMore": {
+    "message": "Прикажи повеќе"
+  },
+  "showLess": {
+    "message": "Прикажи помалку"
+  },
+  "landingTagline1": {
+    "message": "Откријте ја вистината. Најдете ги лагите."
+  },
+  "landingTagline2": {
+    "message": "Нема повеќе дезинформации. Само факти."
+  },
+  "continueWithX": {
+    "message": "Продолжи со X"
+  },
+  "continueWithGoogle": {
+    "message": "Продолжи со Google"
+  },
+  "continueWithApple": {
+    "message": "Продолжи со Apple"
+  },
+  "lastUsed": {
+    "message": "Последно користено"
+  },
+  "cleanupTagline": {
+    "message": "Исчистете го вашиот X фид."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Во рамките на Соединетите Држави, само жителите на Алабама, Аризона, Калифорнија, Колорадо, Конектикат, Делавер, Флорида, Ајдахо, Илиноис, Индијана, Ајова, Канзас, Кентаки, Луизијана, Мејн, Масачусетс, Мисисипи, Мисури, Монтана, Њу Хемпшир, Њу Мексико, Њујорк, Северна Каролина, Северна Дакота, Оклахома, Орегон, Пенсилванија, Јужна Каролина, Јужна Дакота, Тенеси, Тексас, Јута, Вашингтон, Висконсин и Вајоминг можат да користат DisinfaX и да го дополнуваат својот биланс; Вашингтон, D.C., сите територии на САД и сите држави што не се наведени се исклучени. Надвор од Соединетите Држави, достапно е во Канада, Австралија, Нов Зеланд, Сингапур, Јужна Африка, Јапонија, Тајван, Индонезија, Тајланд, Филипини, Малезија, Виетнам и Швајцарија."
+  },
+  "factCheckAllButton": {
+    "message": "Провери сѐ"
+  },
+  "factCheckButton": {
+    "message": "Провери"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX може да направи грешки. Проверете ги информациите двојно.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Вашето салдо е премногу ниско. Дополнете за да продолжите."
+  },
+  "balanceEmpty": {
+    "message": "Вашето салдо е празно. Додајте средства на вашето салдо преку скокачкиот прозорец на DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Вашата сметка е суспендирана."
+  },
+  "errNotSignedIn": {
+    "message": "Не сте најавени. Најавете се и обидете се повторно."
+  },
+  "errInvalidRequest": {
+    "message": "Дел од ова барање не беше препознаен. Проверете дали додатокот е ажуриран."
+  },
+  "errServiceUnavailable": {
+    "message": "Настана грешка од наша страна. Обидете се повторно за момент."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX сè уште не е достапен во вашиот регион поради регулаторни барања."
+  },
+  "errInvalidAmount": {
+    "message": "Тој износ за дополнување не е важечки. Изберете друг износ."
+  },
+  "errNotFound": {
+    "message": "Тоа не можеше да се пронајде. Обидете се повторно."
+  },
+  "settings": {
+    "message": "Поставки",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Секогаш прикажи проверки ако:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Вистинитост < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Доверба > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Проверка на факти",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Внесете тврдење",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Извори",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Образложение",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Отворањето на скок-прозорецот со избран текст ја проверува таа селекција и ќе се наплати од вашиот баланс.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Откажи",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

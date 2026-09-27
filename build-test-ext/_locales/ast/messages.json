@@ -1,0 +1,386 @@
+{
+  "balanceLabel": {
+    "message": "Saldu"
+  },
+  "gifted": {
+    "message": "Regaláu"
+  },
+  "customTopup": {
+    "message": "Personalizáu"
+  },
+  "customAmountLabel": {
+    "message": "Cantidá de recarga personalizada en dólares estadounidenses"
+  },
+  "increase": {
+    "message": "Aumentar"
+  },
+  "decrease": {
+    "message": "Amenorgar"
+  },
+  "topUpBalance": {
+    "message": "Recargar saldu"
+  },
+  "processing": {
+    "message": "Procesando…"
+  },
+  "checkoutError": {
+    "message": "Nun pudo aniciase'l pagu. Torna a intentalo, por favor."
+  },
+  "termsOfService": {
+    "message": "Términos del serviciu"
+  },
+  "privacyPolicy": {
+    "message": "Política de privacidá"
+  },
+  "disclaimerAgree": {
+    "message": "Al recargar, aceutes los nuesos %TOS% y %PRIVACY%."
+  },
+  "disclaimerFx": {
+    "message": "Puen aplicase comisiones de cambéu de divisa si pagues nuna moneda distinta del USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Dientro de los Estaos Xuníos, namás los residentes d'Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Luisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, Nueva Hampshire, Nuevu Méxicu, Nueva York, Carolina del Norte, Dakota del Norte, Oklahoma, Oregón, Pensilvania, Carolina del Sur, Dakota del Sur, Tennessee, Texas, Utah, Washington, Wisconsin y Wyoming puen usar DisinfaX y recargar el so saldu; Washington, D.C., tolos territorios de los EE.XX. y cualquier estáu non llistáu tán escluíos. Fuera de los Estaos Xuníos, ta disponible en Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Xapón, Taiwán, Indonesia, Tailandia, Filipines, Malasia, Vietnam y Suiza."
+  },
+  "signOut": {
+    "message": "Zarrar sesión"
+  },
+  "onboardDisinfactClick": {
+    "message": "Faer clic en %BTN% amuesa les afirmaciones y cobrará del to saldu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Tocar %BTN% amuesa les afirmaciones y cobrará del to saldu"
+  },
+  "onboardLocalize": {
+    "message": "Faer clic en %BTN% vuelve a asitiar los resaltes y cobrará del to saldu"
+  },
+  "onboardAnnotate": {
+    "message": "Faer clic en %BTN% comprueba l'afirmación pa buscar errores y cobrará del to saldu"
+  },
+  "onboardWillCharge": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "onboardFactcheck": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "onboardTranslations": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "onboardRefreshes": {
+    "message": "Faer clic en %BTN% cobrará del to saldu"
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Detecta y destaca la desinformación nos tweets usando analís d'IA.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Verdaderu",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Falsu",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Desconocíu",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Verificando",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Desintoxicando|Desinfectando|Llimpiando|Iguando|Llavando|Guetando|Investigando|Verificando fechos|Desprogramando|Averiguando la verdá|Comprobando|Pensando|Descubriendo|Revisando|Esplorando|Buscando la verdá|Aclarando|Desenmascarando|Illuminando|Clasificando|Recoyendo datos|Informando|Xirando|Cargando|Escarbando|Esponiendo mentires|Filtrando|Cotexando|Desmontando bulos|Desmintiendo",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Mui probablemente",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Probablemente",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Posiblemente",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Mayoritariamente",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Discutiblemente",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Parcialmente",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Equívocamente",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Copiar",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Revelar otra vegada toles afirmaciones d'esti tweet",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Volver investigar esta afirmación",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Verificando",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotar",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotando",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Traducir verificaciones de fechos",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Traducir",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Verificáu",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Volver",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Revelar",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Anubrir",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Disinfact",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Desinfectando",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Llocalizar",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "ser",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ser $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "Recargar"
+  },
+  "showMore": {
+    "message": "Amosar más"
+  },
+  "showLess": {
+    "message": "Amosar menos"
+  },
+  "landingTagline1": {
+    "message": "Desvela la verdá. Atopa les mentires."
+  },
+  "landingTagline2": {
+    "message": "Ensin más desinformación. Namás fechos."
+  },
+  "continueWithX": {
+    "message": "Continuar con X"
+  },
+  "continueWithGoogle": {
+    "message": "Continuar con Google"
+  },
+  "continueWithApple": {
+    "message": "Continuar con Apple"
+  },
+  "lastUsed": {
+    "message": "Usáu la última vez"
+  },
+  "cleanupTagline": {
+    "message": "Llimpia'l to feed d'X."
+  },
+  "factCheckAllButton": {
+    "message": "Verificar too"
+  },
+  "factCheckButton": {
+    "message": "Verificar"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX pue facer fallos. Comprueba la información dos vegaes.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "El to saldu ye demasiáu baxu. Recarga pa siguir, por favor."
+  },
+  "balanceEmpty": {
+    "message": "El to saldu ta vacíu. Recarga'l col popup de DisinfaX, por favor.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "La to cuenta foi suspendida."
+  },
+  "errNotSignedIn": {
+    "message": "Nun tienes la sesión aniciada. Anicia sesión y torna a intentalo, por favor."
+  },
+  "errInvalidRequest": {
+    "message": "Una parte d'esta solicitú nun se reconoció. Asegúrate de que la estensión ta anovada, por favor."
+  },
+  "errServiceUnavailable": {
+    "message": "Asocedió un fallu pel nuesu llau. Torna a intentalo en poco tiempu, por favor."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX entá nun ta disponible na to rexón por requisitos regulatorios."
+  },
+  "errInvalidAmount": {
+    "message": "Esa cantidá de recarga nun ye válida. Escueye otra cantidá, por favor."
+  },
+  "errNotFound": {
+    "message": "Nun se pudo alcontrar esto. Torna a intentalo."
+  },
+  "settings": {
+    "message": "Axustes",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Amosar siempre les verificaciones si:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Veracidá < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Confianza > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Comprobación de datos",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Introduz una afirmación",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Fontes",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Razonamientu",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Abrir el popup con testu seleicionáu comprueba esa seleición y va cargar nel to saldu.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Encaboxar",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

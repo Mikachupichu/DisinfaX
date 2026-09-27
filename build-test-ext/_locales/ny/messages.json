@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Ipeza ndikuwonetsa mfundo zabodza mu tweets pogwiritsa ntchito kusanthula kwa AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Choona",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Bodza",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Osadziwika",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Kuwunika",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Kuwunika|Kufufuza|Kuyeretsa|Kuwulula|Kupeza|Kuganiza|Kuwunikira|Kukumba|Kusefa|Kuyerekeza|Kusanthula|Kukana Zabodza|Kutsimikizira|Kusonkhanitsa|Kufufuza Choonadi|Kufotokoza|Kulingalira|Kuunikira Zinsinsi|Kumaliza Nkhani|Kufufuzafufuza|Kusanthula Mozama|Kuwululira Zowona|Kuthetsa Mafunso|Kuononga Nthano|Kusefanso|Kutsata Zochitika",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Zotheka kwambiri",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Zotheka",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Mwina",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Kambiri",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Zotsutsana",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Mbali",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Zosamveka",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Koperani",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Onetsaninso zonena zonse mu tweet iyi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Fufuzaninso pempho ili",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Kuwunika",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Fotokozani",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Kufotokoza",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Masulirani Zowunika",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Masulirani",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "kukhala",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Zawunikidwa",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Bwererani",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Onetsani",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Bisani",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Kuwunika",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Kuwunika",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Sinthani m'chinenero",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Ndalama zotsala"
+  },
+  "gifted": {
+    "message": "Mphatso"
+  },
+  "customTopup": {
+    "message": "Zosankha"
+  },
+  "customAmountLabel": {
+    "message": "Kuchuluka kwa ndalama zowonjezera mwakufuna kwanu mu madola aku US"
+  },
+  "increase": {
+    "message": "Onjezani"
+  },
+  "decrease": {
+    "message": "Chepetsani"
+  },
+  "topUpBalance": {
+    "message": "Onjezani Ndalama"
+  },
+  "processing": {
+    "message": "Ikukonzedwa…"
+  },
+  "checkoutError": {
+    "message": "Sitinathe kuyamba kulipira. Chonde yesaninso."
+  },
+  "termsOfService": {
+    "message": "Malamulo a Ntchito"
+  },
+  "privacyPolicy": {
+    "message": "Ndondomeko ya Zachinsinsi"
+  },
+  "disclaimerAgree": {
+    "message": "Powonjezera ndalama, mukuvomereza %TOS% ndi %PRIVACY% zathu."
+  },
+  "disclaimerFx": {
+    "message": "Ndalama zosinthira ndalama zakunja zingagwiritsidwe ntchito ngati mukulipira mu ndalama ina osati USD."
+  },
+  "signOut": {
+    "message": "Tulukani"
+  },
+  "onboardDisinfactClick": {
+    "message": "Kudina %BTN% kumasonyeza zonena ndipo kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardDisinfactTap": {
+    "message": "Kukhudza %BTN% kumasonyeza zonena ndipo kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardLocalize": {
+    "message": "Kudina %BTN% kumayikanso zowunikira ndipo kudzakulipitsani ndalama zanu"
+  },
+  "onboardAnnotate": {
+    "message": "Kudina %BTN% kumayang'ana zomwe mwanena kuti zalakwika ndipo mudzakulipiritsa ndalama zanu"
+  },
+  "onboardWillCharge": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardFactcheck": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardTranslations": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "onboardRefreshes": {
+    "message": "Kudina %BTN% kudzachotsa ndalama pa balance yanu"
+  },
+  "topUp": {
+    "message": "Onjezani ndalama"
+  },
+  "showMore": {
+    "message": "Onetsani zambiri"
+  },
+  "showLess": {
+    "message": "Onetsani zochepa"
+  },
+  "landingTagline1": {
+    "message": "Vumbulutsani choonadi. Pezani mabodza."
+  },
+  "landingTagline2": {
+    "message": "Palibenso mfundo zabodza. Zoona zokha."
+  },
+  "continueWithX": {
+    "message": "Pitirizani ndi X"
+  },
+  "continueWithGoogle": {
+    "message": "Pitirizani ndi Google"
+  },
+  "continueWithApple": {
+    "message": "Pitirizani ndi Apple"
+  },
+  "lastUsed": {
+    "message": "Zinagwiritsidwa ntchito posachedwa"
+  },
+  "cleanupTagline": {
+    "message": "Yeretsani feed yanu ya X."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Mkati mwa United States, ndi okhawo okhala ku Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina Kumpoto, Dakota Kumpoto, Oklahoma, Oregon, Pennsylvania, Carolina Kumwera, Dakota Kumwera, Tennessee, Texas, Utah, Washington, Wisconsin, ndi Wyoming amene angagwiritse ntchito DisinfaX ndikuonjeza ndalama zawo; Washington, D.C., madera onse a United States, ndi dziko lililonse losatchulidwa saloledwa. Kunja kwa United States, ipezeka ku Canada, Australia, New Zealand, Singapore, Afirika Kumwera, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ndi Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Wunikani zonse"
+  },
+  "factCheckButton": {
+    "message": "Wunika"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX angalakwa zolakwika. Onetsetsani zambiri kachiwiri.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Ndalama zanu zatsika kwambiri. Chonde onjezerani kuti mupitirize."
+  },
+  "balanceEmpty": {
+    "message": "Ndalama zanu zatha. Chonde onjezerani ndalama ku ndalama zanu pogwiritsa ntchito DisinfaX popup.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Akaunti yanu yaimitsidwa."
+  },
+  "errNotSignedIn": {
+    "message": "Simulowa. Chonde lowani ndikuyesa kachiwiri."
+  },
+  "errInvalidRequest": {
+    "message": "Gawo la pempho ili silinazindikirike. Chonde onetsetsani kuti chowonjezera chasinthidwa."
+  },
+  "errServiceUnavailable": {
+    "message": "Vuto lachitika kumbali kwathu. Chonde yesani kachiwiri patapita kanthawi."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX sichinapezekebe m'dera lanu chifukwa cha zofunikira zamalamulo."
+  },
+  "errInvalidAmount": {
+    "message": "Ndalama zowonjezerazo si zoyenera. Chonde sankhani ndalama zina."
+  },
+  "errNotFound": {
+    "message": "Izi sizinapezeke. Yesani kachiwiri."
+  },
+  "settings": {
+    "message": "Makonda",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Nthawi zonse onetsani mawuniko ngati:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Choona < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Chikhulupiriro > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Kuyang'ana zoona",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Lowetsani mawu",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Magwero",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Kulingalira",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Kutsegula popup ndi mawu osankhidwa kudzayang'ana sankho limenelo ndipo lidzatulutsidwa mu ndalama zanu.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Letsani",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

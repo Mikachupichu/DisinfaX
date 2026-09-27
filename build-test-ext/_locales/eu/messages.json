@@ -1,0 +1,386 @@
+{
+  "balanceLabel": {
+    "message": "Saldoa"
+  },
+  "gifted": {
+    "message": "Dohainik"
+  },
+  "customTopup": {
+    "message": "Pertsonalizatua"
+  },
+  "customAmountLabel": {
+    "message": "Saldoa kargatzeko zenbateko pertsonalizatua AEBetako dolarretan"
+  },
+  "increase": {
+    "message": "Handitu"
+  },
+  "decrease": {
+    "message": "Txikitu"
+  },
+  "topUpBalance": {
+    "message": "Kargatu saldoa"
+  },
+  "processing": {
+    "message": "Prozesatzen…"
+  },
+  "checkoutError": {
+    "message": "Ezin izan da ordainketa hasi. Saiatu berriro."
+  },
+  "termsOfService": {
+    "message": "Zerbitzu-baldintzak"
+  },
+  "privacyPolicy": {
+    "message": "Pribatutasun-politika"
+  },
+  "disclaimerAgree": {
+    "message": "Saldoa kargatzean, gure %TOS% eta %PRIVACY% onartzen dituzu."
+  },
+  "disclaimerFx": {
+    "message": "Dibisa-truke komisioak aplika daitezke USD ez den moneta batean ordaintzen baduzu."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Estatu Batuen barruan, Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Mexiko Berria, New York, Ipar Carolina, Ipar Dakota, Oklahoma, Oregon, Pennsylvania, Hego Carolina, Hego Dakota, Tennessee, Texas, Utah, Washington, Wisconsin eta Wyoming estatuetako biztanleek soilik erabil dezakete DisinfaX eta kargatu dezakete beren saldoa; Washington D.C., AEBetako lurralde guztiak eta zerrendatu gabeko edozein estatu kanpoan geratzen dira. Estatu Batuetatik kanpo, Kanadan, Australian, Zeelanda Berrian, Singapurren, Hego Afrikan, Japonian, Taiwanen, Indonesian, Thailandian, Filipinetan, Malaysian, Vietnamen eta Suitzan dago eskuragarri."
+  },
+  "signOut": {
+    "message": "Amaitu saioa"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% klikatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% sakatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% klikatuz gero, nabarmenenak berriro kokatuko dira eta zure saldoa kobratuko da"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% klik eginez gero, erreklamazioa akatsik dagoen egiaztatzen da eta zure saldoa kobratuko da"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% klikatzeak zure saldua kobratuko du"
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI analisia erabiliz tweet-etan desinformazioa detektatu eta nabarmentzen du.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Egiazkoa",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Faltsua",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ezezaguna",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Egiaztatzen",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Egiaztapena|Ikerketa|Garbiketa|Argitzea|Ezeztapena|Gogoeta|Argiztapena|Zulaketa|Bahetzea|Agerraraztea|Berrespena|Analisia|Konparaketa|Askatzea|Aurkikuntza|Bilaketa|Bilketa|Iragazketa|Gurutzaketa|Ikuskapena|Hausnarketa|Frogatzea|Ondorioztatzea|Azterketa|Ateratzea",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Oso litekeena",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Litekeena",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Agian",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Gehienbat",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Eztabaidagarriki",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Partzialki",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Anbiguoki",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopiatu",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Berriz agerian jarri txio honetako baieztapen guztiak",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Berriz ikertu baieztapen hau",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Egiaztatzen",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Anotatu",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Anotatzen",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Itzuli egiaztapenak",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Itzuli",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Egiaztatuta",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Atzera",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Erakutsi",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Ezkutatu",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Desinfaktatu",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Egiaztatzen",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokalizatu",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "izatea",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ izatea $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "Saldoa kargatu"
+  },
+  "showMore": {
+    "message": "Erakutsi gehiago"
+  },
+  "showLess": {
+    "message": "Erakutsi gutxiago"
+  },
+  "landingTagline1": {
+    "message": "Egia agerian utzi. Gezurrak aurkitu."
+  },
+  "landingTagline2": {
+    "message": "Desinformaziorik ez gehiago. Egitateak baino ez."
+  },
+  "continueWithX": {
+    "message": "Jarraitu X-ekin"
+  },
+  "continueWithGoogle": {
+    "message": "Jarraitu Google-ekin"
+  },
+  "continueWithApple": {
+    "message": "Jarraitu Apple-ekin"
+  },
+  "lastUsed": {
+    "message": "Azken erabilera"
+  },
+  "cleanupTagline": {
+    "message": "Garbitu zure X jarioa."
+  },
+  "factCheckAllButton": {
+    "message": "Egiaztatu guztia"
+  },
+  "factCheckButton": {
+    "message": "Egiaztatu"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX-ek akatsak egin ditzake. Egiaztatu informazioa berriro.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Zure saldoa ez da nahikoa. Kargatu saldoa jarraitzeko."
+  },
+  "balanceEmpty": {
+    "message": "Zure saldoa hutsik dago. Gehitu funtsak zure saldoari DisinfaX-en popup-a erabiliz.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Zure kontua etenda dago."
+  },
+  "errNotSignedIn": {
+    "message": "Ez zaude saioa hasita. Hasi saioa eta saiatu berriro."
+  },
+  "errInvalidRequest": {
+    "message": "Eskaera honen zati bat ez da ezagutu. Ziurtatu hedapena eguneratuta dagoela."
+  },
+  "errServiceUnavailable": {
+    "message": "Errore bat gertatu da gure aldetik. Saiatu berriro pixka bat geroago."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX oraindik ez dago erregio honetan erabilgarri, araudi eskakizunak direla eta."
+  },
+  "errInvalidAmount": {
+    "message": "Kargatze-zenbateko hori ez da baliozkoa. Aukeratu beste zenbateko bat."
+  },
+  "errNotFound": {
+    "message": "Hori ezin izan da aurkitu. Saiatu berriro."
+  },
+  "settings": {
+    "message": "Ezarpenak",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Erakutsi beti egiaztapenak, baldin:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Egiazkotasun < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Konfiantza > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Egiaztapena",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Idatzi baieztapen bat",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Iturriak",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Arrazoibidea",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Testua hautatuta popupa irekitzeak hautapen hori egiaztatuko du eta zure saldoa kargatuko da.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Utzi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

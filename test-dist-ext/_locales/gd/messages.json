@@ -1,0 +1,386 @@
+{
+  "balanceLabel": {
+    "message": "Cothromachadh"
+  },
+  "gifted": {
+    "message": "Air a thoirt seachad"
+  },
+  "customTopup": {
+    "message": "Gnàthaichte"
+  },
+  "customAmountLabel": {
+    "message": "Suim ath-lìonaidh ghnàthaichte ann an dolairean nan SA"
+  },
+  "increase": {
+    "message": "Meudaich"
+  },
+  "decrease": {
+    "message": "Lùghdaich"
+  },
+  "topUpBalance": {
+    "message": "Ath-lìon an cothromachadh"
+  },
+  "processing": {
+    "message": "A' pròiseasadh…"
+  },
+  "checkoutError": {
+    "message": "Cha b’ urrainn am pàigheadh a thòiseachadh. Feuch ris a-rithist."
+  },
+  "termsOfService": {
+    "message": "Teirmean Seirbheis"
+  },
+  "privacyPolicy": {
+    "message": "Poileasaidh Prìobhaideachd"
+  },
+  "disclaimerAgree": {
+    "message": "Le bhith ag ath-lìonadh, tha thu ag aontachadh ris na %TOS% agus %PRIVACY% againn."
+  },
+  "disclaimerFx": {
+    "message": "Faodaidh cìsean iomlaid airgid a bhith an sàs ma phàigheas tu ann an airgeadra seach USD."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Taobh a-staigh nan Stàitean Aonaichte, chan urrainn ach do luchd-còmhnaidh Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina a Tuath, Dakota a Tuath, Oklahoma, Oregon, Pennsylvania, Carolina a Deas, Dakota a Deas, Tennessee, Texas, Utah, Washington, Wisconsin, agus Wyoming DisinfaX a chleachdadh agus an cothromachadh aca a ath-lìonadh; tha Washington, D.C., crìochan-tìre nan SA gu lèir, agus stàitean sam bith nach eil air an liostadh air an dùnadh a-mach. Taobh a-muigh nan Stàitean Aonaichte, tha e ri fhaotainn ann an Canada, Astràilia, Sealan Nuadh, Singeapòr, Afraga a Deas, Iapan, Taiwan, Indonesia, Thailand, Na h-Eileanan Filipineach, Malaisia, Bhietnam, agus An Eilbheis."
+  },
+  "signOut": {
+    "message": "Clàraich a-mach"
+  },
+  "onboardDisinfactClick": {
+    "message": "Ma nì thu briogadh air %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardDisinfactTap": {
+    "message": "Ma bheanas tu ri %BTN%, nochdaidh tagraidhean agus thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardLocalize": {
+    "message": "Ma bhriogas tu air %BTN% ath-shuidhichidh tu na prìomh thachartasan agus cuiridh e cosgais air do chothromachadh"
+  },
+  "onboardAnnotate": {
+    "message": "Ma bhriogas tu air %BTN% seallaidh an tagradh airson mhearachdan agus cuiridh e cosgais air a’ chothromachadh agad"
+  },
+  "onboardWillCharge": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardFactcheck": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardTranslations": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "onboardRefreshes": {
+    "message": "Ma nì thu briogadh air %BTN%, thèid cosgais a chur air do chothromachadh"
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Lorgaidh agus soillsichidh e mì-fhiosrachadh ann an tweets le mion-sgrùdadh AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Fìor",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Meallta",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Neo-aithnichte",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Sgrùdadh",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Dearbhadh|Rannsachadh|Sgioblachadh|Lorgadh|Smaoineachadh|Soilleireachadh|Cladhach|Sìoladh|Nochdadh|Ceasnachadh|Fiosrachadh|Beachdachadh|Cnuasachadh|Rùrachadh|Deuchainn|Mìneachadh|Ath-sgrùdadh|Sireadh|Aithneachadh|Sgaoileadh|Foillseachadh|Sgrùdadh domhainn|Solas a leigeil a-steach|Fìrinn a lorg|Ceistean a chur|Sgudal a ghlanadh|Aithris|Toimhseachan a fhuasgladh",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Glè choltach",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Coltach",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "'S dòcha",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Sa mhòr-chuid",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Connspaideach",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Gu ìre",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Dà-sheaghach",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Lethbhreac",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Ath-fhoillsich tagraidhean an tweet seo.",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Ath-rannsaich an tagradh seo",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Sgrùdadh",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Notaich",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "A' notachadh",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Eadar-theangaich na sgrùdaidhean",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Eadar-theangaich",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Air a sgrùdadh",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Rach air ais",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Seall",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Falaich",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Sgrùd",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Sgrùdadh",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Ionadaich",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "a bhith",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ a bhith $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "Ath-lìon"
+  },
+  "showMore": {
+    "message": "Seall barrachd"
+  },
+  "showLess": {
+    "message": "Seall nas lugha"
+  },
+  "landingTagline1": {
+    "message": "Foillsich an Fhìrinn. Lorg na Breugan."
+  },
+  "landingTagline2": {
+    "message": "Gun bharrachd mì-fhiosrachaidh. Dìreach fìrinnean."
+  },
+  "continueWithX": {
+    "message": "Lean air adhart le X"
+  },
+  "continueWithGoogle": {
+    "message": "Lean air adhart le Google"
+  },
+  "continueWithApple": {
+    "message": "Lean air adhart le Apple"
+  },
+  "lastUsed": {
+    "message": "Air a chleachdadh mu dheireadh"
+  },
+  "cleanupTagline": {
+    "message": "Glan suas an sruth X agad."
+  },
+  "factCheckAllButton": {
+    "message": "Sgrùd na h-uile"
+  },
+  "factCheckButton": {
+    "message": "Sgrùd"
+  },
+  "aiDisclaimer": {
+    "message": "Faodaidh DisinfaX mearachdan a dhèanamh. Thoir sùil eile air an fhiosrachadh.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Tha an cothromachadh agad ro ìseal. Ath-lìon e gus leantainn air adhart."
+  },
+  "balanceEmpty": {
+    "message": "Tha an cothromachadh agad falamh. Cuir airgead ris a' chothromachadh agad leis an pop-up DisinfaX.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Chaidh an cunntas agad a chur na thàmh."
+  },
+  "errNotSignedIn": {
+    "message": "Chan eil thu clàraichte a-steach. Clàraich a-steach agus feuch ris a-rithist."
+  },
+  "errInvalidRequest": {
+    "message": "Cha deach pàirt den iarrtas seo aithneachadh. Dèan cinnteach gu bheil an leudachan ùraichte."
+  },
+  "errServiceUnavailable": {
+    "message": "Thachair mearachd air ar taobh-ne. Feuch ris a-rithist ann an tiotan."
+  },
+  "errRegionNotSupported": {
+    "message": "Chan eil DisinfaX ri fhaotainn fhathast san sgìre agad ri linn riatanasan riaghlaidh."
+  },
+  "errInvalidAmount": {
+    "message": "Chan eil an t-suim ath-lìonaidh sin dligheach. Tagh suim eile."
+  },
+  "errNotFound": {
+    "message": "Cha b’ urrainn dhuinn sin a lorg. Feuch ris a-rithist."
+  },
+  "settings": {
+    "message": "Roghainnean",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Seall sgrùdaidhean an-còmhnaidh ma:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Fìrinn < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Misneachd > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Dearbhadh fhìrinnean",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Cuir a-steach tagradh",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Stòran",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Reusanachadh",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Ma dh'fhuasglas tu am popup le teacsa taghte, thèid an taghadh sin a dhearbhadh agus thèid a chur air a' chothrom agad.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Sguir dheth",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

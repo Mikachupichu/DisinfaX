@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "Qorannoo AI fayyadamuun oduu sobaa tweets keessatti argatee ifa taasisa.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Dhugaa",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Soba",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Hin beekamu",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Mirkaneessa",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Mirkaneessa|Qorannoo|Qulqulleessa|Saaxiluu|Barbaacha|Xiyyeeffannoo|Ifa taasisuu|Boolla qotuu|Calaltii|Xiinxala|Duukaa buʼuu|Ibsa kennuu|Calaqisiisuu|Furmaata barbaacha|Dhugaa baasuu|Sirreeffama|Iskaanii|Fuunfachuu|Koodii banuu|Wal bira qabuu|Cuunfaa|Yaaduu|Xinxaluu|Mirkaneeffannaa|Dhugaa mirkaneessuu",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Baay'ee danda'ama",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Danda'ama",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Tarii",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Irra caalaa",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Falmii qabu",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Gartokkeen",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ifa miti",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kaappii",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Himannoo tweet kana keessaa hunda deebisii mul'isi",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Waakkata kana deebisii qori",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Mirkaneessa",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Yaadachi",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Yaadachaa jira",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Mirkaneeffannaa Hiiki",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Hiiki",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ta'uu",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Mirkanaa'eera",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Deebi'i",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Agarsiisi",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Dhoksi",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Mirkaneessa",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Mirkaneessa",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Afaanin madaali",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Baalaansii"
+  },
+  "gifted": {
+    "message": "Kennaa"
+  },
+  "customTopup": {
+    "message": "Kan filatame"
+  },
+  "customAmountLabel": {
+    "message": "Baay'ina itti dabalii doolaara Ameerikaatiin kan of danda'e"
+  },
+  "increase": {
+    "message": "Dabaluu"
+  },
+  "decrease": {
+    "message": "Hir'isuu"
+  },
+  "topUpBalance": {
+    "message": "Baalaansii itti dabaluu"
+  },
+  "processing": {
+    "message": "Adeemsisaa jira…"
+  },
+  "checkoutError": {
+    "message": "Kaffaltii jalqabuu hin dandeenye. Maaloo irra deebi'ii yaali."
+  },
+  "termsOfService": {
+    "message": "Haala Tajaajilaa"
+  },
+  "privacyPolicy": {
+    "message": "Imaammata Iccitii"
+  },
+  "disclaimerAgree": {
+    "message": "Itti dabaluudhaan, %TOS% fi %PRIVACY% keenya ni fudhatta."
+  },
+  "disclaimerFx": {
+    "message": "Yoo maallaqa USD hin taane biraan kaffalte, kaffaltiin jijjiirraa maallaqa alaa raawwatamuu danda’a."
+  },
+  "signOut": {
+    "message": "Ba'i"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% cuqaasuun himannoo ni mul'isa, herrega keessaniis ni kaffalchiisa"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% tuquun himannoo ni mul'isa, herrega keessaniis ni kaffalchiisa"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% cuqaasuun calaqqisiistota irra deebi'ee kaa'a, hafnaan kees ni kaffala"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% cuqaasuun himannaa dogongora qabaachuu isaa sakatta'a, hafnaan kees ni kaffala"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% cuqaasuun herrega keessan ni kaffalchiisa"
+  },
+  "topUp": {
+    "message": "Guuti"
+  },
+  "showMore": {
+    "message": "Dabalata agarsiisi"
+  },
+  "showLess": {
+    "message": "Xiqqeessii agarsiisi"
+  },
+  "landingTagline1": {
+    "message": "Dhugaa saaxili. Sobawwan argi."
+  },
+  "landingTagline2": {
+    "message": "Odeeffannoo sobaa hin jiru. Dhugaa qofa."
+  },
+  "continueWithX": {
+    "message": "X waliin itti fufi"
+  },
+  "continueWithGoogle": {
+    "message": "Google waliin itti fufi"
+  },
+  "continueWithApple": {
+    "message": "Apple waliin itti fufi"
+  },
+  "lastUsed": {
+    "message": "Dhumarratti fayyadame"
+  },
+  "cleanupTagline": {
+    "message": "Feedii X kee qulqulleessi."
+  },
+  "disclaimerJurisdiction": {
+    "message": " Meeshaalee Tokkoomanii keessatti, jiraattonni Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, fi Wyoming qofatu DisinfaX fayyadamuu fi baalaansii isaanii guutuu danda'a; Washington, D.C., naannolee U.S. hunda, fi kutaawwan hin tarreeffamin kamiyyuu hin dabalatan. Ala Meeshaalee Tokkoomanii, Canada, Australia, New Zealand, Singapore, Afrikaa Kibbaa, Jaappaan, Taayiwaan, Indoneshiyaa, Taayilaand, Filippiins, Maleeshiyaa, Vietnaam, fi Iswiizerlaand keessatti argama."
+  },
+  "factCheckAllButton": {
+    "message": "Hunda mirkaneessi"
+  },
+  "factCheckButton": {
+    "message": "Mirkaneessi"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX dogoggora hojjechuu dandaʼa. Odeeffannoo irra deebiʼii ilaali.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Baankiin kee baay'ee gadi bu'aadha. Maaloo itti fufuuf guuti."
+  },
+  "balanceEmpty": {
+    "message": "Baankiin kee duwwaadha. Maaloo popup DisinfaX fayyadamuun baankii keessatti maallaqa dabali.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Herregni kee dhaabbateera."
+  },
+  "errNotSignedIn": {
+    "message": "Hin seenne. Maaloo seenii deebi'ii yaali."
+  },
+  "errInvalidRequest": {
+    "message": "Kutaa gaaffii kanaa hin beekamne. Maaloo dabalataan haaromsameera taʼuu mirkaneessi."
+  },
+  "errServiceUnavailable": {
+    "message": "Dogoggorri gama keenyaan uumameera. Maaloo yeroo xiqqoo booda deebi'ii yaali."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX sababa qajeelfama seeraatiin naannoo keessatti amma illee hin argamne."
+  },
+  "errInvalidAmount": {
+    "message": "Baay'inni guutuu kun sirrii miti. Maaloo baay'ina biraa filadhu."
+  },
+  "errNotFound": {
+    "message": "Kun hin argamne. Deebi'ii yaali."
+  },
+  "settings": {
+    "message": "Sajoo",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Yeroo hundaa mirkanaa'ewwan agarsiis yoo:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Dhugaa < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Amanamummaa > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Sakatta'iinsa dhugaa",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Yaada galchi",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Madda",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Sababa",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Popup banuu barruu filatameen bantiin filannoo sana sakatta'a, maallaqa kee irraa hir'ata.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Haqi",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

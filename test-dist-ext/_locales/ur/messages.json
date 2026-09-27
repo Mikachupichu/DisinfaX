@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI تجزیے کی مدد سے ٹویٹس میں غلط معلومات کا پتہ لگاتا اور نمایاں کرتا ہے۔",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "درست",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "غلط",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "نامعلوم",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "تحقیق",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "کھدائی جاری|جھوٹ پکڑائی|راز کھولنا|سچائی کی تلاش|چھان بین|جاسوسی|پردہ فاش|کھوج لگانا|حقیقت کی روشنی|سر کھپائی|غور و فکر|گہرائی میں جانا|تفتیش|صفائی|دھول جھاڑنا|کھرا سچ نکالنا|سراغ رسانی|تصدیق|انکشاف|چھلنی کرنا|تانا بانا سلجھانا|نبض پکڑنا|تہہ تک پہنچنا|جوڑ جوڑ کھولنا|کھانا پکانا|باورچی خانے میں|مصالحہ لگانا|پکوان تیاری|سوچ بچار|خیال آرائی|دھیان لگانا|اندر کی تلاش|فلسفیانہ سوچ|استدلال|منطق لگانا|اندازہ لگانا|من ہی من سوچنا|زہر نکالنا|جراثیم کش|کوڑا صاف|کھری کھری|تعصب ہٹانا|پروپیگنڈا صاف|نقاب کشائی|بے نقاب کرنا|روشنی ڈالنا|دھند چھانٹنا|ایکسرے کرنا|دھندلاہٹ دور کرنا|دھند ہٹانا|تلاش جاری|کھوج بین|کھدائی|جڑ سے تلاش|دھواں نکالنا|جانچ پرکھ|آڈٹ کرنا|سوال جواب|جرح کرنا|حوالہ جوڑنا|تصدیق ملانا|توثیق کرنا|حقیقت پرکھنا|حقیقت بنانا|فیصلہ سازی|درجہ بندی|سچ نکھارنا|سچائی جانچنا|جھوٹ گھٹانا|جھوٹ ہٹانا|جھوٹ مٹانا|جھوٹ کاٹنا|جھوٹ توڑنا|جھوٹی خبر کا خاتمہ|ذہن کی صفائی|بکواس ہٹانا|بھانڈا پھوڑنا|افسانہ توڑنا|حاصل کرنا|جمع کرنا|اکٹھا کرنا|نچوڑ نکالنا|ترکیب سازی|کچلنا|فلٹر کرنا|چھاننا|الگ کرنا|پروسیسنگ|تخلیق کرنا|تحریر کرنا|لوڈ ہونا|چکر لگانا|گردش کرنا|گھماؤ|مہم جوئی|علم بڑھانا|روشن کرنا|حل کرنا|وضاحت کرنا|آگاہی دینا|اندازہ نکالنا",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "تقریباً یقینی",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "غالباً",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "شاید",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "زیادہ تر",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "قابل بحث",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "جزوی طور پر",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "مبہم",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "کاپی کریں",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "اس ٹویٹ کے دعوے دوبارہ ظاہر کریں",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "اس دعوے کی دوبارہ تحقیق کریں",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "تحقیق",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "حاشیہ لگائیں",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "حاشیہ لگایا جا رہا ہے",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "تصدیقات کا ترجمہ کریں",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "ترجمہ کریں",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "ہونے",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ ہونے $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "تصدیق مکمل",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "واپس جائیں",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "دکھائیں",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "چھپائیں",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "تصدیق کریں",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "تحقیق",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "مقامی بنائیں",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "بیلنس"
+  },
+  "gifted": {
+    "message": "تحفہ"
+  },
+  "customTopup": {
+    "message": "اپنی مرضی"
+  },
+  "customAmountLabel": {
+    "message": "امریکی ڈالر میں اپنی مرضی کی ٹاپ اپ رقم"
+  },
+  "increase": {
+    "message": "بڑھائیں"
+  },
+  "decrease": {
+    "message": "کم کریں"
+  },
+  "topUpBalance": {
+    "message": "بیلنس ٹاپ اپ کریں"
+  },
+  "processing": {
+    "message": "کارروائی جاری ہے…"
+  },
+  "checkoutError": {
+    "message": "چیک آؤٹ شروع نہیں ہو سکا۔ براہ کرم دوبارہ کوشش کریں۔"
+  },
+  "termsOfService": {
+    "message": "سروس کی شرائط"
+  },
+  "privacyPolicy": {
+    "message": "رازداری کی پالیسی"
+  },
+  "disclaimerAgree": {
+    "message": "ٹاپ اپ کر کے، آپ ہماری %TOS% اور %PRIVACY% سے اتفاق کرتے ہیں۔"
+  },
+  "disclaimerFx": {
+    "message": "اگر آپ USD کے علاوہ کسی کرنسی میں ادائیگی کرتے ہیں تو زرِ مبادلہ کی فیس لاگو ہو سکتی ہے۔"
+  },
+  "signOut": {
+    "message": "سائن آؤٹ کریں"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% پر کلک کرنے سے دعوے ظاہر ہوں گے اور آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% پر ٹیپ کرنے سے دعوے ظاہر ہوں گے اور آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% پر کلک کرنے سے ہائی لائٹس کی جگہ بدل جائے گی اور آپ کا بیلنس چارج ہو جائے گا۔"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% پر کلک کرنے سے غلطیوں کا دعویٰ چیک ہو جاتا ہے اور آپ کا بیلنس چارج ہو جائے گا۔"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% پر کلک کرنے سے آپ کے بیلنس سے رقم کٹے گی"
+  },
+  "topUp": {
+    "message": "ٹاپ اپ"
+  },
+  "showMore": {
+    "message": "مزید دکھائیں"
+  },
+  "showLess": {
+    "message": "کم دکھائیں"
+  },
+  "landingTagline1": {
+    "message": "سچ کو بے نقاب کریں۔ جھوٹ کو تلاش کریں۔"
+  },
+  "landingTagline2": {
+    "message": "اب کوئی غلط معلومات نہیں۔ صرف حقائق۔"
+  },
+  "continueWithX": {
+    "message": "X کے ساتھ جاری رکھیں"
+  },
+  "continueWithGoogle": {
+    "message": "Google کے ساتھ جاری رکھیں"
+  },
+  "continueWithApple": {
+    "message": "Apple کے ساتھ جاری رکھیں"
+  },
+  "lastUsed": {
+    "message": "آخری بار استعمال شدہ"
+  },
+  "cleanupTagline": {
+    "message": "اپنی X فیڈ کو صاف کریں۔"
+  },
+  "disclaimerJurisdiction": {
+    "message": "ریاستہائے متحدہ کے اندر، صرف الاباما، ایریزونا، کیلیفورنیا، کولوراڈو، کنیکٹی کٹ، ڈیلاویئر، فلوریڈا، ایڈاہو، الینوائے، انڈیانا، آئیووا، کنساس، کینٹکی، لوزیانا، مین، میساچوسٹس، مسیسیپی، میسوری، مونٹانا، نیو ہیمپشائر، نیو میکسیکو، نیو یارک، شمالی کیرولائنا، شمالی ڈکوٹا، اوکلاہوما، اوریگون، پنسلوانیا، جنوبی کیرولائنا، جنوبی ڈکوٹا، ٹینیسی، ٹیکساس، یوٹاہ، واشنگٹن، وسکونسن اور وایومنگ کے رہائشی DisinfaX استعمال کر سکتے ہیں اور اپنا بیلنس ٹاپ اپ کر سکتے ہیں؛ واشنگٹن D.C.، تمام امریکی علاقے اور کوئی بھی غیر درج ریاستیں مستثنیٰ ہیں۔ ریاستہائے متحدہ کے باہر، یہ کینیڈا، آسٹریلیا، نیوزی لینڈ، سنگاپور، جنوبی افریقہ، جاپان، تائیوان، انڈونیشیا، تھائی لینڈ، فلپائن، ملائیشیا، ویتنام اور سوئٹزرلینڈ میں دستیاب ہے۔"
+  },
+  "factCheckAllButton": {
+    "message": "سب کی تصدیق کریں"
+  },
+  "factCheckButton": {
+    "message": "تصدیق کریں"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX غلطی کر سکتا ہے۔ معلومات کی دوبارہ تصدیق کریں۔",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "آپ کا بیلنس بہت کم ہے۔ جاری رکھنے کے لیے براہ کرم ٹاپ اپ کریں۔"
+  },
+  "balanceEmpty": {
+    "message": "آپ کا بیلنس ختم ہو گیا ہے۔ براہ کرم DisinfaX پاپ اپ استعمال کر کے اپنے بیلنس میں رقم شامل کریں۔",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "آپ کا اکاؤنٹ معطل کر دیا گیا ہے۔"
+  },
+  "errNotSignedIn": {
+    "message": "آپ سائن ان نہیں ہیں۔ براہ کرم سائن ان کریں اور دوبارہ کوشش کریں۔"
+  },
+  "errInvalidRequest": {
+    "message": "اس درخواست کا کچھ حصہ شناخت نہیں ہو سکا۔ براہ کرم یقینی بنائیں کہ ایکسٹینشن تازہ ترین ہے۔"
+  },
+  "errServiceUnavailable": {
+    "message": "ہماری طرف سے ایک خرابی پیش آئی۔ تھوڑی دیر بعد براہ کرم دوبارہ کوشش کریں۔"
+  },
+  "errRegionNotSupported": {
+    "message": "‏DisinfaX ریگولیٹری تقاضوں کی وجہ سے ابھی آپ کے علاقے میں دستیاب نہیں ہے۔"
+  },
+  "errInvalidAmount": {
+    "message": "وہ ٹاپ اپ رقم درست نہیں ہے۔ براہ کرم دوسری رقم منتخب کریں۔"
+  },
+  "errNotFound": {
+    "message": "یہ نہیں ملا۔ براہ کرم دوبارہ کوشش کریں۔"
+  },
+  "settings": {
+    "message": "ترتیبات",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "ہمیشہ فیکٹ چیک دکھائیں اگر:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "صداقت < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "اعتماد > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "حقائق کی جانچ",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "دعویٰ درج کریں",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "ذرائع",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "استدلال",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "متن منتخب کر کے پاپ اپ کھولنے سے وہ انتخاب جانچا جائے گا اور آپ کے بیلنس سے کٹوتی ہوگی۔",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "منسوخ کریں",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

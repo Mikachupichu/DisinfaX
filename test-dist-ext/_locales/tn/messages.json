@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "E lemoga le go bontsha tshedimosetso ya maaka mo ditweet ka go dirisa tshekatsheko ya AI.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Boammaaruri",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Maaka",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ga se itsege",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Go tlhatlhoba",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Go tlhatlhoba|Go batla|Go phepafatsa|Go senola|Go akanya|Go sekaseka|Go tlhomamisa|Go epa|Go bona|Go dira patlisiso|Go phimola|Go tlhagolola|Go supa|Go kgaoganya|Go kgetholola|Go lekola|Go golola|Go tlhaloganya|Go phuthela|Go kanoka|Go bonesa|Go tsomatsoma|Go tlhotlhomisa|Go itse boammaaruri|Go feta ka bokgoni|Go tlhopha|Go tsamaisa dipatlisiso|Go sokolola",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "E kgonagala thata",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "E kgonagala",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Gongwe",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Gantsi",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "E ka ganediwa",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Ka karolo",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ga e tlhaloganyege",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopitsa",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Bontsha gape dintlha tsotlhe tsa tweet eno",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Batlisisa gape kopo e",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Go tlhatlhoba",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Tshwaela",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Go tshwaelwa",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Ranola Ditlhatlhobo",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Ranola",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "go nna",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ go nna $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "E Tlhatlhobilwe",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Boela Kwa Morago",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Bontsha",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Fitlha",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Tlhatlhoba",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Go tlhatlhoba",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Fetolela puong",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Madi a a Setseng"
+  },
+  "gifted": {
+    "message": "Mpho"
+  },
+  "customTopup": {
+    "message": "E e Ikgethileng"
+  },
+  "customAmountLabel": {
+    "message": "Selekanyo se se ikgethileng sa go tlatsa ka didolara tsa Amerika"
+  },
+  "increase": {
+    "message": "Oketsa"
+  },
+  "decrease": {
+    "message": "Fokotsa"
+  },
+  "topUpBalance": {
+    "message": "Tlatsa Madi"
+  },
+  "processing": {
+    "message": "E a diragatsa…"
+  },
+  "checkoutError": {
+    "message": "Go paletswe go simolola tuelo. Tsweetswee leka gape."
+  },
+  "termsOfService": {
+    "message": "Melao ya Tirelo"
+  },
+  "privacyPolicy": {
+    "message": "Pholisi ya Sephiri"
+  },
+  "disclaimerAgree": {
+    "message": "Ka go tlatsa, o dumalana le %TOS% le %PRIVACY% tsa rona."
+  },
+  "disclaimerFx": {
+    "message": "Dituelo tsa go ananya madi a boditšhabatšhaba di ka nna tsa dirisiwa fa o duela ka madi a e seng USD."
+  },
+  "signOut": {
+    "message": "Tswa"
+  },
+  "onboardDisinfactClick": {
+    "message": "Go tobetsa %BTN% go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardDisinfactTap": {
+    "message": "Go ama %BTN% go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardLocalize": {
+    "message": "Go tobetsa %BTN% go baya dintlhakgolo mme go tla duedisa madi a a setseng"
+  },
+  "onboardAnnotate": {
+    "message": "Go tobetsa %BTN% go tlhola tleleimi gore a ga go na diphoso mme go tla go duedisa madi a a setseng"
+  },
+  "onboardWillCharge": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardFactcheck": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardTranslations": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "onboardRefreshes": {
+    "message": "Go tobetsa %BTN% go tla lefisa madi mo tekanyetsong ya gago"
+  },
+  "topUp": {
+    "message": "Oketsa Madi"
+  },
+  "showMore": {
+    "message": "Bontsha tse dingwe"
+  },
+  "showLess": {
+    "message": "Bontsha tse potlana"
+  },
+  "landingTagline1": {
+    "message": "Senola Boammaaruri. Bona Maaka."
+  },
+  "landingTagline2": {
+    "message": "Ga go sa na Maaka. Nnete fela."
+  },
+  "continueWithX": {
+    "message": "Tswelela ka X"
+  },
+  "continueWithGoogle": {
+    "message": "Tswelela ka Google"
+  },
+  "continueWithApple": {
+    "message": "Tswelela ka Apple"
+  },
+  "lastUsed": {
+    "message": "E Dirisitswe la Bofelo"
+  },
+  "cleanupTagline": {
+    "message": "Phepafatsa X Feed ya gago."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Mo teng ga United States, ke banni ba Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, le Wyoming fela ba ka dirisang DisinfaX le go oketsa madi a bona; Washington, D.C., dikgaolo tsotlhe tsa U.S., le dinaga dipe tse di sa lokololwang ga di akaretswe. Kwa ntle ga United States, e teng kwa Canada, Australia, New Zealand, Singapore, Aforika Borwa, Japane, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, le Switzerland."
+  },
+  "factCheckAllButton": {
+    "message": "Tlhatlhoba tsotlhe"
+  },
+  "factCheckButton": {
+    "message": "Tlhatlhoba"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX e ka dira diphoso. Sekaseka tshedimosetso gape.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Madi a a setseng a gago a kwa tlase thata. Tsweetswee tlatsa go tswelela pele."
+  },
+  "balanceEmpty": {
+    "message": "Madi a a setseng a gago a fedile. Tsweetswee tsenya madi mo mading a gago o dirisa DisinfaX popup.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Akhaonto ya gago e emisitswe."
+  },
+  "errNotSignedIn": {
+    "message": "Ga o tsene. Tsweetswee tsena mme o leke gape."
+  },
+  "errInvalidRequest": {
+    "message": "Karolo ya kopo eno ga e itsiwe. Tsweetswee netefatsa gore katlaletso e ntjhafaditswe."
+  },
+  "errServiceUnavailable": {
+    "message": "Phoso e diragetse mo lotlheng lwa rona. Tsweetswee leka gape mo lobakanyaneng."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX ga e sa fitlhelelesega mo kgaolong ya gago ka ntlha ya ditlhokego tsa molao."
+  },
+  "errInvalidAmount": {
+    "message": "Madi ao a tlatsa ga a a siamo. Tsweetswee tlhopha madi a sele."
+  },
+  "errNotFound": {
+    "message": "Seo ga se bonwa. Leka gape."
+  },
+  "settings": {
+    "message": "Ditlhophiso",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Bontsha ditshekatsheko ka metlha fa:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Boammaaruri < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Tshepo > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Tlholo ya boammaaruri",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Tsenya maipolelo",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Metswedi",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Mabaka",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Go bula popup ka mokwalo o o tlhophilweng go tlhatlhoba thopho eo mme go tla ntshiwa mo balanseng ya gago.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Khansela",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

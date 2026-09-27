@@ -1,0 +1,384 @@
+{
+  "appName": {
+    "message": "DisinfaX"
+  },
+  "appDescription": {
+    "message": "AI elemzés segítségével érzékeli és kiemeli a félretájékoztatást a tweetekben."
+  },
+  "verdictTrue": {
+    "message": "Igaz",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Hamis",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Ismeretlen",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Ellenőrzés",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Ellenőrzés|Kutatás|Tisztítás|Leleplezés|Felfedezés|Töprengés|Megvilágítás|Ásás|Szűrés|Vizsgálat|Elemzés|Kérdezősködés|Tisztázás|Összehasonlítás|Kibogozás|Feltárás|Igazolás|Nyomozás|Boncolgatás|Átvilágítás|Mérlegelés|Fürkészés|Kutakodás|Tényellenőrzés|Igazságkeresés|Rejtvényfejtés",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Nagyon valószínű",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Valószínű",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Lehetséges",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Többnyire",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Vitatottan",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Részben",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Kétértelműen",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word. $VERDICT$$ = True/False.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict. $ADJ$$ (e.g. Mostly), $VERDICT$$ (True/False).",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens. $VERDICT$$, $ADJ$$.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, veracity adj, verdict. $ADJ2$$, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Másolás",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "A tweet összes állításának újra felfedése",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Állítás újrakutatása",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Ellenőrzés",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Jegyzetel",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Jegyzetelés",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Ellenőrzés fordítása",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Fordítás",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "lenni",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Ellenőrizve",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Vissza",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Mutasd",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Rejtsd",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Ellenőrzés",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Ellenőrzés",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Honosít",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Egyenleg"
+  },
+  "gifted": {
+    "message": "Ajándékba"
+  },
+  "customTopup": {
+    "message": "Egyéni"
+  },
+  "customAmountLabel": {
+    "message": "Egyéni feltöltési összeg amerikai dollárban"
+  },
+  "increase": {
+    "message": "Növelés"
+  },
+  "decrease": {
+    "message": "Csökkentés"
+  },
+  "topUpBalance": {
+    "message": "Egyenleg feltöltése"
+  },
+  "processing": {
+    "message": "Feldolgozás…"
+  },
+  "checkoutError": {
+    "message": "A fizetést nem sikerült elindítani. Kérjük, próbáld újra."
+  },
+  "termsOfService": {
+    "message": "Felhasználási feltételek"
+  },
+  "privacyPolicy": {
+    "message": "Adatvédelmi szabályzat"
+  },
+  "disclaimerAgree": {
+    "message": "A feltöltéssel elfogadod a(z) %TOS% és %PRIVACY% feltételeinket."
+  },
+  "disclaimerFx": {
+    "message": "Ha az USD-től eltérő pénznemben fizetsz, valutaváltási díjak merülhetnek fel."
+  },
+  "signOut": {
+    "message": "Kijelentkezés"
+  },
+  "onboardDisinfactClick": {
+    "message": "A(z) %BTN% gombra kattintva megjelennek az állítások, és ez terheli az egyenlegedet"
+  },
+  "onboardDisinfactTap": {
+    "message": "A(z) %BTN% gombra koppintva megjelennek az állítások, és ez terheli az egyenlegedet"
+  },
+  "onboardLocalize": {
+    "message": "A %BTN% gombra kattintva áthelyezi a kiemeléseket, és megterheli egyenlegét"
+  },
+  "onboardAnnotate": {
+    "message": "A %BTN% lehetőségre kattintva ellenőrzi a követelést, hogy vannak-e hibák, és megterheli egyenlegét"
+  },
+  "onboardWillCharge": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "onboardFactcheck": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "onboardTranslations": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "onboardRefreshes": {
+    "message": "A(z) %BTN% gombra kattintva ez terheli az egyenlegedet"
+  },
+  "topUp": {
+    "message": "Feltöltés"
+  },
+  "showMore": {
+    "message": "Több megjelenítése"
+  },
+  "showLess": {
+    "message": "Kevesebb megjelenítése"
+  },
+  "landingTagline1": {
+    "message": "Fedd fel az igazságot. Találd meg a hazugságokat."
+  },
+  "landingTagline2": {
+    "message": "Nincs több dezinformáció. Csak tények."
+  },
+  "continueWithX": {
+    "message": "Folytatás X-szel"
+  },
+  "continueWithGoogle": {
+    "message": "Folytatás Google-lel"
+  },
+  "continueWithApple": {
+    "message": "Folytatás Apple-lel"
+  },
+  "lastUsed": {
+    "message": "Utoljára használva"
+  },
+  "cleanupTagline": {
+    "message": "Tedd rendbe az X-hírfolyamod."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Az Egyesült Államokban csak a következő államok lakosai használhatják a DisinfaX-et és tölthetik fel egyenlegüket: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Új-Mexikó, New York, Észak-Karolina, Észak-Dakota, Oklahoma, Oregon, Pennsylvania, Dél-Karolina, Dél-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin és Wyoming; Washington, D.C., az összes amerikai terület és minden fel nem sorolt állam ki van zárva. Az Egyesült Államokon kívül elérhető Kanadában, Ausztráliában, Új-Zélandon, Szingapúrban, Dél-Afrikában, Japánban, Tajvanon, Indonéziában, Thaiföldön, a Fülöp-szigeteken, Malajziában, Vietnamban és Svájcban."
+  },
+  "factCheckAllButton": {
+    "message": "Mindet ellenőrizd"
+  },
+  "factCheckButton": {
+    "message": "Ellenőrizd"
+  },
+  "aiDisclaimer": {
+    "message": "A DisinfaX hibázhat. Ellenőrizd az információt.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Az egyenleged túl alacsony. Töltsd fel a folytatáshoz."
+  },
+  "balanceEmpty": {
+    "message": "Az egyenleged elfogyott. Kérlek, adj hozzá pénzt az egyenlegedhez a DisinfaX felugró ablakával.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "A fiókodat felfüggesztették."
+  },
+  "errNotSignedIn": {
+    "message": "Nincs bejelentkezve. Jelentkezz be, és próbáld újra."
+  },
+  "errInvalidRequest": {
+    "message": "A kérés egy része nem volt felismerhető. Ellenőrizd, hogy a bővítmény naprakész."
+  },
+  "errServiceUnavailable": {
+    "message": "Hiba történt a mi oldalunkon. Próbáld újra egy kis idő múlva."
+  },
+  "errRegionNotSupported": {
+    "message": "A DisinfaX szabályozási okokból még nem elérhető a régiódban."
+  },
+  "errInvalidAmount": {
+    "message": "Az a feltöltési összeg nem érvényes. Válassz másik összeget."
+  },
+  "errNotFound": {
+    "message": "Ez nem található. Próbáld újra."
+  },
+  "settings": {
+    "message": "Beállítások",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Mindig mutassa a tényellenőrzéseket, ha:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Hitelesség < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Bizonyosság > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Tényellenőrzés",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Adjon meg egy állítást",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Források",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Indoklás",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "A felugró ablak megnyitása kijelölt szöveggel ellenőrzi a kijelölést, és terheli az egyenlegét.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Mégse",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

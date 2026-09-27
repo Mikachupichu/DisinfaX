@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI ئانالىزى ئارقىلىق تۋىتلاردىكى يالغان ئۇچۇرلارنى بايقاپ، ئالاھىدە بەلگە قىلىپ كۆرسىتىدۇ.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "راست",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "يالغان",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "نامەلۇم",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "پاكىت تەكشۈرۈش",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "يالغاننى سۈرۈش|راستلىقنى ئاجرىتىش|تازىلاش|يالغان خەۋەردىن ئايرىش|تۈزەش|يۇيۋىتىش|ئىزدەش|تەتقىق قىلىش|پاكىت تەكشۈرۈش|مېڭە يۇيۇشتىن قۇتۇلدۇرۇش|ھەقىقەتلەشتۈرۈش|دەلىللەش|ئويلىنىش|ئاشكارىلاش|بايقاش|تەكشۈرۈش|كۆزدىن كەچۈرۈش|ھەقىقەت ئىزدەش|روشەنلەشتۈرۈش|راستچىللاشتۇرۇش|ساختىلىقنى ئاشكارىلاش|نۇر چاچىش|تۈرگە ئايرىش|ھۆكۈم چىقىرىش|ئىزدەپ تېپىش|خەۋەرلەندۈرۈش|ئايلىنىش|يۈكلىنىش|چەمبەرلىنىش|چۆرگىلىنىش|پاكىتلاشتۇرۇش|پاكىت شەكىللەندۈرۈش|پاكىت توپلاش|سىرنى ئاچىش|بىر تەرەپ قىلىش|ئالدامچى سەرلەۋھىدىن ئايرىش|كولاش|راستنى ئىزدەش|يالغانچىلىقنى ئېنىقلاش|يالغاندىن ئايرىش|يالغاننى بىكار قىلىش|يالغاندىن خالىي قىلىش|ساختىلىقنى يوقىتىش|ھاسىللاش|يازىش|بىلىم توپلاش|ئىنچىكىلەپ ئويلىنىش|ئوبدان ئويلىنىش|مۆلچەرلەش|ئويلاپ باقىش|چۆمۈلۈش|ئىچكى دۇنياغا سەپەر قىلىش|سەرگۈزەشت قىلىش|پىشۇرۇش|ئاشپەز بولۇش|سەزگۇ ئىشلىتىش|مەنتىقە قوللىنىش|سەبەپ ئىزدەش|فەلسەپە قىلىش|چۈشەندۈرۈش|ھەل قىلىش|يورۇتۇش|نەتىجە چىقىرىش|توپلاش|يىغىش|ئارتۇقچىلىقنى ئايرىش|پاش قىلىش|ئەپسانىنى چاقىش|بۇرمىلاشنى تۈزەش|تەشۋىقاتتىن ئايرىش|ئوچۇق-ئاشكارا سۆزلەش|پاكىزلاش|زەھەرسىزلەندۈرۈش|پاكىتنى سىقىش|تەكشۈرۈپ باقىش|سۈزۈش|سوئال-جاۋاب قىلىش|سوراق قىلىش|نىقابنى ئېچىش|پارچىلاپ تەكشۈرۈش|چۇۋۇش|تەھلىل قىلىش|قوزغاپ چىقىرىش|يىلتىزىنى قومۇرۇش|پارچىلاش|سۈزگۈچتىن ئۆتكۈزۈش|ئۇچۇرلارنى باغلاش|سېلىشتۇرۇپ تەكشۈرۈش|ئىسپاتلاش|تەستىقلاش|سۈزۈپ چىقىرىش|بىرلەشتۈرۈش|ھېسابلاش|تىنىقلاشتۇرۇش|تۇتۇقنى تارقىتىش|تۇمانىنى يېرىش|سۈزگۈچلەش|ئىچىنى كۆرۈش|ئوچۇق قىلىش|نۇرلاندۇرۇش|سۈزۈپ ئايرىش",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "ئىنتايىن چوقۇمدەك",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "چوقۇمدەك",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "ئېھتىمال",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "كۆپىنچە",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "تالاش-تارتىشلىق",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "قىسمەن",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "ئېنىقسىز",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "كۆچۈرۈش",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "بۇ تۋىتتىكى بارلىق دەۋالارنى قايتا ئاشكارىلاش",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "بۇ دەۋانى قايتا تەكشۈرۈش",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "پاكىت تەكشۈرۈش",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "ئىزاھات قوشۇش",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "ئىزاھات قوشۇلماقتا",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "پاكىت تەكشۈرۈشلىرىنى تەرجىمە قىلىش",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "تەرجىمە قىلىش",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "بولۇشى",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ بولۇشى $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "پاكىت تەكشۈرۈلدى",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "ئارقىغا قايتىش",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "كۆرسىتىش",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "يوشۇرۇش",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "ئاشكارىلاش",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "پاكىت تەكشۈرۈش",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "يەرلىكلەشتۈرۈش",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "قالدۇق"
+  },
+  "gifted": {
+    "message": "سوۋغات"
+  },
+  "customTopup": {
+    "message": "ئىختىيارىي"
+  },
+  "customAmountLabel": {
+    "message": "ئامېرىكا دوللىرى بويىچە ئىختىيارىي تولۇقلاش سوممىسى"
+  },
+  "increase": {
+    "message": "ئاشۇرۇش"
+  },
+  "decrease": {
+    "message": "ئازايتىش"
+  },
+  "topUpBalance": {
+    "message": "قالدۇقنى تولۇقلاش"
+  },
+  "processing": {
+    "message": "بىر تەرەپ قىلىنىۋاتىدۇ…"
+  },
+  "checkoutError": {
+    "message": "پۇل تۆلەشنى باشلىغىلى بولمىدى. قايتا سىناڭ."
+  },
+  "termsOfService": {
+    "message": "مۇلازىمەت شەرتلىرى"
+  },
+  "privacyPolicy": {
+    "message": "مەخپىيەتلىك سىياسىتى"
+  },
+  "disclaimerAgree": {
+    "message": "تولۇقلاش ئارقىلىق، سىز بىزنىڭ %TOS% ۋە %PRIVACY% گە قوشۇلىسىز."
+  },
+  "disclaimerFx": {
+    "message": "ئەگەر سىز USD دىن باشقا پۇل بىلەن تۆلىسىڭىز، پۇل ئالماشتۇرۇش ھەققى ئېلىنىشى مۇمكىن."
+  },
+  "signOut": {
+    "message": "ھېساباتتىن چىقىش"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% نى چېكىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% نى بېسىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% نى باسسىڭىز يارقىن نۇقتىلار ئەسلىگە كېلىدۇ ھەمدە تەڭپۇڭلۇقىڭىزغا توك قاچىلايدۇ"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% نى باسسىڭىز خاتالىق توغرىسىدىكى تەلەپنى تەكشۈرۈپ ، تەڭپۇڭلۇقىڭىزنى ئالىدۇ"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% نى چېكىش قالدۇقىڭىزدىن پۇل تۇتۇۋالىدۇ"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% نى چېكىش قالدۇقىڭىزدىن پۇل تۇتۇۋالىدۇ"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% نى چېكىش قالدۇقىڭىزدىن پۇل تۇتۇۋالىدۇ"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% نى چېكىش قالدۇقىڭىزدىن پۇل تۇتۇۋالىدۇ"
+  },
+  "topUp": {
+    "message": "تولۇقلاش"
+  },
+  "showMore": {
+    "message": "تېخىمۇ كۆپ كۆرسىتىش"
+  },
+  "showLess": {
+    "message": "ئازراق كۆرسىتىش"
+  },
+  "landingTagline1": {
+    "message": "ھەقىقەتنى ئاشكارىلاڭ. يالغانلارنى تېپىڭ."
+  },
+  "landingTagline2": {
+    "message": "يالغان ئۇچۇر يوق. پەقەت پاكىتلا بار."
+  },
+  "continueWithX": {
+    "message": "X بىلەن داۋاملاشتۇرۇش"
+  },
+  "continueWithGoogle": {
+    "message": "Google بىلەن داۋاملاشتۇرۇش"
+  },
+  "continueWithApple": {
+    "message": "Apple بىلەن داۋاملاشتۇرۇش"
+  },
+  "lastUsed": {
+    "message": "ئەڭ ئاخىرقى ئىشلىتىلگەن"
+  },
+  "cleanupTagline": {
+    "message": "X ئۇچۇر ئېقىمىڭىزنى تازىلاڭ."
+  },
+  "disclaimerJurisdiction": {
+    "message": "ئامېرىكا قوشما شتاتلىرى ئىچىدە، پەقەت ئالاباما، ئارىزونا، كالىفورنىيە، كولورادو، كوننېكتىكۇت، دېلاۋېر، فلورىدا، ئايداھو، ئىللىنويس، ئىندىيانا، ئايوۋا، كانزاس، كېنتۇككى، لۇئىزىيانا، مېين، ماسساچۇسېتس، مىسسىسسىپپى، مىسسۇرى، مونتانا، نيۇ-گەمپشىر، نيۇ-مېكسىكو، نيۇ-يورك، شىمالىي كارولىنا، شىمالىي داكوتا، ئوكلاخوما، ئورېگون، پېنسىلۋانىيە، جەنۇبىي كارولىنا، جەنۇبىي داكوتا، تېننېسسى، تېكساس، يۇتا، ۋاشىنگتون، ۋىسكونسىن ۋە ۋايومىڭ ئاھالىلىرىلا DisinfaX نى ئىشلىتىپ، قالدۇقىنى تولۇقلىيالايدۇ؛ ۋاشىنگتون، D.C.، بارلىق ئامېرىكا زېمىنلىرى ۋە تىزىملىكتە كۆرسىتىلمىگەن ھەرقانداق شتاتلار بۇنىڭدىن مۇستەسنا. ئامېرىكا قوشما شتاتلىرىنىڭ سىرتىدا، ئۇ كانادا، ئاۋسترالىيە، يېڭى زېلاندىيە، سىنگاپور، جەنۇبىي ئافرىقا، ياپونىيە، تەيۋەن، ھىندونېزىيە، تايلاند، فىلىپپىن، مالايسىيا، ۋىيېتنام ۋە شۋېتسارىيەدە ئىشلەتكىلى بولىدۇ."
+  },
+  "factCheckAllButton": {
+    "message": "ھەممىنى پاكىت تەكشۈرۈش"
+  },
+  "factCheckButton": {
+    "message": "پاكىت تەكشۈرۈش"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX خاتالىقلارغا يول قويۇشى مۇمكىن. ئۇچۇرنى قايتا تەكشۈرۈڭ.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "قالدۇقىڭىز بەك ئاز. داۋاملاشتۇرۇش ئۈچۈن قايتا تولۇقلاڭ."
+  },
+  "balanceEmpty": {
+    "message": "قالدۇقىڭىز تۈگەپتۇ. DisinfaX قاڭقىش كۆزنىكى ئارقىلىق قالدۇقىڭىزغا پۇل قوشۇڭ.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "ھېساباتىڭىز توختىتىلدى."
+  },
+  "errNotSignedIn": {
+    "message": "سىز كىرمىدىڭىز. كىرىپ قايتا سىناڭ."
+  },
+  "errInvalidRequest": {
+    "message": "بۇ ئىلتىماسنىڭ بىر قىسمى تونۇلمىدى. كېڭەيتىلمىنىڭ يېڭىلانغانلىقىنى جەزملەشتۈرۈڭ."
+  },
+  "errServiceUnavailable": {
+    "message": "بىز تەرەپتە بىر خاتالىق يۈز بەردى. ئازراق ۋاقىتتىن كېيىن قايتا سىناڭ."
+  },
+  "errRegionNotSupported": {
+    "message": "قانۇنىي تەلەپلەر سەبەبىدىن DisinfaX تېخى رايونىڭىزدا ئىشلىتىلمەيدۇ."
+  },
+  "errInvalidAmount": {
+    "message": "بۇ تولۇقلاش سوممىسى ئىناۋەتسىز. باشقا سومما تاللاڭ."
+  },
+  "errNotFound": {
+    "message": "بۇ تېپىلمىدى. قايتا سىناڭ."
+  },
+  "settings": {
+    "message": "تەڭشەكلەر",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "ھەمىشە پاكىت تەكشۈرۈشنى كۆرسەت ئەگەر:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "ھەقىقىيلىك < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "ئىشەنچ > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "پاكىت تەكشۈرۈش",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "بىر دەۋانى كىرگۈزۈڭ",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "مەنبەلەر",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "ئاساس",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "تېكىست تاللاپ قىستۇرما كۆزنىك ئاچقاندا شۇ تاللاش تەكشۈرۈلىدۇ ۋە قالدۇقىڭىزدىن تۇتۇلىدۇ.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "بىكار قىلىش",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

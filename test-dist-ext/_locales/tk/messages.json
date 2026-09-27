@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI seljermesini ulanyp, twitlerdäki dezinformasiýany ýüze çykarýar we belleýär.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Dogry",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Ýalan",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Näbelli",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Barlanýar",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Ýalan gyryş|Dezinfaktlama|Arassalaýyş|Galp habar kowuş|Düzediş|Ýuwulyş|Gözleg|Öwreniş|Barlag|Aň arassalaýyş|Hakykatlaşdyryş|Tassyklaýyş|Pikirlenme|Ýüze çykaryş|Açyş|Barlaýyş|Syn ediş|Hakykaty gözlemek|Aç-açanlaşdyryş|Dogruçyllaşdyryş|Galplykdan halas ediş|Yşyklandyryş|Toparlaýyş|Höküm çykaryş|Getiriş|Habarlandyryş|Pyrlanyş|Ýüklenme|Aýlanyş|Öwrüliş|Faktlaşdyryş|Faktlandyryş|Faktlaýyş|Syrlary açyş|Gaýtadan işleýiş|Aldawdan halas ediş|Gazyş|Hakyky ediş|Ýalanlykdan saplaýyş|Ýalanyny aýyryş|Galp zatlary bejeriş|Galplykdan saplaýyş|Galpsyzlaýyş|Döredýiş|Ýazyş|Bilim toplaýyş|Oýlanyş|Oýa batyş|Çuň pikirleniş|Ölçerip-döküp görüş|Düşünjä çümüş|Kalp gözlegi|Syýahat ediş|Bişiriş|Aşpezlik ediş|Duýgy bilen çözüş|Logikalaşdyryş|Delillendiriş|Pelsepe ediş|Aýdyňlaşdyryş|Çözüş|Röwşenlendiriş|Netije çykaryş|Ýygnaýyş|Toplaýyş|Zibilden arassalaýyş|Ýalanlary paş etmek|Rowaýatlary ýykyş|Taraplylykdan halas ediş|Propagandadan arassalaýyş|Göni aýdyş|Sagdynlaşdyryş|Zäherden arassalaýyş|Faktlary sykyş|Barlag geçiriş|Elemek|Görkezmeleri barlaýyş|Soragladyş|Maskany aýyryş|Bölekleýin seljeriş|Çylşyrymlylygy açyş|Bölekläp seljeriş|Gizlini ýüze çykaryş|Köki bilen ýok ediş|Sökülip seljeriş|Gözden geçiriş|Çeşmeleri deňeşdiriş|Çeşmeleri barlaýyş|Tassyklap berkidiş|Hakykylygyny tassyklaýyş|Süzüp arassalaýyş|Jemleýiş|Sanlary owradyş|Bulaşyklygy aýyryş|Bulutlary dargadyş|Dumany deşiş|Süzgüçleýiş|Rentgen ediş|Paş ediş|Nury saçyş|Saýlap-seçiş",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Gaty ähtimal",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ähtimal",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Belki",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Köplenç",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Jedelli",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Bölekleýin",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Ikuçly",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Göçür",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Bu twitiň beýanlaryny täzeden aç",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Bu beýany täzeden gözle",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Barlanýar",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Bellik et",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Bellik edilýär",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Barlaglary terjime et",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Terjime et",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "badgeFiller": {
+    "message": "bolup",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ bolup $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "factCheckedFloatingButton": {
+    "message": "Barlandy",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Yza gaýt",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Görkez",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Gizle",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Barla",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Barlanýar",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Ýerleşdiriň",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Sowgat"
+  },
+  "customTopup": {
+    "message": "Ýörite"
+  },
+  "customAmountLabel": {
+    "message": "ABŞ dollarynda ýörite doldurma mukdary"
+  },
+  "increase": {
+    "message": "Artdyr"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Balansy dolduryň"
+  },
+  "processing": {
+    "message": "Işlenýär…"
+  },
+  "checkoutError": {
+    "message": "Töleg başlap bolmady. Täzeden synanyşyň."
+  },
+  "termsOfService": {
+    "message": "Hyzmat şertleri"
+  },
+  "privacyPolicy": {
+    "message": "Gizlinlik syýasaty"
+  },
+  "disclaimerAgree": {
+    "message": "Balansyňyzy doldurmak arkaly, siz biziň %TOS% we %PRIVACY% bilen ylalaşýarsyňyz."
+  },
+  "disclaimerFx": {
+    "message": "Eger töleg USD-den başga walýutada amala aşyrylsa, walýuta çalyşmak tölegleri alynyp bilner."
+  },
+  "signOut": {
+    "message": "Ulgamdan çyk"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% üstüne basmak beýanlary ýüze çykarar we balansyňyzdan pul tutar"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN%-e degmek beýanlary ýüze çykarar we balansyňyzdan pul tutar"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% -e bassaňyz, esasy pursatlar ýerleşdiriler we balansyňyzy güýçlendirer"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% basylsa, ýalňyşlyklar baradaky talap barlanýar we balansyňyzy alar"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% üstüne basmak balansyňyzdan pul tutar"
+  },
+  "topUp": {
+    "message": "Dolduryň"
+  },
+  "showMore": {
+    "message": "Köpräk görkez"
+  },
+  "showLess": {
+    "message": "Azrak görkez"
+  },
+  "landingTagline1": {
+    "message": "Hakykaty äşgär et. Ýalanlary tap."
+  },
+  "landingTagline2": {
+    "message": "Indi dezinformasiýa ýok. Diňe faktlar."
+  },
+  "continueWithX": {
+    "message": "X bilen dowam et"
+  },
+  "continueWithGoogle": {
+    "message": "Google bilen dowam et"
+  },
+  "continueWithApple": {
+    "message": "Apple bilen dowam et"
+  },
+  "lastUsed": {
+    "message": "Iň soňky ulanylan"
+  },
+  "cleanupTagline": {
+    "message": "X akymyňyzy arassalaň."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerikanyň Birleşen Ştatlarynyň içinde diňe Alabama, Arizona, Kaliforniýa, Kolorado, Konnektikut, Delawer, Florida, Aýdaho, Illinoýs, Indiana, Aýowa, Kanzas, Kentukki, Luiziana, Meýn, Massaçusets, Missisipi, Missuri, Montana, Nýu-Gempşir, Nýu-Meksiko, Nýu-Ýork, Demirgazyk Karolina, Demirgazyk Dakota, Oklahoma, Oregon, Pensilwaniýa, Günorta Karolina, Günorta Dakota, Tennessi, Tehas, Ýuta, Waşington, Wiskonsin we Waýoming ştatlarynyň ýaşaýjylary DisinfaX-i ulanyp we balansyny doldurup bilýär; Waşington, D.C., ähli ABŞ territoriýalary we sanawda görkezilmedik islendik ştatlar muňa girmeýär. Amerikanyň Birleşen Ştatlarynyň daşynda ol Kanada, Awstraliýa, Täze Zelandiýa, Singapur, Günorta Afrika, Ýaponiýa, Taýwan, Indoneziýa, Taýland, Filippinler, Malaýziýa, Wýetnam we Şweýsariýada elýeterlidir."
+  },
+  "factCheckAllButton": {
+    "message": "Ählisini barla"
+  },
+  "factCheckButton": {
+    "message": "Barla"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX ýalňyşyp biler. Maglumaty gaýtadan barlaň.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Balansyňyz gaty pes. Dowam etmek üçin dolduryň."
+  },
+  "balanceEmpty": {
+    "message": "Balansyňyz boş. DisinfaX popup penjiresi arkaly balansyňyza serişde goşuň.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Hasabyňyz togtadyldy."
+  },
+  "errNotSignedIn": {
+    "message": "Siz ulgama girmediňiz. Ulgama giriň we gaýtadan synanyşyň."
+  },
+  "errInvalidRequest": {
+    "message": "Bu soragyň bir bölegi tanalmady. Giňeltmäniň iň soňky wersiýadygyna göz ýetiriň."
+  },
+  "errServiceUnavailable": {
+    "message": "Biziň tarapymyzdan ýalňyşlyk ýüze çykdy. Az wagtdan soň gaýtadan synanyşyň."
+  },
+  "errRegionNotSupported": {
+    "message": "Kadalaşdyryş talaplary sebäpli DisinfaX heniz sebitiňizde elýeterli däl."
+  },
+  "errInvalidAmount": {
+    "message": "Bu doldurma mukdary nädogry. Başga bir mukdar saýlaň."
+  },
+  "errNotFound": {
+    "message": "Bu tapylmady. Gaýtadan synanyşyň."
+  },
+  "settings": {
+    "message": "Sazlamalar",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Hemişe barlaglary görkez, eger:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Hakykat < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Ynam > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Fakt barlagy",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "Beýany giriziň",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Çeşmeler",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Delillendirme",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Saýlanan tekst bilen popup açmak şol saýlamany barlaýar we balansyňyzdan aýrylýar.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ýatyrmak",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}

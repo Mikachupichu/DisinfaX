@@ -1,0 +1,386 @@
+{
+  "balanceLabel": {
+    "message": "Balans"
+  },
+  "gifted": {
+    "message": "Hədiyyə"
+  },
+  "customTopup": {
+    "message": "Fərdi"
+  },
+  "customAmountLabel": {
+    "message": "ABŞ dolları ilə fərdi balans artırma məbləği"
+  },
+  "increase": {
+    "message": "Artır"
+  },
+  "decrease": {
+    "message": "Azalt"
+  },
+  "topUpBalance": {
+    "message": "Balansı Artır"
+  },
+  "processing": {
+    "message": "Emal edilir…"
+  },
+  "checkoutError": {
+    "message": "Ödəniş başladıla bilmədi. Zəhmət olmasa yenidən cəhd edin."
+  },
+  "termsOfService": {
+    "message": "Xidmət Şərtləri"
+  },
+  "privacyPolicy": {
+    "message": "Məxfilik Siyasəti"
+  },
+  "disclaimerAgree": {
+    "message": "Balansı artırmaqla siz %TOS% və %PRIVACY% ilə razılaşırsınız."
+  },
+  "disclaimerFx": {
+    "message": "USD-dən fərqli valyutada ödəniş etsəniz, valyuta dəyişdirmə haqları tətbiq oluna bilər."
+  },
+  "disclaimerJurisdiction": {
+    "message": "Amerika Birləşmiş Ştatları daxilində yalnız Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaho, İllinoys, İndiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massaçusets, Missisipi, Missuri, Montana, Nyu-Hempşir, Nyu-Meksiko, Nyu-York, Şimali Karolina, Şimali Dakota, Oklahoma, Oreqon, Pensilvaniya, Cənubi Karolina, Cənubi Dakota, Tennessi, Texas, Yuta, Vaşinqton, Viskonsin və Vayominq sakinləri DisinfaX-dan istifadə edə və balanslarını artıra bilər; Vaşinqton, D.C., bütün ABŞ əraziləri və sadalanmayan hər hansı ştatlar istisnadır. Amerika Birləşmiş Ştatlarından kənarda Kanada, Avstraliya, Yeni Zelandiya, Sinqapur, Cənubi Afrika, Yaponiya, Tayvan, İndoneziya, Tailand, Filippin, Malayziya, Vyetnam və İsveçrədə mövcuddur."
+  },
+  "signOut": {
+    "message": "Çıxış"
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% düyməsini klikləmək iddiaları göstərəcək və balansınızdan pul tutulacaq"
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% düyməsinə toxunmaq iddiaları göstərəcək və balansınızdan pul tutulacaq"
+  },
+  "onboardLocalize": {
+    "message": "%BTN% klikləməklə, vurğulanan yerlər dəyişdirilir və balansınız doldurulacaq"
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% klikləməklə, səhvlər üçün iddia yoxlanılır və balansınızdan ödəniş tutulacaq"
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "onboardTranslations": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% düyməsini klikləmək balansınızdan pul tutulacaq"
+  },
+  "appName": {
+    "message": "DisinfaX",
+    "description": "The extension name."
+  },
+  "appDescription": {
+    "message": "AI analizindən istifadə edərək tvitlərdə dezinformasiyanı aşkar edir və vurğulayır.",
+    "description": "The extension description."
+  },
+  "verdictTrue": {
+    "message": "Doğru",
+    "description": "Standalone verdict label: the claim is true."
+  },
+  "verdictFalse": {
+    "message": "Yalan",
+    "description": "Standalone verdict label: the claim is false."
+  },
+  "verdictUnknown": {
+    "message": "Bilinmir",
+    "description": "Verdict label when the claim cannot be determined."
+  },
+  "verdictResearching": {
+    "message": "Faktyoxlama",
+    "description": "Verdict label shown while the claim is being analyzed."
+  },
+  "researchingWords": {
+    "message": "Cəfəngiyatdan təmizləmə|Dezinfeksiya|Təmizləmə|Saxta xəbərlərdən təmizləmə|Düzəltmə|Yuma|Axtarış|Araşdırma|Faktyoxlama|Beyin yuyulmasını aradan qaldırma|Həqiqəti üzə çıxarma|Doğrulama|Düşünmə|Aşkarlama|Kəşf etmə|Nəzərdən keçirmə|Kəşfiyyat aparma|Həqiqət axtarışı|Şəffaflaşdırma|Maskanı Götürmə|İşıq salma|Təsnifləndirmə|Məlumat toplama|Məlumatlandırma|Fırlanma|Yüklənmə|Qazma|Yalanları ifşa etmə|Aydınlatma|Süzgəcdən keçirmə|Çarpaz yoxlama|İfşa etmə",
+    "description": "Pipe-separated list of playful words shown at random (one per claim) on the claim-highlight badge while that claim is being fact-checked, instead of a static 'Fact-Checking' label."
+  },
+  "adjVeryLikely": {
+    "message": "Çox ehtimal ki",
+    "description": "Adjective for high-confidence verdicts."
+  },
+  "adjLikely": {
+    "message": "Ehtimal ki",
+    "description": "Adjective for moderate-confidence verdicts."
+  },
+  "adjPossibly": {
+    "message": "Bəlkə",
+    "description": "Adjective for low-confidence verdicts."
+  },
+  "adjMostly": {
+    "message": "Əsasən",
+    "description": "Veracity adjective: mostly true/false with some nuance."
+  },
+  "adjArguably": {
+    "message": "Mübahisəli",
+    "description": "Veracity adjective: arguably true/false, leaning one way."
+  },
+  "adjPartially": {
+    "message": "Qismən",
+    "description": "Veracity adjective: partially true/false, mixed evidence."
+  },
+  "adjEquivocally": {
+    "message": "Qeyri-müəyyən",
+    "description": "Veracity adjective: equivocally true/false, balanced evidence."
+  },
+  "badgeVerdictOnly": {
+    "message": "$VERDICT$",
+    "description": "Badge pattern with only the verdict word.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      }
+    }
+  },
+  "badgeAdjVerdict": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: adj + verdict.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      }
+    }
+  },
+  "badgeVerdictAdj": {
+    "message": "$ADJ$ $VERDICT$",
+    "description": "Badge pattern: verdict + adj in parens.",
+    "placeholders": {
+      "verdict": {
+        "content": "$1",
+        "example": "True"
+      },
+      "adj": {
+        "content": "$2",
+        "example": "Likely"
+      }
+    }
+  },
+  "badgeAdjVerdictAdj2": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: confidence adj, filler, veracity adj, verdict. $ADJ2$$, filler, $ADJ$$, $VERDICT$$.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Likely"
+      }
+    }
+  },
+  "copyTooltip": {
+    "message": "Kopyala",
+    "description": "Tooltip for the copy-to-clipboard button."
+  },
+  "refreshBatchTooltip": {
+    "message": "Bu tvitdəki bütün iddiaları yenidən üzə çıxar",
+    "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
+  },
+  "refreshClaimTooltip": {
+    "message": "Bu iddianı yenidən araşdır",
+    "description": "Tooltip for the individual claim re-research button."
+  },
+  "researchingText": {
+    "message": "Faktyoxlama",
+    "description": "Text shown next to the spinner while waiting for analysis results."
+  },
+  "annotateButton": {
+    "message": "Annotasiya et",
+    "description": "Button in the claim popover that runs a second AI pass to mark suspected errors in the claim text with strikethrough and show corrections."
+  },
+  "annotatingText": {
+    "message": "Annotasiya edilir",
+    "description": "Text shown on the Annotate button while the annotation pass is running."
+  },
+  "translateFactChecks": {
+    "message": "Faktyoxlamaları Tərcümə Et",
+    "description": "Button shown at top of tweet when fact-check highlights need translation to the browser language."
+  },
+  "translateClaimButton": {
+    "message": "Tərcümə et",
+    "description": "Button in popover to translate a specific claim text or reasoning to the browser language."
+  },
+  "factCheckedFloatingButton": {
+    "message": "Yoxlanıldı",
+    "description": "Floating button shown at the top of the timeline when an on-hold tweet finishes classification off-screen. Clicking scrolls back to the tweet."
+  },
+  "goBackFloatingButton": {
+    "message": "Geri qayıt",
+    "description": "Floating button shown at the bottom of the timeline after scrolling back to a classified tweet. Clicking returns the user to their original scroll position."
+  },
+  "revealButton": {
+    "message": "Göstər",
+    "description": "Button that shows the tweet's cached fact-check highlights (hidden by default until the user asks to see them)."
+  },
+  "hideButton": {
+    "message": "Gizlət",
+    "description": "Button that hides the tweet's fact-check highlights again after they were revealed."
+  },
+  "disinfactButton": {
+    "message": "Yoxla",
+    "description": "Button that identifies the claims in a tweet and looks up their verdicts in the database."
+  },
+  "disinfacting": {
+    "message": "Faktyoxlama",
+    "description": "Label shown over a text selection while its analysis is starting (\"Disinfacting\" + spinner)."
+  },
+  "localizeButton": {
+    "message": "Lokallaşdır",
+    "description": "Button shown at top of tweet when fact-check highlights were made for another language version and need to be repositioned for the current text."
+  },
+  "badgeFiller": {
+    "message": "olaraq",
+    "description": "Filler word between confidence adjective and veracity adjective in the combined badge pattern."
+  },
+  "badgeAdjVerdictAdj2Verbose": {
+    "message": "$ADJ2$ $ADJ$ $VERDICT$",
+    "description": "Badge: verbose confidence adj, filler, veracity adj, verdict for multi-word adjectives.",
+    "placeholders": {
+      "adj": {
+        "content": "$1",
+        "example": "Mostly"
+      },
+      "verdict": {
+        "content": "$2",
+        "example": "True"
+      },
+      "adj2": {
+        "content": "$3",
+        "example": "Very Likely"
+      }
+    }
+  },
+  "topUp": {
+    "message": "Balans Artır"
+  },
+  "showMore": {
+    "message": "Daha çox göstər"
+  },
+  "showLess": {
+    "message": "Daha az göstər"
+  },
+  "landingTagline1": {
+    "message": "Həqiqəti Üzə Çıxar. Yalanları Tap."
+  },
+  "landingTagline2": {
+    "message": "Artıq Dezinformasiya Yoxdur. Yalnız Faktlar."
+  },
+  "continueWithX": {
+    "message": "X ilə davam et"
+  },
+  "continueWithGoogle": {
+    "message": "Google ilə davam et"
+  },
+  "continueWithApple": {
+    "message": "Apple ilə davam et"
+  },
+  "lastUsed": {
+    "message": "Son İstifadə"
+  },
+  "cleanupTagline": {
+    "message": "X Lentinizi təmizləyin."
+  },
+  "factCheckAllButton": {
+    "message": "Hamısını Yoxla"
+  },
+  "factCheckButton": {
+    "message": "Yoxla"
+  },
+  "aiDisclaimer": {
+    "message": "DisinfaX səhv edə bilər. Məlumatı yenidən yoxlayın.",
+    "description": "AI-accuracy disclaimer shown in very small text at the bottom of every claim popover (below the sources) and under the version number in the popup."
+  },
+  "errBalanceTooLow": {
+    "message": "Balansınız kifayət qədər deyil. Davam etmək üçün balansı artırın."
+  },
+  "balanceEmpty": {
+    "message": "Balansınız boşdur. DisinfaX popup-u vasitəsilə balansınıza vəsait əlavə edin.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "Hesabınız dayandırılıb."
+  },
+  "errNotSignedIn": {
+    "message": "Siz daxil olmamısınız. Zəhmət olmasa daxil olun və yenidən cəhd edin."
+  },
+  "errInvalidRequest": {
+    "message": "Bu sorğunun bir hissəsi tanınmadı. Zəhmət olmasa uzantının yenilənmiş olduğuna əmin olun."
+  },
+  "errServiceUnavailable": {
+    "message": "Bizim tərəfimizdə xəta baş verdi. Zəhmət olmasa bir az sonra yenidən cəhd edin."
+  },
+  "errRegionNotSupported": {
+    "message": "Tənzimləyici tələblər səbəbindən DisinfaX hələ sizin regionda mövcud deyil."
+  },
+  "errInvalidAmount": {
+    "message": "Həmin balans artırma məbləği düzgün deyil. Zəhmət olmasa başqa məbləğ seçin."
+  },
+  "errNotFound": {
+    "message": "Bu tapılmadı. Zəhmət olmasa yenidən cəhd edin."
+  },
+  "settings": {
+    "message": "Tənzimləmələr",
+    "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "bypassToggleLabel": {
+    "message": "Yoxlamaları həmişə göstər əgər:",
+    "description": "Label of the master toggle: bypassed claims keep their fact-checks visible while hidden. Ends with a colon; the toggle sits beside it.",
+    "placeholders": {}
+  },
+  "bypassVeracityLabel": {
+    "message": "Doğruluq < $1:",
+    "description": "Label of the maximum-veracity slider. $1 is the signed percentage (e.g. -75%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "-75%"
+      }
+    }
+  },
+  "bypassConfidenceLabel": {
+    "message": "Əminlik > $1:",
+    "description": "Label of the minimum-confidence slider. $1 is the percentage (e.g. 20%); the live adjective + verdict readout follows after this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "20%"
+      }
+    }
+  },
+  "factCheckTab": {
+    "message": "Fakt yoxlaması",
+    "description": "Label of the Fact-Check tab in the popup."
+  },
+  "enterClaimPlaceholder": {
+    "message": "İddia daxil edin",
+    "description": "Placeholder text in the Fact-Check tab text field."
+  },
+  "sourcesLabel": {
+    "message": "Mənbələr",
+    "description": "Header for the sources list in fact-check results."
+  },
+  "reasoningLabel": {
+    "message": "Əsaslandırma",
+    "description": "Header for reasoning text in fact-check results."
+  },
+  "selectionConfirmWarning": {
+    "message": "Mətn seçilmiş halda popup açmaq həmin seçimi yoxlayır və balansınızdan çıxılacaq.",
+    "description": "Shown once, before the first selection fact-check, to disclose that the run costs money."
+  },
+  "selectionConfirmCancel": {
+    "message": "Ləğv et",
+    "description": "Declines the selection fact-check in the first-open confirmation."
+  }
+}
