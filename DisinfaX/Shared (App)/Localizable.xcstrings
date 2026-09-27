@@ -14233,6 +14233,9 @@
         }
       }
     },
+    "Close" : {
+      "extractionState" : "manual"
+    },
     "Contacting the App Store…" : {
       "extractionState" : "manual",
       "localizations" : {

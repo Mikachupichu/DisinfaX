@@ -85,6 +85,26 @@
 		93D690C8302A9001009E7A19 /* Realtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C7302A9001009E7A19 /* Realtime.swift */; };
 		93D690D1302A9001009E7A19 /* FactCheckNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */; };
 		93D690D2302A9001009E7A19 /* FactCheckNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */; };
+		DA7A5E275100000000000011 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7A5E275100000000000001 /* ShareViewController.swift */; };
+		DA7A5E275100000000000012 /* ShareFactCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7A5E275100000000000002 /* ShareFactCheckView.swift */; };
+		DA7A5E275100000000000013 /* DisinfaX Share.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DA7A5E275100000000000006 /* DisinfaX Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DA7A5E275100000000000014 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */; };
+		DA7A5E275100000000000015 /* FactCheckClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C0302A9001009E7A19 /* FactCheckClient.swift */; };
+		DA7A5E275100000000000016 /* FactCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C1302A9001009E7A19 /* FactCheckView.swift */; };
+		DA7A5E275100000000000017 /* FactCheckNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */; };
+		DA7A5E275100000000000018 /* Realtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C7302A9001009E7A19 /* Realtime.swift */; };
+		DA7A5E275100000000000019 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
+		DA7A5E27510000000000001A /* UsdFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690B1302A8A01009E7A19 /* UsdFormat.swift */; };
+		DA7A5E27520000000000000E /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7A5E275100000000000001 /* ShareViewController.swift */; };
+		DA7A5E27520000000000000F /* ShareFactCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7A5E275100000000000002 /* ShareFactCheckView.swift */; };
+		DA7A5E275200000000000010 /* DisinfaX Share.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DA7A5E275200000000000003 /* DisinfaX Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DA7A5E275200000000000011 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */; };
+		DA7A5E275200000000000012 /* FactCheckClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C0302A9001009E7A19 /* FactCheckClient.swift */; };
+		DA7A5E275200000000000013 /* FactCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C1302A9001009E7A19 /* FactCheckView.swift */; };
+		DA7A5E275200000000000014 /* FactCheckNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */; };
+		DA7A5E275200000000000015 /* Realtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690C7302A9001009E7A19 /* Realtime.swift */; };
+		DA7A5E275200000000000016 /* SharedTopUpStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D69093302A7811009E7A19 /* SharedTopUpStore.swift */; };
+		DA7A5E275200000000000017 /* UsdFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D690B1302A8A01009E7A19 /* UsdFormat.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +122,20 @@
 			remoteGlobalIDString = 9394CEC93026AEDA00AE138E;
 			remoteInfo = "DisinfaX Extension (macOS)";
 		};
+		DA7A5E27510000000000000F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9394CE8F3026AED900AE138E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA7A5E27510000000000000B;
+			remoteInfo = "DisinfaX Share (iOS)";
+		};
+		DA7A5E27520000000000000C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9394CE8F3026AED900AE138E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA7A5E275200000000000008;
+			remoteInfo = "DisinfaX Share (macOS)";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -112,6 +146,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				9394CEC13026AEDA00AE138E /* DisinfaX Extension.appex in Embed Foundation Extensions */,
+				DA7A5E275100000000000013 /* DisinfaX Share.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -123,6 +158,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				9394CECB3026AEDA00AE138E /* DisinfaX Extension.appex in Embed Foundation Extensions */,
+				DA7A5E275200000000000010 /* DisinfaX Share.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -180,6 +216,14 @@
 		93D690C1302A9001009E7A19 /* FactCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactCheckView.swift; sourceTree = "<group>"; };
 		93D690C7302A9001009E7A19 /* Realtime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime.swift; sourceTree = "<group>"; };
 		93D690D0302A9001009E7A19 /* FactCheckNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactCheckNotifications.swift; sourceTree = "<group>"; };
+		DA7A5E275100000000000001 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		DA7A5E275100000000000002 /* ShareFactCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareFactCheckView.swift; sourceTree = "<group>"; };
+		DA7A5E275100000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA7A5E275100000000000005 /* DisinfaX Share (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DisinfaX Share (iOS).entitlements"; sourceTree = "<group>"; };
+		DA7A5E275100000000000006 /* DisinfaX Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "DisinfaX Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA7A5E275200000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA7A5E275200000000000002 /* DisinfaX Share (macOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DisinfaX Share (macOS).entitlements"; sourceTree = "<group>"; };
+		DA7A5E275200000000000003 /* DisinfaX Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "DisinfaX Share.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +255,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DA7A5E275100000000000009 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA7A5E275200000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -221,10 +279,15 @@
 				93D69090302A7678009E7A19 /* DisinfaX Extension (iOS).entitlements */,
 				93D6908F302A7670009E7A19 /* DisinfaX (macOS).entitlements */,
 				93D6908E302A765E009E7A19 /* DisinfaX (iOS).entitlements */,
+				DA7A5E275200000000000002 /* DisinfaX Share (macOS).entitlements */,
+				DA7A5E275100000000000005 /* DisinfaX Share (iOS).entitlements */,
 				9394CE933026AED900AE138E /* Shared (App) */,
+				DA7A5E275100000000000003 /* Shared (Share) */,
 				9394CE9C3026AEDA00AE138E /* Shared (Extension) */,
 				9394CEA43026AEDA00AE138E /* iOS (App) */,
 				9394CEB53026AEDA00AE138E /* macOS (App) */,
+				DA7A5E275100000000000007 /* iOS (Share) */,
+				DA7A5E275200000000000004 /* macOS (Share) */,
 				9394CEC43026AEDA00AE138E /* iOS (Extension) */,
 				9394CECE3026AEDA00AE138E /* macOS (Extension) */,
 				9394CEA33026AEDA00AE138E /* Products */,
@@ -281,6 +344,8 @@
 				9394CEB43026AEDA00AE138E /* DisinfaX.app */,
 				9394CEC03026AEDA00AE138E /* DisinfaX Extension.appex */,
 				9394CECA3026AEDA00AE138E /* DisinfaX Extension.appex */,
+				DA7A5E275100000000000006 /* DisinfaX Share.appex */,
+				DA7A5E275200000000000003 /* DisinfaX Share.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -343,6 +408,31 @@
 			path = "Shared (Extension)";
 			sourceTree = SOURCE_ROOT;
 		};
+		DA7A5E275100000000000003 /* Shared (Share) */ = {
+			isa = PBXGroup;
+			children = (
+				DA7A5E275100000000000002 /* ShareFactCheckView.swift */,
+				DA7A5E275100000000000001 /* ShareViewController.swift */,
+			);
+			path = "Shared (Share)";
+			sourceTree = "<group>";
+		};
+		DA7A5E275100000000000007 /* iOS (Share) */ = {
+			isa = PBXGroup;
+			children = (
+				DA7A5E275100000000000004 /* Info.plist */,
+			);
+			path = "iOS (Share)";
+			sourceTree = "<group>";
+		};
+		DA7A5E275200000000000004 /* macOS (Share) */ = {
+			isa = PBXGroup;
+			children = (
+				DA7A5E275200000000000001 /* Info.plist */,
+			);
+			path = "macOS (Share)";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -359,6 +449,7 @@
 			);
 			dependencies = (
 				9394CEC33026AEDA00AE138E /* PBXTargetDependency */,
+				DA7A5E275100000000000010 /* PBXTargetDependency */,
 			);
 			name = "DisinfaX (iOS)";
 			packageProductDependencies = (
@@ -380,6 +471,7 @@
 			);
 			dependencies = (
 				9394CECD3026AEDA00AE138E /* PBXTargetDependency */,
+				DA7A5E27520000000000000D /* PBXTargetDependency */,
 			);
 			name = "DisinfaX (macOS)";
 			packageProductDependencies = (
@@ -426,6 +518,44 @@
 			productReference = 9394CECA3026AEDA00AE138E /* DisinfaX Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		DA7A5E27510000000000000B /* DisinfaX Share (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA7A5E27510000000000000C /* Build configuration list for PBXNativeTarget "DisinfaX Share (iOS)" */;
+			buildPhases = (
+				DA7A5E275100000000000008 /* Sources */,
+				DA7A5E275100000000000009 /* Frameworks */,
+				DA7A5E27510000000000000A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DisinfaX Share (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "DisinfaX Share";
+			productReference = DA7A5E275100000000000006 /* DisinfaX Share.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		DA7A5E275200000000000008 /* DisinfaX Share (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA7A5E275200000000000009 /* Build configuration list for PBXNativeTarget "DisinfaX Share (macOS)" */;
+			buildPhases = (
+				DA7A5E275200000000000005 /* Sources */,
+				DA7A5E275200000000000006 /* Frameworks */,
+				DA7A5E275200000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DisinfaX Share (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "DisinfaX Share";
+			productReference = DA7A5E275200000000000003 /* DisinfaX Share.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -448,6 +578,12 @@
 					9394CEC93026AEDA00AE138E = {
 						CreatedOnToolsVersion = 26.6;
 					};
+					DA7A5E27510000000000000B = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					DA7A5E275200000000000008 = {
+						CreatedOnToolsVersion = 26.6;
+					};
 				};
 			};
 			buildConfigurationList = 9394CE923026AED900AE138E /* Build configuration list for PBXProject "DisinfaX" */;
@@ -468,6 +604,8 @@
 				9394CEB33026AEDA00AE138E /* DisinfaX (macOS) */,
 				9394CEBF3026AEDA00AE138E /* DisinfaX Extension (iOS) */,
 				9394CEC93026AEDA00AE138E /* DisinfaX Extension (macOS) */,
+				DA7A5E27510000000000000B /* DisinfaX Share (iOS) */,
+				DA7A5E275200000000000008 /* DisinfaX Share (macOS) */,
 			);
 		};
 /* End PBXProject section */
@@ -544,6 +682,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DA7A5E27510000000000000A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA7A5E275100000000000014 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA7A5E275200000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA7A5E275200000000000011 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -608,6 +762,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DA7A5E275100000000000008 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA7A5E275100000000000011 /* ShareViewController.swift in Sources */,
+				DA7A5E275100000000000012 /* ShareFactCheckView.swift in Sources */,
+				DA7A5E275100000000000015 /* FactCheckClient.swift in Sources */,
+				DA7A5E275100000000000016 /* FactCheckView.swift in Sources */,
+				DA7A5E275100000000000017 /* FactCheckNotifications.swift in Sources */,
+				DA7A5E275100000000000018 /* Realtime.swift in Sources */,
+				DA7A5E275100000000000019 /* SharedTopUpStore.swift in Sources */,
+				DA7A5E27510000000000001A /* UsdFormat.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA7A5E275200000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA7A5E27520000000000000E /* ShareViewController.swift in Sources */,
+				DA7A5E27520000000000000F /* ShareFactCheckView.swift in Sources */,
+				DA7A5E275200000000000012 /* FactCheckClient.swift in Sources */,
+				DA7A5E275200000000000013 /* FactCheckView.swift in Sources */,
+				DA7A5E275200000000000014 /* FactCheckNotifications.swift in Sources */,
+				DA7A5E275200000000000015 /* Realtime.swift in Sources */,
+				DA7A5E275200000000000016 /* SharedTopUpStore.swift in Sources */,
+				DA7A5E275200000000000017 /* UsdFormat.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -620,6 +804,16 @@
 			isa = PBXTargetDependency;
 			target = 9394CEC93026AEDA00AE138E /* DisinfaX Extension (macOS) */;
 			targetProxy = 9394CECC3026AEDA00AE138E /* PBXContainerItemProxy */;
+		};
+		DA7A5E275100000000000010 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA7A5E27510000000000000B /* DisinfaX Share (iOS) */;
+			targetProxy = DA7A5E27510000000000000F /* PBXContainerItemProxy */;
+		};
+		DA7A5E27520000000000000D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA7A5E275200000000000008 /* DisinfaX Share (macOS) */;
+			targetProxy = DA7A5E27520000000000000C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1135,6 +1329,142 @@
 			};
 			name = Release;
 		};
+		DA7A5E27510000000000000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (iOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = WJFG5784YR;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Share)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = DisinfaX;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
+				PRODUCT_NAME = "DisinfaX Share";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DA7A5E27510000000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (iOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = WJFG5784YR;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Share)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = DisinfaX;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
+				PRODUCT_NAME = "DisinfaX Share";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DA7A5E27520000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (macOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = WJFG5784YR;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Share)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = DisinfaX;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
+				PRODUCT_NAME = "DisinfaX Share";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DA7A5E27520000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (macOS).entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = WJFG5784YR;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Share)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = DisinfaX;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
+				PRODUCT_NAME = "DisinfaX Share";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1179,6 +1509,24 @@
 			buildConfigurations = (
 				9394CEEC3026AEDA00AE138E /* Debug */,
 				9394CEED3026AEDA00AE138E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA7A5E27510000000000000C /* Build configuration list for PBXNativeTarget "DisinfaX Share (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA7A5E27510000000000000D /* Debug */,
+				DA7A5E27510000000000000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA7A5E275200000000000009 /* Build configuration list for PBXNativeTarget "DisinfaX Share (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA7A5E27520000000000000A /* Debug */,
+				DA7A5E27520000000000000B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

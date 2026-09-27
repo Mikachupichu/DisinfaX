@@ -74,6 +74,9 @@ struct PaneHeightsKey: PreferenceKey {
 /// Re-hosting used to be the only thing that made the tab switch, and it took the fact-check
 /// surface down with it. The model is now passed in from the controller so the reset costs the
 /// user nothing but a lost glance.
+///
+/// On an iPad with the width for it the picker is gone altogether: the two surfaces are shown side
+/// by side, a half each. See `splitsPanes` for where that stops being a good idea.
 @available(macOS 13.0, iOS 16.0, *)
 struct RootView: View {
 
@@ -98,33 +101,73 @@ struct RootView: View {
 
     @State private var tab: Tab
 
+#if os(iOS)
+    /// Read only on iOS, and only to decide whether there is room for both surfaces at once. See
+    /// `splitsPanes`.
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+#endif
+
     init(factCheckModel: FactCheckModel, initialTab: Tab = .topUp, onMeasuredHeight: ((CGFloat) -> Void)? = nil) {
         self.factCheckModel = factCheckModel
         self.onMeasuredHeight = onMeasuredHeight
         _tab = State(initialValue: initialTab)
     }
 
-    var body: some View {
-        VStack(spacing: 0) {
-            // No label: the two segments name themselves.
-            Picker(selection: $tab) {
-                ForEach([Tab.topUp, Tab.factCheck], id: \.self) { Text($0.title).tag($0) }
-            } label: {
-                EmptyView()
-            }
-            .labelsHidden()
-            .pickerStyle(.segmented)
-            .padding(.horizontal, 24)
-            .padding(.top, 18)
-            .padding(.bottom, 2)
+    /// Whether both surfaces are on screen at once, rather than one at a time behind the picker.
+    ///
+    /// An iPad with the width for it gets the two halves: the balance on the leading side and the
+    /// fact-check on the trailing one — which for Hebrew or Arabic the framework mirrors for us,
+    /// exactly as it mirrors the picker, so the balance lands on the right. Narrower than that
+    /// falls back to the picker: an iPad in Split View, and every phone, where half a screen is
+    /// less than the 392pt both surfaces are drawn at and the fact-check pane would be squeezed
+    /// rather than shared. macOS is always the picker — its window is one pane wide by design.
+    private var splitsPanes: Bool {
+#if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
+#else
+        false
+#endif
+    }
 
+    /// The two surfaces side by side, or one over the other behind the picker.
+    @ViewBuilder
+    private var panes: some View {
+        if splitsPanes {
+            HStack(spacing: 0) {
+                // An equal half each, which needs `maxWidth` on both: left to their own ideal
+                // widths the pair would be laid out at 392pt apiece and centred, sharing nothing.
+                TopUpView().frame(maxWidth: .infinity)
+                Divider()
+                FactCheckView(model: factCheckModel).frame(maxWidth: .infinity)
+            }
+        } else {
             ZStack {
                 TopUpView().tabPane(visible: tab == .topUp)
                 FactCheckView(model: factCheckModel).tabPane(visible: tab == .factCheck)
             }
-            .background(GeometryReader { proxy in
-                Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(panes: proxy.size.height))
-            })
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if !splitsPanes {
+                // No label: the two segments name themselves.
+                Picker(selection: $tab) {
+                    ForEach([Tab.topUp, Tab.factCheck], id: \.self) { Text($0.title).tag($0) }
+                } label: {
+                    EmptyView()
+                }
+                .labelsHidden()
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 24)
+                .padding(.top, 18)
+                .padding(.bottom, 2)
+            }
+
+            panes
+                .background(GeometryReader { proxy in
+                    Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(panes: proxy.size.height))
+                })
 
             // Below the panes rather than inside one of them, because the tab this belongs on is
             // both of them: it is about getting the extension running at all, and a user who
@@ -142,8 +185,9 @@ struct RootView: View {
                 .padding(.bottom, 18)
         }
         // Matches TopUpView's own content width, plus its 24pt side padding, so the picker lines
-        // up with the fields below it instead of hovering over a wider window.
-        .frame(width: 392 + 48)
+        // up with the fields below it instead of hovering over a wider window. Not applied in the
+        // split case, where the width is whatever the screen gave us and sharing it is the point.
+        .frame(width: splitsPanes ? nil : 392 + 48)
         .background(GeometryReader { proxy in
             Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(root: proxy.size.height))
         })

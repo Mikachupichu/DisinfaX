@@ -2850,8 +2850,8 @@ export default defineBackground({
   // Single AI actions (one Fact-Check/reclassify click, Translate, Disinfact/preclassify) no
   // longer queue: they fire directly, and on ANY backend failure the error is surfaced and the
   // claim reverts to its on-hold button (retry affordance). Only Fact-Check All fans many
-  // classifications out at once, so ONLY it uses a client WAITLIST that admits claims within the
-  // balance and the per-claim HOLD the backend reserves — never dispatching one that would 402.
+  // classifications out at once, so ONLY it uses a client WAITLIST that runs a claim in parallel
+  // only while the balance covers its worst-case charge in full, and otherwise one at a time.
 
   /** Fire a single (non-fanning-out) charging AI action directly. No queue: a balance-too-low
    *  402 surfaces via reportWorkerError → workerErrorHandler (notifyError) since no interceptor
@@ -2867,13 +2867,15 @@ export default defineBackground({
   }
 
   // ── Fact-Check All waitlist ─────────────────────────────────────────────────
-  // Replicates the backend hold formula (classify-tweets:128-139) so the client admits only as
-  // many parallel classifications as the balance covers; the rest wait (tweet order) and are
-  // admitted one at a time as settling holds free the balance. Nothing that would 402 is ever
-  // dispatched, so there are no wasted 402s or get_full_claim pulls.
+  // Each admitted claim reserves the WORST-CASE settled charge (not the backend hold — see
+  // CLASSIFICATION_RESERVE), so the balance is sized for what actually leaves it rather than for
+  // what the backend merely held. Claims the balance funds in full run in parallel; once it can't,
+  // they run ONE at a time, draining whatever is left. That still dispatches no wasted 402s: the
+  // backend refuses a hold only while the balance is ≤ 0, so the partly-funded claim runs and it
+  // is the SECOND one in parallel that would 402.
   const FACTCHECK_BATCH_TIMEOUT_MS = 30000;
   const MAX_CLASSIFY_ATTEMPTS = 2; // 1 initial + at most 1 retry after a backend balance-too-low
-  type WaitlistItem = { classificationId: string; claimText: string; batchId: string; locale: string; hold: number; attempts: number };
+  type WaitlistItem = { classificationId: string; claimText: string; batchId: string; locale: string; reserve: number; attempts: number };
   const factCheckWaitlist: WaitlistItem[] = [];
   // Keys (`${id}:${text}`) currently WAITING — stops the broadcast auto-release from double-
   // enqueuing. In-flight claims are tracked by ongoingClaimRefreshes.
@@ -2882,37 +2884,43 @@ export default defineBackground({
   // these (and the on-hold masking shows their button) so a reverted claim isn't re-enqueued.
   // Cleared for a tweet on a fresh Fact-Check All (deliberate retry) and on reset.
   const abandonedFactCheckKeys = new Set<string>();
-  // Σ of admitted-but-unsettled holds. available = visibleTotal(funds) − committedHold is
-  // lag-invariant: acquiring a hold moves money balance→hold (visibleTotal unchanged) while
-  // committedHold tracks our commitments; a settle drops visibleTotal by the tiny real cost and
-  // we drop committedHold by the (larger) reserved hold, so available rises by the freed room.
-  let committedHold = 0;
+  // Σ of admitted-but-unsettled worst-case reserves. available = visibleTotal(funds) −
+  // committedSpend is lag-invariant: acquiring a hold moves money balance→hold (visibleTotal
+  // unchanged) while committedSpend tracks our commitments; a settle drops visibleTotal by the
+  // real cost and we drop committedSpend by the (larger) reservation, so available rises by the
+  // freed room. Because the reservation now bounds the charge rather than the hold, available is
+  // a true spendable figure instead of an under-count of it.
+  let committedSpend = 0;
   let factCheckInFlight = 0;
   // Absolute batch deadline (ms), set once when the waitlist first fills; NOT reset by a re-queue.
   let factCheckBatchDeadline = 0;
   let factCheckBatchTimer: ReturnType<typeof setTimeout> | null = null;
 
-  /** Token estimate — byte-identical to classify-tweets:606-609 (deliberately over-counts). */
-  function estimateTokens(text: string): number {
-    if (!text) return 0;
-    const words = text.trim().split(/\s+/).filter(Boolean).length;
-    return Math.ceil(text.length / 3) + words;
-  }
-  /** Mirrors the classify-tweets hold sizing (2 generations, 3 searches, 1.5 margin,
-   *  $0.15 cap) — typical holds are ~$0.10-0.12, so a $0.25 starter balance admits two
-   *  parallel researches. If the backend formula changes first, the backend simply
-   *  rejects any over-admit (caught as a rare 402). */
-  function computeClassificationHold(mainClaim: string, sources: string[] | undefined): number {
-    const GEMINI_IN = 0.75, GEMINI_OUT = 3.75, SEARCH_FEE = 0.016, MAX_SEARCHES = 3, OUTPUT_LIMIT = 2000, GENERATIONS = 2, MARGIN = 1.5, HOLD_CAP = 0.15;
-    const srcText = sources && sources.length ? sources.join("\n") : "";
-    const estIn = estimateTokens(mainClaim) + estimateTokens(srcText);
-    return Math.min((((estIn * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) * GENERATIONS + (SEARCH_FEE * MAX_SEARCHES)) * MARGIN, HOLD_CAP);
-  }
+  /** Worst-case settled charge for one Fact-Check All classification — the reserve each admitted
+   *  claim holds against the balance. Deliberately NOT the backend hold: classify-tweets settles at
+   *  `cost * FEE_MULTIPLIER * PROFIT_MULTIPLIER`, and the ×2 margin is excluded from the hold (an
+   *  overrun eats the margin rather than the operator's money). Both sides sum the SAME three
+   *  terms — Gemini streams, paid searches, and the post-research annotation — and apply
+   *  fee-recovery once to the total; the terms mirror classify-tweets' `const INPUT_LIMIT` block
+   *  plus its `annotWorstAtLimit`. Change the backend formula and this together. */
+  const CLASSIFICATION_RESERVE = (() => {
+    const GEMINI_IN = 0.75, GEMINI_OUT = 3.75, OUTPUT_LIMIT = 2000;   // gemini-3.6-flash
+    const INPUT_LIMIT = 6000, SEARCH_CONTEXT_TOKENS = 3500, GEMINI_STREAMS = 4;
+    const TAVILY_SEARCH_COST = 0.016, EXA_DEEP_COST = 0.015;
+    const ANNOT_IN = 0.99, ANNOT_OUT = 2.20, ANNOT_FEE = 1.055;   // Qwen 3.8 27B via OpenRouter
+    const ANNOT_INPUT_LIMIT = 20000, ANNOT_OUTPUT_LIMIT = 2000;
+    const FEE_MULTIPLIER = (4 / 3) * 1.03;   // Apple/Stripe take + FX
+    const PROFIT_MULTIPLIER = 2;             // classify-tweets' margin, on the whole charge
+    const geminiWorst = (((INPUT_LIMIT + SEARCH_CONTEXT_TOKENS) * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) * GEMINI_STREAMS;
+    const searchWorst = TAVILY_SEARCH_COST * 2 + EXA_DEEP_COST;
+    const annotWorst = ((ANNOT_INPUT_LIMIT * ANNOT_IN + ANNOT_OUTPUT_LIMIT * ANNOT_OUT) / 1e6) * ANNOT_FEE;
+    return (geminiWorst + searchWorst + annotWorst) * FEE_MULTIPLIER * PROFIT_MULTIPLIER;
+  })();
 
   /** Money free to commit now, in lag-invariant terms (unknown funds → optimistic). */
   function availableToSpend(): number {
     if (!fundsState) return Infinity;
-    return visibleTotal(fundsState) - committedHold;
+    return visibleTotal(fundsState) - committedSpend;
   }
 
   /** Enqueue an on-hold claim for Fact-Check All (arrival order from preclassify = tweet order).
@@ -2924,10 +2932,8 @@ export default defineBackground({
     const hit = classificationCache.get(classificationId);
     const claim = hit?.classification.claims?.find(cl => cl.text === claimText);
     if (!claim || !claim.reclassifyOnHold) return;
-    const cachedTweet = tweetCache.get(classificationId);
-    const sources = cachedTweet ? extractTweetUrls(cachedTweet.text) : undefined;
-    const hold = computeClassificationHold(claim.rewritten ?? claimText, sources);
-    factCheckWaitlist.push({ classificationId, claimText, batchId, locale, hold, attempts: 0 });
+    const reserve = CLASSIFICATION_RESERVE;
+    factCheckWaitlist.push({ classificationId, claimText, batchId, locale, reserve, attempts: 0 });
     factCheckWaitlistKeys.add(key);
     if (factCheckBatchDeadline === 0) { factCheckBatchDeadline = Date.now() + FACTCHECK_BATCH_TIMEOUT_MS; armBatchTimer(); }
     pumpWaitlist();
@@ -2939,9 +2945,19 @@ export default defineBackground({
     factCheckBatchTimer = setTimeout(onBatchTimeout, Math.max(0, factCheckBatchDeadline - Date.now()));
   }
 
-  /** Batch 30s elapsed: abandon every claim STILL WAITING (in-flight ones keep going). */
+  /** Batch 30s elapsed: abandon every claim STILL WAITING (in-flight ones keep going).
+   *  A claim in flight means the queue is draining, not stuck — under a balance too small for
+   *  parallel admission it drains ONE at a time, and each run legitimately outlasts the window.
+   *  So roll the deadline forward instead of abandoning the tail, and let the next settle admit
+   *  (pumpWaitlist runs there). Only a window that closes with nothing in flight is really stuck:
+   *  nothing can be admitted, so no settle is coming to revive the queue. */
   function onBatchTimeout(): void {
     factCheckBatchTimer = null;
+    if (factCheckInFlight > 0) {
+      factCheckBatchDeadline = Date.now() + FACTCHECK_BATCH_TIMEOUT_MS;
+      armBatchTimer();
+      return;
+    }
     if (factCheckWaitlist.length > 0) {
       for (const item of factCheckWaitlist.splice(0, factCheckWaitlist.length)) abandonWaitingClaim(item);
       notifyError(ERROR_CODES.BALANCE_TOO_LOW);
@@ -2949,10 +2965,25 @@ export default defineBackground({
     maybeEndBatch();
   }
 
-  /** Admit as many front claims as the available balance covers their holds; then reconcile batch. */
+  /** Admit every front claim the balance funds in full; once it can't, admit exactly one and stop
+   *  until it settles. Parallel admission needs the FULL reserve for each claim, because all of
+   *  them settle against the same balance at once. A partly-funded head does not need to be
+   *  refused, though — one claim at a time is safe, since the backend's own gate is only that the
+   *  balance is > 0 and a run that overshoots what's left merely dips it negative and blocks the
+   *  next one. Refusing here instead would block a user whose balance is positive but small. */
   function pumpWaitlist(): void {
-    while (factCheckWaitlist.length > 0 && availableToSpend() >= factCheckWaitlist[0].hold) {
-      admitFactCheckClaim(factCheckWaitlist.shift()!);
+    while (factCheckWaitlist.length > 0) {
+      const avail = availableToSpend();
+      if (avail >= CLASSIFICATION_RESERVE) {
+        admitFactCheckClaim(factCheckWaitlist.shift()!);
+        continue; // still fully funded — another claim can safely run alongside it
+      }
+      // `avail > 0` is the lag-invariant reading of the backend's gate: acquire_hold refuses only
+      // while the balance is ≤ 0, and takes LEAST(balance, requested) rather than rejecting a
+      // request larger than the balance. With nothing in flight, committedSpend is 0, so avail is
+      // the balance itself.
+      if (avail > 0 && factCheckInFlight === 0) admitFactCheckClaim(factCheckWaitlist.shift()!);
+      break;
     }
     maybeEndBatch();
   }
@@ -3010,11 +3041,12 @@ export default defineBackground({
     broadcastClassification(flipClaimResearching(hit.classification, claimText, batchId, false));
   }
 
-  /** Start one admitted Fact-Check-All classification: reserve its hold, flip it to researching,
-   *  run pull-then-classify, and on completion release the hold and either finish or (on a rare
-   *  backend balance-too-low) re-queue once / abandon. Mirrors the old releaseFreshResearchClaim. */
+  /** Start one admitted Fact-Check-All classification: reserve its worst-case charge, flip it to
+   *  researching, run pull-then-classify, and on completion release the reservation and either
+   *  finish or (on a rare backend balance-too-low) re-queue once / abandon. Mirrors the old
+   *  releaseFreshResearchClaim. */
   function admitFactCheckClaim(item: WaitlistItem): void {
-    const { classificationId, claimText, batchId, locale, hold } = item;
+    const { classificationId, claimText, batchId, locale, reserve } = item;
     const key = `${classificationId}:${claimText}`;
     factCheckWaitlistKeys.delete(key);
 
@@ -3022,7 +3054,7 @@ export default defineBackground({
     const targetClaim = hit?.classification.claims?.find(cl => cl.text === claimText);
     if (!hit || !targetClaim || !targetClaim.reclassifyOnHold) { maybeEndBatch(); return; }
 
-    committedHold += hold;
+    committedSpend += reserve;
     factCheckInFlight++;
     ongoingClaimRefreshes.add(key);
     const restored = flipClaimResearching(hit.classification, claimText, batchId, true);
@@ -3059,7 +3091,7 @@ export default defineBackground({
       } catch (err: any) {
         console.error("[background] admitFactCheckClaim error:", err);
       } finally {
-        committedHold = Math.max(0, committedHold - hold);
+        committedSpend = Math.max(0, committedSpend - reserve);
         factCheckInFlight = Math.max(0, factCheckInFlight - 1);
         ongoingClaimRefreshes.delete(key);
         if (!(handled || gotUpdate)) {
@@ -3114,7 +3146,7 @@ export default defineBackground({
     factCheckWaitlist.length = 0;
     factCheckWaitlistKeys.clear();
     abandonedFactCheckKeys.clear();
-    committedHold = 0;
+    committedSpend = 0;
     factCheckInFlight = 0;
     factCheckBatchDeadline = 0;
     if (factCheckBatchTimer) { clearTimeout(factCheckBatchTimer); factCheckBatchTimer = null; }

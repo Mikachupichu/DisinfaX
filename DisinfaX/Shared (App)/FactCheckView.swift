@@ -46,6 +46,13 @@ struct FactCheckView: View {
     /// user returns to, not to the view instance that happened to be on screen.
     @ObservedObject var model: FactCheckModel
 
+    /// Whether to draw the `DisinfaX` / `Fact-Check` name above everything else. True everywhere
+    /// in the app, where this view is the whole of what is on screen and has to say what it is.
+    /// False in the share sheet, which is presented under a bar that already carries the name —
+    /// and which is the reason this is a flag on the name rather than a second view: the rest of
+    /// the surface is the same one the app's tab draws, down to the controls that bill.
+    var showsHeader = true
+
     /// Re-read rather than captured: the extension rewrites this every time its popup opens, and
     /// that is exactly the action the signed-out state asks the user to take.
     @State private var session: SharedTopUpStore.Session?
@@ -72,7 +79,9 @@ struct FactCheckView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                header
+                if showsHeader {
+                    header
+                }
                 if session == nil {
                     signedOutNotice
                 } else {
@@ -84,7 +93,9 @@ struct FactCheckView: View {
             }
             .padding(24)
             .tint(Self.accent)
-            .frame(width: 392, alignment: .leading)
+            // Up to, not exactly: the app hosts this in a pane wider than 392 and is unchanged,
+            // but a share sheet on a narrow iPhone is narrower than 392 and would otherwise clip.
+            .frame(maxWidth: 392, alignment: .leading)
         }
         .onAppear { refreshSession() }
         .onReceive(NotificationCenter.default.publisher(for: Self.didBecomeActive)) { _ in refreshSession() }
@@ -93,6 +104,7 @@ struct FactCheckView: View {
 
     // MARK: - Header
 
+    /// Drawn everywhere except the share sheet. See `showsHeader`.
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("DisinfaX").font(.system(size: 26, weight: .bold))
@@ -1528,6 +1540,47 @@ final class FactCheckModel: ObservableObject {
     private var annotateTasks: [FactCheckClaim.ID: Task<Void, Never>] = [:]
     private var annotationWaitTasks: [FactCheckClaim.ID: Task<Void, Never>] = [:]
 
+    // MARK: - Fact-Check All's admission
+
+    /// Claims "Fact-Check All" was pressed for and that have not been admitted yet, in the order
+    /// the snapshot found them. Empty whenever no batch is running.
+    ///
+    /// A claim waits here rather than starting, which is the whole of the guard: every claim this
+    /// button runs reserves its worst case against one shared balance, so the number admitted at
+    /// once has to be the number the balance can settle at once. See `pumpWaitlist`.
+    private var waitlist: [FactCheckClaim.ID] = []
+
+    /// The claims holding a reservation right now.
+    ///
+    /// A set of ids rather than a count, because a run can outlive the batch it belonged to: a
+    /// cancellation reaches a task blocked on an await only when that await returns, so a run from
+    /// the text the user just replaced can end after the next batch has admitted its own. Its id is
+    /// gone from here by then, and its release is dropped rather than credited to a batch it was
+    /// never part of. The ids are claim ids, fresh per preclassification, so the same text checked
+    /// twice does not collide with itself here.
+    private var admitted: Set<FactCheckClaim.ID> = []
+
+    /// Σ of the reserves admitted and not yet finished — the size of the set above, which is what
+    /// makes the two impossible to disagree. `availableToSpend` subtracts it, and that is what
+    /// stops a batch from committing the same money twice.
+    private var committedSpend: Double { Double(admitted.count) * Self.classificationReserve }
+
+    /// Where this batch started: the balance + hold, read once when the button is pressed.
+    ///
+    /// Only the first admissions are decided against it. A press starts runs, runs start the
+    /// notifier's watch, and from then on `availableToSpend` reads that live figure instead —
+    /// which is the point, because only a total that moves with the settles lets a reservation be
+    /// released by the whole of itself rather than by a charge nothing here knows.
+    ///
+    /// Nil until that read answers, and left nil when it fails: a balance nobody could read admits
+    /// everything, which is what this did before there was an admission step at all.
+    private var batchTotal: Double?
+
+    /// The one read of it, in flight. Cancelled with the batch — a total that came back after the
+    /// batch it was read for was torn down belongs to no batch, and keeping it would have the next
+    /// press measure against a figure from before whatever the last one spent.
+    private var batchTotalRead: Task<Void, Never>?
+
     /// The live Realtime subscription for the checked text's hash, if one is open. One at a time,
     /// because one text is on screen at a time; opening for a new hash closes the old handle.
     private var tweetSubscriptions: [String: RealtimeRowSubscription] = [:]
@@ -1555,6 +1608,32 @@ final class FactCheckModel: ObservableObject {
     /// to write and pay to have it written a second time. Attribution is not what separates
     /// users on this path: row-level security does, on the token every request already carries.
     private static let username = ""
+
+    /// The worst-case *settled charge* for one classification — what an admitted "Fact-Check All"
+    /// claim reserves against the balance before it is allowed to run.
+    ///
+    /// The browser extension's `CLASSIFICATION_RESERVE` (`entrypoints/background.ts`), derived the
+    /// same way rather than copied as a figure. The three terms are `classify-tweets`' own
+    /// worst-case hold terms — the Gemini streams, the paid searches, and the post-research
+    /// annotation — summed and fee-recovered once, and then marked up by the margin that worker
+    /// charges. Deliberately the settled charge and NOT the backend hold (`HOLD_CAP`): the hold
+    /// excludes the margin, so reserving it would size a batch against roughly half of what its
+    /// runs really debit, which is the mistake the extension already made once. Change the worker's
+    /// formula and this, the extension's copy, and the `HOLD_CAP` above it all move together.
+    private static let classificationReserve: Double = {
+        let geminiIn = 0.75, geminiOut = 3.75, outputLimit = 2000.0   // gemini-3.6-flash
+        let inputLimit = 6000.0, searchContextTokens = 3500.0, geminiStreams = 4.0
+        let tavilySearchCost = 0.016, exaDeepCost = 0.015
+        let annotIn = 0.99, annotOut = 2.20, annotFee = 1.055          // Qwen 3.8 27B via OpenRouter
+        let annotInputLimit = 20000.0, annotOutputLimit = 2000.0
+        let feeMultiplier = (4.0 / 3.0) * 1.03   // Apple/Stripe take + FX
+        let profitMultiplier = 2.0               // classify-tweets' margin, on the whole charge
+
+        let geminiWorst = ((inputLimit + searchContextTokens) * geminiIn + outputLimit * geminiOut) / 1e6 * geminiStreams
+        let searchWorst = tavilySearchCost * 2 + exaDeepCost
+        let annotWorst = (annotInputLimit * annotIn + annotOutputLimit * annotOut) / 1e6 * annotFee
+        return (geminiWorst + searchWorst + annotWorst) * feeMultiplier * profitMultiplier
+    }()
 
     /// How long a freshly researched claim waits for Flow A's annotation write before offering to
     /// buy one. The popup's own window (ANNOTATE_AUTO_PENDING_TIMEOUT_MS), and for the same
@@ -1760,6 +1839,15 @@ final class FactCheckModel: ObservableObject {
         startResearch(at: index)
     }
 
+    /// Runs every claim still showing its button, admitting no more of them at once than the
+    /// balance can settle at once.
+    ///
+    /// The alternative is what this did until the queue existed: a fan-out that started all of them
+    /// in parallel, each taking a backend hold against the same balance. The holds are the problem
+    /// — `acquire_hold` takes `LEAST(balance, requested)` and refuses only while the balance is at
+    /// or below nothing, so a balance that covers one run and not five will still accept five, and
+    /// the settles that follow debit past it. This is the same queue the extension keeps for the
+    /// same button, decided the same way.
     func researchAll() {
         guard maySpend() else { return }
         // Indices are taken from a snapshot and re-resolved before each use: starting a research
@@ -1768,9 +1856,126 @@ final class FactCheckModel: ObservableObject {
         // A claim with a stale answer is included: "Fact-Check All" is the button that runs the
         // rest of the text, and a claim whose row is past its reclassification date is one of the
         // ones there is work left to do on.
-        for id in claims.filter({ (!$0.isClassified || $0.needsReclassify) && !$0.isResearching }).map(\.id) {
-            guard let index = claims.firstIndex(where: { $0.id == id }) else { continue }
-            startResearch(at: index)
+        //
+        // A claim already queued is not queued again: the button stays on screen while a batch
+        // drains (the claims still waiting have not been researched), so a second press is the
+        // ordinary thing to do and must not put the same claim in line twice.
+        for id in claims.filter({ (!$0.isClassified || $0.needsReclassify) && !$0.isResearching }).map(\.id)
+        where !waitlist.contains(id) {
+            waitlist.append(id)
+        }
+        guard !waitlist.isEmpty else { return }
+        message = nil
+
+        // A batch already under way has its total, so what this press added goes through the same
+        // pump as everything else waiting behind it.
+        if batchTotal != nil {
+            pumpWaitlist()
+            return
+        }
+        // A read already out for this same batch. This press buys no second one, and pumps none
+        // either: there is no total to decide against yet, and pumping without one reads the
+        // balance as unbounded and admits the lot. The read's own pump follows a moment later.
+        guard batchTotalRead == nil else { return }
+
+        // One read per batch, and the whole of what the admission below is decided against. It is
+        // billed — every `get_funds` is — so it happens at the press rather than at each claim.
+        batchTotalRead = Task { [weak self] in
+            let total = await FactCheckNotifier.fetchTotal()
+            guard let self, !Task.isCancelled else { return }
+            self.batchTotalRead = nil
+            self.batchTotal = total
+            self.pumpWaitlist()
+        }
+    }
+
+    /// Admits every queued claim the balance funds in full; once it cannot, admits exactly one and
+    /// stops until it finishes.
+    ///
+    /// Parallel admission needs the FULL reserve for each claim, because every admitted claim
+    /// settles against the same balance at once. A partly-funded head is not refused, though: one
+    /// claim at a time is safe, since the backend's own gate is only that the balance is positive
+    /// and a run that overshoots what is left merely dips it negative and blocks the next one.
+    /// Refusing it instead would block a user whose balance is positive but small.
+    ///
+    /// The reserve is the worst case, and every run settles for at most that, so `availableToSpend`
+    /// under-states what is free rather than over-stating it — the direction a guard on money should
+    /// be wrong in.
+    private func pumpWaitlist() {
+        while !waitlist.isEmpty {
+            let available = availableToSpend()
+            if available >= Self.classificationReserve {
+                admit(waitlist.removeFirst())
+                continue   // still fully funded — another claim can safely run alongside it
+            }
+            // The backend refuses a hold only while the balance is ≤ 0, and takes `LEAST(balance,
+            // requested)` rather than rejecting a request larger than the balance — so with nothing
+            // of this batch in flight, a balance above nothing is the whole of what it takes.
+            if available > 0, admitted.isEmpty {
+                admit(waitlist.removeFirst())
+            }
+            break
+        }
+        // A queue that could not advance with nothing running to free the room for it is not
+        // waiting, it is stuck: only a balance at or below nothing does that. Said as the backend
+        // would have said it — the sentence for it already exists and is translated — because the
+        // alternative is what this did before the queue: dispatch every claim and let each come
+        // back refused, which is one red row per claim saying one thing. A claim never admitted has
+        // no request behind it and so no row to carry it, which leaves the tab as the only place
+        // left to say it.
+        if admitted.isEmpty, !waitlist.isEmpty {
+            waitlist.removeAll()
+            batchTotal = nil
+            let refusal = FactCheckError.worker(status: 402, body: Data()).localizedDescription
+            message = refusal
+            FactCheckNotifier.shared.reportFailure(refusal)
+        }
+    }
+
+    /// Money free to commit now, in the one figure that does not move when a hold is taken.
+    ///
+    /// Taking the live total where there is one, and this batch's own reading of it before that,
+    /// is what lets `finishAdmittedClaim` release a whole reservation rather than the run's real
+    /// charge — which nothing on this side knows. The reservation is deliberately larger than any
+    /// charge, so releasing it against a total that has already moved with the settle reads
+    /// correctly; releasing it against a figure frozen at the press would credit the batch the
+    /// difference between the two, every claim, for the length of the batch.
+    ///
+    /// A total nobody has is unbounded, which admits everything: a balance that could not be read
+    /// is not evidence of an empty one, and guessing otherwise would refuse to run work the user
+    /// asked for. That is also the whole of the fallback for a failed read at the press.
+    private func availableToSpend() -> Double {
+        guard let total = FactCheckNotifier.shared.visibleTotal ?? batchTotal else { return .infinity }
+        return total - committedSpend
+    }
+
+    /// Starts one queued claim, reserving its worst-case charge until it finishes.
+    ///
+    /// The order of these two lines is the reservation: `pumpWaitlist` reads what is free again as
+    /// soon as this returns, so a claim admitted here has to be counted before it is.
+    private func admit(_ id: FactCheckClaim.ID) {
+        guard let index = claims.firstIndex(where: { $0.id == id }) else { return }
+        admitted.insert(id)
+        startResearch(at: index, admitted: true)
+    }
+
+    /// Releases one admitted claim's reservation, then lets the queue past it.
+    ///
+    /// The only place a batch advances: every way an admitted run can end — a verdict, a refusal, a
+    /// failure, a cancellation from `startOver` — comes through the `defer` in `startResearch`, so a
+    /// claim that ends any way at all frees the room it was holding. Without that, one failure
+    /// early in a batch would shrink what the rest of it could ever spend.
+    ///
+    /// A claim no longer in `admitted` is one released already — by `cancelAll`, which drops the
+    /// whole set with the text it belonged to — and its release is dropped with it. See `admitted`.
+    private func finishAdmittedClaim(_ id: FactCheckClaim.ID) {
+        guard admitted.remove(id) != nil else { return }
+        pumpWaitlist()
+        // The batch is over when there is nothing left to admit and nothing running. The total it
+        // was admitted against goes with it, so the next press reads the balance as it stands then
+        // rather than measuring against a figure from before whatever this one spent.
+        if waitlist.isEmpty, admitted.isEmpty {
+            batchTotal = nil
         }
     }
 
@@ -1987,7 +2192,12 @@ final class FactCheckModel: ObservableObject {
         startResearch(at: 0)
     }
 
-    private func startResearch(at index: Int) {
+    /// - Parameter admitted: Whether "Fact-Check All" admitted this run through its queue, and so
+    ///   whether it holds a reservation that has to be released when the run ends. False for the
+    ///   two paths with no queue behind them — the button on a claim's own card, and the lone-claim
+    ///   shortcut — where one run is the whole of what was asked for and there is nothing to wait
+    ///   on. Those spend without reserving, exactly as the extension's own single-claim runs do.
+    private func startResearch(at index: Int, admitted: Bool = false) {
         guard index < claims.count else { return }
         let id = claims[index].id
         let text = claims[index].rewritten
@@ -1999,6 +2209,9 @@ final class FactCheckModel: ObservableObject {
             defer {
                 self.researchTasks[id] = nil
                 self.setResearching(false, on: id)
+                // Before `refreshWorkState`, so the claim this frees the room for is already
+                // marked researching by the time the notifier is told what is in flight.
+                if admitted { self.finishAdmittedClaim(id) }
                 self.refreshWorkState()
             }
             // Name the claim before researching it. Building the locators out here would hand the
@@ -2394,6 +2607,19 @@ final class FactCheckModel: ObservableObject {
         // just cancelled, and a continuation nobody will ever resume is a leak. Each then finds
         // its own task cancelled and stops.
         for waiter in claimRowWaiters { resolve(waiter, with: nil) }
+        // The batch goes with the tasks that were carrying it. A queue left behind would be
+        // admitted against the text that replaced this one, and its reservations would go on
+        // sizing a balance nothing of it is spending from.
+        //
+        // Dropping `admitted` here is also what makes the cancelled runs safe: a cancellation
+        // reaches a task blocked on an await only when that await returns, so some of these runs
+        // end after a later batch has admitted its own, and every one of them then finds its id
+        // already gone and releases nothing. See `admitted`.
+        waitlist.removeAll()
+        admitted.removeAll()
+        batchTotal = nil
+        batchTotalRead?.cancel()
+        batchTotalRead = nil
         refreshWorkState()
     }
 }
