@@ -292,6 +292,8 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
         // anything else arriving here is dropped rather than misrendered.
         if (message.data.kind === 'broke') showNotification('broke', {});
         else showNotification(message.data.kind, { amount: message.data.amount, text: message.data.text, code: message.data.code });
+      } else if (message.type === "ANNOTATE_FAILED" && message.data) {
+        mfBus.dispatchEvent(new CustomEvent('mf-annotate-failed', { detail: message.data }));
       } else if (message.type === "MF_AUTH") {
         if (message.signedIn) {
           // Only act on a real freeze→resume transition, so a redundant

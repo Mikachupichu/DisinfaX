@@ -110,6 +110,8 @@ export default defineBackground({
   /** Cache of the latest MainTweet seen for each tweet id, used to detect
    *  translation toggles and to know which text/locale is currently displayed. */
   const tweetCache = new Map<string, MainTweet>();
+  (globalThis as any).__classificationCache = classificationCache;
+  (globalThis as any).__tweetCache = tweetCache;
   /** Track which highlight locales have been localized per tweet id so we don't
    *  re-run the highlight worker for the same locale repeatedly. */
   const localizedHighlightLocales = new Map<string, Set<string>>();
@@ -261,17 +263,22 @@ export default defineBackground({
         tweets[id] = tweet;
       }
       try {
-        const area = (browser.storage as any).session ?? browser.storage.local;
-        void area.set({ [SELECTION_CACHE_KEY]: { classifications, tweets } });
+        void browser.storage.local.set({ [SELECTION_CACHE_KEY]: { classifications, tweets } });
+        if ((browser.storage as any).session) {
+          void (browser.storage as any).session.set({ [SELECTION_CACHE_KEY]: { classifications, tweets } });
+        }
       } catch { /* storage unavailable */ }
     }, 200);
   }
 
   async function restoreSelectionPipeline() {
     try {
-      const area = browser.storage.session ?? browser.storage.local;
-      const stored = await area.get(SELECTION_CACHE_KEY);
-      const payload = (stored as any)?.[SELECTION_CACHE_KEY];
+      let stored = await browser.storage.local.get(SELECTION_CACHE_KEY);
+      let payload = (stored as any)?.[SELECTION_CACHE_KEY];
+      if ((!payload || typeof payload !== 'object') && (browser.storage as any).session) {
+        stored = await (browser.storage as any).session.get(SELECTION_CACHE_KEY);
+        payload = (stored as any)?.[SELECTION_CACHE_KEY];
+      }
       if (!payload || typeof payload !== 'object') return;
       const classifications = payload.classifications ?? {};
       const tweets = payload.tweets ?? {};
@@ -682,7 +689,7 @@ export default defineBackground({
       }
       if (!tweet) return null;
       const tweetText = (tweet.translatedText && tweet.destinationLanguage) ? tweet.translatedText : tweet.text;
-      const textLocale = ((tweet.translatedText && tweet.destinationLanguage) ? tweet.destinationLanguage : tweet.sourceLanguage) ?? null;
+      const textLocale = ((tweet.translatedText && tweet.destinationLanguage) ? tweet.destinationLanguage : tweet.sourceLanguage) ?? classification.textLocale ?? null;
       if (typeof tweetText !== 'string' || tweetText.length === 0 || !textLocale) return null;
       const tweetHash = await computeTweetHash(tweet);
       return { tweetHash, tweetText, textLocale, claimIndex: Math.max(0, claimIndex) };
@@ -1177,16 +1184,28 @@ export default defineBackground({
    *  ctx.waitUntil. The client path is the same as X — the tweet subscription
    *  (`ensureAnnotationSubscription`) receives `trg_tweet_claim_annotations_updated`.
    *  Do not invent a locale key here: painting `{locale: {}}` made selection look
-   *  like annotations were disabled, and a pull is not how X gets the ranges. */
-  function settleFlowAAnnotations(
-    _classificationId: string,
-    _claimText: string,
-    _loc: AnnotLocators,
+   *  like annotations were disabled, and a pull is not how X gets the ranges.
+   *
+   *  What this DOES do is re-open that subscription on a fresh routing row. The
+   *  subscription opened before research is not necessarily the one Flow A's persist
+   *  finds: `on_tweet_preclassification_complete` deletes every tweet-scoped routing row
+   *  (internal.broadcasts) once the preclassify worker settles, and that runs while this
+   *  claim's research is already in flight — after the pre-research subscribe registered.
+   *  The handle still looks live locally (only the routing row died), so nothing would
+   *  ever recreate it and the persist would broadcast to nobody: the badge sits on
+   *  "Annotating" forever with the annotations already in the DB. Research outlasts that
+   *  teardown, so a row created here is reliably still there when the worker persists. */
+  async function settleFlowAAnnotations(
+    classificationId: string,
+    claimText: string,
+    loc: AnnotLocators,
     _batchId: string
   ) {
-    // Intentionally empty. stampAnnotateInFlight holds "Annotating" until the
-    // broadcast lands a key (including a real empty dict). The subscription
-    // must still be open — see startSelectionPipeline / ensureAnnotationSubscription.
+    try {
+      await ensureAnnotationSubscription(classificationId, claimText, loc.textLocale, true);
+    } catch (err) {
+      console.error('[background] settleFlowAAnnotations: annotation routing re-open failed:', err);
+    }
   }
 
   function mergeSingleClaimAndBroadcast(
@@ -1795,8 +1814,12 @@ export default defineBackground({
    *  the QUOTED tweet's row/hash, so its broadcast needs the quoted subscription
    *  (same quoting.id + quotedHash pair the preclassification path subscribes).
    *  Silent no-op when the tweet isn't cached — research then runs un-annotated,
-   *  exactly as before. Call inside `if (!handled)`, just before refreshClaim. */
-  async function ensureAnnotationSubscription(classificationId: string, claimText: string, locale: string): Promise<void> {
+   *  exactly as before. Call inside `if (!handled)`, just before refreshClaim.
+   *
+   *  `force` re-opens on a brand-new routing row even when a handle is already
+   *  registered, for the callers that need a row created AFTER the preclassification
+   *  teardown has already run (see settleFlowAAnnotations). */
+  async function ensureAnnotationSubscription(classificationId: string, claimText: string, locale: string, force = false): Promise<void> {
     try {
       const cls = classificationCache.get(classificationId)?.classification;
       if (!cls) return;
@@ -1825,10 +1848,14 @@ export default defineBackground({
       // row. Close that leftover ONCE, then keep the annotation-timeout handle:
       // closing it again (a second claim's research, a reclassify) LATE-drops
       // the in-flight annotation UPDATE for the claim that just finished.
-      if (!annotationRoutingReady.has(sideTweetId)) {
+      if (force || !annotationRoutingReady.has(sideTweetId)) {
+        if (force && annotationRoutingReady.has(sideTweetId)) {
+          console.log(`[background] ensureAnnotationSubscription ${sideTweetId}: re-opening on a fresh routing row for Flow A`);
+        }
         const existing = tweetSubs.get(sideTweetId);
         if (existing && !existing.isClosed()) existing.close();
         tweetSubs.delete(sideTweetId);
+        annotationRoutingReady.delete(sideTweetId);
       }
       await ensureTweetSubscription(sideTweetId, hash, locale, ANNOTATION_TIMEOUT_MS);
       annotationRoutingReady.add(sideTweetId);
@@ -3449,36 +3476,102 @@ export default defineBackground({
           const t = s.trim();
           return t.length === 0 || t.length === 1 || !/\s/.test(t);
         };
-        const skip = (el: Element | null): boolean => {
-          if (!el) return true;
-          const tag = el.tagName;
-          if (/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|HEAD|TITLE|SVG|CANVAS|IFRAME|ASIDE|NAV|FOOTER|HEADER|MENU)$/.test(tag)) return true;
-          if (el.hasAttribute('hidden') || el.getAttribute('aria-hidden') === 'true') return true;
-          const role = (el.getAttribute('role') ?? '').toLowerCase();
-          if (['complementary', 'navigation', 'banner', 'contentinfo', 'search', 'menu'].includes(role)) return true;
-          return false;
-        };
-        const neighbor = (el: Element, dir: 'prev' | 'next'): Element | null => {
-          let n: Element | null = dir === 'prev' ? el.previousElementSibling : el.nextElementSibling;
-          while (n && skip(n)) n = dir === 'prev' ? n.previousElementSibling : n.nextElementSibling;
-          return n;
-        };
-        const expandNeighbors = (r: Range): Range => {
+        /** The block `r` sits in, as an element-bounded range: the pool a thin read's
+         *  window is drawn from, and the reason the pool is the block alone and NOT its
+         *  neighbours — a window that runs past the block's edge puts the wrap's boundary
+         *  mid-paragraph in the next one, and re-inserting the read as a span then splits
+         *  that paragraph in two. Mirrors selection.ts blockRange (this function is
+         *  serialized into the page's world and cannot call it). */
+        const blockPool = (r: Range): Range | null => {
           const startEl = r.startContainer.nodeType === 1
             ? (r.startContainer as Element)
             : r.startContainer.parentElement;
           const block = startEl?.closest(BLOCK);
-          if (!block || block === document.body || block === document.documentElement) return r;
-          const from = neighbor(block, 'prev') ?? block;
-          const to = neighbor(block, 'next') ?? block;
-          const expanded = document.createRange();
+          if (!block || block === document.body || block === document.documentElement) return null;
+          const out = document.createRange();
           try {
-            expanded.setStartBefore(from);
-            expanded.setEndAfter(to);
-            return expanded;
+            out.setStartBefore(block);
+            out.setEndAfter(block);
+            return out;
           } catch {
-            return r;
+            return null;
           }
+        };
+        /** Words either side of a right-click that carried no deliberate selection. A
+         *  word is a POINTER at the passage it sits in: the read is its neighbourhood,
+         *  never the article around it (this is the page-world half of the rule in
+         *  entrypoints/selection.ts windowAround — this function is serialized into the
+         *  page's world, so it cannot call that one and the two are kept in step by hand). */
+        const THIN_WINDOW_WORDS = 25;
+        const WHITESPACE = /\s/;
+        const windowBounds = (text: string, a0: number, a1: number, limit: number): [number, number] => {
+          let start = a0, back = 0, i = a0;
+          while (i > 0 && back < limit) {
+            while (i > 0 && WHITESPACE.test(text[i - 1])) i--;
+            if (i === 0) break;
+            while (i > 0 && !WHITESPACE.test(text[i - 1])) i--;
+            back++;
+            start = i;
+          }
+          let end = a1, forward = 0, j = a1;
+          while (j < text.length && forward < limit) {
+            while (j < text.length && WHITESPACE.test(text[j])) j++;
+            if (j >= text.length) break;
+            while (j < text.length && !WHITESPACE.test(text[j])) j++;
+            forward++;
+            end = j;
+          }
+          return [start, end];
+        };
+        const windowAround = (pool: Range, anchor: Range): Range => {
+          if (pool.startContainer.nodeType !== 1 || pool.endContainer.nodeType !== 1) return pool;
+          const common = pool.commonAncestorContainer;
+          const host = common.nodeType === 1 ? (common as Element) : common.parentElement;
+          if (!host) return pool;
+          const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+          const nodes: Text[] = [];
+          const starts: number[] = [];
+          let all = '';
+          for (let n = walker.nextNode() as Text | null; n; n = walker.nextNode() as Text | null) {
+            if (!pool.intersectsNode(n)) continue;
+            starts.push(all.length);
+            nodes.push(n);
+            all += n.data;
+          }
+          if (nodes.length === 0) return pool;
+          const offsetOf = (container: Node, offset: number): number | null => {
+            if (container.nodeType === 3) {
+              const k = nodes.indexOf(container as Text);
+              return k < 0 ? null : starts[k] + offset;
+            }
+            const child = (container as Element).childNodes[offset] ?? null;
+            for (let k = 0; k < nodes.length; k++) {
+              const n = nodes[k];
+              if (child ? n === child || child.contains(n) : n === container || container.contains(n)) return starts[k];
+            }
+            return null;
+          };
+          const a0 = offsetOf(anchor.startContainer, anchor.startOffset);
+          const a1 = offsetOf(anchor.endContainer, anchor.endOffset);
+          if (a0 === null || a1 === null || a1 < a0) return pool;
+          const [from, to] = windowBounds(all, a0, a1, THIN_WINDOW_WORDS);
+          const locate = (g: number): [Text, number] | null => {
+            for (let k = nodes.length - 1; k >= 0; k--) {
+              if (g >= starts[k]) return [nodes[k], Math.min(g - starts[k], nodes[k].data.length)];
+            }
+            return null;
+          };
+          const head = locate(from);
+          const tail = locate(to);
+          if (!head || !tail) return pool;
+          const narrowed = document.createRange();
+          try {
+            narrowed.setStart(head[0], head[1]);
+            narrowed.setEnd(tail[0], tail[1]);
+          } catch {
+            return pool;
+          }
+          return narrowed.toString().trim() ? narrowed : pool;
         };
         const sel = window.getSelection();
         let range: Range | null = sel && sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
@@ -3488,7 +3581,8 @@ export default defineBackground({
         const expandThin = document.documentElement.dataset.mfSelExpandThin === '1';
         delete document.documentElement.dataset.mfSelExpandThin;
         if (expandThin && range && isThin(text)) {
-          const expanded = expandNeighbors(range);
+          const pool = blockPool(range);
+          const expanded = pool ? windowAround(pool, range) : range;
           const expandedText = expanded.toString();
           if (expandedText.trim()) {
             range = expanded;
@@ -3651,7 +3745,22 @@ export default defineBackground({
             }
           }));
         };
+        /** The block a range edge sits in. Mirrors `edgeBlock` in entrypoints/selection.ts
+         *  (this function is serialized into the page's world and cannot call it). */
+        const edgeBlock = (node: Node): Element | null => {
+          const el = node.nodeType === 1 ? (node as Element) : node.parentElement;
+          return el ? el.closest(BLOCK) : null;
+        };
+        /** Whether a range's edges sit in different blocks. `extractContents` re-parents
+         *  everything the range covers to the range's START, so such a range cannot be
+         *  wrapped without moving the page's own text — the title bar's children land in a
+         *  span inside the article body. Mirrors `rangeWithinOneBlock` in selection.ts. */
+        const spansBlocks = (r: Range): boolean => {
+          const a = edgeBlock(r.startContainer) ?? document.body;
+          return a !== (edgeBlock(r.endContainer) ?? document.body);
+        };
         const wrapOne = (r: Range): string | null => {
+          if (spansBlocks(r)) return null;
           const wrapId = `pw_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
           const wrap = document.createElement('span');
           wrap.className = 'mf-segment-wrap';
@@ -3661,6 +3770,15 @@ export default defineBackground({
             wrap.appendChild(r.extractContents());
             r.insertNode(wrap);
           } catch {
+            // The extraction above already moved the page's own nodes into the wrap:
+            // removing it would delete the user's text from the page. Put them back first.
+            if (wrap.childNodes.length > 0) {
+              try {
+                const back = document.createDocumentFragment();
+                while (wrap.firstChild) back.appendChild(wrap.firstChild);
+                r.insertNode(back);
+              } catch { /* nothing safe left to do with these nodes */ }
+            }
             wrap.remove();
             return null;
           }
@@ -3682,6 +3800,11 @@ export default defineBackground({
             const wrapId = wrapOne(leftovers[i]);
             if (wrapId) wrapIds.unshift(wrapId);
           }
+        } else if (spansBlocks(range)) {
+          // Refused rather than wrapped: the page keeps its layout and the page script
+          // fact-checks the text with its claims listed at the selection. `text` and `rect`
+          // are what make that possible, so this is a fallback and not a failure.
+          return fail('selection spans block boundaries', { text, rect });
         } else {
           const wrapId = wrapOne(range);
           if (wrapId) wrapIds.push(wrapId);
@@ -3873,7 +3996,7 @@ export default defineBackground({
    *  The reply is parked on a world global by the handler's own `sendResponse` and collected
    *  afterwards, because the handler is asynchronous — a start answers only after a round trip
    *  of its own back through this file. */
-  async function askSelection(tabId: number, kind: 'start' | 'probe' | 'popupStart'): Promise<{ delivered: boolean; reply: any }> {
+  async function askSelection(tabId: number, kind: 'start' | 'probe' | 'popupStart' | 'notifyNotSignedIn'): Promise<{ delivered: boolean; reply: any }> {
     // The request is staged in the world rather than passed in, for the reason above: the
     // literals below are the whole of what distinguishes a start from a probe. `func` is
     // serialized, so these cannot close over `kind` — each branch is a self-contained
@@ -3887,6 +4010,8 @@ export default defineBackground({
       ? () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_START', keepProbe: false, expandThin: true }; }
       : kind === 'popupStart'
       ? () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_START' }; }
+      : kind === 'notifyNotSignedIn'
+      ? () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_NOTIFICATION', data: { kind: 'error', code: 3 } }; }
       : () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_PROBE' }; };
     try {
       await execTopFrame(tabId, { func: stage });
@@ -3928,6 +4053,21 @@ export default defineBackground({
     } catch (err: any) {
       console.log(`[background] selection ${kind} could not be handed over:`, err?.message ?? err);
       return { delivered: false, reply: null };
+    }
+  }
+
+  /** Display the signed-out error notification on the given tab immediately.
+   *  Broadcasts to any live ports (e.g. X.com) and injects the selection script
+   *  to deliver the notification on arbitrary web pages without running preclassification. */
+  async function notifyTabSignedOut(tabId: number): Promise<void> {
+    notifyError(ERROR_CODES.NOT_SIGNED_IN);
+    try {
+      const { injected } = await injectSelectionScript(tabId);
+      if (injected) {
+        await askSelection(tabId, 'notifyNotSignedIn');
+      }
+    } catch (err) {
+      console.log('[background] notifyTabSignedOut failed to reach tab:', err);
     }
   }
 
@@ -3986,6 +4126,11 @@ export default defineBackground({
         console.log('[background] no tab to run the selection script in');
         return;
       }
+      if (!(await isSignedIn())) {
+        console.log('[background] context menu clicked while signed out; showing error');
+        await notifyTabSignedOut(tabId);
+        return;
+      }
       const { injected, world } = await injectSelectionScript(tabId);
       if (!injected) return;
       // keepProbe: false — this path never ran a probe, so if the page no longer holds a
@@ -4038,11 +4183,24 @@ export default defineBackground({
     selectionId: string, claim: Claim, hash: string, locale: string
   ): Promise<Claim> {
     try {
-      // ANNOTATION_TIMEOUT_MS, not the preclassify window: this is the subscription Flow A's
-      // annotation persist needs to still be open once research runs, and
-      // `ensureAnnotationSubscription` would only reopen the same one.
+      // Preclassification complete deletes internal.broadcasts in Postgres, so any
+      // pre-existing client handle is now detached from routing. Close it so
+      // ensureTweetSubscription creates a fresh routing row via public.subscribe.
+      const existing = tweetSubs.get(selectionId);
+      if (existing && !existing.isClosed()) existing.close();
+      tweetSubs.delete(selectionId);
+      annotationRoutingReady.delete(selectionId);
       await ensureTweetSubscription(selectionId, hash, locale, ANNOTATION_TIMEOUT_MS);
+      annotationRoutingReady.add(selectionId);
       await awaitClaimDbRow(selectionId, claim.text, SELECTION_DB_ROW_TIMEOUT_MS);
+      // Fallback: if broadcast didn't land dbClaimId, pull directly from DB
+      const currentClaims = classificationCache.get(selectionId)?.classification.claims;
+      const currentClaim = currentClaims?.find(c => c.text === claim.text);
+      if (!currentClaim?.dbClaimId) {
+        const candidateText = currentClaim?.rewritten ?? currentClaim?.dbClaimText ?? claim.rewritten ?? claim.dbClaimText ?? claim.text;
+        const pulled = await getFullClaim({ text: candidateText, locale });
+        if (pulled) mergeClaimPayload(selectionId, pulled, locale);
+      }
     } catch (err: any) {
       console.error('[background] claimAfterRowLands error:', err);
     }
@@ -4091,6 +4249,15 @@ export default defineBackground({
       const strip = (s: string) => s.replace(/\s+/g, '');
       const wanted = strip(browserSelectionText);
       const got = strip(req.selected);
+      // A right-click on a word leaves the browser holding just that word (Chrome), and
+      // the context-menu path deliberately grows it to the block it sits in — so the
+      // word lands in the MIDDLE of the read, not at its start. Containment is the
+      // success criterion there; for a real multi-word selection it is not, and a read
+      // that merely contains it is still the mismatch this verdict exists to catch.
+      const clickedWord = (() => {
+        const t = browserSelectionText!.trim();
+        return t.length === 0 || t.length === 1 || !/\s/.test(t);
+      })();
       // The lengths reported are the raw ones — what a person reading the log will count in
       // the page — while the comparison itself is on the stripped forms.
       const verdict = wanted === got
@@ -4099,7 +4266,9 @@ export default defineBackground({
           ? `READ IS WIDER by ${req.selected.length - browserSelectionText.length} char(s) — the browser selected a prefix of what was fact-checked`
           : wanted.startsWith(got)
             ? `read is narrower by ${browserSelectionText.length - req.selected.length} char(s)`
-            : 'DIFFERENT CONTENT — the read is not the browser selection at all';
+            : clickedWord && got.includes(wanted)
+              ? `contains the right-clicked word — the read is the block it sits in (${browserSelectionText.length} char(s) → ${req.selected.length})`
+              : 'DIFFERENT CONTENT — the read is not the browser selection at all';
       console.log(
         '[background] selection cross-check | browser:', JSON.stringify(browserSelectionText.slice(0, 400)),
         `(${browserSelectionText.length} chars)`,
@@ -4151,9 +4320,16 @@ export default defineBackground({
     // Outside the try so the `finally` below can always name the batch, even when the run
     // threw before it got as far as hashing.
     const batchId = nextBatchId();
-    void gatedSpend(async () => {
-      try {
-        const hash = await computeTweetHash(tweet);
+    void (async () => {
+      if (!(await isSignedIn())) {
+        console.log('[background] startSelectionPipeline refused: not signed in');
+        notifyError(ERROR_CODES.NOT_SIGNED_IN);
+        clearInterval(keepAlive);
+        return;
+      }
+      void gatedSpend(async () => {
+        try {
+          const hash = await computeTweetHash(tweet);
 
         // Spinning state first, exactly like the tweet flow: the content script keeps its
         // "Disinfacting" indicator until the first claims land.
@@ -4266,6 +4442,7 @@ export default defineBackground({
         }
       }
     });
+    })();
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -4307,6 +4484,12 @@ export default defineBackground({
     if (message?.type === 'MF_SELECTION_START_TAB' && typeof message.tabId === 'number') {
       (async () => {
         const tabId = message.tabId;
+        if (!(await isSignedIn())) {
+          console.log('[background] selection start refused: not signed in');
+          await notifyTabSignedOut(tabId);
+          sendResponse({ ok: false, reason: 'not-signed-in' });
+          return;
+        }
         let world = await readIsolatedWorld(tabId);
         if (world?.responder !== 'function') {
           const inj = await injectSelectionScript(tabId);
@@ -4323,6 +4506,13 @@ export default defineBackground({
           '| responder:', world?.responder ?? 'probe failed'
         );
         sendResponse(reply && typeof reply === 'object' ? reply : { ok: false, reason: delivered ? 'no-reply' : 'not-delivered' });
+      })();
+      return true; // async sendResponse
+    }
+    if (message?.type === 'MF_NOTIFY_SIGNED_OUT' && typeof message.tabId === 'number') {
+      (async () => {
+        await notifyTabSignedOut(message.tabId);
+        sendResponse({ ok: true });
       })();
       return true; // async sendResponse
     }
@@ -4635,14 +4825,21 @@ export default defineBackground({
       if (message.type === "MF_SELECTION_BEGIN") {
         const data = message.data;
         if (!data || typeof data.id !== "string" || typeof data.selected !== "string" || !data.selected) return;
-        startSelectionPipeline({
-          id: data.id,
-          before: typeof data.before === "string" ? data.before : "",
-          selected: data.selected,
-          after: typeof data.after === "string" ? data.after : "",
-          locale: typeof data.locale === "string" && data.locale ? data.locale : getUiLocale(),
-          force: data.force === true,
-        });
+        void (async () => {
+          if (!(await isSignedIn())) {
+            console.log('[background] MF_SELECTION_BEGIN refused: not signed in');
+            notifyError(ERROR_CODES.NOT_SIGNED_IN);
+            return;
+          }
+          startSelectionPipeline({
+            id: data.id,
+            before: typeof data.before === "string" ? data.before : "",
+            selected: data.selected,
+            after: typeof data.after === "string" ? data.after : "",
+            locale: typeof data.locale === "string" && data.locale ? data.locale : getUiLocale(),
+            force: data.force === true,
+          });
+        })();
         return;
       }
 
@@ -4827,28 +5024,73 @@ export default defineBackground({
       // function except as hash input — only locators are sent, and the worker plus
       // get_annotation_context re-derive everything trust-sensitive server-side.
       if (message.type === "ANNOTATE_CLAIM") {
-        const { classificationId, claimText, locale: msgLocale } = message.data;
-        const hit = classificationCache.get(classificationId);
-        if (!hit) {
-          console.log(`[background] ANNOTATE_CLAIM: no cached classification for ${classificationId}`);
-          return;
-        }
+        void (async () => {
+          const { classificationId, claimText, locale: msgLocale, selection: msgSelection } = message.data;
+          let hit = classificationCache.get(classificationId);
+          if (!hit) {
+            await restoreSelectionPipeline();
+            hit = classificationCache.get(classificationId);
+          }
+          if (!hit) {
+            console.log(`[background] ANNOTATE_CLAIM: no cached classification for ${classificationId}`);
+            for (const port of activePorts) {
+              try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId, claimText } }); } catch {}
+            }
+            return;
+          }
         const classification = hit.classification;
         const anyBatchId = hit.batchIds.values().next().value ?? '';
         const locale = msgLocale ?? getUiLocale();
 
-        const claim = classification.claims?.find(c => c.text === claimText)
+        if (isSelectionId(classificationId) && msgSelection && !tweetCache.has(classificationId)) {
+          const tweet = {
+            id: classificationId,
+            text: msgSelection.selected,
+            fullText: msgSelection.selected,
+            username: '',
+            usertype: 'None',
+            time: new Date().toISOString(),
+            contextBefore: msgSelection.before,
+            contextAfter: msgSelection.after,
+            sourceLanguage: locale,
+          } as unknown as MainTweet;
+          tweetCache.set(classificationId, tweet);
+          persistSelectionPipeline();
+        }
+
+        let claim = classification.claims?.find(c => c.text === claimText)
           ?? classification.quoting?.claims?.find(c => c.text === claimText);
-        if (!claim?.dbClaimId) {
-          console.log(`[background] ANNOTATE_CLAIM: no DB id for "${claimText.slice(0, 40)}...", skipping`);
+        if (!claim) {
+          console.log(`[background] ANNOTATE_CLAIM: claim not found for "${claimText.slice(0, 40)}..."`);
+          for (const port of activePorts) {
+            try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId, claimText } }); } catch {}
+          }
           return;
         }
+
+        // If dbClaimId is missing, resolve it from DB
+        if (!claim.dbClaimId) {
+          const candidateText = claim.rewritten ?? claim.dbClaimText ?? claim.text;
+          const pulled = await getFullClaim({ text: candidateText, locale });
+          if (pulled?.id) {
+            claim.dbClaimId = pulled.id;
+            mergeClaimPayload(classificationId, pulled, locale);
+            const refetched = classificationCache.get(classificationId)?.classification;
+            claim = refetched?.claims?.find(c => c.text === claimText)
+              ?? refetched?.quoting?.claims?.find(c => c.text === claimText)
+              ?? claim;
+          }
+        }
+
         // Never annotate a stale or unclassified claim: a stale verdict must be
         // re-researched first, and a placeholder has no reasoning to annotate yet.
         // (The worker re-checks this server-side; this is just the cheap client gate
         // so an obviously pointless tap doesn't spend the hold.)
         if (claim.reclassifyOnHold || claim.note == null) {
           console.log(`[background] ANNOTATE_CLAIM: claim not classified (onHold=${!!claim.reclassifyOnHold}, note=${claim.note != null}), skipping`);
+          for (const port of activePorts) {
+            try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId, claimText } }); } catch {}
+          }
           return;
         }
 
@@ -4875,8 +5117,15 @@ export default defineBackground({
               ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
             if (!loc) {
               console.log(`[background] ANNOTATE_CLAIM: could not resolve locators for "${claimText.slice(0, 40)}...", skipping`);
+              for (const port of activePorts) {
+                try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId, claimText } }); } catch {}
+              }
               return;
             }
+
+            // Ensure tweet subscription is open so worker's DB persist broadcasts reach the client
+            await ensureAnnotationSubscription(classificationId, claimText, locale);
+
             // Live-paint each streamed pair under this revision's FULL-locale key
             // (same `${textLocale}:${hash}` shape the worker persists — the DB
             // broadcast strips to bare prefixes at read time, and painting the
@@ -4920,16 +5169,25 @@ export default defineBackground({
             // revision — the worker returns 200-empty with X-Annotate-Skipped). Either
             // way the badge stays: a fake "clean" {} would be a lie either way, and a
             // real {} arrives through finalAcc (persisted + live-painted above).
-            if (finalAcc === null) return;
+            if (finalAcc === null) {
+              for (const port of activePorts) {
+                try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId, claimText } }); } catch {}
+              }
+              return;
+            }
             // The authoritative broadcast (annotations trigger) folds the persisted
             // dict in; paint once more in case any line arrived after the last onPartial.
             paintLive(finalAcc);
           } catch (err: any) {
             console.error("[background] ANNOTATE_CLAIM error:", err);
+            for (const port of activePorts) {
+              try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId, claimText } }); } catch {}
+            }
           } finally {
             ongoingClaimRefreshes.delete(annotKey);
           }
         });
+        })();
         return;
       }
 

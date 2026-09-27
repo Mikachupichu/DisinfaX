@@ -140,6 +140,24 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // When opened while signed out with text selected in the active tab, immediately
+  // surface the "not signed in" error notification on the page and in the popup.
+  useEffect(() => {
+    if (user || loading) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (!tab?.id || cancelled) return;
+        const res = await browser.runtime.sendMessage({ type: 'MF_SELECTION_PREPARE', tabId: tab.id });
+        if (cancelled || !res?.hasSelection) return;
+        setAuthError(t('errNotSignedIn'));
+        await browser.runtime.sendMessage({ type: 'MF_NOTIFY_SIGNED_OUT', tabId: tab.id });
+      } catch { /* best effort */ }
+    })();
+    return () => { cancelled = true; };
+  }, [user, loading, t]);
+
   /** Record the provider that just worked, so it can be badged next time. */
   const rememberProvider = (provider: OAuthProvider) => {
     // Swallowed deliberately: this runs AFTER the session is established, inside the

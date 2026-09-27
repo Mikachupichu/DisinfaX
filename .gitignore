@@ -14,6 +14,14 @@ stats-*.json
 .wxt
 web-ext.config.ts
 
+# Test browser profiles — Chrome, Brave and Firefox user-data directories.
+# Three reasons these must never be tracked, not just tidiness: they are ~1.7 GB
+# in aggregate; they hold the live session cookies of whatever account the test
+# run signed in as; and because the browser writes to them continuously, a file
+# can disappear between git's directory scan and its stat, aborting `git add .`
+# with `fatal: unable to stat '...': No such file or directory`.
+.test-*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -21,6 +21,7 @@ import {
   factCheckColor,
   getInlineStyles,
   refreshInPopoverOnboarding,
+  restoreHoverAfterClaimRebuild,
   setAnnotateSeeded,
   settleRebuiltSpanAnnotations,
   setupArticleHandlers as setupClaimHandlers,
@@ -234,6 +235,31 @@ export default defineUnlistedScript(() => {
     .mf-sel-hud { background: #ffffff; color: #0f1419; box-shadow: 0 2px 10px rgba(0,0,0,0.18); }
 }
 .mf-sel-hud .mf-spinner { width: 13px; height: 13px; margin-right: 0; }
+.mf-segment-wrap[data-mf-sel-loading="true"] {
+    background-color: rgba(29, 155, 240, 0.14) !important;
+    padding: 1px 5px 1px 3px !important;
+    -webkit-box-decoration-break: slice !important;
+    box-decoration-break: slice !important;
+    transition: background-color 0.2s ease !important;
+}
+.mf-sel-spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(29, 155, 240, 0.28);
+    border-top-color: #1d9bf0;
+    border-radius: 50%;
+    animation: mf-spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-left: 6px;
+    margin-right: 2px;
+    position: relative;
+    top: -0.08em;
+}
+[dir="rtl"] .mf-sel-spinner {
+    margin-left: 2px;
+    margin-right: 6px;
+}
 .mf-sel-hud-list {
     position: fixed;
     flex-direction: column;
@@ -249,6 +275,7 @@ export default defineUnlistedScript(() => {
 `;
 
   function injectStyles(): void {
+    if (document.querySelector('style[data-mf-selection="true"]')) return;
     const style = document.createElement('style');
     style.dataset.mfSelection = 'true';
     style.textContent = getInlineStyles() + SELECTION_STYLES;
@@ -257,11 +284,9 @@ export default defineUnlistedScript(() => {
 
   // ── Capture ────────────────────────────────────────────────────────────────
 
-  /** How many neighbouring blocks a context window may reach into before it gives up. The
-   *  selection's own block is always the first step; this bounds the walk so a page with
-   *  thousands of siblings cannot turn a selection into a full-document scan, and so the
-   *  context stays "nearby text" rather than the whole article. */
-  const MAX_CONTEXT_BLOCKS = 8;
+  /** Context extraction is bounded solely by word limits (e.g. MAX_BEFORE_WORDS = 250).
+   *  Block traversal continues through preceding/following prose blocks until the word limit is reached
+   *  or the root boundary has no further prose blocks. */
 
   /** Story body the sibling walk is allowed to leave the enclosing block for. Innermost
    *  match: `articleBody` is the body itself, `article` is the story, `main` is the
@@ -269,7 +294,7 @@ export default defineUnlistedScript(() => {
    *  never leaves this root does not move when CBC swaps them. No match → same-block
    *  only (see contextBefore / contextAfter): today's body-wide sibling walk was what
    *  pulled those ads into `before`/`after`. */
-  const ARTICLE_ROOT_SELECTOR = '[itemprop="articleBody"], article, main';
+  const ARTICLE_ROOT_SELECTOR = '[itemprop="articleBody"], article, main, [role="main"], #content, #main-content, #hnmain, .comment-tree, .post, .article, .story';
 
   /** Elements whose text is code or chrome, never prose. A sibling `<div>` holding an
    *  inline `<script>` (or a `<style>` block) would otherwise contribute its source to the
@@ -278,41 +303,103 @@ export default defineUnlistedScript(() => {
 
   /** Landmarks that are next to the story, not in it. Skipped as siblings and as
    *  subtrees so a recirc `<aside>` inside `article` cannot become `contextAfter`. */
-  const CHROME = /^(ASIDE|NAV|FOOTER|HEADER|MENU)$/;
-  const CHROME_ROLES = new Set(['complementary', 'navigation', 'banner', 'contentinfo', 'search', 'menu']);
+  const CHROME = /^(ASIDE|NAV|FOOTER|HEADER|MENU|BUTTON|FORM|SELECT|TEXTAREA|TIME)$/;
+  const CHROME_ROLES = new Set(['complementary', 'navigation', 'banner', 'contentinfo', 'search', 'menu', 'button', 'toolbar']);
+  const AD_PATTERN = /\b(advertisement|ad-container|ad-slot|ad-wrapper|sponsor|sponsored)\b|^(google_ads|dfp-)/i;
 
   function articleRoot(el: Element | null | undefined): Element | null {
-    return el?.closest(ARTICLE_ROOT_SELECTOR) ?? null;
+    if (!el) return null;
+    const tweet = el.closest('article[data-testid="tweet"]');
+    if (tweet) {
+      return (
+        tweet.closest(
+          '[aria-label*="Timeline"], [aria-label*="Conversation"], [data-testid="primaryColumn"], section, main',
+        ) ?? tweet.parentElement
+      );
+    }
+    return el.closest(ARTICLE_ROOT_SELECTOR) ?? null;
   }
 
   function isChrome(el: Element): boolean {
     if (CHROME.test(el.tagName)) return true;
-    if (el.hasAttribute('hidden')) return true;
+    if (el.closest('nav, header, footer, aside, [role="navigation"], [role="banner"], [role="contentinfo"]')) return true;
+    if (el.hasAttribute('hidden') || el.hasAttribute('inert')) return true;
     if (el.getAttribute('aria-hidden') === 'true') return true;
     if (isPassageInvisible(el)) return true;
     const role = (el.getAttribute('role') ?? '').toLowerCase();
-    return CHROME_ROLES.has(role);
+    if (CHROME_ROLES.has(role)) return true;
+    const cls = (el.className || '').toString();
+    const id = el.id || '';
+    if (AD_PATTERN.test(cls) || AD_PATTERN.test(id)) return true;
+    return false;
   }
 
-  /** The preceding sibling worth reading, or null at the edge of the article (or the
-   *  container, when there is no article). Never climbs to a parent: a paragraph's
-   *  neighbours are its siblings, and ascending would pull in headers, nav, and
-   *  sidebars that have nothing to do with the claim. `root` is the article the
-   *  selection lives in — a sibling outside it is an ad/recirc slot, not prose. */
-  function previousContextBlock(node: Element, root: Element | null): Element | null {
-    let prev = node.previousElementSibling;
-    while (prev && (NON_PROSE.test(prev.tagName) || isChrome(prev))) prev = prev.previousElementSibling;
-    if (!prev) return null;
-    if (root && !root.contains(prev)) return null;
-    return prev;
+  const PROSE_SELECTOR = 'p, blockquote, li, dd, dt, pre, h1, h2, h3, h4, h5, h6, [class*="ProseMirror"], [data-testid="tweetText"]';
+
+  function isLeafProse(el: Element): boolean {
+    if (!el || isChrome(el) || NON_PROSE.test(el.tagName)) return false;
+    if (!el.textContent?.trim()) return false;
+    const children = el.querySelectorAll(PROSE_SELECTOR);
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      if (!isChrome(child) && !NON_PROSE.test(child.tagName) && child.textContent?.trim()) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  function nextContextBlock(node: Element, root: Element | null): Element | null {
-    let next = node.nextElementSibling;
-    while (next && (NON_PROSE.test(next.tagName) || isChrome(next))) next = next.nextElementSibling;
-    if (!next) return null;
-    if (root && !root.contains(next)) return null;
-    return next;
+  /** The preceding prose block in document order within `root`, reaching across
+   *  post containers (threads/feeds like Substack or GitHub) and parent sections,
+   *  while strictly skipping UI chrome, buttons, timestamps, and ads. */
+  function findPreviousProseBlock(current: Element, root: Element | null): Element | null {
+    const boundary = root ?? current.ownerDocument?.body ?? document.body;
+    let curr: Element | null = current;
+    while (curr && curr !== boundary && curr !== document.body) {
+      let prev: Element | null = curr.previousElementSibling;
+      while (prev) {
+        if (!isChrome(prev) && !NON_PROSE.test(prev.tagName)) {
+          const candidates = prev.querySelectorAll(PROSE_SELECTOR);
+          for (let i = candidates.length - 1; i >= 0; i--) {
+            const cand = candidates[i];
+            if (isLeafProse(cand) && !cand.contains(current)) {
+              return cand;
+            }
+          }
+          if (prev.matches(PROSE_SELECTOR) && isLeafProse(prev)) {
+            return prev;
+          }
+        }
+        prev = prev.previousElementSibling;
+      }
+      curr = curr.parentElement;
+    }
+    return null;
+  }
+
+  function findNextProseBlock(current: Element, root: Element | null): Element | null {
+    const boundary = root ?? current.ownerDocument?.body ?? document.body;
+    let curr: Element | null = current;
+    while (curr && curr !== boundary && curr !== document.body) {
+      let next: Element | null = curr.nextElementSibling;
+      while (next) {
+        if (!isChrome(next) && !NON_PROSE.test(next.tagName)) {
+          if (next.matches(PROSE_SELECTOR) && isLeafProse(next)) {
+            return next;
+          }
+          const candidates = next.querySelectorAll(PROSE_SELECTOR);
+          for (let i = 0; i < candidates.length; i++) {
+            const cand = candidates[i];
+            if (isLeafProse(cand) && !cand.contains(current)) {
+              return cand;
+            }
+          }
+        }
+        next = next.nextElementSibling;
+      }
+      curr = curr.parentElement;
+    }
+    return null;
   }
 
   function toWords(text: string): string[] {
@@ -409,37 +496,39 @@ export default defineUnlistedScript(() => {
   }
 
   /** The `max` words immediately preceding the selection, reaching back through the
-   *  enclosing block and then — only inside an article root — its preceding siblings.
-   *  No article / articleBody / main: stay in this block. The sibling walk is what
-   *  used to swallow CBC's rotating ads into the hash. */
+   *  enclosing block and then across preceding prose blocks (paragraphs, posts in a
+   *  thread, quotes) within the landmark root. Chrome, buttons, action rows, and
+   *  ads are strictly skipped. */
   function contextBefore(edge: Edge, block: Element, max: number, root: Element | null): string {
     const words: string[] = [];
     let node: Element | null = block;
     let at: Edge | null = edge;
-    const hopsCap = root ? MAX_CONTEXT_BLOCKS : 1;
-    for (let hops = 0; node && hops < hopsCap && words.length < max; hops++) {
-      // Only the tail can survive the `max` cut, so a long block never materializes more
-      // text than the cap needs.
+    const visited = new Set<Element>();
+    while (node && words.length < max) {
+      visited.add(node);
       const chunk = toWords(contextText(node, 'before', at)).slice(-max);
       if (chunk.length) words.unshift(...chunk);
       at = null; // whole blocks from here out
-      node = root ? previousContextBlock(node, root) : null;
+      node = findPreviousProseBlock(node, root);
+      if (node && visited.has(node)) break;
     }
     return words.slice(-max).join(' ');
   }
 
   /** The `max` words immediately following the selection, reaching forward through the
-   *  enclosing block and then — only inside an article root — its following siblings. */
+   *  enclosing block and across following prose blocks within the landmark root. */
   function contextAfter(edge: Edge, block: Element, max: number, root: Element | null): string {
     const words: string[] = [];
     let node: Element | null = block;
     let at: Edge | null = edge;
-    const hopsCap = root ? MAX_CONTEXT_BLOCKS : 1;
-    for (let hops = 0; node && hops < hopsCap && words.length < max; hops++) {
+    const visited = new Set<Element>();
+    while (node && words.length < max) {
+      visited.add(node);
       const chunk = toWords(contextText(node, 'after', at)).slice(0, max);
       if (chunk.length) words.push(...chunk);
       at = null;
-      node = root ? nextContextBlock(node, root) : null;
+      node = findNextProseBlock(node, root);
+      if (node && visited.has(node)) break;
     }
     return words.slice(0, max).join(' ');
   }
@@ -525,11 +614,38 @@ export default defineUnlistedScript(() => {
   /** The element last right-clicked, and Firefox's `menus.getTargetElement` id for
    *  this click. A lazy Disinfact (no real selection) expands from that node. */
   let lastContextTarget: Element | null = null;
+  let lastContextPoint: { x: number; y: number } | null = null;
   let pendingTargetElementId: number | null = null;
 
   document.addEventListener('contextmenu', (e) => {
     lastContextTarget = e.target instanceof Element ? e.target : null;
+    lastContextPoint = { x: e.clientX, y: e.clientY };
   }, true);
+
+  /** The caret under the last right-click, without widening anything. Chrome, Safari and
+   *  Edge resolve viewport coordinates with `caretRangeFromPoint`; Firefox spells it
+   *  `caretPositionFromPoint`. Null when the browser has no point to give — a click on
+   *  chrome, or a layout that no longer exists. */
+  function caretRangeAtClick(): Range | null {
+    const pt = lastContextPoint;
+    if (!pt) return null;
+    const doc = document as any;
+    try {
+      if (typeof doc.caretRangeFromPoint === 'function') {
+        return (doc.caretRangeFromPoint(pt.x, pt.y) as Range | null) ?? null;
+      }
+      if (typeof doc.caretPositionFromPoint === 'function') {
+        const pos = doc.caretPositionFromPoint(pt.x, pt.y);
+        const node = pos?.offsetNode as Node | undefined;
+        if (!node) return null;
+        const caret = document.createRange();
+        caret.setStart(node, Math.min(pos.offset ?? 0, node.nodeType === Node.TEXT_NODE ? (node as Text).length : node.childNodes.length));
+        caret.collapse(true);
+        return caret;
+      }
+    } catch { /* no layout point for this click */ }
+    return null;
+  }
 
   function resolveContextTarget(): Element | null {
     if (typeof pendingTargetElementId === 'number') {
@@ -549,37 +665,156 @@ export default defineUnlistedScript(() => {
     return t.length === 0 || t.length === 1 || !/\s/.test(t);
   }
 
-  function expandRangeToNeighborLines(range: Range): Range {
-    const startEl =
-      range.startContainer.nodeType === Node.ELEMENT_NODE
-        ? (range.startContainer as Element)
-        : range.startContainer.parentElement;
-    const block = startEl?.closest(BLOCK_SELECTOR);
-    if (!block || block === document.body || block === document.documentElement) return range;
-    const root = articleRoot(block);
-    const from = previousContextBlock(block, root) ?? block;
-    const to = nextContextBlock(block, root) ?? block;
-    const expanded = document.createRange();
-    try {
-      expanded.setStartBefore(from);
-      expanded.setEndAfter(to);
-    } catch {
-      return range;
-    }
-    return expanded;
+  /** Words either side of a right-click that carried no deliberate selection. A word
+   *  clicked is a POINTER at the passage it sits in: the read is its neighbourhood —
+   *  50 words — never the article around it. */
+  const THIN_WINDOW_WORDS = 25;
+
+  /** The nearest block a node sits in, or null for a node in no block at all. */
+  function blockOf(node: Node): Element | null {
+    const el =
+      node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
+    const block = el?.closest(BLOCK_SELECTOR) ?? null;
+    if (!block || block === document.body || block === document.documentElement) return null;
+    return block;
   }
 
-  function rangeFromTarget(el: Element): Range | null {
-    const block = el.closest(BLOCK_SELECTOR);
-    if (!block || block === document.body || block === document.documentElement) return null;
-    const seed = document.createRange();
+  /** An element-bounded range over one block: the pool a thin read's window is drawn
+   *  from, and the reason the pool is the block alone and NOT its neighbours — a window
+   *  that runs past the block's edge puts the wrap's boundary mid-paragraph in the next
+   *  one, and a wrap boundary inside a block splits that block in two when the read is
+   *  re-inserted as a span. The two edges are the elements, not their text nodes, so an
+   *  extracted pool is a whole block moved rather than a partial one cloned. */
+  function blockRange(block: Element): Range | null {
+    const out = document.createRange();
     try {
-      seed.selectNodeContents(block);
-      seed.collapse(true);
+      out.setStartBefore(block);
+      out.setEndAfter(block);
     } catch {
       return null;
     }
-    return expandRangeToNeighborLines(seed);
+    return out;
+  }
+
+  const WHITESPACE = /\s/;
+
+  /** Offsets in `text` of a ±`limit`-word window around the anchor span [a0, a1). A word
+   *  is a run of non-whitespace; the window opens on the first character of the limit-th
+   *  word before the anchor and closes on the last character of the limit-th after it, so
+   *  neither edge cuts a word in half. */
+  function windowBounds(text: string, a0: number, a1: number, limit: number): [number, number] {
+    let start = a0, back = 0, i = a0;
+    while (i > 0 && back < limit) {
+      while (i > 0 && WHITESPACE.test(text[i - 1])) i--;
+      if (i === 0) break;
+      while (i > 0 && !WHITESPACE.test(text[i - 1])) i--;
+      back++;
+      start = i;
+    }
+    let end = a1, forward = 0, j = a1;
+    while (j < text.length && forward < limit) {
+      while (j < text.length && WHITESPACE.test(text[j])) j++;
+      if (j >= text.length) break;
+      while (j < text.length && !WHITESPACE.test(text[j])) j++;
+      forward++;
+      end = j;
+    }
+    return [start, end];
+  }
+
+  /** The ±THIN_WINDOW_WORDS window around `anchor`, read out of `pool`. Falls back to
+   *  `pool` when the anchor cannot be located in it: a wider read is the older
+   *  behaviour, and dropping the click altogether would be worse. */
+  function windowAround(pool: Range, anchor: Range): Range {
+    // Word offsets are counted over the pool's text as one stream, so a pool that begins
+    // or ends mid-node would misnumber them. Callers build element-bounded pools.
+    if (pool.startContainer.nodeType !== Node.ELEMENT_NODE
+      || pool.endContainer.nodeType !== Node.ELEMENT_NODE) return pool;
+    const common = pool.commonAncestorContainer;
+    const host = common.nodeType === Node.ELEMENT_NODE ? (common as Element) : common.parentElement;
+    if (!host) return pool;
+    const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+    const nodes: Text[] = [];
+    const starts: number[] = [];
+    let text = '';
+    for (let n = walker.nextNode() as Text | null; n; n = walker.nextNode() as Text | null) {
+      if (!pool.intersectsNode(n)) continue;
+      starts.push(text.length);
+      nodes.push(n);
+      text += n.data;
+    }
+    if (nodes.length === 0) return pool;
+    // The anchor's own character offset in that stream. An element container means a child
+    // boundary, which resolves to the first text node at or inside that child.
+    const offsetOf = (container: Node, offset: number): number | null => {
+      if (container.nodeType === Node.TEXT_NODE) {
+        const k = nodes.indexOf(container as Text);
+        return k < 0 ? null : starts[k] + offset;
+      }
+      const child = (container as Element).childNodes[offset] ?? null;
+      for (let k = 0; k < nodes.length; k++) {
+        const n = nodes[k];
+        const inside = child ? n === child || child.contains(n) : n === container || container.contains(n);
+        if (inside) return starts[k];
+      }
+      return null;
+    };
+    const a0 = offsetOf(anchor.startContainer, anchor.startOffset);
+    const a1 = offsetOf(anchor.endContainer, anchor.endOffset);
+    if (a0 === null || a1 === null || a1 < a0) return pool;
+    const [from, to] = windowBounds(text, a0, a1, THIN_WINDOW_WORDS);
+    const locate = (global: number): [Text, number] | null => {
+      for (let k = nodes.length - 1; k >= 0; k--) {
+        if (global >= starts[k]) return [nodes[k], Math.min(global - starts[k], nodes[k].data.length)];
+      }
+      return null;
+    };
+    const fromRef = locate(from);
+    const toRef = locate(to);
+    if (!fromRef || !toRef) return pool;
+    const narrowed = document.createRange();
+    try {
+      narrowed.setStart(fromRef[0], fromRef[1]);
+      narrowed.setEnd(toRef[0], toRef[1]);
+    } catch {
+      return pool;
+    }
+    return narrowed.toString().trim() ? narrowed : pool;
+  }
+
+  /** The ±window read for a thin selection or a bare right-click: the window around
+   *  `anchor`, drawn from the block the anchor sits in. Never worse than the anchor
+   *  itself, so a window the pool cannot resolve still reads what the browser had. */
+  function thinWindow(anchor: Range): Range {
+    const block = blockOf(anchor.startContainer);
+    const pool = block ? blockRange(block) : null;
+    if (!pool) return anchor;
+    const win = windowAround(pool, anchor);
+    return win.toString().trim() ? win : anchor;
+  }
+
+  /** What a right-click without a deliberate selection reads: the ±window around the
+   *  point clicked, or around the block's first character when the browser cannot
+   *  resolve a caret for the click. */
+  function rangeFromTarget(el: Element): Range | null {
+    const block = blockOf(el);
+    if (!block) return null;
+    const caret = caretRangeAtClick();
+    let anchor: Range | null = null;
+    if (caret && caret.startContainer && block.contains(caret.startContainer)) {
+      anchor = caret;
+    } else {
+      const seed = document.createRange();
+      try {
+        seed.selectNodeContents(block);
+        seed.collapse(true);
+      } catch {
+        return null;
+      }
+      anchor = seed;
+    }
+    const narrowed = thinWindow(anchor);
+    return narrowed.toString().trim() ? narrowed : null;
   }
 
   /** True for a selection inside a form field, where there is no text node to wrap and
@@ -601,10 +836,11 @@ export default defineUnlistedScript(() => {
 
   function rangeIntersectsElement(range: Range, el: Element): boolean {
     try {
+      if (typeof range.intersectsNode === 'function') return range.intersectsNode(el);
       const nr = document.createRange();
       nr.selectNodeContents(el);
-      return range.compareBoundaryPoints(Range.START_TO_END, nr) < 0
-        && range.compareBoundaryPoints(Range.END_TO_START, nr) > 0;
+      return range.compareBoundaryPoints(Range.START_TO_END, nr) > 0
+        && range.compareBoundaryPoints(Range.END_TO_START, nr) < 0;
     } catch {
       return el.contains(range.startContainer) || el.contains(range.endContainer)
         || range.startContainer === el || range.endContainer === el;
@@ -798,8 +1034,11 @@ export default defineUnlistedScript(() => {
           && !isInEditable(live)
           && live.toString().trim();
       if (usable) {
+        // A word, a character, or a stray leftover selection is not a passage the user
+        // chose — it is a right-click that happened to land in text. Read the window
+        // around it, not the block it sits in.
         range = opts?.expandThin && isThinText(live.toString())
-          ? expandRangeToNeighborLines(live)
+          ? thinWindow(live)
           : live;
       }
     }
@@ -873,11 +1112,51 @@ export default defineUnlistedScript(() => {
     return capture;
   }
 
+  /** The innermost block-level element a range edge sits in. `closest` matches the
+   *  innermost one, which is what keeps a paragraph's edge from resolving to the article
+   *  around it. */
+  function edgeBlock(node: Node): Element | null {
+    const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
+    return el?.closest(BLOCK_SELECTOR) ?? null;
+  }
+
+  /** Whether both of a range's edges sit in the same block.
+   *
+   *  `extractContents` re-parents EVERYTHING the range covers to the range's START, so a
+   *  range that opens in one block and closes in another drags whole subtrees into the
+   *  first one and leaves the rest empty. On a Wikipedia article, selecting from the title
+   *  into the lead moves the title bar's own children — tabs, language list and all — into
+   *  a span inside the article body, and the title row left behind is a blank gap. Inside a
+   *  single block nothing crosses a boundary, so the wrap is layout-neutral there and only
+   *  there. Cross-block captures stay unanchored: the claims list instead of highlighting,
+   *  which is worse to look at and never moves the page. */
+  function rangeWithinOneBlock(range: Range): boolean {
+    const start = edgeBlock(range.startContainer) ?? document.body;
+    return start === (edgeBlock(range.endContainer) ?? document.body);
+  }
+
+  /** The point just under the selection, for a capture with no wrap to hang an indicator on.
+   *  The isolated world shares the page's DOM, so the live range measures here directly —
+   *  this is the same reading the page world sends back with its own refusals. */
+  function rangeAnchorRect(range: Range): { x: number; y: number } | null {
+    try {
+      const rects = range.getClientRects();
+      const last = rects.length ? rects[rects.length - 1] : range.getBoundingClientRect();
+      return last && (last.width || last.height) ? { x: last.left, y: last.bottom + 8 } : null;
+    } catch {
+      return null;
+    }
+  }
+
   function wrapRange(range: Range, force: boolean): SelectionCapture | null {
     if (!rangeIsReadable(range)) return null;
     if (!range.toString().trim()) return null;
     const { before, after } = contextAround(range);
     const id = `sel_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    if (!rangeWithinOneBlock(range)) {
+      console.log('[selection] selection spans blocks — leaving the page alone and listing claims');
+      return trimCapture({ id, before, after, selected: range.toString(), wrap: null, force, rect: rangeAnchorRect(range) });
+    }
     let wrap: HTMLElement | null = null;
     let selected = range.toString();
     try {
@@ -889,6 +1168,17 @@ export default defineUnlistedScript(() => {
       selected = passageTextContent(wrap) || wrap.textContent || selected;
     } catch (err) {
       console.log('[selection] could not wrap the selection in place:', err);
+      // The extraction above already succeeded, so the wrap is holding the page's own
+      // nodes: removing it would delete the user's text. Put them back at the range and
+      // drop only what is left empty. Removing a wrap that still has children is the one
+      // way this path can lose a passage, and it must not be able to.
+      if (wrap && wrap.childNodes.length > 0) {
+        try {
+          const back = document.createDocumentFragment();
+          while (wrap.firstChild) back.appendChild(wrap.firstChild);
+          range.insertNode(back);
+        } catch { /* nothing safe left to do with these nodes */ }
+      }
       wrap?.remove();
       wrap = null;
     }
@@ -1016,35 +1306,83 @@ export default defineUnlistedScript(() => {
   function removeHud(): void {
     hud?.remove();
     hud = null;
+    document.querySelectorAll<HTMLElement>('[data-mf-sel-loading="true"]').forEach((el) => {
+      delete el.dataset.mfSelLoading;
+      el.style.removeProperty('background-color');
+      el.style.removeProperty('border-radius');
+      el.style.removeProperty('border-top-left-radius');
+      el.style.removeProperty('border-bottom-left-radius');
+      el.style.removeProperty('border-top-right-radius');
+      el.style.removeProperty('border-bottom-right-radius');
+      el.style.removeProperty('padding');
+      el.style.removeProperty('-webkit-box-decoration-break');
+      el.style.removeProperty('box-decoration-break');
+      el.querySelectorAll('.mf-sel-spinner-cap, .mf-sel-spinner, .mf-standalone-spinner').forEach((s) => s.remove());
+    });
   }
 
   function showHud(capture: SelectionCapture): void {
     removeHud();
-    const el = document.createElement('div');
-    el.className = 'mf-sel-hud';
-
-    const spinner = document.createElement('span');
-    spinner.className = 'mf-spinner';
-    const label = document.createElement('span');
-    label.textContent = t('disinfacting', 'Disinfacting');
-
-    el.appendChild(spinner);
-    el.appendChild(label);
-    document.body.appendChild(el);
-    hud = el;
-
-    // Anchored to the wrap when one exists, so it appears exactly where the user is
-    // reading; otherwise on the selection the page's world measured; otherwise centred,
-    // since no anchor survived.
     if (capture.wrap?.isConnected) {
-      const rect = capture.wrap.getBoundingClientRect();
-      el.style.top = `${window.scrollY + Math.max(8, rect.top - 34)}px`;
-      el.style.left = `${window.scrollX + Math.min(Math.max(8, rect.left), Math.max(8, window.innerWidth - 220))}px`;
-    } else if (!placeBelowSelection(el, capture)) {
-      el.style.position = 'fixed';
-      el.style.top = '12px';
-      el.style.left = '50%';
-      el.style.transform = 'translateX(-50%)';
+      capture.wrap.dataset.mfSelLoading = 'true';
+      capture.wrap.style.setProperty('background-color', 'rgba(29, 155, 240, 0.14)', 'important');
+      capture.wrap.style.setProperty('-webkit-box-decoration-break', 'slice', 'important');
+      capture.wrap.style.setProperty('box-decoration-break', 'slice', 'important');
+      capture.wrap.style.setProperty('padding', '1px 5px 1px 3px', 'important');
+      const isRTL = document.dir === 'rtl' || !!capture.wrap.closest?.('[dir="rtl"]');
+      if (isRTL) {
+        capture.wrap.style.setProperty('border-top-right-radius', '3px', 'important');
+        capture.wrap.style.setProperty('border-bottom-right-radius', '3px', 'important');
+        capture.wrap.style.setProperty('border-top-left-radius', '999px', 'important');
+        capture.wrap.style.setProperty('border-bottom-left-radius', '999px', 'important');
+      } else {
+        capture.wrap.style.setProperty('border-top-left-radius', '3px', 'important');
+        capture.wrap.style.setProperty('border-bottom-left-radius', '3px', 'important');
+        capture.wrap.style.setProperty('border-top-right-radius', '999px', 'important');
+        capture.wrap.style.setProperty('border-bottom-right-radius', '999px', 'important');
+      }
+      const spinner = document.createElement('span');
+      spinner.className = 'mf-sel-spinner mf-standalone-spinner';
+      spinner.setAttribute('aria-hidden', 'true');
+      spinner.style.cssText = `
+        display: inline-block !important;
+        width: 12px !important;
+        height: 12px !important;
+        box-sizing: border-box !important;
+        border: 2px solid rgba(29, 155, 240, 0.35) !important;
+        border-top-color: #1d9bf0 !important;
+        border-radius: 50% !important;
+        animation: mf-spin 0.6s linear infinite !important;
+        vertical-align: middle !important;
+        margin-left: ${isRTL ? '2px' : '6px'} !important;
+        margin-right: ${isRTL ? '6px' : '2px'} !important;
+        position: relative !important;
+        top: -0.08em !important;
+      `;
+      if (isRTL) {
+        capture.wrap.prepend(spinner);
+      } else {
+        capture.wrap.appendChild(spinner);
+      }
+      hud = spinner;
+    } else {
+      // Fallback for unanchorable surfaces (e.g. editor/input where range cannot be wrapped)
+      const el = document.createElement('div');
+      el.className = 'mf-sel-hud';
+      const spinner = document.createElement('span');
+      spinner.className = 'mf-spinner';
+      const label = document.createElement('span');
+      label.textContent = t('disinfacting', 'Disinfacting');
+      el.appendChild(spinner);
+      el.appendChild(label);
+      if (!placeBelowSelection(el, capture)) {
+        el.style.position = 'fixed';
+        el.style.top = '16px';
+        el.style.left = '50%';
+        el.style.transform = 'translateX(-50%)';
+      }
+      document.body.appendChild(el);
+      hud = el;
     }
   }
 
@@ -1175,7 +1513,7 @@ export default defineUnlistedScript(() => {
       'display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px;'
         + ' font-size: 12px; font-weight: 600; white-space: nowrap; align-self: flex-start; '
         + (isOnHold
-          ? 'color: rgb(180, 180, 180); background: rgba(128, 128, 128, 0.25);'
+          ? 'color: #ffffff; background: rgba(128, 128, 128, 0.25);'
           : factCheckColor(claim.confidence, claim.veracity))
         + ';'
     );
@@ -1242,10 +1580,10 @@ export default defineUnlistedScript(() => {
    *  Re-wrapped on every update, over the selection's own DOM (`wrapClaimSegmentsInPlace`):
    *  the claim spans are new each time, which keeps a streaming classification correct by
    *  construction, but the passage between them — its elements and their fonts — is the
-   *  page's own and is left alone. The one piece of X state a fresh span would lose is
-   *  carried across: the reveal animation is keyed per claim (`data-mf-anim-key`), so it
-   *  does not replay, and an open popover is re-attached to the new span by
-   *  `updateOpenPopover`. */
+   *  page's own and is left alone. Everything a fresh span would lose is carried across:
+   *  the reveal animation is keyed per claim (`data-mf-anim-key`) so it does not replay, an
+   *  open popover is re-attached to the new span by `updateOpenPopover`, and the hover the
+   *  pointer is holding is handed back by `restoreHoverAfterClaimRebuild`. */
   function renderClaims(capture: SelectionCapture, classification: Classification): void {
     const claims = classification.claims;
     if (!claims || claims.length === 0) return;
@@ -1347,6 +1685,13 @@ export default defineUnlistedScript(() => {
     // and drags them along; this surface has no such pass, so without this the callout keeps
     // the offset it was given when the popover was shorter and rides up over the reasoning.
     refreshInPopoverOnboarding();
+
+    // The re-wrap above is a rebuild, so a hovered claim loses its hover with the span that
+    // carried it and the highlight under a held pointer drops to the resting colour on every
+    // update — one visible flick per broadcast while the reasoning streams. Hand it back.
+    // (The reveal animation is keyed per claim and an open popover is re-attached above;
+    // this is the third piece of state a fresh span would otherwise lose.)
+    restoreHoverAfterClaimRebuild(wrap!);
   }
 
   // ── Background channel ─────────────────────────────────────────────────────
@@ -1421,6 +1766,10 @@ export default defineUnlistedScript(() => {
       showNotification(data.kind, { amount: data.amount, text: data.text, code: data.code });
       return;
     }
+    if (message?.type === 'ANNOTATE_FAILED') {
+      mfBus.dispatchEvent(new CustomEvent('mf-annotate-failed', { detail: message.data }));
+      return;
+    }
     if (message?.type !== 'CLASSIFICATION') return;
     const data: Classification | undefined = message.data;
     const capture = (data && liveCaptures.get(data.id)) ?? (data && pending && data.id === pending.id ? pending : null);
@@ -1436,7 +1785,15 @@ export default defineUnlistedScript(() => {
       // While `preclassifying` is set, claims may yet arrive and the indicator stays.
       // Without it this is the run's last word — an empty passage, or a failed one —
       // and the indicator has nothing left to wait for.
-      if (!data.preclassifying) removeHud();
+      if (!data.preclassifying) {
+        removeHud();
+        if (capture.wrap && capture.wrap.isConnected) {
+          foldSelectionWrap(capture.wrap);
+          capture.wrap = null;
+        }
+        liveCaptures.delete(data.id);
+        if (pending?.id === data.id) pending = null;
+      }
       return;
     }
 
@@ -1629,6 +1986,15 @@ export default defineUnlistedScript(() => {
       })();
       return true;
     }
+    if (message?.type === 'MF_NOTIFICATION') {
+      const data = message.data;
+      if (data?.kind) {
+        injectStyles();
+        showNotification(data.kind, { amount: data.amount, text: data.text, code: data.code });
+      }
+      sendResponse({ ok: true });
+      return true;
+    }
     return undefined;
   };
 
@@ -1695,7 +2061,19 @@ export default defineUnlistedScript(() => {
     forwardIntent('TRANSLATE_CLAIM', e);
   }) as EventListener);
   mfBus.addEventListener('mf-annotate-claim', ((e: CustomEvent) => {
-    forwardIntent('ANNOTATE_CLAIM', e);
+    if (!current()) return;
+    const cid = e.detail?.classificationId;
+    const capture = (cid && liveCaptures.get(cid))
+      ?? (pending && (!cid || cid === pending.id) ? pending : null)
+      ?? (latest && (!cid || cid === latest.id) && pending ? pending : null);
+    send({
+      type: 'ANNOTATE_CLAIM',
+      data: {
+        ...e.detail,
+        selection: capture ? { selected: capture.selected, before: capture.before, after: capture.after } : null,
+        locale: uiLocale(),
+      },
+    });
   }) as EventListener);
   mfBus.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
     forwardIntent('RECLASSIFY_ON_HOLD_CLICK', e);
@@ -1709,7 +2087,7 @@ export default defineUnlistedScript(() => {
     // The HUD is position:absolute anchored to the wrap, so it re-anchors as the page moves.
     // The popover is not repositioned here: it is absolutely positioned inside the container
     // it was appended to and scrolls with its own highlight, exactly as on X.
-    if (hud && pending?.wrap?.isConnected) {
+    if (hud && hud.classList.contains('mf-sel-hud') && pending?.wrap?.isConnected) {
       const rect = pending.wrap.getBoundingClientRect();
       hud.style.top = `${window.scrollY + Math.max(8, rect.top - 34)}px`;
     }

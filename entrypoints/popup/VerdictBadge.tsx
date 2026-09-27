@@ -325,7 +325,7 @@ export const VerdictBadge: React.FC<VerdictBadgeProps> = ({
       } ${className}`}
       style={{
         backgroundColor: `rgba(${r}, ${g}, ${b}, 0.15)`,
-        color: `rgb(${r}, ${g}, ${b})`,
+        color: '#ffffff',
         border: `1px solid rgba(${r}, ${g}, ${b}, 0.3)`,
       }}
       onMouseOver={(e) => {
