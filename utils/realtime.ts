@@ -42,6 +42,11 @@ export interface ClaimPayload {
   /** Range-keyed annotations {"en": {"start,end": correction}} — only on tweet-scoped
    *  payloads. Present key (even empty) = annotated; absent key = never annotated. */
   annotations?: Record<string, Record<string, string>>;
+  /** Set by settle_tweet_claim_annotations: the claim's post-research annotation run
+   *  has ENDED and persisted nothing. Distinct from a key and from {}, because it
+   *  asserts neither "annotated" nor "clean" — only that nothing more is coming.
+   *  Lets the client settle the Annotating flight at its writer (see mergeClaimPayload). */
+  annotation_run_settled?: boolean;
 }
 
 export interface TweetFetchResult {
@@ -80,6 +85,7 @@ function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, numb
     is_classifying: raw.is_classifying === true,
     highlight: highlight ?? raw.highlight ?? undefined,
     annotations: annotations ?? raw.annotations ?? undefined,
+    annotation_run_settled: raw.annotation_run_settled === true ? true : undefined,
   };
 }
 

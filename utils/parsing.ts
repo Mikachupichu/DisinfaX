@@ -140,13 +140,57 @@ export function parseListTimeline(responseText: string): MainTweet[] | void {
     return parseTweets(collectAllEntries(instructions), TweetType.ListTimeline);
 }
 
-/** Covers every profile-tab query (UserTweets, UserTweetsAndReplies, Likes, UserMedia) —
- *  they all hang their instructions off the same `user.result.timeline` shape. */
+/** Covers every profile-tab query that returns a flat list of `tweet-*` entries
+ *  (UserOriginalsTimeline, UserVideoTimeline, Likes) — they all hang their instructions
+ *  off the same `user.result.timeline` shape and put the tweet on `content.itemContent`.
+ *
+ *  The Replies tab shares that root but NOT that entry shape, so it needs
+ *  `parseUserRepliesTimeline` below. */
 export function parseUserTimeline(responseText: string): MainTweet[] | void {
     const parsed = JSON.parse(responseText);
     const instructions = parsed?.data?.user?.result?.timeline?.timeline?.instructions;
     if (instructions === undefined) probeUnknownShape('User Timeline', parsed?.data);
     return parseTweets(collectAllEntries(instructions), TweetType.UserTimeline);
+}
+
+/** A profile's Replies tab (UserRepliesTimeline).
+ *
+ *  Same `user.result.timeline` root as the other profile tabs, but X groups it into
+ *  `profile-conversation-*` modules: the entry itself carries no tweet, and the
+ *  conversation's tweets sit one level down under `content.items[].item.itemContent`.
+ *  `parseUserTimeline` therefore finds the instructions and then no tweet on any entry,
+ *  and the tab renders with no DisinfaX UI at all. Unwrap the items and classify every
+ *  tweet in each conversation, the way the detail page already does. */
+export function parseUserRepliesTimeline(responseText: string): MainTweet[] | void {
+    const parsed = JSON.parse(responseText);
+    const instructions = parsed?.data?.user?.result?.timeline?.timeline?.instructions;
+    if (instructions === undefined) probeUnknownShape('User Replies Timeline', parsed?.data);
+    const entries = collectAllEntries(instructions);
+    if (entries === undefined) { logTweetParsingError(TweetFieldType.Entries, TweetType.UserTimeline); return; }
+
+    const tweetResultsList: any[] = [];
+    const collect = (result: any) => {
+        if (!result) return;
+        if (screenNameOf(result) === ASSISTANT_SCREEN_NAME) return;
+        tweetResultsList.push(result);
+    };
+    for (const entry of entries) {
+        const entryId = entry?.entryId ?? '';
+        if (excludedEntryIds.some(id => entryId.includes(id))) continue;
+        const items = entry?.content?.items;
+        if (Array.isArray(items)) {
+            for (const item of items) collect(item?.item?.itemContent?.tweet_results?.result);
+            continue;
+        }
+        collect(entry?.content?.itemContent?.tweet_results?.result);
+    }
+
+    if (tweetResultsList.length === 0) return logTweetBatchParsingError(TweetType.UserTimeline);
+    const tweetData = tweetResultsList
+        .map(result => parseTweet(result, TweetType.UserTimeline))
+        .filter(Boolean) as MainTweet[];
+    hydrateReplyChains(tweetData);
+    return tweetData;
 }
 
 export function parseCommunityRankedTimeline(responseText: string): MainTweet[] | void {

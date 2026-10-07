@@ -29,6 +29,7 @@ import {
     parseBookmarksTimeline,
     parseListTimeline,
     parseUserTimeline,
+    parseUserRepliesTimeline,
     parseCommunityRankedTimeline,
     parseCommunityExploreTimeline,
     parseCommunityFetchOne
@@ -49,8 +50,19 @@ const TIMELINE_ENDPOINTS: { marker: string; label: string; parse: (responseText:
     { marker: 'ListLatestTweetsTimeline',  label: 'List Timeline',           parse: parseListTimeline },
     // Substring match: also catches UserTweetsAndReplies, which shares this shape.
     { marker: 'UserTweets',                label: 'User Timeline',           parse: parseUserTimeline },
+    // A profile's default tab. X renamed this operation away from `UserTweets`, so a
+    // profile page matched nothing and injected no buttons at all — the DOM still holds
+    // the tweets, but the capture never produced a tweet for the relay to put on hold.
+    // Same entry shape as `UserTweets`, hence the same parser.
+    { marker: 'UserOriginalsTimeline',     label: 'User Timeline (Originals)', parse: parseUserTimeline },
+    // The Replies tab. Same `user.result.timeline` root as the tabs around it, but the
+    // tweets are nested under `profile-conversation` modules, so it needs its own parser.
+    { marker: 'UserRepliesTimeline',       label: 'User Timeline (Replies)', parse: parseUserRepliesTimeline },
     { marker: 'Likes',                     label: 'User Timeline (Likes)',   parse: parseUserTimeline },
+    // `UserMedia` was the Media tab's operation name until X renamed it; kept because a
+    // rename is not guaranteed to be global, and dead markers cost nothing.
     { marker: 'UserMedia',                 label: 'User Timeline (Media)',   parse: parseUserTimeline },
+    { marker: 'UserVideoTimeline',         label: 'User Timeline (Video)',   parse: parseUserTimeline },
     { marker: 'CommunitiesRankedTimeline', label: 'Community Timeline',      parse: parseCommunityRankedTimeline },
     { marker: 'CommunitiesExploreTimeline',label: 'Community Explore',       parse: parseCommunityExploreTimeline },
     { marker: 'CommunitiesFetchOneQuery',  label: 'Community Fetch One',     parse: parseCommunityFetchOne },
@@ -65,7 +77,7 @@ export default defineContentScript({
     // Same redirect-landing bail as relay.content.ts: do not even patch XHR on a tab
     // whose URL carries a disinfax_ return marker — it is about to be harvested and
     // closed, and its (possibly logged-out sample) tweets must never enter the pipeline.
-    if (location.search.includes('disinfax_oauth=callback') || location.search.includes('disinfax_checkout=')) return;
+    if (location.search.includes('disinfax_oauth=callback')) return;
     const originalOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function(_method, url) {
         this.addEventListener('load', async function() {

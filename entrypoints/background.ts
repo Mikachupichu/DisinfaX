@@ -20,13 +20,20 @@
  */
 import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, backgroundAnnotate, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText, type AnnotLocators, type HighlightAnnotContext } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
-import { supabase, ensureFreshSession } from "../utils/supabase";
+import { supabase, ensureFreshSession, asOAuthProvider } from "../utils/supabase";
 import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision, isLocatedRange, sameLocatedRange } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
 import { MainTweet, Tweet } from "../data/Tweets";
 import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon, toolbarAction } from "../utils/toolbarIcon";
 import { ERROR_CODES } from "../utils/errorCodes";
 import { NATIVE_APP_ID, NATIVE_CALLBACK_SCHEME } from "../utils/nativeHost";
+import {
+  MASTODON_OPT_IN_MESSAGE, MASTODON_OPT_OUT_MESSAGE,
+  MASTODON_COORDINATOR_FILE, MASTODON_INTERCEPTOR_FILE,
+  normalizeInstanceHost, instanceOriginPatterns,
+  readOptedInInstances, writeOptedInInstances,
+  registerInstanceScripts, unregisterInstanceScripts, reconcileInstanceScripts,
+} from "../utils/mastodonOptIn";
 import type { ScriptPublicPath } from "wxt/utils/inject-script";
 
 // [ttft-ext] Fires once per service worker load — if this appears more than once in a
@@ -125,7 +132,7 @@ export default defineBackground({
    *  reconnects and re-sends the batch, but the tap lands before hashing + DB
    *  lookup recreate the entry. Parked here and honored by
    *  flushPendingProcessOnHold when the entry appears; dropped on timeout. */
-  const pendingProcessOnHold = new Map<string, { locale: string; displayedSide: 'TRANSLATED' | 'ORIGINAL' | null; displayedText: string | null; timer: ReturnType<typeof setTimeout> }>();
+  const pendingProcessOnHold = new Map<string, { locale: string; displayedSide: 'TRANSLATED' | 'ORIGINAL' | null; displayedText: string | null; displayedLocale: string | null; timer: ReturnType<typeof setTimeout> }>();
   /** How long a parked tap waits for its entry before being dropped. Matches the
    *  content-side spinner revert (30s), so a timed-out tap leaves the button
    *  restored and a later tap re-parks cleanly. */
@@ -143,7 +150,7 @@ export default defineBackground({
     clearTimeout(pending.timer);
     onHoldTweets.delete(tweetId);
     console.log(`[background] PROCESS_ON_HOLD (deferred): ${tweetId}`);
-    runPreclassification(entry, pending.locale, "PROCESS_ON_HOLD", false, pending.displayedSide, pending.displayedText);
+    runPreclassification(entry, pending.locale, "PROCESS_ON_HOLD", false, pending.displayedSide, pending.displayedText, pending.displayedLocale);
   }
   /** Track which claims currently have an ongoing forced reclassification,
    *  keyed by `${classificationId}:${claimText}`. Prevents concurrent re-runs. */
@@ -170,6 +177,23 @@ export default defineBackground({
    *  Claims in these tweets bypass the per-claim Disinfact badge pause and stream
    *  fresh research immediately after their DB fetch attempt returns no match. */
   const factCheckAllTweetIds = new Set<string>();
+  /** Tweets (and selection passages) whose preclassification drained with exactly ONE
+   *  claim, and which were therefore handed straight to the automatic research run.
+   *
+   *  The drain is the first moment the claim count is known, so it is also the first
+   *  moment a claim can be recognized as the only one — and from there the run researches
+   *  it without any click. But that research starts by waiting on the claim's DB row
+   *  (fetch-claim, up to two seconds), and the drain's own broadcast still left the claim
+   *  wearing the on-hold Fact-Check button the worker's mid-stream row gave it. While an
+   *  id is in this set its claims are presented as the researching state they are about
+   *  to become, so the button is not shown for a wait the user did not ask for; the cache
+   *  keeps the real on-hold flag, so every click path still acts on the state the cache
+   *  holds. The hand-off broadcasts that state itself and this mark is then dropped, which
+   *  is what completes the switch to the loading state.
+   *
+   *  Any other claim count is never marked: those buttons are the user's to act on, and
+   *  nothing about them is researched automatically. */
+  const preclassifyRunTweets = new Set<string>();
   /** Track DB results from fetchTweetByHash so TRANSLATE_FACT_CHECKS can
    *  re-fire the localization pipeline. Keyed by tweet id. */
   const dbHitCache = new Map<string, { tweet: MainTweet; dbClaims: any[] }>();
@@ -178,6 +202,33 @@ export default defineBackground({
   const dbFetchPromises = new Map<string, Promise<{ hash: string; dbResult: any; quotedHash?: string; quotedDbResult?: any }>>();
   /** Track hashes that returned no DB match so we don't retry them. */
   const dbMissHashes = new Set<string>();
+  /** The same lookup memo as `dbFetchPromises`, persisted — because that map is module state
+   *  and dies with the service worker, while the page does not.
+   *
+   *  What makes this worth a store of its own: when the worker is reaped (MV3 idle, an
+   *  extension reload, memory pressure) the relay's port disconnects and it re-announces every
+   *  post the reader has reached, so the replacement worker can serve their taps. Measured
+   *  2026-10-01, a replacement worker bought 11 fresh lookups in the 12 seconds after a Reddit
+   *  page with 17 announced posts lost its worker — the same rows the dead worker had already
+   *  paid for. This memo is what makes that reconnect free: the re-announced posts are answered
+   *  from here instead of being fetched again.
+   *
+   *  `storage.session` for the same reason the checkout tab id uses it — it survives a worker
+   *  restart and is cleared when the browser restarts — plus the TTL below, which bounds how
+   *  long a served answer can be stale. */
+  const LOOKUP_MEMO_KEY = 'mfLookupMemo';
+  /** Oldest entries are dropped past this, so the store cannot grow without bound. */
+  const LOOKUP_MEMO_MAX_ENTRIES = 400;
+  /** And a byte budget under it, since one entry can hold a post's whole claim payload. */
+  const LOOKUP_MEMO_MAX_BYTES = 3_000_000;
+  /** An entry older than this is not served. Research completion rewrites claim rows AFTER
+   *  the snapshot cached here was taken (`markTweetDbStale` handles the in-worker case), and a
+   *  reaped worker can miss that broadcast — so a served answer is trusted only briefly. The
+   *  reconnects this exists for happen seconds after a reap, so the TTL costs nothing. */
+  const LOOKUP_MEMO_TTL_MS = 10 * 60 * 1000;
+  const lookupMemo = new Map<string, { hash: string; dbResult: any; quotedHash?: string; quotedDbResult?: any; at: number }>();
+  let lookupMemoReady: Promise<void> | null = null;
+  let lookupMemoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   /** Tweet ids the content script has reported as present in the DOM.
    *  Used to defer DB fetches for timeline tweets beyond the first 5 of each
    *  XHR batch until they are actually rendered. */
@@ -333,6 +384,98 @@ export default defineBackground({
     dbFetchPromises.delete(tweetId);
     dbHitCache.delete(tweetId);
     reResearchedTweetIds.delete(tweetId);
+    forgetLookup(tweetId, true);
+  }
+
+  /** Read the persisted lookup memo back into memory, once per worker.
+   *
+   *  Entries past `LOOKUP_MEMO_TTL_MS` are dropped on the way in rather than served and
+   *  pruned later, so a worker that starts after a long gap re-buys what it cannot trust. */
+  function loadLookupMemo(): Promise<void> {
+    if (!lookupMemoReady) {
+      lookupMemoReady = (async () => {
+        try {
+          const stored = await browser.storage.session.get(LOOKUP_MEMO_KEY);
+          const raw = stored?.[LOOKUP_MEMO_KEY];
+          if (!raw || typeof raw !== 'object') return;
+          const cutoff = Date.now() - LOOKUP_MEMO_TTL_MS;
+          for (const [id, entry] of Object.entries(raw as Record<string, any>)) {
+            if (entry && typeof entry.at === 'number' && entry.at >= cutoff) lookupMemo.set(id, entry);
+          }
+        } catch (e) {
+          // Not fatal: the only consequence is buying rows this worker already had.
+          console.error('[background] lookup memo read failed:', e);
+        }
+      })();
+    }
+    return lookupMemoReady;
+  }
+
+  function scheduleLookupMemoSave(): void {
+    if (lookupMemoSaveTimer) return;
+    lookupMemoSaveTimer = setTimeout(() => {
+      lookupMemoSaveTimer = null;
+      void saveLookupMemo();
+    }, 1500);
+  }
+
+  /** Write the memo back, newest first, stopping at the byte budget so the oldest entries are
+   *  the ones the store drops. A failed write is logged and ignored: this is a cache. */
+  async function saveLookupMemo(): Promise<void> {
+    try {
+      const blob: Record<string, any> = {};
+      let bytes = 0;
+      for (const [id, entry] of [...lookupMemo.entries()].reverse()) {
+        const size = JSON.stringify(entry).length;
+        if (bytes + size > LOOKUP_MEMO_MAX_BYTES) break;
+        blob[id] = entry;
+        bytes += size;
+      }
+      await browser.storage.session.set({ [LOOKUP_MEMO_KEY]: blob });
+    } catch (e) {
+      console.error('[background] lookup memo write failed:', e);
+    }
+  }
+
+  /** Record a completed lookup, so a worker that replaces this one does not buy it again. */
+  function rememberLookup(tweetId: string, entry: { hash: string; dbResult: any; quotedHash?: string; quotedDbResult?: any }): void {
+    lookupMemo.delete(tweetId);
+    lookupMemo.set(tweetId, { ...entry, at: Date.now() });
+    while (lookupMemo.size > LOOKUP_MEMO_MAX_ENTRIES) {
+      const oldest = lookupMemo.keys().next().value;
+      if (oldest === undefined) break;
+      lookupMemo.delete(oldest);
+    }
+    scheduleLookupMemoSave();
+  }
+
+  /** Drop one entry, for the same reasons `markTweetDbStale` drops the in-memory snapshot.
+   *
+   *  `now` writes through instead of waiting for the debounce. The debounce is fine for
+   *  ADDING — an entry that never reaches the store only costs one lookup after a reap — but
+   *  it is not fine for REMOVING: the store is the one place a superseded snapshot could
+   *  outlive the worker that invalidated it, and if the worker is reaped inside the debounce
+   *  the next one serves the pre-research rows this call exists to retire. `markTweetDbStale`
+   *  is the caller that needs that, and it is rare. */
+  function forgetLookup(tweetId: string, now = false): void {
+    if (!lookupMemo.delete(tweetId)) return;
+    if (now) flushLookupMemo();
+    else scheduleLookupMemoSave();
+  }
+
+  /** Write the memo out immediately, cancelling any pending debounced save. */
+  function flushLookupMemo(): void {
+    if (lookupMemoSaveTimer) { clearTimeout(lookupMemoSaveTimer); lookupMemoSaveTimer = null; }
+    void saveLookupMemo();
+  }
+
+  /** Drop the whole memo on a sign-out/freeze, where every other pipeline cache is cleared. */
+  function clearLookupMemo(): void {
+    if (lookupMemoSaveTimer) { clearTimeout(lookupMemoSaveTimer); lookupMemoSaveTimer = null; }
+    lookupMemo.clear();
+    void browser.storage.session.remove(LOOKUP_MEMO_KEY).catch((e: unknown) => {
+      console.error('[background] lookup memo clear failed:', e);
+    });
   }
 
   /** Remove ALL cache entries whose batchIds contain the given batchId,
@@ -554,7 +697,11 @@ export default defineBackground({
       // bound to the displayed text (preferring it over other held bodies), re-emitted
       // under its bare locale prefix — the revision binding that stops a stale range
       // ever addressing an edited tweet.
-      highlight = selectHighlightRevision(raw, gate);
+      const keptHighlight = selectHighlightRevision(raw, gate);
+      // TEMP GATE PROBE — remove once the dropped-range cause is named.
+      const droppedH = Object.keys(raw).filter(k => !(k.split(':')[0] in keptHighlight));
+      if (droppedH.length > 0) console.log(`[misinfo][gate] highlight dropped ${droppedH.join(',')} | displayed=${gate.displayed ? gate.displayed.slice(0, 12) : 'null'} | known=${[...gate.known].map(h => h.slice(0, 12)).join(',') || 'none'}`);
+      highlight = keptHighlight;
       if (Object.keys(highlight).length === 0) highlight = undefined;
     }
 
@@ -573,6 +720,9 @@ export default defineBackground({
         if (val !== null && typeof val === 'object' && !Array.isArray(val)) rawA[key] = val as Record<string, string>;
       }
       const stripped = selectAnnotationRevision(rawA, gate);
+      // TEMP GATE PROBE — remove once the dropped-range cause is named.
+      const droppedA = Object.keys(rawA).filter(k => !(k.split(':')[0] in stripped));
+      if (droppedA.length > 0) console.log(`[misinfo][gate] annotations dropped ${droppedA.join(',')} | displayed=${gate.displayed ? gate.displayed.slice(0, 12) : 'null'} | known=${[...gate.known].map(h => h.slice(0, 12)).join(',') || 'none'}`);
       // A kept locale key, even with an empty dict ("annotated, nothing wrong"),
       // must survive: collapsing it to undefined is how the Annotate badge came
       // back after Flow A persisted {}. Absence of every key is "never annotated".
@@ -643,6 +793,34 @@ export default defineBackground({
     return { ...base, verdict, note: noteText, confidence: confidenceScore, veracity: veracityScore, sources: normalizeSources(dbClaim.sources) };
   }
 
+  /** The locale a claim list's stored highlight ranges are keyed under, when they all
+   *  agree on exactly one — else null.
+   *
+   *  This is what lets a DOM-fed platform be annotated at all. A tweet knows its own
+   *  language and says so; a post read out of markup usually does not (HN is the one
+   *  DOM platform where the answer is fixed and it states 'en' — see its capture), so
+   *  `sourceLanguage`/`textLocale` both come out empty and the locator build gives up.
+   *  The worker then skips its annotation pass outright ("no locators: tweetHash=false,
+   *  tweetText=false, textLocale=false"), leaving a claim that has just been researched
+   *  with a verdict, no corrections, and an empty annotations dict — which the badge
+   *  renders as the idle "Annotate" button rather than the corrections it should show.
+   *
+   *  The ranges themselves still name the locale: the preclassify worker keys every
+   *  range with the locale it classified the body in, and the annotate pass must be sent
+   *  that same value as `text_locale` — get_annotation_context reads the claim's range
+   *  out of `highlight -> text_locale`, and the worker files the annotations under it.
+   *  So this states the key the claims are already filed under rather than guessing a
+   *  language. One key only, the same rule the render path applies for the same reason:
+   *  with several candidate languages a range would address an arbitrary span, and a
+   *  verdict attached to the wrong words is worse than showing none. */
+  function rangedLocale(claims: Claim[] | null | undefined): string | null {
+    const keys = new Set<string>();
+    for (const c of claims ?? []) {
+      for (const key of Object.keys(c.highlight ?? {})) keys.add(key);
+    }
+    return keys.size === 1 ? [...keys][0] : null;
+  }
+
   /** Locators Flow A needs so classify-tweets can silently annotate a freshly
    *  researched claim under the same hold (see AnnotLocators in intelligence.ts).
    *
@@ -670,6 +848,9 @@ export default defineBackground({
     try {
       const ownList = claims ?? [];
       let claimIndex = ownList.findIndex(c => c.text === claimText);
+      // Which list owns this claim. The ranging locale below is read off it: a quoted
+      // side's ranges are keyed by the QUOTED body's locale, never the main one's.
+      let rangeList = ownList;
       // Structural subset: quoted tweets are plain Tweets (no References or translation
       // fields), so this can't be a MainTweet. computeTweetHash takes `any` regardless.
       type TweetSide = { text?: string; translatedText?: string; destinationLanguage?: string; sourceLanguage?: string; quoting?: { id: string } | null } | null | undefined;
@@ -680,6 +861,7 @@ export default defineBackground({
         const quoted = classification.quoting?.claims;
         if (!quoted || quoted.findIndex(c => c.text === claimText) < 0) return null;
         claimIndex = quoted.findIndex(c => c.text === claimText);
+        rangeList = quoted;
         tweet = tweetCache.get(tweetId)?.quoting ?? dbHitCache.get(tweetId)?.tweet?.quoting ?? null;
         if (!tweet) {
           for (const parent of tweetCache.values()) {
@@ -688,8 +870,11 @@ export default defineBackground({
         }
       }
       if (!tweet) return null;
-      const tweetText = (tweet.translatedText && tweet.destinationLanguage) ? tweet.translatedText : tweet.text;
-      const textLocale = ((tweet.translatedText && tweet.destinationLanguage) ? tweet.destinationLanguage : tweet.sourceLanguage) ?? classification.textLocale ?? null;
+      const hasTranslation = !!(tweet.translatedText && tweet.destinationLanguage);
+      const tweetText = hasTranslation ? tweet.translatedText : tweet.text;
+      const textLocale = (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage)
+        ?? classification.textLocale
+        ?? rangedLocale(rangeList);
       if (typeof tweetText !== 'string' || tweetText.length === 0 || !textLocale) return null;
       const tweetHash = await computeTweetHash(tweet);
       return { tweetHash, tweetText, textLocale, claimIndex: Math.max(0, claimIndex) };
@@ -1082,6 +1267,36 @@ export default defineBackground({
             ? { ...claim, reclassifyOnHold: false, refreshing: true, note: null }
             : claim
         ),
+      };
+    }
+    // A lone claim whose run drained and handed it to the automatic research: it is
+    // about to be researched whether the user clicks or not, and the click that would
+    // normally start it is the button this hides. Present it as the researching state
+    // it is entering, so it never shows a Fact-Check button for the wait on its DB row.
+    // Same shape as the Fact-Check All rewrite above — outgoing copy only, cache
+    // untouched — so every click path stays on the state the cache actually holds, and
+    // the mark (see preclassifyRunTweets) is dropped once the hand-off has broadcast
+    // that state for real.
+    //
+    // A quoted post's claims are masked with the tweet's own: the hand-off counts both,
+    // so a quote holding the run's only claim is researched automatically exactly like
+    // the tweet's own would be.
+    const maskedOnHold = (list: Claim[] | null | undefined): Claim[] | null | undefined =>
+      list?.map(claim =>
+        claim.reclassifyOnHold && !claim.refreshing
+          ? { ...claim, reclassifyOnHold: false, refreshing: true }
+          : claim
+      );
+    const anyStillOnHold = (list: Claim[] | null | undefined): boolean =>
+      !!list?.some(claim => claim.reclassifyOnHold && !claim.refreshing);
+    if (preclassifyRunTweets.has(classification.id)
+        && (anyStillOnHold(outgoing.claims) || anyStillOnHold(outgoing.quoting?.claims))) {
+      outgoing = {
+        ...outgoing,
+        claims: maskedOnHold(outgoing.claims) ?? outgoing.claims,
+        quoting: outgoing.quoting
+          ? { ...outgoing.quoting, claims: maskedOnHold(outgoing.quoting.claims) ?? outgoing.quoting.claims }
+          : outgoing.quoting,
       };
     }
     // Stamp the Flow A marker onto the OUTGOING copy only (the cache keeps the
@@ -1510,6 +1725,20 @@ export default defineBackground({
       return g;
     })();
     const incoming = payloadToClaim(payload, locale, gate);
+    // The worker's post-research annotation run ENDED without persisting: it skipped
+    // (stale / unclassified / no context / over the input ceiling / infra), so no locale
+    // key is coming for this claim and the "Annotating" badge would otherwise spin out
+    // its whole seed window (see stampAnnotateInFlight — the same run, same writer).
+    // Settle it here, at the point the run's outcome is actually known, by reusing the
+    // failure channel: the badge returns to the idle Annotate affordance, which is the
+    // truthful state (nothing was annotated). Never paint {} for this — that asserts
+    // "annotated, clean" (see empty-annotation-key), which a skip does not.
+    if (payload.annotation_run_settled && incoming && !Object.keys(incoming.annotations ?? {}).length) {
+      console.log(`[background] annotation run settled with no key for "${incoming.text.slice(0, 40)}..." — clearing the flight`);
+      for (const port of activePorts) {
+        try { port.postMessage({ type: 'ANNOTATE_FAILED', data: { classificationId: tweetId, claimText: incoming.text } }); } catch {}
+      }
+    }
     // A selection's DB row carrying the worker's "not located in the input" sentinel (or a
     // range outside the passage) describes text the user never selected: the claim pipeline
     // only ever reaches it by having mined the surrounding context. Ignore it here, before
@@ -1931,6 +2160,12 @@ export default defineBackground({
   async function pullClaimBeforeClassify(classificationId: string, claimText: string, locale: string, force = false): Promise<boolean> {
     let cls = classificationCache.get(classificationId)?.classification;
     let claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
+    // A miss here means the paid run about to start has no claim to land on: it is billed,
+    // finishes, and its verdict is dropped. The click's claimText must be the cached claim's
+    // `text` byte for byte, so name the drift rather than pay for it silently.
+    if (!claim && cls?.claims?.length) {
+      console.warn(`[background] pullClaimBeforeClassify ${classificationId}: claimText matched no cached claim — clicked=${JSON.stringify(claimText)} cached=${JSON.stringify(cls.claims.map(c => c.text))}`);
+    }
     // A preclassify-origin claim has no DB id until the worker finishes embedding + inserting
     // it and the row is broadcast over the tweet subscription. Classifying before then races
     // that insert: start_claim_classification can't locate the row, so the claim is (re)created
@@ -1991,8 +2226,10 @@ export default defineBackground({
    *  cover a rare race); `force` now only controls whether the top-of-tweet spinner is shown,
    *  since a forced run has no on-hold button to turn into one.
    *
-   *  On a no-claims outcome the tweet is returned to `onHoldTweets` so the Disinfact button
-   *  comes back and the user can retry. */
+   *  A no-claims outcome broadcasts the tweet with `onHold` cleared and its `batchId` set, so
+   *  the bar settles into the refresh affordance rather than returning to a Disinfact pill —
+   *  refresh re-enters this function, which is the retry. The entry is left in `onHoldTweets`
+   *  either way, so a tap that arrives late is still honored. */
   function runPreclassification(
     entry: { tweet: MainTweet; hash: string },
     locale: string,
@@ -2002,9 +2239,13 @@ export default defineBackground({
      *  content script. `null`/omitted means unknown — callers that cannot observe the DOM
      *  (e.g. BATCH_REFRESH_FORCE) pass nothing and keep the original inference exactly. */
     displayedSide?: 'TRANSLATED' | 'ORIGINAL' | null,
-    /** The text X is actually rendering, sent only when `displayedSide` is 'TRANSLATED'.
-     *  Used as a last resort when the captured payload has no `translatedText`. */
-    displayedText?: string | null
+    /** The text the page is actually rendering, sent only when `displayedSide` is
+     *  'TRANSLATED'. Used as a last resort when the captured payload has no
+     *  `translatedText`. */
+    displayedText?: string | null,
+    /** The language that text is in, read off the page by the content script. Used only
+     *  when the payload names no destination language — see `destinationLocale` below. */
+    displayedLocaleHint?: string | null
   ): void {
     const { tweet, hash } = entry;
     const tweetId = tweet.id;
@@ -2041,12 +2282,23 @@ export default defineBackground({
     const fallbackTranslation = displayedSide === 'TRANSLATED' ? (displayedText?.trim() || undefined) : undefined;
     const displayedTranslation = tweet.translatedText || fallbackTranslation;
 
+    // The language the displayed side is in. The captured payload names it for a post that
+    // was already translated when it was announced, and for those the hint is ignored. It
+    // names nothing for a post the reader translated afterwards — the capture holds only
+    // the source — and there the content script's reading of the live page is the only
+    // source of it. Without that second source `displayedLocale` falls through to
+    // `sourceLanguage`, which files every range under a language the reader is not looking
+    // at, against text whose offsets belong to the source.
+    const destinationLocale = tweet.destinationLanguage
+      ?? (displayedSide === 'TRANSLATED' ? (displayedLocaleHint ?? undefined) : undefined);
+
     // Build the display tweet (translated text when translated) — the worker
     // computes highlight ranges against its `text`. Only the root tweet can use the DOM
     // fallback: `displayedText` is the main tweet's element, not a quoted or parent post.
     function tweetForDisplay(t: MainTweet, isRoot = false): MainTweet {
       const body = isRoot ? displayedTranslation : t.translatedText;
-      const hasTranslationInner = !!body && !!t.destinationLanguage && !readingOriginal;
+      const dest = isRoot ? destinationLocale : t.destinationLanguage;
+      const hasTranslationInner = !!body && !!dest && !readingOriginal;
       return {
         ...t,
         text: hasTranslationInner ? body! : t.text,
@@ -2054,8 +2306,8 @@ export default defineBackground({
         replyingTo: t.replyingTo ? tweetForDisplay(t.replyingTo as MainTweet) : null,
       } as MainTweet;
     }
-    const hasTranslation = !!displayedTranslation && !!tweet.destinationLanguage && !readingOriginal;
-    const displayedLocale = (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage) ?? locale;
+    const hasTranslation = !!displayedTranslation && !!destinationLocale && !readingOriginal;
+    const displayedLocale = (hasTranslation ? destinationLocale : tweet.sourceLanguage) ?? locale;
     const bodySource = !hasTranslation ? 'original' : (tweet.translatedText ? 'translated (payload)' : 'translated (DOM fallback)');
     console.log(`[background] ${logTag} ${tweetId}: displayedSide=${displayedSide ?? 'unknown'} -> preclassifying ${bodySource} text, highlights keyed ${displayedLocale}`);
 
@@ -2119,6 +2371,22 @@ export default defineBackground({
 
         reResearchedTweetIds.add(tweetId);
 
+        // The stream has drained, so the claim count is known — the first moment it is.
+        //
+        // A lone claim is handed to the automatic run below, and until that run's own
+        // broadcast the claim still wears the on-hold button the worker's mid-stream row
+        // gave it — the wait on its DB row, which is the gap the user sees as a button
+        // that vanishes on its own. Mark the tweet and re-broadcast so it enters the
+        // loading state now (see preclassifyRunTweets). Nothing else here needs to
+        // re-broadcast: any other claim count leaves the buttons the user acts on exactly
+        // as the drain left them.
+        const soleClaims = [...(latest.claims ?? []), ...(latest.quoting?.claims ?? [])];
+        if (soleClaims.length === 1) {
+          preclassifyRunTweets.add(tweetId);
+          const settled = classificationCache.get(tweetId)?.classification;
+          if (settled) broadcastClassification(settled);
+        }
+
         // Step 3: refresh the Step-0 subscription timer so the routing row stays
         // alive for the worker's link broadcasts (already a no-op reset when open).
         startTweetSubscription(tweetId, hash, locale);
@@ -2126,13 +2394,16 @@ export default defineBackground({
         // Step 4: a tweet that yields exactly one claim is researched without waiting
         // for a second click. Awaited so the keepAlive interval above spans the
         // research — otherwise the service worker could be reaped mid-call.
-        const soleClaims = [...(latest.claims ?? []), ...(latest.quoting?.claims ?? [])];
         if (soleClaims.length === 1) {
           await autoClassifySoleClaim(tweetId, soleClaims[0], batchId, locale);
         }
       } catch (err: any) {
         console.error(`[background] ${logTag} error:`, err);
       } finally {
+        // The mark is dropped here whatever else happened: a hand-off that threw must not
+        // leave the claim presenting as still-researching with nothing researching it.
+        // (For any other claim count nothing was ever marked, so this is a no-op.)
+        preclassifyRunTweets.delete(tweetId);
         clearInterval(keepAlive);
         // Safety net: never strand the top-of-tweet spinner if the run threw or returned
         // early without ever streaming a claim.
@@ -2228,7 +2499,9 @@ export default defineBackground({
         console.error(`[background] autoClassifySoleClaim error for "${claim.text.slice(0, 40)}":`, err);
       } finally {
         ongoingClaimRefreshes.delete(refreshKey);
-        if (!(handled || gotUpdate)) revertClaimToOnHold(tweetId, claim.text, batchId);
+        // Not `!(handled || gotUpdate)`: a run that streamed a snapshot and then died
+        // without ever settling the claim would keep the wheel it just painted.
+        if (!handled) settleClaimResearch(tweetId, claim.text, batchId, claim.reclassifyOnHold === true);
       }
     });
     trackClaimResearch(refreshKey, promise);
@@ -2306,10 +2579,35 @@ export default defineBackground({
         }
 
         async function fetchForTweet(tweet: MainTweet): Promise<HashResult> {
+          // Both caches below are keyed by id alone, but a lookup is only an answer about the
+          // text it was made against: the same post read before and after its body renders is
+          // two different texts, and their hashes name two different rows. Served by id, the
+          // earlier reading's row — with the claim ranges and annotations bound to THAT text —
+          // is handed to the later reading, so the post's own body is left with no claims and
+          // its stored ranges cannot bind. Same id, same hash is still served as before.
+          const currentHash = await computeTweetHash(tweet);
+
           const existing = dbFetchPromises.get(tweet.id);
           if (existing) {
             const cached = await existing;
+            if (cached.hash === currentHash) return { tweet, ...cached };
+            console.log(`[background] fetchForTweet ${tweet.id}: held lookup is for a different text, looking this one up`);
+            dbFetchPromises.delete(tweet.id);
+          }
+
+          // A lookup an earlier worker already paid for. This is the reconnect path: the dead
+          // worker's page still holds its posts, and the relay hands them all back, so without
+          // this every post the reader had reached is bought a second time.
+          await loadLookupMemo();
+          const remembered = lookupMemo.get(tweet.id);
+          if (remembered && remembered.hash === currentHash) {
+            const { at: _at, ...cached } = remembered;
+            console.log(`[background] fetchForTweet ${tweet.id}: served from the persisted memo`);
+            dbFetchPromises.set(tweet.id, Promise.resolve(cached));
             return { tweet, ...cached };
+          }
+          if (remembered) {
+            console.log(`[background] fetchForTweet ${tweet.id}: memo holds a different text of this post, looking this one up`);
           }
 
           const promise = (async (): Promise<Omit<HashResult, 'tweet'>> => {
@@ -2318,6 +2616,15 @@ export default defineBackground({
               await waitForDom(tweet.id);
             }
             const hash = await computeTweetHash(tweet);
+            // The lookup is a hash of the author name and the text, so a miss is only ever one of
+            // those two having drifted since the row was written. Both halves are printed beside
+            // the hash — the tail matters most, because a text that stops mid-sentence is the one
+            // drift that looks identical at the head. JSON.stringify so a newline shows as \n: the
+            // paragraph join is one of the things two renders of one post disagree on.
+            {
+              const t = String(tweet.fullText ?? '');
+              console.log(`[ttft-ext] hash-input ${tweet.id}: user=${JSON.stringify(String(tweet.username ?? ''))} len=${t.length} head=${JSON.stringify(t.slice(0, 40))} tail=${JSON.stringify(t.slice(-60))} hash=${hash}`);
+            }
             let dbResult: any;
             if (dbMissHashes.has(hash)) {
               dbResult = { success: false };
@@ -2357,6 +2664,7 @@ export default defineBackground({
 
           dbFetchPromises.set(tweet.id, promise);
           const result = await promise;
+          rememberLookup(tweet.id, result);
           return { tweet, ...result };
         }
 
@@ -2506,6 +2814,20 @@ export default defineBackground({
         const uncached: MainTweet[] = [];
         for (const r of dbNotFound) {
           const tweet = r.tweet;
+          // The entry a Disinfact tap runs on must be the text the annotate path will
+          // hash, and that path hashes `tweetCache` — which is overwritten by EVERY
+          // batch (step 0 above). This map used to be written only when the id had no
+          // cached classification, and that is wrong for a post whose text SETTLES
+          // after it first appears: Reddit's body mounts asynchronously, so the same
+          // post is announced twice with two texts and therefore two hashes (the hash
+          // covers `fullText`). The second, complete capture took the `hit` branch
+          // below, leaving the FIRST, body-less capture in this map — the tap then
+          // preclassified text the page no longer showed (its claims all landed in the
+          // title, none in the body), and every later annotation, hashing the current
+          // capture, subscribed and settled against a tweet hash that holds none of
+          // those claims. That is a pending routing row nothing can ever resolve, so
+          // "Annotating" spins out its whole window. Refresh it on every batch.
+          onHoldTweets.set(tweet.id, { tweet, hash: r.hash });
           const hit = classificationCache.get(tweet.id);
           if (hit) {
             hit.batchIds.add(batchId);
@@ -2523,7 +2845,6 @@ export default defineBackground({
             attachTranslatedLocale(onHoldClassification, tweet);
             cacheClassification(onHoldClassification, batchId);
             safePostToPort(port, { type: "CLASSIFICATION", data: onHoldClassification });
-            onHoldTweets.set(tweet.id, { tweet, hash: r.hash });
             // A tap parked while the worker was dead (backgrounded / long idle)
             // won the race and arrived before this entry existed — honor it now
             // instead of stranding the spinner until the 30s revert. No-op untapped.
@@ -2597,6 +2918,28 @@ export default defineBackground({
   function notifyError(messageOrCode: string | number) {
     if (typeof messageOrCode === 'number') broadcastNotification({ kind: 'error', code: messageOrCode });
     else if (messageOrCode) broadcastNotification({ kind: 'error', text: messageOrCode });
+  }
+
+  /** Set by the popup immediately before a user-chosen sign-out, so the background can
+   *  tell "the user signed out" from "the server threw us out". See the reader below. */
+  const INTENTIONAL_SIGNOUT_KEY = 'mf_intentional_signout';
+  /** How long a sign-out marker stays meaningful. The background normally sees the
+   *  marker within a tick of the popup writing it; the window only exists so a marker
+   *  stranded by a suspended worker can never suppress a LATER, real eviction. */
+  const INTENTIONAL_SIGNOUT_TTL_MS = 15_000;
+
+  /** Whether the sign-out we are looking at was chosen by the user. Consumes the marker. */
+  async function consumeIntentionalSignOut(): Promise<boolean> {
+    try {
+      const data = await browser.storage.local.get(INTENTIONAL_SIGNOUT_KEY);
+      const at = data[INTENTIONAL_SIGNOUT_KEY];
+      if (typeof at !== 'number') return false;
+      await browser.storage.local.remove(INTENTIONAL_SIGNOUT_KEY);
+      return Date.now() - at < INTENTIONAL_SIGNOUT_TTL_MS;
+    } catch {
+      // Unreadable storage must not turn a chosen sign-out into an alarming one.
+      return true;
+    }
   }
 
   /** Last total written into the App Group, so an unchanged value costs nothing. */
@@ -3041,6 +3384,48 @@ export default defineBackground({
     broadcastClassification(flipClaimResearching(hit.classification, claimText, batchId, false));
   }
 
+  /** End a claim's research flags once a run WE own is over, restating what the claim
+   *  actually holds.
+   *
+   *  `revertClaimToOnHold` fires only when a run delivered nothing at all
+   *  (`!(handled || gotUpdate)`), and `gotUpdate` latches on the first streamed chunk
+   *  — so a run that streamed a snapshot but never a settled one leaves `refreshing`
+   *  set for the life of the cache. `refreshing` both suppresses the Annotate
+   *  affordance and paints the spinner, so the claim wears a wheel with nothing behind
+   *  it and never recovers: the page has to be reloaded, and a reload re-runs the same
+   *  shape. Only a settled delivery clears the flag, and branch 3 of
+   *  `mergeClaimPayload` is the only thing that produces one.
+   *
+   *  A claim that came to rest is left alone — the delivery that settled it owns the
+   *  state. A claim still flagged when the run ends is restated: with its own research
+   *  results when it has them (verdict badge, or the idle Annotate button when its
+   *  annotation dict is still keyless), otherwise on its on-hold button so it can be
+   *  retried. `wasOnHold` preserves the paid re-run: a change-prone claim's Fact-Check
+   *  button is never displaced by Annotate. Callers must NOT run this when `handled` is
+   *  set — the flag then belongs to another in-flight run, and clearing it would kill a
+   *  wheel that is legitimately spinning. */
+  function settleClaimResearch(classificationId: string, claimText: string, batchId: string, wasOnHold: boolean): void {
+    const hit = classificationCache.get(classificationId);
+    const cached = hit?.classification.claims;
+    const target = cached?.find(cl => cl.text === claimText);
+    if (!hit || !cached || !target) return;
+    // Not flagged any more → the run settled it. Nothing to restate.
+    if (target.refreshing !== true && target.isClassifying !== true) return;
+    const hasVerdict = target.note !== undefined && target.note !== null && String(target.note).trim() !== "";
+    const restated: Claim = {
+      ...target,
+      refreshing: false,
+      isClassifying: false,
+      reclassifyOnHold: wasOnHold || !hasVerdict,
+    };
+    const claims = cached.map(cl => (cl.text === claimText ? restated : cl));
+    const anyOnHold = claims.some(cl => cl.reclassifyOnHold);
+    const merged: Classification = { ...hit.classification, claims, reclassifyOnHold: anyOnHold || undefined };
+    merged.batchId = batchId;
+    cacheClassification(merged, batchId);
+    broadcastClassification(merged);
+  }
+
   /** Start one admitted Fact-Check-All classification: reserve its worst-case charge, flip it to
    *  researching, run pull-then-classify, and on completion release the reservation and either
    *  finish or (on a rare backend balance-too-low) re-queue once / abandon. Mirrors the old
@@ -3104,6 +3489,11 @@ export default defineBackground({
             if (hitBalanceError) notifyError(ERROR_CODES.BALANCE_TOO_LOW); // non-balance failures already notified
           }
           revertClaimToOnHold(classificationId, claimText, batchId);
+        } else if (!handled) {
+          // Streamed a snapshot but never settled the claim: the flags would outlive
+          // the run and strand the spinner. (Reverting here would also drop the
+          // waitlist bookkeeping above that this branch must not touch.)
+          settleClaimResearch(classificationId, claimText, batchId, true);
         }
         pumpWaitlist();
       }
@@ -3155,6 +3545,7 @@ export default defineBackground({
     dbMissHashes.clear();
     seenInDom.clear();
     domFetchResolvers.clear();
+    clearLookupMemo();
     persistSelectionPipeline();
   }
 
@@ -3175,6 +3566,12 @@ export default defineBackground({
   function refreshActiveState() {
     activeEvalChain = activeEvalChain.then(async () => {
       const signed = await isSignedIn();
+      /** The state we are leaving. Read BEFORE the account-switch block below, which
+       *  sets `lastActive = null` whenever the uid changes — and a uid change is exactly
+       *  what a sign-out looks like (`currentUserId()` goes to null whether the user
+       *  chose it or the server evicted the session). Reading it after that block would
+       *  therefore see null on every sign-out and never recognise the transition. */
+      const prevActive = lastActive;
       // Account switches must be caught BEFORE the `lastActive` guard below. Signing out
       // of a ZERO-balance account leaves active already false, so that guard returned
       // early and the teardown further down never ran — the next account then inherited
@@ -3195,6 +3592,11 @@ export default defineBackground({
       if (!signed) clearNativeAccount();
       const active = signed && balanceOk();
       if (lastActive === active) return;
+      /** Whether the extension was live a moment ago, so the sign-out notification further
+       *  down can tell a real ACTIVE → signed-out transition from every other way of
+       *  landing here (a cold start with no session at all, or a signed-out tab the user
+       *  simply opened) — `prevActive` is null on those, and null never notifies. */
+      const wasActive = prevActive;
       // [ttft-ext] Every active/inactive flip, with the inputs that produced it — this is
       // the ONLY path that calls clearAllPipelineState(), which wipes every open tweet/
       // claim subscription. If this fires mid-test, that's what's killing them all at once.
@@ -3206,6 +3608,34 @@ export default defineBackground({
         clearAllPipelineState();
         if (!signed) teardownFundsHub(); // keep the hub alive on a zero-balance
         broadcastActive(false);
+        /** Say so, when a session disappears from under a signed-in user.
+         *
+         *  Without this the extension simply goes quiet: `broadcastActive(false)` freezes
+         *  every relay and `setExtensionFrozen` removes every injection, so the buttons
+         *  vanish and nothing explains why. The cause is usually the rate-limit ban —
+         *  `increment_usage` sets `banned_until` and runs
+         *  `DELETE FROM auth.sessions` whenever any metered window is exceeded, so the
+         *  slot empties server-side and this storage-driven evaluation is the first the
+         *  client hears of it, up to an hour after the ban (the client keeps working on
+         *  its still-valid access token until that expires and its refresh 400s).
+         *
+         *  Deliberately AFTER broadcastActive(false), not before: freezing the relays
+         *  calls removeAllInjections, which deletes `.mf-notif-container` along with
+         *  everything else, so a notification sent first would be wiped before it could
+         *  be read. Sent here it arrives at an already-frozen relay, which is the one
+         *  state `showNotification`'s guard lets `NOT_SIGNED_IN` through in (see
+         *  utils/injecting.ts) — the mechanism this case was built for, and its text is
+         *  already localized in every locale, so no new string is owed.
+         *
+         *  Only when the user did NOT choose this. A deliberate sign-out reaches here
+         *  looking identical from storage alone, so the popup leaves a short-lived marker
+         *  (INTENTIONAL_SIGNOUT_KEY) and we stay quiet when we find one — announcing
+         *  "you're not signed in, please sign in" to someone who just clicked Sign Out,
+         *  or to someone switching accounts, would be worse than the silence this whole
+         *  change exists to fix. */
+        if (wasActive === true && !signed && !(await consumeIntentionalSignOut())) {
+          notifyError(ERROR_CODES.NOT_SIGNED_IN);
+        }
       }
     }).catch(e => console.error('[background] refreshActiveState error:', e));
   }
@@ -3335,33 +3765,61 @@ export default defineBackground({
     } catch { /* ignore */ }
   }
 
-  // ── Stripe checkout: open the checkout tab and close it on the x.com return ──
-  /** Open Stripe checkout in a new tab and close it again once it redirects back to
-   *  x.com carrying the disinfax_checkout marker (see the checkout worker's return
-   *  URLs), then poll for the credit. Watching for the redirect is what lets the user
-   *  land back where they started instead of on a stranded success page. x.com needs no
-   *  extra host permission: its content-script match already makes tabs.onUpdated carry
-   *  changeInfo.url for it. */
+  // ── Stripe checkout: poll for the credit once the checkout tab closes ──
+  /** Where the id of the checkout tab we opened is parked.
+   *
+   *  It has to outlive the service worker: a Stripe session takes minutes and the MV3
+   *  worker idles long before the user finishes paying. The listener below is registered
+   *  at the top level for the same reason — one added *inside* openCheckoutTab is gone by
+   *  then, which is exactly why the previous design needed a content script on the return
+   *  page to send a backup message (and therefore needed the return page to be a host the
+   *  extension already had access to). Reading the id back from storage on each wake lets
+   *  a single top-level listener do the job, and `tabs.onRemoved` carries no URL, so
+   *  nothing here needs host access to the return page.
+   *
+   *  `storage.session` deliberately: it is cleared when the browser restarts, so a stale
+   *  id can never be matched by a new tab that happens to reuse the number. */
+  const CHECKOUT_TAB_KEY = 'mfCheckoutTabId';
+
+  browser.tabs.onRemoved.addListener((tabId) => {
+    void (async () => {
+      try {
+        const stored = await browser.storage.session.get(CHECKOUT_TAB_KEY);
+        if (stored?.[CHECKOUT_TAB_KEY] !== tabId) return;
+        await browser.storage.session.remove(CHECKOUT_TAB_KEY);
+        pollFundsAfterCheckout();
+      } catch (e) {
+        // Log rather than swallow: the only way this path breaks is by not running, and a
+        // silent failure would look exactly like "the top-up worked but nothing resumed".
+        console.error('[background] checkout tab close handling failed:', e);
+      }
+    })();
+  });
+
+  // Forget the frames a closed tab was known to have. They are only addressable while the
+  // tab is open, and the store outlives this worker, so nothing else would ever clean them.
+  browser.tabs.onRemoved.addListener((tabId) => {
+    framesByTab.delete(tabId);
+    selectionFrameByTab.delete(tabId);
+    void (async () => {
+      try {
+        const stored = await browser.storage.session.get(FRAME_STORE);
+        const all = stored?.[FRAME_STORE] as FrameLedger | undefined;
+        if (!all?.[tabId]) return;
+        delete all[tabId];
+        await browser.storage.session.set({ [FRAME_STORE]: all });
+      } catch { /* the entry is bounded by its TTL anyway */ }
+    })();
+  });
+
+  /** Open Stripe checkout in a new tab. The user pays, lands on the DisinfaX success page
+   *  and closes it — that close is the trigger to poll for the credit, and the poll only
+   *  runs for a tab we opened. */
   function openCheckoutTab(url: string) {
     Promise.resolve(browser.tabs.create({ url })).then((tab: any) => {
       const tabId = tab?.id;
       if (tabId == null) return;
-      const onUpdated = (updatedTabId: number, changeInfo: any) => {
-        if (updatedTabId !== tabId) return;
-        const updatedUrl: string | undefined = changeInfo?.url;
-        if (updatedUrl && /:\/\/x\.com[/?#].*disinfax_checkout=/i.test(updatedUrl)) {
-          cleanup();
-          try { browser.tabs.remove(tabId); } catch { /* already gone */ }
-          pollFundsAfterCheckout();
-        }
-      };
-      const onRemoved = (closedId: number) => { if (closedId === tabId) cleanup(); };
-      const cleanup = () => {
-        try { browser.tabs.onUpdated.removeListener(onUpdated); } catch { /* ignore */ }
-        try { browser.tabs.onRemoved.removeListener(onRemoved); } catch { /* ignore */ }
-      };
-      browser.tabs.onUpdated.addListener(onUpdated);
-      browser.tabs.onRemoved.addListener(onRemoved);
+      return browser.storage.session.set({ [CHECKOUT_TAB_KEY]: tabId });
     }).catch((e: any) => console.error('[background] openCheckoutTab error:', e));
   }
 
@@ -3431,13 +3889,22 @@ export default defineBackground({
    *  `func` is serialized and run standalone, so it cannot close over anything here — every
    *  function passed to this is self-contained by necessity, not by style. */
 
-  /** Run an injection in the tab's TOP frame only.
+  /** Run an injection in ONE frame of the tab, and in no other.
    *
-   *  The selection and the wrap both live in the top document, and an unscoped
-   *  injection also runs in every third-party iframe — whose domains Safari then
-   *  gates one by one (the id5-sync.com ad-sync prompt on CBC). Scoping to frame 0
-   *  keeps the single prompt for the site the user is actually on, and keeps the
+   *  An unscoped injection also runs in every third-party iframe — whose domains Safari
+   *  then gates one by one (the id5-sync.com ad-sync prompt on CBC). Naming a single
+   *  frame keeps the single prompt for the site the user is actually on, and keeps the
    *  popup's tabs.sendMessage from being answered by a stale copy in a frame.
+   *
+   *  Which frame is named is the caller's business, and `frameId` is a parameter rather
+   *  than the constant 0 because 0 is not always where the user acted: on a platform whose
+   *  content lives in a same-origin frame (Naver Cafe's `#cafe_main`), a selection is made
+   *  INSIDE that frame, and the frame's selection is not the top document's — measured:
+   *  the frame held 40 characters while the document above it reported `rangeCount` 0 and
+   *  an empty string. A script injected into frame 0 therefore cannot see the selection at
+   *  all. The context menu is handed the frame the click came from (`info.frameId`) and
+   *  targets that one; every other caller keeps frame 0, which is the whole of the page on
+   *  every platform whose content is not framed.
    *
    *  Fails CLOSED when the scoped injection rejects (older Safari builds predate
    *  `frameIds` support): falling back to an unscoped injection there re-runs the
@@ -3445,16 +3912,16 @@ export default defineBackground({
    *  built to prevent. The callers already treat a throw as "not injected" (the
    *  world probe logs `injected:false` and the flow declines with a named reason),
    *  so refusing beats prompting for a tracker. */
-  async function execTopFrame(tabId: number, spec: { files?: any; func?: () => any; world?: any }): Promise<any> {
+  async function execInFrame(tabId: number, frameId: number, spec: { files?: any; func?: () => any; world?: any }): Promise<any> {
     // `allFrames: false` is the documented default, but Safari has been observed
     // injecting into tracker iframes (id5-sync.com on CBC) when the target is
-    // under-specified. Name both: top frame only, never the ad frames.
-    return await browser.scripting.executeScript({ target: { tabId, frameIds: [0], allFrames: false }, ...spec } as any);
+    // under-specified. Name both: the one frame asked for, never the ad frames.
+    return await browser.scripting.executeScript({ target: { tabId, frameIds: [frameId], allFrames: false }, ...spec } as any);
   }
 
-  async function runInPageWorld(tabId: number, func: () => any): Promise<any> {
+  async function runInPageWorld(tabId: number, frameId: number, func: () => any): Promise<any> {
     try {
-      const results = await execTopFrame(tabId, {
+      const results = await execInFrame(tabId, frameId, {
         world: 'MAIN',
         func,
       });
@@ -3474,8 +3941,20 @@ export default defineBackground({
    *  text at all, so it cannot arrive here as text in the first place; and a selection in
    *  rich editable content is one the user can still legitimately want fact-checked, which
    *  the capture handles by declining to wrap rather than by refusing to read. */
-  async function probeSelectionInPageWorld(tabId: number): Promise<string> {
-    const result = await runInPageWorld(tabId, () => {
+  /** The frame a content script's message came from.
+   *
+   *  These two routes are the page script asking for a read in its OWN document, so the
+   *  frame is not a detail the caller may assume away: on a platform whose content lives in
+   *  a same-origin frame, `runInPageWorld` aimed at frame 0 would run the read in the
+   *  document above the one holding the selection and come back empty — the same failure,
+   *  one layer down, that the injection's frame id exists to prevent. The sender carries it,
+   *  so it is taken from there rather than guessed; a sender without one is the top frame. */
+  function senderFrameId(sender: any): number {
+    return typeof sender?.frameId === 'number' ? sender.frameId : 0;
+  }
+
+  async function probeSelectionInPageWorld(tabId: number, frameId: number): Promise<string> {
+    const result = await runInPageWorld(tabId, frameId, () => {
       const sel = window.getSelection();
       const text = sel ? String(sel) : '';
       return text.trim() ? text.slice(0, 200) : '';
@@ -3499,8 +3978,8 @@ export default defineBackground({
    *  whatever the user last clicked into and on a page with any editor on it that is very
    *  often a field nowhere near the selection — checking it refused every selection on the
    *  one page this was first tried on. */
-  async function captureSelectionInPageWorld(tabId: number): Promise<any> {
-    return runInPageWorld(tabId, () => {
+  async function captureSelectionInPageWorld(tabId: number, frameId: number): Promise<any> {
+    return runInPageWorld(tabId, frameId, () => {
       const fail = (why: string, extra: Record<string, any> = {}) => ({ ok: false, why, ...extra });
       try {
         const BLOCK = 'p,li,dd,dt,td,th,caption,figcaption,blockquote,pre,article,section,aside,main,div,h1,h2,h3,h4,h5,h6';
@@ -3529,30 +4008,20 @@ export default defineBackground({
             return null;
           }
         };
-        /** Words either side of a right-click that carried no deliberate selection. A
+        /** Characters either side of a right-click that carried no deliberate selection. A
          *  word is a POINTER at the passage it sits in: the read is its neighbourhood,
          *  never the article around it (this is the page-world half of the rule in
          *  entrypoints/selection.ts windowAround — this function is serialized into the
          *  page's world, so it cannot call that one and the two are kept in step by hand). */
-        const THIN_WINDOW_WORDS = 25;
+        const THIN_WINDOW_CHARS = 60;
         const WHITESPACE = /\s/;
+        /** ±`limit` characters around [a0, a1), each edge walked out to the nearer word
+         *  boundary so neither cuts a word in half (mirrors selection.ts windowBounds). */
         const windowBounds = (text: string, a0: number, a1: number, limit: number): [number, number] => {
-          let start = a0, back = 0, i = a0;
-          while (i > 0 && back < limit) {
-            while (i > 0 && WHITESPACE.test(text[i - 1])) i--;
-            if (i === 0) break;
-            while (i > 0 && !WHITESPACE.test(text[i - 1])) i--;
-            back++;
-            start = i;
-          }
-          let end = a1, forward = 0, j = a1;
-          while (j < text.length && forward < limit) {
-            while (j < text.length && WHITESPACE.test(text[j])) j++;
-            if (j >= text.length) break;
-            while (j < text.length && !WHITESPACE.test(text[j])) j++;
-            forward++;
-            end = j;
-          }
+          let start = Math.max(0, a0 - limit);
+          while (start > 0 && !WHITESPACE.test(text[start - 1])) start--;
+          let end = Math.min(text.length, a1 + limit);
+          while (end < text.length && !WHITESPACE.test(text[end])) end++;
           return [start, end];
         };
         const windowAround = (pool: Range, anchor: Range): Range => {
@@ -3586,7 +4055,7 @@ export default defineBackground({
           const a0 = offsetOf(anchor.startContainer, anchor.startOffset);
           const a1 = offsetOf(anchor.endContainer, anchor.endOffset);
           if (a0 === null || a1 === null || a1 < a0) return pool;
-          const [from, to] = windowBounds(all, a0, a1, THIN_WINDOW_WORDS);
+          const [from, to] = windowBounds(all, a0, a1, THIN_WINDOW_CHARS);
           const locate = (g: number): [Text, number] | null => {
             for (let k = nodes.length - 1; k >= 0; k--) {
               if (g >= starts[k]) return [nodes[k], Math.min(g - starts[k], nodes[k].data.length)];
@@ -3869,9 +4338,9 @@ export default defineBackground({
    *  than declared, so it exists only on pages the user acted on. Re-injection on every
    *  trigger is intentional — the script guards itself and the injection is what makes
    *  the *message* that follows deliverable. */
-  async function peekIsolatedWorld(tabId: number): Promise<IsolatedWorld | null> {
+  async function peekIsolatedWorld(tabId: number, frameId: number): Promise<IsolatedWorld | null> {
     try {
-      const probe = await execTopFrame(tabId, {
+      const probe = await execInFrame(tabId, frameId, {
         func: () => {
           const g = globalThis as any;
           return {
@@ -3892,7 +4361,7 @@ export default defineBackground({
     }
   }
 
-  async function injectSelectionScript(tabId: number): Promise<{ injected: boolean; world: IsolatedWorld | null }> {
+  async function injectSelectionScript(tabId: number, frameId: number): Promise<{ injected: boolean; world: IsolatedWorld | null }> {
     try {
       // A live copy of this extension's script is enough: start/probe are handed
       // to `__mfSelectionResponder` in-world, so re-injecting does not make the
@@ -3901,7 +4370,7 @@ export default defineBackground({
       // extension id (reload of a different build) is not ours; inject then.
       // One peek, not the 5×100ms wait: a cold tab would otherwise stall every
       // probe on a world we already know is empty.
-      const existing = await peekIsolatedWorld(tabId);
+      const existing = await peekIsolatedWorld(tabId, frameId);
       if (existing?.responder === 'function' && existing.runtimeId === browser.runtime.id) {
         console.log(`[background] selection script already in tab ${tabId}:`, JSON.stringify(existing));
         return { injected: true, world: existing };
@@ -3913,9 +4382,17 @@ export default defineBackground({
       // before it can publish `__mfSelectionResponder`. Copy the locals onto
       // globalThis first. The body is string-eval'd so the background's own
       // `browser` binding is not what the tab looks up.
-      await execTopFrame(tabId, {
+      await execInFrame(tabId, frameId, {
         func: () => {
           const g = globalThis as any;
+          // This frame is the one the user acted in, and the copy about to be injected is
+          // told so. selection.js refuses to run in a subframe unless it finds this mark —
+          // it was written when only the top frame could own a selection, which is false
+          // anywhere content lives in a same-origin frame (Naver Cafe's `#cafe_main`), and
+          // the mark is what separates "injected here on purpose" from a copy that landed in
+          // a subframe by accident. Set before the file is injected, and in the frame the
+          // file is injected into, so a copy that is NOT wanted still finds nothing.
+          g.__mfSelectionWanted = true;
           try {
             const b = eval('typeof browser !== "undefined" ? browser : null');
             if (b?.runtime) g.browser = b;
@@ -3931,8 +4408,8 @@ export default defineBackground({
       // path resolves to. See SELECTION_SCRIPT. The whole array and not its length,
       // because `[{frameId:0}]` — a resolve with no `result` — is what a file injection
       // that ran nothing looks like, and it is indistinguishable from a real one by count.
-      const injected = await execTopFrame(tabId, { files: [SELECTION_SCRIPT] });
-      console.log(`[background] selection script injected into tab ${tabId}:`, JSON.stringify(injected));
+      const injected = await execInFrame(tabId, frameId, { files: [SELECTION_SCRIPT] });
+      console.log(`[background] selection script injected into tab ${tabId} frame ${frameId}:`, JSON.stringify(injected));
       // Then ask the tab what is actually in the world the file was injected into. This is
       // the only way to tell "the injection was refused" from "the file ran and its
       // listeners are not answering", and those two need opposite fixes: a refused
@@ -3944,11 +4421,11 @@ export default defineBackground({
       // page whose CSP admits the file can refuse the function. Reading a null world as a
       // failed injection would then skip the message on pages where it would have worked —
       // a diagnostic is not allowed to become a gate.
-      return { injected: true, world: await readIsolatedWorld(tabId) };
+      return { injected: true, world: await readIsolatedWorld(tabId, frameId) };
     } catch (err: any) {
       // Chrome refuses injection into chrome:// pages, the Web Store, PDF viewers and
       // other extension pages. Nothing to do about it — the user cannot fact-check there.
-      console.log(`[background] selection script not injectable into tab ${tabId}:`, err?.message ?? err);
+      console.log(`[background] selection script not injectable into tab ${tabId} frame ${frameId}:`, err?.message ?? err);
       return { injected: false, world: null };
     }
   }
@@ -3969,11 +4446,11 @@ export default defineBackground({
    *  `executeScript` is not a promise that the file's body has finished — the reply this
    *  feeds is sent by the very handler being waited for. Costs nothing when the file is
    *  already through: the first read returns and the loop exits. */
-  async function readIsolatedWorld(tabId: number): Promise<IsolatedWorld | null> {
+  async function readIsolatedWorld(tabId: number, frameId: number): Promise<IsolatedWorld | null> {
     let last: IsolatedWorld | null = null;
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
-        const probe = await execTopFrame(tabId, {
+        const probe = await execInFrame(tabId, frameId, {
           func: () => {
             const g = globalThis as any;
             return {
@@ -3990,7 +4467,7 @@ export default defineBackground({
         });
         last = (probe?.[0]?.result as IsolatedWorld | undefined) ?? null;
       } catch (err: any) {
-        console.log(`[background] isolated world unreadable in tab ${tabId}:`, err?.message ?? err);
+        console.log(`[background] isolated world unreadable in tab ${tabId} frame ${frameId}:`, err?.message ?? err);
         return null;
       }
       if (last?.responder === 'function') break;
@@ -4000,7 +4477,7 @@ export default defineBackground({
     // log line: they must match, and a world reporting a different one (or none) is a world
     // whose listener nothing this file sends can ever reach.
     console.log(
-      `[background] isolated world in tab ${tabId}:`,
+      `[background] isolated world in tab ${tabId} frame ${frameId}:`,
       JSON.stringify(last),
       '| our runtime id:',
       browser.runtime.id
@@ -4028,7 +4505,7 @@ export default defineBackground({
    *  The reply is parked on a world global by the handler's own `sendResponse` and collected
    *  afterwards, because the handler is asynchronous — a start answers only after a round trip
    *  of its own back through this file. */
-  async function askSelection(tabId: number, kind: 'start' | 'probe' | 'popupStart' | 'notifyNotSignedIn'): Promise<{ delivered: boolean; reply: any }> {
+  async function askSelection(tabId: number, frameId: number, kind: 'start' | 'probe' | 'popupStart' | 'notifyNotSignedIn'): Promise<{ delivered: boolean; reply: any }> {
     // The request is staged in the world rather than passed in, for the reason above: the
     // literals below are the whole of what distinguishes a start from a probe. `func` is
     // serialized, so these cannot close over `kind` — each branch is a self-contained
@@ -4046,8 +4523,8 @@ export default defineBackground({
       ? () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_NOTIFICATION', data: { kind: 'error', code: 3 } }; }
       : () => { (globalThis as any).__mfSelectionRequest = { type: 'MF_SELECTION_PROBE' }; };
     try {
-      await execTopFrame(tabId, { func: stage });
-      const invoked = await execTopFrame(tabId, {
+      await execInFrame(tabId, frameId, { func: stage });
+      const invoked = await execInFrame(tabId, frameId, {
         func: () => {
           const g = globalThis as any;
           // The newest copy publishes itself here and retires the one before it, so this is
@@ -4074,7 +4551,7 @@ export default defineBackground({
       // on its own schedule and there is nothing to await it with across the world boundary.
       for (let attempt = 0; attempt < 25; attempt++) {
         await new Promise((r) => setTimeout(r, 120));
-        const read = await execTopFrame(tabId, {
+        const read = await execInFrame(tabId, frameId, {
           func: () => (globalThis as any).__mfSelectionOutcome ?? null,
         });
         const collected = read?.[0]?.result ?? null;
@@ -4088,15 +4565,109 @@ export default defineBackground({
     }
   }
 
+  /** Which frames of a tab are known to run our own content script, and which of them last
+   *  held a selection.
+   *
+   *  The popup names only a tab — no browser API reports which frame of a page holds the
+   *  focus — so on a platform whose content lives in a frame it cannot know where to look.
+   *  It does not have to ask the browser: a frame running our content script can open a port
+   *  (see utils/relayCore.ts), and the port's sender carries the frame id. Recording it costs
+   *  nothing and needs no permission — `webNavigation`, which would enumerate frames
+   *  directly, is deliberately not one this extension carries, and injecting into every
+   *  frame at once is the per-frame prompt the selection path already refuses.
+   *
+   *  Frame 0 is not in here. It is the default, it is always a candidate, and it is tried
+   *  first, so the list holds only the frames that are an ADDITION to it. */
+  const framesByTab = new Map<number, Set<number>>();
+
+  /** Where the frames learned per tab are parked.
+   *
+   *  Session storage rather than this worker's memory, because what a stored frame id
+   *  records is a fact about the PAGE and it has to outlive the worker that heard it. The
+   *  reader loads a Naver Cafe article, reads it for a minute, selects a paragraph and only
+   *  then opens the popup — by which time this worker has almost always been recycled, and
+   *  an in-memory list would have gone with it, leaving the popup with nothing but the top
+   *  document to ask. The id is the whole answer: reaching that frame needs only the toolbar
+   *  grant the popup click produces, not the port that reported it. Session scope also means
+   *  it is dropped when the browser restarts, so an id can never be matched by a tab that
+   *  happens to reuse the number. */
+  const FRAME_STORE = 'mfFramesByTab';
+
+  /** How long a remembered frame is trusted, and how many are kept per tab. A frame id is
+   *  only meaningful to the document that reported it, so a tab that has navigated many
+   *  times would otherwise accumulate ids for documents that are gone. Asking a dead frame
+   *  is harmless — the injection simply finds no selection — but it is not free, and it
+   *  would grow without bound on a long-lived tab. */
+  const FRAME_TTL_MS = 30 * 60 * 1000;
+  const FRAME_MAX = 8;
+
+  /** The shape the store above holds: a frame id and when it was reported, per tab id. */
+  type FrameLedger = Record<string, { frameId: number; at: number }[]>;
+
+  /** The frame the popup's last probe found a selection in, per tab. Start runs after the
+   *  probe and must reach the same document; re-walking would be a guess, because the popup
+   *  taking focus can clear the page's selection in between. */
+  const selectionFrameByTab = new Map<number, number>();
+
+  /** Remember that `frameId` of `tabId` runs our content script. */
+  async function noteFrame(tabId: unknown, frameId: unknown): Promise<void> {
+    if (typeof tabId !== 'number' || typeof frameId !== 'number' || frameId === 0) return;
+    // In memory first: the next probe must see it even if the write below is slow, and a
+    // worker that is busy enough to lose the write is one that will not be recycled either.
+    const frames = framesByTab.get(tabId) ?? new Set<number>();
+    frames.add(frameId);
+    framesByTab.set(tabId, frames);
+    try {
+      const stored = await browser.storage.session.get(FRAME_STORE);
+      const all: FrameLedger = (stored?.[FRAME_STORE] ?? {}) as FrameLedger;
+      const now = Date.now();
+      const kept = (all[tabId] ?? []).filter((e) => now - e.at < FRAME_TTL_MS);
+      all[tabId] = [...kept, { frameId, at: now }].slice(-FRAME_MAX);
+      await browser.storage.session.set({ [FRAME_STORE]: all });
+    } catch { /* the in-memory copy above still answers this worker's probes */ }
+  }
+
+  /** The frames of `tabId` to ask about a selection, in the order to ask them: the top
+   *  document first, then the frames our content script has announced itself from. */
+  async function selectionFrames(tabId: number): Promise<number[]> {
+    const known = new Set<number>(framesByTab.get(tabId) ?? []);
+    try {
+      const stored = await browser.storage.session.get(FRAME_STORE);
+      const all: FrameLedger = (stored?.[FRAME_STORE] ?? {}) as FrameLedger;
+      const now = Date.now();
+      for (const e of all[tabId] ?? []) {
+        if (now - e.at < FRAME_TTL_MS) known.add(e.frameId);
+      }
+    } catch { /* fall back to what this worker heard for itself */ }
+    return [0, ...Array.from(known).sort((a, b) => a - b)];
+  }
+
+  /** The frame of `tabId` that holds a selection, with the probe's answer, or null.
+   *
+   *  A walk rather than a lookup because the frame is not knowable in advance: the selection
+   *  is the only thing that says which frame the user was working in, and it can only be
+   *  read from inside that frame. Each candidate is asked the same question the popup used
+   *  to ask frame 0 alone, and the first one that answers yes wins — so on every platform
+   *  whose content is in the top document this is exactly the single probe it always was. */
+  async function frameHoldingSelection(tabId: number): Promise<{ frameId: number; reply: any; world: IsolatedWorld | null } | null> {
+    for (const frameId of await selectionFrames(tabId)) {
+      const { injected, world } = await injectSelectionScript(tabId, frameId);
+      if (!injected) continue;
+      const { reply } = await askSelection(tabId, frameId, 'probe');
+      if (reply?.hasSelection) return { frameId, reply, world };
+    }
+    return null;
+  }
+
   /** Display the signed-out error notification on the given tab immediately.
    *  Broadcasts to any live ports (e.g. X.com) and injects the selection script
    *  to deliver the notification on arbitrary web pages without running preclassification. */
-  async function notifyTabSignedOut(tabId: number): Promise<void> {
+  async function notifyTabSignedOut(tabId: number, frameId: number): Promise<void> {
     notifyError(ERROR_CODES.NOT_SIGNED_IN);
     try {
-      const { injected } = await injectSelectionScript(tabId);
+      const { injected } = await injectSelectionScript(tabId, frameId);
       if (injected) {
-        await askSelection(tabId, 'notifyNotSignedIn');
+        await askSelection(tabId, frameId, 'notifyNotSignedIn');
       }
     } catch (err) {
       console.log('[background] notifyTabSignedOut failed to reach tab:', err);
@@ -4125,6 +4696,15 @@ export default defineBackground({
   registerSelectionMenu();
   browser.runtime.onInstalled.addListener(() => registerSelectionMenu());
 
+  // Mastodon instances are registered dynamically, one origin at a time, and this worker is
+  // killed after ~30s idle (see the header) — so the registrations cannot be re-established
+  // from a variable here. `persistAcrossSessions` restores them with the browser; this pass
+  // is what repairs the record when the two disagree, and it runs on both events because a
+  // worker restart is not an install. Fire-and-forget: housekeeping must not delay anything.
+  void reconcileInstanceScripts();
+  browser.runtime.onStartup.addListener(() => { void reconcileInstanceScripts(); });
+  browser.runtime.onInstalled.addListener(() => { void reconcileInstanceScripts(); });
+
   /** The browser's own record of the selection, held from the moment the context menu
    *  opened until the read it belongs to arrives (one turn later, and only from that path).
    *  A different extent is a different hash and a different claim set, so this is the one
@@ -4145,9 +4725,17 @@ export default defineBackground({
     // telling those two apart is the whole job of this line.
     const browserText = String(info?.selectionText ?? '');
     browserSelectionText = browserText;
+    // Which frame the click came from, and the reason the whole selection path takes a frame
+    // id at all. A selection made inside a same-origin frame belongs to THAT frame's
+    // selection object and is invisible above it — so a script injected into frame 0 reads
+    // nothing and the click fails silently, which is what it did on Naver Cafe's article.
+    // The click is the one trigger that knows where the user was; `?? 0` covers the browsers
+    // that report no frame for the top document rather than omitting the field.
+    const frameId = typeof info?.frameId === 'number' ? info.frameId : 0;
     console.log(
       '[background] context menu clicked:', info?.menuItemId,
       '| tab id:', tab?.id,
+      '| frame id:', frameId,
       '| selectionText:', JSON.stringify(browserText.slice(0, 400)),
       '| len:', browserText.length
     );
@@ -4160,10 +4748,10 @@ export default defineBackground({
       }
       if (!(await isSignedIn())) {
         console.log('[background] context menu clicked while signed out; showing error');
-        await notifyTabSignedOut(tabId);
+        await notifyTabSignedOut(tabId, frameId);
         return;
       }
-      const { injected, world } = await injectSelectionScript(tabId);
+      const { injected, world } = await injectSelectionScript(tabId, frameId);
       if (!injected) return;
       // keepProbe: false — this path never ran a probe, so if the page no longer holds a
       // selection there is nothing to fall back on and the page script must say so rather
@@ -4171,7 +4759,7 @@ export default defineBackground({
       //
       // The page script reaches back here for the page-world read if its own comes up
       // empty, so this one hand-over is all both halves of the read need.
-      const { delivered, reply } = await askSelection(tabId, 'start');
+      const { delivered, reply } = await askSelection(tabId, frameId, 'start');
       // Stringified because the console renders every object as a bare "Object", so a
       // refusal and a success arrive looking the same. `null` here means the handler was
       // handed the message and had not answered when it stopped being waited for, which is
@@ -4447,8 +5035,17 @@ export default defineBackground({
           return;
         }
 
+        // The stream has drained — see the tweet flow's note at the same point.
         const sole = latest.claims;
         if (sole.length === 1) {
+          // This passage's claim is the only one, so it is researched from here without
+          // waiting for a click: mark it and re-broadcast so it enters the loading state
+          // now, rather than showing a Fact-Check button through the wait on its DB row
+          // (see preclassifyRunTweets).
+          preclassifyRunTweets.add(selectionId);
+          const settled = classificationCache.get(selectionId)?.classification;
+          if (settled) broadcastClassification(settled);
+
           // Decide on the claim the DB has, not on the one the stream stopped at — the
           // difference is a verdict that already exists (see the helper).
           const claim = await claimAfterRowLands(selectionId, sole[0], hash, req.locale);
@@ -4458,6 +5055,10 @@ export default defineBackground({
       } catch (err: any) {
         console.error('[background] startSelectionPipeline error:', err);
       } finally {
+        // Safety net, same as the tweet flow's: the mark is dropped whatever else
+        // happened, so a hand-off that threw can't strand the passage's claim looking
+        // still-researching with nothing researching it.
+        preclassifyRunTweets.delete(selectionId);
         clearInterval(keepAlive);
         const cur = classificationCache.get(selectionId)?.classification;
         // The page's "Disinfacting" indicator and the popup both wait for a terminal,
@@ -4483,8 +5084,84 @@ export default defineBackground({
   // classification results stream back over time rather than as a single reply.
   // ─────────────────────────────────────────────────────────────────────────
 
+  // ── Mastodon runtime opt-in (utils/mastodonOptIn.ts) ───────────────────────
+  //
+  // Mastodon is federated, so an instance is enabled one origin at a time, from a click in
+  // the popup on the instance itself. The GRANT is requested by the popup and not here:
+  // `permissions.request` is only accepted while the caller still holds the user's gesture,
+  // and a gesture does not survive `runtime.sendMessage`. By the time these two messages
+  // arrive the grant is already held, so the background owns only the record and the
+  // registrations.
+
+  /** Put both halves of the integration into a tab that is already open.
+   *
+   *  Registering a content script only affects documents that START after it, and the page
+   *  the reader just clicked on started long ago — without this the opt-in would appear to
+   *  do nothing until they happened to reload. The interceptor goes first: it is the half
+   *  that patches the page's XHR, and running it after the coordinator would leave the
+   *  first sweep with nothing harvested. */
+  async function injectMastodonInto(tabId: number): Promise<void> {
+    const halves = [
+      { world: 'MAIN' as const, allFrames: false, files: [MASTODON_INTERCEPTOR_FILE] },
+      { world: 'ISOLATED' as const, allFrames: true, files: [MASTODON_COORDINATOR_FILE] },
+    ];
+    for (const half of halves) {
+      try {
+        await browser.scripting.executeScript({
+          target: { tabId, allFrames: half.allFrames },
+          files: half.files,
+          world: half.world,
+        } as any);
+      } catch (error) {
+        // A tab on an instance page we cannot inject into is not a failure worth failing
+        // the opt-in over: the registration is in place, so the next load gets both halves.
+        console.log(`[background] mastodon inject (${half.world}) skipped:`, String(error));
+      }
+    }
+  }
+
   // Popup ↔ background messaging (balance, messages, checkout).
   browser.runtime.onMessage.addListener((message: any, _sender: any, sendResponse: (r: any) => void) => {
+    if (message?.type === MASTODON_OPT_IN_MESSAGE && typeof message.host === 'string') {
+      (async () => {
+        const host = normalizeInstanceHost(message.host);
+        try {
+          // The popup asked for this grant a moment ago; a miss here means it was declined
+          // or later revoked, and nothing should be recorded for an origin we cannot reach.
+          if (!(await browser.permissions.contains({ origins: instanceOriginPatterns(host) }))) {
+            sendResponse({ ok: false, reason: 'no-grant' });
+            return;
+          }
+          const instances = await readOptedInInstances();
+          if (!instances.includes(host)) await writeOptedInInstances([...instances, host]);
+          await registerInstanceScripts(host);
+          if (typeof message.tabId === 'number') await injectMastodonInto(message.tabId);
+          sendResponse({ ok: true, host });
+        } catch (error) {
+          sendResponse({ ok: false, reason: String((error as Error)?.message ?? error) });
+        }
+      })();
+      return true; // async sendResponse
+    }
+    if (message?.type === MASTODON_OPT_OUT_MESSAGE && typeof message.host === 'string') {
+      (async () => {
+        const host = normalizeInstanceHost(message.host);
+        try {
+          await unregisterInstanceScripts(host);
+          const instances = await readOptedInInstances();
+          if (instances.includes(host)) await writeOptedInInstances(instances.filter((h) => h !== host));
+          // The origin grant is released, not merely forgotten: leaving it held would keep
+          // the instance in the extension's own permission list after the reader turned it
+          // off, which is exactly the quiet accumulation this design exists to avoid.
+          try { await browser.permissions.remove({ origins: instanceOriginPatterns(host) }); } catch { /* best effort */ }
+          sendResponse({ ok: true, host });
+        } catch (error) {
+          sendResponse({ ok: false, reason: String((error as Error)?.message ?? error) });
+        }
+      })();
+      return true; // async sendResponse
+    }
+
     // Opening the popup is the user's *second* way to start a selection fact-check, so the
     // popup needs to know whether the active tab currently has text selected. Injection
     // lives here, not in the popup, so both trigger paths share one code path — and so the
@@ -4492,18 +5169,20 @@ export default defineBackground({
     // the injection. Reply shape: { hasSelection, preview }.
     if (message?.type === 'MF_SELECTION_PREPARE' && typeof message.tabId === 'number') {
       (async () => {
-        const { injected, world } = await injectSelectionScript(message.tabId);
-        if (!injected) {
-          sendResponse({ hasSelection: false });
-          return;
-        }
-        const { delivered, reply } = await askSelection(message.tabId, 'probe');
+        // Which frame the user selected in is not something the popup can name, so the walk
+        // asks every frame we know of and takes the one that answers yes. The answer is
+        // remembered per tab: start has to hand the message to the same frame, and it runs
+        // after the popup took focus, by which time the selection may no longer be readable.
+        const found = await frameHoldingSelection(message.tabId);
         console.log(
-          '[background] selection probe answered:', JSON.stringify(reply),
-          '| delivered:', delivered,
-          '| responder:', world?.responder ?? 'probe failed'
+          '[background] selection probe answered:', JSON.stringify(found?.reply ?? null),
+          '| frame:', found?.frameId ?? 'none',
+          '| of:', JSON.stringify(await selectionFrames(message.tabId)),
+          '| responder:', found?.world?.responder ?? 'probe failed'
         );
-        sendResponse({ hasSelection: !!reply?.hasSelection, preview: reply?.preview ?? '' });
+        if (found) selectionFrameByTab.set(message.tabId, found.frameId);
+        else selectionFrameByTab.delete(message.tabId);
+        sendResponse({ hasSelection: !!found?.reply?.hasSelection, preview: found?.reply?.preview ?? '' });
       })();
       return true; // async sendResponse
     }
@@ -4518,20 +5197,25 @@ export default defineBackground({
         const tabId = message.tabId;
         if (!(await isSignedIn())) {
           console.log('[background] selection start refused: not signed in');
-          await notifyTabSignedOut(tabId);
+          await notifyTabSignedOut(tabId, 0);
           sendResponse({ ok: false, reason: 'not-signed-in' });
           return;
         }
-        let world = await readIsolatedWorld(tabId);
+        // The frame the probe found, not a fresh guess: the popup takes focus between the two
+        // messages, and a page that has lost its selection answers the same question "no" no
+        // matter which frame it is asked in. Falling back to frame 0 is for a start that
+        // arrives without a probe — the flow allows it, and it is what this path always did.
+        const frameId = selectionFrameByTab.get(tabId) ?? 0;
+        let world = await readIsolatedWorld(tabId, frameId);
         if (world?.responder !== 'function') {
-          const inj = await injectSelectionScript(tabId);
+          const inj = await injectSelectionScript(tabId, frameId);
           if (!inj.injected) {
             sendResponse({ ok: false, reason: 'not-injected' });
             return;
           }
           world = inj.world;
         }
-        const { delivered, reply } = await askSelection(tabId, 'popupStart');
+        const { delivered, reply } = await askSelection(tabId, frameId, 'popupStart');
         console.log(
           '[background] selection popup-start answered:', JSON.stringify(reply),
           '| delivered:', delivered,
@@ -4543,7 +5227,7 @@ export default defineBackground({
     }
     if (message?.type === 'MF_NOTIFY_SIGNED_OUT' && typeof message.tabId === 'number') {
       (async () => {
-        await notifyTabSignedOut(message.tabId);
+        await notifyTabSignedOut(message.tabId, 0);
         sendResponse({ ok: true });
       })();
       return true; // async sendResponse
@@ -4559,7 +5243,7 @@ export default defineBackground({
           sendResponse({ text: '' });
           return;
         }
-        sendResponse({ text: await probeSelectionInPageWorld(tabId) });
+        sendResponse({ text: await probeSelectionInPageWorld(tabId, senderFrameId(_sender)) });
       })();
       return true; // async sendResponse
     }
@@ -4570,7 +5254,7 @@ export default defineBackground({
           sendResponse({ ok: false, why: 'no tab' });
           return;
         }
-        const result = await captureSelectionInPageWorld(tabId);
+        const result = await captureSelectionInPageWorld(tabId, senderFrameId(_sender));
         // The only place the outcome of a page-world capture is legible: the page script
         // gets the same object, but it is the wrap that proves it, and the wrap is drawn
         // from here.
@@ -4613,17 +5297,6 @@ export default defineBackground({
     if (message?.type === 'MF_OPEN_CHECKOUT' && typeof message.url === 'string') {
       openCheckoutTab(message.url);
       return undefined; // no response
-    }
-    // Stripe return tab: the content script on x.com/?disinfax_checkout= fires this at
-    // document_start because the tabs.onUpdated watcher in openCheckoutTab is often gone
-    // by then (MV3 idle during the Checkout session). Close the tab immediately — its
-    // page must not classify, and leaving it open is how a freshly-funded X tab ended
-    // up with no DisinfaX UI (relay bails on the marker and never injects).
-    if (message?.type === 'MF_CHECKOUT_RETURN') {
-      const tabId = _sender?.tab?.id;
-      if (tabId != null) { try { browser.tabs.remove(tabId); } catch { /* already gone */ } }
-      if (message.outcome === 'success') pollFundsAfterCheckout();
-      return undefined;
     }
     // Safari drives OAuth (ASWebAuthenticationSession) and top-ups (StoreKit) through the
     // containing app. Safari only lets the BACKGROUND script call sendNativeMessage — a
@@ -4757,8 +5430,8 @@ export default defineBackground({
           // (Apple/X sign-ins always lost the popup-teardown race; only a fast Google
           // redirect survived to write it). Best-effort, like the popup's own write.
           try {
-            const usedProvider = message.provider;
-            if (usedProvider === 'x' || usedProvider === 'google' || usedProvider === 'apple') {
+            const usedProvider = asOAuthProvider(message.provider);
+            if (usedProvider) {
               await browser.storage.local.set({ disinfax_last_oauth_provider: usedProvider });
             }
           } catch { /* badge is best-effort */ }
@@ -4826,7 +5499,18 @@ export default defineBackground({
   void restoreToolbarIcon();
 
   browser.runtime.onConnect.addListener(port => {
+    // A frame announcing itself so it can be addressed later, and nothing else — it carries
+    // no messages in either direction. See `noteFrame` for why a frame of a framed platform
+    // has to do this, and utils/native.content.ts for where it is opened.
+    if (port.name === 'frame') {
+      void noteFrame(port.sender?.tab?.id, port.sender?.frameId);
+      return;
+    }
     if (port.name !== "classify") return;
+    // Which frame this is. Nothing else in the extension is told the frame id of a frame
+    // running our content script, and it is the only way the popup's selection fact-check can
+    // learn which frame to look in on a platform whose content is framed. See framesByTab.
+    void noteFrame(port.sender?.tab?.id, port.sender?.frameId);
     activePorts.add(port);
     console.log(`[background] port connected, activePorts now ${activePorts.size}`);
     port.onDisconnect.addListener(() => {
@@ -5001,6 +5685,7 @@ export default defineBackground({
         dbMissHashes.clear();
         const forget = (id: string) => {
           dbFetchPromises.delete(id);
+          forgetLookup(id);
           reResearchedTweetIds.delete(id);
           localizedHighlightLocales.delete(id);
           factCheckAllTweetIds.delete(id);
@@ -5027,6 +5712,9 @@ export default defineBackground({
           forget(t.id);
           if (t.quoting) forget(t.quoting.id);
         }
+        // One write for the whole loop rather than one per id: the removals above are the
+        // point, and a refresh must not leave a superseded snapshot in the store.
+        flushLookupMemo();
 
         // This IS the click ("Re-classify this tweet's claims"), so run a real
         // preclassification rather than a reload. It used to call processFullBatch, which
@@ -5322,7 +6010,7 @@ export default defineBackground({
       }
 
       if (message.type === "PROCESS_ON_HOLD") {
-        const { tweetId, locale: msgLocale, displayedSide, displayedText } = message.data;
+        const { tweetId, locale: msgLocale, displayedSide, displayedText, displayedLocale } = message.data;
         const locale = msgLocale ?? getUiLocale();
         const entry = onHoldTweets.get(tweetId);
         if (!entry) {
@@ -5339,6 +6027,7 @@ export default defineBackground({
             locale,
             displayedSide: displayedSide ?? null,
             displayedText: displayedText ?? null,
+            displayedLocale: displayedLocale ?? null,
             timer: setTimeout(() => {
               pendingProcessOnHold.delete(tweetId);
               console.log(`[background] PROCESS_ON_HOLD: parked tap for ${tweetId} timed out, dropped`);
@@ -5360,7 +6049,7 @@ export default defineBackground({
         // first captured and has no idea the user switched sides since, so without it
         // runPreclassification would key highlights under the translation's locale for a
         // user reading the original.
-        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false, displayedSide ?? null, displayedText ?? null);
+        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false, displayedSide ?? null, displayedText ?? null, displayedLocale ?? null);
         return;
       }
 
@@ -5459,6 +6148,7 @@ export default defineBackground({
               ongoingClaimRefreshes.delete(refreshKey);
               // Any backend failure → revert to the on-hold button so the user can retry.
               if (!(handled || gotUpdate)) revertClaimToOnHold(classificationId, claimText, anyBatchId);
+              else if (!handled) settleClaimResearch(classificationId, claimText, anyBatchId, true);
             }
           });
           trackClaimResearch(refreshKey, pipelineResearchPromise);
@@ -5545,6 +6235,7 @@ export default defineBackground({
             ongoingClaimRefreshes.delete(refreshKey);
             // Any backend failure → revert to the on-hold button so the user can retry.
             if (!(handled || gotUpdate)) revertClaimToOnHold(classificationId, claimText, anyBatchId);
+            else if (!handled) settleClaimResearch(classificationId, claimText, anyBatchId, true);
           }
         });
         trackClaimResearch(refreshKey, reclassifyResearchPromise);
@@ -5803,15 +6494,22 @@ export default defineBackground({
 
         console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} displayed locale -> ${textLocale}`);
 
+        // WHICH side supplied the text decides what the next paid localization measures
+        // its ranges against, and the three are indistinguishable from the outside, so it
+        // is named on the log line below.
+        let textSource: 'capture-source' | 'capture-translation' | 'dom' | 'none' = 'none';
+
         // Update the classification's displayed text locale and, if we know the text,
         // update translatedText/translatedLocale so the content script uses the right source.
         const updatedCls: Classification = { ...classification, textLocale };
         if (textLocale === tweet.sourceLanguage && tweet.text) {
           updatedCls.translatedText = tweet.text;
           updatedCls.translatedLocale = tweet.sourceLanguage;
+          textSource = 'capture-source';
         } else if (textLocale === tweet.destinationLanguage && tweet.translatedText) {
           updatedCls.translatedText = tweet.translatedText;
           updatedCls.translatedLocale = tweet.destinationLanguage;
+          textSource = 'capture-translation';
         } else if (displayedText) {
           // Locale resolved from the DOM (watchDisplayedLocaleFromDom): X translated the tweet
           // lazily, so the captured payload has no destinationLanguage and the cached tweet has
@@ -5826,6 +6524,54 @@ export default defineBackground({
           // That only applies to this lazily-translated path, which has no other source.
           updatedCls.translatedText = displayedText;
           updatedCls.translatedLocale = textLocale;
+          textSource = 'dom';
+        }
+
+        // A paid localization survives a reload only if the client still recognises the
+        // body it was measured against: ranges are persisted as "<locale>:<sha256-of-body>"
+        // and selectHighlightRevision drops every key whose body the client does not hold.
+        // A post captured with one side on screen holds ONLY that side (all Telegram posts,
+        // and X's lazily-translated ones), so the moment the reader flips it, the ranges
+        // persisted for the other side are invisible: the Localize button comes back over a
+        // result already paid for, and clicking it is worse than useless — `localizedHighlightLocales`
+        // still holds the locale, so localizeHighlights returns without running and the
+        // button does nothing at all.
+        //
+        // The reader has just said what is on screen, so record that side on the cached
+        // tweet and read the persisted ranges back through a gate that knows it. This only
+        // ever FILLS a translation side that was missing and only ever ADDS a highlight, so
+        // a tweet whose payload carried both sides is untouched.
+        if (displayedText && textLocale) {
+          const cached = tweetCache.get(tweetId);
+          if (cached && !(cached.translatedText && cached.destinationLanguage)) {
+            tweetCache.set(tweetId, { ...cached, translatedText: displayedText, destinationLanguage: textLocale });
+          }
+          const shownTweet = tweetCache.get(tweetId);
+          const dbEntry = dbHitCache.get(tweetId);
+          if (shownTweet && dbEntry?.dbClaims?.length) {
+            const gate = revisionGateFor(shownTweet, shownTweet.quoting);
+            const byId = new Map<string, any>();
+            const byText = new Map<string, any>();
+            for (const d of dbEntry.dbClaims) {
+              if (d?.id != null) byId.set(String(d.id), d);
+              const key = extractClaimText(d?.claim);
+              if (key && !byText.has(key)) byText.set(key, d);
+            }
+            let recovered = 0;
+            updatedCls.claims = (updatedCls.claims ?? []).map(cl => {
+              if (resolveHighlightRange(cl.highlight, textLocale)) return cl;
+              const d = (cl.dbClaimId ? byId.get(cl.dbClaimId) : undefined) ?? byText.get(cl.dbClaimText ?? cl.text);
+              if (!d?.highlight || typeof d.highlight !== 'object') return cl;
+              const kept = selectHighlightRevision(d.highlight as Record<string, unknown>, gate);
+              const range = kept[textLocale] as [number, number] | undefined;
+              if (!isLocatedRange(range)) return cl;
+              recovered++;
+              return { ...cl, highlight: { ...(cl.highlight ?? {}), [textLocale]: range } };
+            });
+            if (recovered > 0) {
+              console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} recovered ${recovered} persisted ${textLocale} highlight(s) for the body now on screen`);
+            }
+          }
         }
         // If the newly-displayed locale's highlights aren't already cached, NEVER
         // localize automatically (localizing charges the balance). Instead surface our
@@ -5842,8 +6588,8 @@ export default defineBackground({
         // the fallback area to flash before the Disinfact button appears. The final state is
         // identical either way; the two conditions are complements (some claim missing a
         // highlight for this locale vs. some claim having one).
-        const needsLocalization = (classification.claims ?? []).some(cl => !resolveHighlightRange(cl.highlight, textLocale));
-        console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} needsLocalization=${needsLocalization}`);
+        const needsLocalization = (updatedCls.claims ?? []).some(cl => !resolveHighlightRange(cl.highlight, textLocale));
+        console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} text=${textSource} needsLocalization=${needsLocalization}`);
         if (needsLocalization) {
           console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} no cached highlights for ${textLocale} → holding for Translate Fact-Checks button`);
           updatedCls.translateFactChecksOnHold = true;

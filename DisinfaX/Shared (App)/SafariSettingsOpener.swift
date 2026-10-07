@@ -17,19 +17,30 @@ enum SafariSettingsOpener {
 
     private static let safariBundleIdentifier = "com.apple.Safari"
 
-    /// Where "Return to Safari" lands the user: the site the extension actually runs on.
+    /// Where "Return to Safari" lands the user after a purchase: the checkout's own success page,
+    /// the same one a Stripe checkout redirects to (see create-checkout-session).
+    ///
+    /// This used to be x.com, when X was the only site the extension ran on. The extension runs on
+    /// a dozen platforms now, so that target dropped a reader who had been on Facebook or Reddit
+    /// onto X — plus it read as if the payment had returned them to the wrong place.
     ///
     /// Opening a URL rather than merely activating Safari is deliberate. Activation alone changes
     /// the menu bar and nothing else when Safari's windows are minimised or on another Space —
     /// which is the reported symptom, and why it only appeared to work when Safari happened to be
     /// the previous app. Opening a URL always surfaces a window, in an existing one as a tab if
     /// there is one.
-    private static let returnDestination = URL(string: "https://x.com")!
+    private static let purchaseDestination = URL(string: "https://disinfax.app/success")!
+
+    /// Where "Open Safari Extension Settings…" lands first. Only the window-surfacing behaviour
+    /// above matters here — the settings pane opens over whatever this loads — so it is the
+    /// product's own site rather than the purchase page, which would be a strange thing to be
+    /// looking at while enabling an extension.
+    private static let settingsDestination = URL(string: "https://disinfax.app")!
 
     /// Brings Safari forward after a purchase. macOS only: iOS has no equivalent — an app cannot
     /// activate another. Does not quit this app, so a second top-up needs no relaunch.
     static func activateSafari() {
-        openInSafari(returnDestination) { _ in }
+        openInSafari(purchaseDestination) { _ in }
     }
 
     /// Opens Safari's extension settings for DisinfaX.
@@ -39,7 +50,7 @@ enum SafariSettingsOpener {
     /// bug as above. That Safari also comes to the front, and that the pane opens inside Safari's
     /// own Settings window rather than alone, is Apple's behaviour and is not adjustable.
     static func open() {
-        openInSafari(returnDestination) { _ in
+        openInSafari(settingsDestination) { _ in
             SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionIdentifier) { _ in }
         }
     }

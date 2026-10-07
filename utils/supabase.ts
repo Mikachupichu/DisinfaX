@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { browser } from 'wxt/browser';
+import { isPlatformHost } from './platforms/hosts';
 
 const supabaseUrl = 'https://pofekzkirnysbuqbxmvp.supabase.co';
 /** Supabase's *publishable* (anon) key. This is designed to ship in client code: it
@@ -32,19 +33,18 @@ const chromeStorageAdapter = {
  *  logs. Content scripts need no Supabase API at all (relay/capture only pass
  *  messages; auth headers are minted in the background).
  *
- *  Detection is by URL because content scripts have an x.com href while the
- *  popup/background/options pages do not. Best-effort: anything unrecognized
- *  keeps the session-owning client, so a detection miss degrades to today's
- *  behaviour rather than signing anyone out. */
+ *  Detection is by hostname, because content scripts run on a platform page while the
+ *  popup/background/options pages do not. It asks the platform host list rather than
+ *  naming x.com so that adding a platform cannot introduce this bug by omission — the
+ *  failure mode is a silent sign-out with no server-side trace, which is exactly the
+ *  kind of thing that ships unnoticed. Best-effort: anything unrecognized keeps the
+ *  session-owning client, so a detection miss degrades to the previous behaviour
+ *  rather than signing anyone out. */
 function ownsAuthSession(): boolean {
   try {
-    const href = (globalThis as { location?: { href?: unknown } }).location?.href;
-    if (typeof href !== 'string' || !href) return true;
-    // x.com pages (MAIN or isolated world alike) must not own the session.
-    // The OAuth/Stripe redirect tabs also land on x.com and are handled by the
-    // background after the harvester forwards them — also not owners.
-    if (href.includes('x.com/') || href === 'https://x.com' || href.startsWith('https://x.com?')) return false;
-    return true;
+    const loc = (globalThis as { location?: { href?: unknown; hostname?: unknown } }).location;
+    if (!loc || typeof loc.hostname !== 'string' || !loc.hostname) return true;
+    return !isPlatformHost(loc.hostname);
   } catch {
     return true;
   }
@@ -74,6 +74,54 @@ export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKe
         detectSessionInUrl: false,
       },
 });
+
+/** The sign-in rows we offer, keyed by the name WE use for them.
+ *
+ *  Lives here rather than in the popup because two contexts need the same list and must
+ *  not be able to disagree: the popup draws the buttons from it, and the background
+ *  validates the provider before recording it for the "last used" badge (the Firefox
+ *  flow completes while the popup is dead, so the background writes that value). A
+ *  second copy of an allowlist is exactly the shape that drifts. */
+export type OAuthProvider = 'x' | 'google' | 'apple' | 'facebook' | 'linkedin' | 'reddit';
+
+/** The rows the sign-in screen offers, in the order it draws them. */
+export const OAUTH_PROVIDERS: OAuthProvider[] = ['google', 'apple', 'x', 'facebook', 'linkedin', 'reddit'];
+
+/** Supabase's own name for each row, which is not always ours.
+ *
+ *  LinkedIn must be the OIDC provider: `linkedin` is the older one and drives LinkedIn's
+ *  deprecated OAuth 2.0 endpoints. Reddit is not one of Supabase's built-in providers at all, so
+ *  it is addressed through the custom OAuth2 provider configured in the dashboard — the
+ *  identifier there has to be `reddit` for this string to resolve. The three others are the
+ *  provider's own name. These values go straight into `signInWithOAuth`, so the union they form
+ *  is what type-checks them against Supabase's own list. */
+export const SUPABASE_PROVIDER = {
+  google: 'google',
+  apple: 'apple',
+  x: 'x',
+  facebook: 'facebook',
+  linkedin: 'linkedin_oidc',
+  reddit: 'custom:reddit',
+} as const satisfies Record<OAuthProvider, string>;
+
+/** The scopes each provider is asked for. `openid` is what makes Google and LinkedIn return an
+ *  ID token, and LinkedIn's OIDC app is only allowed those three; Reddit's `identity` is the
+ *  scope that lets the custom provider read `/api/v1/me`. Facebook's `email` is the smallest
+ *  scope that yields a usable identity, and Apple is asked for nothing, as before. */
+export const OAUTH_SCOPES = {
+  google: 'openid',
+  apple: '',
+  x: 'users.read',
+  facebook: 'email',
+  linkedin: 'openid profile email',
+  reddit: 'identity',
+} as const satisfies Record<OAuthProvider, string>;
+
+/** Narrow an untrusted value (a stored badge, a message from the popup) to a provider we
+ *  actually offer, or null. */
+export function asOAuthProvider(value: unknown): OAuthProvider | null {
+  return OAUTH_PROVIDERS.includes(value as OAuthProvider) ? (value as OAuthProvider) : null;
+}
 
 let refreshInFlight: Promise<void> | null = null;
 const REFRESH_MARGIN_SECONDS = 60;

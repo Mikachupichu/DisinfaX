@@ -380,5 +380,40 @@
   "selectionConfirmCancel": {
     "message": "キャンセル",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "クリア",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ で DisinfaX を有効にする",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$ で DisinfaX が有効です",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "オフにする",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook で続行"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn で続行"
+  },
+  "continueWithReddit": {
+    "message": "Reddit で続行"
   }
 }

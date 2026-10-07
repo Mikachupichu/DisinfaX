@@ -35,16 +35,27 @@ import {
   isPassageInvisible,
 } from '../utils/injecting';
 import { mfBus } from '../utils/mfBus';
+import { isInstanceOptedIn } from '../utils/mastodonOptIn';
+import { platformForHost } from '../utils/platforms/registry';
+import { mastodonAdapter } from '../utils/platforms/mastodon';
+import type { CapturedPost, PlatformAdapter } from '../utils/platforms/types';
 import type { Claim, Classification, TextSegment } from '../data/Classification';
+import type { MainTweet } from '../data/Tweets';
 
 export default defineUnlistedScript(() => {
-  // Subframes get the file too on older builds that ignore frameIds: only the top
-  // frame owns the selection, the wrap and the popover. A frame copy installs
-  // nothing, answers nothing, and returns before touching the DOM or the runtime.
-  // The popup no longer uses tabs.sendMessage (Safari delivered that to every
-  // iframe and prompted for tracker origins); start is handed over in this world.
+  // Subframes get the file too on older builds that ignore frameIds, and a frame copy is
+  // wanted in exactly one case: the background injected into that frame on purpose, because
+  // the user's selection is in it. That is not always the top document — anywhere content
+  // lives in a same-origin frame (Naver Cafe's `#cafe_main`) the selection belongs to the
+  // frame and the document above it reports an empty one — so the background marks the frame
+  // it targets, and the mark is what a frame copy runs on. Both are read here and the copy
+  // returns before touching the DOM or the runtime when neither holds: an untargeted copy
+  // installs nothing and answers nothing, which is what keeps a stray copy in an ad frame
+  // from drawing a HUD of its own. The top frame needs no mark. The popup no longer uses
+  // tabs.sendMessage (Safari delivered that to every iframe and prompted for tracker
+  // origins); start is handed over in this world.
   try {
-    if (window.self !== window.top) return;
+    if (window.self !== window.top && (globalThis as any).__mfSelectionWanted !== true) return;
   } catch {
     return;
   }
@@ -131,8 +142,12 @@ export default defineUnlistedScript(() => {
     return owner !== undefined && w[RESPONDER] === owner;
   }
 
-  const MAX_BEFORE_WORDS = 250;
-  const MAX_AFTER_WORDS = 25;
+  /** Character counts, not words: a word is a meaningless unit on the CJK surfaces we
+   *  integrate (a 250-"word" Dcard post is one paragraph), and the window has to bound the
+   *  string we hash and ship, not the whitespace runs in it. 250 words → 1500 characters,
+   *  25 → 150. */
+  const MAX_BEFORE_CHARS = 1500;
+  const MAX_AFTER_CHARS = 150;
 
   /** Block-level elements whose text bounds the context window. Deliberately a union of
    *  the common prose containers: `closest()` matches the INNERMOST one, which is what
@@ -145,9 +160,9 @@ export default defineUnlistedScript(() => {
 
   type SelectionCapture = {
     id: string;
-    /** Up to MAX_BEFORE_WORDS words preceding the selection, or "" when it opens a block. */
+    /** Up to MAX_BEFORE_CHARS characters preceding the selection, or "" when it opens a block. */
     before: string;
-    /** Up to MAX_AFTER_WORDS words following the selection, or "" at the end of a block. */
+    /** Up to MAX_AFTER_CHARS characters following the selection, or "" at the end of a block. */
     after: string;
     /** The selection's OWN text, taken from the DOM after extraction so it is guaranteed
      *  to align character-for-character with the offsets the worker returns ranges in. */
@@ -211,11 +226,12 @@ export default defineUnlistedScript(() => {
    *  only what is unique to this flow: the "Disinfacting" indicator, and the z-index the
    *  popover needs on a page whose own chrome is stacked high. */
   const SELECTION_STYLES = `
-/* .mf-popover is z-index 1 in the X stylesheet, which is right inside a tweet's own
-   stacking context and wrong on an arbitrary page: a sticky header or a cookie bar with a
-   four-digit z-index would draw over the window. The popover is appended to a container on
-   THIS page, so the comparison is against this page's z-indices, not X's. */
-.mf-popover { z-index: 2147483647 !important; }
+/* The shared stylesheet already puts the claim popover at the top of the z-index range, so
+   on an arbitrary page it draws over that page's own chrome — a sticky header, a cookie bar
+   — while still losing to our own notifications and Go-Back / Fact-Checked buttons, which is
+   the one ordering that has to hold everywhere. Repeated here as an !important so a host
+   stylesheet cannot out-specify the window. */
+.mf-popover { z-index: 2147483643 !important; }
 .mf-sel-hud {
     position: absolute;
     z-index: 2147483646;
@@ -284,9 +300,9 @@ export default defineUnlistedScript(() => {
 
   // ── Capture ────────────────────────────────────────────────────────────────
 
-  /** Context extraction is bounded solely by word limits (e.g. MAX_BEFORE_WORDS = 250).
-   *  Block traversal continues through preceding/following prose blocks until the word limit is reached
-   *  or the root boundary has no further prose blocks. */
+  /** Context extraction is bounded solely by character limits (e.g. MAX_BEFORE_CHARS = 1500).
+   *  Block traversal continues through preceding/following prose blocks until the character
+   *  limit is reached or the root boundary has no further prose blocks. */
 
   /** Story body the sibling walk is allowed to leave the enclosing block for. Innermost
    *  match: `articleBody` is the body itself, `article` is the story, `main` is the
@@ -402,8 +418,28 @@ export default defineUnlistedScript(() => {
     return null;
   }
 
-  function toWords(text: string): string[] {
-    return text.trim().split(/\s+/).filter(Boolean);
+  /** One stream of prose for the window: whitespace runs collapse to single spaces, so a
+   *  block's indentation and its line breaks don't spend the character budget. */
+  function squash(text: string): string {
+    return text.replace(/\s+/g, ' ').trim();
+  }
+
+  /** The tail of `text` within `max` characters, opened on a word boundary — a cut landing
+   *  inside a word drops that fragment rather than sending half a word as context. */
+  function tailChars(text: string, max: number): string {
+    if (text.length <= max) return text;
+    const at = text.length - max;
+    if (/\s/.test(text[at - 1])) return text.slice(at);
+    const space = text.indexOf(' ', at);
+    return space < 0 ? text.slice(at) : text.slice(space + 1);
+  }
+
+  /** The head of `text` within `max` characters, closed on a word boundary. */
+  function headChars(text: string, max: number): string {
+    if (text.length <= max) return text;
+    if (/\s/.test(text[max])) return text.slice(0, max);
+    const space = text.lastIndexOf(' ', max);
+    return space < 0 ? text.slice(0, max) : text.slice(0, space);
   }
 
   /** Strip leading/trailing whitespace from the wrap's own text nodes so
@@ -495,42 +531,50 @@ export default defineUnlistedScript(() => {
     return out.join('');
   }
 
-  /** The `max` words immediately preceding the selection, reaching back through the
+  /** The `max` characters immediately preceding the selection, reaching back through the
    *  enclosing block and then across preceding prose blocks (paragraphs, posts in a
    *  thread, quotes) within the landmark root. Chrome, buttons, action rows, and
    *  ads are strictly skipped. */
   function contextBefore(edge: Edge, block: Element, max: number, root: Element | null): string {
-    const words: string[] = [];
+    const parts: string[] = [];
+    let length = 0;
     let node: Element | null = block;
     let at: Edge | null = edge;
     const visited = new Set<Element>();
-    while (node && words.length < max) {
+    while (node && length < max) {
       visited.add(node);
-      const chunk = toWords(contextText(node, 'before', at)).slice(-max);
-      if (chunk.length) words.unshift(...chunk);
+      const chunk = squash(contextText(node, 'before', at));
+      if (chunk) {
+        parts.unshift(chunk);
+        length += chunk.length + 1;
+      }
       at = null; // whole blocks from here out
       node = findPreviousProseBlock(node, root);
       if (node && visited.has(node)) break;
     }
-    return words.slice(-max).join(' ');
+    return tailChars(parts.join(' '), max);
   }
 
-  /** The `max` words immediately following the selection, reaching forward through the
+  /** The `max` characters immediately following the selection, reaching forward through the
    *  enclosing block and across following prose blocks within the landmark root. */
   function contextAfter(edge: Edge, block: Element, max: number, root: Element | null): string {
-    const words: string[] = [];
+    const parts: string[] = [];
+    let length = 0;
     let node: Element | null = block;
     let at: Edge | null = edge;
     const visited = new Set<Element>();
-    while (node && words.length < max) {
+    while (node && length < max) {
       visited.add(node);
-      const chunk = toWords(contextText(node, 'after', at)).slice(0, max);
-      if (chunk.length) words.push(...chunk);
+      const chunk = squash(contextText(node, 'after', at));
+      if (chunk) {
+        parts.push(chunk);
+        length += chunk.length + 1;
+      }
       at = null;
       node = findNextProseBlock(node, root);
       if (node && visited.has(node)) break;
     }
-    return words.slice(0, max).join(' ');
+    return headChars(parts.join(' '), max);
   }
 
   /** Text between the start of the enclosing block and the selection, then that same block
@@ -557,11 +601,19 @@ export default defineUnlistedScript(() => {
       const startRoot = articleRoot(startBlock);
       const endRoot = articleRoot(endBlock);
 
+      // A post we integrate but have no buttons on hands the selection its own bounds.
+      const bounded = postContextAround(
+        { container: range.startContainer, offset: range.startOffset },
+        { container: range.endContainer, offset: range.endOffset },
+        range.startContainer,
+      );
+      if (bounded) return bounded;
+
       if (startBlock) {
-        before = contextBefore({ container: range.startContainer, offset: range.startOffset }, startBlock, MAX_BEFORE_WORDS, startRoot);
+        before = contextBefore({ container: range.startContainer, offset: range.startOffset }, startBlock, MAX_BEFORE_CHARS, startRoot);
       }
       if (endBlock) {
-        after = contextAfter({ container: range.endContainer, offset: range.endOffset }, endBlock, MAX_AFTER_WORDS, endRoot);
+        after = contextAfter({ container: range.endContainer, offset: range.endOffset }, endBlock, MAX_AFTER_CHARS, endRoot);
       }
     } catch (err) {
       // Context is a bonus, never a requirement — a detached or mid-re-render selection
@@ -587,8 +639,10 @@ export default defineUnlistedScript(() => {
         const at = Array.prototype.indexOf.call(parent.childNodes, el);
         const block = el.parentElement?.closest(BLOCK_SELECTOR) ?? document.body;
         const root = articleRoot(block);
-        before = contextBefore({ container: parent, offset: at }, block, MAX_BEFORE_WORDS, root);
-        after = contextAfter({ container: parent, offset: at + 1 }, block, MAX_AFTER_WORDS, root);
+        const bounded = postContextAround({ container: parent, offset: at }, { container: parent, offset: at + 1 }, el);
+        if (bounded) return bounded;
+        before = contextBefore({ container: parent, offset: at }, block, MAX_BEFORE_CHARS, root);
+        after = contextAfter({ container: parent, offset: at + 1 }, block, MAX_AFTER_CHARS, root);
       }
     } catch (err) {
       // As above: context is a bonus, never a requirement.
@@ -665,10 +719,12 @@ export default defineUnlistedScript(() => {
     return t.length === 0 || t.length === 1 || !/\s/.test(t);
   }
 
-  /** Words either side of a right-click that carried no deliberate selection. A word
-   *  clicked is a POINTER at the passage it sits in: the read is its neighbourhood —
-   *  50 words — never the article around it. */
-  const THIN_WINDOW_WORDS = 25;
+  /** Characters either side of a right-click that carried no deliberate selection — one
+   *  word or less, or nothing at all. A word clicked is a POINTER at the passage it sits
+   *  in: the read is its neighbourhood, ±60 characters, never the article around it. A
+   *  character count rather than a word count because a word is a meaningless unit on the
+   *  CJK surfaces we integrate. */
+  const THIN_WINDOW_CHARS = 60;
 
   /** The nearest block a node sits in, or null for a node in no block at all. */
   function blockOf(node: Node): Element | null {
@@ -698,31 +754,18 @@ export default defineUnlistedScript(() => {
 
   const WHITESPACE = /\s/;
 
-  /** Offsets in `text` of a ±`limit`-word window around the anchor span [a0, a1). A word
-   *  is a run of non-whitespace; the window opens on the first character of the limit-th
-   *  word before the anchor and closes on the last character of the limit-th after it, so
-   *  neither edge cuts a word in half. */
+  /** Offsets in `text` of a ±`limit`-character window around the anchor span [a0, a1).
+   *  Each edge is then walked out to the nearer word boundary, so neither cuts a word in
+   *  half and the window can overshoot by at most the word it stops on. */
   function windowBounds(text: string, a0: number, a1: number, limit: number): [number, number] {
-    let start = a0, back = 0, i = a0;
-    while (i > 0 && back < limit) {
-      while (i > 0 && WHITESPACE.test(text[i - 1])) i--;
-      if (i === 0) break;
-      while (i > 0 && !WHITESPACE.test(text[i - 1])) i--;
-      back++;
-      start = i;
-    }
-    let end = a1, forward = 0, j = a1;
-    while (j < text.length && forward < limit) {
-      while (j < text.length && WHITESPACE.test(text[j])) j++;
-      if (j >= text.length) break;
-      while (j < text.length && !WHITESPACE.test(text[j])) j++;
-      forward++;
-      end = j;
-    }
+    let start = Math.max(0, a0 - limit);
+    while (start > 0 && !WHITESPACE.test(text[start - 1])) start--;
+    let end = Math.min(text.length, a1 + limit);
+    while (end < text.length && !WHITESPACE.test(text[end])) end++;
     return [start, end];
   }
 
-  /** The ±THIN_WINDOW_WORDS window around `anchor`, read out of `pool`. Falls back to
+  /** The ±THIN_WINDOW_CHARS window around `anchor`, read out of `pool`. Falls back to
    *  `pool` when the anchor cannot be located in it: a wider read is the older
    *  behaviour, and dropping the click altogether would be worse. */
   function windowAround(pool: Range, anchor: Range): Range {
@@ -762,7 +805,7 @@ export default defineUnlistedScript(() => {
     const a0 = offsetOf(anchor.startContainer, anchor.startOffset);
     const a1 = offsetOf(anchor.endContainer, anchor.endOffset);
     if (a0 === null || a1 === null || a1 < a0) return pool;
-    const [from, to] = windowBounds(text, a0, a1, THIN_WINDOW_WORDS);
+    const [from, to] = windowBounds(text, a0, a1, THIN_WINDOW_CHARS);
     const locate = (global: number): [Text, number] | null => {
       for (let k = nodes.length - 1; k >= 0; k--) {
         if (global >= starts[k]) return [nodes[k], Math.min(global - starts[k], nodes[k].data.length)];
@@ -857,6 +900,117 @@ export default defineUnlistedScript(() => {
     return null;
   }
 
+  /** Our own injected chrome, on any platform: the marker that says a post is already
+   *  being handled by the extension. */
+  const INJECTED_CHROME =
+    '[data-mf-charge="disinfact"], [data-mf-charge="refresh-top"], [data-mf-charge="factcheckall"], [data-mf-charge="translate-tweet"], [mf-on-hold-id], [mf-top-bar-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]';
+
+  /** The adapter for this host, or null on X and on any ordinary webpage.
+   *
+   *  Resolved from the hostname rather than read out of the seam `utils/injecting.ts`
+   *  keeps for the platform's own content script. That seam is module state, and this
+   *  script is its own bundle: the adapter `native.content.ts` installs is not visible to
+   *  this copy of `injecting.ts` (two content scripts in one isolated world are still two
+   *  module registries), so asking the seam here would answer null on every platform.
+   *  `platformForHost` is a pure lookup on the hostname — the same answer, with no state
+   *  to be missing.
+   *
+   *  X is deliberately excluded. Its posts are found from `/status/` permalinks below,
+   *  exactly as they always have been, so nothing about X depends on this resolving. */
+  let hostAdapter: PlatformAdapter | null = null;
+
+  /** Resolve `hostAdapter` — once, and including the one case a hostname lookup cannot
+   *  answer by itself.
+   *
+   *  On every platform but Mastodon `platformForHost` IS the answer: the hosts are in the
+   *  manifest, so the lookup is complete. A Mastodon instance is not: it is federated, and
+   *  the reader granted it one origin at a time at runtime (see utils/mastodonOptIn.ts), so
+   *  the instance the reader is on is deliberately absent from the static list and the
+   *  lookup comes back empty on a page whose posts the coordinator has already put buttons
+   *  on. Without the fallback this file would conclude it is on an ordinary webpage: a
+   *  selection inside a post carrying our pill would be read as a web selection instead of
+   *  being handed to the post, and a passage would lose the post's author and chain as its
+   *  context — the two things the coordinator's own copy of the adapter resolves correctly.
+   *  The coordinator asks the same two questions in the same order (`native.content.ts`), so
+   *  the two bundles cannot disagree about which host this is.
+   *
+   *  Asynchronous, and resolved before the first message is answered rather than at load,
+   *  because the fallback is a storage read and everything below reads `hostAdapter`
+   *  synchronously. Cached, so one read covers the page. */
+  let hostAdapterReady: Promise<void> | null = null;
+
+  function resolveHostAdapter(): Promise<void> {
+    hostAdapterReady ??= (async () => {
+      const found = platformForHost(location.hostname);
+      if (found && found.id !== 'x') {
+        hostAdapter = found;
+        return;
+      }
+      try {
+        if (await isInstanceOptedIn(location.hostname)) hostAdapter = mastodonAdapter;
+      } catch {
+        /* Storage unreachable: stay null, which is this file's answer on an ordinary page. */
+      }
+    })();
+    return hostAdapterReady;
+  }
+
+  /** Whether `post` is one of the platform's long-form posts — the posts that keep the
+   *  passage behaviour even though they carry our buttons.
+   *
+   *  A long post gets a pill like every other post, and clicking that pill is the fast way
+   *  into the whole post. A SELECTION inside it is the other half of the pair and stays
+   *  what it always was: the reader pays for the passage they asked about, read inside the
+   *  post's own bounds and with the post's chain as its context. So every place below that
+   *  would otherwise treat "carries our chrome" as "we handle this post whole" asks this
+   *  first.
+   *
+   *  Read off the DOM, because the verdict cannot be computed here: the platforms answer
+   *  `isLongForm` from state their coordinator holds, and this script is a separate bundle
+   *  with its own copy of the adapter module (see the note on `hostAdapter`). The
+   *  coordinator stamps the answer on each post as it sweeps, which also makes the
+   *  question free to ask — no character counting, and no capture lookup per selection. */
+  function isLongFormPost(post: Element): boolean {
+    return post.hasAttribute('mf-longform');
+  }
+
+  /** The post one of our own injected elements sits in, as the platform names it.
+   *
+   *  `postElementFor` returns the INNERMOST post, which is the guard the X path below
+   *  spells as `el.closest('article') === article`: a quote card's buttons belong to the
+   *  quote card, never to the post quoting it. */
+  function postOfChrome(el: Element): Element | null {
+    return hostAdapter?.postElementFor(el) ?? null;
+  }
+
+  /** Posts whose Disinfact/refresh chrome is already injected — the only posts
+   *  that must not go through web-select. X articles and posts whose anchors
+   *  were missing stay on the web-select path (a post we could not place buttons on
+   *  renders none, so it is not counted here and its text stays fact-checkable as a web
+   *  selection — see `placeButtons` in utils/platforms/types.ts).
+   *
+   *  On a platform with an adapter the scan runs from our own chrome outwards rather than
+   *  from the page's markup inwards: the chrome is what says "we already handle this
+   *  post", the adapter resolves it to the owning post without this file needing to know
+   *  the platform's post vocabulary, and the posts are then subtracted by root rather than
+   *  by button — subtracting a pill would leave the post's own text behind as a web
+   *  selection. */
+  function injectedNativePostsIntersecting(range: Range): Element[] {
+    const seen = new Set<Element>();
+    for (const slot of Array.from(document.querySelectorAll<HTMLElement>(INJECTED_CHROME))) {
+      const post = postOfChrome(slot);
+      if (!post || seen.has(post)) continue;
+      // A long-form post is left out: its pill is there for a click, but a selection
+      // inside it is still a passage, and subtracting the post here is what would turn
+      // that passage into a click on the whole post.
+      if (isLongFormPost(post)) continue;
+      if (rangeIntersectsElement(range, post)) seen.add(post);
+    }
+    return Array.from(seen).sort((a, b) =>
+      (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1,
+    );
+  }
+
   /** Tweets whose Disinfact/refresh chrome is already injected — the only tweets
    *  that must not go through web-select. X articles and tweets whose anchors
    *  were missing stay on the web-select path. Nested quoted articles are
@@ -869,10 +1023,7 @@ export default defineUnlistedScript(() => {
   }
 
   function articleHasButtonInjections(article: Element): boolean {
-    return !!ownButton(
-      article,
-      '[data-mf-charge="disinfact"], [data-mf-charge="refresh-top"], [data-mf-charge="factcheckall"], [data-mf-charge="translate-tweet"], [mf-on-hold-id], [mf-top-bar-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]',
-    );
+    return !!ownButton(article, INJECTED_CHROME);
   }
 
   function injectedTweetArticlesIntersecting(range: Range): Element[] {
@@ -887,6 +1038,9 @@ export default defineUnlistedScript(() => {
     for (const article of Array.from(scope.querySelectorAll('article'))) {
       if (!articleHasButtonInjections(article)) continue;
       if (!tweetIdFromArticle(article)) continue;
+      // Same exclusion as the native path: a long tweet keeps its pill AND its passage
+      // behaviour, so a selection inside one is never turned into a click on the tweet.
+      if (isLongFormPost(article)) continue;
       if (rangeIntersectsElement(range, article)) seen.add(article);
     }
     const startArticle = (range.startContainer.nodeType === Node.ELEMENT_NODE
@@ -913,6 +1067,185 @@ export default defineUnlistedScript(() => {
     const tweetId = tweetIdFromArticle(article);
     if (!tweetId) return;
     mfBus.dispatchEvent(new CustomEvent('mf-process-on-hold', { detail: { tweetId } }));
+  }
+
+  /** The post's own controls, in the order a user asking to fact-check this text would
+   *  want them: the on-hold Disinfact first, then a re-run, then the translation a post
+   *  whose fact-checks are waiting on one needs, then the in-flight button last. */
+  const NATIVE_HANDOFF = [
+    'button[data-mf-charge="disinfact"]',
+    'button[data-mf-charge="refresh-top"]',
+    'button[data-mf-charge="translate-tweet"]',
+    'button[data-mf-charge="factcheckall"]',
+    // Last, and only in its "there is something hidden to show" state: a post whose
+    // claims are already classified renders a bar with no charge button at all — just the
+    // Reveal toggle — and a selection inside such a post must still do something. Reveal
+    // is what the post's own chrome offers for it. The state is the attribute's value, not
+    // the label's text, so this stays locale-independent. `hide` is deliberately not here:
+    // it would take claims OFF the post the user just asked about.
+    'button[data-mf-visual="reveal"]',
+  ] as const;
+
+  /** Hand a selection off to the post that already carries our buttons, by clicking the
+   *  post's own control — the same move the X path makes on the two platforms' shared
+   *  chrome, and the only one available to this script: the extension's internal event bus
+   *  is module state, so a dispatch from here would reach no listener in the content
+   *  script that actually owns the post. A real click crosses that boundary through the
+   *  DOM, which is what the X path relies on too.
+   *
+   *  Button-scoped to the post via `postOfChrome` so a quote card nested inside it cannot
+   *  answer for the outer post. A post carrying our buttons but none of these controls is
+   *  a bar state this list has not met: nothing is clicked, and the selection is still
+   *  spent on the post rather than turned into a second, paid web capture of text the post
+   *  already owns. */
+  function fireNativePostAsDisinfact(post: Element): void {
+    for (const selector of NATIVE_HANDOFF) {
+      for (const btn of Array.from(post.querySelectorAll<HTMLElement>(selector))) {
+        if (postOfChrome(btn) !== post) continue;
+        btn.click();
+        return;
+      }
+    }
+  }
+
+  /** The posts to subtract from a selection, whichever platform this is. */
+  function injectedPostsIntersecting(range: Range): Element[] {
+    return hostAdapter ? injectedNativePostsIntersecting(range) : injectedTweetArticlesIntersecting(range);
+  }
+
+  /** Hand one of those posts the user's intent, whichever platform this is. */
+  function firePostAsDisinfact(post: Element): void {
+    if (hostAdapter) fireNativePostAsDisinfact(post);
+    else fireTweetAsDisinfact(post);
+  }
+
+  /* ── A post whose text is read as a passage, not as a post ────────────────────────
+   *
+   *  Two of them. A long-form post, whose pill is the fast way into the whole thing while
+   *  a selection inside it is the slow, cheaper way into the part the reader actually
+   *  wants — and a post whose anchors were missing, which has no pill at all and whose
+   *  text is therefore only ever reachable as a web selection (see `placeButtons` in
+   *  utils/platforms/types.ts). The second is still keyed off the absence of our chrome;
+   *  the first is keyed off the adapter's own verdict, because it HAS chrome now and the
+   *  question is no longer whether we handle the post but which of the two ways the
+   *  reader asked for.
+   *
+   *  Such a selection stays a selection — the reader pays for the passage they asked
+   *  about, not for the post — but the extension KNOWS the post, so the context is the
+   *  post's rather than the page's: the selection is read inside the post's own bounds,
+   *  and `before` opens with the author (badge included), the ancestors and the quotes,
+   *  which is the same context the buttons path sends. It rides in `contextBefore` rather
+   *  than in `replyingTo`/`quoting` because a selection carries its context in those two
+   *  fields alone, and because that is what puts the chain into the selection's hash
+   *  (`canonicalContext` hashes before + selected + after and nothing else) — the same
+   *  reason a post's own hash covers its whole chain. */
+
+  /** Our own chrome inside `post` — its own, not a nested post's: a comment of a
+   *  buttonless post carries buttons, and that comment is a post of its own. */
+  function hasOwnChrome(post: Element): boolean {
+    for (const slot of Array.from(post.querySelectorAll(INJECTED_CHROME))) {
+      if (postOfChrome(slot) === post) return true;
+    }
+    return false;
+  }
+
+  /** The post `node` sits in, when a selection inside it is to be read as a passage in
+   *  that post rather than as a page-level selection.
+   *
+   *  Two kinds of post qualify. One carries none of our chrome — anchors were missing, so
+   *  there is no pill to click and the selection is the only way in. The other is a
+   *  long-form post: it has a pill now, but the pill and the passage are the pair the
+   *  reader chooses between, so the post's own bounds, author and chain are exactly as
+   *  much the passage's context as they were when the post had no pill at all. */
+  function buttonlessPostFor(node: Node): Element | null {
+    const post = hostAdapter?.postElementFor(node) ?? null;
+    if (!post) return null;
+    if (hasOwnChrome(post) && !isLongFormPost(post)) return null;
+    return post;
+  }
+
+  /** A post's author and their badge, in the shape the classifier reads a speaker in. */
+  function speakerOf(post: { username?: string | null; usertype?: string | null }): string {
+    const badge = post.usertype && !/^(none|regular)$/i.test(post.usertype) ? ` (${post.usertype})` : '';
+    return (post.username ? `@${post.username}` : 'anonymous') + badge;
+  }
+
+  /** A post's quote, as one line — `[quoted] @user (Verified): …`. */
+  function quotedLine(post: MainTweet | null | undefined): string[] {
+    const quoted = post?.quoting;
+    return quoted ? [`[quoted] ${speakerOf(quoted)}: ${quoted.text ?? ''}`] : [];
+  }
+
+  /** A buttonless post's ancestry and quotes, as the prologue a selection's `before`
+   *  opens with — oldest first, so the chain reads in the order it was written, and the
+   *  post's own line last so the selection's own passage continues it.
+   *
+   *  The same walk the coordinator does when it links a batch, done here off the ids the
+   *  DOM states, because this script is its own bundle and cannot see the coordinator's
+   *  captured set. Bounded by the depth the hash is bounded by (20) and by the ids already
+   *  seen, so a platform stating a cycle cannot spin here. */
+  function ancestryPrologue(post: Element): string {
+    const seam = hostAdapter;
+    if (!seam?.capture || !seam.captureRoots || !seam.postIdOf) return '';
+    const id = seam.postIdOf(post);
+    if (!id) return '';
+    const focal = seam.capture(post);
+    if (!focal) return '';
+    const roots = seam.captureRoots();
+    const chain: CapturedPost[] = [];
+    const seen = new Set<string>([id]);
+    let parentId = focal.replyParentId ?? null;
+    while (parentId && chain.length < 20 && !seen.has(parentId)) {
+      seen.add(parentId);
+      const root = roots.find((candidate) => seam.postIdOf(candidate) === parentId);
+      if (!root) break;
+      const lifted = seam.capture(root);
+      if (!lifted) break;
+      chain.unshift(lifted);
+      parentId = lifted.replyParentId ?? null;
+    }
+    const lines: string[] = [];
+    for (const ancestor of chain) {
+      lines.push(`[thread] ${speakerOf(ancestor.post)}: ${ancestor.post.text}`);
+      lines.push(...quotedLine(ancestor.post));
+    }
+    lines.push(...quotedLine(focal.post));
+    // No newline after the last line: the post's own text continues it.
+    lines.push(`[post] ${speakerOf(focal.post)}: `);
+    return lines.join('\n');
+  }
+
+  /** A selection's context inside a buttonless post: the post's own text either side of the
+   *  passage, its speaker, and the chain it hangs under — and nothing from beyond the post.
+   *
+   *  The post is the only bound here, on both sides: these are the post types that are
+   *  buttonless *because* they are long, and a context that stopped short of the post's own
+   *  end would hand the classifier a fragment of a passage rather than the passage in its
+   *  place. The web-select caps (MAX_BEFORE_CHARS/MAX_AFTER_CHARS) bound a page whose prose
+   *  runs past the thing selected; here the post ends the string by itself.
+   *
+   *  The chain is the same prologue a first-class post's click carries, in the order it was
+   *  written: ancestors oldest first, each with its speaker and quote, then the selection's
+   *  own post — its speaker and badge on the `[post]` line — and then its own words up to the
+   *  passage, so what stands immediately before the selected text is the text it was
+   *  selected from. Ordering the speaker anywhere else would leave the post's words
+   *  unattributed, which is the one thing the classifier cannot recover from. */
+  function postBoundedContext(startEdge: Edge, endEdge: Edge, post: Element): { before: string; after: string } | null {
+    if (!post.contains(startEdge.container) || !post.contains(endEdge.container)) return null;
+    return {
+      before: ancestryPrologue(post) + squash(contextText(post, 'before', startEdge)),
+      after: squash(contextText(post, 'after', endEdge)),
+    };
+  }
+
+  /** `contextAround` and `contextAroundElement` both defer to `postBoundedContext` when
+   *  their selection sits inside one of these posts, and fall through to the page's own
+   *  prose walk otherwise. Returns null whenever the post cannot answer — a selection
+   *  spanning out of the post, an adapter that cannot read the root it names. */
+  function postContextAround(startEdge: Edge, endEdge: Edge, node: Node): { before: string; after: string } | null {
+    const post = buttonlessPostFor(node);
+    if (!post) return null;
+    return postBoundedContext(startEdge, endEdge, post);
   }
 
   function leftoverRanges(range: Range, holes: Element[]): Range[] {
@@ -1065,9 +1398,9 @@ export default defineUnlistedScript(() => {
         range = live;
       }
     }
-    const injectedTweets = extract ? injectedTweetArticlesIntersecting(range) : [];
+    const injectedTweets = extract ? injectedPostsIntersecting(range) : [];
     if (extract && injectedTweets.length > 0) {
-      for (const article of injectedTweets) fireTweetAsDisinfact(article);
+      for (const article of injectedTweets) firePostAsDisinfact(article);
       const leftovers = leftoverRanges(range, injectedTweets);
       sel?.removeAllRanges();
       extraLeftoverCaptures = [];
@@ -1621,7 +1954,30 @@ export default defineUnlistedScript(() => {
     // rebuild already stripped the old spans, and the wrap's text no longer matches
     // the segments, so the passage would be left as bare text with nothing shown.
     // The claims still stand — list them rather than showing nothing at all.
-    if (!wrapClaimSegmentsInPlace(wrap!, segments!, claims, classification.batchId, classification.id, uiLocale())) {
+    // The wrap's passage is not necessarily the string the worker saw. `trimCapture` trims
+    // the selection before it is sent, and it can only trim TEXT nodes: a `<br>` at either
+    // edge of the selection is an element, so the newline it renders stays in the passage
+    // while the trimmed copy lost it. The segments index the trimmed string, the paint
+    // walks the untrimmed one, and the length gate inside would read that one-character
+    // difference as "the page re-rendered under the run" — the passage left bare with
+    // nothing shown. Pad the segments out to the passage instead, exactly as the post path
+    // does: the classified run is located in it and what surrounds it becomes plain
+    // segments, which wrap nothing.
+    const passage = passageTextContent(wrap!);
+    const joined = segments!.map((s) => s.text).join('');
+    const at = passage === joined ? 0 : passage.indexOf(joined);
+    if (at < 0) {
+      console.log('[selection] wrap no longer holds the classified text — listing claims instead of bare text');
+      renderClaimList(claims, classification.id, capture);
+      return;
+    }
+    const aligned: TextSegment[] = [];
+    if (at > 0) aligned.push({ text: passage.slice(0, at), claimIndex: null });
+    aligned.push(...segments!);
+    const tail = passage.slice(at + joined.length);
+    if (tail) aligned.push({ text: tail, claimIndex: null });
+
+    if (!wrapClaimSegmentsInPlace(wrap!, aligned, claims, classification.batchId, classification.id, uiLocale())) {
       console.log('[selection] wrap text drifted mid-run — listing claims instead of bare text');
       renderClaimList(claims, classification.id, capture);
       return;
@@ -1915,6 +2271,10 @@ export default defineUnlistedScript(() => {
         // an unreadable range, a bad context walk — visible only to a page console nobody
         // had open. A failure now arrives named.
         try {
+          // Whichever host this is, settled before anything reads it: on a Mastodon instance
+          // it is a storage read, and a probe that raced it would report "no post here" on a
+          // page full of our own buttons.
+          await resolveHostAdapter();
           // The popup has just taken focus, which leaves the page's selection intact but
           // blurred. Re-reading it here is what makes "select text → open the popup" work.
           // Read-only: opening the popup for the balance must not eat the selection.
@@ -1944,6 +2304,8 @@ export default defineUnlistedScript(() => {
       // Deferred for the same reason as the probe above.
       void (async () => {
         try {
+          // Settled first, for the same reason as the probe above.
+          await resolveHostAdapter();
           // Always re-read: the text selected NOW is what the user means, and it is regularly
           // a different selection from whatever a previous probe or a previous Disinfact left
           // in `pending`. A stale capture must never win — that would fact-check text the user

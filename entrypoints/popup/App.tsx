@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient';
+import { supabase, OAUTH_PROVIDERS, SUPABASE_PROVIDER, OAUTH_SCOPES, asOAuthProvider } from './supabaseClient';
+import type { OAuthProvider } from './supabaseClient';
 import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import Dashboard from './Dashboard';
 import { useT, getUiLocale, isRtl } from './i18n';
@@ -8,18 +9,16 @@ import { callNativeHost, NATIVE_CALLBACK_SCHEME } from '../../utils/nativeHost';
 
 /** Where the provider sends the user back on the iOS tab-based flow.
  *
- *  Deliberately x.com — a host the extension can already see — rather than disinfax.app,
- *  so no host permission for the extension's own site is needed. The page's content is
- *  irrelevant: this tab exists only for auth-callback.content.ts to harvest the OAuth
- *  params at document_start and for the background to close it. The `disinfax_oauth`
- *  marker distinguishes it from an ordinary x.com visit (auth-callback.content.ts,
- *  relay.content.ts and capture.main.content.ts all key off it), and the root path keeps
- *  the allowlist entry a single pattern — see the Supabase Redirect URLs step, where
- *  `https://x.com/*` must be added because the Site URL no longer covers this target.
+ *  Our own success page — the same path a Stripe checkout returns to — so the callback no
+ *  longer rides on host access to x.com. The page's content is irrelevant either way: this
+ *  tab exists only for auth-callback.content.ts to harvest the OAuth params at
+ *  document_start and for the background to close it. The `disinfax_oauth` marker is what
+ *  keeps that harvest off every other visit to the page, the checkout landing included.
  *
  *  Must stay in sync with the `matches` pattern and marker check in
- *  auth-callback.content.ts. */
-const AUTH_CALLBACK_URL = 'https://x.com/?disinfax_oauth=callback';
+ *  auth-callback.content.ts, and with the Supabase Redirect URLs allowlist, where
+ *  `https://disinfax.app/**` must be listed for the provider to accept this target. */
+const AUTH_CALLBACK_URL = 'https://disinfax.app/success?disinfax_oauth=callback';
 
 /** True on iPhone/iPad. One Safari build serves macOS and iOS, so this cannot be decided
  *  at build time via import.meta.env.SAFARI — and the two need different OAuth transports:
@@ -35,12 +34,17 @@ function isIosOrIpadOs(): boolean {
   }
 }
 
-type OAuthProvider = 'x' | 'google' | 'apple';
-
 /** Remembers the provider used for the last successful sign-in so it can be badged on
  *  return visits. Popup-local (extension origin), and only written after a session is
  *  actually established. */
 const LAST_PROVIDER_STORAGE_KEY = 'disinfax_last_oauth_provider';
+
+/** Written just before a user-chosen sign-out so the background can tell it apart from a
+ *  session the SERVER killed. Both look identical from the auth slot alone, and the
+ *  background raises a "you're not signed in" notice for the server-killed case (see
+ *  consumeIntentionalSignOut in entrypoints/background.ts) — which must not appear when
+ *  the user is the one who signed out. Read-and-cleared by the background. */
+const INTENTIONAL_SIGNOUT_KEY = 'mf_intentional_signout';
 
 /** The DisinfaX spray-bottle wordmark logo. Uses the white variant shipped in
  *  public/icon/ (same source as the toolbar icon and manifest icons) instead of a
@@ -72,7 +76,37 @@ const XIcon = () => (
   </svg>
 );
 
+/** Like Google's, these three keep their brand colours on the white button rather than
+ *  inheriting `fill-current`, so all four read as the service's own mark. */
+const FacebookIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/>
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#0A66C2" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+  </svg>
+);
+
+const RedditIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="12" fill="#FF4500"/>
+    <path fill="#fff" d="M19.5 12a1.5 1.5 0 0 0-2.55-1.06 7.4 7.4 0 0 0-3.9-1.23l.83-3.9 2.71.58a1.06 1.06 0 1 0 .12-.73l-3.02-.64a.36.36 0 0 0-.43.28l-.92 4.31a7.4 7.4 0 0 0-4 1.23A1.5 1.5 0 1 0 6.9 13.6a2.9 2.9 0 0 0-.05.55c0 2.8 3.24 5.07 7.15 5.07s7.15-2.27 7.15-5.07a2.9 2.9 0 0 0-.05-.55A1.5 1.5 0 0 0 19.5 12zM9.2 13.8a1.06 1.06 0 1 1 2.12 0 1.06 1.06 0 0 1-2.12 0zm5.9 3.14c-.75.75-2.19.81-2.6.81-.41 0-1.85-.06-2.6-.81a.3.3 0 0 1 .42-.42c.48.47 1.5.63 2.18.63s1.7-.16 2.18-.63a.3.3 0 0 1 .42.42zm-.42-2.08a1.06 1.06 0 1 1 0-2.12 1.06 1.06 0 0 1 0 2.12z"/>
+  </svg>
+);
+
 /** One provider row on the sign-in screen, badged when it was the last one used. */
+/** Whether the four social sign-in rows are offered on the sign-in screen.
+ *
+ *  All four are built and wired (see utils/supabase.ts), but none of them can currently complete:
+ *  Reddit gates new API clients behind a manual approval, Meta has this account under a
+ *  device-trust restriction, and the extension is still a friends-only beta besides. Google and
+ *  Apple are unaffected. Set this back to `true` to restore all four rows — no other change is
+ *  needed, and each provider starts working on its own as soon as it is enabled in Supabase. */
+const SHOW_SOCIAL_SIGNIN = false;
+
 function OAuthButton({ icon, label, isLastUsed, lastUsedLabel, onClick }: {
   icon: React.ReactNode;
   label: string;
@@ -118,7 +152,9 @@ export default function App() {
   useEffect(() => {
     browser.storage.local.get(LAST_PROVIDER_STORAGE_KEY).then((r: any) => {
       const stored = r?.[LAST_PROVIDER_STORAGE_KEY];
-      if (stored === 'x' || stored === 'google' || stored === 'apple') setLastUsedProvider(stored);
+      // Membership in the same list the buttons are drawn from, so adding a provider
+      // cannot leave the badge validating against a stale set.
+      if (OAUTH_PROVIDERS.includes(stored)) setLastUsedProvider(stored);
     }).catch(() => { /* badge is best-effort */ });
   }, []);
 
@@ -192,11 +228,11 @@ export default function App() {
         //    read it later — which matters for the tab flow, where this popup is gone by
         //    the time the provider redirects back.
         const { data, error } = await supabase.auth.signInWithOAuth({
-          provider,
+          provider: SUPABASE_PROVIDER[provider],
           options: {
             redirectTo: useTabFlow ? AUTH_CALLBACK_URL : 'disinfax://auth-callback',
             skipBrowserRedirect: true,
-            scopes: provider === 'x' ? 'users.read' : (provider === 'google' ? 'openid' : (provider === 'apple' ? '' : undefined)),
+            scopes: OAUTH_SCOPES[provider],
           },
         });
 
@@ -290,11 +326,11 @@ export default function App() {
       } else {
         const extensionRedirectUrl = browser.identity.getRedirectURL();
         const { data, error } = await supabase.auth.signInWithOAuth({
-          provider,
+          provider: SUPABASE_PROVIDER[provider],
           options: {
             redirectTo: extensionRedirectUrl,
             skipBrowserRedirect: true,
-            scopes: provider === 'x' ? 'users.read' : (provider === 'google' ? 'openid' : (provider === 'apple' ? '' : undefined)),
+            scopes: OAUTH_SCOPES[provider],
           },
         });
 
@@ -395,6 +431,13 @@ export default function App() {
     // Local scope only: the default is 'global', which revokes EVERY session on the
     // account — signing out on one device silently logged the user out everywhere else.
     // A Sign Out button should end the session on this device only.
+    //
+    // Mark the intent BEFORE the session goes, so the background — which learns of this
+    // only from the storage change — can suppress the "you're not signed in" notice it
+    // raises when a session disappears unbidden. Awaited so the marker is durable before
+    // the slot empties; a failure here is not worth blocking the sign-out over, and
+    // degrades to today's behaviour (a notice the user did not strictly need).
+    try { await browser.storage.local.set({ [INTENTIONAL_SIGNOUT_KEY]: Date.now() }); } catch { /* best-effort */ }
     await supabase.auth.signOut({ scope: 'local' });
     // Direct revocation alongside the background relay (storage.onChanged →
     // refreshActiveState → clearNativeAccount): two independent paths because
@@ -459,13 +502,38 @@ export default function App() {
               lastUsedLabel={t('lastUsed')}
               onClick={() => handleOAuthLogin('apple')}
             />
-            <OAuthButton
-              icon={<XIcon />}
-              label={t('continueWithX')}
-              isLastUsed={lastUsedProvider === 'x'}
-              lastUsedLabel={t('lastUsed')}
-              onClick={() => handleOAuthLogin('x')}
-            />
+            {SHOW_SOCIAL_SIGNIN && (
+              <>
+                <OAuthButton
+                  icon={<XIcon />}
+                  label={t('continueWithX')}
+                  isLastUsed={lastUsedProvider === 'x'}
+                  lastUsedLabel={t('lastUsed')}
+                  onClick={() => handleOAuthLogin('x')}
+                />
+                <OAuthButton
+                  icon={<FacebookIcon />}
+                  label={t('continueWithFacebook')}
+                  isLastUsed={lastUsedProvider === 'facebook'}
+                  lastUsedLabel={t('lastUsed')}
+                  onClick={() => handleOAuthLogin('facebook')}
+                />
+                <OAuthButton
+                  icon={<LinkedInIcon />}
+                  label={t('continueWithLinkedIn')}
+                  isLastUsed={lastUsedProvider === 'linkedin'}
+                  lastUsedLabel={t('lastUsed')}
+                  onClick={() => handleOAuthLogin('linkedin')}
+                />
+                <OAuthButton
+                  icon={<RedditIcon />}
+                  label={t('continueWithReddit')}
+                  isLastUsed={lastUsedProvider === 'reddit'}
+                  lastUsedLabel={t('lastUsed')}
+                  onClick={() => handleOAuthLogin('reddit')}
+                />
+              </>
+            )}
           </div>
         </div>
       ) : (

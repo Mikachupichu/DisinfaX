@@ -46,6 +46,22 @@ export type MainTweet = Tweet & References & {
     destinationLanguage?: string;
 }
 
+/** The language key for a post on a platform that states its language NOWHERE — neither
+ *  in its payload nor in its markup.
+ *
+ *  Every highlight range is persisted under "<language>:<text hash>", so a post with no
+ *  language has no key to file its ranges under. The background falls back to the reader's
+ *  own UI locale in that case, which looks harmless and is not: the same post read by a
+ *  French-UI user and an English-UI user is filed under two different keys, so the second
+ *  reader finds no highlights for their locale and is offered a paid re-localization of a
+ *  post that is already classified. A single named key makes the choice reader-independent.
+ *
+ *  `und` is ISO 639-3's "undetermined" code and is already what X emits from `legacy.lang`
+ *  when it cannot name a language, so nothing downstream is seeing a value it has never
+ *  seen. It is deliberately not "NA" (the obvious-looking spelling): `na` is Nauruan's
+ *  ISO 639-1 code, so a key spelled that way would claim to be a real language. */
+export const UNKNOWN_LANGUAGE = 'und';
+
 /** Account standing, mirroring X's `verification.verified_type` values. `Regular` uses
  *  X's own "None" string so an unverified account round-trips through the raw payload. */
 export enum Usertype {

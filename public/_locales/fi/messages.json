@@ -380,5 +380,40 @@
   "selectionConfirmCancel": {
     "message": "Peruuta",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Tyhjennä",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Ota DisinfaX käyttöön sivustolla $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX on käytössä sivustolla $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Poista käytöstä",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Jatka Facebook:llä"
+  },
+  "continueWithLinkedIn": {
+    "message": "Jatka LinkedIn:llä"
+  },
+  "continueWithReddit": {
+    "message": "Jatka Reddit:llä"
   }
 }
