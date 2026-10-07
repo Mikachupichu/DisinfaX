@@ -382,5 +382,40 @@
   "selectionConfirmCancel": {
     "message": "لغوه",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "پاک کړئ",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "په $HOST$ کې DisinfaX فعال کړه",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX په $HOST$ کې فعال دی",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "بندول",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "د Facebook سره دوام ورکړئ"
+  },
+  "continueWithLinkedIn": {
+    "message": "د LinkedIn سره دوام ورکړئ"
+  },
+  "continueWithReddit": {
+    "message": "د Reddit سره دوام ورکړئ"
   }
 }

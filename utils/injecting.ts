@@ -26,6 +26,45 @@ import { mfBus } from "./mfBus";
 import { codeToMessageKey, ERROR_CODES } from "./errorCodes";
 import { KALAM_BOLD_LATIN_B64, KALAM_BOLD_LATIN_EXT_B64 } from "./correctionFont";
 import disinfaxMarkRaw from "../public/black.svg?raw";
+import type { PlatformAdapter, PostRef, TextRegion } from "./platforms/types";
+
+// ── Active platform adapter ──────────────────────────────────────────────────
+
+/**
+ * The adapter for the platform this document is on, or null on an ordinary webpage.
+ *
+ * X is deliberately excluded from every seam below, and that exclusion is what makes
+ * this refactor unable to regress X: the X adapter's methods delegate straight back
+ * into this file (see `utils/platforms/x.ts`), so consulting it from here would
+ * recurse. X therefore keeps executing its native code path, token for token, while
+ * the other platforms route through the adapter.
+ *
+ * Set once by the platform content script before any injection runs. Until a
+ * non-X entrypoint calls it, every seam is inert and this file behaves exactly as it
+ * did before the adapter existed.
+ */
+let activeAdapter: PlatformAdapter | null = null;
+
+export function setPlatformAdapter(adapter: PlatformAdapter | null): void {
+    activeAdapter = adapter;
+}
+
+/** The adapter to consult from a seam: the active one, unless it is X's (which would
+ *  recurse) or there is none (a plain webpage). */
+function platformSeam(): PlatformAdapter | null {
+    return activeAdapter && activeAdapter.id !== 'x' ? activeAdapter : null;
+}
+
+/** Whether an id belongs to a native post on this page.
+ *
+ *  The platform-agnostic form of `isTweetTargetOnX`. Use this wherever the answer
+ *  decides feed-centering or whether a selection counts as a web selection — places
+ *  that were only ever X-shaped because X was the only platform. */
+export function isNativePostTarget(id: string): boolean {
+    const seam = platformSeam();
+    if (seam) return seam.isPostTarget(id);
+    return isTweetTargetOnX(id);
+}
 
 // ── Input mode (touch vs. pointer) ───────────────────────────────────────────
 
@@ -157,8 +196,19 @@ const factCheckAllClickedIds = new Set<string>();
 const individuallyClickedOnHoldClaims = new Set<string>();
 
 // Tracks on-hold Disinfact clicks for the floating scroll navigation buttons:
-// tweetId -> { originalScrollY, pendingClaimTexts }.
-const onHoldScrollStates = new Map<string, { originalScrollY: number; pendingClaimTexts: Set<string> }>();
+// tweetId -> { mark, pendingClaimTexts, keptClaimTexts }.
+//
+// `pendingClaimTexts` is the work still outstanding — it empties as verdicts land, and the
+// button appears once it does. `keptClaimTexts` is every claim this run ever had in flight,
+// which is what the button OFFERS: the results the reader just paid for. They differ by
+// design. A post can already hold verdicts from an earlier classification, and those claims
+// are never pending here (they are not being researched), so they must not be listed on a
+// button that announces THIS run's results — nor decide where that button points.
+const onHoldScrollStates = new Map<string, {
+    mark: ScrollMark;
+    pendingClaimTexts: Set<string>;
+    keptClaimTexts: Set<string>;
+}>();
 
 interface FloatingButtonState {
     path: string;
@@ -172,6 +222,10 @@ interface FloatingButtonState {
     hoverLeaveTimer: ReturnType<typeof setTimeout> | null;
     visibilityCheck: ReturnType<typeof setInterval> | null;
     tweetId: string;
+    /** The claims this button is offering (see buttonClaimSpans). Carried on the state so
+     *  the restore-on-navigation interval can ask the same question the button was built on
+     *  — it runs with nothing but this registry entry in hand. */
+    claimTexts?: ReadonlySet<string>;
 }
 
 const floatingButtonRegistry = new Map<string, FloatingButtonState>();
@@ -210,6 +264,9 @@ function normalizeLocaleOverride(raw: string | null | undefined): string | null 
 try {
     browser.storage.local.get('mfLocale').then((r: any) => {
         localeOverride = normalizeLocaleOverride(r?.mfLocale ?? null);
+        if (localeOverride && localeOverride !== 'en') {
+            ensureLocaleMessagesLoading(localeOverride).then(repairUnresolvedLabels).catch(() => {});
+        }
     }).catch(() => {});
     browser.storage.onChanged.addListener((changes: Record<string, any>, area: string) => {
         if (area === 'local' && 'mfLocale' in changes) {
@@ -274,17 +331,22 @@ type RawMessageEntry = { message: string; placeholders?: Record<string, { conten
 const localeMessageCache = new Map<string, Record<string, RawMessageEntry>>();
 const localeMessageLoadPromises = new Map<string, Promise<void>>();
 
-/** Kick off (once) an async fetch of `_locales/<locale>/messages.json` and cache it.
+/** Kick off (once) an async fetch of `_locales/<locale>/messages.json` and cache it,
+ *  returning the load so a caller can also act on arrival.
  *  Used for the mfLocale test override and as the ultimate fallback when the
- *  chrome/browser i18n API is unavailable — both are edge paths, so the fetch
- *  being async (results only available on the *next* call to `t`) is an acceptable
- *  trade-off for not duplicating any translated copy inside this file.
+ *  chrome/browser i18n API is unavailable — both are edge paths, and the fetch is
+ *  started by the lookup that needs it, so a `t` call in the meantime can only answer
+ *  with the raw key. `repairUnresolvedLabels` is what undoes that: it runs off this
+ *  promise and rewrites the labels that were built before the catalog landed. The
+ *  copy itself stays in `_locales` and is never duplicated inside this file.
  *
  *  `locale` may be a hyphenated BCP-47 tag (e.g. "zh-TW"); the `_locales/` folders
  *  are named with underscores, so candidates try the underscore form first, then
  *  the bare base language, caching the result under the original hyphenated key. */
-function ensureLocaleMessagesLoading(locale: string): void {
-    if (localeMessageCache.has(locale) || localeMessageLoadPromises.has(locale)) return;
+function ensureLocaleMessagesLoading(locale: string): Promise<void> {
+    const inFlight = localeMessageLoadPromises.get(locale);
+    if (inFlight) return inFlight;
+    if (localeMessageCache.has(locale)) return Promise.resolve();
     const promise = (async () => {
         try {
             const runtime = (typeof chrome !== 'undefined' && (chrome as any).runtime)
@@ -308,7 +370,135 @@ function ensureLocaleMessagesLoading(locale: string): void {
         }
     })();
     localeMessageLoadPromises.set(locale, promise);
+    return promise;
 }
+
+// Warm the English catalog at module load rather than leaving it to the first `t` call:
+// that call would be the one that built a bar, and the fetch it starts lands a tick too
+// late for the label it is already writing. See `repairUnresolvedLabels`.
+//
+// This has to sit BELOW `localeMessageCache`/`localeMessageLoadPromises`, not in the
+// module-init block above `t`: `ensureLocaleMessagesLoading` reaches those bindings, so a
+// call made before their `const` initializers run throws a ReferenceError from the
+// temporal dead zone — inside the async function it becomes a rejected promise, which the
+// `.catch` swallows, leaving the warm-up and the repair silently inert. Measured: with the
+// call above the declarations, no catalog was ever fetched and a bar built before the
+// first successful lookup kept its raw key.
+//
+// The repair runs on BOTH settle paths. On a host that blocks the fetch the promise only
+// ever rejects, and `then` alone would leave the repair inert on precisely the hosts where
+// the catalog is missing and `t` has nothing to fall back on.
+ensureLocaleMessagesLoading('en').then(repairUnresolvedLabels, repairUnresolvedLabels);
+
+/** Our own chrome, wherever a label can live: every injected bar, notification and
+ *  popover. The repair below is scoped to these so it can never rewrite host text. */
+const OUR_CHROME_SELECTOR = '[mf-top-bar-id], [mf-visual-id], [mf-on-hold-id], '
+    + '[translate-fc-id], [mf-refresh-id], [classification-id], [mf-unmatched], '
+    + '.mf-notif-container, .mf-popover, .mf-onboard, .mf-onboard-attached';
+
+/** Keys are camelCase identifiers — `disinfactButton`, `factCheckAllButton` — and no
+ *  platform renders one as prose. This is what identifies our own label when the catalog
+ *  itself is unavailable; see `repairUnresolvedLabels`. A leading uppercase is required,
+ *  so an ordinary word like "Disinfact" can never match. */
+const CATALOG_KEY_SHAPE = /^[a-z][A-Za-z0-9]*[A-Z][A-Za-z0-9]*$/;
+
+/** Rewrite the labels that were built before their catalog arrived.
+ *
+ *  `t` answers with the raw key when neither the chrome i18n API nor the English
+ *  overlay can resolve a string, and the overlay is only *started* by the lookup that
+ *  needs it — so the FIRST label built in a content-script world rendered its key and
+ *  stayed that way, because a label is written once. Measured on a Reddit thread: the
+ *  first bar read "revealButton" while every bar built a moment later read "Disinfact".
+ *  Warming the catalog at module load closes the window; this closes it for good.
+ *
+ *  Only leaf elements are considered, so skipping parents keeps us from flattening a
+ *  subtree, and only a leaf whose whole text is one of our keys is rewritten.
+ *
+ *  Where the catalog cannot be loaded the key's SHAPE stands in for membership in it.
+ *  That is not a hypothetical: a content script's `fetch` is subject to the PAGE's CSP,
+ *  and Facebook's blocks `chrome-extension:` — measured, `fetch(chrome.runtime.getURL(
+ *  '_locales/en/messages.json'))` throws "Failed to fetch" there. Requiring the catalog
+ *  would leave this repair inert on exactly the host it is needed on, and would leave
+ *  `t`'s English fallback dead there too. */
+function repairUnresolvedLabels(): void {
+    const en = localeMessageCache.get('en');
+    let repaired = 0;
+    for (const host of Array.from(document.querySelectorAll<HTMLElement>(OUR_CHROME_SELECTOR))) {
+        for (const el of Array.from(host.querySelectorAll<HTMLElement>('*'))) {
+            if (el.children.length > 0) continue;
+            const text = (el.textContent ?? '').trim();
+            if (!text) continue;
+            if (en ? !(text in en) : !CATALOG_KEY_SHAPE.test(text)) continue;
+            const resolved = t(text);
+            if (resolved !== text) { el.textContent = resolved; repaired++; }
+        }
+    }
+    // Only ever printed when there was something to undo, so a healthy page stays quiet —
+    // but a page that prints it is a page where a label outlived its catalog, which is the
+    // signal to look at why the lookup could not answer.
+    if (repaired) console.log(`[misinfo] i18n: repaired ${repaired} label(s) that could not resolve`);
+}
+
+/** Repair labels for as long as the page lives, not merely once.
+ *
+ *  A content-script world outlives an extension reload: its JavaScript and its DOM event
+ *  listeners keep running, but `chrome.i18n` and `chrome.runtime` are gone from it.
+ *  Measured on facebook.com — one frame held NINE of our isolated worlds and only one
+ *  still had the extension APIs. A bar whose button was wired up by a dead world is still
+ *  clickable, and the rebuild that click triggers runs `t` there, where neither the i18n
+ *  API nor the (CSP-blocked) catalog can answer, so the label is written as its raw key and
+ *  — because a label is written once — stays that way. That is the whole observable: bars
+ *  correct on a fresh load, "disinfactButton" the moment one is rebuilt.
+ *
+ *  A one-shot repair cannot catch that: the write happens long after module load, and it
+ *  happens in another world. What the two worlds DO share is the DOM, so this watches it,
+ *  and the repair runs from whichever world is still alive.
+ *
+ *  The filter is deliberately narrow — a mutation only schedules a pass when its target or
+ *  an added node is inside our own chrome — because on a busy host the observer itself fires
+ *  constantly and the pass, cheap as it is, must not run on every one of those. Passes are
+ *  coalesced to one per frame, so a burst of writes costs a single sweep of our bars. */
+function watchForUnresolvedLabels(): void {
+    let scheduled = false;
+    const schedule = () => {
+        if (scheduled) return;
+        scheduled = true;
+        const run = () => { scheduled = false; repairUnresolvedLabels(); };
+        // `requestAnimationFrame` is the cheapest coalescer while the tab is visible, but a
+        // HIDDEN tab is served no frames at all, so arming the repair with it alone means it
+        // simply never runs — measured: a planted raw key sat unhealed for as long as the
+        // Facebook tab stayed in the background. Timers are still serviced there (throttled,
+        // which for a repair that only has to happen eventually is fine), so they carry it.
+        if (document.visibilityState === 'visible' && typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(run);
+        } else {
+            setTimeout(run, 0);
+        }
+    };
+    const inOurChrome = (node: Node | null): boolean => {
+        if (!node || node.nodeType !== 1) return false;
+        const el = node as Element;
+        if (el.matches?.(OUR_CHROME_SELECTOR)) return true;
+        return !!el.closest?.(OUR_CHROME_SELECTOR);
+    };
+    try {
+        new MutationObserver((records) => {
+            for (const rec of records) {
+                if (inOurChrome(rec.target.nodeType === 1 ? rec.target : rec.target.parentElement)) return schedule();
+                for (const node of Array.from(rec.addedNodes)) {
+                    if (inOurChrome(node)) return schedule();
+                }
+            }
+        }).observe(document, { childList: true, subtree: true, characterData: true });
+    } catch {
+    }
+}
+
+// Sits below `OUR_CHROME_SELECTOR` and the two functions it reaches. The observer itself
+// reads none of them at call time — its callback is deferred to the first mutation — but a
+// call placed above the `const` would still be the kind of forward reference that silently
+// works one day and throws the next.
+watchForUnresolvedLabels();
 
 /** Formats a raw `_locales` message entry the same way chrome.i18n.getMessage does:
  *  named `$PLACEHOLDER$` tokens are resolved via the entry's `placeholders` map to a
@@ -479,8 +669,11 @@ function isDarkMode(): boolean {
 }
 
 /** Highlight tint for a claim. On-hold ("Fact-Check", actionable) = a prominent
- *  black/white tint; researching ("Fact-Checking", in progress) or no verdict = gray;
- *  otherwise the verdict color. `hover` returns the stronger hover variant. */
+ *  black/white tint; no verdict yet = gray; otherwise the verdict color — and a
+ *  reclassification keeps the verdict it is replacing for as long as that verdict is
+ *  still the one on screen, so only the badge gains the spinner and the highlight never
+ *  goes grey under a colour the reader is still reading. `hover` returns the stronger
+ *  hover variant. */
 export function highlightBgColor(claim: Claim, hover: boolean, surface?: Element | null): string {
     const hasVerdictColor = claim.confidence !== undefined && claim.confidence !== null
         && claim.veracity !== undefined && claim.veracity !== null && claim.confidence >= 0.2;
@@ -490,7 +683,7 @@ export function highlightBgColor(claim: Claim, hover: boolean, surface?: Element
             ? (hover ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.28)')
             : (hover ? 'rgba(0,0,0,0.34)' : 'rgba(0,0,0,0.22)');
     }
-    if (claim.refreshing || !hasVerdictColor) {
+    if (!hasVerdictColor) {
         // The neutral tint follows the canvas, the same way the on-hold one above does.
         // A mid-grey at 25% is #202020 over X's black but #DFDFDF over the white page a
         // web selection sits on — close enough to white to read as "not highlighted at
@@ -556,7 +749,7 @@ function wrapBadgeInCap(badge: HTMLElement, _bg?: string): HTMLElement {
 function restHighlightColor(span: HTMLElement): string {
     const pVal = parseFloat(span.dataset.probability ?? "");
     const vVal = parseFloat(span.dataset.veracity ?? "");
-    if (span.dataset.refreshing !== "true" && !isNaN(pVal) && !isNaN(vVal) && pVal >= 0.2) {
+    if (!isNaN(pVal) && !isNaN(vVal) && pVal >= 0.2) {
         return confidenceRgba(pVal, 0.25, vVal);
     }
     // Hover already uses the stronger verdict colour in hoverBg. If numbers
@@ -1262,13 +1455,53 @@ function animateHighlightReveal(span: HTMLElement, bgColor: string) {
 /** Remove all .mf-segment-wrap DOM elements for the given tweet ID.
  *  This forces the next upgradeToSegments call to re-render from scratch
  *  instead of updating in place (needed when claims change after batch refresh). */
-function removeSegmentWraps(tweetId: string) {
-    const links = document.querySelectorAll(`a[href*="/status/${tweetId}"]`);
-    for (const link of links) {
+/** Every element a classification's post is currently rendered into — the seam's own
+ *  roots, or X's article for a status link. Teardown is scoped per post, so it needs the
+ *  same notion of "where this post lives" that injection has; an X-shaped lookup finds
+ *  nothing on a platform that has no `/status/` URLs, and the post would never be torn
+ *  down. */
+function postContainersFor(id: string): Element[] {
+    const seam = platformSeam();
+    if (seam) return seam.postRoots(id);
+    const out: Element[] = [];
+    for (const link of document.querySelectorAll(`a[href*="/status/${id}"]`)) {
         const article = link.closest('article');
-        if (!article) continue;
-        const wraps = article.querySelectorAll('.mf-segment-wrap');
-        for (const wrap of wraps) wrap.remove();
+        if (article && !out.includes(article)) out.push(article);
+    }
+    return out;
+}
+
+function removeSegmentWraps(tweetId: string) {
+    for (const root of postContainersFor(tweetId)) {
+        const wraps = root.querySelectorAll<HTMLElement>('.mf-segment-wrap');
+        for (const wrap of Array.from(wraps)) discardSegmentWrap(wrap);
+    }
+}
+
+/** Drop one post's highlight paint from one root, when the classification being rendered
+ *  gives it no claims to show.
+ *
+ *  Teardown otherwise happens only when a delivery REPLACES a held classification
+ *  (`removeSegmentWraps` inside the merge), and both ends of that are scoped to the post's
+ *  roots AT THAT MOMENT. A root that was painted and then left the adapter's set — Facebook
+ *  renders one story twice, the modal and the card behind it, and the adapter keeps one of
+ *  them (`postRootsFromDom`) — is never swept: the swap's teardown runs against the roots of
+ *  the swap, not against the root that holds the paint. Re-entering the set does not help
+ *  either, because a claims-less render tears nothing down; it builds no Hide/Reveal pill
+ *  (`wantsVisual` needs claims), so the stale spans and their wrapper sit there revealed,
+ *  showing highlights for claims that are no longer held. Measured on a permalink whose modal
+ *  held nine claim spans for an id the bar showed as Disinfact.
+ *
+ *  Scoped by the claim spans' own `mfCid`, so a quoted post rendered inside the same root
+ *  keeps its paint: a wrap whose spans all name another post is not this post's. */
+function clearStaleSegmentPaint(article: Element, id: string) {
+    for (const wrap of Array.from(article.querySelectorAll<HTMLElement>('.mf-segment-wrap'))) {
+        const cids = Array.from(wrap.querySelectorAll<HTMLElement>('.mf-segment-claim'))
+            .map((span) => span.dataset.mfCid);
+        if (cids.length === 0) continue;
+        if (!cids.every((cid) => cid === id)) continue;
+        console.log(`[misinfo] clearStaleSegmentPaint: dropping ${cids.length} stale highlight span(s) for ${id}`);
+        discardSegmentWrap(wrap);
     }
 }
 
@@ -1291,10 +1524,7 @@ function removeSegmentWraps(tweetId: string) {
  *  declasses it), which is what upgradeToSegments keys off to choose a full rebuild over an
  *  in-place update — so the next render after the switch still rebuilds from scratch. */
 function removeInjectedElements(tweetId: string) {
-    const links = document.querySelectorAll(`a[href*="/status/${tweetId}"]`);
-    for (const link of links) {
-        const article = link.closest('article');
-        if (!article) continue;
+    for (const article of postContainersFor(tweetId)) {
         for (const wrap of article.querySelectorAll<HTMLElement>('.mf-segment-wrap')) {
             const host = wrap.parentElement as (HTMLElement & { _mfOriginalNodes?: ChildNode[] }) | null;
             const originals = host?._mfOriginalNodes;
@@ -1334,6 +1564,36 @@ function removeInjectedElements(tweetId: string) {
  *  listeners are dropped by replacing the node with a clone. The wrap is also
  *  un-classed so a later re-login re-renders segments from scratch. */
 function freezeSegmentWrap(wrap: HTMLElement) {
+    // An in-place wrap holds the PAGE's own nodes rather than ours, so stripping classes and
+    // keeping the element would leave our bare <span> wrapped around the post's block content
+    // for the rest of the page's life — and at `display: contents` no longer applying, the
+    // block layout under it is the page's to keep, not ours to perturb. Unwrapping gives the
+    // same result freezing is for — no highlights, no badges, no listeners, text intact —
+    // with the host's own structure handed back exactly as it was.
+    //
+    // Our own nodes are INSIDE that wrap, though: the claim spans carrying the tint and the
+    // badge pills beside them. Unwrapping the wrap alone hands those back with the page's
+    // nodes, which is how Hide came to be a visual no-op on every in-place platform — the
+    // button flipped to Reveal while every highlight and "Fact-Check" pill stayed on screen,
+    // and a sign-out left the same debris behind. Strip them first, unwrapping each claim
+    // span rather than removing it so the page's own nodes inside it (links included) are
+    // handed back untouched. Same cleanup `wrapClaimSegmentsInPlace` does before a rebuild.
+    //
+    // Un-painting means more than unwrapping our spans on an in-place wrap: the paint may have
+    // cut the page's own text nodes and left stand-in runs holding the post's text. Hide that
+    // only unwraps leaves those stand-ins behind, so the page's next write into its own (now
+    // empty) node lands beside the words it replaced — the host's toggle visibly flipping while
+    // the old language stays on screen, with no wrap left for the stale-paint guard to catch it.
+    if (wrap.dataset.mfInPlace === "1") {
+        undoInPlacePaint(wrap);
+        for (const badge of Array.from(wrap.querySelectorAll('.mf-inline-badge'))) badge.remove();
+        for (const spinner of Array.from(wrap.querySelectorAll('.mf-standalone-spinner'))) spinner.remove();
+        for (const span of Array.from(wrap.querySelectorAll<HTMLElement>('.mf-segment-claim'))) {
+            span.replaceWith(...Array.from(span.childNodes));
+        }
+        wrap.replaceWith(...Array.from(wrap.childNodes));
+        return;
+    }
     for (const badge of Array.from(wrap.querySelectorAll('.mf-inline-badge'))) badge.remove();
     for (const spinner of Array.from(wrap.querySelectorAll('.mf-standalone-spinner'))) spinner.remove();
     for (const span of Array.from(wrap.querySelectorAll<HTMLElement>('.mf-segment-claim'))) {
@@ -1408,7 +1668,10 @@ function cssAttrValue(value: string): string {
  *
  *  An empty result means "nothing to point at" — the caller's cue to do nothing, exactly as
  *  it was when a tweet was simply absent from the DOM. */
-function classificationRoots(id: string): Element[] {
+export function classificationRoots(id: string): Element[] {
+    const seam = platformSeam();
+    if (seam) return seam.postRoots(id);
+
     const links = document.querySelectorAll(`a[href*="/status/${id}"]`);
     if (links.length > 0) {
         const roots: Element[] = [];
@@ -1455,7 +1718,44 @@ function isTweetVisible(tweetId: string): boolean {
     return false;
 }
 
-/** Returns true when EVERY highlighted claim of this tweet is fully inside the viewport.
+/** The claim spans the Fact-Checked button is about: the highlights it offers to take the
+ *  reader back to.
+ *
+ *  The button is an offer to go back and read the results of a run the reader just paid for,
+ *  and it is raised once no more of that run's claims are outstanding. Everything it does —
+ *  whether it should be on screen at all, which way its arrow points, whose verdicts it lists
+ *  on hover, what colour it takes — is a question about THAT run's claims and no others.
+ *
+ *  Two kinds of claim sit in the same root and had to be told apart. A claim left ON HOLD
+ *  waits on the user's own Fact-Check click: idle, never part of the run, and its span stays
+ *  un-verdicted. A claim verdicted by an EARLIER classification is finished but equally not
+ *  this run's — its verdict was read long ago. Counting either made the button answer about
+ *  highlights nobody had just bought: on a post taller than a screen, "every highlight
+ *  visible" can never hold (all its spans cannot fit in one viewport at once), so the button
+ *  stayed up for the rest of the session with its arrow on whichever un-bought claim sat
+ *  nearest the fold. On X one screenful holds the whole tweet, so the readings coincided and
+ *  hid this.
+ *
+ *  So the run's own claims come first, by text — the caller (the on-hold tracker) is the only
+ *  thing that knows them, and an empty result is an answer ("those claims painted nothing
+ *  here"), never an invitation to borrow another run's highlights. Without them, fall back to
+ *  the spans that carry a verdict, which is what the badges paint from: probability and
+ *  veracity are stamped `String(claim.confidence ?? "")`, so an un-verdicted claim's span holds
+ *  empty strings. Selection wraps, and spans repainted by an older build, have neither and
+ *  keep their old behaviour. */
+function buttonClaimSpans(root: Element, claimTexts?: ReadonlySet<string>): Element[] {
+    const spans = Array.from(root.querySelectorAll<HTMLElement>('span.mf-segment-claim'));
+    if (claimTexts && claimTexts.size > 0) {
+        return spans.filter(span => claimTexts.has(span.dataset.claimText ?? ''));
+    }
+    const verdicted = spans.filter(span =>
+        (span.dataset.probability ?? '') !== '' && (span.dataset.veracity ?? '') !== ''
+    );
+    return verdicted.length > 0 ? verdicted : spans;
+}
+
+/** Returns true when EVERY highlighted claim the button is offering is fully inside the
+ *  viewport.
  *
  *  This is the question the Fact-Checked button actually cares about: "can the user see the
  *  verdicts they just paid for?" — not isTweetVisible()'s "is any pixel of the article on
@@ -1466,11 +1766,11 @@ function isTweetVisible(tweetId: string): boolean {
  *  Falls back to isTweetVisible() when no highlight span is laid out — the claims may not be
  *  rendered yet, or may have matched no text — so behaviour is unchanged where this cannot
  *  answer. Quoted-tweet claims are covered too: their spans live inside the same article. */
-function areTweetHighlightsVisible(tweetId: string): boolean {
+function areTweetHighlightsVisible(tweetId: string, claimTexts?: ReadonlySet<string>): boolean {
     let sawLaidOutHighlight = false;
 
     for (const root of classificationRoots(tweetId)) {
-        const spans = root.querySelectorAll('span.mf-segment-claim');
+        const spans = buttonClaimSpans(root, claimTexts);
         if (spans.length === 0) continue;
 
         let allVisible = true;
@@ -1492,8 +1792,9 @@ function areTweetHighlightsVisible(tweetId: string): boolean {
     return sawLaidOutHighlight ? false : isTweetVisible(tweetId);
 }
 
-/** Which way the user has to scroll to reach this tweet's nearest off-screen highlight, or
- *  null when no highlight is laid out (caller then falls back to the article's own rect).
+/** Which way the user has to scroll to reach the nearest off-screen highlight the button is
+ *  offering (see buttonClaimSpans), or null when none is laid out — the caller then falls
+ *  back to the article's own rect.
  *
  *  The floating button used to take its side and arrow from the article rect alone — "is the
  *  tweet's bottom above mid-screen?". Once the button started appearing for a single highlight
@@ -1504,13 +1805,13 @@ function areTweetHighlightsVisible(tweetId: string): boolean {
  *
  *  Distance-ranked rather than order-ranked: on a tweet spilling past both edges, the nearest
  *  off-screen highlight is the one the user just lost and expects to get back. */
-function offScreenHighlightDirection(tweetId: string): 'above' | 'below' | null {
+function offScreenHighlightDirection(tweetId: string, claimTexts?: ReadonlySet<string>): 'above' | 'below' | null {
     let nearestAbove = Infinity;
     let nearestBelow = Infinity;
     let sawLaidOutHighlight = false;
 
     for (const root of classificationRoots(tweetId)) {
-        for (const span of root.querySelectorAll('span.mf-segment-claim')) {
+        for (const span of buttonClaimSpans(root, claimTexts)) {
             const rect = span.getBoundingClientRect();
             if (rect.height === 0 && rect.width === 0) continue;
             sawLaidOutHighlight = true;
@@ -1525,71 +1826,115 @@ function offScreenHighlightDirection(tweetId: string): 'above' | 'below' | null 
     return nearestAbove <= nearestBelow ? 'above' : 'below';
 }
 
-/** Smoothly scroll the window so the top of the tweet — or of a selection's highlights —
- *  is visible. Animation duration is fixed at 1000ms regardless of distance.
+/** Where the reader is, in the scroller that actually holds the content.
+ *
+ *  `window.scrollY` is that position only on a page that scrolls its own document. Several of
+ *  the platforms here scroll an inner element instead — Telegram Web A scrolls its message
+ *  list, so its document is exactly one viewport tall and `window.scrollY` is 0 at every
+ *  moment — and a position that records the window alone then reports "the reader is at the
+ *  top" wherever they really are. That is not a cosmetic difference, because the floating
+ *  navigation buttons are built out of this number: the Go Back button was dismissed the
+ *  instant it appeared (its "has the reader got back?" test held on every tick, since neither
+ *  side ever moved) and clicking either button scrolled nothing at all. */
+type ScrollMark = { container: Element | null; top: number };
+
+/** The element that scrolls `el`, or null when the document is what scrolls it.
+ *
+ *  Read as the nearest ancestor that both declares itself a scroller and is currently
+ *  overflowing — an ancestor that cannot scroll sends nothing anywhere, so it is skipped in
+ *  favour of the document path the rest of the code has always used. */
+function scrollContainerOf(el: Element | null): Element | null {
+    for (let node = el?.parentElement ?? null; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
+        const overflowY = getComputedStyle(node).overflowY;
+        if (overflowY !== 'auto' && overflowY !== 'scroll' && overflowY !== 'overlay') continue;
+        if (node.scrollHeight <= node.clientHeight + 1) continue;
+        return node;
+    }
+    return null;
+}
+
+/** The reader's position around `el`, for a "come back to this" button. */
+function markAt(el: Element | null): ScrollMark {
+    const container = scrollContainerOf(el);
+    return { container, top: container ? container.scrollTop : window.scrollY };
+}
+
+/** How far the reader has moved from a mark. Both sides read the mark's own scroller, so a
+ *  document that cannot scroll does not read as "no distance" on a page whose list can. */
+function markDistance(mark: ScrollMark): number {
+    const now = mark.container ? mark.container.scrollTop : window.scrollY;
+    return Math.abs(now - mark.top);
+}
+
+/** Animate a scroll position. A null container is the document scroller — the window path,
+ *  unchanged. Duration is fixed at 1000ms regardless of distance. */
+function animateScroll(container: Element | null, targetY: number, durationMs: number = 1000): Promise<void> {
+    return new Promise(resolve => {
+        const startY = container ? container.scrollTop : window.scrollY;
+        const startTime = performance.now();
+        const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        function step(now: number) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / durationMs, 1);
+            const eased = easeInOutCubic(progress);
+            const y = startY + (targetY - startY) * eased;
+            if (container) container.scrollTop = y; else window.scrollTo(0, y);
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                resolve();
+            }
+        }
+        requestAnimationFrame(step);
+    });
+}
+
+/** Smoothly scroll back to a mark. */
+function scrollToMark(mark: ScrollMark, durationMs: number = 1000): Promise<void> {
+    return animateScroll(mark.container, mark.top, durationMs);
+}
+
+/** Smoothly scroll so the top of the tweet — or of a selection's highlights — is visible.
  *
  *  The tweet path keeps its own narrow `article` lookup rather than going through
  *  classificationRoots(): that helper's selector list would also accept an inner
  *  `div[role="link"]`, which on X.com can sit inside the article and would move the scroll
  *  destination. A selection has no article at all, so only it takes the fallback. */
 function scrollToTweet(tweetId: string, durationMs: number = 1000): Promise<void> {
-    return new Promise(resolve => {
-        const article = document.querySelector(`a[href*="/status/${tweetId}"]`)?.closest('article');
-        const target = article ?? classificationRoots(tweetId)[0];
-        if (!target) { resolve(); return; }
-        const startY = window.scrollY;
-        const targetY = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 80); // leave room for header
-        const startTime = performance.now();
-        const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const article = document.querySelector(`a[href*="/status/${tweetId}"]`)?.closest('article');
+    const target = article ?? classificationRoots(tweetId)[0];
+    if (!target) return Promise.resolve();
 
-        function step(now: number) {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / durationMs, 1);
-            const eased = easeInOutCubic(progress);
-            window.scrollTo(0, startY + (targetY - startY) * eased);
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                resolve();
-            }
-        }
-        requestAnimationFrame(step);
-    });
-}
+    const container = scrollContainerOf(target);
+    if (container) {
+        // The content is in a scroller of its own, so the window has nothing to give: move the
+        // container instead, leaving the same 80px of room above the target that the window
+        // path leaves for a sticky header.
+        const offset = target.getBoundingClientRect().top - container.getBoundingClientRect().top;
+        return animateScroll(container, Math.max(0, container.scrollTop + offset - 80), durationMs);
+    }
 
-/** Smoothly scroll back to an absolute scrollY position.
- *  Animation duration is fixed at 1000ms regardless of distance. */
-function scrollToPosition(targetY: number, durationMs: number = 1000): Promise<void> {
-    return new Promise(resolve => {
-        const startY = window.scrollY;
-        const startTime = performance.now();
-        const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-        function step(now: number) {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / durationMs, 1);
-            const eased = easeInOutCubic(progress);
-            window.scrollTo(0, startY + (targetY - startY) * eased);
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                resolve();
-            }
-        }
-        requestAnimationFrame(step);
-    });
+    // leave room for header
+    return animateScroll(null, Math.max(0, target.getBoundingClientRect().top + window.scrollY - 80), durationMs);
 }
 
 const upArrowSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
 const downArrowSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
 
 /** Compute the average highlight color across all finished claims in a classification.
- *  Ignores claims that are still researching or on-hold. Returns null if no color can be derived. */
-function averageClaimColor(classification: Classification): { r: number; g: number; b: number } | null {
+ *  Ignores claims that are still researching or on-hold. Returns null if no color can be derived.
+ *
+ *  `claimTexts` restricts the average to one run's claims, for the same reason the hover list
+ *  is restricted: the Fact-Checked button takes its colour from the highlights it is offering
+ *  to return the reader to, so a verdict left over from an earlier classification must not
+ *  tint it. */
+function averageClaimColor(classification: Classification, claimTexts?: ReadonlySet<string>): { r: number; g: number; b: number } | null {
+    const scoped = claimTexts && claimTexts.size > 0 ? claimTexts : null;
     const allClaims: Claim[] = [
         ...(classification.claims ?? []),
         ...(classification.quoting?.claims ?? [])
-    ];
+    ].filter(cl => !scoped || scoped.has(cl.text));
     const finished = allClaims.filter(cl =>
         cl.verdict !== "research required" &&
         !cl.refreshing &&
@@ -1755,7 +2100,7 @@ function handlePathChange(oldPath: string, newPath: string) {
             }, newState.remainingTimeMs);
 
             newState.visibilityCheck = setInterval(() => {
-                if (areTweetHighlightsVisible(newState.tweetId)) {
+                if (areTweetHighlightsVisible(newState.tweetId, newState.claimTexts)) {
                     clearFloatingButtonForPath(newPath, true);
                 }
             }, 500);
@@ -1799,7 +2144,7 @@ function setupNavigationListener() {
  *  integration or a selection made exclusively inside tweet articles). If the selection
  *  was on an X article, UI chrome, or non-tweet container, or on a general webpage, this
  *  returns false. */
-function isTweetTargetOnX(tweetId: string): boolean {
+export function isTweetTargetOnX(tweetId: string): boolean {
     const isX = /^(www\.)?(twitter|x)\.com$/i.test(window.location.hostname);
     if (!isX) return false;
 
@@ -1822,7 +2167,10 @@ function isTweetTargetOnX(tweetId: string): boolean {
 }
 
 /** Compute the center X coordinate of the timeline column on X. */
-function getTimelineColumnCenter(): number | null {
+export function getTimelineColumnCenter(): number | null {
+    const seam = platformSeam();
+    if (seam) return seam.feedCenter();
+
     const primaryCol = document.querySelector<HTMLElement>('[data-testid="primaryColumn"]');
     if (primaryCol) {
         const rect = primaryCol.getBoundingClientRect();
@@ -1841,17 +2189,18 @@ function createFloatingButton(
     position: 'top' | 'bottom',
     onClick: () => void,
     classification?: Classification,
-    tweetId: string = ''
+    tweetId: string = '',
+    claimTexts?: ReadonlySet<string>
 ): HTMLElement {
     const path = window.location.pathname;
     clearFloatingButtonForPath(path, true);
     setupNavigationListener();
 
     const isRTL = isRTLLocale(getEffectiveUILocale());
-    const avgColor = classification ? averageClaimColor(classification) : null;
+    const avgColor = classification ? averageClaimColor(classification, claimTexts) : null;
     const baseRgb = avgColor ? `${avgColor.r}, ${avgColor.g}, ${avgColor.b}` : "29, 155, 240";
 
-    const shouldCenterOnTimeline = isTweetTargetOnX(tweetId);
+    const shouldCenterOnTimeline = isNativePostTarget(tweetId);
     const timelineCenter = shouldCenterOnTimeline ? getTimelineColumnCenter() : null;
     const left = timelineCenter !== null ? `${timelineCenter}px` : '50%';
     const transform = 'translateX(-50%)';
@@ -1873,7 +2222,7 @@ function createFloatingButton(
         ${position}: 80px;
         left: ${left};
         transform: ${transform};
-        z-index: 9999;
+        z-index: 2147483647;
         display: inline-flex;
         flex-direction: column;
         align-items: center;
@@ -1906,7 +2255,8 @@ function createFloatingButton(
         dismissTimer: null,
         hoverLeaveTimer: null,
         visibilityCheck: null,
-        tweetId
+        tweetId,
+        claimTexts
     };
 
     btn.addEventListener("mouseenter", () => {
@@ -1934,7 +2284,7 @@ function createFloatingButton(
     };
     btn.addEventListener("click", handler);
 
-    document.body.appendChild(btn);
+    mountOverlayChrome(btn);
     floatingButtonRegistry.set(path, state);
 
     state.dismissTimer = setTimeout(() => tryDismissFloatingButtonForPath(path), 10000);
@@ -1963,21 +2313,46 @@ function factCheckedButtonPreviewHtml(tweetText: string, isRTL: boolean): string
     return `<div class="mf-fc-btn-preview" style="font-size:12px;line-height:1.35;font-weight:400;font-style:italic;opacity:0.92;text-align:${isRTL ? 'right' : 'left'};max-width:340px;white-space:normal;word-wrap:break-word;padding:4px 0;cursor:pointer;">${escaped}</div>`;
 }
 
-/** Build the claims list HTML for the Fact-Checked button hover state. */
-function factCheckedButtonClaimsHtml(classification: Classification, isRTL: boolean): string {
-    const claims = classification.claims ?? [];
+/** Done for the purposes of the Fact-Checked button: the claim has a VERDICT.
+ *
+ *  Deliberately does not wait on `note` (the reasoning). Reasoning and sources stream
+ *  in afterwards and the popover renders them live, so gating on the note kept the
+ *  button hidden long after the highlight had already settled on its final colour —
+ *  the user could not be sent back to a tweet whose verdicts were, visibly, ready.
+ *  The `verdict !== "research required"` guard stays: a claim can carry a DB-matched
+ *  confidence/veracity while still awaiting its own research, and that must not count. */
+function claimHasVerdict(cl: Claim) {
+    return cl.verdict !== "research required"
+        && cl.confidence !== undefined && cl.confidence !== null
+        && cl.veracity !== undefined && cl.veracity !== null;
+}
+
+/** Build the claims list HTML for the Fact-Checked button hover state.
+ *
+ *  Verdicts only. A claim with no verdict is IDLE — it waits on the user's own Fact-Check
+ *  click — so it is not work in progress, and the undefined-probability fallback (a
+ *  researching word) under a "Fact-Checked" heading advertised research that was not
+ *  happening. The post's own badges still offer every claim, checked or not.
+ *
+ *  When the caller knows which claims this run took on (`claimTexts`), those are the only
+ *  rows. The post may already carry verdicts from an earlier classification — the reader
+ *  watched those land, and listing them again under a button that announces the results of
+ *  the run they just paid for claims credit the run did not earn. */
+function factCheckedButtonClaimsHtml(classification: Classification, isRTL: boolean, claimTexts?: ReadonlySet<string>): string {
+    const scoped = claimTexts && claimTexts.size > 0 ? claimTexts : null;
+    const claims = (classification.claims ?? [])
+        .map((claim, claimIndex) => ({ claim, claimIndex }))
+        .filter(({ claim }) => claimHasVerdict(claim) && (!scoped || scoped.has(claim.text)));
     if (claims.length === 0) return '';
     const locale = getEffectiveUILocale();
     const q = quoteMarksForLocale(locale);
-    const rows = claims.map(cl => {
+    // Each row carries its claim's index in the classification: the hover handler looks its
+    // claim up positionally, and a filtered list no longer lines up with classification.claims.
+    const rows = claims.map(({ claim: cl, claimIndex }) => {
         const display = (cl.rewritten && cl.rewritten !== cl.text) ? cl.rewritten : `${q.open}${cl.text}${q.close}`;
         const escaped = escapeHtml(display);
-        const badgeColor = '#ffffff';
-        const badgeHtml = (cl.confidence !== undefined && cl.veracity !== undefined)
-            ? verdictBadgeHtml(cl.confidence, cl.veracity)
-            : escapeHtml(pickResearchingWord(`${classification.id}:${cl.text}`));
-        const badgeClass = cl.confidence !== undefined && cl.veracity !== undefined ? ` class="${VERDICT_BADGE_CLASS}"` : '';
-        return `<div class="mf-fc-btn-claim" style="display:flex;align-items:center;${isRTL ? 'flex-direction:row-reverse;' : 'flex-direction:row;'}gap:6px;margin:2px 0;white-space:nowrap;width:100%;cursor:pointer;"><span${badgeClass} style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(0,0,0,0.5);color:${badgeColor};white-space:nowrap;flex-shrink:0;">${badgeHtml}</span><span style="font-size:11px;${isRTL ? 'text-align:right;' : 'text-align:left;'}overflow:hidden;text-overflow:ellipsis;max-width:280px;opacity:0.95;">${escaped}</span></div>`;
+        const badgeHtml = verdictBadgeHtml(cl.confidence, cl.veracity);
+        return `<div class="mf-fc-btn-claim" data-claim-index="${claimIndex}" style="display:flex;align-items:center;${isRTL ? 'flex-direction:row-reverse;' : 'flex-direction:row;'}gap:6px;margin:2px 0;white-space:nowrap;width:100%;cursor:pointer;"><span class="${VERDICT_BADGE_CLASS}" style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(0,0,0,0.5);color:#ffffff;white-space:nowrap;flex-shrink:0;">${badgeHtml}</span><span style="font-size:11px;${isRTL ? 'text-align:right;' : 'text-align:left;'}overflow:hidden;text-overflow:ellipsis;max-width:280px;opacity:0.95;">${escaped}</span></div>`;
     });
     return `<div class="mf-fc-btn-claims" style="display:flex;flex-direction:column;align-items:${isRTL ? 'flex-end' : 'flex-start'};gap:2px;max-width:360px;">${rows.join('')}</div>`;
 }
@@ -1996,8 +2371,8 @@ function factCheckedButtonContent(extraHtml: string, label: string, iconSvg: str
  *  scroll tracker) and a selection on an arbitrary webpage (the id is a selection's
  *  classification id, and the caller is trackSelectionFloatingButtons). Everything below is
  *  the same either way — the anchor resolution lives in classificationRoots(). */
-function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number, classification: Classification) {
-    if (areTweetHighlightsVisible(tweetId)) {
+function showFactCheckedFloatingButton(tweetId: string, classification: Classification, claimTexts?: ReadonlySet<string>) {
+    if (areTweetHighlightsVisible(tweetId, claimTexts)) {
         console.log(`[misinfo] showFactCheckedFloatingButton ${tweetId}: all highlights visible, skipping`);
         return;
     }
@@ -2006,7 +2381,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     // own wrapped passage stands in — that IS what the button offers to scroll them back to.
     const tweetText = findTweetTextInDom(tweetId) ?? selectionPassageText(tweetId);
     const isRTL = isRTLLocale(getEffectiveUILocale());
-    const avgColor = averageClaimColor(classification);
+    const avgColor = averageClaimColor(classification, claimTexts);
     // 0.15 (not higher): the claim text stays white, so a strong brighten washes it
     // out and makes the hover list unreadable. A subtle lift keeps contrast intact.
     const brightened = avgColor ? brightenColor(avgColor, 0.15) : null;
@@ -2021,7 +2396,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     // the reason this button exists, so it — not the article's midpoint — decides the side and
     // the arrow. Only when no highlight is laid out do we fall back to the target-rect
     // inference: content above viewport => position 'top', arrow UP; below => 'bottom', DOWN.
-    const highlightDirection = offScreenHighlightDirection(tweetId);
+    const highlightDirection = offScreenHighlightDirection(tweetId, claimTexts);
     const isTargetAbove = highlightDirection !== null
         ? highlightDirection === 'above'
         : (targetRect ? targetRect.bottom <= window.innerHeight / 2 : true);
@@ -2030,12 +2405,14 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
 
     const path = window.location.pathname;
     const btn = createFloatingButton(t("factCheckedFloatingButton"), factCheckedIcon, position, async () => {
-        const capturedOriginalScrollY = window.scrollY;
+        // Where the reader was when they asked to be taken there, in the scroller that holds
+        // the content — what the Go Back button has to return them to.
+        const capturedMark = markAt(targetEl);
         await scrollToTweet(tweetId, 1000);
         // Go Back button appears at opposite edge
         const goBackPosition: 'top' | 'bottom' = position === 'top' ? 'bottom' : 'top';
-        showGoBackFloatingButton(tweetId, capturedOriginalScrollY, classification, goBackPosition);
-    }, classification, tweetId);
+        showGoBackFloatingButton(tweetId, capturedMark, classification, goBackPosition, claimTexts);
+    }, classification, tweetId, claimTexts);
 
     btn.innerHTML = factCheckedButtonDefaultHtml(t("factCheckedFloatingButton"), factCheckedIcon, isRTL);
     (btn as any)._mfIsFactCheckedButton = true;
@@ -2056,7 +2433,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
 
     function setupClaimBadgeHoverHandlers() {
         const claimEls = btn.querySelectorAll<HTMLElement>(".mf-fc-btn-claim");
-        claimEls.forEach((claimEl, index) => {
+        claimEls.forEach((claimEl) => {
             let badgeHoverTimer: ReturnType<typeof setTimeout> | null = null;
 
             claimEl.addEventListener("mouseenter", () => {
@@ -2065,7 +2442,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
                 badgeHoverTimer = setTimeout(() => {
                     const state = floatingButtonRegistry.get(path);
                     if (!state?.hovered) return;
-                    const claim = classification.claims?.[index];
+                    const claim = classification.claims?.[Number(claimEl.dataset.claimIndex)];
                     if (claim) {
                         showPreviewPopoverFromButton(btn, claim, classification, claimEl);
                     }
@@ -2100,10 +2477,18 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     }
 
     function showClaims() {
+        // Idempotent. On a platform whose passage cannot be read back there is no preview state
+        // to return to: showPreview() falls through to here, so the mouseover over the label —
+        // the one region that has a handler calling showPreview() — rebuilds the button's
+        // innerHTML while the cursor is on it, where the claim rows below are left alone. That
+        // asymmetry is the reported "the Fact-Checked part was not clicking; the rest was":
+        // the swap replaces the element the cursor is pressing. Entering the state twice has
+        // nothing to add, so the second call is dropped.
+        if (showingClaims) return;
         showingClaims = true;
         setHoverStyle();
         btn.innerHTML = factCheckedButtonContent(
-            factCheckedButtonClaimsHtml(classification, isRTL),
+            factCheckedButtonClaimsHtml(classification, isRTL, claimTexts),
             t("factCheckedFloatingButton"), factCheckedIcon, isRTL, position
         );
         setupClaimBadgeHoverHandlers();
@@ -2164,7 +2549,7 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
     const state = floatingButtonRegistry.get(path);
     if (state) {
         state.visibilityCheck = setInterval(() => {
-            if (areTweetHighlightsVisible(tweetId)) {
+            if (areTweetHighlightsVisible(tweetId, claimTexts)) {
                 clearFloatingButtonForPath(path, true);
             }
         }, 500);
@@ -2172,19 +2557,18 @@ function showFactCheckedFloatingButton(tweetId: string, originalScrollY: number,
 }
 
 /** Show the "Go Back" floating button after scrolling to the tweet. */
-function showGoBackFloatingButton(tweetId: string, originalScrollY: number, classification: Classification, position: 'top' | 'bottom' = 'bottom') {
+function showGoBackFloatingButton(tweetId: string, mark: ScrollMark, classification: Classification, position: 'top' | 'bottom' = 'bottom', claimTexts?: ReadonlySet<string>) {
     const label = t("goBackFloatingButton");
     const isRTL = isRTLLocale(getEffectiveUILocale());
     const path = window.location.pathname;
 
     // Point arrow towards direction of scroll when clicked:
-    // If original position is above current position (originalScrollY < window.scrollY), arrow points UP.
-    // If original position is below current position (originalScrollY > window.scrollY), arrow points DOWN.
-    const goBackIcon = originalScrollY < window.scrollY ? upArrowSvg : downArrowSvg;
+    // If the mark is above where the reader is now, arrow points UP; below, DOWN.
+    const goBackIcon = mark.top < (mark.container ? mark.container.scrollTop : window.scrollY) ? upArrowSvg : downArrowSvg;
 
     const btn = createFloatingButton(label, goBackIcon, position, async () => {
-        await scrollToPosition(originalScrollY, 1000);
-    }, classification, tweetId);
+        await scrollToMark(mark, 1000);
+    }, classification, tweetId, claimTexts);
 
     const safeLabel = label || "Go Back";
     btn.innerHTML = `<div style="display:flex;${isRTL ? 'flex-direction:row-reverse;' : 'flex-direction:row;'}align-items:center;gap:8px;font-size:15px;font-weight:700;">${isRTL ? `<span>${safeLabel}</span>${goBackIcon}` : `${goBackIcon}<span>${safeLabel}</span>`}</div>`;
@@ -2212,7 +2596,7 @@ function showGoBackFloatingButton(tweetId: string, originalScrollY: number, clas
             } else {
                 becameInvisibleAt = null;
             }
-            if (Math.abs(window.scrollY - originalScrollY) < 5) {
+            if (markDistance(mark) < 5) {
                 clearFloatingButtonForPath(path, true);
             }
         }, 500);
@@ -2247,19 +2631,15 @@ export function trackSelectionFloatingButtons(classification: Classification): v
     const claims = classification.claims ?? [];
     if (claims.length === 0) return;
 
-    /** The same bar the tweet flow uses. A claim with a VERDICT counts; one sitting on hold
-     *  is idle — waiting on the user's own Disinfact click, not on a result — so it does not
-     *  hold the button back; and at least one verdict must exist, because the button is an
-     *  invitation to go back and read a result and there is nothing to read until then. */
-    const hasVerdict = (cl: Claim) =>
-        cl.verdict !== 'research required'
-        && cl.confidence !== undefined && cl.confidence !== null
-        && cl.veracity !== undefined && cl.veracity !== null;
+    /** The same bar the tweet flow uses (claimHasVerdict). A claim sitting on hold is idle —
+     *  waiting on the user's own Disinfact click, not on a result — so it does not hold the
+     *  button back; and at least one verdict must exist, because the button is an invitation
+     *  to go back and read a result and there is nothing to read until then. */
 
     // The claim checks run before any DOM work: the caller drives this from a scroll handler,
     // and until the run settles every scroll event lands here and should cost nothing.
-    if (!claims.some(hasVerdict)) return;
-    const settled = claims.every(cl => hasVerdict(cl) || cl.reclassifyOnHold === true);
+    if (!claims.some(claimHasVerdict)) return;
+    const settled = claims.every(cl => claimHasVerdict(cl) || cl.reclassifyOnHold === true);
 
     // Nothing to point at: the claims found no text to anchor to and rendered as a list
     // instead of highlights, or the wrap has since gone. A button that scrolls nowhere is
@@ -2279,7 +2659,7 @@ export function trackSelectionFloatingButtons(classification: Classification): v
         }
         selectionButtonShown.add(id);
         selectionButtonArmed.delete(id);
-        showFactCheckedFloatingButton(id, window.scrollY, classification);
+        showFactCheckedFloatingButton(id, classification);
         return;
     }
 
@@ -2315,31 +2695,22 @@ function updateOnHoldScrollTracking(classification: Classification) {
         if (!currentClaimTexts.has(text)) state.pendingClaimTexts.delete(text);
     }
 
-    /** Done for the purposes of the Fact-Checked button: the claim has a VERDICT.
-     *
-     *  Deliberately does not wait on `note` (the reasoning). Reasoning and sources stream
-     *  in afterwards and the popover renders them live, so gating on the note kept the
-     *  button hidden long after the highlight had already settled on its final colour —
-     *  the user could not be sent back to a tweet whose verdicts were, visibly, ready.
-     *  The `verdict !== "research required"` guard stays: a claim can carry a DB-matched
-     *  confidence/veracity while still awaiting its own research, and that must not count. */
-    const hasVerdict = (cl: Claim) =>
-        cl.verdict !== "research required"
-        && cl.confidence !== undefined && cl.confidence !== null
-        && cl.veracity !== undefined && cl.veracity !== null;
-
     /** Only a claim that is actually IN FLIGHT can hold the button back.
      *
      *  A claim sitting on hold is idle — it is waiting on the user's own Fact-Check click,
      *  not on a result — so it must not count as outstanding. Otherwise fact-checking one
      *  claim on a multi-claim tweet left the others permanently un-verdicted, the pending
      *  set never emptied, and the button never appeared at all for a partial check. */
-    const isAwaitingVerdict = (cl: Claim) => !hasVerdict(cl) && cl.reclassifyOnHold !== true;
+    const isAwaitingVerdict = (cl: Claim) => !claimHasVerdict(cl) && cl.reclassifyOnHold !== true;
 
     for (const cl of allClaims) {
         if (isAwaitingVerdict(cl) && !state.pendingClaimTexts.has(cl.text)) {
             state.pendingClaimTexts.add(cl.text);
         }
+        // Every claim this run takes on stays on the books, even once its verdict lands —
+        // that set is what the button offers. A claim that already carried a verdict when
+        // the run started is never awaiting one, so an earlier run's results never enter it.
+        if (isAwaitingVerdict(cl)) state.keptClaimTexts.add(cl.text);
     }
 
     // Clear anything that is no longer outstanding — either it produced a verdict, or it
@@ -2351,13 +2722,13 @@ function updateOnHoldScrollTracking(classification: Classification) {
         }
     }
 
-    console.log(`[misinfo] updateOnHoldScrollTracking ${classification.id}: pending=${state.pendingClaimTexts.size}, anyFresh=${allClaims.some(cl => cl.freshlyResearched)}, tweetVisible=${isTweetVisible(classification.id)}, highlightsVisible=${areTweetHighlightsVisible(classification.id)}`);
+    console.log(`[misinfo] updateOnHoldScrollTracking ${classification.id}: pending=${state.pendingClaimTexts.size}, kept=${state.keptClaimTexts.size}, anyFresh=${allClaims.some(cl => cl.freshlyResearched)}, tweetVisible=${isTweetVisible(classification.id)}, highlightsVisible=${areTweetHighlightsVisible(classification.id, state.keptClaimTexts)}`);
 
     if (state.pendingClaimTexts.size === 0) {
-        const anyCompleted = allClaims.some(hasVerdict);
+        const anyCompleted = allClaims.some(claimHasVerdict);
         if (anyCompleted) {
             console.log(`[misinfo] updateOnHoldScrollTracking ${classification.id}: showing Fact-Checked button`);
-            showFactCheckedFloatingButton(classification.id, state.originalScrollY, classification);
+            showFactCheckedFloatingButton(classification.id, classification, state.keptClaimTexts);
             // Tear the tracker down only once it has done its job.
             onHoldScrollStates.delete(classification.id);
         }
@@ -2513,6 +2884,28 @@ export function injectClassifications(classifications: Classification[], tweetTe
         const idx = allClassifications.findIndex(x => x.id === c.id);
         if (idx >= 0) {
             const old = allClassifications[idx];
+            // One post is read from more than one trace, and only the trace holding the
+            // text a claim's ranges were measured against can bind them; a sibling trace of
+            // the same post arrives with the revision gate stripped, so its claims carry no
+            // highlight and no annotations. Adopting that emptier copy is what un-marks the
+            // body, plants the claim-less placeholder below (which reports every claim
+            // unmatched and renders the fallback box), and offers Annotate again on a claim
+            // that is already annotated. `claimsEqual` deliberately ignores highlight and
+            // annotations, so when it calls these the same claims they ARE the same claims:
+            // keep what the held copy has and this delivery does not carry. A genuinely new
+            // revision — or a fresh annotation — arrives WITH the field and wins as always.
+            if (claimsEqual(c.claims, old.claims)) {
+                const n = c.claims?.length ?? 0;
+                for (let i = 0; i < n; i++) {
+                    const cl = c.claims![i], prev = old.claims![i];
+                    if (!cl.highlight || Object.keys(cl.highlight).length === 0) {
+                        if (prev.highlight && Object.keys(prev.highlight).length > 0) cl.highlight = prev.highlight;
+                    }
+                    if (!cl.annotations || Object.keys(cl.annotations).length === 0) {
+                        if (prev.annotations && Object.keys(prev.annotations).length > 0) cl.annotations = prev.annotations;
+                    }
+                }
+            }
             const claimsChanged = !claimsEqual(c.claims, old.claims);
             const highlightsChanged = c.claims?.some((cl, i) => {
                 const oldCl = old.claims?.[i];
@@ -2647,6 +3040,43 @@ export function injectClassifications(classifications: Classification[], tweetTe
             childList: true,
             subtree: true,
         });
+
+        // The page rewriting a post's text in place — its own translate toggle handing the new
+        // language to the node it made — leaves nothing but a `characterData` record: no node is
+        // added, no element is re-rendered, and the injection observer above therefore never
+        // hears it. Kept separate for exactly that reason (it must not run injections on every
+        // keystroke), and scoped to the wrap the mutated node sits in, so the cost is one
+        // `closest` per mutation.
+        const paintObserver = new MutationObserver((mutations) => {
+            let dropped: Set<string> | null = null;
+            for (const mutation of mutations) {
+                const node = mutation.target;
+                const el = (node.nodeType === Node.ELEMENT_NODE ? node : (node as ChildNode).parentElement) as Element | null;
+                if (!el?.closest) continue;
+                const wrap = el.closest<HTMLElement>('.mf-segment-wrap.mf-in-place');
+                if (!wrap || !inPlacePaintIsStale(wrap)) continue;
+                const id = wrap.querySelector<HTMLElement>('.mf-segment-claim')?.dataset.mfCid ?? '?';
+                console.log(`[misinfo] in-place paint dropped for ${id}: the page rewrote the text under it`);
+                undoInPlacePaint(wrap);
+                if (id !== '?') {
+                    if (!dropped) dropped = new Set();
+                    dropped.add(id);
+                }
+            }
+            // Put those posts back in THIS task. Un-painting here is instant, but the pass that
+            // repaints them is only debounced behind a host *childList* change — and the write
+            // that got us here is a characterData one, which that observer never sees. So
+            // waiting leaves the reader looking at the post's own words with no highlights for
+            // 100–200ms, and returning them only if the page happens to mutate again; that is
+            // the highlights flipping away and back that a reader sees on a host which
+            // re-renders the posts it handed us to paint. The work and every guard are the
+            // pass's own (a body no longer matching its segments is refused by
+            // wrapClaimSegmentsInPlace either way) — only the moment it lands changes, and
+            // nothing is painted in between.
+            const ids = dropped;
+            if (ids) classificationInjections(allClassifications.filter((c) => ids.has(c.id)));
+        });
+        paintObserver.observe(document.body, { characterData: true, subtree: true });
     }
 }
 
@@ -2787,8 +3217,15 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
 
     tweetText = htmlDecode(tweetText);
 
+    // Do NOT decode cl.text. It is the claim's identity, not just its label: it travels to
+    // the background on every claim action and is matched with === against the cached claim
+    // (refreshClaim, awaitClaimDbRow, researchCache, mergeSingleClaimAndBroadcast). X is the
+    // one platform whose payload is HTML-escaped, so decoding only the DOM's copy made the
+    // background's claim ("…watermarks to ChatGPT &amp; Codex…") and the clicked text
+    // ("…watermarks to ChatGPT & Codex…") differ — every lookup missed, and the fact-check
+    // ran, billed the user, and landed its verdict nowhere. `rewritten` is display text and
+    // a research query, never a key, so decoding it is fine.
     for (const cl of claims) {
-      cl.text = htmlDecode(cl.text);
       if (cl.rewritten) cl.rewritten = htmlDecode(cl.rewritten);
     }
 
@@ -2828,6 +3265,34 @@ function kickOffTextBreakup(classification: Classification, tweetTextCache?: Map
             mainSegments = breakupTweetText(tweetText, fallbackClaims);
             if (mainSegments) {
                 console.log(`[misinfo] Text breakup: matched via rewritten claims for ${classification.id}`);
+            }
+        }
+    }
+
+    // Last resort before the fallback box: the worker's stored ranges, when they name the
+    // body under exactly one key. Text matching above can only succeed if a claim's own words
+    // appear in the post, and the workers do NOT promise that — they return the claim as
+    // normalized prose (live example: claim "nearly 70% of patients in the mRNA-4157 vaccine
+    // group" against a post reading "NEARLY 70% of people in the vaccine group"), while the
+    // range they stored with it is exact. Without this, such a post shows no highlights at all
+    // — every claim lands in the fallback box — even though its ranges tile the body.
+    //
+    // A translated tweet names its range key outright (above); an untranslated one has no
+    // locale field, because for an untranslated body the key is just the language the worker
+    // classified in and nothing needs translating. Hence keying off the claims themselves, and
+    // only when they agree on ONE key: a range addresses words, and several candidate
+    // languages of similar length would let a verdict land on an arbitrary span — worse than
+    // showing none. Ranges are trusted here exactly as the translated path trusts them.
+    if (!mainSegments) {
+        const rangeKeys = new Set<string>();
+        for (const cl of claims) {
+            for (const key of Object.keys(cl.highlight ?? {})) rangeKeys.add(key);
+        }
+        const onlyKey = rangeKeys.size === 1 ? [...rangeKeys][0] : null;
+        if (onlyKey) {
+            mainSegments = breakupWithHighlights(tweetText, claims, onlyKey);
+            if (mainSegments) {
+                console.log(`[misinfo] Text breakup: matched via stored ranges under ${onlyKey} for ${classification.id}`);
             }
         }
     }
@@ -2894,7 +3359,14 @@ function mfPlainText(el: Element): string {
             }
             if (node.classList.contains("mf-inline-badge") || node.classList.contains("mf-standalone-spinner")) return;
             for (const child of Array.from(node.childNodes)) walk(child);
-        } else {
+        } else if (node.nodeType === Node.TEXT_NODE) {
+            // Text nodes only. A comment node's textContent is its data, which is not
+            // rendered content: Naver Cafe's smart editor brackets every text module with
+            // comments carrying its own template markup (" SE-TEXT { " / " } SE-TEXT "), and
+            // counting them made this string disagree with the post's classified text (which
+            // comes from textContent, and textContent excludes comments) by exactly the
+            // comments' length — so every highlight on such a post was refused here as a
+            // suspected translation swap.
             out += node.textContent ?? '';
         }
     };
@@ -2972,7 +3444,10 @@ const textBreakupInProgress = new Set<string>();
  *  already keys off — and the containment check keeps the search inside this article. When
  *  every link sits in a card we return null, which callers already read as "not quoted".
  */
-function getArticleMainStatusId(article: Element): string | null {
+export function getArticleMainStatusId(article: Element): string | null {
+    const seam = platformSeam();
+    if (seam) return seam.postIdOf(article);
+
     for (const link of article.querySelectorAll<HTMLAnchorElement>('a[href*="/status/"]')) {
         const quotedCard = link.closest('div[role="link"]');
         if (quotedCard && article.contains(quotedCard)) continue;
@@ -2982,27 +3457,46 @@ function getArticleMainStatusId(article: Element): string | null {
     return null;
 }
 
-/** Locate every on-screen occurrence of each classification's tweet and inject into it.
+/** Every on-screen occurrence of a post, as the (timestamp anchor, container, isQuoted)
+ *  triple the injector consumes.
  *
- *  A tweet can appear more than once on a page (timeline plus a quoted card, say), so this
- *  walks all status links rather than assuming one match, and derives whether each match is
- *  the main tweet or a quoted one from its position in the article. */
+ *  On X both come from the status permalink: the post is found by its `/status/<id>`
+ *  link and the article enclosing that link. A DOM-fed platform has no such link — the
+ *  root element IS the post, and on Reddit a comment carries no permalink node at all —
+ *  so there the adapter's roots serve as both.
+ *
+ *  A post can appear more than once on a page (a timeline entry plus the card it
+ *  quotes, say), so this returns every occurrence rather than assuming one; `isQuoted`
+ *  is derived from which post each container actually holds. */
+function postOccurrences(id: string): { time: Element; article: Element; isQuoted: boolean }[] {
+    const seam = platformSeam();
+    const out: { time: Element; article: Element; isQuoted: boolean }[] = [];
+    if (seam) {
+        for (const root of seam.postRoots(id)) {
+            const mainStatusId = seam.postIdOf(root);
+            out.push({ time: root, article: root, isQuoted: mainStatusId !== null && mainStatusId !== id });
+        }
+        return out;
+    }
+    for (const time of document.querySelectorAll(`a[href*="/status/${id}"]`)) {
+        const article = time.closest("article");
+        if (!article) continue;
+        const mainStatusId = getArticleMainStatusId(article);
+        out.push({ time, article, isQuoted: mainStatusId !== null && mainStatusId !== id });
+    }
+    return out;
+}
+
+/** Locate every on-screen occurrence of each classification's tweet and inject into it. */
 function classificationInjections(classifications: Classification[]) {
     if (extensionFrozen) return;
     syncQuotingClassifications();
     for (const classification of classifications) {
-        const times = document.querySelectorAll(`a[href*="/status/${classification.id}"]`);
-        if (times.length === 0) {
+        const occurrences = postOccurrences(classification.id);
+        if (occurrences.length === 0) {
             console.log(`[misinfo] classificationInjections: no DOM elements found for ${classification.id}`);
         }
-        for (const time of times) {
-            const article = time.closest("article");
-            if (!article) {
-                console.log(`[misinfo] classificationInjections: no article for ${classification.id} time element`);
-                continue;
-            }
-            const mainStatusId = getArticleMainStatusId(article);
-            const isQuoted = mainStatusId !== null && mainStatusId !== classification.id;
+        for (const { time, article, isQuoted } of occurrences) {
             injectClassification(time, classification, article, isQuoted);
         }
     }
@@ -3975,6 +4469,56 @@ function renderClaims(c: Classification | QuotedClassification, claimsOverride?:
         .join("");
 }
 
+/** Render the fallback claim boxes — the list of rewritten claims shown under a post whose
+ *  claims could not be anchored to their own text.
+ *
+ *  Off in production, deliberately. A box is a diagnostic, not a fact-check: it names claims
+ *  the injector failed to place, and its presence under a post whose highlights are perfectly
+ *  fine reads as output when it is really an error report. Logged either way (see the
+ *  `unmatched claims` line), so a build that hides them still says how many it could not
+ *  anchor. Flip to true to inspect the boxes themselves. */
+const RENDER_FALLBACK_CLAIM_BOXES = false;
+
+/** Put a claim box inside the post it belongs to.
+ *
+ *  X hangs it under the main article's byline, and after the timestamp when that article
+ *  has no byline to hang it from. Everywhere else — the DOM-fed platforms, where the
+ *  injector's container IS the post element itself, so `time === article` — it goes at the
+ *  END of that element, never beside it.
+ *
+ *  Beside it is what made the boxes pile up. `insertAdjacentElement("afterend", …)` on the
+ *  root puts the box OUTSIDE the subtree every later pass searches
+ *  (`article.querySelector('[mf-unmatched="…"]')`), so the box is write-only: the pass that
+ *  has claims it cannot place appends a copy, and the pass that later places them cannot
+ *  find that copy to remove it. A post re-injected a dozen times collects a dozen identical
+ *  boxes beneath text whose highlights are perfectly fine — the leftover of one early pass
+ *  that ran before its segments existed. */
+function placeClaimBox(time: Element, article: Element, div: HTMLElement, mainTweet: boolean) {
+    if (mainTweet) {
+        const byline = article.querySelector('[data-testid="User-Name"]');
+        if (byline) { byline.appendChild(div); return; }
+    }
+    if (time === article) article.appendChild(div);
+    else time.insertAdjacentElement("afterend", div);
+}
+
+/** Remove this post's claim boxes that live outside every container of the post.
+ *
+ *  Nothing else can reach them. Each pass looks for a box with
+ *  `article.querySelector(...)`, and the clear path with `postContainersFor(id)` — both
+ *  confined to the post's own subtree — so a box that a pass of an older build left
+ *  BESIDE the post is invisible to the update that should rewrite it, to the branch that
+ *  removes it once its claims are placed, and to the teardown that clears the post. It
+ *  sits there for the life of the page, and a post re-injected a dozen times leaves a
+ *  dozen of them: the same two unplaceable claims printed over and over under a post
+ *  whose highlights are perfectly fine. */
+function sweepOrphanClaimBoxes(id: string) {
+    const containers = postContainersFor(id);
+    for (const box of document.querySelectorAll(`[mf-unmatched="${id}"], [classification-id="${id}"]`)) {
+        if (!containers.some(root => root.contains(box))) box.remove();
+    }
+}
+
 // ── Inline segment rendering (Phase 2): claims highlighted in the tweet text ─
 
 export function getInlineStyles(): string {
@@ -4004,6 +4548,13 @@ export function getInlineStyles(): string {
 }
 .mf-segment-wrap {
     display: inline !important;
+}
+/* An in-place wrap holds the post's own DOM — headings, list items, links — instead of a
+   rendered run of text, so it must not generate a box of its own: display:contents lays
+   its children out as if the wrap were not there, which is what keeps the post
+   pixel-identical to how the page built it. */
+.mf-segment-wrap[data-mf-in-place="1"] {
+    display: contents !important;
 }
 .mf-segment-wrap[data-mf-sel-loading="true"] {
     background-color: rgba(29, 155, 240, 0.14) !important;
@@ -4353,7 +4904,11 @@ b.mf-badge-empty,
 }
 .mf-popover {
     position: absolute;
-    z-index: 1;
+    /* The reader opened this window on purpose, so it has to cover the page it is talking
+       about — a host panel, a sticky header, another site's own overlay. Only our own
+       floating chrome outranks it, and the whole ladder sits at the top of the range rather
+       than at 9999 because a HOST's cookie bar or sticky header is routinely at 9999 too. */
+    z-index: 2147483643;
     background: #1a1a2e;
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 12px;
@@ -4498,6 +5053,31 @@ b.mf-badge-empty,
 .mf-standalone-spinner {
     vertical-align: middle;
 }
+/* Our chrome is tappable wherever it lands, descendants included.
+   pointer-events INHERITS, so a host that disables it on a subtree disables our own
+   controls inside that subtree — and a value computed by inheritance is not the same
+   thing as a value written on the element: an inline auto on the container does nothing
+   for the buttons under it. Facebook's mobile site is exactly this shape — .ssr
+   #screen-root > .m, and every element under it, are pointer-events: none — and it cost
+   us every tap on that surface. Measured there: the bar container hit-tested and its
+   button did not, so a press was delivered to a container with no handler on it (the pill
+   painted, sat under the finger, and did nothing at all); and every claim span and badge
+   of a painted post hit-tested to the host's own DIV.m, which is why tapping a highlight
+   neither opened its popover nor reached the Annotate affordance.
+   Only the chrome that lives INSIDE the host's tree is listed. Popovers and notices are
+   appended to document.body, where the host rule cannot reach them, and the preview
+   popover's own none/auto pair (see .mf-popover-preview) is behaviour, not accident.
+   The badge's inner slots keep their explicit none: on the desktop host they compute none
+   too, so the badge stays the target on both, and the claim span stays the target
+   everywhere else. !important because the host rule is an id-and-two-classes descendant
+   selector that outranks ours on the button regardless of order. */
+.mf-btn-container,
+.mf-btn-container *,
+.mf-segment-wrap,
+.mf-segment-claim,
+.mf-inline-badge {
+    pointer-events: auto !important;
+}
 /* Narrow viewports (phones) run out of room on the action row that X already packs with
    its own controls, so the Disinfact / Fact-Check All buttons get squeezed or pushed to
    wrap. Reclaim the horizontal padding X's button classes apply — the tap target stays
@@ -4565,7 +5145,8 @@ b.mf-badge-empty,
 
 /* ── Balance notifications ──
    Top-right on wide screens, top-centered on narrow (mobile) ones. z-index sits
-   above popovers (z:1) but below the Fact-Checked / Go-Back buttons (z:9999). */
+   above popovers (z:2147483643) but below the Fact-Checked / Go-Back buttons
+   (z:2147483647). */
 .mf-notif-container {
     position: fixed;
     top: 12px;
@@ -4575,7 +5156,7 @@ b.mf-badge-empty,
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
-    z-index: 9998;
+    z-index: 2147483645;
     pointer-events: none;
     max-width: min(360px, 90vw);
 }
@@ -4607,10 +5188,11 @@ b.mf-badge-empty,
 .mf-notif.mf-notif-visible { opacity: 1; transform: translateY(0); }
 
 /* ── Onboarding "charge-balance" popovers ──
-   Reuse the popover look but sit above claim popovers (z:1) and below notifications
-   (z:9998). Always fully opaque and persistent (unless mirroring a preview popover). */
+   Reuse the popover look but sit above claim popovers (z:2147483643) and below
+   notifications (z:2147483645). Always fully opaque and persistent (unless mirroring a
+   preview popover). */
 .mf-onboard {
-    z-index: 9997;
+    z-index: 2147483644;
     opacity: 1;
     min-width: 0;
     max-width: 210px;
@@ -4629,6 +5211,46 @@ b.mf-badge-empty,
 /* Attached onboarding popovers (translate / refresh) sit just below a claim popover
    and share its opacity (mirrored in JS), with a smooth fade. */
 .mf-onboard-attached { transition: opacity 180ms ease; }
+
+/* ── Source-link favicons ──
+   A host stylesheet reaches in here: Reddit ships a reset whose selector list includes
+   an img rule with margin-bottom: 1rem, and inside the 20px centred flex link that margin
+   makes the icon's margin box 32px tall, so the icon centres 8px above the middle of the
+   circle and the link's overflow clips its top — the favicon renders short and stuck to
+   the top of the ring. Same defence as the badges: our own class and !important, so no
+   host sheet can size or space our icon. The link keeps its geometry inline (the hover
+   writes width/padding/border-radius there and must keep winning), so only what the
+   hover never touches is pinned here. */
+.mf-source-link { margin: 0 !important; }
+.mf-source-link > * {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.mf-source-link > img {
+    width: 16px !important;
+    height: 16px !important;
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 2px !important;
+}
+
+/* ── Floating buttons (Fact-Checked / Go Back) ──
+   The favicon defect above, on a whole element. A host reset for :where(button) supplies
+   height: var(--button-height), overflow: hidden and a line-height equal to its button height
+   (Reddit ships exactly that). Our inline styles declare none of the three, so the zero
+   specificity of :where() does not save us: the button is pinned to a single line and the
+   expanded state — the preview text, then the claim list — is clipped to a ~30px strip, with
+   every row inflated to that same ~30px on the way through. Pin the box here, the way the
+   badges and the source links already do. Everything the JS and the hover write stays inline
+   and unqualified: width, padding, radius, colours, transform. */
+.mf-floating-scroll-btn {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    line-height: normal !important;
+    white-space: normal !important;
+}
 `;
 }
 
@@ -4657,8 +5279,12 @@ function getNotifContainer(): HTMLElement {
         injectStyles();
         c = document.createElement('div');
         c.className = 'mf-notif-container';
-        document.body.appendChild(c);
     }
+    // A toast belongs over whatever the reader is looking at, and the page's comments view is a
+    // top-layer surface no z-index of ours can reach. Re-homing an existing container also
+    // covers the toast raised while that surface is open, and the container a closed surface
+    // took with it is rebuilt here on the next notification.
+    mountOverlayChrome(c);
     return c;
 }
 
@@ -4852,7 +5478,7 @@ function isDuplicatePageNotification(
 // that popover's type (same effect as clicking its charge button); other types are
 // unaffected, since e.g. Fact-Check and Fact-Check All are separate buttons that
 // happen to share a purpose. z-index sits above
-// claim popovers (z:1) but below notifications (z:9998).
+// claim popovers (z:2147483643) but below notifications (z:2147483645).
 
 const ONBOARD_DISMISS_KEY = 'mf_onboarding_dismissed';
 const ONBOARD_CLICKED_KEY = 'mf_onboarding_clicked_types';
@@ -5268,7 +5894,15 @@ export function refreshInPopoverOnboarding() {
         if (claimPop.querySelector('[data-mf-charge="refresh-inner"]') && onboardingActive('refresh-inner')) wants.push('refresh-inner');
 
         const isPreview = previewPopoverState?.popover === claimPop;
-        const container = claimPop.offsetParent instanceof HTMLElement ? claimPop.offsetParent : getTimelineContainer(claimPop);
+        // Below, these callouts are placed from the claim popover's offsetTop/offsetLeft — the
+        // coordinates it was positioned in. A popover mounted on document.body (see mountPopover)
+        // has no offsetParent and reports VIEWPORT coordinates, so its callouts are mounted there
+        // too and anchored the same way; without this they would resolve against the document
+        // instead and slide by the page's scroll offset.
+        const viewportAnchored = !!(claimPop as any)._mfViewportFixed;
+        const container = viewportAnchored
+            ? document.body
+            : (claimPop.offsetParent instanceof HTMLElement ? claimPop.offsetParent : getTimelineContainer(claimPop));
 
         const existing = new Map<string, HTMLElement>();
         for (const op of Array.from(document.querySelectorAll<HTMLElement>('.mf-onboard-attached'))) {
@@ -5282,6 +5916,7 @@ export function refreshInPopoverOnboarding() {
             if (!wants.includes(type)) continue;
             let op = existing.get(type);
             if (!op) { op = buildAttachedOnboardingPopover(type, claimPop); container.appendChild(op); }
+            if (viewportAnchored) op.style.position = 'fixed';
             ordered.push(op);
         }
         // Position stacked directly below the claim popover, matching its width.
@@ -5381,7 +6016,10 @@ window.addEventListener('scroll', () => {
 /** Find the element holding a tweet's body text within `article`, or null when the
  *  structure doesn't match. `isQuoted` looks inside the nested quoted-tweet card
  *  instead of the outer tweet. */
-function findTweetTextElement(article: Element, isQuoted: boolean = false, tweetId?: string): Element | null {
+export function findTweetTextElement(article: Element, isQuoted: boolean = false, tweetId?: string): Element | null {
+    const seam = platformSeam();
+    if (seam) return seam.textElement(article, { id: tweetId ?? '', isQuoted });
+
     if (tweetId) {
         const link = article.querySelector(`a[href*="/status/${tweetId}"]`);
         if (link) {
@@ -5415,6 +6053,54 @@ function findTweetTextElement(article: Element, isQuoted: boolean = false, tweet
     return null;
 }
 
+/** Show the whole of an X post we have just painted marks into.
+ *
+ *  X clamps a long post's own text element, and it does it with an INLINE style rather than
+ *  a rule: `[data-testid="tweetText"]` carries `style="-webkit-line-clamp: 5; …"`, which no
+ *  stylesheet scan will ever find. `overflow: hidden` arrives from a class. Measured on a
+ *  signed-in home timeline: a 275-character post rendered 100px against a 140px
+ *  scrollHeight, two of its lines unreachable.
+ *
+ *  Two separate readings decided that this is worth clearing. First, it is not a state X
+ *  keeps only off-screen posts in: scrolling that post to the middle of the viewport and
+ *  touching nothing left `clamp: 5, overflow: hidden, hidden: 40` exactly as it was, from
+ *  +300ms out to +9s. Second, a QUOTED post gets no "Show more" to escape through — the
+ *  outer post in the same article renders one and the quote inside it does not — so there a
+ *  post past five lines is cut with nothing on screen offering the rest.
+ *
+ *  `renderSegmentedTweet` rebuilds that element's CHILDREN, which leaves the inline clamp
+ *  exactly where it was: a reader who followed a claim past line five would be reading four
+ *  lines, an ellipsis, and no sign of what they came for.
+ *
+ *  Two declarations are the whole of it — clearing the clamp and the overflow it hides
+ *  behind takes the same element from `100/140, hidden 40` to `140/140, hidden 0`, verified
+ *  on the element itself. X's own "Show more" lifts the same clamp. X's control is left in
+ *  the DOM rather than removed — it is React's node, and a node deleted from outside React
+ *  is the classic way to break reconciliation on the host's next render of the very subtree
+ *  our `mf-segment-wrap` lives in. Nothing here changes the text, so the hash and the id are
+ *  untouched.
+ *
+ *  X is the one platform reached without the adapter seam (consulting the X adapter from
+ *  this file would recurse — see the note at the top of `utils/platforms/x.ts`), which is
+ *  why this lives here rather than on `xAdapter`. */
+function unclipXPostText(textElement: Element): void {
+    const el = textElement as HTMLElement;
+    el.style.webkitLineClamp = 'unset';
+    el.style.overflow = 'visible';
+}
+
+/** Give a body we are about to paint into, or have just been asked about, the whole of
+ *  itself — through the platform's own hook where it has one, and through X's own clamp
+ *  where it does not. */
+function unclipPostBody(textElement: Element): void {
+    const seam = platformSeam();
+    if (seam) {
+        seam.unclip?.(textElement);
+        return;
+    }
+    unclipXPostText(textElement);
+}
+
 /** Rebuild a tweet's text element from `segments`, wrapping claim segments in interactive
  *  highlight spans and leaving the rest as plain text.
  *
@@ -5444,6 +6130,334 @@ function renderSegmentedTweet(tweetTextEl: Element, segments: TextSegment[], cla
     if (!host._mfOriginalNodes) host._mfOriginalNodes = Array.from(tweetTextEl.childNodes);
     tweetTextEl.innerHTML = "";
     tweetTextEl.appendChild(wrap);
+}
+
+/** The fewest characters of a classified run worth painting on their own.
+ *
+ *  Only used on the partial-fit path below, where the element holds a prefix of the run and
+ *  not the whole of it. Below this length a match is as likely to be a coincidence as the
+ *  run, and painting a coincidental range would underline words nobody classified. */
+const MIN_ALIGNED_PREFIX = 12;
+
+/** Paint `segments` over the element's own text, leaving the rest of its DOM alone.
+ *
+ *  `renderSegmentedTweet` cannot be used for a body that is markup. It writes the
+ *  classified text into the element, which is correct for a tweet (one inline run, and X
+ *  re-links @/#/URLs itself) and destructive for a rendered markdown body: Reddit's links,
+ *  headings and list items are not text nodes to be rewritten, so the rebuild flattens the
+ *  whole post into a single paragraph and every link loses the words it was wrapped around.
+ *
+ *  Instead the element's children are moved into a `.mf-segment-wrap` and
+ *  `wrapClaimSegmentsInPlace` wraps only the claimed runs inside it. In this mode the wrap
+ *  is `display: contents` (see the stylesheet), so it generates no box: the block structure
+ *  underneath lays out exactly as the page built it.
+ *
+ *  The wrapper deliberately does NOT park the moved children in `_mfOriginalNodes` the way
+ *  `renderSegmentedTweet` parks X's. That handoff is only sound when the parked nodes are
+ *  held intact, and the rebuild path does hold them: it renders from its own spans and
+ *  never touches X's nodes. This path wraps the parked nodes THEMSELVES — `isolateTextRun`
+ *  rewrites a text node's data and empties it, and `extractContents` detaches what it
+ *  takes — so a snapshot taken here is a husk by the time any teardown reads it, and
+ *  `restoreOriginals` would put an empty node back and leave the post blank. Measured: a
+ *  comment whose claim started at offset 0 lost its entire body. Without the parking,
+ *  every teardown takes its in-place-safe branch instead — `discardSegmentWrap` and
+ *  `freezeSegmentWrap` both un-paint a wrap of this kind (restoring the text a paint cut out
+ *  of the page's own nodes) and unwrap it — and all of them keep the text.
+ *
+ *  Nothing is lost when nothing can be highlighted: with no claim in `segments` no run is
+ *  wrapped and the element is left as the page rendered it. */
+function renderSegmentsInPlace(tweetTextEl: Element, segments: TextSegment[], claims: Claim[], batchId: string, classificationId: string | undefined, hiddenPlain: Set<number> | null, textLocale?: string) {
+    let wrap = tweetTextEl.querySelector<HTMLElement>(":scope > .mf-segment-wrap");
+    if (!wrap) {
+        const live = Array.from(tweetTextEl.childNodes);
+        if (live.length === 0) return;
+        wrap = document.createElement("span");
+        wrap.className = "mf-segment-wrap mf-in-place";
+        wrap.dataset.mfInPlace = "1";
+        wrap.dataset.mfHiddenPlain = hiddenPlainSig(hiddenPlain);
+        tweetTextEl.appendChild(wrap);
+        wrap.append(...live);
+    }
+    // `wrapClaimSegmentsInPlace` walks the container's text by the segments' own lengths,
+    // so the segments must start at the container's first character. They do not: the
+    // classified text is trimmed (the worker hashes it, and a leading indent is not part of
+    // the post) while the element's text is whatever whitespace the page's markup indents
+    // with. Pad the segments out to the element's own text — the classified run is located
+    // in it, and the whitespace on either side becomes plain segments, which wrap nothing.
+    // A passage has two possible shapes and the classified text names which one is in force: with
+    // every `<br>` counted as the newline it renders, or with breaks counted as nothing at all.
+    // The first is what `passageTextContent` produces and what every adapter that reads its body
+    // through it classifies; the second is what a body read by plain `textContent` classifies, and
+    // a break inside such a body is invisible to the capture but not to this walk — so the
+    // classified run would not be found and the post would lose every highlight, silently. Asking
+    // which shape contains the text costs one failed `indexOf` in the common case and makes the
+    // adapter's own read the deciding vote rather than a migration this file has to keep in step.
+    const joined = segments.map(s => s.text).join('');
+    const bounds = [0];
+    for (const seg of segments) bounds.push(bounds[bounds.length - 1] + seg.text.length);
+    // The element and the classified run can also differ INSIDE the run, in which case
+    // containment of the whole thing fails while most of it sits in the element verbatim.
+    // A host that ellipsised a link it renders is the case in hand: Threads paints
+    // `cnn.it/4y52w…` where the payload — and so the classification — holds the whole URL,
+    // so a body the adapter read from the network names text the page never wrote. Dropping
+    // every highlight on such a post is the one outcome that helps nobody: the claims before
+    // the divergence are exactly the claims the element does hold. So take the longest run of
+    // LEADING segments the element contains — cut at a segment boundary, so no claim is ever
+    // painted in part — and leave the rest of what is on screen as plain text.
+    const fitOf = (p: string): { at: number; kept: number } | null => {
+        const whole = p.indexOf(joined);
+        if (whole >= 0) return { at: whole, kept: segments.length };
+        for (let i = segments.length - 1; i >= 1; i--) {
+            if (bounds[i] < MIN_ALIGNED_PREFIX) break;
+            const at = p.indexOf(joined.slice(0, bounds[i]));
+            if (at >= 0) return { at, kept: i };
+        }
+        return null;
+    };
+    let breaks = true;
+    let passage = passageTextContent(wrap, true);
+    let fit = fitOf(passage);
+    // A partial fit is worth a second look at the other shape: the shape that does not hold
+    // the whole run may well hold more of it. Contained-whole costs no second walk.
+    if (!fit || fit.kept < segments.length) {
+        const altPassage = passageTextContent(wrap, false);
+        const altFit = fitOf(altPassage);
+        if (altFit && (!fit || altFit.kept > fit.kept)) {
+            breaks = false;
+            passage = altPassage;
+            fit = altFit;
+        }
+    }
+    let at = fit ? fit.at : 0;
+    let kept = fit ? fit.kept : 0;
+    // The classified text and the page can also disagree on WHITESPACE ALONE, and then the exact
+    // fit above stops at the first place they do: the claims before it are exactly the claims the
+    // element still holds, so the post keeps the highlights of its opening and silently loses
+    // every one after — two badges in the first paragraph and a plain rest, which reads as the
+    // painter giving up halfway.
+    //
+    // What makes the two copies part company is a body completed from the page's own payload
+    // (facebook's `wholeBodyText`). That splice keeps the page's characters up to the cut and
+    // takes the remainder from the payload, and the payload separates paragraphs with a newline
+    // where the renderer runs each into its own block and puts nothing between them (see
+    // `squeeze`). One character then sits in the classified text that the page never wrote, and
+    // every claim placed after the first paragraph join addresses the page one character off.
+    //
+    // Whitespace is the ONLY thing tolerated here. Every non-space character of the classified run
+    // must appear, in order and unchanged, in the passage — so no claim can be painted over words
+    // it does not name, and a divergence of any other kind leaves the exact fit's answer standing.
+    // A segment is taken only when the alignment reaches its end, so no claim is ever painted in
+    // part, the same rule the exact fit follows.
+    let spaceCuts: number[] | null = null;
+    if (kept < segments.length) {
+        const spaceFitOf = (p: string): { at: number; kept: number; cuts: number[] } | null => {
+            const ws = (ch: string): boolean => ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r' || ch === '\f' || ch === '\v';
+            const map: number[] = new Array(joined.length + 1).fill(-1);
+            let j = 0;
+            let i = 0;
+            while (j < joined.length && i < p.length) {
+                const c = joined[j];
+                const d = p[i];
+                if (c === d || (ws(c) && ws(d))) { map[j] = i; j++; i++; continue; }
+                if (ws(c)) { map[j] = i; j++; continue; }
+                if (ws(d)) { i++; continue; }
+                break;
+            }
+            if (map[0] < 0) return null;
+            // The passage index just past the last classified character the alignment reached.
+            // `map` holds a position per consumed character, so a boundary AT the end of the run
+            // has none — and without this the final cut reads as "never reached", which slices the
+            // last segment empty and hands its characters to the plain tail instead. Set only when
+            // the whole run was consumed: anywhere else that index belongs to a character the
+            // alignment refused, and a segment ending there must not be taken.
+            if (j === joined.length) map[joined.length] = i;
+            let n = 0;
+            while (n < segments.length && map[bounds[n + 1]] >= 0) n++;
+            if (n === 0) return null;
+            const cuts: number[] = [];
+            for (let k = 0; k <= n; k++) cuts.push(map[bounds[k]]);
+            return { at: cuts[0], kept: n, cuts };
+        };
+        let best = spaceFitOf(passage);
+        if (!best || best.kept < segments.length) {
+            const altPassage = passageTextContent(wrap, !breaks);
+            const altBest = spaceFitOf(altPassage);
+            if (altBest && (!best || altBest.kept > best.kept)) {
+                best = altBest;
+                passage = altPassage;
+                breaks = !breaks;
+            }
+        }
+        if (best && best.kept > kept) {
+            at = best.at;
+            kept = best.kept;
+            spaceCuts = best.cuts;
+            console.log(`[misinfo] renderSegmentsInPlace: ${classificationId ?? '?'} — the classified text and the element agree on every character but their whitespace, so ${kept} of ${segments.length} segments are painted instead of the exact fit's ${fit ? fit.kept : 0}.`);
+        }
+    }
+    // The passage offset of each segment's start: the exact fit's own arithmetic, or the offsets
+    // the whitespace alignment landed on. Everything emitted below is a slice of the PASSAGE,
+    // which is what keeps the walk's segments accounting for every character of the container.
+    const cutAt = (k: number): number => (spaceCuts ? spaceCuts[k] : at + bounds[k]);
+    if (!fit && !spaceCuts) {
+        // Both sides are printed because they are the whole diagnosis: a mismatch here means
+        // the element no longer holds the text that was classified, and which side moved (a
+        // host translation, a rebuild by the page, an our-own teardown that dropped the
+        // originals) is only visible by comparing them.
+        console.log(`[misinfo] renderSegmentsInPlace: ${classificationId ?? '?'} — the element's text does not contain the classified text, leaving it unwrapped. dom(${passage.length})="${passage.slice(0, 60)}" classified(${joined.length})="${joined.slice(0, 60)}"`);
+        return;
+    }
+    if (kept < segments.length) {
+        const cut = cutAt(kept);
+        console.log(`[misinfo] renderSegmentsInPlace: ${classificationId ?? '?'} — the element holds only the first ${kept} of ${segments.length} classified segments (${bounds[kept]}/${joined.length} chars); highlighting those and leaving the rest plain. dom="…${passage.slice(Math.max(0, cut - 20), cut + 20)}" classified="…${joined.slice(Math.max(0, bounds[kept] - 20), bounds[kept] + 20)}"`);
+    }
+    const aligned: TextSegment[] = [];
+    if (at > 0) aligned.push({ text: passage.slice(0, at), claimIndex: null });
+    // While hidden, a non-bypassing claim renders as ordinary text, which in this mode
+    // just means it is not wrapped at all — there is no plain span to build, because the
+    // page's own text node is already what plain rendering produces.
+    for (let i = 0; i < kept; i++) {
+        const seg = segments[i];
+        // The page's own characters rather than the classified slice: the two are the same string
+        // wherever the fit was exact, and where it was not, these are the characters on screen.
+        const text = passage.slice(cutAt(i), cutAt(i + 1));
+        const out = text === seg.text ? seg : { ...seg, text };
+        aligned.push(hiddenPlain && out.claimIndex !== null && hiddenPlain.has(out.claimIndex)
+            ? { ...out, claimIndex: null }
+            : out);
+    }
+    // Everything past the fit is one plain segment covering it. It has to be here — the walk
+    // below requires the segments to account for every character of the container — and being
+    // plain is what keeps the unpaintable tail from being painted as something it is not.
+    const tail = passage.slice(cutAt(kept));
+    if (tail) aligned.push({ text: tail, claimIndex: null });
+
+    if (!wrapClaimSegmentsInPlace(wrap, aligned, claims, batchId, classificationId, textLocale, breaks)) {
+        console.log(`[misinfo] renderSegmentsInPlace: element text does not match the classified segments for ${classificationId ?? '?'} — left unwrapped`);
+    }
+}
+
+/** Discard a segment wrap without discarding the text it holds.
+ *
+ *  An in-place wrap owns the post's own child nodes — the page's, not ours — so `remove()`
+ *  would delete the post along with them. It is unwrapped instead, which returns those
+ *  nodes to the host exactly where they were. A rebuild wrap holds the rendered text
+ *  itself and is removed as before. Every removal site goes through here for that reason. */
+function discardSegmentWrap(wrap: HTMLElement) {
+    if (wrap.dataset.mfInPlace === "1") {
+        // Un-paint before handing the page's nodes back, for the same reason Hide does: a
+        // stand-in left holding the post's text is a post the page's own next write cannot
+        // visibly replace.
+        undoInPlacePaint(wrap);
+        wrap.replaceWith(...Array.from(wrap.childNodes));
+        return;
+    }
+    wrap.remove();
+}
+
+/** What an in-place paint has to undo, recorded on the wrap it painted. */
+type InPlacePaint = {
+    /** The passage as this paint left it, node by node. A page writing a post's next text into a
+     *  node it made shows up here and nowhere else — no element added, no element re-rendered, so
+     *  the injection observer never hears it. Detached nodes are deliberately NOT a signal: our
+     *  own churn detaches plenty, and a page that renders fresh nodes instead of rewriting these
+     *  is caught by that observer as the removal it is. */
+    watch: { node: Text; left: string }[];
+    /** Text this paint cut out of a node that is the page's own, with the whole text that node
+     *  held before the cut. Putting it back cannot double anything: the run cut out of it lives
+     *  in a node the paint minted, and undo drops those. */
+    cut: { node: Text; before: string; left: string }[];
+    /** Claim spans this paint minted, holding only text of its own. Removed. */
+    own: HTMLElement[];
+    /** Claim spans holding the page's own nodes — a claim that runs across an `<a>`/`<u>` keeps
+     *  that element inside its highlight. Unwrapped, never removed. */
+    moved: HTMLElement[];
+};
+
+type PaintHost = HTMLElement & { _mfPaint?: InPlacePaint };
+type MintedText = Text & { _mfMinted?: true };
+
+function inPlacePaintOf(wrap: HTMLElement): InPlacePaint | null {
+    return (wrap as PaintHost)._mfPaint ?? null;
+}
+
+/** Mark text this extension minted — a stand-in run cut out of the page's own node.
+ *
+ *  The mark has to outlive the paint that made it: a later paint cuts those same stand-in nodes
+ *  rather than the node they were cut from, so by the time undo runs the record no longer names
+ *  them. Without it, dropping the paint would leave text the page has since replaced sitting in
+ *  the passage, and restoring that paint's cuts would double text it no longer holds alone. */
+function markMinted(node: Text) {
+    (node as MintedText)._mfMinted = true;
+}
+
+function markMintedSubtree(el: Element) {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) markMinted(node as Text);
+}
+
+/** Undo an in-place paint: strip ours, hand the page's text back.
+ *
+ *  Called when the page has rewritten the words under a paint, and on every teardown of the
+ *  wrap (Hide, discard) — a paint left standing while its stand-in runs hold the post's text is
+ *  exactly what makes the page's next write invisible, so teardown un-paints rather than merely
+ *  unwrapping.
+ *
+ *  What comes off is ours: the claim spans, the stand-in runs, and the spans holding the page's
+ *  own nodes (those are unwrapped, never removed). A cut node goes back to the text it held,
+ *  unless the page has already written something else into it — that text is the page's to show
+ *  — or unless the cut was into a stand-in of an earlier paint, which is ours to drop. */
+function undoInPlacePaint(wrap: HTMLElement) {
+    const paint = inPlacePaintOf(wrap);
+    if (!paint) return;
+    delete (wrap as PaintHost)._mfPaint;
+    // Our chrome first, before anything is unwrapped into the passage: a badge is not text.
+    for (const chrome of Array.from(wrap.querySelectorAll('.mf-inline-badge, .mf-standalone-spinner'))) {
+        chrome.remove();
+    }
+    for (const span of paint.moved) {
+        if (!span.isConnected) continue;
+        for (const inner of Array.from(span.querySelectorAll('.mf-strike, .mf-corr'))) {
+            inner.replaceWith(...Array.from(inner.childNodes));
+        }
+        span.replaceWith(...Array.from(span.childNodes));
+    }
+    for (const span of paint.own) {
+        if (span.isConnected) span.remove();
+    }
+    // Stand-ins outlive the paint that minted them, so they are found by their mark rather than
+    // by the record, and a cut that landed in one is never restored (its `before` is also this
+    // paint's, and the text it holds is the language the page has just replaced).
+    const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+    const minted: Text[] = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if ((node as MintedText)._mfMinted) minted.push(node as Text);
+    }
+    for (const cut of paint.cut) {
+        if ((cut.node as MintedText)._mfMinted || !cut.node.isConnected || cut.node.data !== cut.left) continue;
+        cut.node.data = cut.before;
+    }
+    for (const node of minted) node.remove();
+}
+
+/** Has the page rewritten the words under an in-place paint?
+ *
+ *  Compared node by node against the passage as the paint left it. A node the paint wrote and
+ *  the page has since written something else into is the whole signal: that is what a language
+ *  toggle does — the same node, new text, no element re-rendered. */
+function inPlacePaintIsStale(wrap: HTMLElement): boolean {
+    const paint = inPlacePaintOf(wrap);
+    if (!paint) return false;
+    for (const entry of paint.watch) {
+        if (entry.node.data !== entry.left) return true;
+    }
+    return false;
+}
+
+/** Does the active platform want highlights painted over its own text nodes rather than
+ *  rebuilt from the classified text? See `PlatformAdapter.highlightInPlace`. */
+function platformHighlightsInPlace(): boolean {
+    return !!platformSeam()?.highlightInPlace;
 }
 
 /** Create a styled <a> element that visually matches X.com's native links
@@ -5687,7 +6701,10 @@ function makeClaimSegmentNodes(batchId: string, classificationId?: string, textL
             const badge = document.createElement("b");
             badge.className = plainLabel ? "mf-inline-badge" : needsAnnotate ? "mf-inline-badge mf-annotate-badge" : `mf-inline-badge ${VERDICT_BADGE_CLASS}`;
             badge.style.cssText = `display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; position: relative; top: -0.142em; line-height: 1.15; padding: 0.12em 0.52em; border-radius: 999px; font-size: 0.75em; font-weight: 600; white-space: nowrap; margin-left: ${isRTL ? '0' : '0.25em'}; margin-right: ${isRTL ? '0.25em' : '0'}; color: ${txtColor}; background: rgba(0,0,0,0.7); cursor: pointer;`;
-            if (isRefreshing || (prob === undefined && !isOnHoldNow && !isPipelineClaim)) {
+            // On hold is a settled state and beats a `refreshing` left over from whatever
+            // parked the claim (see the stand-in spinner's note in the update path): a run
+            // always states `reclassifyOnHold: false`, so a parked claim never hides one.
+            if (!isOnHoldNow && (isRefreshing || (prob === undefined && !isPipelineClaim))) {
                 const fcSpinner = document.createElement("span");
                 fcSpinner.className = "mf-fc-spinner";
                 if (isRTL) {
@@ -5951,38 +6968,99 @@ export function isPassageInvisible(el: Element): boolean {
     return false;
 }
 
+/** One position-holding unit of a passage: a text node, or a `<br>` occupying the single
+ *  character its rendered line break takes up in the passage string.
+ *
+ *  A break is a unit of the string and not decoration. The capture half reads the same
+ *  string this half indexes, so a `<br>` dropped from the model is a newline dropped from
+ *  what a post is taken to say: measured on Naver, a two-line comment arrived at the worker
+ *  welded into one run of words (`0.5리터 / 가스` read back as `0.5리터가스`), and on bsky
+ *  the markup fallback disagreed with the platform's own record whenever a body had a line
+ *  break in it — one post, two strings, the collision `post-id-names-one-text` refuses. */
+type PassagePiece = { text: Text } | { br: Element };
+
+/** How many characters a piece contributes to the passage string. */
+function pieceLength(piece: PassagePiece): number {
+    return "br" in piece ? 1 : piece.text.data.length;
+}
+
+/** The element a piece is anchored in — the text node's parent, or the break itself. */
+function pieceAnchor(piece: PassagePiece): Element | null {
+    return "br" in piece ? piece.br : piece.text.parentElement;
+}
+
+/** The passage string's units, in order: visible text nodes, with every `<br>` standing for
+ *  the newline it renders when `breaks` is set. Badge and other hidden subtrees are skipped,
+ *  because their words are not in the worker's string and must not shift later offsets.
+ *
+ *  `breaks` false yields the shape a plain `textContent` read produces — a break counted as
+ *  nothing — which is what an adapter that has not yet been moved onto `passageTextContent`
+ *  still classifies. Both shapes exist because the classified text is the thing being located
+ *  and it appears verbatim in only one of them; see `renderSegmentsInPlace`. */
+function passagePieces(container: HTMLElement, breaks: boolean): PassagePiece[] {
+    const pieces: PassagePiece[] = [];
+    const walk = (node: Node) => {
+        if (node.nodeType === 1) {
+            const el = node as Element;
+            if (isPassageInvisible(el)) return;
+            if (el.tagName === "BR") {
+                if (breaks) pieces.push({ br: el });
+                return;
+            }
+            for (const child of Array.from(el.childNodes)) walk(child);
+            return;
+        }
+        if (node.nodeType === 3) pieces.push({ text: node as Text });
+    };
+    walk(container);
+    return pieces;
+}
+
+/** The passage text a subtree holds, for reading back a run a paint has just cut out: text
+ *  nodes joined, with each `<br>` read as the newline it renders. Unlike the passage model
+ *  itself this hides nothing — it answers what the fragment in hand says, not what the
+ *  worker was told. */
+function passageTextOfFragment(node: Node): string {
+    if (node.nodeType === 3) return (node as Text).data;
+    if (node.nodeType !== 1) return "";
+    const el = node as Element;
+    if (el.tagName === "BR") return "\n";
+    return Array.from(el.childNodes).map(passageTextOfFragment).join("");
+}
+
 /** Passage text nodes inside a selection wrap, chrome and hidden subtrees
  *  excluded. Badge/spinner words are not in the worker's string, so they
  *  must not shift later offsets. */
 function passageTextNodes(container: HTMLElement): Text[] {
     const nodes: Text[] = [];
-    const walk = (node: Node) => {
-        if (node.nodeType === 1) {
-            if (isPassageInvisible(node as Element)) return;
-            for (const child of Array.from(node.childNodes)) walk(child);
-            return;
-        }
-        if (node.nodeType === 3) nodes.push(node as Text);
-    };
-    walk(container);
+    for (const piece of passagePieces(container, true)) {
+        if ("text" in piece) nodes.push(piece.text);
+    }
     return nodes;
 }
 
-/** The string `wrapClaimSegmentsInPlace` indexes — visible passage only. */
-export function passageTextContent(container: HTMLElement): string {
-    return passageTextNodes(container).map((t) => t.data).join("");
+/** The string `wrapClaimSegmentsInPlace` indexes — visible passage only, with every `<br>`
+ *  read as the newline it renders. The adapters read a body through this same function, which
+ *  is what makes the classified text and the offsets into it one string rather than two.
+ *
+ *  `breaks` false drops the breaks and yields what a plain `textContent` read produces. That
+ *  shape exists only for a container already classified by an adapter that still reads its body
+ *  that way; `renderSegmentsInPlace` picks whichever shape actually holds the classified text. */
+export function passageTextContent(container: HTMLElement, breaks = true): string {
+    return passagePieces(container, breaks).map((piece) => ("br" in piece ? "\n" : piece.text.data)).join("");
 }
 
-function locatePassage(container: HTMLElement, offset: number): { node: Text; offset: number } | null {
-    const nodes = passageTextNodes(container);
+function locatePassage(container: HTMLElement, offset: number, breaks: boolean): { index: number; piece: PassagePiece; offset: number } | null {
+    const pieces = passagePieces(container, breaks);
     let remaining = offset;
-    for (const n of nodes) {
-        if (remaining < n.data.length) return { node: n, offset: remaining };
-        remaining -= n.data.length;
+    for (let i = 0; i < pieces.length; i++) {
+        const len = pieceLength(pieces[i]);
+        if (remaining < len) return { index: i, piece: pieces[i], offset: remaining };
+        remaining -= len;
     }
-    if (remaining === 0 && nodes.length > 0) {
-        const last = nodes[nodes.length - 1];
-        return { node: last, offset: last.data.length };
+    if (remaining === 0 && pieces.length > 0) {
+        const last = pieces.length - 1;
+        return { index: last, piece: pieces[last], offset: pieceLength(pieces[last]) };
     }
     return null;
 }
@@ -6017,41 +7095,68 @@ function locatePassage(container: HTMLElement, offset: number): { node: Text; of
  *  The fold-back above already ran by then, so a false return leaves the passage as
  *  BARE TEXT with no highlights at all; the caller must fall back (the selection flow
  *  lists the claims) rather than leave it that way. True when the wrap holds spans. */
-export function wrapClaimSegmentsInPlace(container: HTMLElement, segments: TextSegment[], claims: Claim[], batchId: string, classificationId?: string, textLocale?: string): boolean {
+export function wrapClaimSegmentsInPlace(container: HTMLElement, segments: TextSegment[], claims: Claim[], batchId: string, classificationId?: string, textLocale?: string, breaks = true): boolean {
     const claimSegmentNodes = makeClaimSegmentNodes(batchId, classificationId, textLocale);
+    // Recorded as the cuts happen, so the page's own text can be put back: a paint over the
+    // page's text cuts its nodes, and the page hands a post's next text to the node it made.
+    // Only an in-place wrap holds the page's own nodes — a selection wrap holds a copy of
+    // them, and the page's text is not inside it to be blocked.
+    const painted = container.dataset.mfInPlace === "1";
+    const previous = painted ? inPlacePaintOf(container) : null;
+    const paint: InPlacePaint = { watch: [], cut: [], own: [], moved: [] };
+    if (painted) delete (container as PaintHost)._mfPaint;
 
     for (const span of Array.from(container.querySelectorAll(".mf-segment-claim"))) {
         // Keep page formatting (`<u>`/`<em>`/`<a>`) across a streaming rebuild.
         // Flattening to a text node would split the next wrap on those nodes
         // again. Annotation paint already replaced those children, so only
-        // then fall back to the passage string.
+        // then fall back to the passage string. The flattened node is still OURS —
+        // text recovered from a span, not the page's — so it carries the mark that
+        // lets a later teardown drop it rather than keep the language it replaced.
         if (span.querySelector(".mf-strike, .mf-corr")) {
-            span.replaceWith(document.createTextNode(passageTextOf(span)));
+            const flat = document.createTextNode(passageTextOf(span));
+            markMinted(flat);
+            span.replaceWith(flat);
             continue;
         }
         for (const chrome of Array.from(span.querySelectorAll(".mf-inline-badge, .mf-standalone-spinner"))) {
             chrome.remove();
         }
         if (span.childNodes.length === 0) {
-            span.replaceWith(document.createTextNode(passageTextOf(span)));
+            const flat = document.createTextNode(passageTextOf(span));
+            markMinted(flat);
+            span.replaceWith(flat);
         } else {
             span.replaceWith(...Array.from(span.childNodes));
         }
     }
 
-    // Offsets are into `container.textContent` (same string `segments` index).
+    // Offsets are into the passage string (same string `segments` index).
     // Do NOT walk a snapshot of Text nodes: wrapping claim 1 with extractContents
     // across an `<h1>`/`<p>` detaches later snapshot entries, so claim 2 never
     // wraps while this still returns true. Re-resolve each offset from the live
     // DOM instead, and skip badge/spinner text so those words cannot shift the
     // remaining ranges.
-    const passageLen = passageTextNodes(container).reduce((n, t) => n + t.data.length, 0);
-    if (passageLen !== segments.reduce((n, s) => n + s.text.length, 0)) return false;
+    const passageLen = passageTextContent(container, breaks).length;
+    if (passageLen !== segments.reduce((n, s) => n + s.text.length, 0)) {
+        // The fold-back above is lossless, so the previous record still describes the page's
+        // own nodes — it is what can put their text back. Keep it.
+        if (previous) (container as PaintHost)._mfPaint = previous;
+        return false;
+    }
 
     let flat = 0;
     for (const seg of segments) {
         const segStart = flat;
         flat += seg.text.length;
+        // `flat` counts the container's own characters, `seg.start` the classified text's.
+        // They part company exactly where the passage carries something the classification
+        // does not — the indentation `renderSegmentsInPlace` pads a trimmed body with — and
+        // the offset stamped on the span (mfSegStart) has to be the classified one, because
+        // that is the string the claim's annotation ranges address. Stamping the passage
+        // offset instead shifted every painted range by the padding's width: a strike landed
+        // that many characters to the left of the words it named, and the correction with it.
+        const clsDelta = seg.start === undefined ? 0 : seg.start - segStart;
         const claimIdx = seg.claimIndex;
         const claim = claimIdx === null ? undefined : claims[claimIdx];
         if (!claim) continue;
@@ -6059,32 +7164,41 @@ export function wrapClaimSegmentsInPlace(container: HTMLElement, segments: TextS
         let left = seg.text.length;
         let pieceStart = segStart;
         while (left > 0) {
-            const start = locatePassage(container, pieceStart);
+            const start = locatePassage(container, pieceStart, breaks);
             if (!start) break;
-            const block = nearestClaimBlock(start.node, container);
-            const nodes = passageTextNodes(container);
-            const startIndex = nodes.indexOf(start.node);
-            if (startIndex < 0) break;
+            const block = nearestClaimBlock(pieceAnchor(start.piece) ?? container, container);
+            const pieces = passagePieces(container, breaks);
+            // The index comes back from the locate, never from `indexOf`: a piece is a
+            // wrapper minted per call, so the entry `locatePassage` matched is a different
+            // object from the equal-looking one in this array and `indexOf` would answer -1
+            // for every claim — the wrap built, the gate passed, and not one span painted.
+            const startIndex = start.index;
 
             let endIndex = startIndex;
             let endOffset = start.offset;
             let pieceTake = 0;
             let i = startIndex;
             let o = start.offset;
-            while (pieceTake < left && i < nodes.length) {
-                const n = nodes[i];
-                if (!n.isConnected || n.data.length === 0) {
+            while (pieceTake < left && i < pieces.length) {
+                const piece = pieces[i];
+                const anchor = pieceAnchor(piece);
+                if (!anchor || !anchor.isConnected) {
                     i++;
                     o = 0;
                     continue;
                 }
-                if (n.parentElement?.closest(".mf-segment-claim")) {
+                if ("text" in piece && piece.text.data.length === 0) {
                     i++;
                     o = 0;
                     continue;
                 }
-                if (nearestClaimBlock(n, container) !== block && pieceTake > 0) break;
-                const a = n.data.length - o;
+                if (anchor.closest(".mf-segment-claim")) {
+                    i++;
+                    o = 0;
+                    continue;
+                }
+                if (nearestClaimBlock(anchor, container) !== block && pieceTake > 0) break;
+                const a = pieceLength(piece) - o;
                 if (a <= 0) { i++; o = 0; continue; }
                 const t = Math.min(a, left - pieceTake);
                 pieceTake += t;
@@ -6096,29 +7210,54 @@ export function wrapClaimSegmentsInPlace(container: HTMLElement, segments: TextS
             if (pieceTake <= 0) break;
 
             const withBadge = left - pieceTake === 0;
-            if (startIndex === endIndex) {
-                const { run } = isolateTextRun(nodes[startIndex], start.offset, pieceTake);
-                const pieceSeg: TextSegment = { text: run.data, claimIndex: claimIdx, start: pieceStart };
+            const startPiece = pieces[startIndex];
+            const endPiece = pieces[endIndex];
+            if (startIndex === endIndex && "text" in startPiece) {
+                const host = startPiece.text;
+                const before = host.data;
+                const { run, after } = isolateTextRun(host, start.offset, pieceTake);
+                const pieceSeg: TextSegment = { text: run.data, claimIndex: claimIdx, start: pieceStart + clsDelta };
                 const [span] = claimSegmentNodes(pieceSeg, claim, withBadge);
                 run.replaceWith(span);
+                if (painted) {
+                    // The span holds text this paint minted while `host` — the page's own node —
+                    // keeps the run's prefix, so undo drops the span and puts the whole text back
+                    // into the page's node. The tail is minted too, and goes by its mark.
+                    paint.cut.push({ node: host, before, left: host.data });
+                    paint.own.push(span as HTMLElement);
+                    markMintedSubtree(span as Element);
+                    if (after) markMinted(after);
+                }
             } else {
-                let startNode = nodes[startIndex];
-                let endNode = nodes[endIndex];
-                if (start.offset > 0) startNode = startNode.splitText(start.offset);
-                if (endOffset < endNode.data.length) endNode.splitText(endOffset);
+                // A run that reaches a `<br>` — or starts on one — is cut out by RANGE rather
+                // than by `isolateTextRun`, because a break is an element and cannot be a text
+                // node's slice. `extractContents` moves the break itself into the claim, so the
+                // wrapped run still renders the line break it claims; `setStartBefore` and
+                // `setEndAfter` are what take it in, a boundary AT the break excluding it.
                 const range = document.createRange();
-                range.setStart(startNode, 0);
-                range.setEnd(endNode, endNode.data.length);
+                if ("text" in startPiece) {
+                    const first = start.offset > 0 ? startPiece.text.splitText(start.offset) : startPiece.text;
+                    range.setStart(first, 0);
+                } else {
+                    range.setStartBefore(startPiece.br);
+                }
+                if ("text" in endPiece) {
+                    if (endOffset < endPiece.text.data.length) endPiece.text.splitText(endOffset);
+                    range.setEnd(endPiece.text, endPiece.text.data.length);
+                } else {
+                    range.setEndAfter(endPiece.br);
+                }
                 const fragment = range.extractContents();
                 const contents = Array.from(fragment.childNodes);
-                const pieceText = contents.map(n => n.textContent ?? "").join("");
+                const pieceText = contents.map(passageTextOfFragment).join("");
                 const pieceSeg: TextSegment = {
                     text: pieceText || seg.text.slice(pieceStart - segStart, pieceStart - segStart + pieceTake),
                     claimIndex: claimIdx,
-                    start: pieceStart,
+                    start: pieceStart + clsDelta,
                 };
                 const [span] = claimSegmentNodes(pieceSeg, claim, withBadge, contents);
                 range.insertNode(span);
+                if (painted) paint.moved.push(span as HTMLElement);
             }
             left -= pieceTake;
             pieceStart += pieceTake;
@@ -6136,6 +7275,12 @@ export function wrapClaimSegmentsInPlace(container: HTMLElement, segments: TextS
             pinStrikeLayout(w, inner, line);
         }
     }
+    if (painted) {
+        // The passage as it now stands. Taken after the layout pass, which is the last thing to
+        // touch these nodes: the record compares against exactly what ends up on the page.
+        paint.watch = passageTextNodes(container).map((node) => ({ node, left: node.data }));
+        (container as PaintHost)._mfPaint = paint;
+    }
     return true;
 }
 
@@ -6152,20 +7297,58 @@ function isolateTextRun(node: Text, offset: number, length: number): { run: Text
     const rest = data.slice(offset + length);
     node.data = data.slice(0, offset);
     parent.insertBefore(run, anchor);
+    markMinted(run);
     let after: Text | null = null;
     if (rest) {
         after = document.createTextNode(rest);
         parent.insertBefore(after, run.nextSibling);
+        markMinted(after);
     }
-    if (node.data === "") node.remove();
+    // `node` is NEVER removed, emptied or not. It is the page's own text node object, and a
+    // renderer hands a post's next text to THE node it made: Substack's translate toggle writes
+    // the new language into the very node the previous language came out of (measured — same
+    // node, new `data`, still connected, its `lang` flipped with it). A node we detached takes
+    // that write out of the document, so the toggle's own control changes state while the words
+    // on screen do not. Empty, the node is inert: offsets skip it, and `undoInPlacePaint` puts
+    // its text back.
     return { run, after };
 }
 
 /** Promote one already-injected tweet from the Phase 1 fallback box to Phase 2 inline
  *  highlights, once segments are available. Bails out quietly when there is nothing to
  *  upgrade or the tweet's text element can no longer be found in X's DOM. */
-function upgradeToSegments(article: Element, classification: Classification | QuotedClassification, batchId: string, isQuoted: boolean = false, hiddenPlain?: Set<number> | null, textLocaleOverride?: string) {
-    const segments = classification.segments;
+/** The parts of `segments` that fall inside one region of a post's text, re-based onto
+ *  that region.
+ *
+ *  Segments tile the whole classified text, so the ones covering a block boundary spill
+ *  into the block on either side; each piece is cut to the region and keeps its claim
+ *  index, which is how a claim that runs across the boundary still highlights on both
+ *  sides. A segment's `start` — the offset annotations index against — moves with the
+ *  cut rather than with the region, so it stays an offset into the text the claim was
+ *  matched in. */
+function sliceSegmentsToRegion(segments: TextSegment[], start: number, end: number): TextSegment[] {
+    const out: TextSegment[] = [];
+    let at = 0;
+    for (const seg of segments) {
+        const segStart = at;
+        const segEnd = at + seg.text.length;
+        at = segEnd;
+        const from = Math.max(start, segStart);
+        const to = Math.min(end, segEnd);
+        if (to <= from) continue;
+        const text = seg.text.slice(from - segStart, to - segStart);
+        if (!text) continue;
+        out.push({
+            text,
+            claimIndex: seg.claimIndex,
+            ...(seg.start === undefined ? {} : { start: seg.start + (from - segStart) }),
+        });
+    }
+    return out;
+}
+
+function upgradeToSegments(article: Element, classification: Classification | QuotedClassification, batchId: string, isQuoted: boolean = false, hiddenPlain?: Set<number> | null, textLocaleOverride?: string, targetEl?: Element | null, segmentsOverride?: TextSegment[]) {
+    const segments = segmentsOverride ?? classification.segments;
     const claims = classification.claims;
     if (!segments || segments.length === 0 || !claims || claims.length === 0) return;
     // Locale stamped onto spans so the annotation popover knows which key's
@@ -6180,7 +7363,11 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
     // changed signature throws the wrap away and rebuilds from scratch. Quoted
     // passes compute their own set at their call site, never the parent's.
     const wrapPlain = hiddenPlain === undefined ? null : hiddenPlain;
-    const tweetTextEl = findTweetTextElement(article, isQuoted, classification.id);
+    // `targetEl` is how a multi-region post paints its second block: the caller has
+    // already cut `segmentsOverride` down to that block, so the element is handed in
+    // rather than looked up. Everything below is per-element, which is what makes one
+    // post with two wraps work — each region reconciles against its own.
+    const tweetTextEl = targetEl ?? findTweetTextElement(article, isQuoted, classification.id);
     if (!tweetTextEl) {
         console.log(`[misinfo] upgradeToSegments: no tweetTextEl found for ${classification.id} (isQuoted=${isQuoted})`);
         return;
@@ -6197,7 +7384,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
         // but only when the wrap is FULLY plain; a bypass flip usually leaves some
         // claim spans behind, which would take the in-place path and render wrong.
         console.log(`[misinfo] upgradeToSegments: hidden-bypass set changed for ${classification.id}, re-rendering`);
-        existingWrap.remove();
+        discardSegmentWrap(existingWrap);
     }
     if (existingWrap && !stalePlain) {
         const existingClaimSpans = existingWrap.querySelectorAll(".mf-segment-claim");
@@ -6205,7 +7392,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
 
         if (existingClaimSpans.length === 0 && newHasClaims) {
             console.log(`[misinfo] upgradeToSegments: existing wrap is plain text but new segments have claims for ${classification.id}, re-rendering`);
-            existingWrap.remove();
+            discardSegmentWrap(existingWrap);
         } else {
             let updated = 0;
             for (const span of existingClaimSpans) {
@@ -6240,6 +7427,11 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 const oldProbability = el.dataset.probability;
                 const oldVeracity = el.dataset.veracity;
                 const oldRefreshing = el.dataset.refreshing;
+                // Read before the stamps below: whether the claim was parked decides the
+                // badge's face (Fact-Check, no wheel) as much as its verdict does, so a
+                // park/unpark has to count as a change or a wheel painted before the park
+                // would stay on a claim that has nothing running.
+                const oldOnHold = el.dataset.reclassifyOnHold === "true" ? "true" : "";
                 const isRefreshing = claim.refreshing;
                 // Whether this span carries the "always show the badge regardless of
                 // hover" flag, checked before any of the mutations below might flip it.
@@ -6264,6 +7456,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                     oldProbability !== String(claim.confidence ?? "") ||
                     oldVeracity !== String(claim.veracity ?? "") ||
                     oldRefreshing !== (isRefreshing ? "true" : "") ||
+                    oldOnHold !== (claim.reclassifyOnHold ? "true" : "") ||
                     oldRewritten !== (claim.rewritten ?? claim.text);
                 el.dataset.verdict = label;
                 el.dataset.claimText = claim.text;
@@ -6407,7 +7600,9 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                             landed.style.marginLeft = isRTLEl ? '0' : '0.27em';
                             landed.style.marginRight = isRTLEl ? '0.27em' : '0';
                             landed.innerHTML = '';
-                            if (claim.refreshing || (claim.confidence === undefined && !claim.reclassifyOnHold && !isPipelineResearching)) {
+                            // On hold wins over a stale `refreshing` here too — see the stand-in
+                            // spinner's note in the in-place update path above.
+                            if (!claim.reclassifyOnHold && (claim.refreshing || (claim.confidence === undefined && !isPipelineResearching))) {
                                 const landedSpinner = document.createElement("span");
                                 landedSpinner.className = "mf-fc-spinner";
                                 if (isRTLEl) {
@@ -6486,7 +7681,17 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                 // A live annotate flight counts as loading: its hover-only badge is
                 // gone with the hover, and the stand-in holds the state instead.
                 {
-                    const loadingNow = el.dataset.refreshing === "true" || isResearching || isAnnotatePending(el);
+                    // On hold is a SETTLED state: the claim is parked for the reader to start,
+                    // and the dataset can still be carrying a `refreshing` from whatever
+                    // parked it. A sole claim is parked the moment its automatic run starts
+                    // (`autoClassifySoleClaim`), and if that run's result never lands the flag
+                    // never clears — a wheel with nothing behind it, for the life of the page.
+                    // Every genuine run states `reclassifyOnHold: false` (that is exactly what
+                    // separates a running claim from a parked one), so on hold wins here and no
+                    // live run can be hidden by it.
+                    const onHoldNow = el.dataset.reclassifyOnHold === "true";
+                    const loadingNow = (!onHoldNow && (el.dataset.refreshing === "true" || isResearching))
+                        || isAnnotatePending(el);
                     const hasBadge = !!el.querySelector(".mf-inline-badge");
                     const standalone = el.querySelector(".mf-standalone-spinner");
                     if (loadingNow && !hasBadge && !standalone) {
@@ -6567,7 +7772,7 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
                             badge.innerHTML = '';
                             badge.classList.remove("mf-annotate-badge");
                             badge.classList.toggle(VERDICT_BADGE_CLASS, !plainLabel);
-                            if (isRefreshingNow || (claim.confidence === undefined && !isOnHold && !pipelineResearching)) {
+                            if (!isOnHold && (isRefreshingNow || (claim.confidence === undefined && !pipelineResearching))) {
                                 const fcSpinner = document.createElement("span");
                                 fcSpinner.className = "mf-fc-spinner";
                                 if (isRTLEl) {
@@ -6656,7 +7861,16 @@ function upgradeToSegments(article: Element, classification: Classification | Qu
     injectStyles();
     // Falls back to stamping nothing — the popover then prefers the UI-locale
     // key, same as before.
-    renderSegmentedTweet(tweetTextEl, segments, claims, batchId, classification.id, wrapPlain, stampedLocale);
+    // A claim is about to be shown inside this body, so the reader is owed the whole of it:
+    // a host that clamps the body with CSS would otherwise leave the marks — and the claim
+    // itself — somewhere inside a few lines and an ellipsis. Fires only when there is
+    // something to paint, which is the same condition X's rebuild amounts to.
+    if (segments.some(s => s.claimIndex !== null)) unclipPostBody(tweetTextEl);
+    if (platformHighlightsInPlace()) {
+        renderSegmentsInPlace(tweetTextEl, segments, claims, batchId, classification.id, wrapPlain, stampedLocale);
+    } else {
+        renderSegmentedTweet(tweetTextEl, segments, claims, batchId, classification.id, wrapPlain, stampedLocale);
+    }
 
     // If the pointer was already resting over this tweet (see the note above), the
     // just-destroyed old span's hover state died with it and the freshly built replacement
@@ -6864,29 +8078,91 @@ function setupGlobalHandlers() {
     window.addEventListener("beforeprint", enterPrintMode);
     window.addEventListener("afterprint", exitPrintMode);
 
-    // Coalesced via rAF like the scroll handler below: each squeeze forces a
-    // reflow, and raw resize events fire continuously through a window drag.
+    setupSqueezeRecovery();
+}
+
+let squeezeRecoverySetup = false;
+
+/** Everything that has to happen when the space a header row has *changes*, rather than
+ *  when a button is injected into it: the label caps the squeezer wrote describe a layout
+ *  that may no longer exist, and only a fresh measure can say.
+ *
+ *  This lives apart from `setupGlobalHandlers` because it must not wait for that function.
+ *  `setupGlobalHandlers` is reached from `upgradeToSegments`, which runs when a post gets
+ *  its first claims — so on a page where nothing has been fact-checked yet there are
+ *  buttons, their labels can be capped, and nothing is listening: window narrow, labels
+ *  cut to "D…", window wide again, and the cap stays (live-reproduced on Bluesky, where the
+ *  header band really does crush). The injection path installs it directly for that case;
+ *  `globalHandlersSetup` still installs it on X exactly where it always did. */
+function setupSqueezeRecovery() {
+    if (squeezeRecoverySetup) return;
+    squeezeRecoverySetup = true;
+
+    // Coalesced like the scroll handler below: each squeeze forces a reflow, and raw
+    // resize events fire continuously through a window drag.
+    //
+    // BOTH triggers re-arm on every event rather than bailing out while one is pending.
+    // Dropping events during a drag ran the pass against an INTERMEDIATE layout and then
+    // ignored the events that followed, so the caps stayed sized for a width the reader
+    // had already left — the widen that should lift them produced no pass at all
+    // (live-reproduced on Bluesky: stale caps held for the whole 4s after the window grew
+    // back). Re-arming makes both a trailing pass: the frame runs one frame after the
+    // drag pauses, the timer 300ms after it ends, so whichever lands last reads the layout
+    // the reader actually stopped at.
+    //
+    // The timer is also the half that survives a throttled frame. A BACKGROUND tab (or an
+    // unfocused window) throttles rAF to nothing, so a frame-only trigger never runs there
+    // — precisely the case where a cap written in a narrow window has to come off.
     let topBtnSqueezeRaf = 0;
+    let topBtnSqueezeTimer = 0;
     window.addEventListener("resize", () => {
         updateOpenPopover();
-        if (topBtnSqueezeRaf) return;
+        if (topBtnSqueezeRaf) cancelAnimationFrame(topBtnSqueezeRaf);
         topBtnSqueezeRaf = requestAnimationFrame(() => {
             topBtnSqueezeRaf = 0;
             resqueezeAllTopButtons();
         });
+        if (topBtnSqueezeTimer) window.clearTimeout(topBtnSqueezeTimer);
+        topBtnSqueezeTimer = window.setTimeout(() => {
+            topBtnSqueezeTimer = 0;
+            if (topBtnSqueezeRaf) {
+                cancelAnimationFrame(topBtnSqueezeRaf);
+                topBtnSqueezeRaf = 0;
+            }
+            resqueezeAllTopButtons();
+        }, 300);
     });
     // Window resize never fires when a narrow pane grows (side panel, split
     // view, zoom-to-fit): X's own layout reflows the header row in place and a
-    // stale max-width cap sticks with room to spare. A ResizeObserver on each
-    // row carrying our buttons re-runs the squeezer — whose caps-clear-first
-    // pass snaps labels back to full width — whenever the row itself changes
-    // size in EITHER direction. One observer for the whole page (articles come
-    // and go); a WeakSet keeps each row observed exactly once. Observing is
+    // stale max-width cap sticks with room to spare. A ResizeObserver on the DOCUMENT's
+    // own width catches every one of those, and it is the element that survives: these
+    // SPAs re-render their feeds, so a row observed when it was injected is detached a
+    // moment later and never reports again — a row observer alone silently stops working
+    // (live-reproduced on Bluesky: the first narrow/widen pair recovered, the next two
+    // steps ran no pass at all). Height is ignored deliberately: it changes on every feed
+    // append, and a squeeze never needs redoing because a post was added below.
+    if (typeof ResizeObserver !== 'undefined') {
+        let lastDocWidth = document.documentElement.clientWidth;
+        const docWidthObserver = new ResizeObserver(() => {
+            const w = document.documentElement.clientWidth;
+            if (w === lastDocWidth) return;
+            lastDocWidth = w;
+            resqueezeAllTopButtons();
+        });
+        const watchDocWidth = () => {
+            if (document.documentElement) docWidthObserver.observe(document.documentElement);
+            else setTimeout(watchDocWidth, 50);
+        };
+        watchDocWidth();
+    }
+    // Row-level, for the one case the document width cannot see: a layout that reflows a
+    // header row without the document changing size. One observer for the whole page
+    // (articles come and go); a WeakSet keeps each row observed exactly once. Observing is
     // inert: it only schedules updateTopButtonSqueeze, which is itself idempotent.
     if (typeof ResizeObserver !== 'undefined') {
         const topBtnRowObserver = new ResizeObserver((entries) => {
             for (const entry of entries) {
-                const article = (entry.target as Element).closest('article');
+                const article = postOfButtonSlot(entry.target as Element);
                 if (!article) continue;
                 updateTopButtonSqueeze(article);
             }
@@ -6914,12 +8190,30 @@ function setupGlobalHandlers() {
     }
 }
 
-/** Re-run the top-button squeezer on every article holding one of our buttons.
+/** The element that stands for a post holding one of our button slots.
+ *
+ *  On X that is the enclosing `<article>`, which is also what `injectClassification`
+ *  hands the squeezer. A DOM-fed platform has no articles at all — Bluesky's post roots
+ *  are `div[data-testid^="feedItem-by-"]` — so `closest('article')` found nothing there
+ *  and the resize path silently did no work: the labels kept a cap from a layout that no
+ *  longer existed, on the one platform whose header band genuinely crushes. The adapter
+ *  answers this question (`postElementFor`), so ask it.
+ *
+ *  Falling back to the slot's own parent row rather than null keeps a miss harmless:
+ *  re-squeezing the row is exactly what the caller wanted, and `applyTopButtonSqueeze`
+ *  is idempotent and reads the container out of whatever element it is given. */
+function postOfButtonSlot(slot: Element): Element | null {
+    const seam = platformSeam();
+    if (seam) return seam.postElementFor(slot) ?? slot.parentElement;
+    return slot.closest('article');
+}
+
+/** Re-run the top-button squeezer on every post holding one of our buttons.
  *  Shared by the window-resize handler above (grow AND shrink — the squeezer's
  *  caps-clear-first pass snaps labels back when space returns). */
 function resqueezeAllTopButtons() {
     for (const slot of Array.from(document.querySelectorAll<HTMLElement>('[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'))) {
-        const article = slot.closest('article');
+        const article = postOfButtonSlot(slot);
         if (article) updateTopButtonSqueeze(article);
     }
 }
@@ -6992,6 +8286,14 @@ export function setupArticleHandlers(articleEl: Element) {
         const sel = window.getSelection();
         if (sel && !sel.isCollapsed) return;
 
+        // The claim is our own control, so a click on it must never also run the host
+        // page's default action. On Reddit's feed a post's whole body is wrapped in the
+        // card's permalink `<a>`, and the stopPropagation calls below do NOT cancel an
+        // anchor's navigation — only preventDefault does — so without this the click that
+        // opens the popover also navigates away and the popover is gone before it paints.
+        // Inert on X, whose tweet text has no anchor around it.
+        e.preventDefault();
+
         // A tap on the verdict badge is what shows its percentages on a touchscreen, where
         // there is no hover — the browser holds :hover on the tapped element. That only
         // works if the tap reaches the badge instead of being read as a click on the claim:
@@ -7040,9 +8342,21 @@ export function setupArticleHandlers(articleEl: Element) {
           target.dataset.veracity = target.dataset.cachedVeracity ?? "";
           target.dataset.sources = target.dataset.cachedSources ?? "[]";
           target.dataset.refreshing = "true";
+          // What is being reclassified keeps the colour and badge of the verdict it is
+          // replacing for as long as the re-run streams: that verdict is still the one on
+          // screen, so only its badge gains the spinner. Grey and a researching word are
+          // for a claim that has never had a verdict — the same predicate the build and
+          // in-place paints use, so the three agree and the click moves no colour at all.
+          const cachedP = parseFloat(target.dataset.cachedConfidence ?? "");
+          const cachedV = parseFloat(target.dataset.cachedVeracity ?? "");
+          const hasCachedVerdict = !isNaN(cachedP) && !isNaN(cachedV) && cachedP >= 0.2;
           const darkNow = isDarkSurface(target);
-          paintClaimBg(target, darkNow ? 'rgba(180,180,180,0.32)' : 'rgba(0,0,0,0.18)');
-          target.dataset.hoverBg = darkNow ? 'rgba(180,180,180,0.42)' : 'rgba(0,0,0,0.28)';
+          paintClaimBg(target, hasCachedVerdict
+            ? confidenceRgba(cachedP, 0.25, cachedV)
+            : darkNow ? 'rgba(180,180,180,0.32)' : 'rgba(0,0,0,0.18)');
+          target.dataset.hoverBg = hasCachedVerdict
+            ? confidenceRgba(cachedP, 0.5, cachedV)
+            : darkNow ? 'rgba(180,180,180,0.42)' : 'rgba(0,0,0,0.28)';
           const claimIdForSeed = target.dataset.mfCid || (() => {
             // Legacy fallback for spans built before mfCid existed. Unreliable for
             // quoted tweets (outer article link) and detail view; mfCid is preferred.
@@ -7061,32 +8375,47 @@ export function setupArticleHandlers(articleEl: Element) {
             (badge as HTMLElement).style.marginLeft = isRTL ? '0' : '0.27em';
             (badge as HTMLElement).style.marginRight = isRTL ? '0.27em' : '0';
             badge.innerHTML = '';
+            const fcLabel = hasCachedVerdict
+              ? verdictLabel(cachedP, cachedV, researchingSeed)
+              : pickResearchingWord(researchingSeed);
             const fcSpinner = document.createElement("span");
             fcSpinner.className = "mf-fc-spinner";
             if (isRTL) {
               fcSpinner.style.marginRight = "0";
               fcSpinner.style.marginLeft = "0.27em";
-              badge.appendChild(document.createTextNode(pickResearchingWord(researchingSeed)));
+              badge.appendChild(document.createTextNode(fcLabel));
               badge.appendChild(fcSpinner);
             } else {
               badge.appendChild(fcSpinner);
-              badge.appendChild(document.createTextNode(pickResearchingWord(researchingSeed)));
+              badge.appendChild(document.createTextNode(fcLabel));
             }
+            badge.classList.remove("mf-annotate-badge");
+            badge.classList.add(VERDICT_BADGE_CLASS);
             syncBadgeLoadingClass(badge as HTMLElement);
           }
           const classificationId = claimIdForSeed;
           if (classificationId) {
             const ct = target.dataset.claimText;
             individuallyClickedOnHoldClaims.add(`${classificationId}:${ct}`);
+            // The reader just clicked a control on this post, which is the whole
+            // thing the top-of-tweet buttons record — so record it here too. Without
+            // it the re-check they just ordered revokes the claim's own verdict (the
+            // payload lands with note:null), that claim leaves the bypass set, and a
+            // post whose only visible claim was that one drops back behind its
+            // Reveal button: the click appears to hide the post it was made on, and
+            // the latched verdict keeps it hidden until they click Reveal by hand.
+            markVisualsEngaged(classificationId);
             selectionButtonShown.delete(classificationId);
             selectionButtonArmed.delete(classificationId);
             if (!onHoldScrollStates.has(classificationId) && ct) {
               onHoldScrollStates.set(classificationId, {
-                originalScrollY: window.scrollY,
-                pendingClaimTexts: new Set([ct])
+                mark: markAt(target),
+                pendingClaimTexts: new Set([ct]),
+                keptClaimTexts: new Set([ct])
               });
             } else if (onHoldScrollStates.has(classificationId) && ct) {
               onHoldScrollStates.get(classificationId)!.pendingClaimTexts.add(ct);
+              onHoldScrollStates.get(classificationId)!.keptClaimTexts.add(ct);
             }
             mfBus.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
               detail: { classificationId, claimText: ct }
@@ -7144,15 +8473,21 @@ export function setupArticleHandlers(articleEl: Element) {
           if (classificationId) {
             const ct = target.dataset.claimText!;
             individuallyClickedOnHoldClaims.add(`${classificationId}:${ct}`);
+            // Same as the on-hold badge above: a claim-level Fact-Check click is a
+            // click on this post, so the post counts as engaged and its visuals stay
+            // up through the re-check instead of dropping behind Reveal.
+            markVisualsEngaged(classificationId);
             selectionButtonShown.delete(classificationId);
             selectionButtonArmed.delete(classificationId);
             if (!onHoldScrollStates.has(classificationId) && ct) {
               onHoldScrollStates.set(classificationId, {
-                originalScrollY: window.scrollY,
-                pendingClaimTexts: new Set([ct])
+                mark: markAt(target),
+                pendingClaimTexts: new Set([ct]),
+                keptClaimTexts: new Set([ct])
               });
             } else if (onHoldScrollStates.has(classificationId) && ct) {
               onHoldScrollStates.get(classificationId)!.pendingClaimTexts.add(ct);
+              onHoldScrollStates.get(classificationId)!.keptClaimTexts.add(ct);
             }
             mfBus.dispatchEvent(new CustomEvent('mf-reclassify-on-hold-click', {
               detail: { classificationId, claimText: ct }
@@ -7300,11 +8635,7 @@ function showPopover(
         const shell = buildPopoverShell(trigger, false);
         popover = shell.popover;
 
-        const timelineContainer = getTimelineContainer(trigger);
-        if (getComputedStyle(timelineContainer).position === "static") {
-            timelineContainer.style.position = "relative";
-        }
-        timelineContainer.appendChild(popover);
+        mountPopover(popover, trigger);
         shell.render(reasoning, sources, claimText);
         bringPopoverToFront(popover);
 
@@ -7332,6 +8663,9 @@ function showPopover(
             shiftPopoverBelowBadge(trigger);
         }
         refreshInPopoverOnboarding();
+        // Last, once the window is at its final size and place: a host layer over it is invisible
+        // to everything above this line.
+        ensurePopoverVisible(popover, trigger);
     } catch (e) {
         console.error("[misinfo] showPopover failed:", e);
         if (popover && popover.parentElement) popover.remove();
@@ -7898,8 +9232,245 @@ function makeDraggable(el: HTMLElement) {
     });
 }
 
-function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
+/** The box that would crop a popover mounted in this element, in viewport coordinates, or
+ *  null when nothing between it and the page clips.
+ *
+ *  A popover is `position: absolute` inside its container, so any ancestor of that container
+ *  with a non-visible overflow CUTS it: everything past that ancestor's edge is simply not
+ *  painted, and the reader is left with a strip of a popover instead of a popover. No z-index
+ *  beats that — the clip is not about paint order. It is also not exotic: it is what a host
+ *  does whenever the post sits in a column narrower than the window (a permalink dialog, a
+ *  thread pane), which is exactly the case where placing the popover to the right — the
+ *  placement with room on the page — would be cropped.
+ *
+ *  This is therefore a yes/no question ("can this container hold a popover at all?"), which
+ *  `mountPopover` asks before choosing a host. Every ancestor is checked, not just the nearest,
+ *  because one far up is enough to crop. An axis left `visible` does not clip, but a container
+ *  that sets one axis to a non-visible value has the other compute to `auto` anyway, so testing
+ *  whole elements costs nothing real.
+ */
+function clippingBounds(el: Element | null): { left: number; top: number; right: number; bottom: number } | null {
+    let box: { left: number; top: number; right: number; bottom: number } | null = null;
+    for (let cur = el; cur && cur !== document.documentElement; cur = cur.parentElement) {
+        const style = getComputedStyle(cur);
+        if (style.overflowX === 'visible' && style.overflowY === 'visible') continue;
+        const r = cur.getBoundingClientRect();
+        box = box
+            ? {
+                left: Math.max(box.left, r.left),
+                top: Math.max(box.top, r.top),
+                right: Math.min(box.right, r.right),
+                bottom: Math.min(box.bottom, r.bottom),
+            }
+            : { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+    }
+    return box;
+}
+
+/** Mount a claim popover in the one place on this page that can hold it whole.
+ *
+ *  The timeline container is the default, and `position: absolute` inside it is worth keeping:
+ *  the container scrolls the popover with its post for free. That only works while nothing
+ *  between popover and page clips, though, and hosts do clip. Measured on a Facebook permalink
+ *  comment: the comments column is 350..1050 wide, the claim ends at x=960, so the placement
+ *  with room on the PAGE put the popover at 968..1328 — and the column's own `overflow: hidden`
+ *  painted away all but its first 82px.
+ *
+ *  `document.body` is the escape, and `position: fixed` alone is not: the same column also sets
+ *  `perspective`, which makes it the containing block for fixed descendants, and a fixed
+ *  popover left in place still resolved its `left: 968px` against the column (measured: viewport
+ *  x=1318). Body has no host between it and the page, so a fixed popover there is viewport-
+ *  anchored with nothing to crop it — measured at the same coordinates, both its right and
+ *  bottom edges hit-test as the popover itself instead of as the page behind it.
+ *
+ *  What it gives up is the free scroll-tracking, which `trackViewportFixedPopovers` restores.
+ */
+function mountPopover(popover: HTMLElement, trigger: HTMLElement): void {
+    const host = topLayerHost(trigger);
+    const container = getTimelineContainer(trigger);
+    // A top-layer surface is not reachable from outside it by any z-index, so a window mounted
+    // anywhere else is painted under it however large ours is. Ride the trigger's own surface.
+    if (host && !host.contains(container)) {
+        mountViewportFixed(popover, host);
+        return;
+    }
+    if (clippingBounds(container)) {
+        mountViewportFixed(popover, host);
+        return;
+    }
+    if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
+    container.appendChild(popover);
+}
+
+/** The host's own top-layer surface containing the trigger, if there is one.
+ *
+ *  A `<dialog>` opened with `showModal()` is painted in the browser's TOP LAYER, which is stacked
+ *  above every z-index on the page — our 2147483643 included — so no `z-index` we can write reaches
+ *  over it and the only way in is to be inside it. Measured on LinkedIn's mobile search surface: the
+ *  "N comments" control opens `DIALOG.ebumkj` covering the viewport, a claim in a comment lights up
+ *  with its window open, and the window measured fixed, on screen and correctly placed while
+ *  `elementFromPoint` at its own centre returned a span of that dialog's. */
+function topLayerHost(trigger: HTMLElement): HTMLElement | null {
+    const dialog = trigger.closest('dialog[open]');
+    return dialog instanceof HTMLElement ? dialog : null;
+}
+
+/** The page's open `<dialog>` painted highest, if it has one: the last one in document order.
+ *
+ *  Same fact as `topLayerHost`, from the side that has no trigger — our own overlay chrome.
+ *  Notifications (z:2147483645) and the floating buttons (z:2147483647) are mounted on the body
+ *  and no z-index reaches out of the top layer. Measured on LinkedIn's mobile search surface:
+ *  the comments control opens `DIALOG.ebumkj`, and `elementFromPoint` at the centre of a
+ *  max-z-index element on the body returned that dialog. Measured in the same dialog: a fixed
+ *  child lands at its own viewport coordinates — `transform`, `filter` and `contain` are `none`
+ *  on the dialog and on every ancestor — and `elementFromPoint` then returns the child. */
+function openTopLayerSurface(): HTMLElement | null {
+    const dialogs = document.querySelectorAll<HTMLElement>('dialog[open]');
+    return dialogs.length > 0 ? dialogs[dialogs.length - 1] : null;
+}
+
+/** Put our own overlay chrome where the reader can see it: inside the page's top-layer surface
+ *  while one is open, on the body otherwise. */
+function mountOverlayChrome(el: HTMLElement): void {
+    const host = openTopLayerSurface() ?? document.body;
+    if (el.parentElement !== host) host.appendChild(el);
+    watchTopLayer();
+}
+
+/** Follow the page's top layer for chrome that is ALREADY on screen.
+ *
+ *  `mountOverlayChrome` decides where chrome goes as it appears, which covers the case the
+ *  reader is actually in: a charge made inside the comments view raises its notification into
+ *  the surface that is open at that moment. The other half is chrome that appeared BEFORE the
+ *  surface did — a toast lives 5s and a floating button 10s, so the click that opens the
+ *  page's comments easily lands inside that window, and a surface painted over them is the
+ *  same bug. A `<dialog>` announces itself by gaining an `open` attribute or by being inserted
+ *  already carrying one, so those are the only two mutations worth hearing: a feed mutates
+ *  every frame and must not be walked. */
+let topLayerWatcher: MutationObserver | null = null;
+function watchTopLayer(): void {
+    if (topLayerWatcher || !document.documentElement) return;
+    const rehome = () => {
+        const host = openTopLayerSurface();
+        const chrome: HTMLElement[] = [];
+        for (const state of Array.from(floatingButtonRegistry.values())) {
+            if (state.btn?.isConnected) chrome.push(state.btn);
+        }
+        const container = document.querySelector<HTMLElement>('.mf-notif-container');
+        if (container) chrome.push(container);
+        for (const el of chrome) {
+            // A surface is open: everything of ours belongs inside it. None is open: only
+            // chrome the closing surface stranded inside a `<dialog>` still needs moving —
+            // it would otherwise sit in a subtree that no longer paints.
+            if (host || el.closest('dialog')) mountOverlayChrome(el);
+        }
+    };
+    // One re-check per burst, not per record, and never a subtree walk: this observer sees
+    // every frame of a feed, so all it may cost is a tag comparison per inserted node.
+    let scheduled = false;
+    const schedule = () => {
+        if (scheduled) return;
+        scheduled = true;
+        queueMicrotask(() => { scheduled = false; rehome(); });
+    };
+    topLayerWatcher = new MutationObserver((records) => {
+        for (const record of records) {
+            if (record.type === 'attributes') {
+                if ((record.target as Element).tagName === 'DIALOG') schedule();
+                continue;
+            }
+            for (const node of Array.from(record.addedNodes)) {
+                if (node.nodeType === 1 && (node as Element).tagName === 'DIALOG') { schedule(); break; }
+            }
+        }
+    });
+    topLayerWatcher.observe(document.documentElement, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ['open'],
+    });
+}
+
+/** Mount a popover fixed to the viewport, inside `host` when the trigger lives in a top-layer
+ *  surface and on `document.body` otherwise. The escape for both a container that would crop the
+ *  window and a window the host paints over. */
+function mountViewportFixed(popover: HTMLElement, host?: HTMLElement | null): void {
+    (popover as any)._mfViewportFixed = true;
+    popover.style.position = 'fixed';
+    (host ?? document.body).appendChild(popover);
+    trackViewportFixedPopovers();
+}
+
+/** Confirm the window just placed is the thing the reader would actually touch there, and move it to
+ *  the body when it is not.
+ *
+ *  `mountPopover` mounts the window inside a container the HOST owns, which leaves one failure it
+ *  cannot see: anything the host paints above that container covers the window. The reader then gets
+ *  a highlight sitting in its window-open state with no window anywhere. A host's own composited
+ *  layer is not something this file can enumerate per platform, and no z-index on our element
+ *  reaches out of a container the host has already stacked it inside.
+ *
+ *  So ask the page instead of guessing: hit-test the window's own centre. Hit-testing follows paint
+ *  order, so a window the reader cannot see is a window that is not the answer — covered, cropped,
+ *  or placed off the viewport. That answer is the same whichever it was, and it is the escape
+ *  `clippingBounds` already uses: mounted fixed to the viewport, where nothing the host stacks can
+ *  reach it. A window that IS the answer is left exactly where it was, which is what keeps every
+ *  platform that works today on the placement it has.
+ *
+ *  The one place a z-index cannot follow is a top-layer surface, which `topLayerHost` answers
+ *  separately: a window moved out of it would be painted under it, however large our z-index.
+ */
+function ensurePopoverVisible(popover: HTMLElement, trigger: HTMLElement): void {
+    if ((popover as any)._mfViewportFixed) return;
+    // A dragged window was put where the reader wanted it; their placement is not ours to move.
     if ((popover as any)._mfManuallyPositioned) return;
+    if (!popover.isConnected) return;
+    const rect = popover.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const onScreen = cx >= 0 && cy >= 0 && cx <= window.innerWidth && cy <= window.innerHeight;
+    const at = onScreen ? document.elementFromPoint(cx, cy) : null;
+    if (at && at.closest('.mf-popover') === popover) return;
+    mountViewportFixed(popover, topLayerHost(trigger));
+    positionPopover(popover, trigger);
+}
+
+/** Keep body-mounted popovers with their post while anything scrolls.
+ *
+ *  A capture-phase listener, not a bubble one: scroll events do not bubble, so a listener on
+ *  window only ever hears the document's own scroll — and on the hosts that need this, what
+ *  scrolls is an inner container (the comments column), whose events reach window in the
+ *  capture phase alone. One rAF per burst, and the scan is empty and free on every platform
+ *  that mounts its popovers in the container as usual.
+ */
+let viewportFixedScrollRaf = 0;
+let viewportFixedTracking = false;
+function trackViewportFixedPopovers(): void {
+    if (viewportFixedTracking) return;
+    viewportFixedTracking = true;
+    const reposition = () => {
+        if (viewportFixedScrollRaf) return;
+        viewportFixedScrollRaf = requestAnimationFrame(() => {
+            viewportFixedScrollRaf = 0;
+            for (const p of Array.from(document.querySelectorAll<HTMLElement>('.mf-popover'))) {
+                if (!(p as any)._mfViewportFixed) continue;
+                const t = (p as any)._mfTrigger as HTMLElement | undefined;
+                if (!p.isConnected || !t || !t.isConnected) continue;
+                positionPopover(p, t);
+            }
+        });
+    };
+    window.addEventListener('scroll', reposition, { capture: true, passive: true });
+    window.addEventListener('resize', reposition, { passive: true });
+}
+
+function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
+    // A body-mounted popover is positioned in VIEWPORT coordinates (see mountPopover), so its
+    // formula has no container term. It is also never frozen by a drag: nothing scrolls it back
+    // into place with its post, so a frozen one would hang in the viewport while the post left.
+    // The drag is re-applied as an offset at the end instead, exactly as the other
+    // viewport-fixed family does (see positionOnboardingPopover).
+    const viewportFixed = !!(popover as any)._mfViewportFixed;
+    if ((popover as any)._mfManuallyPositioned && !viewportFixed) return;
     popover.style.maxHeight = '';
     popover.style.overflowY = '';
     popover.style.width = '';
@@ -7911,10 +9482,10 @@ function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
     // popover was appended to (this divergence is what threw the first tweet's
     // popovers far below where they belong). scrollTop/scrollLeft make the transform
     // correct even when that parent is an internal scroll container (0 otherwise).
-    const offsetParent = (popover.offsetParent as HTMLElement | null) ?? getTimelineContainer(trigger);
-    const containerRect = offsetParent.getBoundingClientRect();
-    const containerScrollTop = offsetParent.scrollTop || 0;
-    const containerScrollLeft = offsetParent.scrollLeft || 0;
+    const offsetParent = viewportFixed ? null : ((popover.offsetParent as HTMLElement | null) ?? getTimelineContainer(trigger));
+    const containerRect = offsetParent ? offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+    const containerScrollTop = offsetParent ? offsetParent.scrollTop || 0 : 0;
+    const containerScrollLeft = offsetParent ? offsetParent.scrollLeft || 0 : 0;
     const popoverRect = popover.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -7939,8 +9510,14 @@ function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
         if (targetViewportTop + popoverRect.height > viewportHeight - padding) {
             targetViewportTop = viewportHeight - padding - popoverRect.height;
         }
-        if (targetViewportTop < headerBottom + padding) {
-            targetViewportTop = headerBottom + padding;
+        // A body-mounted popover has to be able to LEAVE with its post, the way an
+        // in-container one does when the container scrolls it out of sight — otherwise
+        // scrolling the post away would park the window against the top edge of the screen
+        // with nothing under it. A trigger already above the header has no top to be pushed
+        // down to, so it keeps its own position and goes off-screen with the post.
+        const topLimit = headerBottom + padding;
+        if (targetViewportTop < topLimit) {
+            targetViewportTop = viewportFixed ? Math.min(topLimit, trigRect.top) : topLimit;
         }
         top = targetViewportTop - containerRect.top + containerScrollTop;
     } else {
@@ -7989,6 +9566,11 @@ function positionPopover(popover: HTMLElement, trigger: HTMLElement) {
         const maxVLeft = viewportWidth - currentPopWidth - padding;
         const clampedVLeft = Math.max(minVLeft, Math.min(targetViewportLeft, maxVLeft));
         left = clampedVLeft - containerRect.left + containerScrollLeft;
+    }
+
+    if (viewportFixed) {
+        left += Number((popover as any)._mfDragDx) || 0;
+        top += Number((popover as any)._mfDragDy) || 0;
     }
 
     popover.style.left = `${left}px`;
@@ -8361,11 +9943,7 @@ function showPreviewPopover(trigger: HTMLElement) {
 
     const { popover, render } = buildPopoverShell(trigger, true);
 
-    const timelineContainer = getTimelineContainer(trigger);
-    if (getComputedStyle(timelineContainer).position === "static") {
-        timelineContainer.style.position = "relative";
-    }
-    timelineContainer.appendChild(popover);
+    mountPopover(popover, trigger);
     render(reasoning, sources, claimText);
     bringPopoverToFront(popover);
 
@@ -8434,6 +10012,54 @@ function schedulePreviewPopoverDismiss(trigger: HTMLElement) {
 }
 
 
+/** The trigger fields an open preview window reads (see updateOpenPopover). */
+const PREVIEW_TRIGGER_FIELDS = [
+    "claimRewritten", "claimText", "reasoning", "probability",
+    "veracity", "sources", "claimLocale", "reasoningLocale", "refreshing",
+] as const;
+
+/** Re-stamp the Fact-Checked button's stand-in trigger from the claim it stands for.
+ *
+ *  A preview hung on a claim highlight stays live because its trigger IS the span: every
+ *  delivery re-stamps that span's dataset and updateOpenPopover re-reads it on each pass,
+ *  which is how the reasoning expands and the sources arrive at the end while the window is
+ *  open. The button's hover list has no span of its own — it parks this stand-in over the
+ *  claim row — so its dataset was written once, at hover time, and the open window kept that
+ *  snapshot: the reasoning cut short at whatever had streamed by then, and the sources, which
+ *  land last, missing outright.
+ *
+ *  The claim's own span is copied where there is one, because that dataset is exactly what
+ *  hovering the highlight itself shows — same fields, same extraction — so the two windows
+ *  cannot drift apart. A claim that rendered as list text instead of a highlight has no span
+ *  to copy, and the held classification stands in. */
+function syncButtonPreviewTrigger(trigger: HTMLElement) {
+    const live = (trigger as any)._mfLiveClaim as { id: string; index: number } | undefined;
+    if (!live) return;
+
+    const span = document.querySelector<HTMLElement>(
+        `.mf-segment-claim[data-mf-cid="${cssAttrValue(live.id)}"][data-claim-index="${live.index}"]`);
+    if (span) {
+        for (const field of PREVIEW_TRIGGER_FIELDS) {
+            const value = span.dataset[field];
+            if (value === undefined) delete trigger.dataset[field];
+            else trigger.dataset[field] = value;
+        }
+        return;
+    }
+
+    const claim = allClassifications.find(c => c.id === live.id)?.claims?.[live.index];
+    if (!claim) return;
+    trigger.dataset.claimRewritten = (claim.rewritten && claim.rewritten !== claim.text) ? claim.rewritten : claim.text;
+    trigger.dataset.claimText = claim.text;
+    trigger.dataset.reasoning = extractReasoning(claim.note, claim.confidence, claim.veracity);
+    trigger.dataset.probability = String(claim.confidence ?? "");
+    trigger.dataset.veracity = String(claim.veracity ?? "");
+    trigger.dataset.sources = JSON.stringify(claim.sources ?? []);
+    trigger.dataset.claimLocale = claim.claimLocale ?? '';
+    trigger.dataset.reasoningLocale = claim.reasoningLocale ?? '';
+    trigger.dataset.refreshing = claim.refreshing ? "true" : "";
+}
+
 /** Show a preview popover anchored to the Fact-Checked button for a given claim.
  *  The preview follows the same hover rules as highlight previews: opaque while
  *  hovered, dismissed 1 second after the pointer leaves both the badge and the
@@ -8450,10 +10076,17 @@ function showPreviewPopoverFromButton(anchorBtn: HTMLElement, claim: Claim, clas
     (trigger as any)._mfButtonPreview = true;
     (trigger as any)._mfAnchorEl = claimEl;
     (trigger as any)._mfButtonEl = anchorBtn;
+    // Which claim this stand-in speaks for. The window it carries has to follow the research
+    // as it streams, so it is resolved positionally — the way the button's own hover handler
+    // looks its claim up — and re-stamped on every update (syncButtonPreviewTrigger).
+    (trigger as any)._mfLiveClaim = { id: classification.id, index: Number(claimEl.dataset.claimIndex) };
     trigger.style.cssText = "position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;";
     trigger.dataset.claimRewritten = (claim.rewritten && claim.rewritten !== claim.text) ? claim.rewritten : claim.text;
     trigger.dataset.claimText = claim.text;
-    trigger.dataset.reasoning = claim.note ?? "";
+    // Same extraction the claim's own span carries: the "Label: " prefix belongs to the badge,
+    // and leaving it on the reasoning is a second copy of the verdict the highlight popover
+    // does not show.
+    trigger.dataset.reasoning = extractReasoning(claim.note, claim.confidence, claim.veracity);
     trigger.dataset.probability = String(claim.confidence ?? "");
     trigger.dataset.veracity = String(claim.veracity ?? "");
     trigger.dataset.sources = JSON.stringify(claim.sources ?? []);
@@ -8461,6 +10094,7 @@ function showPreviewPopoverFromButton(anchorBtn: HTMLElement, claim: Claim, clas
     trigger.dataset.claimLocale = claim.claimLocale ?? '';
     trigger.dataset.reasoningLocale = claim.reasoningLocale ?? '';
     document.body.appendChild(trigger);
+    syncButtonPreviewTrigger(trigger);
 
     const rect = claimEl.getBoundingClientRect();
     trigger.style.left = `${rect.left}px`;
@@ -8532,6 +10166,7 @@ function createSourceLink(src: Source, hoverBg?: string): HTMLAnchorElement {
         window.open(url, '_blank', 'noopener,noreferrer');
     });
 
+    link.className = "mf-source-link";
     link.style.cssText = `
         display: inline-flex;
         align-items: center;
@@ -8562,7 +10197,10 @@ function createSourceLink(src: Source, hoverBg?: string): HTMLAnchorElement {
 
     const img = document.createElement("img");
     img.alt = "";
-    img.style.cssText = "width: 16px; height: 16px; display: none; border-radius: 2px;";
+    // margin/padding reset inline as well as in the stylesheet: a host rule on `img` is
+    // what pushes the icon out of the circle, and the inline copy holds even if the
+    // stylesheet has not landed or is shadowed.
+    img.style.cssText = "width: 16px; height: 16px; display: none; border-radius: 2px; margin: 0; padding: 0;";
     img.referrerPolicy = "no-referrer";
     link.appendChild(img);
 
@@ -9219,7 +10857,16 @@ export function repaintInlineAnnotations(
         if (el instanceof HTMLElement && kept.includes(el)) continue;
         el.remove();
     }
-    if (!annotations || typeof annotations !== 'object') {
+    // An on-hold claim's stored ranges belong to the classification being replaced —
+    // the highlight is carrying the plain "Fact-Check" badge precisely because that
+    // result no longer matches this text. Painting them leaves a stale strike and its
+    // correction over words nothing has re-derived yet, so the paint waits for the
+    // click that starts the reclassification. Read live from the dataset, not from the
+    // claim, for the same reason every badge predicate does: the span is updated in
+    // place as the claim progresses. The strip above still runs, so this is also what
+    // clears paint a span was already carrying when it went on hold.
+    const onHold = span.dataset.reclassifyOnHold === 'true';
+    if (onHold || !annotations || typeof annotations !== 'object') {
         // Append, never insertBefore(kept[0]): callers detach kept nodes first,
         // and a detached node is not a valid reference (throws NotFoundError).
         span.appendChild(document.createTextNode(text));
@@ -9448,6 +11095,10 @@ export function updateOpenPopover() {
         if (!trigger) return;
 
         if (popover.dataset.preview === "true") {
+            // The button's window hangs on a stand-in rather than on a claim span, so nothing
+            // else re-stamps it as the research streams: pull the claim's current values in
+            // before the reads below. No-op for a highlight's own preview.
+            syncButtonPreviewTrigger(trigger);
             // A preview's trigger is transient by nature: the claim span a rebuild threw away,
             // or the stand-in span the Fact-Checked button's hover list parks on the claim's
             // rect. A rebuilt-away span is not a departure, though — the pointer is still on
@@ -9713,7 +11364,7 @@ export function updateOpenPopover() {
 
 /** Find the Grok button's parent div for inserting custom buttons.
  *  Uses `aria-label*="Grok"` — "Grok" is a brand name, never translated. */
-function findGrokRow(article: Element): { row: HTMLElement; btn: HTMLElement } | null {
+export function findGrokRow(article: Element): { row: HTMLElement; btn: HTMLElement } | null {
     const grokBtn = article.querySelector<HTMLElement>('button[aria-label*="Grok"]');
     if (!grokBtn?.parentElement) return null;
     return { row: grokBtn.parentElement as HTMLElement, btn: grokBtn };
@@ -9871,7 +11522,41 @@ const MF_NARROW_MAX_WIDTH = 500;
 function currentBtnGap(): string {
     return window.innerWidth <= MF_NARROW_MAX_WIDTH ? MF_BTN_GAP_NARROW : MF_BTN_GAP;
 }
-function placeButtonContainer(container: HTMLElement, article: Element, time: Element, grokData: { row: HTMLElement } | null) {
+/** Place a post's button container on whichever platform this document is.
+ *
+ *  `time` and `grokData` are X's placement anchors and are only consulted on X — the
+ *  adapter finds its own anchors, because the *reason* X falls back from an action row
+ *  to a Grok row to the timestamp does not generalise to a forum comment or a chat
+ *  message. Call sites pass both so the X path stays byte-identical. */
+export function placePostButtons(
+    container: HTMLElement,
+    root: Element,
+    ref: PostRef,
+    time: Element,
+    grokData: { row: HTMLElement } | null,
+): void {
+    const seam = platformSeam();
+    if (seam) {
+        // Buttons keep full priority against the author cluster, exactly as on X: without
+        // this the row's own shrinking would clip our labels at an arbitrary point with no
+        // relation to how much the header overflowed, and `applyTopButtonSqueeze` would
+        // never see a crush to respond to (both items would shrink in proportion). With
+        // the container rigid, the cluster takes the whole shortfall, the squeeze pass
+        // reads it, and the labels give way deliberately — right-to-left, down to a
+        // 24px floor, never below.
+        container.style.flexShrink = '0';
+        // The squeeze-recovery wiring belongs to the button, not to the first set of
+        // claims: a label capped in a narrow window has to snap back when the space
+        // returns, and on these platforms that can happen long before any post on the
+        // page has been fact-checked.
+        setupSqueezeRecovery();
+        seam.placeButtons(container, root, ref);
+        return;
+    }
+    placeButtonContainer(container, root, time, grokData);
+}
+
+export function placeButtonContainer(container: HTMLElement, article: Element, time: Element, grokData: { row: HTMLElement } | null) {
     const MF_BTN_GAP = currentBtnGap();
     // On narrow screens tighten BOTH sides: only one of them carries the gap below, and the
     // other side still inherits the row's 8px, so leaving it untouched would look lopsided.
@@ -10000,7 +11685,9 @@ function enterPrintMode() {
         const innerDiv = grokData?.btn.querySelector<HTMLElement>('div[dir="ltr"]');
         const innerClass = innerDiv?.className ?? refBtn.className;
         container.appendChild(buildPrintLabel(innerClass));
-        placeButtonContainer(container, article, time, grokData);
+        // This loop selected the article whose *main* post is this classification
+        // (getArticleMainStatusId above), so it is never the quoted card.
+        placePostButtons(container, article, { id: classification.id }, time, grokData);
         printContainersAdded.add(container);
     }
 }
@@ -10139,12 +11826,104 @@ function measureUnconstrainedWidth(el: HTMLElement, hide?: HTMLElement | null): 
     return w;
 }
 
+/** The author cluster a DOM-fed platform's header row puts opposite our buttons.
+ *
+ *  The adapter's `placeButtons` puts the container in the post's header ROW, so the
+ *  thing that shrinks when the row runs out of room is one of that row's other children
+ *  — the [name][handle][time] cluster on Bluesky. Widest-wins rather than
+ *  first-child-wins: the cluster is by far the widest thing in a header band, so a
+ *  platform that also parks a small control in the same row (a menu, a follow button)
+ *  still has its shrinkable element measured. A row whose other children are all
+ *  unshrinkable is a safe miss — an unshrinkable element measures natural === visible,
+ *  so the crush reads 0 and nothing is capped. */
+function squeezableCluster(row: Element, container: Element): HTMLElement | null {
+    let widest: HTMLElement | null = null;
+    let widestW = -1;
+    for (const child of Array.from(row.children)) {
+        if (child === container) continue;
+        const w = child.getBoundingClientRect().width;
+        if (w > widestW) {
+            widestW = w;
+            widest = child as HTMLElement;
+        }
+    }
+    return widest;
+}
+
+/** Whether the buttons and the row's other children are laid out on ONE line — the only
+ *  arrangement in which our buttons can be the reason the author cluster is short of room.
+ *
+ *  A block-level bar in a block parent has a line to itself: every block child of a block
+ *  box is sized to that box's width whether or not its siblings exist, so nothing it does
+ *  can shrink them, and the max-content deficit such a sibling reports is its own
+ *  line-breaking rather than a crush we caused. Telegram's messages without a sender line
+ *  are exactly this shape — measured live, `.content-inner` is `display: block` and our
+ *  bar, the media block and the body are three 448px-wide blocks stacked in it — and the
+ *  media block's 304px phantom deficit capped the label to 35px of its natural 58 on a row
+ *  with nothing beside it. A float is the opposite case and keeps its squeeze wherever it
+ *  was put: the line boxes beside a float really do give way to it, which is how the
+ *  comment-surface adapters park their buttons. */
+function buttonsShareRowLine(row: Element, container: Element): boolean {
+    const buttonStyle = getComputedStyle(container);
+    if (buttonStyle.float !== 'none') return true;
+    // An inline-level bar sits in a line box with whatever is beside it, so it always
+    // competes; only a block-level one can be alone on its line, and even then only when
+    // the parent is not laying its children out across one line.
+    if (buttonStyle.display.startsWith('inline')) return true;
+    const rowDisplay = getComputedStyle(row).display;
+    return rowDisplay === 'flex' || rowDisplay === 'inline-flex'
+        || rowDisplay === 'grid' || rowDisplay === 'inline-grid';
+}
+
+/** Smallest space, in px, that truncating a label has to give back to the header
+ *  before it is allowed to. Below this the label is left at its natural width — see
+ *  the cap loop in `applyTopButtonSqueeze`. */
+const MIN_SQUEEZE_GAIN = 6;
+
+/** Least room, in px, worth keeping a label for when a host has measured the space it
+ *  left for the bar (`mf-seat-width`). Under this a label fits a letter and an ellipsis
+ *  and nothing else, so a button that carries its own mark stands as the mark instead —
+ *  the label is then the button's accessible name rather than its visible one. */
+const MIN_SEAT_LABEL_WIDTH = 48;
+
 function applyTopButtonSqueeze(article: Element) {
     if (!article.isConnected) return;
+    // The bar that BELONGS to this article, not the first bar inside it, because a root can hold
+    // another root's markup — the mobile Facebook story view is one scroller carrying the story
+    // AND every comment under it, each comment with a pill of its own. The first bar in that
+    // subtree is a comment's, and the re-seat below MOVES it (placeButtons appends the container
+    // to the root it is handed and seats it there): measured on a live story view, four pills of
+    // one comment's id sitting on the story's scroller, that comment left with none, and its name
+    // answering on a root that is not its own. The article's own id is what the injector keyed the
+    // bar with, so it selects exactly the one that belongs here. A page with no seam (X) keeps the
+    // lookup it had: its key is the status id and `postIdOf` is not what named the bar.
+    const ownId = platformSeam()?.postIdOf(article) ?? null;
+    const own = ownId ? cssAttrValue(ownId) : null;
     const container = article.querySelector<HTMLElement>(
-        '[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'
+        own
+            ? `[mf-top-bar-id="${own}"], [mf-on-hold-id="${own}"], [translate-fc-id="${own}"], [mf-refresh-id="${own}"], [mf-visual-id="${own}"]`
+            : '[mf-top-bar-id], [mf-on-hold-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]'
     );
     if (!container) return;
+    // A bar the host measured room for (`mf-seat-width`) is capped by that room, not by the
+    // author cluster's crush: the seat is not a row we share with the cluster, so there is
+    // nothing to give way to — and the clear loop below would wipe the seat cap on the very
+    // next frame. The seat cap is the authority there, and this is where it gets refreshed.
+    if (container.dataset.mfSeatWidth !== undefined) {
+        // Asked again, every pass, by the adapter that MEASURED this seat. The host finishes
+        // laying its own header out after the first measurement — a story's Join control, or the
+        // header of the post it shares, can land in the band the seat was chosen from a frame or
+        // more later — and a seat is only ever chosen from the DOM, so it has to be chosen again
+        // while the DOM is still settling. This runs from the row observer and the interval that
+        // already watch these bars, which is what makes the seat follow the host. It also frees a
+        // bar whose story had no box when it was built (`-1`): the same pass seats it the moment
+        // that story has a size. The measuring itself stays in the adapter, which is the only
+        // thing that knows how to do it.
+        const seam = platformSeam();
+        if (seam) seam.placeButtons(container, article, { id: container.getAttribute('mf-top-bar-id') ?? '' });
+        applySeatCap(container);
+        return;
+    }
     const row = container.parentElement;
     if (!row) return;
 
@@ -10172,14 +11951,32 @@ function applyTopButtonSqueeze(article: Element) {
     // downward on repeat calls.
     for (const b of all) ((b as any)._mfTopBtnLabel as HTMLElement).style.maxWidth = 'none';
 
-    const userName = article.querySelector<HTMLElement>('[data-testid="User-Name"]');
-    const header = (userName && row && !userName.contains(row) && userName.parentElement?.contains(row))
-        ? userName.parentElement as HTMLElement
-        : (userName ?? row);
+    // Nothing to answer where the buttons are not on the author cluster's line in the
+    // first place — see `buttonsShareRowLine`. The caps are cleared above and nothing is
+    // written here, which is the right resting state for such an article: the labels sit
+    // at their natural width however the row has been laid out around them.
+    if (!buttonsShareRowLine(row, container)) return;
+
+    // The header band and the author cluster inside it. On X the cluster is the
+    // User-Name block, found by testid. On a DOM-fed platform `article` IS the post root
+    // and the adapter has already put our container in the post's own header row as a
+    // sibling of the author cluster, so the row is the header and the cluster is the
+    // widest of its other children — see `squeezableCluster`. The crush test below is
+    // then platform-neutral, which is the point: the rule the labels obey is "give way
+    // once the header is genuinely overflowing", and it holds on every platform.
+    const seam = platformSeam();
+    const userName = seam ? null : article.querySelector<HTMLElement>('[data-testid="User-Name"]');
+    const header = seam
+        ? row as HTMLElement
+        : (userName && row && !userName.contains(row) && userName.parentElement?.contains(row))
+            ? userName.parentElement as HTMLElement
+            : (userName ?? row);
     if (!header || header.clientWidth === 0) return;
 
-    const userCluster = (userName?.firstElementChild as HTMLElement | null)
-        ?? (header.firstElementChild as HTMLElement | null);
+    const userCluster = seam
+        ? squeezableCluster(row, container)
+        : ((userName?.firstElementChild as HTMLElement | null)
+            ?? (header.firstElementChild as HTMLElement | null));
 
     const headerRect = header.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
@@ -10195,17 +11992,8 @@ function applyTopButtonSqueeze(article: Element) {
     const actionEl = (row !== header && row !== userCluster) ? row : container;
     const actionWidth = actionEl.getBoundingClientRect().width;
 
-    // TEMP squeeze diagnosis log — remove once the crush-driven policy is confirmed.
     const userVisibleW = userRect ? userRect.width : -1;
     const crushed = userRect ? (naturalUserW - userVisibleW) : 0;
-    {
-        const contMinusHeader = containerRect.right - headerRect.right;
-        const term1 = naturalUserW + actionWidth + headerGap - headerRect.width;
-        const nameSnippet = (userName?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24);
-        const btnLabels = all.map((b) => ((b as any)._mfTopBtnLabel as HTMLElement)?.textContent?.trim().slice(0, 12) || '?').join('|');
-        const shape = `hdrIsUC=${String(header === userCluster)} hdrIsRow=${String(header === row)}`;
-        console.log(`[misinfo] squeeze-debug leftover=${leftover.toFixed(1)} userVisibleW=${userVisibleW.toFixed(1)} naturalUserW=${naturalUserW.toFixed(1)} crushed=${crushed.toFixed(1)} actionW=${actionWidth.toFixed(1)} headerW=${headerRect.width.toFixed(1)} contMinusHeader=${contMinusHeader.toFixed(1)} term1=${term1.toFixed(1)} name="${nameSnippet}" btns=${all.length}[${btnLabels}] ${shape}`);
-    }
 
     // Crush-driven policy: the username's own crushed deficit (natural minus
     // visible) is the only signal we trust. Uncrushed name → never squeeze —
@@ -10215,30 +12003,111 @@ function applyTopButtonSqueeze(article: Element) {
     // Kalshi/BBC far-guard case without blocking real squeezes: after X
     // ellipsizes the name, space-between reopens the gap (the WSJ "Th..."
     // case: 90-130px crush with 30-48px leftover), and that state must squeeze.
-    // TEMP: outcome log (see end of function).
-    const dbgName = (userName?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24);
-    if (!userRect || crushed <= 1) { console.log(`[misinfo] squeeze-outcome name="${dbgName}" no-squeeze uncrushed crushed=${crushed.toFixed(1)}`); return; }
+    if (!userRect || crushed <= 1) return;
 
-    // Squeeze exactly the deficit (+2px buffer so the name fully recovers),
-    // spread right-to-left with a 24px floor per label: an 8px deficit takes
-    // 8px off the buttons (visually untouched) instead of flooring them, and
-    // a 130px deficit spreads across both buttons into Disinf… intermediaries.
-    let remaining = crushed + 2;
-    const caps: string[] = [];
-    for (const b of [...btns].reverse()) {
-        if (remaining <= 0) break;
+    // Proportional policy: each label gives way by the same FRACTION the author
+    // cluster lost, instead of absorbing the whole deficit. Taking the whole
+    // deficit let a single button soak up the entire crush down to the 24px floor
+    // ("D…") while the header showed a merely elided handle — the button read as
+    // destroyed and the row as barely compressed, which is backwards: the header
+    // must not lose priority to the buttons. A shared fraction keeps the two in
+    // step (header down a quarter → labels down a quarter, header and handle
+    // eliding together), and the floor only engages when the row is genuinely out
+    // of room. The 0.9 clamp keeps the floor as the last word, so no label is ever
+    // squeezed to nothing however extreme the crush.
+    const loss = Math.min(0.9, crushed / naturalUserW);
+    const keep = 1 - loss;
+    const measured = btns.map((b) => {
         const label = (b as any)._mfTopBtnLabel as HTMLElement;
-        const labelFull = label.getBoundingClientRect().width;
+        return { label, full: label.getBoundingClientRect().width };
+    });
+    for (const { label, full } of measured) {
         // Keep enough width for a letter + ellipsis (e.g. "Disinf…") instead of
         // collapsing the label to 0 / logo-only in one hop.
         const minLabelWidth = 24;
-        const shrinkable = Math.max(0, labelFull - minLabelWidth);
-        const take = Math.min(remaining, shrinkable);
-        label.style.maxWidth = `${Math.max(minLabelWidth, labelFull - take)}px`;
-        remaining -= take;
-        caps.push(`${label.textContent?.trim().slice(0, 12)}->${label.style.maxWidth}`);
+        const cap = Math.max(minLabelWidth, full * keep);
+        // A cap is only worth writing when it hands the row back a real amount of
+        // space. `text-overflow: ellipsis` fires on ANY deficit, down to a fraction
+        // of a pixel, so a header that is merely rounding-level over (measured live
+        // on Bluesky: 571px of content in a 568px row, a 3px crush across three
+        // buttons) turned "Hide" into "Hi…" and "Fact-Check All" into
+        // "Fact-Check…" — labels destroyed to buy back 0.4px each, while the host's
+        // own handle ellipsis absorbs the whole deficit anyway. Staying at the
+        // natural width there keeps every label legible and leaves the row exactly
+        // as the platform would have laid it out without us.
+        if (full - cap < MIN_SQUEEZE_GAIN) continue;
+        label.style.maxWidth = `${cap}px`;
     }
-    console.log(`[misinfo] squeeze-outcome name="${dbgName}" SQUEEZED crushed=${crushed.toFixed(1)} btns=${btns.length} exempt=${all.length - btns.length} caps=[${caps.join(', ')}]`);
+}
+
+/** Answer for the room a host measured and handed over (`mf-seat-width`), for bars whose
+ *  seat is not a row we share with the author cluster but a window the host itself left.
+ *
+ *  The mobile Facebook story header is packed end to end: avatar, name, a localized
+ *  Join/Follow, a meta line, and the app's own `…`, with a free window at the end of the
+ *  first line that measured 0..56px against the 88px a labelled pill needs. So a labelled
+ *  pill cannot be seated there at all, and capping the labels the way a squeezed desktop
+ *  row does would show "D…" on every story. Under `MIN_SEAT_LABEL_WIDTH` a button that
+ *  carries its own mark drops the words and stands as the mark, with the label kept as its
+ *  accessible name; otherwise the labels share the room evenly. Nothing is ever drawn
+ *  outside the measured window: a label wide enough to overhang is capped rather than
+ *  allowed to cover the host's own row.
+ *
+ *  Called on every sync pass as well as at build time, because the host finishes laying its
+ *  header out after we first measure it — a Join control that appears a frame later moves
+ *  the window, and the cap has to follow the window, not the labels that were capped for
+ *  the old one. */
+function applySeatCap(container: HTMLElement) {
+    const raw = container.dataset.mfSeatWidth;
+    if (raw === undefined) return;
+    // A measured ZERO is a measurement like any other — the header left no room at all — and it
+    // is answered the same way. Treating it as "unmeasured" is what let an 88px labelled pill be
+    // drawn into a window that had just been measured as empty.
+    const seatWidth = Number(raw);
+    if (!Number.isFinite(seatWidth) || seatWidth < 0) return;
+    const labels = Array.from(container.querySelectorAll<HTMLElement>('.mf-topbtn-label'));
+    if (!labels.length) return;
+    // Measure from natural widths, so a repeat call cannot ratchet a cap downward, and
+    // bring back any label a previous pass stood down as a mark — the window can widen.
+    for (const label of labels) {
+        label.style.maxWidth = 'none';
+        label.style.display = '';
+    }
+    const chrome = container.getBoundingClientRect().width
+        - labels.reduce((n, l) => n + l.getBoundingClientRect().width, 0);
+    const room = Math.max(0, seatWidth - chrome);
+    const share = Math.max(8, Math.floor(room / labels.length));
+    const tight = room < MIN_SEAT_LABEL_WIDTH * labels.length;
+    for (const label of labels) {
+        const btn = label.closest('button');
+        // A word this bar is about to show for the first time may never have resolved: the
+        // label is written once, at build, in whichever content-script world handled the
+        // injection — and on this host a dead world writes its raw key (see
+        // `repairUnresolvedLabels`, whose watcher heals it a frame later, invisibly, while the
+        // label sits hidden behind the mark). Revealing it would show "disinfactButton" as the
+        // button's name. So resolve it here first, and if this world cannot either, keep
+        // standing as the mark until one that can has healed the text.
+        const text = (label.textContent ?? '').trim();
+        if (CATALOG_KEY_SHAPE.test(text)) {
+            const resolved = t(text);
+            if (resolved === text) {
+                label.style.display = 'none';
+                continue;
+            }
+            label.textContent = resolved;
+        }
+        // Under MIN_SEAT_LABEL_WIDTH per label a word fits a letter and an ellipsis and
+        // nothing else, so a button carrying its own mark stands as the mark and keeps the
+        // word as its accessible name. A button with no mark has nothing to stand on and
+        // takes the share instead — the bar is never wider than the room it was given.
+        if (tight && btn?.querySelector('svg')) {
+            btn.title = label.textContent ?? '';
+            btn.setAttribute('aria-label', label.textContent ?? '');
+            label.style.display = 'none';
+            continue;
+        }
+        label.style.maxWidth = `${share}px`;
+    }
 }
 
 /** Visible pill chrome + hover affordance for the top-of-tweet buttons (Disinfact,
@@ -10248,16 +12117,21 @@ function applyTopButtonSqueeze(article: Element) {
  *  identical-looking row items. The gray matches the row text color X uses
  *  (rgb(83, 100, 113)) so it reads on both light and dark themes.
  *
- *  `tint` is the Reveal/Hide verdict summary: per the design it is NOT hover
- *  chrome — it is the button's persistent background, applied at build time
- *  only. The normal/hover paint closures below deliberately ignore it: the
- *  tint must survive any mouse pass untouched. */
+ *  `initialTint` is the Reveal/Hide verdict summary: per the design it is NOT
+ *  hover chrome — it is the button's persistent background. The normal/hover
+ *  paint closures below deliberately ignore it (the tint must survive any mouse
+ *  pass untouched), and `_mfTopBtnSetTint` swaps it later WITHOUT re-entering
+ *  this function: a verdict that lands while the reader is hovering the pill
+ *  repaints that same element, where rebuilding the button would drop it out
+ *  from under the pointer mid-click. Re-calling this function is not an option
+ *  — it would stack a second pair of mouseenter/mouseleave listeners. */
 function styleTopTweetButton(
     btn: HTMLButtonElement,
     iconOnly: boolean,
-    tint?: { bg: string; hoverBg: string },
+    initialTint?: { bg: string; hoverBg: string } | null,
     textBlack?: boolean
 ) {
+    let tint = initialTint ?? undefined;
     // Ring is an inset shadow, not a border: a 1px border + 3px vertical padding
     // on top of 13px type is what pushed the tweet body down (Image #15). Zero
     // vertical padding keeps the pill the same height as Grok / the timestamp.
@@ -10293,12 +12167,7 @@ function styleTopTweetButton(
         btn.style.boxShadow = "inset 0 0 0 1px rgba(83, 100, 113, 0.35)";
         btn.style.color = "rgb(83, 100, 113)";
     };
-    // Reused by click handlers that disable the button mid-hover: a disabled
-    // button stops firing mouse events, so the mouseleave below would never run
-    // and the hover tint would stick on the dimmed button.
-    (btn as any)._mfTopBtnNormal = paintNormal;
-    btn.addEventListener("mouseenter", () => {
-        if (isTouchInput() || btn.disabled) return;
+    const paintHover = () => {
         // Tinted buttons strengthen their own verdict fill on hover instead of
         // swapping to gray — the tint must survive any mouse pass untouched.
         if (tint) {
@@ -10309,19 +12178,46 @@ function styleTopTweetButton(
         }
         btn.style.backgroundColor = "rgba(83, 100, 113, 0.16)";
         btn.style.boxShadow = "inset 0 0 0 1px rgba(83, 100, 113, 0.6)";
+    };
+    // Reused by click handlers that disable the button mid-hover: a disabled
+    // button stops firing mouse events, so the mouseleave below would never run
+    // and the hover tint would stick on the dimmed button.
+    (btn as any)._mfTopBtnNormal = paintNormal;
+    // Tracked rather than read back off :hover: the synthetic enter the browser
+    // replays after a DOM change is not a real pointer position, and this button
+    // must not need one to keep the fill it already has.
+    let hovered = false;
+    btn.addEventListener("mouseenter", () => {
+        hovered = true;
+        if (isTouchInput() || btn.disabled) return;
+        paintHover();
     });
     btn.addEventListener("mouseleave", () => {
+        hovered = false;
         if (btn.disabled) return;
         paintNormal();
     });
+    // A verdict that arrives after the button was built repaints it where it
+    // stands. The caller owns the text wrap's colour and the dataset marker; this
+    // only owns the chrome it painted.
+    (btn as any)._mfTopBtnSetTint = (next: { bg: string; hoverBg: string } | null | undefined) => {
+        tint = next ?? undefined;
+        if (hovered && !btn.disabled && !isTouchInput()) paintHover();
+        else paintNormal();
+    };
 }
 
-/** A claim participates in the Reveal/Hide verdict tint only when it is
- *  classified AND will not show a Disinfact button — the tint must hint at the
- *  tweet's veracity, never at claims the user still owes an action. Mirrors the
- *  thresholds highlightBgColor uses: neutral below confidence 0.2. */
+/** A claim participates in the Reveal/Hide verdict tint only when it carries a
+ *  verdict — the tint must hint at the tweet's veracity, never at a claim with
+ *  nothing to say. Mirrors the thresholds highlightBgColor uses: neutral below
+ *  confidence 0.2.
+ *
+ *  A re-check in flight does NOT revoke this, for the same reason
+ *  bypassEligibleClaim ignores it: the gates below already demand a verdict, so
+ *  the flag can only ever veto a claim that has one, and it is the single input
+ *  here that moves with no reader action at all. Left in, it recoloured the pill
+ *  on every pass of a run the reader never touched. */
 function tintEligibleClaim(cl: Claim): boolean {
-    if (cl.reclassifyOnHold) return false;
     if (cl.confidence === undefined || cl.confidence === null) return false;
     if (cl.veracity === undefined || cl.veracity === null) return false;
     return cl.confidence >= 0.2;
@@ -10344,6 +12240,13 @@ function averageVerdictTint(claims: Claim[] | null | undefined): { bg: string; h
     return { bg: `rgba(${r}, ${g}, ${b}, 0.25)`, hoverBg: `rgba(${r}, ${g}, ${b}, 0.5)` };
 }
 
+/** The Reveal pill's own verdict tint, defined once so the bar's tint signature and
+ *  the button's paint can never disagree: averaged over the tweet's claims, and only
+ *  while the visuals are hidden behind the Reveal button. */
+function pillVerdictTint(isReveal: boolean, claims: Claim[] | null | undefined): { bg: string; hoverBg: string } | null {
+    return isReveal ? averageVerdictTint(claims) : null;
+}
+
 /** True when the tweet's cached preclassification visuals are hidden from view —
  *  revealed only via the Reveal button. The revealed set wins. The caller is
  *  responsible for main-tweet-only scoping (matching every other visual-gating
@@ -10355,14 +12258,22 @@ function visualsHiddenFor(tweetId: string, claims: Claim[] | null | undefined): 
     if (!claims || claims.length === 0) return false;
     // Cached preclassification (DB hit, or the user's own earlier click) with no
     // engagement on any top-of-tweet action this session defaults to hidden.
-    const engaged = factCheckAllClickedIds.has(tweetId)
-        || processingOnHoldIds.has(tweetId)
-        || processingTranslateFactChecksIds.has(tweetId)
-        || refreshRunPendingIds.has(tweetId)
-        || revealedVisualIds.has(tweetId);
-    if (engaged) return false;
-    hiddenVisualIds.add(tweetId);
-    return true;
+    //
+    // Only the user's own clicks count. `processingOnHoldIds` and
+    // `processingTranslateFactChecksIds` are UI state our OWN injection writes: a tweet
+    // with pending Disinfact claims is put into `processingOnHoldIds` by the pass that
+    // builds its container (and by syncTopButtonBar), and the next pass clears it at the
+    // top before the container check decides whether to put it back. Counting those as
+    // engagement made this verdict alternate between passes — highlights painted on one
+    // and stripped on the next — which is the flicker a reader sees.
+    const engaged = factCheckAllClickedIds.has(tweetId) || refreshRunPendingIds.has(tweetId);
+    // Remembered either way. This one verdict drives both the strip gate and the
+    // Reveal/Hide button's own key, and it is re-derived on every injection pass, so any
+    // input that can differ between two passes (a run settling, a flag clearing) could
+    // otherwise take back the state the reader is already looking at. From here it moves
+    // only on the reader's own Reveal/Hide click.
+    (engaged ? revealedVisualIds : hiddenVisualIds).add(tweetId);
+    return !engaged;
 }
 
 /** Main-tweet-scoped wrapper: quoted tweets never participate (their parent's
@@ -10383,12 +12294,21 @@ function markVisualsEngaged(tweetId: string) {
 
 /** True when a claim keeps its highlight while the tweet's cached visuals stay
  *  hidden: classified (a note is the completion signal — see the isResearching
- *  comment in buildSegmentWrap), not awaiting reclassification, and clearing
- *  BOTH popup thresholds — confidence at or above the floor, veracity at or
- *  below the ceiling. */
+ *  comment in buildSegmentWrap) and clearing BOTH popup thresholds — confidence
+ *  at or above the floor, veracity at or below the ceiling.
+ *
+ *  A re-check in flight does NOT revoke this, matching the rule the painter
+ *  already follows (keep a claim's colour while it refreshes as long as it
+ *  still carries a valid verdict). The gates below already require a complete
+ *  verdict, so an awaited re-check can only be vetoed on a claim that HAS one —
+ *  and that veto was the one input to the strip gate that could differ between
+ *  two injection passes with no reader action at all: `reclassifyOnHold` is set
+ *  and cleared by our own payloads as a run settles, so a claim flipped
+ *  eligible -> ineligible -> eligible, stripping the reader's highlight and
+ *  painting it back, which is the flicker. Nothing else here can move on its
+ *  own. The reader's hidden/revealed state still moves only on their click. */
 function bypassEligibleClaim(cl: Claim): boolean {
     if (!bypassSettings.enabled) return false;
-    if (cl.reclassifyOnHold) return false;
     if (cl.confidence === undefined || cl.confidence === null) return false;
     if (cl.veracity === undefined || cl.veracity === null) return false;
     if (cl.note === undefined || cl.note === null || String(cl.note).trim() === '') return false;
@@ -10441,6 +12361,42 @@ function hiddenPlainSig(set: Set<number> | null): string {
 
 const processingTranslateFactChecksIds = new Set<string>();
 
+/** Open a clamped body the moment the reader asks us about the post.
+ *
+ *  A host that clamps a long body with CSS keeps the whole string in the DOM, so marks
+ *  painted into it can sit in text the reader cannot see. `upgradeToSegments` opens the
+ *  clamp as it paints a claim, but that is only one of the ways a body comes to carry marks
+ *  — a highlight localization repaints an already-marked post through its own path — and a
+ *  classification that comes back with no claims paints nothing at all, leaving the reader
+ *  who just paid for it looking at three lines and an ellipsis. The reader clicked our
+ *  button on this post; from that click on, the post is owed to them whole, whatever the
+ *  answer turns out to be.
+ *
+ *  Called from every button we put on a post, before the button's own handler runs its
+ *  work, and awaited by each of them — the paint has to land on the opened body.
+ *
+ *  Two kinds of clamp, because the platforms hold a body back in two different ways. The
+ *  CSS one keeps every word in the DOM and hides the overflow, so clearing the declarations
+ *  is the whole remedy and a no-op anywhere else, since it writes two declarations the host
+ *  does not read. The other kind CUTS the words out of the page: three lines and an ellipsis
+ *  ARE the body, there is no declaration to clear, and the only way to the rest is the host's
+ *  own control — which the adapter drives (`revealClipped`, the same hook the sweep uses
+ *  before a clipped post can be read at all). That one is a real click on the host answered a
+ *  re-render later, so it is awaited, and it is asked `onDemand`: the reader is asking, and an
+ *  adapter's retry bound must not answer their click with nothing.
+ *
+ *  A quoted card is left alone — the click was on the post, not on whoever it quotes. */
+async function expandClampedBody(article: Element, id: string, isQuoted: boolean): Promise<void> {
+    const textEl = findTweetTextElement(article, isQuoted, id);
+    if (textEl) unclipPostBody(textEl);
+    if (isQuoted) return;
+    const seam = platformSeam();
+    if (!seam?.revealClipped) return;
+    await seam.revealClipped(article, { onDemand: true }).catch((e) => {
+        console.error('[misinfo] opening a clipped post on demand failed', e);
+    });
+}
+
 /** Build the Reveal (cached visuals hidden) / Hide (cached visuals shown) button. */
 function buildVisualToggleButton(
     classification: Classification,
@@ -10483,31 +12439,50 @@ function buildVisualToggleButton(
     btn.innerHTML = "";
     btn.appendChild(textWrap);
     const isReveal = hidden;
-    const tint = isReveal ? averageVerdictTint(classification.claims) : null;
-    const isTinted = !!tint;
-    const textColor = isTinted ? (isDarkMode() ? "#fff" : "#000") : "rgb(83, 100, 113)";
-    btn.style.color = textColor;
-    textWrap.style.color = textColor;
-    if (isTinted) btn.dataset.mfVisualTint = "true";
-    styleTopTweetButton(btn, false, tint ?? undefined, isTinted);
+    // Painted through a closure rather than once at build: a verdict can land after the
+    // bar exists, and the caller (syncTopButtonBar) repaints this button in place instead
+    // of rebuilding the bar around it. The text colour is owned here, not by
+    // styleTopTweetButton, precisely because it moves with the tint.
+    const applyTint = (next: { bg: string; hoverBg: string } | null) => {
+        const tinted = !!next;
+        const textColor = tinted ? (isDarkMode() ? "#fff" : "#000") : "rgb(83, 100, 113)";
+        btn.style.color = textColor;
+        textWrap.style.color = textColor;
+        if (tinted) btn.dataset.mfVisualTint = "true";
+        else delete btn.dataset.mfVisualTint;
+        (btn as any)._mfTopBtnSetTint?.(next);
+    };
+    (btn as any)._mfApplyTint = applyTint;
+    styleTopTweetButton(btn, false, null, false);
+    applyTint(pillVerdictTint(isReveal, classification.claims));
 
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const id = classification.id;
+        // Which way this click toggles is read BEFORE the wait, and the wait is first: the post
+        // the reader asked about has to be whole on screen before the visuals are read back off
+        // it, and the host answers an expansion by re-rendering the post — this button's bar
+        // with it — so what they clicked is the state to act on, not what the rebuild says
+        // afterwards. The occurrences below are resolved after it returns for the same reason.
         const revealing = (btn.dataset.mfVisual ?? "") === "reveal";
+        await expandClampedBody(article, id, isQuoted);
         if (revealing) {
             markVisualsEngaged(id);
         } else {
             hiddenVisualIds.add(id);
             revealedVisualIds.delete(id);
         }
-        const nodes = document.querySelectorAll(`a[href*="/status/${id}"]`);
-        for (const node of nodes) {
-            const art = node.closest("article");
-            if (!art) continue;
-            const mainStatusId = getArticleMainStatusId(art);
-            if (mainStatusId !== null && mainStatusId !== id) continue;
-            injectClassification(node as Element, classification, art, false);
+        // The quoted-card occurrences are skipped: revealing is a main-tweet action, and
+        // a quoted card's own visuals belong to whoever quotes it.
+        // This button outlives the classification it was built from: the bar is reused
+        // whenever its key is unchanged, while every later delivery replaces the held
+        // object in `allClassifications` (annotations land there, never on this
+        // closure). Re-rendering from the captured object would rebuild the wrap from a
+        // pre-annotation snapshot — the annotation disappears and Annotate comes back.
+        const current = allClassifications.find(x => x.id === id) || classification;
+        for (const { time, article: art, isQuoted } of postOccurrences(id)) {
+            if (isQuoted) continue;
+            injectClassification(time, current, art, false);
         }
         updateTopButtonSqueeze(article);
     });
@@ -10551,11 +12526,12 @@ function buildFactCheckAllButton(
     markTopButtonSqueezable(btn, label);
     btn.appendChild(textWrap);
 
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         btn.disabled = true;
         btn.style.opacity = "0.6";
         btn.style.cursor = "default";
+        await expandClampedBody(article, classification.id, false);
         (btn as any)._mfTopBtnNormal?.();
         ((btn as any)._mfTopBtnLabel as HTMLElement | undefined)?.style.setProperty("max-width", "none");
         factCheckAllClickedIds.add(classification.id);
@@ -10609,15 +12585,17 @@ function buildDisinfactButton(
     btn.appendChild(textWrap);
     styleTopTweetButton(btn, false);
 
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", async (e) => {
         e.stopPropagation();
+        await expandClampedBody(article, classification.id, isQuoted);
         disinfactRunPendingIds.add(classification.id);
         processingOnHoldIds.add(classification.id);
         markVisualsEngaged(classification.id);
 
         onHoldScrollStates.set(classification.id, {
-            originalScrollY: window.scrollY,
-            pendingClaimTexts: new Set()
+            mark: markAt(article),
+            pendingClaimTexts: new Set(),
+            keptClaimTexts: new Set()
         });
 
         mfBus.dispatchEvent(new CustomEvent("mf-process-on-hold", {
@@ -10688,8 +12666,9 @@ function buildTranslateFactChecksButton(
     textWrap.style.color = localizeTextColor;
     styleTopTweetButton(btn, false, localizeTint ?? undefined, isLocalizeTinted);
 
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", async (e) => {
         e.stopPropagation();
+        await expandClampedBody(article, classification.id, isQuoted);
         processingTranslateFactChecksIds.add(classification.id);
         markVisualsEngaged(classification.id);
 
@@ -10727,11 +12706,12 @@ function buildTopBatchRefreshButton(
     btn.title = t("refreshBatchTooltip");
     btn.dataset.mfCharge = "refresh-top";
     btn.innerHTML = TOP_BATCH_REFRESH_SVG;
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         if (btn.disabled) return;
         btn.disabled = true;
         const id = classification.id;
+        await expandClampedBody(article, id, isQuoted);
         factCheckAllClickedIds.delete(id);
         refreshRunPendingIds.add(id);
         markVisualsEngaged(id);
@@ -10751,6 +12731,46 @@ function buildTopBatchRefreshButton(
     return btn;
 }
 
+/** Containers already sealed, so repeated syncs do not stack listeners on one bar. */
+const hostSealedContainers = new WeakSet<Element>();
+
+/** Keep our own controls' events off the host page.
+ *
+ *  Our bars are injected inside the host's own clickable regions: a Bluesky thread root wraps
+ *  its header row — and so our pill — in the author's profile `<a>`, and a Reddit feed card
+ *  wraps its whole body in the post's permalink. A link's navigation is a DEFAULT ACTION, not
+ *  a bubbling handler, so `stopPropagation` alone leaves it armed: on Bluesky the click that
+ *  starts a preclassification also opened the author's profile, and the page was gone before
+ *  the bar could repaint. Both are therefore needed — `stopPropagation` keeps the host's own
+ *  JS handlers from seeing the press (a React `role="link"` wrapper opens on click), and
+ *  `preventDefault` cancels the anchor.
+ *
+ *  Sealing the container rather than each button covers every descendant control, including
+ *  ones a later sync adds. Only `click`'s default is cancelled; `mousedown`'s is left alone
+ *  so a click can still move focus, and our own handlers run earlier in the same bubble and
+ *  are unaffected. */
+export function sealHostEvents(container: HTMLElement) {
+    if (hostSealedContainers.has(container)) return;
+    hostSealedContainers.add(container);
+    // The capture-phase listener is the one that actually cancels the anchor, and it has to be
+    // in the capture phase. Every button we build stops propagation at its own target (to keep
+    // React's root listener — which is what turns a host `role="link"` wrapper into a click —
+    // from ever seeing the press), so an event that starts on one of our buttons never bubbles
+    // back up to this container: measured live, the whole path was
+    // `doc-capture → bar-capture → btn-target` and then nothing. A bubble-phase seal here is
+    // therefore dead code on exactly the presses it exists for. Capture runs root-to-target, so
+    // it cannot be skipped by a descendant, and `preventDefault` there leaves our own handlers
+    // untouched. The bubble-phase listeners stay for controls that do not stop propagation
+    // themselves, and for the presses a host might route through mousedown/pointerdown.
+    container.addEventListener("click", (e) => e.preventDefault(), true);
+    for (const type of ["pointerdown", "mousedown", "pointerup", "mouseup", "click"]) {
+        container.addEventListener(type, (e) => {
+            e.stopPropagation();
+            if (type === "click") e.preventDefault();
+        });
+    }
+}
+
 /** Unified top button bar for a tweet: encloses all active buttons (Hide/Reveal,
  *  Disinfact / Fact-Check All, Refresh) in a single outer pill area with consistent
  *  spacing. If there is only 1 button, the DisinfaX logo is integrated within the
@@ -10766,12 +12786,19 @@ function syncTopButtonBar(
     injectStyles();
     const id = classification.id;
     const claims = classification.claims;
-    const grokData = findGrokRow(article);
-    const subscribeWrapper = findSubscribeWrapper(article);
+    const seam = platformSeam();
+    const grokData = seam ? null : findGrokRow(article);
+    const subscribeWrapper = seam ? null : findSubscribeWrapper(article);
     const refBtn = (subscribeWrapper?.querySelector("button") as HTMLElement | null) ?? grokData?.btn ?? (time as HTMLElement);
-    const refClass = refBtn.className;
+    // On X the reference button's class list is what makes our pill inherit X's font
+    // metrics and colour tokens. Elsewhere that read is not style-neutral: the nearest
+    // anchor on Reddit is the post root, and copying `shreddit-post`'s class list onto our
+    // <button> would carry the post's own layout rules with it. The pill is already fully
+    // specified inline by styleTopTweetButton, so the seam path takes neutral hook classes
+    // and inherits nothing from the host.
+    const refClass = seam ? 'mf-native-btn' : refBtn.className;
     const innerDiv = grokData?.btn.querySelector<HTMLElement>('div[dir="ltr"]');
-    const innerClass = innerDiv?.className ?? refClass;
+    const innerClass = seam ? 'mf-native-btn-inner' : (innerDiv?.className ?? refClass);
 
     const cls = classification as Classification;
 
@@ -10805,15 +12832,23 @@ function syncTopButtonBar(
     }
 
     const isReveal = wantsVisual && isHidden;
-    // While hidden, the tint must hint only at claims the user chose to keep
-    // hidden: bypassed claims already show their own colours inline, so tinting
-    // the button by them would double-count, and a tweet whose every claim is
-    // bypassed would paint a coloured button over fully-visible verdicts. Null
-    // (standard gray pill) when everything bypassed.
-    const tintClaims = isReveal
-        ? (claims ?? []).filter(cl => !bypassEligibleClaim(cl))
-        : cls.claims;
-    const tint = isReveal ? averageVerdictTint(tintClaims) : null;
+    // The verdict tint is deliberately NOT part of the bar key: while it was, a tint that
+    // moved on its own — a run streaming a verdict in, or the re-check flag the pill's own
+    // gates used to read — tore the whole bar down and built a new one, and a fresh button
+    // is never *entered*, so the fill dropped to its resting colour under a stationary
+    // pointer and pulsed back on the browser's synthetic enter. That pulse is the flicker,
+    // and a click landing inside it landed on a button that no longer existed.
+    //
+    // What this value is now: a signature only. pillVerdictTint is shared with
+    // buildVisualToggleButton, so the signature and the pill's own paint can never
+    // disagree, and a moved signature repaints that existing button in place.
+    //
+    // The raw claim list is passed, matching what the pill has always painted. The
+    // bypassed-claims filter that used to sit here fed only the key, never the paint, so
+    // dropping it changes nothing the reader sees; folding it into both would change the
+    // pill's colour for anyone running with bypass on, which is not this fix's business.
+    const tint = pillVerdictTint(isReveal, claims);
+    const tintSig = tint?.bg ?? "";
 
     // When the Reveal button is present, all other buttons are hidden
     if (isReveal) {
@@ -10842,7 +12877,9 @@ function syncTopButtonBar(
     if (wantsVisual) buttonCount++;
     if (actionType !== null) buttonCount++;
     if (wantsRefresh) buttonCount++;
-    const barKey = `${wantsVisual ? (isHidden ? "reveal" : "hide") : "none"}|${actionType ?? "none"}|${wantsRefresh}|${wantsSpinner}|${tint?.bg ?? ""}`;
+    // Structural only: which pill, which action, refresh, spinner. Anything cosmetic — the
+    // verdict tint above all — is repainted on the live button rather than keyed here.
+    const barKey = `${wantsVisual ? (isHidden ? "reveal" : "hide") : "none"}|${actionType ?? "none"}|${wantsRefresh}|${wantsSpinner}`;
 
     const existingContainer = article.querySelector<HTMLElement>(`[mf-top-bar-id="${id}"]`);
 
@@ -10857,15 +12894,54 @@ function syncTopButtonBar(
         container.classList.add("mf-btn-container");
         container.setAttribute("mf-top-bar-id", id);
     }
+    sealHostEvents(container);
+
+    // Paint order, not event handling. A host that covers a whole card with an absolutely
+    // positioned overlay puts that overlay above every in-flow descendant, and hit-testing
+    // follows paint order — so the press lands on the overlay and never reaches our buttons at
+    // all. Reddit draws each feed post's permalink as `<a class="absolute inset-0">` inside
+    // `shreddit-post`; measured there, `elementFromPoint` at the Disinfact pill's own centre
+    // returned that anchor for 4 of 4 pills, and the click opened the post instead. The seal
+    // above cannot help: `preventDefault` only cancels an event we are sent. Positioning the
+    // container above an overlay that carries no z-index restores the hit test, and moves
+    // nothing — `relative` with no offsets leaves the host's own layout and margins in charge.
+    //
+    // Skipped for a bar its adapter has seated itself: an absolutely positioned bar is already
+    // above any overlay (its z-index is set by whoever seated it) and its offsets are the seat,
+    // so rewriting `relative` here would drop it back into the host's flow — measured on the
+    // mobile Facebook surface, whose rows are fixed-height boxes that an in-flow bar overflows.
+    if (container.style.position !== 'absolute') {
+        container.style.position = 'relative';
+        container.style.zIndex = '1';
+    }
     // Drop any old separated containers that are not this container
     for (const old of Array.from(article.querySelectorAll<HTMLElement>(`[mf-on-hold-id="${id}"]:not([mf-top-bar-id]), [translate-fc-id="${id}"]:not([mf-top-bar-id]), [mf-refresh-id="${id}"]:not([mf-top-bar-id]), [mf-visual-id="${id}"]:not([mf-top-bar-id])`))) {
         old.remove();
     }
 
+    // An adapter that MEASURED where its button goes has to be asked again on every pass: the host
+    // finishes laying its own header out after we first measure it. Measured on the mobile
+    // Facebook surface, a Follow control the app rendered a frame later landed exactly on the seat
+    // chosen before it existed — and a seat is only ever chosen from the DOM, so it has to be
+    // chosen again while the DOM is still settling. Guarded on the measurement itself, so no
+    // platform that seats its buttons without measuring is re-placed by this.
+    const seatingSeam = container.isConnected ? platformSeam() : null;
+    if (seatingSeam && container.dataset.mfSeatWidth !== undefined) {
+        seatingSeam.placeButtons(container, article, { id, isQuoted });
+    }
+    applySeatCap(container);
+
     if (container.isConnected && container.dataset.mfBarKey === barKey) {
+        // Same bar. A verdict tint that moved since the last pass is adopted by the button
+        // that is already there — same element, same listeners, same pointer under it.
+        if ((container.dataset.mfBarTint ?? "") !== tintSig) {
+            container.dataset.mfBarTint = tintSig;
+            (container.querySelector("button[data-mf-visual]") as any)?._mfApplyTint?.(tint);
+        }
         return;
     }
     container.dataset.mfBarKey = barKey;
+    container.dataset.mfBarTint = tintSig;
 
     const hasMultipleButtons = buttonCount > 1;
     const hasOuterPill = hasMultipleButtons || (buttonCount >= 1 && wantsSpinner);
@@ -10893,10 +12969,17 @@ function syncTopButtonBar(
         }
     }
 
+    // A bar its adapter has seated OVER the host's own layout — positioned absolutely, as the
+    // mobile Facebook surface does — is painted on top of the host's content, so its ground has to
+    // be opaque: measured there, the poster's name and meta line read straight through the
+    // translucent fill and garbled the label. The adapter that seated it says what to composite
+    // over; a bar in the host's own flow keeps the translucent fill it shares with every platform.
+    const seatBg = container.dataset.mfSeatBg ?? null;
+
     if (hasOuterPill) {
         // Outer pill chrome encompassing all buttons
         container.style.borderRadius = "999px";
-        container.style.backgroundColor = "rgba(83, 100, 113, 0.08)";
+        container.style.backgroundColor = seatBg ?? "rgba(83, 100, 113, 0.08)";
         container.style.boxShadow = "inset 0 0 0 1px rgba(83, 100, 113, 0.35)";
         container.style.padding = "0";
         container.style.gap = "4px";
@@ -10922,9 +13005,11 @@ function syncTopButtonBar(
             container.insertBefore(hoistedLogoWrap, spinnerSlot);
         }
     } else {
-        // Single button with no spinner: container is transparent, button itself carries the pill chrome
+        // Single button with no spinner: container carries no chrome of its own, the button does —
+        // unless the bar is seated over the host's layout, where the ground is what keeps the host's
+        // words out of our label.
         container.style.borderRadius = "999px";
-        container.style.backgroundColor = "transparent";
+        container.style.backgroundColor = seatBg ?? "transparent";
         container.style.boxShadow = "none";
         container.style.padding = "0";
         container.style.gap = "0";
@@ -11005,9 +13090,11 @@ function syncTopButtonBar(
     }
 
     if (!container.isConnected) {
-        placeButtonContainer(container, article, time, grokData);
+        placePostButtons(container, article, { id, isQuoted }, time, grokData);
     }
+
     updateTopButtonSqueeze(article);
+    applySeatCap(container);
 }
 
 function syncVisualToggleButton(time: Element, classification: Classification, article: Element, isQuoted: boolean) {
@@ -11099,6 +13186,14 @@ function injectClassification(
     if (!findTweetTextElement(article, isQuoted, classification.id)) {
         console.log(`[misinfo] injectClassification: tweet text anchor missing for ${classification.id} (isQuoted=${isQuoted}) — skipping all injection`);
         return;
+    }
+
+    // Nothing to paint means nothing may stay painted, in THIS root. The states below all
+    // return before any highlight work — on-hold, mid-re-run, a claim-less broadcast, a
+    // pending translation — so a wrap still standing here is a leftover the transition-scoped
+    // teardown could not reach (see clearStaleSegmentPaint).
+    if (!classification.claims || classification.claims.length === 0) {
+        clearStaleSegmentPaint(article, classification.id);
     }
 
     if (!isQuoted) {
@@ -11260,7 +13355,32 @@ function injectClassification(
         // render as plain text (see buildSegmentWrap). Null everywhere else, so
         // every non-hidden path builds exactly what it always built.
         const hiddenPlain = hiddenPlainIndices(article, classification, isQuoted);
-        upgradeToSegments(article, classification, clBatchId, isQuoted, hiddenPlain);
+        // A post rendered as several blocks (Reddit's title above its body) is painted
+        // one block at a time: the segments are cut to each region's slice of the
+        // classified text and written into that region's element. Handing the whole set
+        // to the first element would put the other blocks' words inside it — the same
+        // text in two places, and the post looking like it says something it doesn't.
+        // Nothing renders the text BETWEEN two regions (the separator the adapter joins
+        // them with), so that text is dropped here exactly as it is absent from the page.
+        // The classified text, rebuilt from the segments that carry its offsets. It is
+        // handed to the adapter because the adapter is what maps that text onto the page's
+        // elements, and on a platform whose text comes from an API the string classified
+        // need not be the string the markup shows (a payload's caption against a clipped
+        // render). An adapter that assumed otherwise would cut each region's slice at an
+        // offset belonging to the wrong text — see PostRef.text.
+        const classifiedText = segments.map((s) => s.text).join('');
+        const regions: TextRegion[] | null | undefined = !isQuoted
+            ? platformSeam()?.textRegions?.(article, { id: classification.id, text: classifiedText })
+            : null;
+        if (regions && regions.length > 1) {
+            for (const region of regions) {
+                const sliced = sliceSegmentsToRegion(segments, region.start, region.end);
+                if (sliced.length === 0) continue;
+                upgradeToSegments(article, classification, clBatchId, isQuoted, hiddenPlain, undefined, region.el, sliced);
+            }
+        } else {
+            upgradeToSegments(article, classification, clBatchId, isQuoted, hiddenPlain);
+        }
         if (!isQuoted && mainCls.quoting && mainCls.quoting.segments && mainCls.quoting.segments.length > 0) {
             upgradeToSegments(article, mainCls.quoting, clBatchId, true, undefined,
                 mainCls.textLocale ?? mainCls.translatedLocale);
@@ -11300,8 +13420,11 @@ function injectClassification(
             const unmatched = claims.filter((c, i) => !fallbackMasked(c, i) && !segmentClaimTexts.has(c.text) && !segmentClaimTexts.has(c.rewritten ?? ''));
             const oldFallback = article.querySelector(`[classification-id="${classification.id}"]`);
             if (oldFallback) oldFallback.remove();
+            sweepOrphanClaimBoxes(classification.id);
             if (unmatched.length > 0) {
-                console.log(`[misinfo] injectClassification: ${unmatched.length} unmatched claims for ${classification.id}, rendering Phase 1 fallback`);
+                console.log(`[misinfo] injectClassification: ${unmatched.length} unmatched claims for ${classification.id}${RENDER_FALLBACK_CLAIM_BOXES ? ", rendering fallback box" : ", fallback box suppressed"}`);
+            }
+            if (RENDER_FALLBACK_CLAIM_BOXES && unmatched.length > 0) {
                 const existing = article.querySelector(`[mf-unmatched="${classification.id}"]`);
                 if (existing) {
                     existing.innerHTML = renderClaims(classification, unmatched);
@@ -11321,8 +13444,7 @@ function injectClassification(
                         box-sizing: border-box;
                     `;
                     const mainTweet = !isQuoted && parseInt(article.getAttribute("tabindex") ?? "0") < 0;
-                    if (mainTweet) article.querySelector(`[data-testid="User-Name"]`)?.appendChild(div);
-                    else time.insertAdjacentElement("afterend", div);
+                    placeClaimBox(time, article, div, mainTweet);
                 }
             } else {
                 const unmatchedDiv = article.querySelector(`[mf-unmatched="${classification.id}"]`);
@@ -11347,10 +13469,12 @@ function injectClassification(
         article.querySelector(`[mf-unmatched="${classification.id}"]`)?.remove();
         return;
     }
-    console.log(`[misinfo] injectClassification: Phase 1 (fallback) for ${classification.id}`);
+    console.log(`[misinfo] injectClassification: Phase 1 (fallback) for ${classification.id}${RENDER_FALLBACK_CLAIM_BOXES ? "" : ", box suppressed"}`);
     const mainTweet = !isQuoted && parseInt(article.getAttribute("tabindex") ?? "0") < 0;
     const existing = article.querySelector(`[classification-id="${classification.id}"]`);
-    if (existing) {
+    if (!RENDER_FALLBACK_CLAIM_BOXES) {
+        if (existing) existing.remove();
+    } else if (existing) {
         existing.innerHTML = renderClaims(classification);
     } else {
         const div = document.createElement("div");
@@ -11367,8 +13491,7 @@ function injectClassification(
             font-size: 14px;
             box-sizing: border-box;
         `;
-        if (mainTweet) article.querySelector(`[data-testid="User-Name"]`)?.appendChild(div);
-        else time.insertAdjacentElement("afterend", div);
+        placeClaimBox(time, article, div, mainTweet);
     }
 
     const quotedTimes = article.querySelectorAll("time");

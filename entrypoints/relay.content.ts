@@ -11,8 +11,9 @@
  *  balance nor read extension state. Everything crossing in from the page — only the
  *  X_DATA_CAPTURED message — is origin-checked before it is trusted.
  */
-import { injectClassifications, setAnnotateSeeded, showNotification, setExtensionFrozen, hasNonExtensionChange } from '../utils/injecting';
+import { injectClassifications, setAnnotateSeeded, showNotification, setExtensionFrozen, hasNonExtensionChange, getArticleMainStatusId } from '../utils/injecting';
 import { mfBus } from '../utils/mfBus';
+import { xAdapter } from '../utils/platforms/x';
 import { MainTweet } from "../data/Tweets";
 import { reportColorScheme } from '../utils/toolbarIcon';
 
@@ -39,11 +40,16 @@ function sendToPort(message: any) {
   if (!currentPort) {
     // No live port — the background worker was killed (service-worker sleep after
     // backgrounding or long idle, aggressive on phones). Reconnect first so the
-    // intent isn't silently dropped: connectAndClassify re-sends the full batch,
-    // which repopulates the background's in-memory tweet stores, and the send
-    // below then goes out on the fresh port.
+    // intent isn't silently dropped: the re-announce repopulates the background's
+    // in-memory tweet stores, and the send below then goes out on the fresh port.
+    // INDIVIDUALLY, not as one unindexed batch: the worker that just died held this
+    // page's tweets in memory, so the recovery has to hand them back — but one
+    // unindexed batch means the background looks up every one of them in the DB at
+    // once (a billed fetch each, all in the same tick). Indexed, it fetches the first
+    // few eagerly and defers the rest until the reader's viewport reaches them, which
+    // is the rule the initial page load already follows.
     console.log(`[misinfo] relay: no port, reconnecting to deliver message...`);
-    connectAndClassify();
+    classifyCapturedTweetsIndividually();
   }
   if (currentPort) {
     try { currentPort.postMessage(message); } catch (e) {
@@ -52,7 +58,7 @@ function sendToPort(message: any) {
       // fresh one instead of early-returning on the unchanged-batch fingerprint.
       try { currentPort.disconnect(); } catch { /* ignore */ }
       currentPort = null;
-      connectAndClassify();
+      classifyCapturedTweetsIndividually();
       // Retry once on the fresh port: without this, the tap that healed the
       // connection would still be lost and the user would have to tap twice.
       try { currentPort?.postMessage(message); } catch (e2) {
@@ -196,8 +202,42 @@ function flushPendingDomReports() {
   }
 }
 
-/** Report all tweet ids currently rendered in the DOM. */
+
+/** Mark the posts on screen that are being shown in the long-form shape.
+ *
+ *  A long post gets a pill like every other post; what the mark keeps for it is the
+ *  SELECTION — a passage taken out of it stays a passage, with the post's own bounds, its
+ *  author and its chain as the context, instead of firing the post whole the way a
+ *  selection inside a short post does. `entrypoints/selection.ts` reads the mark.
+ *
+ *  Stamped on the DOM rather than handed to the injector, and that is the whole change
+ *  from what this used to be: the selection bundle is its own module registry (two content
+ *  scripts in one isolated world are still two registries), so a set held in this one is
+ *  invisible to it, and X's judgement is a character count against a limit — nothing the
+ *  selection side could key on by itself.
+ *
+ *  The judgement is X's own: a post is long when it carries more characters than X will
+ *  show without an expander (see `xAdapter.isLongForm`). It is taken from the DOM, on the
+ *  text X is displaying right now, so it follows a translation — and it is recomputed
+ *  wholesale on every pass, so a post can also LEAVE the shape when the text shown gets
+ *  shorter.
+ *
+ *  A post's quoted card is a rendering of a DIFFERENT post, with its own pill, but it is
+ *  not a root the selection side resolves to, so only the article's own id is judged. */
+function stampLongFormPosts() {
+  const judge = xAdapter.isLongForm;
+  if (!judge) return;
+  for (const article of Array.from(document.querySelectorAll('article[data-testid="tweet"]'))) {
+    const mainId = getArticleMainStatusId(article);
+    article.toggleAttribute('mf-longform', !!(mainId && judge(article, { id: mainId })));
+  }
+}
+
+/** Report all tweet ids currently rendered in the DOM, and mark the long-form ones — the
+ *  two share a trigger (any non-extension change to the page) and a scan of the same
+ *  articles, so they are swept together. */
 function reportVisibleTweets() {
+  stampLongFormPosts();
   const links = document.querySelectorAll<HTMLAnchorElement>('a[href*="/status/"]');
   let reported = 0;
   for (const link of links) {
@@ -332,7 +372,9 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
       const error = browser.runtime.lastError;
       if (capturedTweets.length > 0) {
         console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, reconnecting in 1s...`);
-        setTimeout(() => connectAndClassify(), 1000);
+        // Re-announce INDIVIDUALLY, never as one batch — see sendToPort above: one
+        // unindexed batch is a billed DB lookup per captured tweet, all at once.
+        setTimeout(() => classifyCapturedTweetsIndividually(), 1000);
       } else {
         console.log(`[misinfo] relay: port disconnected${error ? ` (${error.message})` : ''}, NOT reconnecting (capturedTweets=${capturedTweets.length})`);
       }
@@ -525,25 +567,12 @@ export default defineContentScript({
   main() {
     console.log('[misinfo] relay content script loaded, localeOverride=', localeOverride);
 
-    // Redirect-landing bail: OAuth/Stripe return to x.com with a disinfax_ marker (see
-    // AUTH_CALLBACK_URL in popup/App.tsx and the checkout worker's return URLs), and the
-    // harvester/background closes that tab within milliseconds. Classify nothing from it:
+    // Redirect-landing bail: a URL carrying a disinfax_ return marker (see
+    // AUTH_CALLBACK_URL in popup/App.tsx) is a tab the harvester/background closes within
+    // milliseconds. OAuth no longer returns here — it lands on disinfax.app — so this is
+    // belt-and-braces rather than a live path. Classify nothing from such a tab anyway:
     // when the user is logged out of X the landing page renders logged-out sample tweets,
     // and capturing those would spend balance on someone else's content on a torn-down tab.
-    //
-    // Checkout close cannot rely on the background's tabs.onUpdated watcher alone: Stripe
-    // checkout takes long enough that the MV3 worker often idles and drops that listener,
-    // so the return tab would stay open (and this bail would then leave it with no
-    // DisinfaX UI). Sending MF_CHECKOUT_RETURN from here wakes the worker and closes the
-    // tab the same way the OAuth harvester does — before X's SPA has anything to render.
-    if (location.search.includes('disinfax_checkout=')) {
-      let outcome: string | null = null;
-      try { outcome = new URLSearchParams(location.search).get('disinfax_checkout'); } catch { /* ignore */ }
-      void browser.runtime
-        .sendMessage({ type: 'MF_CHECKOUT_RETURN', outcome })
-        ?.catch?.(() => { /* background asleep or already handled */ });
-      return;
-    }
     if (location.search.includes('disinfax_oauth=callback')) return;
 
     // The background service worker has no DOM and so cannot read the browser's

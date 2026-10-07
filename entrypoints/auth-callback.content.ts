@@ -9,23 +9,22 @@
  *  this script — which runs on the redirect target — hands whatever the provider returned
  *  back to the background, where the Supabase client can complete the exchange.
  *
- *  Matches x.com rather than disinfax.app so the extension needs no host access to its
- *  own site: the redirect target's content is irrelevant (this tab exists only to be
- *  harvested and closed), and x.com is already granted on every build. The redirect
- *  carries a `disinfax_oauth=callback` marker (see AUTH_CALLBACK_URL in popup/App.tsx)
- *  and this handler no-ops unless it is present, so ordinary x.com visits — and any
- *  `?code=` X itself might ever use — are unaffected. relay.content.ts and
- *  capture.main.content.ts bail on the same marker so the logged-out X landing page's
- *  sample tweets are never captured into the pipeline on a tab about to be torn down.
+ *  Matches disinfax.app — the extension's own site, whose success page is the redirect
+ *  target. That costs host access to a second domain, where the previous x.com target
+ *  borrowed a host every build already matched, but the callback can only be read from a
+ *  host this script is allowed to run on. The redirect carries a `disinfax_oauth=callback`
+ *  marker (see AUTH_CALLBACK_URL in popup/App.tsx) and this handler no-ops unless it is
+ *  present, so an ordinary visit to the page — including the Stripe checkout return to the
+ *  same path — is untouched.
  *
- *  Runs at document_start so the params are read before X's SPA boot can route away —
- *  notably when the user is logged out of X, where the 302 lands with `?code=` in the
- *  bar and the background exchanges and closes the tab before any /login push matters.
+ *  Runs at document_start so the params are read before the success page's own scripts can
+ *  route away: it is built to be looked at, not to hold a code, and whatever it does on
+ *  load must not get there first.
  *
  *  Safari-only: Chromium and Firefox use browser.identity and never take this path.
  */
 export default defineContentScript({
-  matches: ['*://x.com/*'],
+  matches: ['*://disinfax.app/*'],
   include: ['safari'],
   runAt: 'document_start',
   main() {

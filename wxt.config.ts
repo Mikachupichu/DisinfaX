@@ -53,7 +53,7 @@ export default defineConfig({
   manifest: (env) => ({
     name: 'DisinfaX',
     description: "Identifies and highlights disinformation in tweets using fast and intelligent research.",
-    version: '1.0.5',
+    version: '1.1.0',
     default_locale: 'en',
     // Static icons (chrome://extensions, the extensions menu, the Web Store
     // listing) cannot be themed at runtime, so they use the neutral gray logo
@@ -106,13 +106,29 @@ export default defineConfig({
       'activeTab',
       'scripting'
     ],
-    // No host_permissions entry: redirect detection (Stripe return, OAuth callback) now
-    // lands on x.com, whose content-script match already grants tabs.onUpdated URL
-    // visibility for it — Chrome only populates changeInfo.url for tabs matching a
-    // granted host permission, and x.com matches on every build. This deliberately
-    // avoids both disinfax.app access and the broad 'tabs' permission's "read your
-    // browsing history" warning.
-    host_permissions: [],
+    // No host_permissions entry: noticing a return needs no host API. The checkout landing
+    // is a plain `tabs.onRemoved` on the tab we opened, and that event carries no URL; the
+    // OAuth callback is read by a content script whose own `matches` grant it, which is the
+    // only reason it can sit on disinfax.app — a second domain the extension is now allowed
+    // on, taken deliberately (see AUTH_CALLBACK_URL in popup/App.tsx). Still no broad 'tabs'
+    // permission, so no "read your browsing history" warning.
+    // `mastodon.social` alone: the default instance, and the only Mastodon host with a
+    // static match. It is one named host, so it does not raise the all-sites install
+    // warning, and it is where the majority of the network's readers are.
+    host_permissions: ['*://mastodon.social/*'],
+    // Mastodon is otherwise federated: every other instance is its own third-party domain,
+    // so there is no list of hosts to declare and no suffix to match. Declared as OPTIONAL
+    // for those, and requested one origin at a time from a click on the instance itself —
+    // a required all-hosts grant would be an install-time warning for every user on the
+    // store listing, including the ones who never open a Mastodon instance. Chrome only
+    // accepts a requested origin that a declared entry covers, which is why this is broad
+    // while every actual request is a single `https://<instance>/*`. See
+    // utils/mastodonOptIn.ts.
+    //
+    // Safari has no optional_host_permissions: it rejects the key outright, and its own
+    // per-site grants are handled in the containing app. Omitted there rather than shipped
+    // as a no-op, so the manifest stays honest about what each target can do.
+    ...(env.browser !== 'safari' ? { optional_host_permissions: ['*://*/*'] } : {}),
     browser_specific_settings: {
       gecko: {
         id: "disinfax@disinfax.app", // Must be unique (email format recommended)

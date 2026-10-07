@@ -6,6 +6,7 @@ import { parseWorkerErrorMessage, codeToMessageKey } from '../../utils/errorCode
 import { browser } from 'wxt/browser';
 import { callNativeHost } from '../../utils/nativeHost';
 import { FactCheckTab } from './FactCheckTab';
+import SiteOptIn from './SiteOptIn';
 
 /** Render a USD amount with a smaller "US" + "$" vertically centered against the
  *  number (rather than baseline-aligned). Symbol size scales with the surrounding
@@ -784,6 +785,9 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      {/* ── Opt in to the Mastodon instance in this tab (renders nothing elsewhere) ── */}
+      <SiteOptIn />
+
       {/* ── Messages (usually none) ── */}
       {messages.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -960,10 +964,12 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
       {/* ── Settings (collapsed): per-extension thresholds for keeping strong
           false-claim highlights visible while cached visuals stay hidden behind
           the Reveal button. Both the confidence floor and the veracity ceiling
-          must hold, and claims needing a re-check never bypass. Content script
-          reads the same storage.local keys live, so a drag flips the tab with no
-          reload. The expanded body scrolls inside a bounded height so opening it
-          never grows the popup window. */}
+          must hold on a claim that carries a complete verdict; a re-check in
+          flight does not revoke a claim that already clears both — revoking on
+          that flag made the highlight flicker, since the flag moves on its own.
+          Content script reads the same storage.local keys live, so a drag flips
+          the tab with no reload. The expanded body scrolls inside a bounded
+          height so opening it never grows the popup window. */}
       <div className="flex min-h-0 flex-col rounded-lg border border-zinc-800/70 bg-zinc-900/30">
         <button
           type="button"

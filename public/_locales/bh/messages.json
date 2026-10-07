@@ -382,5 +382,40 @@
   "selectionConfirmCancel": {
     "message": "रद्द करीं",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "साफ करीं",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ पर DisinfaX चालू करीं",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$ खातिर DisinfaX चालू बा",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "बंद करीं",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook के साथे आगे बढ़ीं"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn के साथे आगे बढ़ीं"
+  },
+  "continueWithReddit": {
+    "message": "Reddit के साथे आगे बढ़ीं"
   }
 }

@@ -1616,10 +1616,11 @@ final class FactCheckModel: ObservableObject {
     /// same way rather than copied as a figure. The three terms are `classify-tweets`' own
     /// worst-case hold terms — the Gemini streams, the paid searches, and the post-research
     /// annotation — summed and fee-recovered once, and then marked up by the margin that worker
-    /// charges. Deliberately the settled charge and NOT the backend hold (`HOLD_CAP`): the hold
-    /// excludes the margin, so reserving it would size a batch against roughly half of what its
-    /// runs really debit, which is the mistake the extension already made once. Change the worker's
-    /// formula and this, the extension's copy, and the `HOLD_CAP` above it all move together.
+    /// charges. Deliberately the settled charge and NOT the backend hold: the hold excludes the
+    /// margin, so reserving it would size a batch against roughly half of what its runs really
+    /// debit, which is the mistake the extension already made once. The worker's hold carries no
+    /// cap, so this reserve stays the conservative side of it. Change the worker's formula and
+    /// this, and the extension's copy, together.
     private static let classificationReserve: Double = {
         let geminiIn = 0.75, geminiOut = 3.75, outputLimit = 2000.0   // gemini-3.6-flash
         let inputLimit = 6000.0, searchContextTokens = 3500.0, geminiStreams = 4.0
