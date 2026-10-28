@@ -11,7 +11,7 @@
  *  balance nor read extension state. Everything crossing in from the page — only the
  *  X_DATA_CAPTURED message — is origin-checked before it is trusted.
  */
-import { injectClassifications, setAnnotateSeeded, showNotification, setExtensionFrozen, hasNonExtensionChange, getArticleMainStatusId } from '../utils/injecting';
+import { injectClassifications, setAnnotateSeeded, showNotification, setExtensionFrozen, hasNonExtensionChange, getArticleMainStatusId, handleSelectionGesture, mfPlainText } from '../utils/injecting';
 import { mfBus } from '../utils/mfBus';
 import { xAdapter } from '../utils/platforms/x';
 import { MainTweet } from "../data/Tweets";
@@ -21,7 +21,10 @@ const tweetTextCache = new Map<string, string>();
 const translatedTextCache = new Map<string, string>();
 let capturedTweets: MainTweet[] = [];
 let currentBatchId: string | null = null;
-let pendingBatchRefresh: { batchId: string; tweetId?: string } | null = null;
+let pendingBatchRefresh: {
+  batchId: string; tweetId?: string;
+  side?: "alt" | "translation"; sideText?: string; sideLocale?: string;
+} | null = null;
 let localeOverride: string | null = null;
 let currentPort: any = null;
 /** True while the user is logged out: the extension is frozen (injections torn
@@ -99,7 +102,14 @@ function watchDisplayedLocaleFromDom(tweetId: string, article: Element) {
   const existing = localeWatchTimers.get(tweetId);
   if (existing !== undefined) clearInterval(existing);
 
-  const readText = () => readTextEl()?.textContent ?? null;
+  // mfPlainText, not textContent: the element can be holding our own paint at the moment of the
+  // snapshot (the toggle tears the segments down and the sweep rebuilds them), and textContent
+  // counts our chrome as words — an inline badge's label, a correction's replacement. Those got
+  // baked into the body stored as the displayed text, so every offset after one shifted.
+  const readText = () => {
+    const el = readTextEl();
+    return el ? mfPlainText(el) : null;
+  };
 
   const STEP_MS = 150;
   /** How long to wait for the `lang` attribute to flip at all. */
@@ -383,16 +393,22 @@ function connectAndClassify(tweetsToSend?: MainTweet[], xhrBatchId?: string, xhr
 
   // Send the actual data (on existing port or newly created one)
   if (pendingBatchRefresh) {
-    const { batchId: refreshBatchId, tweetId: refreshTweetId } = pendingBatchRefresh;
+    const {
+      batchId: refreshBatchId, tweetId: refreshTweetId,
+      side: refreshSide, sideText: refreshSideText, sideLocale: refreshSideLocale,
+    } = pendingBatchRefresh;
     pendingBatchRefresh = null;
     currentBatchId = `batch_${Date.now()}`;
     const tweetsToSend = refreshTweetId
       ? capturedTweets.filter(t => t.id === refreshTweetId)
       : capturedTweets;
-    console.log(`[misinfo] relay: sending BATCH_REFRESH_FORCE for batchId=${refreshBatchId} tweetId=${refreshTweetId ?? 'all'}, sending ${tweetsToSend.length} tweet(s), new batchId=${currentBatchId}`);
+    console.log(`[misinfo] relay: sending BATCH_REFRESH_FORCE for batchId=${refreshBatchId} tweetId=${refreshTweetId ?? 'all'} side=${refreshSide ?? 'unknown'}, sending ${tweetsToSend.length} tweet(s), new batchId=${currentBatchId}`);
     currentPort.postMessage({
       type: "BATCH_REFRESH_FORCE",
-      data: { batchId: refreshBatchId, tweetId: refreshTweetId, tweets: tweetsToSend, newBatchId: currentBatchId, locale: localeOverride }
+      data: {
+        batchId: refreshBatchId, tweetId: refreshTweetId, tweets: tweetsToSend, newBatchId: currentBatchId, locale: localeOverride,
+        side: refreshSide ?? null, sideText: refreshSideText ?? null, sideLocale: refreshSideLocale ?? null,
+      }
     });
   } else {
     currentBatchId = `batch_${Date.now()}`;
@@ -426,21 +442,21 @@ function classifyCapturedTweetsIndividually() {
 // ---- Event listeners (set up once, always use currentPort) ----
 
 mfBus.addEventListener('mf-refresh-claim', ((e: CustomEvent) => {
-  const { classificationId, claimText, dbClaimText } = e.detail;
+  const { classificationId, claimText, dbClaimText, side, sideText, sideLocale } = e.detail;
   console.log(`[misinfo] relay: refresh-claim for ${classificationId} "${claimText.slice(0, 40)}..."`);
-  sendToPort({ type: "REFRESH_CLAIM", data: { classificationId, claimText, dbClaimText, locale: localeOverride } });
+  sendToPort({ type: "REFRESH_CLAIM", data: { classificationId, claimText, dbClaimText, locale: localeOverride, side, sideText, sideLocale } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-set-displayed-locale', ((e: CustomEvent) => {
-  const { tweetId, textLocale, displayedText } = e.detail;
-  console.log(`[misinfo] relay: set-displayed-locale for ${tweetId} -> ${textLocale}`);
-  sendToPort({ type: "SET_DISPLAYED_LOCALE", data: { tweetId, textLocale, displayedText } });
+  const { tweetId, textLocale, displayedText, bodyOnly } = e.detail;
+  console.log(`[misinfo] relay: set-displayed-locale for ${tweetId} -> ${textLocale}${bodyOnly ? ' (body only)' : ''}`);
+  sendToPort({ type: "SET_DISPLAYED_LOCALE", data: { tweetId, textLocale, displayedText, bodyOnly } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-refresh-batch', ((e: CustomEvent) => {
-  const { batchId, tweetId } = e.detail;
-  console.log(`[misinfo] relay: refresh-batch for ${batchId} (tweetId=${tweetId ?? 'unknown'}), forcing reconnection`);
-  pendingBatchRefresh = { batchId, tweetId };
+  const { batchId, tweetId, side, sideText, sideLocale } = e.detail;
+  console.log(`[misinfo] relay: refresh-batch for ${batchId} (tweetId=${tweetId ?? 'unknown'}, side=${side ?? 'unknown'}), forcing reconnection`);
+  pendingBatchRefresh = { batchId, tweetId, side, sideText, sideLocale };
   connectAndClassify();
 }) as EventListener);
 
@@ -472,7 +488,7 @@ function getTweetTranslationState(tweetElement: Element) {
 }
 
 mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
-  const { tweetId } = e.detail;
+  const { tweetId, fromSelection } = e.detail;
   // The DOM reads below are refinements to the translation signal. They are guarded so a
   // failure cannot swallow the intent: losing them costs some translation accuracy, losing
   // the send costs the user a click that appears to do nothing.
@@ -503,13 +519,13 @@ mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
         .find(el => !el.closest('div[role="link"]'))?.textContent ?? null)
     : null;
   console.log(`[misinfo] relay: process-on-hold for ${tweetId} (displayedSide=${displayedSide ?? 'unknown'}, displayedText=${displayedText ? `${displayedText.length} chars` : 'none'})`);
-  sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide, displayedText } });
+  sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide, displayedText, fromSelection: fromSelection === true } });
   } catch (err) {
     console.error(`[misinfo] relay: mf-process-on-hold THREW for ${tweetId}`, err);
     // Send anyway. The DOM reads above are refinements — losing them costs some translation
     // accuracy, but losing the intent costs the user a click that appears to do nothing.
     try {
-      sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide: null, displayedText: null } });
+      sendToPort({ type: "PROCESS_ON_HOLD", data: { tweetId, locale: localeOverride, displayedSide: null, displayedText: null, fromSelection: fromSelection === true } });
     } catch (sendErr) {
       console.error(`[misinfo] relay: fallback send also failed for ${tweetId}`, sendErr);
     }
@@ -517,15 +533,17 @@ mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
 }) as EventListener);
 
 mfBus.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
-  const { tweetId } = e.detail;
-  console.log(`[misinfo] relay: fact-check-all for ${tweetId}`);
-  sendToPort({ type: "FACT_CHECK_ALL", data: { tweetId, locale: localeOverride } });
+  const { tweetId, claimTexts } = e.detail;
+  console.log(`[misinfo] relay: fact-check-all for ${tweetId}${Array.isArray(claimTexts) ? ` (${claimTexts.length} claim(s) under a revealed area)` : ''}`);
+  // `claimTexts` narrows the hand-off to the claims a revealed area covers; absent, the
+  // background takes every claim still on hold on the post, which is the button's job.
+  sendToPort({ type: "FACT_CHECK_ALL", data: { tweetId, locale: localeOverride, claimTexts: Array.isArray(claimTexts) ? claimTexts : undefined } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-annotate-claim', ((e: CustomEvent) => {
-  const { classificationId, claimText } = e.detail;
-  console.log(`[misinfo] relay: annotate-claim for ${classificationId} "${claimText?.slice(0, 40)}..."`);
-  sendToPort({ type: "ANNOTATE_CLAIM", data: { classificationId, claimText, locale: localeOverride } });
+  const { classificationId, claimText, side, sideText, sideLocale } = e.detail;
+  console.log(`[misinfo] relay: annotate-claim for ${classificationId} "${claimText?.slice(0, 40)}..."${side ? ` (side=${side})` : ''}`);
+  sendToPort({ type: "ANNOTATE_CLAIM", data: { classificationId, claimText, locale: localeOverride, side: side ?? null, sideText: sideText ?? null, sideLocale: sideLocale ?? null } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
@@ -535,9 +553,9 @@ mfBus.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
 }) as EventListener);
 
 mfBus.addEventListener('mf-translate-fact-checks', ((e: CustomEvent) => {
-  const { tweetId } = e.detail;
-  console.log(`[misinfo] relay: translate-fact-checks for ${tweetId}`);
-  sendToPort({ type: "TRANSLATE_FACT_CHECKS", data: { tweetId, locale: localeOverride } });
+  const { tweetId, side } = e.detail;
+  console.log(`[misinfo] relay: translate-fact-checks for ${tweetId}${side === 'alt' ? ' (other side)' : ''}`);
+  sendToPort({ type: "TRANSLATE_FACT_CHECKS", data: { tweetId, locale: localeOverride, side } });
 }) as EventListener);
 
 mfBus.addEventListener('mf-translate-claim', ((e: CustomEvent) => {
@@ -567,10 +585,11 @@ export default defineContentScript({
   main() {
     console.log('[misinfo] relay content script loaded, localeOverride=', localeOverride);
 
-    // Redirect-landing bail: a URL carrying a disinfax_ return marker (see
-    // AUTH_CALLBACK_URL in popup/App.tsx) is a tab the harvester/background closes within
-    // milliseconds. OAuth no longer returns here — it lands on disinfax.app — so this is
-    // belt-and-braces rather than a live path. Classify nothing from such a tab anyway:
+    // Redirect-landing bail: a URL carrying a disinfax_ return marker is a tab an OAuth
+    // landing once occupied. OAuth no longer returns to a page at all — the provider's
+    // redirect opens the containing app (see NATIVE_AUTH_CALLBACK_URL in popup/App.tsx) —
+    // so this is belt-and-braces for a tab left over from an older build rather than a live
+    // path. Classify nothing from such a tab anyway:
     // when the user is logged out of X the landing page renders logged-out sample tweets,
     // and capturing those would spend balance on someone else's content on a torn-down tab.
     if (location.search.includes('disinfax_oauth=callback')) return;
@@ -623,6 +642,21 @@ export default defineContentScript({
       console.log(`[misinfo] relay: cached ${cachedCount} tweet texts + ${translatedCount} translations, cache size now ${tweetTextCache.size}`);
 
       capturedTweets = tweets;
+
+      // Published for the selection bundle, which keeps its own module registry in this
+      // same isolated world (see `utils/injecting.ts` on the seam): a passage selected
+      // inside a tweet reads its chain from here — the tweets X itself sent, full text and
+      // linked ancestors — rather than walking the timeline's DOM for it. A function, so
+      // it answers with the set as it stands rather than a snapshot.
+      (globalThis as { __mfPostChainFor?: (id: string) => MainTweet | null }).__mfPostChainFor =
+        (id) => capturedTweets.find((t) => t.id === id) ?? null;
+
+      // Same seam, same reason: a web selection taken inside a post that carries our buttons
+      // is answered by the copy of the painter that owns that post — its revealed areas and
+      // its repaint live here, not in the selection bundle. False sends the reader back to
+      // the passage path.
+      (globalThis as { __mfSelectionGesture?: (id: string, selected: string, postEl: Element | null) => boolean }).__mfSelectionGesture =
+        handleSelectionGesture;
 
       // Each tweet is self-contained (linked tweets are nested as context).
       // Send each tweet individually as its own batch, but include the original

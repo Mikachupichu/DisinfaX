@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Phát hiện và làm nổi bật thông tin sai lệch trong tweet bằng phân tích AI."
+    "message": "Phát hiện và làm nổi bật thông tin sai lệch trong bài đăng bằng phân tích AI."
   },
   "verdictTrue": {
     "message": "Đúng",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Hiển thị lại tất cả tuyên bố trong tweet này",
+    "message": "Hiển thị lại tất cả tuyên bố trong bài đăng này",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Đăng xuất"
   },
+  "deleteAccount": {
+    "message": "Xóa tài khoản và dữ liệu liên quan",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Số dư của bạn cùng một hash mật mã của địa chỉ email được bảo vệ bằng khóa bí mật sẽ được giữ lại, nhằm ngăn chặn việc lạm dụng số tiền miễn phí được cấp khi đăng ký. Đăng ký lại bằng cùng tài khoản sẽ khôi phục số dư của bạn.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Nhấp vào %BTN% sẽ hiển thị các tuyên bố và trừ tiền vào số dư của bạn"
   },
@@ -285,7 +293,7 @@
     "message": "Dùng gần nhất"
   },
   "cleanupTagline": {
-    "message": "Dọn dẹp bảng tin X của bạn."
+    "message": "Dọn dẹp bảng tin của bạn."
   },
   "disclaimerJurisdiction": {
     "message": "Trong phạm vi Hoa Kỳ, chỉ cư dân của các bang Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Bắc Carolina, Bắc Dakota, Oklahoma, Oregon, Pennsylvania, Nam Carolina, Nam Dakota, Tennessee, Texas, Utah, Washington, Wisconsin và Wyoming mới có thể sử dụng DisinfaX và nạp tiền vào số dư; Washington, D.C., tất cả các vùng lãnh thổ của Hoa Kỳ và bất kỳ bang nào không được liệt kê đều bị loại trừ. Bên ngoài Hoa Kỳ, dịch vụ có sẵn tại Canada, Úc, New Zealand, Singapore, Nam Phi, Nhật Bản, Đài Loan, Indonesia, Thái Lan, Philippines, Malaysia, Việt Nam và Thụy Sĩ."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Không tìm thấy nội dung đó. Vui lòng thử lại."
   },
+  "errNoClaims": {
+    "message": "Không tìm thấy tuyên bố nào có thể kiểm chứng trong văn bản này.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Cài đặt",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Giao diện",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Sáng",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Tự động",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tối",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Luôn hiển thị kiểm chứng nếu:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Tiếp tục với Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Hỗ trợ mù màu: huy hiệu cố định",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Giữ mọi huy hiệu kiểm chứng thông tin luôn hiển thị trên bài viết mà không cần di chuột. Kết luận được thể hiện bằng màu đánh dấu cũng như câu từ, giúp ích cho những ai không phân biệt được các màu này.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Cỡ chữ lớn",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Dành cho văn bản trong cửa sổ (các tuyên bố, lập luận...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Đóng",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Nhấp để chỉnh sửa tuyên bố",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Chi tiết kiểm chứng thông tin",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Đoạn văn bản được chọn quá dài để kiểm chứng. Tối đa 1 000 ký tự.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Thông báo khi số dư giảm",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Nhiều hơn: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "CÁCH KIỂM CHỨNG THÔNG TIN",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Trên bất kỳ trang web nào, hãy chọn văn bản bạn muốn kiểm chứng.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Nhấp chuột phải vào văn bản đã chọn và chọn Kiểm Chứng (cũng hoạt động trên văn bản chưa được chọn).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Nhấp chuột phải vào văn bản đã chọn và chọn {1} Kiểm Chứng (cũng hoạt động trên văn bản chưa được chọn).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Quá trình kiểm chứng bắt đầu ngay và được trừ vào số dư của bạn.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Khi văn bản vẫn đang được chọn, hãy chạm vào ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " biểu tượng trên thanh địa chỉ, sau đó chọn {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

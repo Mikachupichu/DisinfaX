@@ -44,6 +44,14 @@
   "signOut": {
     "message": "Logga út"
   },
+  "deleteAccount": {
+    "message": "Strika kontu og tilknýtt dáta",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Tín saldo og ein kryptografisk hash av tínum teldupostadressi, sum er vard við einum loyniligum lykli, verða goymd fyri at forða misnýtslu av teimum ókeypis midlunum, sum verða givin, tá ið konto verður stovnað. Skráar tú teg aftur við sama konto, verður saldoin endurreistur.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "At klikkja á %BTN% vísir ásagnir og tekur gjald av saldo tínum"
   },
@@ -73,7 +81,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Finnur og markar misupplýsingar í tweetum við hjálp av AI-greining.",
+    "message": "Finnur og markar misupplýsingar í postum við hjálp av AI-greining.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -185,7 +193,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sýn ásagnirnar í hesum tweetinum aftur",
+    "message": "Sýn ásagnirnar í hesum postinum aftur",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -290,7 +298,7 @@
     "message": "Seinast brúkt"
   },
   "cleanupTagline": {
-    "message": "Reinsa tína X-rás."
+    "message": "Reinsa tína rás."
   },
   "factCheckAllButton": {
     "message": "Kanna alt"
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Hetta kundi ikki finnast. Vinarliga royn aftur."
   },
+  "errNoClaims": {
+    "message": "Ongar sannpróvandi útsegner vóru funnar í hesum teksti.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Innstillingar",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Útsjónd",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ljós",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Sjálvvirkandi",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Myrkur",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Vís altíð kanningar, um:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Halt fram við Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Litblindavinaligt: støðug merki",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Halt øll staðfestingarmerki sjónlig á innleggum uttan at sveima yvir. Ein dómur sæst líka nógv av litingini sum av orðunum, so hetta hjálpir teimum, ið ikki kenna hesar litir frá hvørjum øðrum.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Stór skriftstødd",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Til tekst inni í gluggum (frágreiðingar, grundgevingar...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Lat aftur",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Trýst fyri at broyta ásøgn",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Smálutir um staðfesting",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Hetta úrvalið er ov langt at faktakanna. Í mesta lagi 1 000 tekn.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Fráboða tá ið saldoð minkar",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Ym meira enn: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "HVUSSU KANNA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Á einari hvørji sum helst heimasíðu, vel tann tekstin tú vilt kanna.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Høgraklikkja á valda tekstin og vel Kanna (virkar eisini á óvaldum teksti).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Høgraklikkja á valda tekstin og vel {1} Kanna (virkar eisini á óvaldum teksti).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Kannin byrjar beint og verður goldin av tínum saldo.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Meðan teksturin framvegis er valdur, trýst á ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ímyndina í adressubjálkanum og vel so {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

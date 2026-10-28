@@ -34,6 +34,7 @@
  */
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -180,6 +181,31 @@ function authorElement(root: Element): Element | null {
   return isSubmission(root)
     ? trailingElement(root, '.subtext a.hnuser')
     : root.querySelector('.comhead a.hnuser');
+}
+
+/** The row's age element — the `SPAN.age` carrying the posting time, found on both row
+ *  shapes the way the author is: inside the comment's own head line, and in the trailing
+ *  subtext row for a submission. */
+function ageElement(root: Element): Element | null {
+  return isSubmission(root)
+    ? trailingElement(root, '.subtext .age')
+    : root.querySelector('.comhead .age');
+}
+
+/** When the row was written, off the age element's `title`.
+ *
+ *  Measured 2026-10-14 on `/newcomments`: the title is a bare datetime with no zone
+ *  (`2026-10-14T09:23:15`), and HN writes it in UTC — a row reading "0 minutes ago" titled
+ *  09:23:15 while the browser's own clock was 09:23:23Z in a UTC-4 zone. So the `Z` is added
+ *  here rather than left to `Date.parse`, which reads a zone-less datetime as the READER's
+ *  local time and would have filed every post four hours early (and a post written just after
+ *  local midnight on the previous day). Older pages state a Unix second count instead, which
+ *  is read as one. */
+function postedAt(root: Element): string | undefined {
+  const title = ageElement(root)?.getAttribute('title')?.trim() ?? '';
+  if (!title) return undefined;
+  if (/^\d+$/.test(title)) return isoDatetime(Number(title));
+  return /^\d{4}-\d{2}-\d{2}T/.test(title) ? isoDatetime(`${title}Z`) : undefined;
 }
 
 /** A comment's text. `.commtext` is present on every comment that has text to show; a
@@ -495,6 +521,7 @@ export const hackerNewsAdapter: PlatformAdapter = {
     if (!text) return null;
 
     const username = authorElement(root)?.textContent?.trim() ?? '';
+    const datetime = postedAt(root);
 
     const post = {
       id: namespaced(id),
@@ -516,6 +543,9 @@ export const hackerNewsAdapter: PlatformAdapter = {
       conversationId: conversationIdOf(root),
       quoting: null,
       replyingTo: null,
+      // The posting time the row's age element states, which is what the preclassify prompt's
+      // "today is" note is built from on this platform.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     return { post, replyParentId: isPost ? null : replyParentId(root) };

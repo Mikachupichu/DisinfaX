@@ -21,15 +21,17 @@ enum FactCheckClient {
     private static let preclassifyEndpoint = URL(string: "https://preclassify-tweets.michael-pouget01.workers.dev/")!
     private static let classifyEndpoint = URL(string: "https://classify-tweets.michael-pouget01.workers.dev/")!
 
-    /// Supabase's *publishable* (anon) key — the same one the extension ships, and not a secret:
-    /// it grants nothing on its own, and every table and RPC is gated by row-level security keyed
-    /// on `auth.uid()`. Here that identity comes from the user's own access token, so the app can
-    /// read exactly the rows its owner could read from the extension and no others.
-    /// Not private: `SupabaseRealtime` opens its own socket and calls the same `subscribe` RPC
-    /// against the same project, and a second copy of the URL and key would be a second thing to
-    /// keep in step with the extension.
-    static let supabaseBase = "https://pofekzkirnysbuqbxmvp.supabase.co"
-    static let supabaseAnonKey = "sb_publishable_4ZX8ljVPNImnvcpLl60Q_g_zgOK77Ua"
+    /// Supabase's project URL and *publishable* (anon) key — the same pair the extension ships,
+    /// and not secrets: the key grants nothing on its own, and every table and RPC is gated by
+    /// row-level security keyed on `auth.uid()`. Here that identity comes from the user's own
+    /// access token, so the app can read exactly the rows its owner could read from the
+    /// extension and no others.
+    ///
+    /// Forwarded rather than declared, so the copy `AppSession` refreshes against and the copy
+    /// these requests authenticate against cannot drift — and so `SupabaseRealtime`, which
+    /// opens its own socket and calls the same `subscribe` RPC, keeps its existing spelling.
+    static var supabaseBase: String { SharedTopUpStore.supabaseBase }
+    static var supabaseAnonKey: String { SharedTopUpStore.supabaseAnonKey }
 
     /// The locale claims and reasoning are written in, and the key they are cached under.
     ///
@@ -63,15 +65,29 @@ enum FactCheckClient {
         return session
     }
 
+    /// The same token, renewed first if it is close to expiring.
+    ///
+    /// The app holds the session's refresh token too (see `AppSession`), so a run that starts
+    /// with an old token renews it instead of asking the reader to go and open the popup. This
+    /// throws only when there is genuinely no session: nobody signed in, or the server refused
+    /// to renew one. Every way of failing to reach the network leaves a live token alone, so a
+    /// bad connection never reads as a sign-out.
+    private static func freshSession() async throws -> SharedTopUpStore.StoredSession {
+        guard let session = await AppSession.current() else { throw FactCheckError.sessionUnavailable }
+        return session
+    }
+
     /// Whether a request could authenticate at all, asked without sending one.
     ///
-    /// The same test `liveSession` makes, exposed because the answer is knowable before a run is
-    /// attempted and not only after one has been refused: the token is in the container and its
-    /// expiry is readable from here. Deliberately the same expression rather than a copy of its
-    /// reasoning — a control left enabled by this has to be one `liveSession` would let through,
-    /// or the app is offering a click it already knows will fail.
+    /// A session that can be RENEWED, not one that happens to be fresh right now. This app holds
+    /// the refresh token and `freshSession()` renews on demand, so a token with ten seconds left
+    /// is not a reason to disable a control — and treating it as one is what used to leave the
+    /// app looking signed out until the popup was reopened. A record with no refresh token (one
+    /// written by a build from before the app kept its own session) still counts while its
+    /// access token is live, because that is all it can ever be.
     static var canAuthenticate: Bool {
-        (try? liveSession()) != nil
+        if SharedTopUpStore.storedSession?.refreshToken != nil { return true }
+        return (try? liveSession()) != nil
     }
 
     /// The same rule as `canAuthenticate`, answered with the token itself, for the callers that
@@ -96,14 +112,18 @@ enum FactCheckClient {
 
         for scalar in text.precomposedStringWithCompatibilityMapping.unicodeScalars {
             guard !isStrippedByNormalize(scalar) else { continue }
-            let isSpace = scalar == " " || scalar == "\t"
-            if isSpace {
+            if scalar == " " || scalar == "\t" {
+                // The whole run becomes ONE PLAIN SPACE, which is what `/[ \t]+/g → " "` does.
+                // Keeping the first scalar of the run instead would carry a tab through whenever
+                // a run starts with one — `"a\tb"` hashed as "a\tb" where the workers hash "a b",
+                // and a hash they can disprove is a run whose DB writes are silently skipped.
                 if lastWasSpace { continue }
                 lastWasSpace = true
+                compacted.append(" ")
             } else {
                 lastWasSpace = false
+                compacted.append(scalar)
             }
-            compacted.append(scalar)
         }
 
         var lower = 0
@@ -146,10 +166,67 @@ enum FactCheckClient {
 
     /// Deterministic serialization of the input, joined by a control character `normalizeText`
     /// cannot leave behind, so no field can forge a boundary. Port of the extension's
-    /// `canonicalContext` for the un-threaded case, which is the only one this tab produces:
-    /// an app fact-check is a single text, never a reply thread or a quote.
+    /// `canonicalContext`, all three of its cases: the un-threaded text the tab produces, a
+    /// webpage selection (a text with the passage around it), and a post with its quoted post and
+    /// the post it replies to.
+    ///
+    /// A selection is the three parts as ONE unit, led by `\x1c` so it can never collide with a
+    /// tweet that happens to carry the same text — the same selected words inside a different
+    /// surrounding paragraph are a different thing and must not hit the first one's cached claims.
     static func canonicalContext(_ input: FactCheckInput) -> String {
-        normalizeText(input.username) + "\u{1F}" + normalizeText(input.fullText)
+        canonicalContext(input, depth: 0)
+    }
+
+    /// The recursion the worker also caps at 20. `\x1f` separates the fields, `\x1e` introduces a
+    /// quoted post and `\x1d` a reply parent — the same four sentinels, in the same places, because
+    /// `normalizeText` strips every one of them from the text itself.
+    private static func canonicalContext(_ input: FactCheckInput, depth: Int) -> String {
+        context(
+            username: input.username,
+            fullText: input.fullText,
+            contextBefore: input.contextBefore,
+            contextAfter: input.contextAfter,
+            quoting: input.quoting.map { canonicalContext($0, depth: depth + 1) },
+            replyingTo: input.replyingTo.map { canonicalContext($0, depth: depth + 1) },
+            depth: depth
+        )
+    }
+
+    private static func canonicalContext(_ node: FactCheckContext, depth: Int) -> String {
+        context(
+            username: node.username,
+            fullText: node.fullText,
+            contextBefore: node.contextBefore,
+            contextAfter: node.contextAfter,
+            quoting: node.quoting.map { canonicalContext($0, depth: depth + 1) },
+            replyingTo: node.replyingTo.map { canonicalContext($0, depth: depth + 1) },
+            depth: depth
+        )
+    }
+
+    /// The one body both of the above run: a selection is its three parts as one unit, anything
+    /// else is the account and the text with the context hung off it.
+    private static func context(
+        username: String,
+        fullText: String,
+        contextBefore: String?,
+        contextAfter: String?,
+        quoting: String?,
+        replyingTo: String?,
+        depth: Int
+    ) -> String {
+        if depth > 20 { return "" }
+
+        if contextBefore != nil || contextAfter != nil {
+            return "\u{1C}" + normalizeText(contextBefore ?? "")
+                + "\u{1F}" + normalizeText(fullText)
+                + "\u{1F}" + normalizeText(contextAfter ?? "")
+        }
+
+        var canonical = normalizeText(username) + "\u{1F}" + normalizeText(fullText)
+        if let quoting { canonical += "\u{1E}" + quoting }
+        if let replyingTo { canonical += "\u{1D}" + replyingTo }
+        return canonical
     }
 
     /// Hex SHA-256 of the canonical context — the cache key shared with the backend.
@@ -171,7 +248,7 @@ enum FactCheckClient {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
-                    let session = try liveSession()
+                    let session = try await freshSession()
                     var request = authorizedRequest(preclassifyEndpoint, token: session.accessToken)
                     request.httpBody = try JSONEncoder().encode(PreclassifyRequest(
                         input: input,
@@ -222,7 +299,7 @@ enum FactCheckClient {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
-                    let session = try liveSession()
+                    let session = try await freshSession()
                     var request = authorizedRequest(classifyEndpoint, token: session.accessToken)
                     request.httpBody = try JSONEncoder().encode(
                         ResearchRequest(
@@ -306,7 +383,7 @@ enum FactCheckClient {
         locale: String,
         onPartial: @escaping ([String: String]) -> Void
     ) async throws -> [String: String]? {
-        let session = try liveSession()
+        let session = try await freshSession()
         var request = authorizedRequest(classifyEndpoint, token: session.accessToken)
         request.httpBody = try JSONEncoder().encode(AnnotateRequest(
             annotations_only: true,
@@ -368,9 +445,14 @@ enum FactCheckClient {
         // among them.
         verdict.sources = grounding
 
+        // The worker's document is FLAT — `veracity`, `confidence`, `reasoning` and `sources` sit
+        // at the top level (measured 2026-10-26 against a live Streams run). `mainResult` is an
+        // older wrapper that no longer exists, and requiring it meant the parse was abandoned on
+        // every run, so the regex'd fallback stood and `sources` came back empty while the verdict
+        // beside it was correct.
         guard let data = outermostJSONObject(in: document),
-              let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let result = root["mainResult"] as? [String: Any] else { return verdict }
+              let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return verdict }
+        let result = (root["mainResult"] as? [String: Any]) ?? root
 
         if let confidence = (result["confidence"] as? NSNumber)?.doubleValue { verdict.confidence = confidence }
         if let veracity = (result["veracity"] as? NSNumber)?.doubleValue { verdict.veracity = veracity }
@@ -540,6 +622,16 @@ enum FactCheckClient {
         let probability: Double?
         let reasoning: String?
         let sources: [FactCheckSource]
+        /// `tweet_claims.is_hidden`: the post's strict-filtering categories rejected this claim.
+        /// The page keeps such a claim out of sight until a selection uncovers that part of the
+        /// post, and the tab lists it under a collapsed expander.
+        let isHidden: Bool
+        /// `tweet_claims.is_annotating`: an annotation run for this link is streaming RIGHT NOW
+        /// (server-stamped at the run's start, cleared by its persist or settle, and bounded by a
+        /// five-minute window). A run writes nothing until it ends, so this flag — carried by the
+        /// row read — is the only way a viewer can know an annotation is coming instead of
+        /// offering to buy one that is already under way.
+        let isAnnotating: Bool
 
         /// Whether the row answers its claim: reasoning is what makes a claim answered, and
         /// without it the claim is shown on hold with its Fact-Check button instead.
@@ -563,7 +655,10 @@ enum FactCheckClient {
     /// Never throws. A lookup that fails is a miss, not an error: the worst case of ignoring it is
     /// the price the user would have paid without it.
     static func cachedRows(for input: FactCheckInput, locale: String) async -> [ClaimRow] {
-        guard let session = try? liveSession(),
+        // The renewing accessor, not the raw one: a miss here is not free. It is the difference
+        // between reusing the row the extension already paid for and buying the same
+        // classification twice, so one refresh is worth paying to avoid it.
+        guard let session = await AppSession.current(),
               let url = URL(string: "\(supabaseBase)/rest/v1/rpc/fetch_tweet_and_touch_network") else { return [] }
 
         var request = URLRequest(url: url)
@@ -574,7 +669,9 @@ enum FactCheckClient {
         request.httpBody = try? JSONSerialization.data(withJSONObject: ["input_hash": "\\x" + hash(of: input)])
 
         guard let (data, response) = try? await URLSession.shared.data(for: request),
-              let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { return [] }
+              let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            return []
+        }
 
         // The RPC returns a table, so an array of rows; a bare object shows up in the
         // singular-return variants. Both are read rather than assuming one.
@@ -589,7 +686,8 @@ enum FactCheckClient {
         }
 
         guard let row = rows.first, let linked = row["tweet_claims"] as? [[String: Any]] else { return [] }
-        return linked.compactMap { claimRow(from: $0, body: input.fullText, locale: locale) }
+        let built = linked.compactMap { claimRow(from: $0, body: input.fullText, locale: locale) }
+        return built
     }
 
     /// One link row, read into the pieces the tab works with. Both range-bearing fields are held
@@ -602,6 +700,8 @@ enum FactCheckClient {
             fields: raw,
             highlight: link["highlight"],
             annotations: link["annotations"],
+            isHidden: (link["is_hidden"] as? Bool) ?? false,
+            isAnnotating: (link["is_annotating"] as? Bool) ?? false,
             body: body,
             locale: locale
         )
@@ -617,6 +717,8 @@ enum FactCheckClient {
             fields: payload,
             highlight: payload["highlight"],
             annotations: payload["annotations"],
+            isHidden: (payload["is_hidden"] as? Bool) ?? false,
+            isAnnotating: (payload["is_annotating"] as? Bool) ?? false,
             body: body,
             locale: locale
         )
@@ -626,6 +728,8 @@ enum FactCheckClient {
         fields raw: [String: Any],
         highlight: Any?,
         annotations: Any?,
+        isHidden: Bool,
+        isAnnotating: Bool,
         body: String,
         locale: String
     ) -> ClaimRow {
@@ -643,7 +747,9 @@ enum FactCheckClient {
             veracity: (raw["veracity"] as? NSNumber)?.doubleValue,
             probability: (raw["probability"] as? NSNumber)?.doubleValue,
             reasoning: reasoning?.text,
-            sources: sources(from: raw["sources"])
+            sources: sources(from: raw["sources"]),
+            isHidden: isHidden,
+            isAnnotating: isAnnotating
         )
     }
 
@@ -700,6 +806,20 @@ enum FactCheckClient {
         let trimmed = body.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmed.isEmpty { known.insert(sha256Hex(trimmed)) }
         return (sha256Hex(body), known)
+    }
+
+    /// Whether the annotate pipeline has already been through `body` for this row.
+    ///
+    /// A review is recorded even when it corrects nothing: a claim found clean is persisted as a
+    /// `<text-locale>:<sha256-of-body>` key holding an empty range dict. So a row that names this
+    /// revision is finished, whatever its ranges say — waiting there for one more range is waiting
+    /// for something that will never be written.
+    static func reviewRecorded(_ row: ClaimRow, body: String) -> Bool {
+        let gate = revisionGate(for: body)
+        return row.annotations.keys.contains { key in
+            guard let split = splitRevisionKey(key) else { return false }
+            return split.hash == gate.displayed || gate.known.contains(split.hash)
+        }
     }
 
     /// A link's annotations, held to the body in hand. Empty when nothing survives — and that
@@ -879,6 +999,7 @@ enum FactCheckClient {
             claimLocale: row.claimLocale,
             isClassified: answered && !row.reclassify,
             needsReclassify: answered && row.reclassify,
+            isHidden: row.isHidden,
             // A row that is past its reclassification date still holds a real answer, and it is
             // the one a re-run shows while it runs (the card gates the badge on the run, exactly
             // as the popup does with cachedResult).
@@ -935,15 +1056,151 @@ struct FactCheckInput: Encodable {
     let usertype: String
     let time: String
 
+    /// When the post under check was written — or last edited, where the host states that — as an
+    /// ISO 8601 instant in UTC. Absent for a text that has no post behind it, which is every text
+    /// the app's own tab checks, and absent for a host that states no date.
+    ///
+    /// It is what the preclassify worker dates its own instructions from (`todayIs`), so an old
+    /// post's claims are judged as of its own moment rather than as of today. It reaches nothing
+    /// else: the hash below is derived from `username` and `fullText` alone, and the model's view of
+    /// the post carries the text, the account and the surrounding posts, never this. Like the four
+    /// fields after it, absent must mean ABSENT rather than null, which is why `encode(to:)` is
+    /// hand-written.
+    let datetime: String?
+
+    /// The passage around a selected text, and the posts around a post. All four are optional and
+    /// absent on every input this app produced before the Shortcuts action existed, which is what
+    /// keeps the wire bytes — and so the hash, and so the cache key — of the tab's own fact-checks
+    /// exactly what they were. See `canonicalContext` for how each one is hashed, and `encode(to:)`
+    /// for why a nil one must be left out of the request entirely rather than sent as null.
+    let contextBefore: String?
+    let contextAfter: String?
+    let quoting: FactCheckContext?
+    let replyingTo: FactCheckContext?
+
     /// `id` and `time` reach neither the hash nor the model — the worker's canonical context is
     /// built from the username and the text alone — but they are part of the shape it expects.
     init(text: String, username: String) {
+        self.init(
+            text: text,
+            username: username,
+            usertype: "None",
+            contextBefore: nil,
+            contextAfter: nil,
+            quoting: nil,
+            replyingTo: nil,
+            datetime: nil
+        )
+    }
+
+    init(
+        text: String,
+        username: String,
+        usertype: String,
+        contextBefore: String?,
+        contextAfter: String?,
+        quoting: FactCheckContext?,
+        replyingTo: FactCheckContext?,
+        datetime: String?
+    ) {
         self.id = "app_\(Int(Date().timeIntervalSince1970 * 1000))"
         self.text = text
         self.fullText = text
         self.username = username
-        self.usertype = "None"
+        self.usertype = usertype
         self.time = ISO8601DateFormatter().string(from: Date())
+        self.datetime = datetime
+        self.contextBefore = contextBefore
+        self.contextAfter = contextAfter
+        self.quoting = quoting
+        self.replyingTo = replyingTo
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, text, fullText, username, usertype, time, datetime
+        case contextBefore, contextAfter, quoting, replyingTo
+    }
+
+    /// Written out by hand for one reason: `encodeIfPresent`, so a field this input does not carry
+    /// is ABSENT from the JSON rather than present and null. The worker reads the presence of
+    /// `contextBefore`/`contextAfter` as the whole difference between a selection and a tweet
+    /// (`canonicalContext`), and `undefined` and `null` are not the same question there — a null
+    /// would hash every ordinary text as a selection with empty context and key it under a hash
+    /// nothing else computes.
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(text, forKey: .text)
+        try container.encode(fullText, forKey: .fullText)
+        try container.encode(username, forKey: .username)
+        try container.encode(usertype, forKey: .usertype)
+        try container.encode(time, forKey: .time)
+        try container.encodeIfPresent(datetime, forKey: .datetime)
+        try container.encodeIfPresent(contextBefore, forKey: .contextBefore)
+        try container.encodeIfPresent(contextAfter, forKey: .contextAfter)
+        try container.encodeIfPresent(quoting, forKey: .quoting)
+        try container.encodeIfPresent(replyingTo, forKey: .replyingTo)
+    }
+}
+
+/// A post standing around the one being checked: the post it quotes, the post it replies to, and
+/// those posts' own context in turn.
+///
+/// The same shape as `FactCheckInput` minus the `id` (the worker's validator asks for four string
+/// fields and a standing, and nothing else), and a CLASS rather than a struct for the one reason
+/// that matters: a thread is walked recursively, and a struct cannot hold itself.
+///
+/// No `datetime` either: the date a run is judged as of is the checked post's own, read from the
+/// top-level input alone, and a surrounding post's date is read by nothing.
+final class FactCheckContext: Encodable {
+    let text: String
+    let fullText: String
+    let username: String
+    let usertype: String
+    let time: String
+    let contextBefore: String?
+    let contextAfter: String?
+    let quoting: FactCheckContext?
+    let replyingTo: FactCheckContext?
+
+    init(
+        text: String,
+        username: String,
+        usertype: String,
+        contextBefore: String?,
+        contextAfter: String?,
+        quoting: FactCheckContext?,
+        replyingTo: FactCheckContext?
+    ) {
+        self.text = text
+        self.fullText = text
+        self.username = username
+        self.usertype = usertype
+        self.time = ISO8601DateFormatter().string(from: Date())
+        self.contextBefore = contextBefore
+        self.contextAfter = contextAfter
+        self.quoting = quoting
+        self.replyingTo = replyingTo
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case text, fullText, username, usertype, time
+        case contextBefore, contextAfter, quoting, replyingTo
+    }
+
+    /// By hand for the same reason `FactCheckInput`'s is: a field this node does not carry must be
+    /// absent, not null, or the worker would read it as a selection with empty context.
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(text, forKey: .text)
+        try container.encode(fullText, forKey: .fullText)
+        try container.encode(username, forKey: .username)
+        try container.encode(usertype, forKey: .usertype)
+        try container.encode(time, forKey: .time)
+        try container.encodeIfPresent(contextBefore, forKey: .contextBefore)
+        try container.encodeIfPresent(contextAfter, forKey: .contextAfter)
+        try container.encodeIfPresent(quoting, forKey: .quoting)
+        try container.encodeIfPresent(replyingTo, forKey: .replyingTo)
     }
 }
 
@@ -979,6 +1236,10 @@ struct FactCheckClaim: Identifiable {
     /// forever.
     var awaitingAnnotations = false
     var isAnnotating = false
+    /// The post's link to this claim carries `tweet_claims.is_hidden`: the strict filtering
+    /// categories dropped it, and only a selection over that part of the post reveals it on the
+    /// page. The tab lists such claims under a collapsed expander.
+    var isHidden = false
 
     /// Nil while the claim is preclassified but not yet researched, which is the state the
     /// Fact-Check button exists for.
@@ -1175,13 +1436,23 @@ private struct ClaimStreamParser {
            let end = (bounds[1] as? NSNumber)?.intValue,
            start >= 0, end > start, end <= units.count {
             let slice = String(decoding: units[start..<end], as: UTF16.self)
-            return FactCheckClaim(rawText: slice, rewritten: rewritten.isEmpty ? slice : rewritten, range: (start, end))
+            return FactCheckClaim(
+                rawText: slice,
+                rewritten: rewritten.isEmpty ? slice : rewritten,
+                range: (start, end),
+                isHidden: object["is_hidden"] as? Bool ?? false
+            )
         }
 
         // [-1,-1] is the worker saying it could not locate its own rewrite in the text. The
         // rewrite is still the claim and still worth showing, just without a position.
         guard !rewritten.isEmpty else { return nil }
-        return FactCheckClaim(rawText: rewritten, rewritten: rewritten, range: nil)
+        return FactCheckClaim(
+            rawText: rewritten,
+            rewritten: rewritten,
+            range: nil,
+            isHidden: object["is_hidden"] as? Bool ?? false
+        )
     }
 }
 
@@ -1195,7 +1466,10 @@ enum FactCheckError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .sessionUnavailable:
-            return String(localized: "Your session needs refreshing — open the DisinfaX popup in Safari, then try again.")
+            // The popup is no longer where a session comes from — this app signs in and renews by
+            // itself — so the sentence is the app's ordinary "not signed in", the same one a 401
+            // from a worker produces. Reused rather than rewritten: it says the same thing.
+            return String(localized: "You're not signed in. Please sign in and try again.")
         case .worker(let status, let body):
             return Self.message(forStatus: status, body: body)
         case .unreadable:

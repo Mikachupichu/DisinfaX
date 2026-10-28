@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Ndeteksi lan nyorot informasi palsu ing tweets kanthi analisis AI.",
+    "message": "Ndeteksi lan nyorot informasi palsu ing kiriman kanthi analisis AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -115,7 +115,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Nampilake maneh kabeh pratelan ing tweet iki",
+    "message": "Nampilake maneh kabeh pratelan ing kiriman iki",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -234,6 +234,14 @@
   "signOut": {
     "message": "Metu"
   },
+  "deleteAccount": {
+    "message": "Busak Akun lan Data sing Gegandhengan",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Saldo sampeyan, lan hash kriptografi saka alamat email sampeyan sing dilindhungi nganggo kunci rahasia, disimpen kanggo nyegah penyalahgunaan dana gratis sing diwenehake nalika ndhaftar. Yen sampeyan ndhaptar maneh nganggo akun sing padha, saldo sampeyan bakal dibalekake.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Nyeklik %BTN% bakal nampilake klaim lan ngurangi saldomu"
   },
@@ -286,7 +294,7 @@
     "message": "Pungkasan Digunakake"
   },
   "cleanupTagline": {
-    "message": "Resiki Feed X sampeyan."
+    "message": "Resiki Feed sampeyan."
   },
   "disclaimerJurisdiction": {
     "message": "Ing sajrone Amerika Serikat, mung warga negara bagian Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, lan Wyoming sing bisa nganggo DisinfaX lan ngisi ulang saldone; Washington, D.C., kabeh wilayah A.S., lan negara bagian apa wae sing ora kadhaptar ora kalebu. Ing njaba Amerika Serikat, kasedhiya ing Kanada, Australia, Selandia Baru, Singapura, Afrika Kidul, Jepang, Taiwan, Indonesia, Thailand, Filipina, Malaysia, Vietnam, lan Swiss."
@@ -329,9 +337,29 @@
   "errNotFound": {
     "message": "Iku ora ditemokake. Mangga coba maneh."
   },
+  "errNoClaims": {
+    "message": "Ora ana pratelan sing bisa diverifikasi ing teks iki.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Setelan",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Tampilan",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Padhang",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otomatis",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Peteng",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Tansah tuduhake priksa fakta yen:",
@@ -416,5 +444,79 @@
   },
   "continueWithReddit": {
     "message": "Terusake nganggo Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Ramah buta warna: lencana permanen",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Tansah tampilake saben lencana pameriksaan fakta ing kiriman tanpa kudu ngarahake kursor. Kaputusan disampekake liwat warna sorotan lan uga tembung, saengga iki mbantu sapa wae sing ora bisa mbedakake warna kasebut.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Ukuran aksara gedhe",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Kanggo teks ing jero jendela (klaim, penalaran...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Tutup",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klik kanggo ngowahi pratelan",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Rincian pameriksaan fakta",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Pilihan iki kepanjangan kanggo dipriksa. Paling akeh 1 000 aksara.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Kabari nalika saldo suda",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Luwih saka: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "CARA MRIKSA FAKTA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Ing kaca web apa wae, pilih teks sing arep dipriksa.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Klik-tengen teks sing dipilih lan pilih Priksa (uga bisa digunakake ing teks sing ora dipilih).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Klik-tengen teks sing dipilih lan pilih {1} Priksa (uga bisa digunakake ing teks sing ora dipilih).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Pameriksaan langsung diwiwiti lan dipotong saka saldomu.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Nalika teks isih dipilih, tutul ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikon ing bar alamat, banjur pilih {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

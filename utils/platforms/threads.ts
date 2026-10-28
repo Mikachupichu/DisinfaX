@@ -51,7 +51,7 @@
 import type { MainTweet, QuotedTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { isPassageInvisible, sealHostEvents } from '../injecting';
-import { appLanguage } from './capture';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
 
@@ -173,6 +173,16 @@ function postIdOfElement(root: Element): string | null {
  *  The menu is read under its desktop wording first and by icon second, so a surface that
  *  ships the control without the attribute is still recognized as a post and nothing about
  *  the desktop reading changes. */
+/** When the post was written, off the `<time datetime>` its header renders.
+ *
+ *  The FIRST `<time>` in the container, which is the post's own for the reason `headerRow`
+ *  states: the header precedes the body in document order, so a quoted post's timestamp —
+ *  which sits inside the body — is never reached first. The instant is the host's own
+ *  (`2026-10-12T16:56:29.000Z`); the `1d` beside it is a rendering nothing here reads. */
+function postedAt(root: Element): string | undefined {
+  return isoDatetime(root.querySelector('time')?.getAttribute('datetime'));
+}
+
 function headerRow(root: Element): Element | null {
   const menu = root.querySelector(MENU_ATTR_SELECTOR) ?? root.querySelector(MENU_ICON_SELECTOR);
   const time = root.querySelector('time');
@@ -815,6 +825,11 @@ export const threadsAdapter: PlatformAdapter = {
   // highlights go over the page's own text nodes instead.
   highlightInPlace: true,
 
+  // A caption the reader had translated into another language is reported by its words, and
+  // its side is filed under `und`: the app language names Threads' default target rather than
+  // the post's (see `translationLocaleIsGuessed`).
+  translationLocaleIsGuessed: true,
+
   textRegions(root, ref) {
     // One block takes the ordinary single-element path; only a text of two or more blocks
     // needs its segments cut.
@@ -927,12 +942,12 @@ export const threadsAdapter: PlatformAdapter = {
     // than spending a classification on an empty string.
     if (!text) return null;
 
-    // Which side is on screen, named only when the app's language is known: a translation
-    // whose language cannot be named has no key to file its highlight ranges under, and the
-    // background requires BOTH fields before it treats the post as translated at all. Such a
-    // post is classified as its own source, which is exactly what this platform did before
-    // any of this existed.
-    const destination = translated ? appLanguage() : null;
+    // `und`, never the app language: which language the post was translated INTO is a guess
+    // (see `displayedTranslationLocale`), and a guessed key files the ranges somewhere nothing
+    // else reads. `und` is the honest name, and it still tells this side apart from the source
+    // and from every other rendering, because the key includes the hash of the body itself.
+    const destination = translated ? 'und' : null;
+    const datetime = postedAt(root);
 
     const post = {
       id,
@@ -959,6 +974,11 @@ export const threadsAdapter: PlatformAdapter = {
       // it is excluded from this post's own text (see `paragraphElements`) and why it can
       // never be a post of its own.
       quoting: networkQuotes.get(id) ?? null,
+      // The rendered header's own time. The payload carries one too (`taken_at`), and it is
+      // deliberately not read: the DOM value is the host's own statement of the same instant
+      // and this file already resolves the element for placement, so nothing here depends on
+      // an unverified payload field name.
+      ...(datetime ? { datetime } : {}),
       // Resolved by `hydrateReplyChains` from the id below, and only when the parent is in
       // the same batch — which is the ordinary case on a thread, where the whole chain is
       // captured together.
@@ -972,29 +992,45 @@ export const threadsAdapter: PlatformAdapter = {
     return { post, replyParentId: networkParents.get(id) ?? null };
   },
 
-  /** Which language the app is translating into, when the post on screen is a translation.
+  /** Whether the post on screen is a translation — and nothing about which language.
    *
-   *  Null in the two cases where this platform has nothing to report: the post is showing its
-   *  own words, or the document names no language. The second is the same rule the captured
-   *  side follows — a translation that cannot be named has no key to file its ranges under —
-   *  and it is why `appLanguage` returning null is not treated as a language named nothing.
+   *  `und` says the side is not the post's own words and that its language cannot be known:
+   *  the reader's app language is only the default the host's translate control starts from,
+   *  and the markup states nothing. Ranges are filed by `<locale>:<hash of the body>`, so the
+   *  side is still told apart from the source and from every other rendering by its hash
+   *  alone. Null means the post is showing its own words.
    *
    *  Deliberately no `revealSource`: Telegram needs one because it renders one side at a time
    *  and the other side is nowhere on the page, so its source has to be read back off the
    *  host's own toggle. Here the source is already in hand — the caption came from the payload
    *  that `capture` files — so there is nothing to recover and no reason to touch the page. */
   displayedTranslationLocale(root) {
-    return isTranslated(root) ? appLanguage() : null;
+    return isTranslated(root) ? 'und' : null;
   },
 
   /** The text on screen, which is what a flip's highlight ranges have to be measured against.
    *
    *  Asked only when a flip is being reported, never on a sweep, so the real read here is
-   *  affordable — and it is the same string `capture` files as `translatedText`, so the ranges
-   *  the background stores for the translated side are keyed by the text the painter will be
-   *  handed back. */
+   *  affordable — and on the translated side it is the same string `capture` files as
+   *  `translatedText`, so the ranges the background stores for that side are keyed by the text
+   *  the painter will be handed back.
+   *
+   *  The source side answers too. Answering null there was a paid press measuring the wrong
+   *  side: a reader who flipped BACK to the source and pressed Localize handed over nothing,
+   *  so the background fell through to the body the classification named — the translation —
+   *  and measured, and billed, ranges into words that were not on screen (reported 2026-10-23).
+   *  The caption where the payload described this post, because the caption IS this side's
+   *  body: `capture` hashes it, the classification measured into it, and `postRegions` aligns
+   *  it to the markup. The markup instead would make a clipped inline link read as another
+   *  revision of the source (`sameBodyRevision`), which is a "the reader flipped" report over
+   *  a post that did not. Without a caption the markup is what `capture` filed, so the two
+   *  agree by construction. */
   displayedText(root) {
-    return isTranslated(root) ? displayedBody(root) || null : null;
+    if (isTranslated(root)) return displayedBody(root) || null;
+    const id = postIdOfElement(root);
+    const caption = id ? networkCaptions.get(id) : undefined;
+    if (caption?.length) return caption.join(POST_JOIN);
+    return displayedBody(root) || null;
   },
 
   /** The preferred half: the posts Meta's own GraphQL responses described.
@@ -1034,6 +1070,7 @@ export const threadsAdapter: PlatformAdapter = {
 
       const root = postRoots(id)[0] ?? null;
       const text = caption.join(POST_JOIN);
+      const datetime = root ? postedAt(root) : undefined;
       const post = {
         id,
         text,
@@ -1048,6 +1085,10 @@ export const threadsAdapter: PlatformAdapter = {
         conversationId: id,
         quoting: record.quoted ? quotedTweet(record.quoted) : null,
         replyingTo: null,
+        // Read off the element this post's own header renders, when it is on screen. A post
+        // the payload described before its row was rendered carries no time until the DOM half
+        // captures it — absent rather than inferred.
+        ...(datetime ? { datetime } : {}),
       } as MainTweet;
 
       captured.push({ post, replyParentId: parentId });

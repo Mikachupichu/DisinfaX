@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "ກວດຫາ ແລະ ເນັ້ນໃສ່ຂໍ້ມູນບິດເບືອນໃນ tweet ໂດຍໃຊ້ການວິເຄາະ AI.",
+    "message": "ກວດຫາ ແລະ ເນັ້ນໃສ່ຂໍ້ມູນບິດເບືອນໃນໂພສ ໂດຍໃຊ້ການວິເຄາະ AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -115,7 +115,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ສະແດງຄໍາອ້າງອີງທັງໝົດຂອງ tweet ນີ້ຄືນໃໝ່",
+    "message": "ສະແດງຄໍາອ້າງອີງທັງໝົດຂອງໂພສນີ້ຄືນໃໝ່",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -234,6 +234,14 @@
   "signOut": {
     "message": "ອອກຈາກລະບົບ"
   },
+  "deleteAccount": {
+    "message": "ລຶບບັນຊີ ແລະ ຂໍ້ມູນທີ່ກ່ຽວຂ້ອງ",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "ຍອດເງິນຂອງທ່ານ ແລະ hash ແບບເຂົ້າລະຫັດຂອງທີ່ຢູ່ອີເມວຂອງທ່ານ ເຊິ່ງໄດ້ຮັບການປົກປ້ອງດ້ວຍກະແຈລັບ ຈະຖືກເກັບຮັກສາໄວ້ ເພື່ອປ້ອງກັນການໃຊ້ເງິນຟຣີທີ່ໃຫ້ຕອນລົງທະບຽນໃນທາງທີ່ຜິດ.ການລົງທະບຽນອີກຄັ້ງດ້ວຍບັນຊີດຽວກັນ ຈະຄືນຍອດເງິນຂອງທ່ານ.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "ການຄລິກ %BTN% ຈະເປີດເຜີຍຄໍາກ່າວອ້າງ ແລະ ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ"
   },
@@ -286,7 +294,7 @@
     "message": "ໃຊ້ຫຼ້າສຸດ"
   },
   "cleanupTagline": {
-    "message": "ຈັດລະບຽບຟີດ X ຂອງທ່ານ."
+    "message": "ຈັດລະບຽບຟີດຂອງທ່ານ."
   },
   "disclaimerJurisdiction": {
     "message": "ພາຍໃນສະຫະລັດອາເມຣິກາ, ມີແຕ່ຜູ້ທີ່ອາໄສຢູ່ໃນລັດ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ແລະ Wyoming ເທົ່ານັ້ນທີ່ສາມາດໃຊ້ DisinfaX ແລະຕື່ມເງິນເຂົ້າຍອດເງິນຂອງຕົນໄດ້; Washington, D.C., ດິນແດນທັງໝົດຂອງສະຫະລັດ, ແລະລັດໃດໆທີ່ບໍ່ໄດ້ລະບຸໄວ້ແມ່ນຖືກຍົກເວັ້ນ. ພາຍນອກສະຫະລັດອາເມຣິກາ, ສາມາດໃຊ້ໄດ້ໃນ Canada, Australia, New Zealand, Singapore, ອາຟຣິກາໃຕ້, ຍີ່ປຸ່ນ, ໄຕ້ຫວັນ, ອິນໂດເນເຊຍ, ໄທ, ຟິລິບປິນ, ມາເລເຊຍ, ຫວຽດນາມ ແລະ ສະວິດເຊີແລນ."
@@ -329,9 +337,29 @@
   "errNotFound": {
     "message": "ບໍ່ພົບສິ່ງນັ້ນ. ກະລຸນາລອງໃໝ່."
   },
+  "errNoClaims": {
+    "message": "ບໍ່ພົບຂໍ້ກ່າວອ້າງທີ່ສາມາດກວດສອບໄດ້ໃນຂໍ້ຄວາມນີ້.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ການຕັ້ງຄ່າ",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "ຮູບລັກສະນະ",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ແຈ້ງ",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "ອັດຕະໂນມັດ",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "ມືດ",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ສະແດງການກວດສອບສະເໝີຖ້າ:",
@@ -416,5 +444,79 @@
   },
   "continueWithReddit": {
     "message": "ດຳເນີນຕໍ່ດ້ວຍ Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "ເໝາະສຳລັບຄົນຕາບອດສີ: ປ້າຍສະແດງຕະຫຼອດ",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "ສະແດງປ້າຍກວດສອບຂໍ້ເທັດຈິງທັງໝົດເທິງໂພສຕ໌ໂດຍບໍ່ຕ້ອງຊີ້ເມົາສ໌. ຄຳຕັດສິນສະແດງຜ່ານສີໄຮໄລ້ພໍໆກັບຂໍ້ຄວາມ, ສິ່ງນີ້ຈຶ່ງຊ່ວຍຜູ້ທີ່ແຍກສີບໍ່ອອກ.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "ຂະໜາດຟອນໃຫຍ່",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ສຳລັບຂໍ້ຄວາມໃນວິນໂດ (ຂໍ້ກ່າວອ້າງ, ເຫດຜົນ...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "ປິດ",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "ຄລິກເພື່ອແກ້ໄຂຄຳກ່າວອ້າງ",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "ລາຍລະອຽດການກວດສອບຂໍ້ເທັດຈິງ",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ການເລືອກນີ້ຍາວເກີນໄປທີ່ຈະກວດສອບ. ສູງສຸດ 1,000 ຕົວອັກສອນ.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ແຈ້ງເຕືອນເມື່ອຍອດເງິນຫຼຸດລົງ",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "ຫຼາຍກວ່າ: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "ວິທີກວດສອບຂໍ້ເທັດຈິງ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "ໃນໜ້າເວັບໃດກໍໄດ້ ໃຫ້ເລືອກຂໍ້ຄວາມທີ່ທ່ານຕ້ອງການກວດສອບ.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "ຄລິກຂວາໃສ່ຂໍ້ຄວາມທີ່ເລືອກ ແລ້ວເລືອກ ກວດສອບ (ໃຊ້ໄດ້ກັບຂໍ້ຄວາມທີ່ບໍ່ໄດ້ເລືອກນຳ).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "ຄລິກຂວາໃສ່ຂໍ້ຄວາມທີ່ເລືອກ ແລ້ວເລືອກ {1} ກວດສອບ (ໃຊ້ໄດ້ກັບຂໍ້ຄວາມທີ່ບໍ່ໄດ້ເລືອກນຳ).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "ການກວດສອບຈະເລີ່ມທັນທີ ແລະ ຈະຫັກຈາກຍອດເງິນຂອງທ່ານ.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "ໃນຂະນະທີ່ຂໍ້ຄວາມຍັງຖືກເລືອກຢູ່ ໃຫ້ແຕະ ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ໄອຄອນໃນແຖບທີ່ຢູ່ ແລ້ວເລືອກ {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

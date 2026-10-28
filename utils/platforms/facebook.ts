@@ -131,13 +131,20 @@
  *  time. `looksTranslated` guards the one case the rule does not cover — a post met already
  *  translated with the translation rendered into that same element — where `rememberSource`'s
  *  copy is used, or the post goes unfiled.
+ *
+ *  The mobile app renders both sides too, but in one container and under its own headings, so
+ *  there the two questions are answered separately and structurally: `mobileBody` is what names
+ *  the post, always its own words, and `mobileShown` is the side on screen, which is what
+ *  `textElement` returns and what our chrome is painted onto (see `mobileSides`).
  */
+import { browser } from 'wxt/browser';
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { appLanguage } from './capture';
 import { collectCommentTexts, collectPostIds } from './facebookPostIds';
+import { isAgeLabel, isoDatetime, isoDatetimeFromAge } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
-import { passageTextContent } from '../injecting';
+import { passageRangeAt, passageTextContent } from '../injecting';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
 
@@ -318,6 +325,23 @@ function ownText(el: Element | null): string {
   return (clone.textContent ?? '').trim();
 }
 
+/** The author half of a Facebook identity: the name clipped to a fixed length.
+ *
+ *  `canonicalContext` hashes the author's name beside the text, and Facebook states that name
+ *  differently per surface: the desktop render shows it whole, while the mobile renderer truncates
+ *  it to whatever fits its header. Measured 2026-10-20 on one group post, the visible name was
+ *  "La Guerra del Pacifico" (22 characters) at 390 and 375 px, "La Guerra del Pacifi" (20) at 360
+ *  and "La Guerra del P" (15) at 320 — so the phone filed that post under a name no row the
+ *  desktop wrote could ever match, and two of the phone's own loads disagreed with each other.
+ *
+ *  A prefix is the longest form every surface can state. Thirteen characters clears the narrowest
+ *  layout measured (15) and leaves a little room for iOS's own font metrics, which are not this
+ *  emulation's. Normalized first, so a wrap or a doubled space cannot move the boundary. */
+function authorIdentity(name: string): string {
+  const flat = name.normalize('NFKC').replace(/\s+/g, ' ').trim();
+  return Array.from(flat).slice(0, 13).join('');
+}
+
 /** A story's username: the words on the profile link inside the name element.
  *
  *  `ownText` alone on the name element is not the name. Measured on a search result whose post WAS
@@ -339,9 +363,9 @@ function storyAuthor(name: Element | null): string {
   if (!name) return '';
   for (const link of Array.from(name.querySelectorAll('a[role="link"]'))) {
     const own = ownText(link);
-    if (own) return own;
+    if (own) return authorIdentity(own);
   }
-  return ownText(name);
+  return authorIdentity(ownText(name));
 }
 
 /** The post container a `profile_name` sits in: the nearest ancestor that also holds the
@@ -762,6 +786,13 @@ function footerStoryRoots(): Element[] {
     }
   }
   const addressed = found.length === 1 ? documentStoryId() : null;
+  // The page's address names a story the payload has not resolved to an id yet. A words digest
+  // coined in that window is one the next render contradicts: measured on a photo permalink, the
+  // clamped block was filed as `text:<digest>` and the render that replaced it as the post's real
+  // id — one story, two ids, two pills fighting for one seat. Waiting costs a sweep; the id it
+  // waits for is the one the address already states.
+  const awaitingAddress = found.length === 1 && !addressed
+    && permalinkId(location.pathname + location.search) !== null;
   const roots: Element[] = [];
   for (const candidate of found) {
     // Remembered before anything names the block: its words are read off the body recorded here,
@@ -769,7 +800,13 @@ function footerStoryRoots(): Element[] {
     footerBlocks.set(candidate.block, { body: candidate.body, row: candidate.row, author: candidate.author });
     // The block's own words are the last resort, and they are what a photo permalink or a
     // lightbox card rests on when neither its markup nor the page's address names the story.
-    const id = candidate.postId ?? addressed ?? postIdIn(candidate.block);
+    let id = candidate.postId ?? addressed;
+    if (!id) {
+      // Asked before `postIdIn` rather than after it, because that call is what names a block by
+      // its words — and a name it writes is frozen on the element for life.
+      if (awaitingAddress) continue;
+      id = postIdIn(candidate.block);
+    }
     if (!id) continue;
     resolvedRootIds.set(candidate.block, id);
     roots.push(candidate.block);
@@ -785,6 +822,51 @@ function permalinkId(href: string): string | null {
   if (story) return story[1];
   const photo = href.match(PHOTO_FBID);
   return photo ? photo[1] : null;
+}
+
+/** Whether the payload states this story's words, and they are NOT the words this root shows.
+ *
+ *  The markup cannot answer this by itself: the payload repeats a share's attached story under
+ *  several nodes and only some of the copies state its `post_id` (measured on a search card —
+ *  the attached story's permalink and photo sat in branches naming no id at all, so the alias
+ *  walk filed them under the SHARER). What it can answer is which story the payload says these
+ *  words are: a name whose story opens differently from the root's own words names another
+ *  story, and taking it files the root under that story's id — the one thing
+ *  `post-id-names-one-text` refuses.
+ *
+ *  A story the payload says nothing about is no evidence either way, and neither is an opening
+ *  too short to identify anything (`MIN_MESSAGE_MATCH`, the floor the maps above already use). */
+function namesOtherStory(root: Element, id: string): boolean {
+  const stated = postIdMessages.get(id);
+  if (stated === undefined) return false;
+  const words = rootWordsOf(root);
+  if (!words) return false;
+  const shown = wordsKey(words.mark);
+  const said = wordsKey(stated);
+  if (shown.length < MIN_MESSAGE_MATCH || said.length < MIN_MESSAGE_MATCH) return false;
+  return !(shown.startsWith(said) || said.startsWith(shown));
+}
+
+/** The story the payload states these very words under, or null when it states none.
+ *
+ *  `postIdMarks` holds the exact squeezed opening, which is the whole of a short story's text;
+ *  the walk is for the one difference the markup cannot show — an emoji drawn as a picture,
+ *  whose characters never reach anything read off the page while the payload's copy keeps them.
+ *  `textIdNames` is not consulted: an entry there is a name this element's words were filed
+ *  under before, which is what a contested root is trying to get away from. */
+function storyOfWords(root: Element): string | null {
+  const words = rootWordsOf(root);
+  if (!words) return null;
+  const exact = postIdMarks.get(words.mark);
+  if (exact) return exact;
+  const shown = wordsKey(words.mark);
+  if (shown.length < MIN_MESSAGE_MATCH) return null;
+  for (const [id, message] of postIdMessages) {
+    const said = wordsKey(message);
+    if (said.length < MIN_MESSAGE_MATCH) continue;
+    if (shown.startsWith(said) || said.startsWith(shown)) return id;
+  }
+  return null;
 }
 
 function postIdIn(root: Element): string | null {
@@ -824,20 +906,43 @@ function postIdIn(root: Element): string | null {
     pcb ??= href.match(PHOTO_PCB)?.[1] ?? null;
     photo ??= href.match(PHOTO_FBID)?.[1] ?? null;
   }
+  // A name found here can still belong to a DIFFERENT story: a share card renders the sharer's
+  // words above the attached story, and that story's own links — its permalink, its photo — sit
+  // inside the same root (see `namesOtherStory`).
+  let contested = false;
   for (const name of [pfbid, story, group, pcb, photo]) {
     if (!name) continue;
     const resolved = postIdAliases.get(name);
-    if (resolved) {
-      resolvedRootIds.set(root, resolved);
-      rememberTextId(root, resolved);
-      return resolved;
+    if (!resolved) continue;
+    if (namesOtherStory(root, resolved)) {
+      contested = true;
+      continue;
     }
+    resolvedRootIds.set(root, resolved);
+    rememberTextId(root, resolved);
+    return resolved;
   }
-  const fallback = pfbid ?? story ?? group ?? pcb ?? photo;
-  if (fallback) {
-    resolvedRootIds.set(root, fallback);
-    rememberTextId(root, fallback);
-    return fallback;
+  // Only names the map does NOT know reach this loop: one it does know was either taken above
+  // or refused there, and a refused name must not come back as its raw markup id.
+  for (const name of [pfbid, story, group, pcb, photo]) {
+    if (!name || postIdAliases.has(name)) continue;
+    if (namesOtherStory(root, name)) {
+      contested = true;
+      continue;
+    }
+    resolvedRootIds.set(root, name);
+    rememberTextId(root, name);
+    return name;
+  }
+  // Every name the root carries belongs to a story the payload says shows other words. Its own
+  // words are the only name left, and the payload may still state the story they belong to.
+  if (contested) {
+    const own = storyOfWords(root);
+    if (own) {
+      resolvedRootIds.set(root, own);
+      rememberTextId(root, own);
+      return own;
+    }
   }
   // Nothing in the markup names this story at all. Its own words do (see `rootWordsOf`): the
   // payload's id for those words when the payload described them, and a digest of them when it
@@ -1113,20 +1218,62 @@ function endsAtCut(body: Element): boolean {
   return false;
 }
 
-/** The expander holding back a root's own words, whichever kind of root this is: a story states
- *  its words at `story_message`, a comment states them on the row itself. */
+/** The element holding the words the reader is being shown for a root — the one whose clip is
+ *  worth opening, and whose length is what an expansion moves.
+ *
+ *  A story states its words at `story_message`, a comment states them on the row itself. A story
+ *  the page has TRANSLATED is the exception, and it is a different one than a flip looks like: the
+ *  translation is not swapped in for the message but APPENDED below it. Measured 2026-10-15 on a
+ *  profile feed, immediately after the page's own `See translation`: the `story_message` still held
+ *  the whole 1006-character Spanish body, while the English sat in its own block outside it
+ *  (`.closest('[data-ad-rendering-role="story_message"]')` null) and clamped to
+ *  `Retiro Park, Madrid (1914)… See more`. So the source stays readable underneath and this
+ *  appended block is what the reader is reading — which is also the block our classification is
+ *  measured against (`translatedBody`), because the page's cut leaves only the translation's first
+ *  line in the document and the rest is completed from its own payload.
+ *
+ *  The difference matters at the cut. This block is clamped by the page itself, and the text it
+ *  holds back is exactly the text our marks were placed on, so a reader who has asked us about the
+ *  post is owed the control pressed rather than a pill claiming highlights that are nowhere on the
+ *  page. */
+function wordsBlock(root: Element): Element | null {
+  if (root.matches(COMMENT)) return root;
+  return appendedTranslation(root) ?? storyMessage(root);
+}
+
+/** The expander holding back the words of `wordsBlock`: a story's own message, or the translation
+ *  block the page appended below it, whichever block the reader is being shown. */
 function expanderOf(root: Element): Element | null {
-  const body = root.matches(COMMENT) ? root : storyMessage(root);
+  const body = wordsBlock(root);
   return body ? truncationControl(body) : null;
+}
+
+/** The control that puts an OPEN body back, in the position `truncationControl` found the
+ *  expander: the last control inside the body's own run.
+ *
+ *  Read structurally because the label is a translated string: measured, the control that said
+ *  `…See more` says `See less` once the body is open, and it is still the last control in that
+ *  run. Used only on a body known to be open, so the control found is the one that closes it. */
+function collapseControl(root: Element): Element | null {
+  const body = wordsBlock(root);
+  if (!body) return null;
+  const runs = body.getAttribute('dir') === 'auto' ? [body] : Array.from(body.querySelectorAll(DIR_AUTO));
+  for (const el of runs) {
+    const controls = Array.from(el.querySelectorAll(CONTROL));
+    if (controls.length > 0) return controls[controls.length - 1];
+  }
+  return null;
 }
 
 /** A root's own body length, clipped or not — how much of that text the page is holding.
  *
  *  The signal an expansion is watched for. It is read as the joined `dir="auto"` runs for a
- *  comment and as the story's own message for a story, which is the same split `expanderOf`
- *  makes, so the number moves with the body the expander belongs to and with nothing else. */
+ *  comment and as the message for a story, which is the same split `expanderOf` makes, so the
+ *  number moves with the body the expander belongs to and with nothing else — `wordsBlock`, not
+ *  `bodyLength`, because on a translated post the block being opened is the appended translation
+ *  and the source message underneath it does not move when that one does. */
 function ownBodyLength(root: Element): number {
-  return root.matches(COMMENT) ? (commentText(root) ?? '').length : bodyLength(root);
+  return root.matches(COMMENT) ? (commentText(root) ?? '').length : bodyWords(wordsBlock(root)).length;
 }
 
 /** How many times the page's expander may be clicked for one root before it is left alone.
@@ -1139,7 +1286,31 @@ function ownBodyLength(root: Element): number {
 const MAX_EXPAND_ATTEMPTS = 3;
 const EXPAND_POLL_MS = 25;
 const EXPAND_POLLS = 40;
+/** How much text a language detector is trusted to judge, and how sure it must be.
+ *
+ *  Short comment-length text is where detectors disagree most, and a wrong verdict costs a
+ *  flip the reader did not ask for, so a row under this many characters is left alone and a
+ *  result that is not reliable, or whose top language holds less than this share of the
+ *  text, names no side at all. A wrong verdict that survives those two gates is still safe:
+ *  `revealCommentSource` confirms the side it gets back and puts a flip back when it cannot. */
+const MIN_DETECT_CHARS = 24;
+const MIN_DETECT_CONFIDENCE = 90;
 const expandAttempts = new WeakMap<Element, number>();
+/** Each comment row's language-detector verdict, keyed on the row element itself.
+ *
+ *  A comment whose translation was produced by the host's AUTOMATIC translation has been seen
+ *  to keep the shape of its own words — the body still sits under an ancestor carrying `lang`
+ *  — where a manual swap drops that attribute (see `commentStatesLanguage`). The markup then
+ *  states a side the words do not agree with, and the only signal left is the words
+ *  themselves, so `detectTranslatedCommentSides` asks a language detector and records the
+ *  answer here. Read by `commentShowsTranslation`, which stays synchronous: the detector is a
+ *  pre-pass, and a row it has not examined is read exactly as it was before this existed.
+ *  Per element rather than per id because the verdict is about the words in THAT render — and
+ *  keyed by those words too, because the app swaps a comment's side IN PLACE: measured, a reader
+ *  pressing the host's translation control leaves the same block element showing the other
+ *  language, so an element-only cache kept answering with the side that had already gone and the
+ *  translation was filed as a comment of its own. */
+const sideTranslationVerdicts = new WeakMap<Element, { key: string; translated: boolean }>();
 /** The tail of the expansions, so the clicks are one at a time.
  *
  *  A click is a real interaction with the host and the host answers it by re-rendering, so two
@@ -1175,6 +1346,25 @@ function endOfVisiblePrefix(full: string, visible: string): number {
   return -1;
 }
 
+/** The payload's whole text for the story a frozen id names, or undefined when it states none.
+ *
+ *  `postIdMessages` is keyed by the payload's DECIMAL `post_id`, and a root is frozen on the
+ *  first name it resolved (`postIdIn`) — which, on a surface whose payload had not yet stated
+ *  the story's permalink, is the name the markup spells (`pfbid…`, a photo id). The alias can
+ *  land afterwards (a later blob, or the MAIN world's forward of the app's own responses, see
+ *  `absorbPostIds`), and the root cannot be renamed, but the payload's text for it is still
+ *  there under its decimal. Asking through the alias is what joins the two: without it the body
+ *  falls back to the surface's own render, and the surfaces do not spell their paragraph seams
+ *  alike, so one post is filed under two identities (measured 2026-10-19: one story captured as
+ *  `facebook:702023159450572` at 1117 characters and as its `pfbid…` at 1120). */
+function payloadWords(id: string): string | undefined {
+  const bare = bareId(id);
+  const direct = postIdMessages.get(bare);
+  if (direct !== undefined) return direct;
+  const resolved = postIdAliases.get(bare);
+  return resolved ? postIdMessages.get(resolved) : undefined;
+}
+
 /** A post's own words, whole, where the page shows only a prefix of them.
  *
  *  Facebook truncates a long body in place: the words keep their `dir="auto"` run, are cut, and
@@ -1183,12 +1373,10 @@ function endOfVisiblePrefix(full: string, visible: string): number {
  *  the words the classifier was shown would be words the reader cannot see.
  *
  *  The page's own payload states the story's whole message (`postIdMessages`), so the body is
- *  completed from it: the page's characters VERBATIM up to the cut, and the payload's remainder
- *  after it. Keeping the visible part byte-identical is the point — every claim the classifier
- *  places in the first part then has an offset that lands on the characters the page is
- *  painting. The remainder is joined the way the page joins it rather than as the payload spells
- *  it, because the words are not just a place to put offsets: they ARE the post's identity (see
- *  the join below).
+ *  completed from it. The visible words are proof the payload is THIS body's text — matched up to
+ *  whitespace, and only whitespace, by `endOfVisiblePrefix` — and the completed text is the
+ *  payload as the page joins it, because the words are not just a place to put offsets: they ARE
+ *  the post's identity (see the join below).
  *
  *  Returns '' when there is nothing to file: the payload holds no text for this story, or holds
  *  a text this body does not begin — a stale entry, or a body showing a TRANSLATION of the post,
@@ -1206,24 +1394,66 @@ function wholeBodyText(id: string, body: Element, shown: string): string {
   // as a body whose expander is still drawn. Returns '' when the payload cannot complete it,
   // which keeps the post out of the batch rather than filing its prefix.
   // The ellipsis read comes first for the same reason it does in `bodyClipped`: this runs on
-  // every capture for every root, and a complete body is dismissed by one string read.
+  // every capture for every root, and a complete body is dismissed by one string read. The same
+  // read also decides the paint — a cut body is left unpainted until the reader opens it.
   const drawn = bodyTruncated(body);
-  if (!drawn && (!(body.textContent ?? '').includes('…') || !endsAtCut(body))) return text;
-  const full = postIdMessages.get(bareId(id));
-  if (!full) return '';
+  if (!drawn && (!(body.textContent ?? '').includes('…') || !endsAtCut(body))) {
+    // A body shown whole is the full text already, so nothing is being held back here — but the
+    // render still spells the gaps BETWEEN its paragraphs its own way, and the surfaces do not
+    // agree on it (see the join below). Where the payload states this same text up to whitespace,
+    // its canonical join is the spelling the post's identity is filed under everywhere else.
+    const full = payloadWords(id);
+    if (full) {
+      const canonical = full.replace(/\s*\n\s*/g, '');
+      if (squeeze(full) === squeeze(text)) return canonical;
+      // A cut the page drew without the shape `bodyTruncated` and `endsAtCut` key on — the mark
+      // outside the run, another character, or none at all — still leaves the words it does show
+      // as the OPENING of the payload's text. Filed, that opening names the post by a text it does
+      // not have, is hashed as a post of its own, and classifies only the words before the cut:
+      // the reader's own "See less" post came back "no claims found" with the rest of the post
+      // plainly in front of them. The payload states the whole text, so a body that begins it is
+      // completed from it, whatever the page drew at the cut.
+      if (endOfVisiblePrefix(full, text) >= 0) {
+        // The copy `sourceText` just remembered is this opening, and a later read of the same
+        // post must not answer with it.
+        rememberSource(id, canonical);
+        return canonical;
+      }
+    }
+    return text;
+  }
+  const full = payloadWords(id);
   const visible = visiblePrefix(body);
-  const end = endOfVisiblePrefix(full, visible);
-  if (end < 0) return '';
+  const end = endOfVisiblePrefix(full ?? '', visible);
+  if (end < 0 || !full) {
+    // A body the host was asked to open and then to put back: its words were read while it was
+    // open and kept (see `expandedBodies`), so the rest of the text is here rather than on the
+    // page. The visible words still have to prove the copy is THIS body's text, exactly as they
+    // do against the payload — and this is read even when the payload states an entry of its own,
+    // because a search-feed entry need not be this body's text (see `bodyClipped`).
+    const expanded = expandedBodies.get(id);
+    if (expanded && endOfVisiblePrefix(expanded, visible) >= 0) return expanded;
+    return '';
+  }
   // The payload is not the render (see `endOfVisiblePrefix`): it separates the author's
   // paragraphs with a newline where the page runs them together with nothing between. Taken
   // verbatim, the completed text is a SECOND identity for a post that already has a row —
   // measured on a clipped search-feed story whose row is this same text with the paragraph break
   // removed (`facebook:1224195383044868`: the rendered reading was in the DB with 9 claims, the
   // completed one found nothing, and the post showed a Disinfact button over a preclassification
-  // it already had). Whitespace is one thing to the reader and another to the hash, so the
-  // remainder is joined the way the page joins it — the gap between blocks contributes nothing —
-  // and only then is the text the post's own.
-  return visible + full.slice(end).replace(/\s*\n\s*/g, '');
+  // it already had). Whitespace is one thing to the reader and another to the hash, so the gap
+  // between blocks contributes nothing — and only then is the text the post's own.
+  //
+  // The join is applied to the payload's WHOLE text, not just to its remainder, because the
+  // render's own half of the seam is not the same on every surface: measured 2026-10-18 on one
+  // story, the feed's run drops the author's trailing space before a paragraph break
+  // (`…HUMANO?Esta…`) while the photo viewer's keeps it (`…HUMANO? Esta…`), so a completion
+  // built from each surface's visible words named the same post two ways and only the feed's
+  // found its row — which is the Disinfact button over a preclassification seen on the photo
+  // view alone. The payload states both halves, so completing from it makes the identity one
+  // string whatever surface read it; `end` above still proves the visible words ARE this text
+  // up to whitespace, which is what keeps the swap to whitespace.
+  return full.replace(/\s*\n\s*/g, '');
 }
 
 /** A comment's words as the page is showing them, with its own expander taken out.
@@ -1264,10 +1494,45 @@ function visibleCommentPrefix(root: Element): string {
  *  every claim the classifier placed after it would be painted over the wrong words; refusing is
  *  the failure that costs a button rather than a wrong highlight. */
 function wholeCommentText(id: string, root: Element, shown: string): string {
+  // A comment the host is showing in its translation has swapped its own words out for it IN
+  // PLACE (see `revealCommentSource`), so the words on screen are not this comment's text. The
+  // own words are the copy taken while the host had them up, and with no copy there is nothing
+  // to file: naming the comment by its translation would give one comment a different identity
+  // in each language — classified and billed twice — which is the rule `post-id-names-one-text`
+  // forbids. Refused rather than completed from the payload, which states the comment in its own
+  // language and cannot vouch for the translation being shown here.
+  if (commentShowsTranslation(root)) return rememberedSources.get(id) ?? '';
   // Same rule as a story's body, and the same window: a comment whose expander has been clicked
   // away before its text landed still ends at the page's cut (see `wholeBodyText`).
   if (!bodyTruncated(root) && (!(root.textContent ?? '').includes('…') || !endsAtCut(root))) {
-    return sourceText(id, shown);
+    const text = sourceText(id, shown);
+    // A cut the page drew without the shape `bodyTruncated` and `endsAtCut` key on — the mark
+    // outside the run, another character, or none at all — still leaves the words it shows as the
+    // OPENING of what the payload says this comment says. Filed as they stand, that opening is the
+    // comment's whole text: hashed as a comment of its own, classified and billed only for the
+    // words before the cut, and disagreeing with every later read of the same comment (see
+    // `wholeBodyText`, `post-id-names-one-text`). The payload holds what the comment says, so a row
+    // that begins it is completed from it — the same proof branch 2 asks below. `text` is empty
+    // when these words are not the comment's own (a translation shown in place with no remembered
+    // copy), and the payload cannot stand in for a side it is not in.
+    if (text) {
+      const full = commentTexts.get(bareId(id));
+      if (full) {
+        const visible = visibleCommentPrefix(root);
+        const end = endOfVisiblePrefix(full, visible);
+        // The remainder has to hold words, or there is nothing being held back and the row is
+        // already whole — rewriting its identity for a trailing newline would be an identity of
+        // its own.
+        if (end >= 0 && full.slice(end).trim().length > 0) {
+          const completed = visible + full.slice(end);
+          // The copy `sourceText` just remembered is this opening, and a later read — the host
+          // swapping in a translation, say — must not answer with it.
+          rememberSource(id, completed);
+          return completed;
+        }
+      }
+    }
+    return text;
   }
   const full = commentTexts.get(bareId(id));
   if (!full) return '';
@@ -1358,10 +1623,10 @@ function commentAuthorEl(root: Element): Element | null {
  *  six rows. */
 function commentAuthor(root: Element): string {
   const link = commentAuthorEl(root);
-  if (link) return ownText(link);
+  if (link) return authorIdentity(ownText(link));
   for (const run of Array.from(root.querySelectorAll(STORY_RUN))) {
     const text = textOf(run);
-    if (text) return text;
+    if (text) return authorIdentity(text);
   }
   return '';
 }
@@ -1441,6 +1706,27 @@ const MIN_TRANSLATION_LENGTH = 16;
  *  it, so requiring all of it would miss posts that are plainly translated. */
 const TRANSLATION_PROBE = 32;
 
+/** The block the page puts a translation in when it APPENDS one under the post, rather than
+ *  replacing the post's own words with it.
+ *
+ *  Measured 2026-10-15 on a Spanish post of a page feed: before the flip the root held no
+ *  `blockquote` carrying a run at all, and after it held exactly one — the run is a
+ *  `div[dir="auto"]` inside a `blockquote.html-blockquote`, opening with the fetched English and
+ *  ending in the host's own `See more`. So the block is a marker the markup otherwise lacks, and
+ *  it is needed because the source's run can open with the same words: that post is titled with a
+ *  proper noun, so its Spanish and its English both start `Calle de la Montera, Madrid (1967)`.
+ *  Text alone therefore cannot say which side is on screen, and a test that tries (see
+ *  `looksTranslated`) answers for whichever run it reads first — the source. */
+const TRANSLATED_BLOCK = "blockquote";
+
+/** How much of a fetched translation has to be on screen inside such a block before the run is
+ *  believed to be that translation.
+ *
+ *  A floor against a stray run of a few characters, not a length to match on: the host clamps the
+ *  translation it appends (measured: at the post's first line, with the rest behind a `See more`),
+ *  so what is on screen is an OPENING of the fetched string whose length the post decides. */
+const TRANSLATION_HEAD = 12;
+
 /** Text with every whitespace run removed — the form two copies of one text are compared in.
  *
  *  Whitespace is what the two sides do NOT agree on: the payload separates paragraphs with a
@@ -1450,26 +1736,61 @@ function squeeze(text: string): string {
   return text.replace(/\s+/g, '');
 }
 
+/** Squeezed text with the emoji dropped. The page draws each emoji as a picture, so none of
+ *  its characters reach anything read off the markup while the payload's copy of the same
+ *  text carries them; comparing the two literally would call every emoji-bearing body a
+ *  disagreement with itself. */
+function withoutEmoji(squeezed: string): string {
+  return squeezed.replace(/[\p{Extended_Pictographic}\p{Regional_Indicator}️‍]/gu, '');
+}
+
+/** The opening letters and digits of a text — the form two copies of it are compared in when
+ *  the renderer is known to drop characters the payload keeps.
+ *
+ *  `squeeze` covers the whitespace the two sides disagree on; this covers the rest: the page
+ *  draws an emoji as a picture, so none of its characters reach anything read off the markup,
+ *  while the payload's copy of the same post carries them. Punctuation is dropped with them.
+ *  Only used to ask whether two copies show the SAME opening, and dropping characters can only
+ *  make them look more alike — the safe direction, since a question left unanswered here leaves
+ *  the markup's own name in place. */
+const WORDS_KEY_LEN = 64;
+function wordsKey(text: string): string {
+  return text.normalize('NFKC').replace(/[^\p{L}\p{N}]+/gu, '').toLowerCase().slice(0, WORDS_KEY_LEN);
+}
+
 /** The translations Facebook's own GraphQL has handed over, most recent last.
  *
  *  Facebook shows a post in one language at a time and the side not on screen is nowhere on the
  *  page, so the only way to know what is being shown is to have watched the app fetch it — which
- *  `facebook.capture.content.ts` does. Nothing else on the page says it: measured on a Spanish
- *  post, clicking `See translation` swapped the visible words for their English ones and changed
- *  nothing else but the link's own locale-dependent label. */
+ *  `facebook.capture.content.ts` does. The markup says it too, but only once the translation is
+ *  on screen and only in the block it is painted into (see `TRANSLATED_BLOCK`); the fetched copy
+ *  is what says WHICH side is showing, since the page appends the translation under the post
+ *  rather than swapping the post's own words for it. */
 const shownTranslations: string[] = [];
 
 /** Whether the post is on screen in a translation of it rather than in its own words.
  *
- *  `textContent` rather than the painted body because this is asked on every sweep for every post
- *  in reach and so has to be one property read. Its blind spot is text the painter would skip —
- *  a visually-hidden node's words — which cannot make a post look translated unless it already
- *  contains a fetched translation verbatim. */
+ *  Asked on every sweep for every post in reach, so the whole-root reading below is one property
+ *  read — and it is tried LAST, because the root holds both sides at once once a flip has
+ *  happened and only a containment test over the finished text can tell that the translation
+ *  REPLACED the post's words. The appended case is answered by the block the page painted it in
+ *  (`TRANSLATED_BLOCK`), which is the only reading that survives a post whose two sides open
+ *  alike. Its blind spot is text the painter would skip — a visually-hidden node's words — which
+ *  cannot make a post look translated unless it already contains a fetched translation. */
 function isTranslated(root: Element): boolean {
+  // A mobile story needs none of this and cannot use it: the app hands over no GraphQL on that
+  // surface, so `shownTranslations` is empty there and this would answer false however plainly
+  // the story is translated. That surface says it in its own markup instead, with both renderings
+  // in one container (see `mobileSides`).
+  if (isMobileRoot(root)) return mobileSides(root) !== null;
+  // Asked BEFORE the fetched copy: the block the host painted a translation into says so on its
+  // own (see `appendedTranslation`), and a post the reader meets already translated has no
+  // fetched copy at all.
+  if (appendedTranslation(root)) return true;
   if (shownTranslations.length === 0) return false;
   const shown = squeeze(root.textContent ?? '');
   if (!shown) return false;
-  return shownTranslations.some((translation) => shown.includes(translation.slice(0, TRANSLATION_PROBE)));
+  return shownTranslations.some((translation) => shown.includes(squeeze(translation).slice(0, TRANSLATION_PROBE)));
 }
 
 /** The body the page is SHOWING, as one string — what a flip's ranges have to be measured
@@ -1484,27 +1805,358 @@ function shownBody(root: Element): string {
  *
  *  The only way to recognise the translated side, because nothing structural marks it: the
  *  fetched copy is the whole body while the page renders it as separate blocks, so the test is
- *  a prefix of it appearing inside the candidate, whitespace squeezed. */
+ *  a prefix of it appearing inside the candidate, whitespace squeezed. Both sides are squeezed,
+ *  and they have to be: the payload separates paragraphs with newlines where the page puts each
+ *  block in its own element, so a squeezed page and an unsqueezed payload never agree on a
+ *  multi-word run and the test answers false for every real translation. */
 function looksTranslated(text: string): boolean {
   if (!text || shownTranslations.length === 0) return false;
   const candidate = squeeze(text);
-  return shownTranslations.some((translation) => candidate.includes(translation.slice(0, TRANSLATION_PROBE)));
+  return shownTranslations.some((translation) => candidate.includes(squeeze(translation).slice(0, TRANSLATION_PROBE)));
+}
+
+/** Whether a run the page put in a translation block IS the translation the app fetched.
+ *
+ *  Compared from the FRONT, which is the direction the host's own clamp cuts: the block it
+ *  appends shows an opening of the fetched string and holds the rest behind a `See more`, so
+ *  asking whether the run contains a fixed-length prefix of the translation (what
+ *  `looksTranslated` does) asks for characters the page never rendered — measured on a post
+ *  clamped at its first line, the run held 29 squeezed characters of it and the test wanted 32.
+ *  So the run's own visible opening is the needle, cut at the host's own ellipsis when it wrote
+ *  one, and the fetched string is asked whether it STARTS with it. A run left unclamped holds the
+ *  whole translation and answers the same way, the two being equal. */
+function opensTranslation(text: string): boolean {
+  if (!text || shownTranslations.length === 0) return false;
+  const cut = text.indexOf("…");
+  const visible = squeeze(cut >= 0 ? text.slice(0, cut) : text);
+  if (visible.length < TRANSLATION_HEAD) return false;
+  return shownTranslations.some((translation) => squeeze(translation).startsWith(visible));
+}
+
+/** The block the host painted a translation into, for a post the app never fetched one for.
+ *
+ *  `appendedTranslation` recognises a block by its TEXT — an opening of a translation the app's
+ *  own GraphQL handed over. A post the reader meets ALREADY translated never made that fetch:
+ *  its words arrived with the page, `shownTranslations` is empty, and every reading keyed on that
+ *  buffer was blind to the block — so `capture` refused such a post on every sweep and it sat
+ *  buttonless while its comments had buttons (measured 2026-10-16 on a searched Spanish post;
+ *  reported by the reader as "no buttons here, probably ignoring quoted text").
+ *
+ *  Recognised STRUCTURALLY instead, by the row the host ends a translation with: one
+ *  `span[dir="auto"]` holding its own controls — measured on that post, three `[role="button"]`
+ *  children (an empty preferences trigger, the side toggle, and `Rate this translation`), inside
+ *  the `blockquote` the words are in. Nothing else the host renders in a blockquote carries that
+ *  row: the page's other blockquotes held one word each and no control at all. */
+function untaggedTranslation(root: Element): Element | null {
+  for (const block of Array.from(root.querySelectorAll(TRANSLATED_BLOCK))) {
+    if (!painted(block) || !bodyWords(block)) continue;
+    for (const control of Array.from(block.querySelectorAll(CONTROL))) {
+      const row = control.parentElement;
+      if (row?.tagName !== 'SPAN' || row.getAttribute('dir') !== 'auto') continue;
+      if (row.querySelectorAll(CONTROL).length < 2) continue;
+      return block;
+    }
+  }
+  return null;
+}
+
+/** The block the page appended as a translation of this post, if it appended one.
+ *
+ *  The BLOCK, not the run inside it that identifies it. Which run opens a fetched translation is
+ *  what says the block IS a translation (`opensTranslation`), but the translation is not always one
+ *  run: the host clamps what it appended to the post's first line and writes the rest in when its
+ *  own `See more` is pressed, and the words then arrive as SIBLING runs of that same block —
+ *  measured 2026-10-15 on a searched Spanish post, one 42-character run while clamped and runs of
+ *  32, 840 and 38 once opened. Naming the run paints nothing there: the painter reads its passage
+ *  off the element it is handed and asks whether the classified text is inside it, so a run holding
+ *  the first 32 characters of a 914-character translation is refused and the post loses every
+ *  highlight it has (measured: `renderSegmentsInPlace … dom(32)="Parque del Retiro, Madrid (1963)"
+ *  classified(1009)=…`). The block holds all of it, which is what the paint needs.
+ *
+ *  Nothing changes while the translation is still clamped: the host's control then sits inside the
+ *  run under this block, `bodyControl` finds it there, and the painter builds its wrap in that run
+ *  and leaves the block's own children alone. */
+function appendedTranslation(root: Element): Element | null {
+  for (const el of Array.from(root.querySelectorAll(`${TRANSLATED_BLOCK} ${DIR_AUTO}`))) {
+    const text = textOf(el);
+    if (text && opensTranslation(text)) return el.closest(TRANSLATED_BLOCK) ?? el;
+  }
+  // Second, so a fetched copy still names the block whenever there is one: a post the app
+  // never fetched a translation for is recognised by the block's own controls instead (see
+  // `untaggedTranslation`).
+  return untaggedTranslation(root);
+}
+
+/** The host's own control that swaps which language the reader is shown, inside the block it
+ *  translated into.
+ *
+ *  This is the road to the source of a post the reader met ALREADY translated, where the page
+ *  makes the translation the body and leaves the source out of the document entirely (measured
+ *  2026-10-16: such a root holds no `story_message` at all). Facebook's own response cannot
+ *  supply it — the translation payload carries the translation alone (see
+ *  `facebook.capture.content.ts`) — so the host's control is the only way to it.
+ *
+ *  Found STRUCTURALLY, without reading the host's label, because that label is the host's own
+ *  string in the reader's language and it is not the same word in both directions: measured, the
+ *  row is `<language> · <toggle> · Rate this translation`, and the toggle is the row's first
+ *  control that has words. The row carries an icon-only preferences trigger BEFORE it (measured
+ *  2026-10-16: an empty `[role="button"]` whose `aria-label` names translation preferences), and
+ *  pressing that opens a menu rather than swapping the side. Both directions of the toggle are
+ *  this one element, so a press to reveal and a press to put back are the same lookup
+ *  (`revealSource`). */
+function translationToggle(root: Element): Element | null {
+  const block = appendedTranslation(root);
+  if (!block) return null;
+  for (const control of Array.from(block.querySelectorAll(CONTROL))) {
+    const row = control.parentElement;
+    if (row?.tagName === 'SPAN' && row.getAttribute('dir') === 'auto' && textOf(control)) return control;
+  }
+  return null;
+}
+
+/** The host's own control that swaps a COMMENT between its own words and its translation.
+ *
+ *  A comment's translation is not the story's shape: the host swaps the comment's single body
+ *  run for the translation IN PLACE (see `revealCommentSource`), so there is no blockquote for
+ *  `translationToggle` to find and the control sits in the comment's own footer row instead.
+ *  Found STRUCTURALLY, and never by its label, because that label is the host's own localized
+ *  string and it changes with the direction: measured on one photo permalink's six comments,
+ *  the row was `<like> · <toggle> · <edited>` and the toggle was a `div[role="button"]` with
+ *  words whose parent is a `div` and whose grandparent is the `li` the row is written in.
+ *  The neighbours fail that shape: Like and Edited are `div`s under a `span`, reaction counts
+ *  are `span` children, and this extension's own bar is a `button` inside its container.
+ *
+ *  A POST permalink's action row states one more control of that same shape: measured on
+ *  2026-10-18 on every comment of one post permalink, the row held Reply AND the translation
+ *  control as the last two of like · (blank) · Reply · translation · reaction count, each
+ *  `<li>` alone inside its own one-child `div` — so the siblings are those wrapper `div`s,
+ *  consecutive, and a row with two candidates is not ambiguous there: the translation control
+ *  is the second of the two. (The photo viewer's row has no Reply at all, which is why it read
+ *  cleanly before.) A row with a third candidate, or with two whose wrappers are not
+ *  consecutive, names none: that is a shape not measured, and the press is a real interaction
+ *  with the host. */
+function commentTranslationToggle(root: Element): Element | null {
+  const found: { control: Element; holder: Element }[] = [];
+  for (const control of Array.from(root.querySelectorAll(CONTROL))) {
+    if (control.tagName !== 'DIV') continue;
+    const row = control.parentElement;
+    if (row?.tagName !== 'DIV' || row.parentElement?.tagName !== 'LI') continue;
+    if (!textOf(control)) continue;
+    found.push({ control, holder: row.parentElement.parentElement as Element });
+  }
+  if (found.length === 0) return null;
+  if (found.length === 1) return found[0].control;
+  if (found.length !== 2) return null;
+  const [first, second] = found;
+  return second.holder.previousElementSibling === first.holder ? second.control : null;
+}
+
+/** Whether a comment's body states the language it is written in anywhere below its root.
+ *
+ *  This is what says WHICH side of a comment is on screen, since the host states nothing else
+ *  about it: measured 2026-10-18 on one photo permalink's six comments, every comment showing
+ *  its own words carried the comment's language (`lang="es"`) on the `span[dir="auto"]` above
+ *  the run holding them, and the one flipped to its translation carried no `lang` at all.
+ *  Structural and locale-free: the attribute is read, its value never compared, and the
+ *  translation's own language is never asked for. */
+function commentStatesLanguage(root: Element): boolean {
+  for (const part of commentParts(root)) {
+    let el: Element | null = part.el;
+    while (el && el !== root) {
+      if (el.getAttribute('lang')) return true;
+      el = el.parentElement;
+    }
+  }
+  return false;
+}
+
+/** The language a comment's body states for itself, or null when it states none.
+ *
+ *  The value is read here, unlike everywhere else in this file, because it is the CLAIM the
+ *  language detector checks a translated render against: the host swaps a comment's words in
+ *  place and, when the swap is its automatic one, has been seen to leave the source's `lang`
+ *  standing over the translated words. A body whose words are reliably in a language other
+ *  than the one it states is not showing its own words, whatever its markup says. */
+function commentStatedLanguage(root: Element): string | null {
+  for (const part of commentParts(root)) {
+    let el: Element | null = part.el;
+    while (el && el !== root) {
+      const lang = el.getAttribute('lang');
+      if (lang) return lang;
+      el = el.parentElement;
+    }
+  }
+  return null;
+}
+
+/** The base language of a tag (`es-MX` → `es`), which is as much as a detector reports and
+ *  all a comparison needs: a translation into another regional variant of the same language
+ *  still shares the words' language. */
+function languageBase(tag: string | null | undefined): string {
+  return (tag ?? '').trim().toLowerCase().split('-')[0];
+}
+
+/** The language the host translates INTO on the mobile app.
+ *
+ *  The app's document states a static "en" whatever the reader's own locale (measured on the
+ *  mobile shell), while the host's control and its output follow the browser's language —
+ *  measured by changing Accept-Language: a Spanish comment under es-ES was offered no control at
+ *  all, and under en-US got "See Translation" and English words. The browser's language is
+ *  therefore the only name the target has; the document's own tag is the fallback for a browser
+ *  that states none. */
+function hostTranslationLanguage(): string {
+  return languageBase(typeof navigator !== 'undefined' ? navigator.language : '') || appLanguage() || '';
+}
+
+/** Whether a comment on screen is the host's translation of it rather than its own words.
+ *
+ *  The toggle alone is not the answer: the host offers "See translation" on a comment whose own
+ *  words are on screen too, and pressing that would be a flip the reader did not ask for. The
+ *  pair is what "this is the translation" means — a control that would swap the side, and a body
+ *  stating no language of its own. A comment with no toggle is left exactly as it was.
+ *
+ *  A body that DOES state a language is normally its own words, but the host's automatic
+ *  translation has been seen to leave that claim standing over the translated words, so the
+ *  detector's verdict is consulted there (see `detectTranslatedCommentSides`). No verdict yet
+ *  — every row before the pre-pass has run, and every row whose words the detector could not
+ *  answer for — reads exactly as it did before that pre-pass existed. */
+function commentShowsTranslation(root: Element): boolean {
+  if (!root.matches(COMMENT)) return false;
+  if (commentStatesLanguage(root)) return sideVerdict(root) === true;
+  return commentTranslationToggle(root) !== null;
+}
+
+/** The detector's answer for the side `root` is showing NOW, or undefined when it has none.
+ *
+ *  A verdict answers only for the words it was read from. The host flips a comment in place, so
+ *  the same element can be showing the other language with the old reading still cached under it;
+ *  asks the words again and drops a verdict that no longer describes what is on screen, which
+ *  leaves that row to the pre-pass rather than letting a stale answer decide a capture. */
+function sideVerdict(root: Element): boolean | undefined {
+  const held = sideTranslationVerdicts.get(root);
+  if (!held) return undefined;
+  // Only the mobile surface swaps a body in place; a desktop comment keeps its own words in the
+  // document on both sides, so there the element alone is the key and no text is read here.
+  if (!isMobileComment(root)) return held.translated;
+  const showing = mobileWords(mobileCommentBody(root));
+  return squeeze(showing || '') === held.key ? held.translated : undefined;
 }
 
 /** The translated side, when that is what the page is painting.
  *
  *  A flip does NOT take the post's own words away: measured on a flipped Spanish post, the
  *  single `story_message` still held the Spanish while the English ran as sibling `dir="auto"`
- *  blocks in the same root — both sides in the document at once. So the source is the element
- *  `textElement` names, and this is the other one, found by the only thing that distinguishes
- *  it: its text is the string the app's own response delivered. Returns null when no run in the
- *  root is a fetched translation. */
-function translatedBody(root: Element): string | null {
+ *  blocks in the same root — both sides in the document at once, and the reader's own reading of
+ *  the flip is that the translation is ADDED below the post rather than swapped for its words.
+ *  So the source and this are two runs in one root, and this one is found by the only thing that
+ *  distinguishes it: its text is the string the app's own response delivered. Returns null when
+ *  no run in the root is a fetched translation.
+ *
+ *  The appended block is asked for FIRST, by the block it is painted in (`TRANSLATED_BLOCK`). An
+ *  unguided walk of the root's runs answers with the source on a post whose two sides open alike:
+ *  measured, both the Spanish and the English of that post begin "Calle de la Montera, Madrid
+ *  (1967)" and the source is the earlier of the two in document order. */
+function translatedElement(root: Element): Element | null {
+  const appended = appendedTranslation(root);
+  if (appended) return appended;
   for (const el of Array.from(root.querySelectorAll(DIR_AUTO))) {
     const text = textOf(el);
-    if (text && looksTranslated(text)) return text;
+    if (text && looksTranslated(text)) return el;
   }
   return null;
+}
+
+/** The words of that side, as one string.
+ *
+ *  `bodyWords` rather than `textOf`, for the reason that function exists: the host writes its own
+ *  `See more` inside the run — measured inside the appended translation's `div[dir="auto"]` — and
+ *  a plain `textContent` reads that label back as though the translator had written it. What the
+ *  cut itself leaves is not removed: the page's `…` is where the reader's reading stops. What is
+ *  removed is the CUT — a run the host clamped is an opening of the fetched copy, and being held
+ *  at one line is the host's rendering, not a shorter translation (`wholeTranslation`). */
+function translatedBody(root: Element): string | null {
+  const el = translatedElement(root);
+  if (!el) return null;
+  const shown = translationWords(el);
+  return wholeTranslation(shown) ?? shown;
+}
+
+/** The host's own control row inside a translation, if the block carries one.
+ *
+ *  Measured on an appended translation: a `span[dir="auto"]` holding the icon-only preferences
+ *  trigger, the side toggle and `Rate this translation`, joined by `·` separators the host
+ *  writes as spans of its own. The words run is a sibling of that row, never inside it. */
+function translationControlRow(el: Element): Element | null {
+  for (const row of Array.from(el.querySelectorAll('span[dir="auto"]'))) {
+    if (row.querySelectorAll(CONTROL).length < 2) continue;
+    const clone = row.cloneNode(true) as Element;
+    for (const control of Array.from(clone.querySelectorAll(CONTROL))) control.remove();
+    if (/[\p{L}\p{N}]/u.test(clone.textContent ?? '')) continue;
+    return row;
+  }
+  return null;
+}
+
+/** A translation block's own words, with the host's control row and expander taken out.
+ *
+ *  `bodyWords` alone is not enough here: the row's `·` separators are not controls, so they
+ *  survive it, and the classified translation ends up holding them — measured, the words ended
+ *  at the host's `…` while the classified string went on `"   ·   ·"`, and the painter then
+ *  refused the whole body as text it did not hold (`renderSegmentsInPlace … dom(46)=" THE FIRE
+ *  THAT BURNED IN THE HEART OF BOGOTÁ… " classified(52)=…   ·   ·`), leaving the translation
+ *  bare while its group advertised the highlights. */
+function translationWords(el: Element): string {
+  const clone = el.cloneNode(true) as Element;
+  translationControlRow(clone)?.remove();
+  for (const control of Array.from(clone.querySelectorAll(CONTROL))) control.remove();
+  return (clone.textContent ?? '').trim();
+}
+
+/** The fetched translation a clamped run is an opening of, when there is one.
+ *
+ *  The block the page appends holds only the opening of the translation and leaves the rest
+ *  behind its own `See more` — measured on the post that prompted this, a fetched copy of 967
+ *  characters rendered as a 35-character run. Measured against the run, a localization can place
+ *  no claim past that first line: on that post the worker localized one claim of six, reported
+ *  the other five unmatched, and the bar came back saying the highlights were there. The fetched
+ *  copy is the whole string and the run is a prefix of it, so a range into the copy is a range
+ *  into the words the reader can reach — the same preference X states for its own truncated DOM
+ *  text. What falls past the host's cut is painted once the reader opens the block, and the sweep
+ *  re-renders it there, because the host answering `See more` replaces the nodes we wrapped.
+ *
+ *  Asked from the FRONT, the direction the host cuts (`opensTranslation`), and answered whenever
+ *  the copy covers the run's own opening — the equal case included, which is what an OPENED block
+ *  is. That case has to answer the copy as well, because this reading is the post's reported
+ *  body: with the run returned instead, `See more` / `See less` hand the background two different
+ *  strings for one side of one post (the fetched copy while clamped, the run once opened), the
+ *  stored range revision no longer matches the reported body, and the side loses its marks and
+ *  offers Localize. The words are the same either way (`squeeze` on both); only the identity of
+ *  the string moves, and it is the copy's identity that is stable across the toggle. */
+function wholeTranslation(shown: string): string | null {
+  if (!shown || shownTranslations.length === 0) return null;
+  const cut = shown.indexOf('…');
+  const visible = squeeze(cut >= 0 ? shown.slice(0, cut) : shown);
+  if (visible.length < TRANSLATION_HEAD) return null;
+  const covers = shownTranslations.filter((t) => {
+    const whole = squeeze(t);
+    return whole.length >= visible.length && whole.startsWith(visible);
+  });
+  if (covers.length === 0) return null;
+  // An OPENED block renders the whole translation, so a fetched copy that IS those characters
+  // is the body the page holds — and the one a paint has to agree with past the opening, where
+  // two variants of the same translation can diverge (the host re-fetches between them; see
+  // SET_DISPLAYED_LOCALE). Emoji are dropped because the renderer draws each as a picture, so
+  // none of their characters reach the markup.
+  if (cut < 0) {
+    const exact = covers.find((t) => withoutEmoji(squeeze(t)) === withoutEmoji(visible));
+    if (exact) return exact;
+  }
+  // Nothing on the page says WHICH variant a clamped block is holding, and this answers the
+  // post's reported identity — the body the ranges of a run are keyed by. So the answer never
+  // falls back to the rendered run: `See more` / `See less` would then hand the background two
+  // different strings for one side, the stored revision would stop matching, and the side would
+  // lose its marks and offer Localize over a localization already paid for.
+  return covers[0];
 }
 
 /** The post's own words, given the text the page is showing in the element `textElement` names.
@@ -1542,6 +2194,30 @@ function rememberSource(id: string, text: string): void {
     const oldest = rememberedSources.keys().next().value;
     if (oldest === undefined) break;
     rememberedSources.delete(oldest);
+  }
+}
+
+/** A clipped body's whole words, taken while the host had it open.
+ *
+ *  The host is asked for the rest of a body and then asked to put the clamp back, so the reader
+ *  keeps the page they were reading and the post is still filed whole (see `revealClipped` and
+ *  `revealMobileClipped`). The words therefore have to be kept here rather than left on the page:
+ *  `capture` reads them off this copy, and `bodyClipped` stops asking for the press once it has
+ *  them.
+ *
+ *  Keyed by the id the CLIPPED body names, taken before the press, because that is what the root
+ *  resolves to once the body is clipped again — an id here is the digest of the words on screen,
+ *  and it changes when the text grows. Bounded like the source copy above. */
+const MAX_REMEMBERED_EXPANSIONS = 64;
+const expandedBodies = new Map<string, string>();
+
+function rememberExpansion(id: string, text: string): void {
+  expandedBodies.delete(id);
+  expandedBodies.set(id, text);
+  while (expandedBodies.size > MAX_REMEMBERED_EXPANSIONS) {
+    const oldest = expandedBodies.keys().next().value;
+    if (oldest === undefined) break;
+    expandedBodies.delete(oldest);
   }
 }
 
@@ -1708,6 +2384,56 @@ function scanEmbeddedPostIds(): void {
   }
 }
 
+/** When the payload says each object was written, keyed by the id this adapter files that
+ *  object under — one map for a story's and one for a comment's, because the two are read on two
+ *  different branches of `capture` and neither should be able to answer for the other.
+ *
+ *  The payload is the exact and the preferred source. The rendered markup states a time as a
+ *  RELATIVE label — a story's own permalink link reads `3d`, a sidebar entry `4w`, a comment's own
+ *  timestamp link `18h`, with no `title`, no `<time>` and not one `data-utime` anywhere on the page,
+ *  measured on a feed and on a post page — so the markup's label is a floor rather than an instant,
+ *  and it is read as one (`ageIn`) only where this map holds nothing for the object. The payload
+ *  states the instant itself, in Unix seconds, on the same node as the id: `creation_time` beside
+ *  `post_id`, `created_time` beside `legacy_fbid` (see `statedTime`).
+ *
+ *  Read at capture, so a root swept before its payload arrived carries no time — the same limit
+ *  the id join has, and it costs a date rather than an identity. In practice the payload is first:
+ *  a feed's blobs are scanned before the first root is filed (`scanEmbeddedPostIds`) and a later
+ *  page's response lands before the posts it describes are rendered.
+ *
+ *  The mobile app's own stories are named by a digest rather than by the payload's id and receive
+ *  nothing here, which is the same measurement that leaves them without a host id at all (see the
+ *  mobile section below). Bounded like the alias map: one entry is a timestamp, and a feed scroll
+ *  runs to hundreds of posts. */
+const MAX_REMEMBERED_TIMES = 4096;
+const postCreatedAt = new Map<string, string>();
+const commentCreatedAt = new Map<string, string>();
+
+/** When a post or comment was written, off the age its own root states — the fallback for the
+ *  maps above, which hold nothing until the payload describing the object has been read.
+ *
+ *  A desktop timestamp is an anchor whose visible text IS the age (`18h`), and the same anchor
+ *  carries the instant in the accessibility label the reader never sees — measured 2026-10-14 on
+ *  a page's comment list: text `18h`, label `Tuesday, October 13, 2026 at 1:14 PM`. So the label is
+ *  read first and the age only where the label says nothing readable, which is a floor
+ *  (`isoDatetimeFromAge`).
+ *
+ *  The age on the anchor's own face is what identifies it, and that is not incidental: a comment's
+ *  WORDS sit inside this same root, so a duration mentioned in them is no evidence of a time —
+ *  only an anchor that is nothing but an age is a permalink (`isAgeLabel`), and the label is
+ *  accepted only off such an anchor. A root that states neither stays undated, which is what it
+ *  was before.
+ *
+ *  Only ever called for a root whose own time this is. A story root holds its comments' anchors as
+ *  well as its own (a story renders its comment list inside it), so this is never asked of one. */
+function ageIn(root: Element): string | undefined {
+  for (const link of Array.from(root.querySelectorAll('a'))) {
+    if (!isAgeLabel(link.textContent)) continue;
+    return isoDatetime(link.getAttribute('aria-label')) ?? isoDatetimeFromAge(link.textContent);
+  }
+  return undefined;
+}
+
 /** Remember which story each name stands for, in the shape both sources of this arrive in —
  *  the page's own blobs and the MAIN world's forward of the app's responses.
  *
@@ -1718,9 +2444,21 @@ function scanEmbeddedPostIds(): void {
 function rememberPostIds(records: unknown[]): void {
   for (const record of records) {
     if (!record || typeof record !== 'object') continue;
-    const { postId, aliases, message } = record as { postId?: unknown; aliases?: unknown; message?: unknown };
+    const { postId, aliases, message, createdAt } = record as {
+      postId?: unknown;
+      aliases?: unknown;
+      message?: unknown;
+      createdAt?: unknown;
+    };
     if (typeof postId !== 'string' || !/^\d+$/.test(postId)) continue;
     if (!Array.isArray(aliases)) continue;
+    // The story's own time, in the shape `statedTime` validated it in. Kept whether or not the
+    // record carries anything else: a root that resolved its id off a permalink spelling the
+    // story's own decimal needs no alias to take the time from here.
+    if (typeof createdAt === 'number' && Number.isInteger(createdAt) && createdAt > 0) {
+      const iso = isoDatetime(createdAt);
+      if (iso) postCreatedAt.set(namespaced(postId), iso);
+    }
     for (const alias of aliases) {
       if (typeof alias !== 'string' || alias === postId) continue;
       if (!/^(pfbid[0-9A-Za-z]+|\d+)$/.test(alias)) continue;
@@ -1750,6 +2488,11 @@ function rememberPostIds(records: unknown[]): void {
     if (oldest === undefined) break;
     postIdMessages.delete(oldest);
   }
+  while (postCreatedAt.size > MAX_REMEMBERED_TIMES) {
+    const oldest = postCreatedAt.keys().next().value;
+    if (oldest === undefined) break;
+    postCreatedAt.delete(oldest);
+  }
 }
 
 /** Remember what each comment says, validated the way the ids above are: this is page-authored
@@ -1758,8 +2501,19 @@ function rememberPostIds(records: unknown[]): void {
 function rememberCommentTexts(records: unknown[]): void {
   for (const record of records) {
     if (!record || typeof record !== 'object') continue;
-    const { commentId, text } = record as { commentId?: unknown; text?: unknown };
+    const { commentId, text, createdAt } = record as {
+      commentId?: unknown;
+      text?: unknown;
+      createdAt?: unknown;
+    };
     if (typeof commentId !== 'string' || !/^\d+$/.test(commentId)) continue;
+    // The comment's own time is stored before the text is judged: the words and the instant are
+    // independent statements about the same comment, and a record whose text is too short to
+    // complete anything still dates the comment it names.
+    if (typeof createdAt === 'number' && Number.isInteger(createdAt) && createdAt > 0) {
+      const iso = isoDatetime(createdAt);
+      if (iso) commentCreatedAt.set(namespaced(commentId), iso);
+    }
     if (typeof text !== 'string') continue;
     if (squeeze(text).length < MIN_MESSAGE_MATCH) continue;
     commentTexts.set(commentId, text);
@@ -1768,6 +2522,11 @@ function rememberCommentTexts(records: unknown[]): void {
     const oldest = commentTexts.keys().next().value;
     if (oldest === undefined) break;
     commentTexts.delete(oldest);
+  }
+  while (commentCreatedAt.size > MAX_REMEMBERED_TIMES) {
+    const oldest = commentCreatedAt.keys().next().value;
+    if (oldest === undefined) break;
+    commentCreatedAt.delete(oldest);
   }
 }
 
@@ -1796,8 +2555,8 @@ function rememberCommentTexts(records: unknown[]): void {
  * measured `... See more`, written with three ASCII dots rather than `…`, which is why the
  * desktop reader's `…` test finds nothing here. Clicking that span re-renders the story: the
  * words come back WHOLE and the expander is gone entirely, not left behind as a "less" control.
- * So `bodyClipped`/`revealClipped` drive it exactly as Quora's does, and a mobile post is filed
- * with its whole text rather than a prefix (`truncated-means-excluded`).
+ * So a clipped mobile body is left to the reader's own tap — nothing of ours presses that span
+ * (see `bodyClipped`), and the post is filed whole on the sweep after they do.
  *
  * **There is no host id, and that is measured rather than assumed.** No `post_id`, no
  * `story_fbid`, no id attribute on a story root and none in the inline scripts; the app's data
@@ -1883,6 +2642,18 @@ const MOB_CHIP_ROW = 3;
 /** How long the app's own inline affordance may read before it is not that affordance. The
  *  measured one is 12 characters; the cap is what keeps a real sentence out. */
 const MOB_LABEL_LIMIT = 40;
+/** How long a text component beside a story's body must read before it is a second RENDERING of
+ *  that story rather than chrome the app stacked near it — see `mobileSides`.
+ *
+ *  Measured on two live stories the app was translating, both read as the direct children of one
+ *  container: the post's own words, an empty spacer, the app's rendering of them, then its
+ *  "Translated from French" line — `[1216, 0, 133, 22]` characters in one story and
+ *  `[56, 0, 683, 22]` in the other. Only the two renderings clear this, so the empty spacer and
+ *  the label both fall out of the count. Swept over ~60 containers across six feeds beside those
+ *  two, no OTHER container held two components this long: a story's body is one component however
+ *  many paragraphs it holds (measured, a two-line post keeps its newline inside one), so two of
+ *  them beside each other is the translation and nothing else measured. */
+const MOB_SIDE_MIN = 40;
 /** How far up a node is walked looking for the story container it belongs to. A selection inside
  *  a post resolves in a handful of levels; the cap is what stops a walk that never finds one. */
 const MOB_MAX_WALK = 30;
@@ -1975,6 +2746,21 @@ function hasPicture(el: Element): boolean {
   return false;
 }
 
+/** Whether the page's own address states a story rather than an identity.
+ *
+ *  The app renders a story detail view and a profile with the same shapes: a picture-bearing
+ *  fragment over one fragment carrying the action chips. Measured on a Page profile
+ *  (`m.facebook.com/<page>/`), the scroller held exactly that — the page's intro card above,
+ *  one post below — and nothing in the markup told the two apart, so the whole profile was read
+ *  as a story and named off its header. What the two DO state differently is the address: a
+ *  detail view is reached at `/story.php`, `/permalink.php`, at a `/posts/` or `/permalink/`
+ *  path, or with the story's own id as a parameter; a profile is reached at its own name. */
+function mobileStoryAddress(): boolean {
+  return /\/story\.php|\/permalink\.php|\/posts\/|\/permalink\/|[?&](?:story_fbid|fbid)=/.test(
+    location.pathname + location.search,
+  );
+}
+
 /** Every story the app has rendered: a child of the scroller holding words and a chip row.
  *
  *  With one exception, and it is the story's own detail view — the page a feeder's tap opens, on
@@ -2013,7 +2799,14 @@ function mobileRoots(): Element[] {
   const rows = kids.filter((kid) => chipRowIn(kid));
   if (rows.length === 1) {
     const above = kids.slice(0, kids.indexOf(rows[0]));
-    if (!hasPicture(rows[0]) && above.some((kid) => kid.querySelector('img'))) return [scroller];
+    // The detail view is a STORY page, and the address is what says so. Read off shape alone, a
+    // profile page answers exactly like it: the profile's own intro card is the picture-bearing
+    // fragment above, and its posts — one visible on a fresh render — are the single row. That
+    // made the scroller the "story", named off the page's header and its posts, so every profile
+    // got a Disinfact over its name, offering to classify the header. An address naming a story
+    // is the one fact the reader's location states and the shape cannot (see `permalinkId` and
+    // the shapes beside it, and the page's own `/posts/` and `/permalink/` paths).
+    if (mobileStoryAddress() && !hasPicture(rows[0]) && above.some((kid) => kid.querySelector('img'))) return [scroller];
   }
   return kids.filter((kid) => kid.querySelector(MOB_TEXT) && chipRowIn(kid));
 }
@@ -2138,6 +2931,26 @@ function mobileAuthorRow(el: Element): boolean {
   return false;
 }
 
+/** When a mobile story or comment was written, off the label the app puts on its author row —
+ *  the same label `mobileAuthorRow` recognises the row by, and the only statement of a time this
+ *  surface makes.
+ *
+ *  The app composes its own stories and the payload never describes them, so a mobile post has no
+ *  other date to give; the label reads `Terry Toope, 1 day ago, Public group`, with the age as
+ *  prose in the middle of it. Only the age is taken, and only from a label this knows the unit of:
+ *  a label in another language, or one naming no duration at all (`Robert Rentals, Sep 28, Public
+ *  group` — an older story, whose date the app states as a day), leaves the post undated rather
+ *  than misdated. The LAST number-and-unit is the one read, so a name or an audience line carrying
+ *  a number of its own cannot be mistaken for the age. */
+function mobileAgeIn(root: Element): string | undefined {
+  const header = mobileHeader(root);
+  for (const text of Array.from(header?.querySelectorAll(MOB_TEXT) ?? [])) {
+    const age = isoDatetimeFromAge(text.getAttribute('aria-label'));
+    if (age) return age;
+  }
+  return undefined;
+}
+
 /** The colour the app is painting behind a story.
  *
  *  A pill laid over the app's own layout needs a ground of its own: measured on the m-site, the
@@ -2204,10 +3017,18 @@ function mobileWindow(root: Element, header: Element | null, end: Element | null
   // this helper reported as empty was covered by a name line and a control belonging to the shared
   // card, so the pill was seated straight over them. The band is still bounded by the header's own
   // lines, so the story's body — which lives below the header's box — never enters the count.
-  const content = Array.from(root.querySelectorAll(`${MOB_TEXT}, [role="button"]`))
+  //
+  // An element's BOX is not always its words' extent: the app lays some header lines out full
+  // width, with the name and its Follow control set at the left of a 390px component. Measured on
+  // a live story, `International news · Follow` was one such component: its box ran past the `…`
+  // and was dropped for it, the only thing left in the band was the avatar (right edge 110px), and
+  // the seat came out 236px wide — so the 88px pill was drawn over the tail of Follow. A component
+  // that runs past the end control is therefore measured by its WORDS instead (see
+  // `textRightEdge`), and only when those words end inside the seat's own bound.
+  const candidates = Array.from(root.querySelectorAll(`${MOB_TEXT}, [role="button"]`))
     .filter((el) => !el.closest('.mf-btn-container'))
-    .map((el) => el.getBoundingClientRect())
-    .filter((r) => r.width > 0 && r.height > 0 && r.right <= right + MOB_SEAT_GAP);
+    .map((el) => ({ el, r: el.getBoundingClientRect() }))
+    .filter(({ r }) => r.width > 0 && r.height > 0);
   // Lines top to bottom, so "the first line with room" is the topmost one.
   lines.sort((a, b) => a.top - b.top);
   // Every line gets a band at least as tall as the pill. A line thinner than the pill is not a
@@ -2230,8 +3051,20 @@ function mobileWindow(root: Element, header: Element | null, end: Element | null
     })
     .filter((band) => band.bottom - band.top >= MOB_PILL_HEIGHT)
     .map((band) => {
-      const inBand = content.filter((r) => r.top < band.bottom && r.bottom > band.top);
-      const contentRight = inBand.length ? Math.max(...inBand.map((r) => r.right)) : rootRect.left;
+      const inBand = candidates.filter(({ r }) => r.top < band.bottom && r.bottom > band.top);
+      let contentRight = rootRect.left;
+      for (const { el, r } of inBand) {
+        if (r.right <= right + MOB_SEAT_GAP) {
+          contentRight = Math.max(contentRight, r.right);
+          continue;
+        }
+        // A box past the end control is laid out wider than its words; the words are what the
+        // pill has to clear, and only a run that ends inside the bound is theirs to claim.
+        const wordsRight = textRightEdge(el);
+        if (wordsRight > 0 && wordsRight <= right + MOB_SEAT_GAP) {
+          contentRight = Math.max(contentRight, wordsRight);
+        }
+      }
       return { ...band, w: Math.max(0, right - contentRight - MOB_SEAT_GAP) };
     });
   // The topmost line that can hold the pill, not the widest line: the app's `…` closes the
@@ -2295,6 +3128,238 @@ function mobileEndControl(scope: Element): Element | null {
   return best;
 }
 
+/** One mobile root's press count. Bounded by the same constants the desktop expander is, and for
+ *  the same reason: a control that will not open must not be pressed on every sweep. */
+const mobileExpandAttempts = new WeakMap<Element, number>();
+
+/** Press a control the way a tap does.
+ *
+ *  The mobile app is a tap-driven document: a bare `click()` is only the last of the events a
+ *  finger produces, and the app's own handler is bound to the pointer pair on this surface. Both
+ *  are dispatched, in the order a real tap produces them, so the app answers whichever one it
+ *  listens for. */
+function tapHost(el: Element, point?: { x: number; y: number }): void {
+  const target = el as HTMLElement;
+  const rect = target.getBoundingClientRect();
+  const init = {
+    bubbles: true,
+    cancelable: true,
+    clientX: point?.x ?? rect.left + rect.width / 2,
+    clientY: point?.y ?? rect.top + rect.height / 2,
+  };
+  for (const type of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']) {
+    const event = type.startsWith('pointer')
+      ? new PointerEvent(type, init)
+      : new MouseEvent(type, init);
+    target.dispatchEvent(event);
+  }
+}
+
+/** A point inside `el` that sits over plain words rather than a link, and the element to send
+ *  the tap through.
+ *
+ *  The app's own text toggle answers a tap on the body, but a link inside those words would be
+ *  followed instead — so the first text node that is not inside one is what this picks, and the
+ *  element falls back to `el` itself when every word is linked or none renders. */
+function plainTextPoint(el: Element): { el: Element; x: number; y: number } {
+  const rect = el.getBoundingClientRect();
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!(node.textContent ?? '').trim()) continue;
+    const parent = node.parentElement;
+    if (!parent || parent.closest('a[href], [role="link"]')) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const words = range.getBoundingClientRect();
+    if (words.width < 4 || words.height < 4) continue;
+    return { el: parent, x: words.left + words.width / 2, y: words.top + words.height / 2 };
+  }
+  return { el, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+}
+
+/** Drive the app's own expander on a body it is showing a prefix of.
+ *
+ *  Serialized through the same queue `revealClipped` uses, and bounded the same way: two clicks
+ *  racing would interleave two of the app's re-renders under each other's polls, and a control
+ *  that refuses to open must not be clicked on every sweep. The signal watched for is the
+ *  expander going away, with the body growing as the fallback for the day the app leaves it
+ *  behind — and the body is looked up again on every poll, because the app answers by re-rendering
+ *  the story: the element that was clicked is detached by the time the answer arrives (measured),
+ *  so a poll holding the old node reads a body that is no longer on the page. */
+async function revealMobileClipped(root: Element, opts?: { onDemand?: boolean }): Promise<void> {
+  if (!mobileExpanderIn(mobileBody(root))) return;
+  // The clipped words ARE the body's name, and the app replaces them with the whole text on the
+  // press — so the name is taken before it, and the copy is filed under it once the body is back
+  // (see `expandedBodies`).
+  const id = postIdOf(root);
+  if (!opts?.onDemand) {
+    const attempts = (mobileExpandAttempts.get(root) ?? 0) + 1;
+    mobileExpandAttempts.set(root, attempts);
+    if (attempts > MAX_EXPAND_ATTEMPTS) return;
+  }
+  expanding = expanding
+    .then(async () => {
+      if (!root.isConnected) return;
+      const control = mobileExpanderIn(mobileBody(root));
+      if (!control) return;
+      const before = mobileWords(mobileBody(root)).length;
+      tapHost(control);
+      let opened = false;
+      for (let i = 0; i < EXPAND_POLLS; i++) {
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+        if (!root.isConnected) return;
+        const body = mobileBody(root);
+        if (!body) continue;
+        if (!mobileExpanderIn(body) || mobileWords(body).length > before) {
+          opened = true;
+          break;
+        }
+      }
+      if (!opened) {
+        console.warn('[misinfo] facebook: a clipped mobile post would not expand; it stays out of this batch');
+        return;
+      }
+      // Read the words while the app has them on the page, then put the body back the way the
+      // reader found it. The app re-rendered the run on the press, so the body is looked up
+      // again. The tap that puts it back goes to a point over plain words — never over a link,
+      // which the app would follow instead (see `plainTextPoint`). A body that refuses the tap
+      // stays open, which is still the reader's own page.
+      const grown = mobileBody(root);
+      if (!grown) return;
+      const text = desktopFormOf(grown, passageTextContent(grown as HTMLElement)).trim();
+      if (id && text) rememberExpansion(id, text);
+      const point = plainTextPoint(grown);
+      tapHost(point.el, point);
+    })
+    .catch((e) => {
+      console.error('[misinfo] facebook: expanding a clipped mobile post failed', e);
+    });
+  return expanding;
+}
+
+/** One translated mobile comment's press count, keyed by the translation it is showing.
+ *
+ *  Per TEXT rather than per element because the app re-renders the block on the flip, and a bound
+ *  held by the element would be reset by the very answer it is counting. Bounded like the copies
+ *  above. */
+const mobileCommentFlipAttempts = new Map<string, number>();
+
+/** Press the app's tap target for a control it wrote its words into — the `MContainer` above it,
+ *  which is the element the action id is stated on (measured; see
+ *  `mobileCommentTranslationToggle`). */
+function pressCommentControl(control: Element): void {
+  const row = control.parentElement;
+  tapHost(row && row.hasAttribute('data-action-id') ? row : control);
+}
+
+/** Read a translated mobile comment's own words back off the app, then put the reader's side back.
+ *
+ *  The app swaps a comment's body for its translation IN PLACE, so its own words are nowhere on
+ *  the page and the host's own control is the only road to them (see `revealCommentSource`, the
+ *  desktop row, which this mirrors). The press is put back immediately so the reader keeps the
+ *  side they chose, and the words are remembered (`mobileCommentSources`) rather than left on the
+ *  page, because the capture that follows reads the row in the translation.
+ *
+ *  Which side came back is CONFIRMED rather than assumed: the press has answered when the body's
+ *  words CHANGE. A press that changes nothing — a comment already in the reader's own language, or
+ *  a control the app has not hydrated yet — remembers nothing and leaves the row exactly as it was.
+ *  Serialized through the same queue as every other press here, and bounded per translation text
+ *  so a control that refuses cannot be pressed on every sweep. */
+async function revealMobileCommentSource(root: Element, opts?: { onDemand?: boolean }): Promise<void> {
+  const body = mobileCommentBody(root);
+  const toggle = mobileCommentTranslationToggle(root);
+  if (!body || !toggle) return;
+  const shown = mobileWords(body);
+  const key = squeeze(shown);
+  if (!key || mobileCommentSources.has(key)) return;
+  // An attempt is spent once a read has had both its presses and still found no source. The
+  // host ignores a press that arrives before its own menu has hydrated, and counting those
+  // first presses was how three ignored ones blocked a comment for the page's life.
+  if (!opts?.onDemand && (mobileCommentFlipAttempts.get(key) ?? 0) >= MAX_EXPAND_ATTEMPTS) return;
+  const countFailure = () => {
+    const attempts = (mobileCommentFlipAttempts.get(key) ?? 0) + 1;
+    mobileCommentFlipAttempts.delete(key);
+    mobileCommentFlipAttempts.set(key, attempts);
+    while (mobileCommentFlipAttempts.size > MAX_REMEMBERED_COMMENT_SOURCES) {
+      const oldest = mobileCommentFlipAttempts.keys().next().value;
+      if (oldest === undefined) break;
+      mobileCommentFlipAttempts.delete(oldest);
+    }
+  };
+  expanding = expanding
+    .then(async () => {
+      if (!root.isConnected) return;
+      const control = mobileCommentTranslationToggle(root);
+      if (!control) return;
+      pressCommentControl(control);
+      // Whether the press moved ANYTHING. An untouched body is the host ignoring a press it
+      // was not ready for, and that is the one case worth a second press.
+      let moved = false;
+      let source = '';
+      for (let i = 0; i < EXPAND_POLLS; i++) {
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+        if (!root.isConnected) return;
+        const now = mobileCommentBody(root);
+        if (!now) continue;
+        const words = mobileWords(now);
+        if (!words || squeeze(words) === key) continue;
+        moved = true;
+        // A body that merely GREW is the same side of the comment being rendered in full (the app
+        // re-renders the block on the press), not the other language; accepting it would file the
+        // words on screen as the comment's own and name it twice.
+        if (!squeeze(words).startsWith(key)) {
+          source = desktopFormOf(now, words).trim();
+          break;
+        }
+      }
+      if (!source && !moved) {
+        // Pressed into a host that had not hydrated yet. One more press, after the pause its
+        // own menu takes, before this counts as a failed read.
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS * 8));
+        if (!root.isConnected) return;
+        const retry = mobileCommentTranslationToggle(root);
+        if (!retry) return;
+        pressCommentControl(retry);
+        for (let i = 0; i < EXPAND_POLLS; i++) {
+          await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+          if (!root.isConnected) return;
+          const now = mobileCommentBody(root);
+          if (!now) continue;
+          const words = mobileWords(now);
+          if (words && !squeeze(words).startsWith(key)) {
+            source = desktopFormOf(now, words).trim();
+            break;
+          }
+        }
+      }
+      if (!source) {
+        countFailure();
+        return;
+      }
+      rememberMobileCommentSource(key, source);
+      mobileCommentFlipAttempts.delete(key);
+      // The app re-rendered the block on the press, so the control is looked up again. A control
+      // that is not there to put the reader back is left as the host made it: the source is
+      // already remembered, and the capture reads it off this copy either way.
+      const back = mobileCommentTranslationToggle(root);
+      if (!back) return;
+      pressCommentControl(back);
+      // The put-back is a host fetch like the read was. One second was short enough that a slow
+      // answer left the reader on the source under a label saying it was the translation; give
+      // it three. Verification only — a reader already put back returns from the first poll.
+      for (let i = 0; i < EXPAND_POLLS * 3; i++) {
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+        if (!root.isConnected) return;
+        const now = mobileCommentBody(root);
+        if (now && squeeze(mobileWords(now)) === key) return;
+      }
+    })
+    .catch((e) => {
+      console.error('[misinfo] facebook: reading a translated mobile comment’s source failed', e);
+    });
+  return expanding;
+}
+
 /** The app's own expander inside a body it is showing a prefix of, or null.
  *
  *  Structural, never by label: the LAST child of a `dir="auto"` run, a short childless `<span>`
@@ -2335,13 +3400,14 @@ function mobileExpanderIn(body: Element | null): Element | null {
  *  quotes: no text, no anchor, and the story is passed over rather than given a pill.
  *
  *  A story the app is showing a translation of carries BOTH renderings in this one container, its
- *  own words and the app's rendering of them as siblings (measured: 94 French words, the app's
- *  21-word English rendering, then its "Translated from French" line). The reading below picks the
- *  longest of them, which is the post's own words in every story measured so far — a translation
- *  arrives clamped to a few lines and so reads shorter than what it translated. Which of the two
- *  is which is a question this surface answers structurally, not by the words, and it is answered
- *  where the second rendering is painted rather than here. */
-function mobileBody(root: Element): Element | null {
+ *  own words and the app's rendering of them as siblings. This reading cannot tell them apart: it
+ *  takes the longer, and while that is the post's own words in the stories measured first, it is
+ *  the app's rendering in others (measured: 56 characters of French against the app's
+ *  683-character English), so the side it lands on is a coin toss between the two. Which side is
+ *  which is a question this surface answers STRUCTURALLY rather than by the words, so it is
+ *  answered in `mobileSides` and this reading is only what a story with no second side falls back
+ *  to — see `mobileBody`. */
+function mobileBodyOf(root: Element): Element | null {
   // A comment is read as the component the app makes its words with, which is also the one
   // capture files its text from — NOT by the header-excluded search below.
   //
@@ -2389,6 +3455,172 @@ function mobileBody(root: Element): Element | null {
   return best;
 }
 
+/** The two renderings of a mobile story the app is showing a translation of, or null.
+ *
+ *  The one place on this surface that answers which side is which, and it answers structurally —
+ *  never by the words, which would have to name a language to do it. Measured, twice, on stories
+ *  the app was translating: the post's own words and the app's rendering of them are the only two
+ *  text components in the container that read at any length, they are its DIRECT children, they
+ *  stand in that order, and the app puts an empty spacer between them (`[1216, 0, 133, 22]` and
+ *  `[56, 0, 683, 22]`, the last component in each being its "Translated from French" line). So
+ *  the reading is: the body's own parent, the components this long among its direct children, and
+ *  the spacer between the two that are left.
+ *
+ *  Every one of those three is a guard, and each one fails to "no translation" rather than to a
+ *  guess. Two long components beside each other in one container is the shape this refuses to
+ *  read as anything else; requiring EXACTLY two is what keeps a card or a nested story's own
+ *  words out of the pair; and the spacer is what keeps a container holding two ordinary runs of
+ *  text from being read as a post and its translation. A story this cannot read keeps the reading
+ *  it had before any of this existed (`mobileBodyOf`), which is a coin toss between its two sides
+ *  rather than a wrong answer about a story that only ever had one.
+ *
+ *  Comments are left out: translation of a comment is unmeasured on this surface (the reader's
+ *  own guess is that the app does none), and a comment's container holds the words-and-chrome
+ *  shape this rule is calibrated against rather than a story's. If the app is found to translate
+ *  them, this is the gate to lift. */
+function mobileSides(root: Element): { source: Element; translation: Element } | null {
+  if (isMobileComment(root)) return null;
+  const body = mobileBodyOf(root);
+  const parent = body?.parentElement ?? null;
+  if (!body || !parent || !isMobileRoot(parent)) return null;
+  const kids = Array.from(parent.children).filter((el) => el.matches(MOB_TEXT));
+  const sides = kids.filter((el) => bodyWords(el).length > MOB_SIDE_MIN);
+  // Exactly two, and the body is one of them. The body is read off the whole root while these
+  // are read off its own container, so the two readings are asked to agree rather than assumed
+  // to: a container they disagree about is read as no translation rather than as a story whose
+  // own words are some third component.
+  if (sides.length !== 2 || !sides.includes(body)) return null;
+  const gap = kids.slice(kids.indexOf(sides[0]) + 1, kids.indexOf(sides[1]));
+  if (!gap.some((el) => bodyWords(el).length === 0)) return null;
+  return { source: sides[0], translation: sides[1] };
+}
+
+/** The app's own line under a mobile story's translation — the row the second button group is
+ *  seated beside, or null.
+ *
+ *  Measured 2026-10-19 on a live story the app was translating: the component directly after
+ *  the translation in the same container is one short line (`Translated from Spanish`, a
+ *  364px box whose words end 195px short of its right edge, 21px tall), and it is the last
+ *  component there. It is read STRUCTURALLY — the next text component after the translation,
+ *  short enough not to be a side — and never by its words, which are the host's own string in
+ *  the reader's language.
+ *
+ *  A long component after the translation is the next story's words rather than a line to seat
+ *  beside, and an empty one says nothing the pill can be placed after; both answer null. */
+function mobileTranslationLine(root: Element): Element | null {
+  const sides = mobileSides(root);
+  if (!sides) return null;
+  for (let el = sides.translation.nextElementSibling; el; el = el.nextElementSibling) {
+    if (!el.matches(MOB_TEXT)) continue;
+    const words = bodyWords(el).length;
+    if (words >= MOB_SIDE_MIN) return null;
+    if (words > 0) return el;
+  }
+  return null;
+}
+
+/** A mobile story's own words, whatever the app is showing beside them.
+ *
+ *  The identity of a mobile post — its id, its hash, its classification's subject and the text a
+ *  web selection inside it acts on — is always the post's OWN words, never the app's rendering of
+ *  them, exactly as `capture`'s desktop branch files `storyMessage` whichever side is on screen
+ *  and as every other platform with a translation does (see `telegram.ts`). A story showing a
+ *  translation is therefore read as its source side here, and the side on screen is `mobileShown`.
+ *  A story with one side has no such distinction to make and this is that side. */
+function mobileBody(root: Element): Element | null {
+  return mobileSides(root)?.source ?? mobileBodyOf(root);
+}
+
+/** The side of a mobile story the reader is reading: the app's rendering of it when the app is
+ *  showing one, and the story's own words otherwise.
+ *
+ *  This is what our chrome is painted onto and what the painter measures its highlight offsets
+ *  into, so it is the element `textElement` returns. It is NEVER what names the post — see
+ *  `mobileBody` — and the two are the same element for the ordinary story that has no second
+ *  side. */
+function mobileShown(root: Element): Element | null {
+  return mobileSides(root)?.translation ?? mobileBody(root);
+}
+
+/** A body's words in the shape the desktop surface reads them.
+ *
+ *  The app's renderer lays text out itself and writes its line breaks into the text node as
+ *  literal newlines — measured on one post: 31 of them, no `<br>` anywhere in the body. The
+ *  desktop's `textContent` never holds one, and `normalizeText` keeps a newline, so a text read
+ *  straight off this renderer hashes the same post differently from the desktop: the DB lookup
+ *  misses and the post arrives on hold, as "Disinfact" (the whole of `textIdNames` on mobile is
+ *  such a hash, which is why the two surfaces are also two ids).
+ *
+ *  Every newline stands for one of two desktop characters. A wrap stands for the space the
+ *  renderer consumed at the break; a paragraph break stands for NOTHING, because the desktop
+ *  splits paragraphs into blocks and `textContent` joins blocks with no separator. Three shapes
+ *  state a paragraph break on this renderer — a doubled newline, a newline before the ZWSP its
+ *  paragraph starts with, a newline beside a space it keeps — and a bare newline is settled by
+ *  the renderer's own layout: it breaks a line only when the next word would not have fit, so a
+ *  line that ended with room to spare ended at a paragraph. A body that cannot be measured (not
+ *  laid out) falls back to the wrap, the common case, which leaves that post as it is today. */
+function desktopFormOf(body: Element, text: string): string {
+  if (!text.includes('\n')) return text;
+  const rectOf = (start: number, end: number): DOMRect | null => {
+    const range = passageRangeAt(body as HTMLElement, start, end);
+    return range ? range.getBoundingClientRect() : null;
+  };
+  // The column's right edge, read off the lines this text produced: no line the renderer
+  // wrapped can reach past it, and that is what a paragraph break is told against.
+  let columnRight = Number.NaN;
+  for (let at = 0, lineStart = 0; at <= text.length; at++) {
+    if (at < text.length && text[at] !== '\n') continue;
+    if (at > lineStart) {
+      const line = rectOf(lineStart, at);
+      if (line && line.width > 0) {
+        columnRight = Number.isNaN(columnRight) ? line.right : Math.max(columnRight, line.right);
+      }
+    }
+    lineStart = at + 1;
+  }
+  // A wrap was decided against room that had to hold a space AND the word; the break itself
+  // consumed that space, so it has to be measured off some other one in the text.
+  let spaceWidth = 0;
+  for (let at = text.indexOf(' '); at >= 0 && !spaceWidth; at = text.indexOf(' ', at + 1)) {
+    const space = rectOf(at, at + 1);
+    if (space && space.width > 0) spaceWidth = space.width;
+  }
+  let out = '';
+  let lineStart = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] !== '\n') {
+      out += text[i];
+      continue;
+    }
+    let run = 1;
+    while (i + run < text.length && text[i + run] === '\n') run++;
+    const prev = out[out.length - 1] ?? '';
+    const next = text[i + run] ?? '';
+    const paragraph = run > 1 || next === '​' || next === '' || prev === ' ' || prev === '\t' || next === ' ' || next === '\t';
+    if (!paragraph) {
+      let wordEnd = i + 1;
+      while (wordEnd < text.length && !/\s/.test(text[wordEnd])) wordEnd++;
+      const line = rectOf(lineStart, i);
+      const word = rectOf(i + 1, wordEnd);
+      // 1px of slack: the renderer laid these words out at sub-pixel precision and a range
+      // rect rounds, so a wrap can come out one hundredth of a pixel short of its own space.
+      const wraps = !line || !word || Number.isNaN(columnRight)
+        || columnRight - line.right < word.width + spaceWidth + 1;
+      if (wraps) out += ' ';
+    }
+    i += run - 1;
+    lineStart = i + 1;
+  }
+  return out;
+}
+
+/** The desktop shape of a name the app's renderer may have wrapped. A name has no paragraphs,
+ *  so a newline in one is a wrap and stands for the space it replaced. */
+function desktopLineOf(text: string): string {
+  if (!text.includes('\n')) return text;
+  return text.replace(/\n(?=​)/g, '').replace(/\n+/g, ' ');
+}
+
 /** A story's words as the classifier and the painter both read them.
  *
  *  Through `passageTextContent`, the highlighter's own extractor, so the classified string and
@@ -2422,7 +3654,7 @@ function mobileAuthor(root: Element): string {
   if (!header) return '';
   for (const el of Array.from(header.querySelectorAll(MOB_TEXT))) {
     const words = bodyWords(el);
-    if (words) return words;
+    if (words) return authorIdentity(desktopLineOf(words));
   }
   return '';
 }
@@ -2513,7 +3745,169 @@ function mobileCommentAuthorEl(root: Element): Element | null {
 }
 
 function mobileCommentAuthor(root: Element): string {
-  return bodyWords(mobileCommentAuthorEl(root));
+  return authorIdentity(desktopLineOf(bodyWords(mobileCommentAuthorEl(root))));
+}
+
+/** The app's own control that swaps a comment between its words and its translation.
+ *
+ *  Found STRUCTURALLY, and never by its label, which is the host's own localized string and
+ *  changes with the direction. Measured 2026-10-20 on a story view's comment, in both states the
+ *  control swaps between: it is the block's ONE short text component that is itself inert — no
+ *  role, no aria-label, no action id and not focusable — with the tap target on the `MContainer`
+ *  above it, which states `data-focusable` and a `data-action-id` and no role. The neighbours all
+ *  fail that shape: Like's parent is a `role="button"` carrying its own label, Reply's component
+ *  IS the action target, the timestamp's component carries the host's `aria-label`, and the
+ *  reaction summary is a button of its own. Only components BELOW the body are read, so the
+ *  author line and the body itself are out of scope. */
+function mobileCommentTranslationToggle(root: Element): Element | null {
+  const body = mobileCommentBody(root);
+  if (!body) return null;
+  const parts = Array.from(root.querySelectorAll(MOB_TEXT));
+  const at = parts.indexOf(body);
+  if (at < 0) return null;
+  const found: Element[] = [];
+  for (let i = at + 1; i < parts.length; i++) {
+    const el = parts[i];
+    if (el.hasAttribute('role') || el.hasAttribute('aria-label')) continue;
+    if (el.hasAttribute('data-action-id') || el.hasAttribute('data-focusable')) continue;
+    const row = el.parentElement;
+    if (!row || row.getAttribute('data-mcomponent') !== 'MContainer') continue;
+    if (!row.hasAttribute('data-action-id') || !row.hasAttribute('data-focusable')) continue;
+    if (row.hasAttribute('role')) continue;
+    if (found.some((other) => other === el || other.contains(el))) continue;
+    found.push(el);
+  }
+  return found.length === 1 ? found[0] : null;
+}
+
+/** A translated mobile comment's own words, keyed by the translation the app painted over them.
+ *
+ *  The app swaps a comment's single body run for its translation IN PLACE (measured 2026-10-20:
+ *  the source's words are gone from the document the moment the host answers its own control),
+ *  so the copy has to be taken while the host has the source up — `revealMobileCommentSource`
+ *  presses the control, reads and puts the reader's side back. It is what names the comment (see
+ *  `mobileCommentId`) and what the capture files: a comment named by whichever language happens
+ *  to be on screen is one comment filed, classified and billed twice, which is the rule
+ *  `post-id-names-one-text` forbids.
+ *
+ *  Keyed by the translation's WORDS rather than by an element, because the app re-renders the
+ *  block on the flip and the identity has to survive that. Bounded like the copies above; oldest
+ *  out first. */
+const MAX_REMEMBERED_COMMENT_SOURCES = 64;
+const mobileCommentSources = new Map<string, string>();
+const mobileCommentOwnWords = new Set<string>();
+
+function rememberMobileCommentSource(key: string, text: string): void {
+  mobileCommentSources.delete(key);
+  mobileCommentSources.set(key, text);
+  while (mobileCommentSources.size > MAX_REMEMBERED_COMMENT_SOURCES) {
+    const oldest = mobileCommentSources.keys().next().value;
+    if (oldest === undefined) break;
+    mobileCommentSources.delete(oldest);
+  }
+  rememberMobileCommentOwnWords(text);
+}
+
+/** Comment words this page has filed as a comment's OWN, bounded like the sources beside it.
+ *
+ *  A comment is filed under its own words, so a comment the reader has already seen captured has
+ *  words here. That is what lets a reader's own press of the host's control be read without a
+ *  language detector (see `mobileFlipPresses`): the pressed side is one this page has already
+ *  named, and what the host swaps in is the other. */
+function rememberMobileCommentOwnWords(words: string): void {
+  const key = squeeze(words);
+  if (!key) return;
+  mobileCommentOwnWords.delete(key);
+  mobileCommentOwnWords.add(key);
+  while (mobileCommentOwnWords.size > MAX_REMEMBERED_COMMENT_SOURCES) {
+    const oldest = mobileCommentOwnWords.values().next().value;
+    if (oldest === undefined) break;
+    mobileCommentOwnWords.delete(oldest);
+  }
+}
+
+/** Which side a mobile comment is showing, when this page itself can say — `true` when the words
+ *  on screen are the translation, `false` when they are the comment's own, `undefined` when
+ *  nothing has named them.
+ *
+ *  The detector's verdict answers first. Without one — Safari has no
+ *  `browser.i18n.detectLanguage` — a comment whose translation was read back (a key in
+ *  `mobileCommentSources`) or whose own words this page already filed says the side outright. */
+function mobileCommentSideKnown(root: Element): boolean | undefined {
+  const verdict = sideVerdict(root);
+  if (verdict !== undefined) return verdict;
+  const words = squeeze(mobileWords(mobileCommentBody(root)));
+  if (!words) return undefined;
+  if (mobileCommentSources.has(words)) return true;
+  if (mobileCommentOwnWords.has(words)) return false;
+  return undefined;
+}
+
+/** A reader's own press of a mobile comment's translate control, waiting for the host's answer.
+ *
+ *  Keyed by the comment's long-press mark rather than by the element, because the host re-renders
+ *  the block on the flip and the mark is what survives it (measured: the mark and our own bar
+ *  stay, the inner action ids change). Bounded like the copies above; an unanswered press older
+ *  than a minute is dropped. */
+const MOBILE_FLIP_PRESS_MS = 60_000;
+const mobileFlipPresses = new Map<string, { key: string; wasTranslated: boolean; at: number }>();
+let mobileFlipTapWatching = false;
+
+/** Remember which side a comment was showing when the reader pressed its control.
+ *
+ *  This is the side signal a detector is not needed for: a trusted press that lands on the
+ *  control's own tap row is a reader asking the host to swap the body, and the words on screen at
+ *  that moment are the side being left. Only a comment whose side this page already knows is
+ *  recorded — an unknown side is one a press cannot teach us anything about, and guessing there
+ *  would file a translation as a comment's own words.
+ *
+ *  Synthetic presses (`element.click()` from `revealMobileCommentSource`) are not trusted and are
+ *  left alone; the reveal confirms its own side. */
+function watchMobileFlipTaps(): void {
+  if (mobileFlipTapWatching) return;
+  mobileFlipTapWatching = true;
+  const onPress = (event: Event): void => {
+    if (!event.isTrusted) return;
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const root = target.closest(MOB_COMMENT);
+    if (!root || !isMobileComment(root)) return;
+    const row = mobileCommentTranslationToggle(root)?.parentElement;
+    if (!row || !row.contains(target)) return;
+    const mark = root.getAttribute(MOB_LONG_CLICK);
+    const key = squeeze(mobileWords(mobileCommentBody(root)));
+    const side = mobileCommentSideKnown(root);
+    if (!mark || !key || side === undefined) return;
+    mobileFlipPresses.set(mark, { key, wasTranslated: side, at: Date.now() });
+  };
+  // iOS dispatches a tap as pointerup and click alike; either naming the side is enough.
+  document.addEventListener('click', onPress, true);
+  document.addEventListener('pointerup', onPress, true);
+}
+
+/** Turn a reader's answered press into a verdict: the host swapped the body, so the words that
+ *  replaced the pressed ones are the other side.
+ *
+ *  `translatedText` is remembered against the words it translated, which is what keeps the
+ *  comment's id built from its own words — the rule `post-id-names-one-text` holds on this
+ *  surface only through that copy. Run before the detector pre-pass, and independently of it:
+ *  this is the one road a browser without `detectLanguage` has. */
+function resolveMobileFlipPress(root: Element): void {
+  const mark = root.getAttribute(MOB_LONG_CLICK);
+  if (!mark) return;
+  const press = mobileFlipPresses.get(mark);
+  if (!press) return;
+  if (Date.now() - press.at > MOBILE_FLIP_PRESS_MS) {
+    mobileFlipPresses.delete(mark);
+    return;
+  }
+  const now = squeeze(mobileWords(mobileCommentBody(root)));
+  if (!now || now === press.key) return;
+  mobileFlipPresses.delete(mark);
+  const translated = !press.wasTranslated;
+  if (translated) rememberMobileCommentSource(now, press.key);
+  else rememberMobileCommentOwnWords(now);
+  sideTranslationVerdicts.set(root, { key: now, translated });
 }
 
 /** The name a mobile comment is filed under: a digest of its author and its words.
@@ -2526,10 +3920,30 @@ function mobileCommentAuthor(root: Element): string {
 function mobileCommentId(root: Element): string | null {
   const body = mobileCommentBody(root);
   if (!body) return null;
-  const words = squeeze(mobileWords(body));
+  // A comment the app is showing the translation of is named by its OWN words, the copy taken
+  // while the host had them up (see `mobileCommentSources`), so its identity is the same on both
+  // sides. Without a copy — a translation met with no source read back — the words on screen are
+  // all there is, and the capture refuses the row rather than filing that.
+  const live = mobileWords(body);
+  const words = squeeze(mobileCommentSources.get(squeeze(live)) ?? live);
   const username = mobileCommentAuthor(root);
   if (!words || !username) return null;
   return TEXT_ID_PREFIX + wordsDigest(username, words);
+}
+
+/** Whether a mobile comment's own words are held back by the app — it is showing a translation
+ *  and no copy of its source has been read back yet.
+ *
+ *  The detector pre-pass is what says the words on screen ARE a translation: this surface states
+ *  no language at all (measured, no `lang` anywhere in the block on either side), so markup alone
+ *  cannot. From here the row is held back until its own words have been read off the host (see
+ *  `revealMobileCommentSource`), which is the same question `bodyClipped` asks of a clipped body. */
+function mobileCommentSourceMissing(root: Element): boolean {
+  if (!isMobileComment(root)) return false;
+  if (sideVerdict(root) !== true) return false;
+  const body = mobileCommentBody(root);
+  if (!body) return false;
+  return !mobileCommentSources.has(squeeze(mobileWords(body)));
 }
 
 /** Every comment block the app has rendered inside a scope, in the order it laid them out.
@@ -2687,75 +4101,98 @@ function mobileCommentWindow(root: Element): { left: number; top: number; width:
   return { left, top: line.top, width: Math.max(0, right - left) };
 }
 
-/** Drive the app's own expander on a body it is showing a prefix of.
+/** The rightmost edge of the words on an element, measured per line box.
  *
- *  Serialized through the same queue `revealClipped` uses, and bounded the same way: two clicks
- *  racing would interleave two of the app's re-renders under each other's polls, and a control
- *  that refuses to open must not be clicked on every sweep. The signal watched for is the
- *  expander going away, with the body growing as the fallback for the day the app leaves it
- *  behind — and the body is looked up again on every poll, because the app answers by re-rendering
- *  the story: the element that was clicked is detached by the time the answer arrives (measured),
- *  so a poll holding the old node reads a body that is no longer on the page. */
-const mobileExpandAttempts = new WeakMap<Element, number>();
-
-/** Press a control the way a tap does.
- *
- *  The mobile app is a tap-driven document: a bare `click()` is only the last of the events a
- *  finger produces, and the app's own handler is bound to the pointer pair on this surface. Both
- *  are dispatched, in the order a real tap produces them, so the app answers whichever one it
- *  listens for. */
-function tapHost(el: Element): void {
-  const target = el as HTMLElement;
-  const rect = target.getBoundingClientRect();
-  const init = {
-    bubbles: true,
-    cancelable: true,
-    clientX: rect.left + rect.width / 2,
-    clientY: rect.top + rect.height / 2,
-  };
-  for (const type of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']) {
-    const event = type.startsWith('pointer')
-      ? new PointerEvent(type, init)
-      : new MouseEvent(type, init);
-    target.dispatchEvent(event);
+ *  A component's own rectangle says where its ROW ends, not where its words do — the app's
+ *  text components fill their column, and the measured one under a translation left 195px of
+ *  its 364px box empty. Ranges over the text nodes answer with the line boxes themselves, so
+ *  the widest line's right edge is where the writing actually stops. */
+function textRightEdge(el: Element): number {
+  let right = 0;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.nodeValue?.trim()) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    for (const rect of Array.from(range.getClientRects())) {
+      if (rect.width > 0) right = Math.max(right, rect.right);
+    }
   }
+  return right;
 }
 
-async function revealMobileClipped(root: Element, opts?: { onDemand?: boolean }): Promise<void> {
-  if (!mobileExpanderIn(mobileBody(root))) return;
-  if (!opts?.onDemand) {
-    const attempts = (mobileExpandAttempts.get(root) ?? 0) + 1;
-    mobileExpandAttempts.set(root, attempts);
-    if (attempts > MAX_EXPAND_ATTEMPTS) return;
+/** Where a mobile story's second button group goes: beside the app's line under the
+ *  translation (see `mobileTranslationLine`), the one row on that surface with room left.
+ *
+ *  Laid OVER the app's layout exactly as the post's own pill is (`placeButtons`), for the same
+ *  measured reasons: the app positions its components absolutely, so an in-flow sibling grows
+ *  nothing and an inserted flex item is crushed. Room is measured from the line's last word —
+ *  its component's box fills the column — and handed to the bar as `mf-seat-width`, the
+ *  measurement the header's seat hands its own. A line that leaves less than a pill's width
+ *  seats nothing: a group parked over the host's words is worse than none. */
+function placeMobileTranslationButtons(container: HTMLElement, root: Element) {
+  const line = mobileTranslationLine(root);
+  if (!line) return;
+  const rootRect = root.getBoundingClientRect();
+  if (rootRect.width <= 0 || rootRect.height <= 0) {
+    container.dataset.mfSeatWidth = '-1';
+    container.style.visibility = 'hidden';
+    if (container.parentElement !== root) root.appendChild(container);
+    return;
   }
-  expanding = expanding
-    .then(async () => {
-      if (!root.isConnected) return;
-      const control = mobileExpanderIn(mobileBody(root));
-      if (!control) return;
-      const before = mobileWords(mobileBody(root)).length;
-      tapHost(control);
-      for (let i = 0; i < EXPAND_POLLS; i++) {
-        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
-        if (!root.isConnected) return;
-        if (!mobileExpanderIn(mobileBody(root))) return;
-        if (mobileWords(mobileBody(root)).length > before) return;
-      }
-      console.warn('[misinfo] facebook: a clipped mobile post would not expand; it stays out of this batch');
-    })
-    .catch((e) => {
-      console.error('[misinfo] facebook: expanding a clipped mobile post failed', e);
-    });
-  return expanding;
+  const lineRect = line.getBoundingClientRect();
+  const wordsRight = textRightEdge(line);
+  const right = Math.min(lineRect.right, rootRect.right) - MOB_SEAT_GAP;
+  const left = wordsRight + MOB_SEAT_GAP;
+  const width = Math.max(0, right - left);
+  if (wordsRight <= 0 || width < MOB_PILL_MIN_WIDTH) {
+    container.style.visibility = 'hidden';
+    return;
+  }
+  container.style.visibility = '';
+  container.style.float = '';
+  container.style.marginLeft = '';
+  container.style.marginTop = '';
+  container.style.position = 'absolute';
+  container.style.zIndex = MOB_SEAT_Z;
+  // The app's containers are `pointer-events: none` and turn it back on only inside their own
+  // tappable rows; a seat that says nothing is inert however whole it paints (see
+  // `placeButtons`).
+  container.style.pointerEvents = 'auto';
+  const surface = mobileSurfaceColor(root);
+  container.dataset.mfSeatBg = surface;
+  container.style.backgroundColor = surface;
+  container.dataset.mfSeatWidth = String(Math.round(width));
+  if (container.parentElement !== root) root.appendChild(container);
+  const block = (container.offsetParent as HTMLElement | null) ?? root;
+  const blockRect = block.getBoundingClientRect();
+  container.style.right = 'auto';
+  container.style.left = `${Math.round(left - blockRect.left)}px`;
+  container.style.top = `${Math.round(lineRect.top + (lineRect.height - MOB_PILL_HEIGHT) / 2 - blockRect.top)}px`;
 }
 
 /** Compose a mobile post for classification, or refuse it.
  *
  *  Refused while the app is still holding text back, for the reason every adapter here refuses
  *  one: a prefix names no post, and this surface has no payload that could complete it — the
- *  expander is the only road to the rest of the text, so a body that would not open is left
- *  uncaptured rather than filed short (mastodon.ts refuses a clipped root the same way). A later
- *  sweep tries again, up to `MAX_EXPAND_ATTEMPTS`. */
+ *  expander is the only road to the rest of the text, so a body the reader has not opened is left
+ *  uncaptured rather than filed short (mastodon.ts refuses a gated root the same way). Their own
+ *  tap is what opens it, and the next sweep files it whole.
+ *
+ *  A story the app is showing a translation of is filed exactly as the desktop branch files a
+ *  flipped post and as `telegram.ts` files a translated message: the post's OWN words as `text`
+ *  and `fullText` — they are its hash, and a hash of the app's rendering would file one story
+ *  under a different name in each language, classified and billed again as a new post — with the
+ *  side on screen carried beside them as `translatedText` and `destinationLanguage`. The
+ *  background then classifies the side on screen and files its ranges under the language the
+ *  reader is reading, which is the whole point: the reader gets this platform's buttons working
+ *  on the words in front of them rather than on words a scroll further up.
+ *
+ *  The refusal above is asked of the SOURCE side only, which is what `mobileBody` answers. That
+ *  is the side that names the post, so it is the side a prefix would damage. A clipped rendering
+ *  costs nothing this surface can fix: the app states no payload holding its remainder, and what
+ *  it is showing is what the reader is looking at, so the classified text and the element our
+ *  highlights are painted into stay each other's measure either way. */
 function captureMobile(root: Element): CapturedPost | null {
   // A comment is composed by its own reader. Both are `MContainer`s and the dispatch above
   // cannot tell them apart, so the mark the app puts on a comment's container is what decides
@@ -2765,15 +4202,30 @@ function captureMobile(root: Element): CapturedPost | null {
   if (!id) return null;
   const body = mobileBody(root);
   if (!body) return null;
-  if (mobileExpanderIn(body)) return null;
-  const text = mobileWords(body);
+  // A body the app is still clipping is filed from the copy taken while the host had it open
+  // (`expandedBodies`) — the press that read it put the clamp straight back — and is refused
+  // when there is no copy, rather than filed as its prefix.
+  const text = mobileExpanderIn(body)
+    ? (expandedBodies.get(namespaced(id)) ?? '')
+    : desktopFormOf(body, passageTextContent(body as HTMLElement)).trim();
   const username = mobileAuthor(root);
   if (!text || !username) return null;
+  const shown = mobileShown(root);
+  const transcribed = shown && shown !== body ? mobileWords(shown) : '';
+  const destination = transcribed ? appLanguage() : null;
+  const datetime = mobileAgeIn(root);
   return {
     post: {
       id: namespaced(id),
       text,
       fullText: text,
+      // The side the reader is reading, when it is not the post's own words. A language that
+      // cannot be named is not carried: the locale is the key the rendered ranges are filed
+      // under, and `isTranslated` would be answering true while nothing could address them. The
+      // capture then states one side only, which is the reading this platform had before any of
+      // this existed.
+      translatedText: transcribed && destination ? transcribed : undefined,
+      destinationLanguage: transcribed && destination ? destination : undefined,
       username,
       // The badge is looked for with the same anchor the desktop design uses, inside the story's
       // own header. Unmeasured on this surface: if the mobile app draws its badge another way, a
@@ -2783,6 +4235,7 @@ function captureMobile(root: Element): CapturedPost | null {
       conversationId: namespaced(id),
       quoting: null,
       replyingTo: null,
+      ...(datetime ? { datetime } : {}),
     } as MainTweet,
     replyParentId: null,
   };
@@ -2811,22 +4264,39 @@ function captureMobile(root: Element): CapturedPost | null {
 function captureMobileComment(root: Element): CapturedPost | null {
   const body = mobileCommentBody(root);
   if (!body || mobileExpanderIn(body)) return null;
-  const text = mobileWords(body);
+  // A comment the app is showing in its translation is filed under its OWN words — the copy taken
+  // while the host had them up (see `mobileCommentSources`) — with the side on screen carried
+  // beside them, exactly as `captureMobile` files a translated story. With no copy there is
+  // nothing to file: naming the comment by its translation would give it a different identity in
+  // each language, so the row stays out of this batch rather than being classified twice.
+  if (mobileCommentSourceMissing(root)) return null;
+  const live = desktopFormOf(body, passageTextContent(body as HTMLElement)).trim();
+  const own = mobileCommentSources.get(squeeze(mobileWords(body)));
+  const text = own ?? live;
+  const transcribed = own ? live : '';
+  const destination = transcribed ? hostTranslationLanguage() : null;
   const author = mobileCommentAuthorEl(root);
-  const username = bodyWords(author);
+  const username = authorIdentity(desktopLineOf(bodyWords(author)));
   if (!text || !username) return null;
   const id = mobileCommentId(root);
   if (!id) return null;
   const parentId = mobileCommentParentId(root);
   if (!parentId) return null;
+  const datetime = mobileAgeIn(root);
   // Refused rather than filed onto itself: an ancestor's name is read off the page the same way
   // this comment's is, and a comment that resolved to its own name would be its own ancestor.
   if (parentId === namespaced(id)) return null;
+  rememberMobileCommentOwnWords(text);
   return {
     post: {
       id: namespaced(id),
       text,
       fullText: text,
+      // The side the reader is reading, when the app is showing that rather than the comment's own
+      // words. Filed under the language the reader is reading so the background can offer the
+      // classification the source already has instead of paying for a second one.
+      translatedText: transcribed && destination ? transcribed : undefined,
+      destinationLanguage: transcribed && destination ? destination : undefined,
       username,
       // The badge is looked for with the anchor the desktop comment branch uses — the commenter's
       // own name line, widened to the line it sits on. Unmeasured on this surface: if the mobile
@@ -2840,9 +4310,268 @@ function captureMobileComment(root: Element): CapturedPost | null {
       conversationId: parentId,
       quoting: null,
       replyingTo: null,
+      ...(datetime ? { datetime } : {}),
     } as MainTweet,
     replyParentId: parentId,
   };
+}
+
+/** Put the post's own words back on the page, for a post the reader met only in translation.
+ *
+ *  Facebook shows a post in one language at a time, and a post the reader meets ALREADY
+ *  translated is rendered with the translation as the body and the source nowhere in the
+ *  document (measured 2026-10-16: no `story_message` anywhere in such a root). Its own response
+ *  cannot supply the source — the translation payload carries the translation alone (see
+ *  `facebook.capture.content.ts`) — so the host's control is the only road to it, and this
+ *  presses it.
+ *
+ *  Pressed UNASKED, not on a button, because a post is hashed from its source text: until the
+ *  source has been read there is no post to put a button on, which is why such a post is
+ *  buttonless today while its comments are not.
+ *
+ *  The words are remembered rather than left to the page (`rememberSource`), because the press is
+ *  put back immediately — the reader is owed the post as they found it, in the language they were
+ *  reading — and the host re-renders the block at will. So the source is filed from the copy even
+ *  though the words are taken off the page again, and the translation left where it was is read as
+ *  the post's translated side exactly as a flipped post's is (`translatedBody`).
+ *
+ *  Serialized and bounded exactly as an expansion is, and for the same reasons: two presses racing
+ *  would interleave the host's re-renders under each other's polls, and a control that refuses
+ *  must not be pressed forever. A body that comes back CUT is left on the page rather than put
+ *  away — the ordinary pass completes a clamped body from the host's payload, and hiding it again
+ *  would take that away. */
+async function revealTranslatedSource(root: Element, opts?: { onDemand?: boolean }): Promise<void> {
+  const id = postIdOf(root);
+  if (!id) return;
+  if (!opts?.onDemand) {
+    const attempts = (expandAttempts.get(root) ?? 0) + 1;
+    expandAttempts.set(root, attempts);
+    if (attempts > MAX_EXPAND_ATTEMPTS) return;
+  }
+
+  expanding = expanding
+    .then(async () => {
+      if (!root.isConnected) return;
+      const toggle = translationToggle(root);
+      if (!toggle) return;
+      (toggle as HTMLElement).click();
+      let body: Element | null = null;
+      for (let i = 0; i < EXPAND_POLLS; i++) {
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+        if (!root.isConnected) return;
+        // Nothing of this post's own was in the document before the press, so the message
+        // appearing at all is the host answering with the source.
+        const shown = storyMessage(root);
+        if (shown && bodyWords(shown)) {
+          body = shown;
+          break;
+        }
+      }
+      if (!body) {
+        console.warn(
+          '[misinfo] facebook: a translated post would not show its source; it stays out of this batch',
+        );
+        return;
+      }
+      // The source comes back CUT to one line, and its payload cannot complete it (see
+      // `bodyClipped`), so the page's own expander is the rest of the road: pressed here, and the
+      // words read once they have grown. Remembered after this, so the copy is the whole source.
+      const more = truncationControl(body);
+      if (more) {
+        const before = bodyWords(body).length;
+        (more as HTMLElement).click();
+        for (let i = 0; i < EXPAND_POLLS; i++) {
+          await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+          if (!root.isConnected) return;
+          const shown = storyMessage(root);
+          if (!shown) break;
+          if (bodyWords(shown).length > before) {
+            body = shown;
+            break;
+          }
+        }
+      }
+      rememberSource(id, bodyWords(body));
+      const back = translationToggle(root);
+      if (back && !endsAtCut(body)) (back as HTMLElement).click();
+    })
+    .catch((e) => {
+      console.error('[misinfo] facebook: revealing a translated post’s source failed', e);
+    });
+  return expanding;
+}
+
+/** Read the side of every comment row whose markup cannot state it.
+ *
+ *  A manual swap drops the language from a comment's body and `commentStatesLanguage` answers
+ *  for it; the host's automatic translation has been seen to leave that attribute standing
+ *  over the translated words, so markup alone reports a side that is not the one on screen and
+ *  the translation is captured as the comment's own words. The words are then the only signal
+ *  there is: each row that states a language, offers the footer toggle and holds enough words
+ *  to judge is handed to `browser.i18n.detectLanguage`, and a reliable reading in a different
+ *  language than the one stated is what marks the row translated.
+ *
+ *  Run as a PRE-PASS, before the clipped pass asks `bodyClipped`: `commentShowsTranslation` is
+ *  synchronous and every reader of it is too. Nothing here changes what a row means until a
+ *  verdict says so, and a verdict that is wrong is corrected by the reveal itself —
+ *  `revealCommentSource` confirms the side it gets back and puts a flip back, remembering
+ *  nothing, when the host did not answer with the source. A row the detector cannot judge, or
+ *  a browser where the detector is absent, is left exactly as it was. */
+async function detectTranslatedCommentSides(roots: Element[]): Promise<void> {
+  // A reader's own press of a comment's control names both sides without a detector, so it is
+  // resolved even where the detector is missing (Safari states none).
+  watchMobileFlipTaps();
+  for (const root of roots) {
+    if (root.isConnected && isMobileComment(root)) resolveMobileFlipPress(root);
+  }
+  if (languageDetectionUnavailable) return;
+  const readings: { root: Element; text: string; stated: string; translatedWhenSame?: boolean }[] = [];
+  for (const root of roots) {
+    if (!root.isConnected) continue;
+    if (sideVerdict(root) !== undefined) continue;
+    if (isMobileComment(root)) {
+      // The app's own comment surface states no language at all — measured 2026-10-20, no `lang`
+      // anywhere in the block on either side — so the only claim the words can be checked against
+      // is the one the app translates INTO: the document's own language. A comment the host offers
+      // to translate whose words are already in that language is showing the translation, and the
+      // row is marked the other way round from the desktop one below.
+      if (!mobileCommentTranslationToggle(root)) continue;
+      const words = mobileWords(mobileCommentBody(root));
+      const stated = hostTranslationLanguage();
+      // No length floor here, unlike the desktop row: a short comment is exactly the text whose
+      // side the reader is most likely to flip, and the reading is still only taken when the
+      // detector calls it reliable. A string too short to judge simply gets no verdict.
+      if (!words || !stated) continue;
+      readings.push({ root, text: words, stated, translatedWhenSame: true });
+      continue;
+    }
+    if (!root.matches(COMMENT)) continue;
+    if (!commentTranslationToggle(root)) continue;
+    const stated = commentStatedLanguage(root);
+    if (!stated) continue;
+    const text = commentText(root);
+    if (!text || text.trim().length < MIN_DETECT_CHARS) continue;
+    readings.push({ root, text, stated });
+  }
+  await Promise.all(readings.map(async ({ root, text, stated, translatedWhenSame }) => {
+    const result = await detectLanguageOf(text);
+    if (!root.isConnected) return;
+    // No answer at all (the API refused or is gone): no verdict, so the row is read as it
+    // always was and a later pass may ask again.
+    if (!result) return;
+    const top = result.isReliable ? result.languages?.[0] : undefined;
+    const detected = top && top.percentage >= MIN_DETECT_CONFIDENCE ? languageBase(top.language) : '';
+    const same = !!detected && detected === languageBase(stated);
+    sideTranslationVerdicts.set(root, { key: squeeze(text), translated: translatedWhenSame ? same : !!detected && !same });
+  }));
+}
+
+/** Whether the language detector is missing or refuses on this browser. Once true, the
+ *  pre-pass stops asking; nothing else reads it, because no verdict means no change. */
+let languageDetectionUnavailable = false;
+
+type LanguageDetection = {
+  isReliable: boolean;
+  languages: { language: string; percentage: number }[];
+};
+
+/** `browser.i18n.detectLanguage` as a promise, and null wherever it cannot answer. Wrapped
+ *  because the typings state the callback form, and because a content script running where
+ *  the API is absent must fall through to the markup-only reading rather than throw. */
+function detectLanguageOf(text: string): Promise<LanguageDetection | null> {
+  return new Promise((resolve) => {
+    let settled = false;
+    const settle = (result: LanguageDetection | null | undefined) => {
+      if (settled) return;
+      settled = true;
+      resolve(result && typeof result === 'object' ? result : null);
+    };
+    try {
+      const detect = (browser.i18n as unknown as {
+        detectLanguage?: (t: string, cb: (r: LanguageDetection) => void) => void;
+      }).detectLanguage;
+      if (!detect) {
+        languageDetectionUnavailable = true;
+        settle(null);
+        return;
+      }
+      detect(text, (result) => settle(result));
+    } catch {
+      languageDetectionUnavailable = true;
+      settle(null);
+    }
+  });
+}
+
+/** Put a COMMENT's own words on the page long enough to read them.
+ *
+ *  Three translation shapes, three roads. A story flips by APPENDING its translation below its
+ *  own words, and a story met already translated keeps none of those words at all. A comment is
+ *  neither: the host swaps the comment's single body run for the translation IN PLACE (measured
+ *  2026-10-18 on a photo permalink: the same runs, in the same elements, in the other language),
+ *  so the comment's own words are nowhere on the page and the translation is the only text there
+ *  is to read. Filing that text as the comment's own gives one comment a different identity in
+ *  each language — classified, billed and stored twice (see `wholeCommentText`) — so the words
+ *  are read back off the host and the reader is put on the side they were reading.
+ *
+ *  Pressed UNASKED, for the same reason a translated-only story is: there is no comment to put a
+ *  button on until its own words have been read. The press is put back immediately, and the words
+ *  are remembered rather than left to the page (`rememberSource`), because the row is re-rendered
+ *  by the host at will and the capture that follows reads it in the translation.
+ *
+ *  Which side came back is CONFIRMED, never assumed: the host states the language of a comment's
+ *  own words on the run's wrapper and states none for the translation (see
+ *  `commentStatesLanguage`). A press that changes nothing, or that brings back a body still
+ *  stating no language, is put back and remembers nothing — an unconfirmed side is left exactly
+ *  as today rather than filed as a guess.
+ *
+ *  Serialized and bounded exactly as every other expansion here, and for the same reasons: two
+ *  presses racing would interleave the host's re-renders under each other's polls, and a control
+ *  that refuses must not be pressed forever. */
+async function revealCommentSource(root: Element, opts?: { onDemand?: boolean }): Promise<void> {
+  const id = postIdOf(root);
+  if (!id) return;
+  if (!opts?.onDemand) {
+    const attempts = (expandAttempts.get(root) ?? 0) + 1;
+    expandAttempts.set(root, attempts);
+    if (attempts > MAX_EXPAND_ATTEMPTS) return;
+  }
+
+  expanding = expanding
+    .then(async () => {
+      if (!root.isConnected) return;
+      const toggle = commentTranslationToggle(root);
+      if (!toggle) return;
+      (toggle as HTMLElement).click();
+      let source: string | null = null;
+      for (let i = 0; i < EXPAND_POLLS; i++) {
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+        if (!root.isConnected) return;
+        if (!commentStatesLanguage(root)) continue;
+        source = commentText(root);
+        if (source) break;
+      }
+      if (source) {
+        // Complete or cut, exactly as a story's own words come back: the page's payload states
+        // what a cut holds back, and words it cannot complete are not remembered at all, so the
+        // comment stays out of this batch rather than being filed as its translation.
+        const whole = wholeCommentText(id, root, source);
+        if (whole) rememberSource(id, whole);
+      }
+      const back = commentTranslationToggle(root);
+      if (back) (back as HTMLElement).click();
+      // Waited for, unlike the story's press back: the capture that follows reads this same row,
+      // and a host caught half-way through putting the translation back would hand it a shape
+      // neither side describes.
+      for (let i = 0; i < EXPAND_POLLS; i++) {
+        await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
+        if (!root.isConnected || !commentStatesLanguage(root)) return;
+      }
+    })
+    .catch((e) => {
+      console.error('[misinfo] facebook: reading a translated comment’s source failed', e);
+    });
+  return expanding;
 }
 
 export const facebookAdapter: PlatformAdapter = {
@@ -2873,13 +4602,8 @@ export const facebookAdapter: PlatformAdapter = {
 
   postIdOf,
 
-  /** A story or a comment, judged for length — see LONG_FORM_CHARS.
-   *
-   *  Comments are never long-form: they are the shape this integration is for, and a comment
-   *  the page truncates is completed from the page's own payload rather than dropped, so it
-   *  carries its whole text and its buttons either way. That is also why the measurement is
-   *  scoped to the root's OWN message: a story's markup holds its comments, and a truncated
-   *  comment inside a short story would otherwise condemn the story. */
+  detectTranslatedSides: detectTranslatedCommentSides,
+
   /** Whether this root's own words are both held back by the page AND unanswerable from the
    *  page's own payload.
    *
@@ -2915,17 +4639,48 @@ export const facebookAdapter: PlatformAdapter = {
    *  of the body's own text for the ellipsis the page leaves at a cut (`bodyTruncated` keys on the
    *  same character), and only then the two clones a body that may be cut costs — the expander's
    *  read of the run, and the prefix `wholeBodyText` matches against the payload. An ordinary feed
-   *  post, whose body is complete, is still dismissed by the ellipsis read alone. */
+   *  post, whose body is complete, is still dismissed by the ellipsis read alone.
+   *
+   *  What the painter owes a body that stays clipped is `bodyControl`: the wrapper the marks are
+   *  painted into is built before the host's own control and only the nodes ahead of it are moved,
+   *  so the host can still take that control out of the tree it is in.
+   *
+   *  The third case is a post with no body element at all: the page is showing it ONLY in its
+   *  translation, and its own words are off the document rather than cut inside it (see
+   *  `revealSource`). The same question is asked of it and the same answer is owed — its words
+   *  are held back and its own payload cannot complete them — so it is reported here rather than
+   *  left to a `capture` that can only refuse it, which is what left such a post buttonless. */
   bodyClipped(root) {
     // The mobile app states no payload this adapter can read, so the expander it left in the body
     // is not a shortcut around a longer text — it is the only road to the rest of it, and a body
     // carrying one is a body being held back. (See the mobile section: `bodyTruncated`'s `…` test
     // finds nothing there, because that surface writes three ASCII dots.)
-    if (isMobileRoot(root)) return mobileExpanderIn(mobileBody(root)) !== null;
+    if (isMobileRoot(root)) {
+      // A comment the app is showing the translation of has its own words off the document: the
+      // host's own control is the only road to them, so it is reported here as held back until
+      // they have been read back (see `revealMobileCommentSource`).
+      if (mobileCommentSourceMissing(root)) return true;
+      if (!mobileExpanderIn(mobileBody(root))) return false;
+      // The press is the only road to the rest of a clipped body, and the body is put back
+      // afterwards — so once the words have been read (see `expandedBodies`) there is nothing
+      // left to ask the page for, and the post is filed from the copy.
+      const id = postIdOf(root);
+      return !(id && expandedBodies.has(id));
+    }
     const id = postIdOf(root);
     if (!id) return false;
+    // A comment the host is showing in translation has its own words nowhere on the page: it
+    // swapped them out for the translation in place, so the comment cannot be named until they
+    // have been read back (see `revealCommentSource`). Reported here as held back, which is the
+    // question this hook asks, on exactly the terms a translated-only story is.
+    if (root.matches(COMMENT) && commentShowsTranslation(root)) return !rememberedSources.has(id);
     const body = root.matches(COMMENT) ? root : storyMessage(root);
-    if (!body) return false;
+    // A story the page is showing ONLY in its translation has no body element at all: the words
+    // on screen are the block the host translated into and the source is out of the document
+    // (see `revealSource`). Its own words are held back and its own payload cannot complete them,
+    // which is this hook's question — asked here of a body that is ABSENT rather than cut. A
+    // comment is never this shape, and a root with neither a body nor that control stays refused.
+    if (!body) return !root.matches(COMMENT) && translationToggle(root) !== null;
     // Nothing the page cut can be held back without the ellipsis it writes at the cut, so a body
     // holding none is a complete body: the common root, and the answer that costs one string read.
     if (!(body.textContent ?? '').includes('…')) return false;
@@ -2951,13 +4706,30 @@ export const facebookAdapter: PlatformAdapter = {
    *  way the wait can be over — the same pair Quora watches, and the same poll, because this is
    *  the same kind of host control. The affordance alone is not enough of an answer: the page
    *  removes it as soon as it is clicked and writes the words a re-render later, and a body read
-   *  in that window is still the prefix. Nothing is put back: the reader is owed the text the
-   *  page was holding, so an expansion is a page left MORE readable than it was found. A root
-   *  whose body will not open keeps its prefix and stays out of this batch, which costs it a
-   *  button rather than a wrong one; a later sweep tries again, and after `MAX_EXPAND_ATTEMPTS`
-   *  it is left alone so a refusal cannot be paid for on every sweep. */
+   *  in that window is still the prefix. The words are read and kept, and the body is put back
+   *  as the reader found it (`expandedBodies`, `collapseControl`): the post is filed whole
+   *  without leaving the page reflowed for a click the reader did not make. A root whose body
+   *  will not open keeps its prefix and stays out of this batch, which costs it a button rather
+   *  than a wrong one; a later sweep tries again, and after `MAX_EXPAND_ATTEMPTS` it is left
+   *  alone so a refusal cannot be paid for on every sweep.
+   *
+   *  The mobile app is the same case reached differently — no payload behind the cut at all, so
+   *  the press is the only road to the rest of the words (see `revealMobileClipped`). */
   async revealClipped(root, opts) {
-    if (isMobileRoot(root)) return revealMobileClipped(root, opts);
+    if (isMobileRoot(root)) {
+      // A translated mobile comment is the same question as the desktop row below, on a surface
+      // whose swap is in place, so its own words are read first and the body is put back after.
+      if (mobileCommentSourceMissing(root)) return revealMobileCommentSource(root, opts);
+      return revealMobileClipped(root, opts);
+    }
+    // A post the page is showing ONLY in its translation is the same case reached differently:
+    // its own words are held back by the page and the payload cannot complete them, so the
+    // host's own control is the road (see `revealSource`).
+    if (!storyMessage(root) && translationToggle(root)) return revealTranslatedSource(root, opts);
+    // A COMMENT translated in place is the same question on a row instead of a story, and the
+    // road is the comment's own control (see `revealCommentSource`). Asked before the expander,
+    // because the comment's own words are what the expander would be opening.
+    if (commentShowsTranslation(root)) return revealCommentSource(root, opts);
     if (!expanderOf(root)) return;
     if (!opts?.onDemand) {
       const attempts = (expandAttempts.get(root) ?? 0) + 1;
@@ -2975,14 +4747,26 @@ export const facebookAdapter: PlatformAdapter = {
         for (let i = 0; i < EXPAND_POLLS; i++) {
           await new Promise((resolve) => setTimeout(resolve, EXPAND_POLL_MS));
           if (!root.isConnected) return;
-          if (ownBodyLength(root) > before) return;
+          if (ownBodyLength(root) > before) {
+            // The host has the words on the page. Read them now, then put the body back as the
+            // reader found it: the copy is what the post is filed from, since the words are taken
+            // off the page again (see `expandedBodies`).
+            const id = postIdOf(root);
+            const opened = wordsBlock(root);
+            if (id && opened) {
+              rememberExpansion(id, bodyWords(opened));
+              const back = collapseControl(root);
+              if (back && !endsAtCut(opened)) (back as HTMLElement).click();
+            }
+            return;
+          }
           // The control going away is the page answering, but the answer it gives that way is not
           // always the text: it is removed the moment it is clicked and the words arrive a
           // re-render later, and the body read in between is the prefix the page was holding —
           // which `capture` would then file as the post's own words (see `endsAtCut`). So the
           // wait ends on the words having grown, or on the control being gone with the cut gone
           // from the words as well: the two ways there is nothing left to wait for.
-          const body = root.matches(COMMENT) ? root : storyMessage(root);
+          const body = wordsBlock(root);
           if (!expanderOf(root) && !(body && endsAtCut(body))) return;
         }
         console.warn('[misinfo] facebook: a clipped post would not expand; it stays out of this batch');
@@ -2993,6 +4777,22 @@ export const facebookAdapter: PlatformAdapter = {
     return expanding;
   },
 
+  /** The page's own expander, which it writes INSIDE the run holding the words it cut
+   *  (`…<div role="button">See more</div>`) — so the painter builds its wrapper in that run and
+   *  leaves the control where the page put it. See `bodyControl` on the adapter type for what
+   *  moving it costs. Only the desktop surfaces reach here: the mobile app states no payload
+   *  this adapter can read, so a truncated mobile post is still refused by `capture`. */
+  bodyControl(body) {
+    return truncationControl(body);
+  },
+
+  /** A story or a comment, judged for length — see LONG_FORM_CHARS.
+   *
+   *  Comments are never long-form: they are the shape this integration is for, and a comment
+   *  the page truncates is completed from the page's own payload rather than dropped, so it
+   *  carries its whole text and its buttons either way. That is also why the measurement is
+   *  scoped to the root's OWN message: a story's markup holds its comments, and a truncated
+   *  comment inside a short story would otherwise condemn the story. */
   isLongForm(root) {
     if (isMobileRoot(root)) {
       const body = mobileBody(root);
@@ -3006,9 +4806,18 @@ export const facebookAdapter: PlatformAdapter = {
   },
 
   textElement(root) {
-    if (isMobileRoot(root)) return mobileBody(root);
+    // The side the reader is reading, which is the app's rendering of a story it is showing a
+    // translation of and the story's own words otherwise. Not `mobileBody`: that is the post's
+    // identity, and on a story with two sides the classified text is the one on screen, so this
+    // is the element the offsets in it have to be measured into (see `mobileShown`).
+    if (isMobileRoot(root)) return mobileShown(root);
     if (root.matches(COMMENT)) return root.querySelector(DIR_AUTO);
-    return storyMessage(root);
+    // A desktop flip leaves the source where it was and adds the translation beside it, so the
+    // side on screen is that sibling run and not `storyMessage`. The same rule as the mobile
+    // branch above, and for the same reason: what NAMES the post stays its own words (see
+    // `capture`, which reads `storyMessage` whichever side is showing, and `sourceText`), while
+    // what we paint over and measure offsets into is what the reader is actually reading.
+    return translatedElement(root) ?? storyMessage(root);
   },
 
   // A comment is classified as ONE post — the worker reads its blocks together — but the page
@@ -3083,6 +4892,19 @@ export const facebookAdapter: PlatformAdapter = {
     // without covering something — see that helper. Anywhere outside the root is not an option
     // either: a seat outside the root is never wired and never cleaned up.
     if (isMobileRoot(root)) {
+      // One root carries one post's group, plus the other side's while the host shows both.
+      // A comment is named by its words, and the app swaps those in place when the reader
+      // flips it, so a group seated before the swap can be left standing under an id nothing
+      // syncs any more — measured, two groups stacked over one comment after a flip, the older
+      // one never re-seated and never removed, and still there after flipping back. Only
+      // DIRECT children are this root's own bars: a story's scroller carries its comments'
+      // groups deeper inside, each seated on its own root.
+      const ownBarId = container.getAttribute('mf-top-bar-id');
+      for (const other of Array.from(root.children)) {
+        if (other === container) continue;
+        const otherBarId = other.getAttribute('mf-top-bar-id');
+        if (otherBarId !== null && otherBarId !== ownBarId) other.remove();
+      }
       // A story the app has in the DOM but recycled off-screen has no box: every edge of it
       // measures zero, and seating from that put the pill at the far left of a story that then
       // appeared — measured, `right: 6px` on a root whose own rectangle was 0x0. Nothing can be
@@ -3126,8 +4948,11 @@ export const facebookAdapter: PlatformAdapter = {
       container.style.backgroundColor = surface;
       const seat = comment ? mobileCommentWindow(root) : mobileWindow(root, header, end);
       // The width the app left, for the bar's renderer: a row with no room for words gets the mark
-      // instead of a label crushed to nothing (see `mf-seat-width` there).
+      // instead of a label crushed to nothing (see `mf-seat-width` there). This app's header packs
+      // its controls to the end of the line, so the pill is allowed to hang a little past the
+      // window rather than drop its words outright (see `mf-seat-overhang` there).
       container.dataset.mfSeatWidth = String(Math.round(seat.width));
+      container.dataset.mfSeatOverhang = '1';
       // Only when it is not already there: this runs on every pass that re-measures the seat, and
       // re-appending a node that is already the root's last child is a DOM mutation with no
       // effect on the layout — noise the host's own observers would have to answer for.
@@ -3197,15 +5022,45 @@ export const facebookAdapter: PlatformAdapter = {
     // states none (see `footerStoryRoots`) — the same row either way, and the same search for the
     // control the buttons are inset from, because that search is by position and holds no label.
     let row: Element | null = root.querySelector(NAME) ?? footerBlocks.get(root)?.row ?? null;
+    // The row they belong on is the one whose control sits on the NAME's own line. A header that
+    // stacks the author line over a line of its own (a page's "AI content · December 28, 2025"
+    // line, measured on a search result) puts both lines in ONE flex column, and there the last
+    // control in the column belongs to the line BELOW the name: seating from it took the buttons
+    // down with it and opened a gap between the name and that line, which is the reader's report
+    // "the buttons create a ton of space between the username and the description". So a row
+    // whose control is on another line is searched past; a header with no control on the name's
+    // line at all keeps the first row found, which is where these buttons have always gone.
+    const name = root.querySelector(NAME) ?? footerBlocks.get(root)?.author ?? null;
+    const onNameLine = (control: Element): boolean => {
+      if (!name) return true;
+      const a = name.getBoundingClientRect();
+      const b = control.getBoundingClientRect();
+      return b.height > 0 && b.top < a.bottom && a.top < b.bottom;
+    };
     let menu: Element | null = null;
+    let fallback: { row: Element; menu: Element } | null = null;
     for (let i = 0; row && row !== root && i < 8; i++) {
       if (getComputedStyle(row).display === 'flex') {
-        menu = menuControl(row);
-        if (menu) break;
+        const mates = Array.from(row.querySelectorAll(CONTROL)).filter(
+          (b) => !name?.contains(b) && onNameLine(b),
+        );
+        if (mates.length) {
+          menu = mates[mates.length - 1];
+          break;
+        }
+        if (!fallback) {
+          const any = menuControl(row);
+          if (any) fallback = { row, menu: any };
+        }
       }
       row = row.parentElement;
     }
-    if (!row || row === root || !menu) return;
+    if (!menu) {
+      if (!fallback) return;
+      row = fallback.row;
+      menu = fallback.menu;
+    }
+    if (!row || row === root) return;
     container.style.marginLeft = 'auto';
     // Inserted before the row's own child that HOLDS the control, not the control itself:
     // measured, the control sits three levels inside the row (the row's child is the cluster
@@ -3287,18 +5142,132 @@ export const facebookAdapter: PlatformAdapter = {
    *  when the document states no language at all, which is read as "no translation to describe"
    *  rather than as a language named nothing. */
   displayedTranslationLocale(root) {
+    // A mobile comment is the one surface that swaps its single body run for the translation IN
+    // PLACE (see `mobileCommentSources`), so both sides share one element and `isTranslated`
+    // cannot tell them apart — it reads a pair of siblings, and `mobileSides` answers null for a
+    // comment. The verdict the comment's identity already keeps is what says which side is up;
+    // without it a flip is never reported, and the side now on screen is never the one a
+    // localization measures into.
+    if (isMobileComment(root)) {
+      return sideVerdict(root) === true ? hostTranslationLanguage() : null;
+    }
     return isTranslated(root) ? appLanguage() : null;
   },
 
-  /** The side on screen, read only when the reader's own flip is being reported.
+  /** The body on screen, whichever side that is.
    *
-   *  The TRANSLATION, not the element `textElement` names: a flip leaves the post's own words
-   *  where they were and paints the translation beside them, so the run carrying the fetched
-   *  string is the one the reader is reading. Falls back to that element only if nothing in the
-   *  root matches a fetched translation, which a report of a flip should not reach. */
+   *  Usually the TRANSLATION, not the element `textElement` names: a flip leaves the post's own
+   *  words where they were and paints the translation beside them, so the run carrying the fetched
+   *  string is the one the reader is reading. But a host auto-translation the extension never
+   *  fetched is invisible to `isTranslated`, so the capture can file that translation as the
+   *  comment's own words; flipping back to the source then leaves the capture holding the wrong
+   *  side, and a Localize press must measure into the words the reader is actually reading. */
   displayedText(root) {
-    if (!isTranslated(root)) return null;
-    return translatedBody(root) ?? (shownBody(root) || null);
+    // A mobile story is read off its own markup rather than off the fetched copy the desktop
+    // branch matches against, and read through the same extractor `captureMobile` files it with,
+    // so the string handed to the background is the one it has to measure ranges into.
+    if (isMobileRoot(root)) {
+      // A comment's translation REPLACES its body rather than sitting beside it, so there is no
+      // second element to name: the body on screen is the side to hand over whichever one that
+      // is. Answering null here left a Localize press on a translated comment with no words at
+      // all, and the run then measured the claims into the captured source while filing its
+      // ranges under the language the reader was looking at — charged, painted nothing.
+      if (isMobileComment(root)) return mobileWords(mobileCommentBody(root)) || null;
+      const shown = mobileSides(root)?.translation ?? null;
+      return shown ? mobileWords(shown) || null : null;
+    }
+    const translated = translatedBody(root);
+    if (translated) return translated;
+    // A comment's words are its sibling runs joined — the reading `capture` files and
+    // `wholeCommentText` completes; a story's are its message block.
+    if (root.matches(COMMENT)) return commentText(root) || null;
+    // A story the page has CUT holds only an opening of the post's words (see
+    // `bodyTruncated`), and the capture files the whole body from the payload
+    // (`wholeBodyText`). A Localize press measured against the opening places nothing past
+    // the cut: the claims that name the rest match no words, so the side paints its prefix
+    // and the reader's own `See more` leaves everything below it bare however the bar is
+    // toggled (reported 2026-10-18). The press has to measure into the text the post is
+    // known by, which is what the translation side has always done (`wholeTranslation`).
+    // Ranges past the cut paint once the host shows those words.
+    const shown = shownBody(root);
+    const body = storyMessage(root);
+    return (body ? wholeBodyText(postIdOf(root) ?? '', body, shown) : '') || shown || null;
+  },
+
+  /** Both sides of one story the page is showing at once, which a flip makes it do.
+   *
+   *  The flip does NOT take the post's own words away: the page appends the translation under
+   *  them (see `translatedElement`), so a flipped story has two bodies in one root and the
+   *  reader can see whichever they like. Painting only the translation side — which is what
+   *  `textElement` names, and what the first button group's pill therefore governs — left the
+   *  post's own words plain beside it, and this is what the second paint and the second button
+   *  group are placed from.
+   *
+   *  Both surfaces the app shows both sides on answer here: the desktop one appends the
+   *  translation below the post's own words (`translatedElement`), and the m-site renders the
+   *  two as siblings in one container (`mobileSides`). Each answers its pair NAMED, which is
+   *  what both paints and both button groups need. Comments are left out on both — the desktop
+   *  append belongs to a story, and comment translation is unmeasured on the m-site (see
+   *  `mobileSides`). */
+  dualTextElements(root) {
+    if (root.matches(COMMENT)) return null;
+    if (isMobileRoot(root)) return mobileSides(root);
+    const source = storyMessage(root);
+    const translation = translatedElement(root);
+    if (!source || !translation) return null;
+    if (source === translation || source.contains(translation) || translation.contains(source)) return null;
+    return { source, translation };
+  },
+
+  /** The second button group's seat: the page's own row of translation controls,
+   *  `<language> · Hide translation · Rate this translation`.
+   *
+   *  Found STRUCTURALLY and never by reading a label, which is the same rule `translationToggle`
+   *  follows and for the same reason — those words are the host's own string in the reader's
+   *  language. Measured 2026-10-16 on a flipped Spanish post: the block the popup appended holds
+   *  three `[role="button"]` controls whose parent is a `span[dir="auto"]`, and ALL THREE SHARE
+   *  one parent — that parent is the row, 626px wide with its own content ending 385px short of
+   *  it. Only the first of the three is empty, which is exactly why the seat is their shared
+   *  parent and not any single control: seating from one control names whichever the walk
+   *  happened to reach first.
+   *
+   *  The pill goes at the END of that row, after its last control, rather than at the row's own
+   *  far edge: the row is inline content, so an appended `inline-flex` lands where the reader
+   *  expects to find it, right of the words they just read.
+   *
+   *  Nothing is seated when the block is gone — with the translation hidden there is no second
+   *  side, so there is nothing to seat a second group against (see `dualTextElements`).
+   *
+   *  The m-site has no such row: its translation sits in a text component of its own, and the
+   *  one row under it is the app's own "Translated from …" line. That surface is measured and
+   *  placed by `placeMobileTranslationButtons`. */
+  placeTranslationButtons(container, root) {
+    if (isMobileRoot(root)) {
+      placeMobileTranslationButtons(container, root);
+      return;
+    }
+    const block = appendedTranslation(root);
+    if (!block) return;
+    const controls = Array.from(block.querySelectorAll(CONTROL));
+    let row: Element | null = null;
+    let held = 0;
+    const seen = new Set<Element>();
+    for (const control of controls) {
+      const parent = control.parentElement;
+      if (!parent || parent.tagName !== 'SPAN' || parent.getAttribute('dir') !== 'auto') continue;
+      if (seen.has(parent)) continue;
+      seen.add(parent);
+      if (!textOf(parent)) continue;
+      const mine = controls.filter((c) => c.parentElement === parent).length;
+      if (mine > held) {
+        held = mine;
+        row = parent;
+      }
+    }
+    if (!row) return;
+    container.style.marginLeft = '8px';
+    container.style.marginTop = '';
+    if (container.parentElement !== row) row.appendChild(container);
   },
 
   /** Take in the translations the app's own GraphQL hands over.
@@ -3376,7 +5345,9 @@ export const facebookAdapter: PlatformAdapter = {
     // reader ever saw it (see `filedMobileIds`).
     if (isMobileRoot(root)) {
       const lifted = captureMobile(root);
-      if (lifted) filedMobileIds.add(lifted.post.id);
+      if (lifted) {
+        filedMobileIds.add(lifted.post.id);
+      }
       return lifted;
     }
     const id = postIdOf(root);
@@ -3415,7 +5386,21 @@ export const facebookAdapter: PlatformAdapter = {
       // here (both are legacy decimal); the story is resolved by containment because its own
       // id is a pfbid. The payload is asked first because the markup is right for one level
       // only: a reply to a reply is named by its link as a child of the thread's root.
-      const parent = commentParents.get(id) ?? commentParentId(root);
+      //
+      // The two sources spell the id differently and exactly one of them is already
+      // namespaced: `commentParents` is filled by `absorbThreadEdges`, which stores both sides
+      // as this adapter's ids, while the markup's link states the bare decimal. Namespacing
+      // the union rather than each source is what keeps a payload edge linkable — applying
+      // `namespaced` to its value spells `facebook:facebook:<id>`, which matches no captured
+      // comment, and every reply beyond one level then files with no ancestor at all.
+      const edgeParent = commentParents.get(id);
+      const linkedParent = commentParentId(root);
+      const parent = edgeParent ?? (linkedParent ? namespaced(linkedParent) : null);
+      // The comment's own time: what the payload stated (`commentCreatedAt`), and where that
+      // holds nothing — the payload has not been read yet, or said nothing about this comment —
+      // the age the comment's own root states. Never the time of the story it hangs under: a
+      // reply's date is its own.
+      const datetime = commentCreatedAt.get(id) ?? ageIn(root);
       return {
         post: {
           id,
@@ -3430,6 +5415,7 @@ export const facebookAdapter: PlatformAdapter = {
           conversationId: story ? namespaced(story) : id,
           quoting: null,
           replyingTo: null,
+          ...(datetime ? { datetime } : {}),
         } as MainTweet,
         // A comment's ancestor is the comment it answers, and a top-level comment's is the
         // story: the chain is post ← comment ← comment, exactly the shape the host's own
@@ -3437,26 +5423,38 @@ export const facebookAdapter: PlatformAdapter = {
         // root sits inside another — so the edge comes from the reply's own permalink rather
         // than from nesting (see `commentParentId`). A comment whose parent is not on screen
         // links to nothing, and `relink` adds it on a later sweep once the parent is captured.
-        replyParentId: parent ? namespaced(parent) : story ? namespaced(story) : null,
+        replyParentId: parent ?? (story ? namespaced(story) : null),
       };
     }
 
     const body = storyMessage(root);
-    if (!body) return null;
+    // A post the page is showing ONLY in its translation has no message element to read: the
+    // host rendered the translation where the source's element belongs and left the source out
+    // of the document, and the copy taken while its own control had the source on the page is
+    // then the post's own words (`revealSource`, which takes it). The block on screen stays the
+    // translated side, read by `translatedBody` below exactly as a flipped post's is.
+    const remembered = body ? null : rememberedSources.get(id);
+    if (!body && !(remembered && translatedBody(root))) return null;
     // A body a computed style is clipping still holds all of its words, so it stays refused;
     // a body TRUNCATED in place is completed from the page's own payload (`wholeBodyText`).
-    if (bodyClamped(body)) return null;
-    const shown = bodyWords(body);
+    if (body && bodyClamped(body)) return null;
+    const shown = body ? bodyWords(body) : remembered ?? '';
     // The name's role where the surface states one; the author link where it states none — the
     // block's own header, found when the block was (see `footerStoryRoots`).
     const link = footerBlocks.get(root)?.author ?? null;
     const author = root.querySelector(NAME) ?? link;
     const username = storyAuthor(author);
     if (!shown || !username) return null;
-    const text = wholeBodyText(id, body, shown);
+    const text = body ? wholeBodyText(id, body, shown) : shown;
     if (!text) return null;
     const destination = isTranslated(root) ? appLanguage() : null;
     const transcribed = destination ? translatedBody(root) : null;
+    // The story's own time, as the payload stated it (see `postCreatedAt`). Deliberately no
+    // fallback to the markup here, unlike the comment branch above: a story root CONTAINS its
+    // comment list, and measured on a page's feed the only timestamp anchors inside a story root
+    // belonged to its comments — so reading one off the root would date the story with whatever
+    // its first comment said, which is worse than no date at all.
+    const datetime = postCreatedAt.get(id);
     return {
       post: {
         id,
@@ -3473,6 +5471,7 @@ export const facebookAdapter: PlatformAdapter = {
         conversationId: id,
         quoting: null,
         replyingTo: null,
+        ...(datetime ? { datetime } : {}),
       } as MainTweet,
       replyParentId: null,
     };

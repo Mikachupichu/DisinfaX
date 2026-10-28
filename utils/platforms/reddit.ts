@@ -38,6 +38,7 @@
  *  on comments), and comments have no `id` attribute at all (only `thingid`). */
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -114,6 +115,31 @@ function fullnameOf(root: Element): string | null {
  *  Null when the attribute is absent (an old renderer, a page with no post), which leaves
  *  the post to the shared unknown-language fallback rather than to a guess from the
  *  reader's own locale. */
+/** The first `time[datetime]` that belongs to `root` rather than to a comment nested inside
+ *  it.
+ *
+ *  The ownership test is the whole point: new Reddit nests a comment's replies inside the
+ *  comment element itself — measured on a comments page, a root with three replies under it
+ *  carried four `<time>` elements — so a bare `querySelector` would start reading a reply's
+ *  time the moment the header moved, and the post would be dated by its first answer. */
+function ownTime(root: Element): Element | null {
+  for (const el of Array.from(root.querySelectorAll('time[datetime]'))) {
+    if (el.closest(`${POST_TAG}, ${COMMENT_TAG}`) === root) return el;
+  }
+  return null;
+}
+
+/** When the post or comment was written, off the `<time datetime>` its own header renders.
+ *
+ *  The host states it three ways — `created-timestamp` on a post, `created` on a comment,
+ *  and this `<time>` — and measured on a comments page all three agree to the millisecond.
+ *  This is the one read because it is an ISO 8601 instant in a standard shape
+ *  (`2026-10-08T07:24:10.485Z`), where the attributes are `<microseconds>+0000`: a form V8
+ *  accepts and a stricter parser (Safari's) need not, on code that ships to both. */
+function postedAt(root: Element): string | undefined {
+  return isoDatetime(ownTime(root)?.getAttribute('datetime'));
+}
+
 function languageOf(root: Element): string | null {
   return root.getAttribute('post-language')
     ?? document.querySelector(`${POST_TAG}[post-language]`)?.getAttribute('post-language')
@@ -478,6 +504,7 @@ export const redditAdapter: PlatformAdapter = {
     // thing to send. On a comments page the submission's own `author` is present too,
     // which is why posts and comments share this read.
     const username = root.getAttribute('author') ?? '';
+    const datetime = postedAt(root);
 
     const post = {
       id: namespaced(fullname),
@@ -506,6 +533,10 @@ export const redditAdapter: PlatformAdapter = {
       // put text in the hash that the reader of the crosspost never saw.
       quoting: null,
       replyingTo: null,
+      // The time the header states. Absent when the renderer this page load used has not
+      // rendered a `<time>` yet, which is a post without a stated time rather than a guessed
+      // one.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     // Reddit's own reading of the post's language, when it has one. Left absent otherwise

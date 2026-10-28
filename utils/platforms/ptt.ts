@@ -49,6 +49,7 @@ import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
+import { isoDatetime } from '../datetime';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
 
 /** PTT ids are namespaced for the same reason every platform's after X are: the background
@@ -121,6 +122,26 @@ function fileFromPath(path: string): string | null {
 /** The article the page itself is showing. */
 function pageFile(): string | null {
   return fileFromPath(location.pathname);
+}
+
+/** When an article was posted, from the instant PTT states in the article's own file name.
+ *
+ *  A PTT article's address is `M.<unix seconds>.A.<hash>.html`, and the middle field is the
+ *  second it was submitted. Measured against the article page that states the same moment a
+ *  second way, `/bbs/Gossiping/M.1791970824.A.353.html`: its metadata line reads
+ *  `Wed Oct 14 17:40:22 2026` where the file name decodes to `2026-10-14T09:40:24Z` — Taipei is
+ *  UTC+8, so the two are the same moment two seconds apart, and the metadata line is the one
+ *  that cannot be read. It is a locale rendering with no zone on it, so parsing it would put
+ *  every article at whatever offset the READER happens to live at, and the file name states the
+ *  same time exactly.
+ *
+ *  Only an article has one. A PUSH's row states its time as `10/12 09:23` and nothing else —
+ *  no year, no seconds, and in no attribute this could read — so a push carries no datetime
+ *  rather than one reconstructed from a label. That is one date missing on a comment, never a
+ *  wrong one: the article the push hangs under still carries its own. */
+function postedAt(): string | undefined {
+  const match = /^M\.(\d+)\./.exec(pageFile() ?? '');
+  return isoDatetime(match ? Number(match[1]) : null);
 }
 
 /** An article page's container, or null when this page is not showing an article.
@@ -536,6 +557,7 @@ export const pttAdapter: PlatformAdapter = {
     }
 
     const parts = articleParts(root);
+    const datetime = postedAt();
     const text = parts.map((part) => part.text).join(POST_JOIN);
     const username = textOf(authorElement(root));
     // An article with neither headline nor body, or one whose metadata block names no author,
@@ -551,6 +573,7 @@ export const pttAdapter: PlatformAdapter = {
         conversationId: id,
         quoting: null,
         replyingTo: null,
+        ...(datetime ? { datetime } : {}),
       } as MainTweet,
       replyParentId: null,
     };

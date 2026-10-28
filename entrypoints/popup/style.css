@@ -21,6 +21,13 @@ button:not(:disabled) {
 .mf-threshold-slider {
   --mf-slider-color: rgb(128, 128, 128);
   --mf-slider-fill: 50%;
+  /* The unfilled track and the ring around the knob are the two parts the setting
+     itself does not colour, so they are the two that have to follow the appearance
+     (see the light block at the end of this file). Vars rather than two variants of
+     every rule below: the gradient is written twice already — once per direction —
+     and a literal apiece is what would drift. */
+  --mf-slider-track: #3f3f46;
+  --mf-slider-thumb-ring: #fafafa;
   appearance: none;
   -webkit-appearance: none;
   height: 4px;
@@ -29,8 +36,8 @@ button:not(:disabled) {
     to right,
     var(--mf-slider-color) 0%,
     var(--mf-slider-color) var(--mf-slider-fill),
-    #3f3f46 var(--mf-slider-fill),
-    #3f3f46 100%
+    var(--mf-slider-track) var(--mf-slider-fill),
+    var(--mf-slider-track) 100%
   );
   outline: none;
 }
@@ -39,8 +46,8 @@ button:not(:disabled) {
     to left,
     var(--mf-slider-color) 0%,
     var(--mf-slider-color) var(--mf-slider-fill),
-    #3f3f46 var(--mf-slider-fill),
-    #3f3f46 100%
+    var(--mf-slider-track) var(--mf-slider-fill),
+    var(--mf-slider-track) 100%
   );
 }
 .mf-threshold-slider::-webkit-slider-thumb {
@@ -50,7 +57,7 @@ button:not(:disabled) {
   height: 14px;
   border-radius: 9999px;
   background: var(--mf-slider-color);
-  border: 2px solid #fafafa;
+  border: 2px solid var(--mf-slider-thumb-ring);
   cursor: pointer;
 }
 .mf-threshold-slider::-moz-range-thumb {
@@ -58,7 +65,7 @@ button:not(:disabled) {
   height: 10px;
   border-radius: 9999px;
   background: var(--mf-slider-color);
-  border: 2px solid #fafafa;
+  border: 2px solid var(--mf-slider-thumb-ring);
   cursor: pointer;
 }
 .mf-threshold-slider:disabled {
@@ -152,6 +159,10 @@ body {
   transform: rotate(-14deg);
 }
 .mf-corr {
+  /* The page's own rule: a host text run that does not wrap (mobile Facebook's Bloks
+     text is white-space: pre) must not carry the correction off the right edge. */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
   font: inherit;
   font-family: "MFKalam", "Segoe Print", "Bradley Hand", "Chalkboard SE", "Marker Felt", "Comic Sans MS", cursive;
   font-weight: 700;
@@ -240,5 +251,101 @@ body {
 .mf-badge-glue,
 .mf-badge-verdict {
   color: #ffffff !important;
+}
+
+/* ── Light appearance ───────────────────────────────────────────────────────────
+   The popup is written dark-first: every colour it paints comes from a Tailwind theme
+   variable, and the utilities resolve through those variables rather than baking the
+   values in. So the whole palette re-points here, at the root, with no component
+   touched for it.
+
+   Keyed on a class rather than on `prefers-color-scheme`, because the Appearance
+   setting can override the system in either direction. The class is the RESOLVED
+   scheme and is always exactly one of the two — see entrypoints/popup/theme.ts.
+
+   Unlayered on purpose. `@import "tailwindcss"` emits its theme variables inside
+   `@layer theme` and its utilities unlayered, and an unlayered declaration outranks a
+   layered one whatever the order — so this block wins over the emitted theme with no
+   `!important` anywhere, and the utilities, which only read `var(--color-*)`, follow.
+
+   The neutrals are re-pointed to the shade that reads at the same weight on white
+   rather than mirrored shade-for-shade: zinc-400 is the secondary ink against the dark
+   panel, so it stays the secondary ink here. */
+html.mf-theme-light {
+  color-scheme: light;
+  --color-white: #18181b;        /* `text-white` is this popup's primary ink */
+  --color-zinc-950: #ffffff;     /* the panel's own ground */
+  --color-zinc-900: #f4f4f5;     /* raised cards, inputs, the settings panel */
+  --color-zinc-800: #e4e4e7;
+  --color-zinc-700: #d4d4d8;     /* the toggle's off track */
+  --color-zinc-600: #a1a1aa;     /* disabled and footnote text */
+  --color-zinc-400: #52525b;     /* secondary ink */
+  --color-zinc-300: #3f3f46;     /* labels */
+  --color-zinc-200: #27272a;
+  --color-zinc-100: #18181b;     /* primary ink */
+  --color-emerald-950: #ecfdf5;  /* the selected tab's wash, and its kin */
+  --color-emerald-900: #d1fae5;
+  --color-emerald-700: #6ee7b7;
+  --color-emerald-400: #059669;  /* source links */
+  --color-emerald-300: #047857;
+  --color-red-950: #fef2f2;
+  --color-red-900: #fee2e2;
+  --color-red-800: #fecaca;
+  --color-red-400: #dc2626;      /* errors, the delete button */
+  --color-red-300: #b91c1c;
+  --color-red-100: #991b1b;
+}
+/* The dark palette IS the emitted one, so all this side has to say is which way the
+   UA's own widgets and scrollbars go. */
+html.mf-theme-dark {
+  color-scheme: dark;
+}
+
+/* Two backgrounds do not follow the palette, so their ink must not either: the sign-in
+   button is white in both appearances, and the primary buttons sit on a saturated
+   emerald that a dark ink would not read on. */
+html.mf-theme-light .bg-white {
+  background-color: #ffffff;
+}
+html.mf-theme-light .text-white.bg-emerald-600 {
+  color: #ffffff;
+}
+
+/* zinc-200 and zinc-700 are border-or-background greys everywhere they appear but one
+   place each: the sign-in button's edge has to stay light against its own white fill,
+   and the two dim footnote lines read `text-zinc-700`, which would vanish on white. */
+html.mf-theme-light .border-zinc-200 {
+  border-color: #e4e4e7;
+}
+html.mf-theme-light .text-zinc-700 {
+  color: #a1a1aa;
+}
+
+/* The slider's unfilled track and the ring around its knob (see the vars above). */
+html.mf-theme-light .mf-threshold-slider {
+  --mf-slider-track: #e4e4e7;
+  --mf-slider-thumb-ring: #ffffff;
+}
+
+/* The verdict badges wear a 15% wash of their own verdict colour and pin their ink
+   white for it — legible on the dark panel, invisible on the light one, where that wash
+   over a white card is barely a tint. Same selector list, same `!important`, only later
+   in the file: VerdictBadge.tsx writes the white inline as well, and an important author
+   declaration is what outranks an inline one. */
+html.mf-theme-light .mf-verdict-badge,
+html.mf-theme-light .mf-verdict-badge *,
+html.mf-theme-light .mf-inline-badge,
+html.mf-theme-light .mf-inline-badge *,
+html.mf-theme-light .mf-web-badge,
+html.mf-theme-light .mf-web-badge *,
+html.mf-theme-light .mf-annotate-badge,
+html.mf-theme-light .mf-annotate-badge *,
+html.mf-theme-light .mf-badge-slot,
+html.mf-theme-light .mf-badge-stack,
+html.mf-theme-light .mf-badge-adj,
+html.mf-theme-light .mf-badge-pct,
+html.mf-theme-light .mf-badge-glue,
+html.mf-theme-light .mf-badge-verdict {
+  color: #18181b !important;
 }
 

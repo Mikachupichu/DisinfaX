@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
-import { useT, getUiLocale, formatUsdNumber, usdSymbolAfterAmount, giftPercent, giftDollars, formatPercent, formatUsdExactCents } from './i18n';
+import { useT, getUiLocale, formatUsdNumber, usdSymbolAfterAmount, giftPercent, giftDollars, formatPercent, formatUsdExactCents, formatUsd } from './i18n';
 import { parseWorkerErrorMessage, codeToMessageKey } from '../../utils/errorCodes';
 import { browser } from 'wxt/browser';
 import { callNativeHost } from '../../utils/nativeHost';
 import { FactCheckTab } from './FactCheckTab';
 import SiteOptIn from './SiteOptIn';
+import { setThemePref, useThemePref } from './theme';
+import type { ThemePref } from '../../utils/theme';
 
 /** Render a USD amount with a smaller "US" + "$" vertically centered against the
  *  number (rather than baseline-aligned). Symbol size scales with the surrounding
@@ -107,6 +109,54 @@ const BYPASS_DEFAULT_ENABLED = false;
 const BYPASS_DEFAULT_CONFIDENCE = 0.2;
 const BYPASS_DEFAULT_VERACITY = 0;
 
+/** Colourblind-friendly mode (per-extension storage.local): every claim keeps its badge —
+ *  the verdict word and its percentage, or the button a claim is waiting on — on screen,
+ *  instead of showing it only under the pointer. A verdict is carried by the highlight's
+ *  colour as much as by its words, and a reader who cannot separate those colours reads
+ *  the badge instead. Off by default: it costs height in every post. */
+const STORE_PERSISTENT_BADGES = 'mf_persistent_badges';
+const PERSISTENT_BADGES_DEFAULT = false;
+
+/** Large popover type (per-extension storage.local): the rewritten claim, the reasoning and
+ *  the onboarding hints are set small so a window stays short over the post it describes.
+ *  This enlarges all of it 1.25x for a reader who needs it larger. Off by default: a window
+ *  is a fixed 360px wide, so the whole increase is paid for in height, and that is a trade
+ *  each reader makes for themselves. */
+const STORE_LARGE_FONT = 'mf_large_popover_font';
+const LARGE_FONT_DEFAULT = false;
+
+/** Spend notifications (per-extension storage.local): the in-page toast that reports
+ *  a balance decrease. On by default for decreases above US$0.001 — the toast is
+ *  about money, and most single charges are far smaller than that. The slider sets
+ *  the floor, US$0.001–US$0.1. */
+const STORE_SPEND_NOTIFY_ENABLED = 'mf_spend_notify_enabled';
+const STORE_SPEND_NOTIFY_THRESHOLD = 'mf_spend_notify_threshold';
+const SPEND_NOTIFY_DEFAULT_ENABLED = true;
+const SPEND_NOTIFY_DEFAULT_THRESHOLD = 0.001;
+const SPEND_NOTIFY_MIN_THRESHOLD = 0.001;
+const SPEND_NOTIFY_MAX_THRESHOLD = 0.1;
+
+/** Slider position (0–1) ↔ threshold. Logarithmic because the range spans two
+ *  orders of magnitude: on a linear track US$0.01 would sit a tenth of the way
+ *  from the left edge, and everything below it in the last few pixels. */
+function spendThresholdToSlider(threshold: number): number {
+  const t = Math.min(SPEND_NOTIFY_MAX_THRESHOLD, Math.max(SPEND_NOTIFY_MIN_THRESHOLD, threshold));
+  return Math.log(t / SPEND_NOTIFY_MIN_THRESHOLD) / Math.log(SPEND_NOTIFY_MAX_THRESHOLD / SPEND_NOTIFY_MIN_THRESHOLD);
+}
+function spendSliderToThreshold(position: number): number {
+  const t = SPEND_NOTIFY_MIN_THRESHOLD * Math.pow(SPEND_NOTIFY_MAX_THRESHOLD / SPEND_NOTIFY_MIN_THRESHOLD, position);
+  return Math.round(Math.min(SPEND_NOTIFY_MAX_THRESHOLD, Math.max(SPEND_NOTIFY_MIN_THRESHOLD, t)) * 10000) / 10000;
+}
+
+/** Appearance choices, in the order they are offered: the two explicit schemes either
+ *  side of the automatic default. Plain names rather than icons — the whole setting is
+ *  three words, and an icon set would need its own translated labels anyway. */
+const THEME_OPTIONS: { value: ThemePref; labelKey: string }[] = [
+  { value: 'light', labelKey: 'themeLight' },
+  { value: 'auto', labelKey: 'themeAuto' },
+  { value: 'dark', labelKey: 'themeDark' },
+];
+
 /** Adjective key for a confidence-floor value. Mirrors the likelihood bands in
  *  verdictBadgeParts() (utils/injecting.ts) so the slider label reads like the
  *  badge its threshold would produce. Null at 0.9+, where badges show no adjective. */
@@ -206,13 +256,16 @@ interface DashboardProps {
    *  than from this object, so nothing here reads it yet. */
   user: User;
   onSignOut: () => void;
+  /** Deletes the account and its data. Resolves to a message to show, or null on
+   *  success — on success App tears the session down and this component unmounts. */
+  onDeleteAccount: () => Promise<string | null>;
   /** Raised while a webpage-selection fact-check owns the popup. App hides its footer on
    *  this: the indicator is meant to be the entire popup, and the version/disclaimer line
    *  sitting under it would contradict that. */
   onSelectionActive?: (active: boolean) => void;
 }
 
-export default function Dashboard({ user, onSignOut, onSelectionActive }: DashboardProps) {
+export default function Dashboard({ user, onSignOut, onDeleteAccount, onSelectionActive }: DashboardProps) {
   const t = useT();
   const locale = getUiLocale();
 
@@ -232,7 +285,17 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [disclaimerExpanded, setDisclaimerExpanded] = useState(false);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const customRef = useRef<HTMLInputElement>(null);
+
+  const handleDeleteAccount = async () => {
+    setDeleteBusy(true);
+    setDeleteError(null);
+    const err = await onDeleteAccount();
+    // On success this component is unmounting; only the failure path needs to recover.
+    if (err) { setDeleteError(err); setDeleteBusy(false); }
+  };
 
   // Show-while-hidden bypass: master toggle + minimum confidence + maximum veracity.
   // Collapsed by default so the popup keeps its height; the settings need their own
@@ -242,6 +305,24 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
   const [bypassEnabled, setBypassEnabled] = useState(BYPASS_DEFAULT_ENABLED);
   const [bypassConfidence, setBypassConfidence] = useState(BYPASS_DEFAULT_CONFIDENCE);
   const [bypassVeracity, setBypassVeracity] = useState(BYPASS_DEFAULT_VERACITY);
+
+  // Colourblind-friendly mode. Sits next to the gate above rather than in the appearance
+  // block: like the gate it decides what is SHOWN (badges that would otherwise wait for
+  // the pointer), not how the popup looks.
+  const [persistentBadges, setPersistentBadges] = useState(PERSISTENT_BADGES_DEFAULT);
+
+  // Large popover type. Joins the block above rather than the appearance one: like the
+  // badges it decides how the claim windows behind the popup read, not how the popup looks.
+  const [largeFont, setLargeFont] = useState(LARGE_FONT_DEFAULT);
+
+  // Spend notifications. Joins the settings above because it decides what the page
+  // SHOWS — whether a spend raises a toast at all, and how large one has to be.
+  const [spendNotifyEnabled, setSpendNotifyEnabled] = useState(SPEND_NOTIFY_DEFAULT_ENABLED);
+  const [spendNotifyThreshold, setSpendNotifyThreshold] = useState(SPEND_NOTIFY_DEFAULT_THRESHOLD);
+
+  // Appearance. The palette itself is driven by the class this store puts on <html>
+  // (see style.css + theme.ts); the popup only reads the choice to mark the segment.
+  const themePref = useThemePref();
 
   // ── Fact-checking anywhere: "select text → open the popup" ──────────────────
   // The popup is the user's second way into a selection fact-check. It asks the active
@@ -354,11 +435,15 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
   const persistBypassEnabled = useCallback((next: boolean) => { setBypassEnabled(next); storageSet({ [STORE_BYPASS_ENABLED]: next }); }, []);
   const persistBypassConfidence = useCallback((next: number) => { setBypassConfidence(next); storageSet({ [STORE_BYPASS_CONFIDENCE]: next }); }, []);
   const persistBypassVeracity = useCallback((next: number) => { setBypassVeracity(next); storageSet({ [STORE_BYPASS_VERACITY]: next }); }, []);
+  const persistPersistentBadges = useCallback((next: boolean) => { setPersistentBadges(next); storageSet({ [STORE_PERSISTENT_BADGES]: next }); }, []);
+  const persistLargeFont = useCallback((next: boolean) => { setLargeFont(next); storageSet({ [STORE_LARGE_FONT]: next }); }, []);
+  const persistSpendNotifyEnabled = useCallback((next: boolean) => { setSpendNotifyEnabled(next); storageSet({ [STORE_SPEND_NOTIFY_ENABLED]: next }); }, []);
+  const persistSpendNotifyThreshold = useCallback((next: number) => { setSpendNotifyThreshold(next); storageSet({ [STORE_SPEND_NOTIFY_THRESHOLD]: next }); }, []);
 
   // Load persisted selection + custom amount, current balance, and messages.
   useEffect(() => {
     (async () => {
-      const stored = await storageGet([STORE_TAB, STORE_SELECTION, STORE_CUSTOM, STORE_BYPASS_ENABLED, STORE_BYPASS_CONFIDENCE, STORE_BYPASS_VERACITY]);
+      const stored = await storageGet([STORE_TAB, STORE_SELECTION, STORE_CUSTOM, STORE_BYPASS_ENABLED, STORE_BYPASS_CONFIDENCE, STORE_BYPASS_VERACITY, STORE_PERSISTENT_BADGES, STORE_LARGE_FONT, STORE_SPEND_NOTIFY_ENABLED, STORE_SPEND_NOTIFY_THRESHOLD]);
       if (stored[STORE_TAB] === 'factcheck' || stored[STORE_TAB] === 'balance') {
         setActiveTab(stored[STORE_TAB]);
       }
@@ -367,6 +452,13 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
       if (typeof stored[STORE_BYPASS_ENABLED] === 'boolean') setBypassEnabled(stored[STORE_BYPASS_ENABLED]);
       setBypassConfidence(clampBypass(stored[STORE_BYPASS_CONFIDENCE], 0, 1, BYPASS_DEFAULT_CONFIDENCE));
       setBypassVeracity(clampBypass(stored[STORE_BYPASS_VERACITY], -1, 1, BYPASS_DEFAULT_VERACITY));
+      if (typeof stored[STORE_PERSISTENT_BADGES] === 'boolean') setPersistentBadges(stored[STORE_PERSISTENT_BADGES]);
+      if (typeof stored[STORE_LARGE_FONT] === 'boolean') setLargeFont(stored[STORE_LARGE_FONT]);
+      if (typeof stored[STORE_SPEND_NOTIFY_ENABLED] === 'boolean') setSpendNotifyEnabled(stored[STORE_SPEND_NOTIFY_ENABLED]);
+      const storedSpendThreshold = stored[STORE_SPEND_NOTIFY_THRESHOLD];
+      setSpendNotifyThreshold(typeof storedSpendThreshold === 'number' && Number.isFinite(storedSpendThreshold)
+        ? Math.min(SPEND_NOTIFY_MAX_THRESHOLD, Math.max(SPEND_NOTIFY_MIN_THRESHOLD, storedSpendThreshold))
+        : SPEND_NOTIFY_DEFAULT_THRESHOLD);
       setLoaded(true);
     })();
 
@@ -582,6 +674,9 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
    */
   useEffect(() => {
     if (!import.meta.env.SAFARI) return;
+    // The spend setting is read from storage alongside everything else; sending before that
+    // finishes would overwrite the app's stored value with the defaults.
+    if (!loaded) return;
     (async () => {
       try {
         const { data } = await supabase.auth.getSession();
@@ -598,6 +693,8 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
             balance: typeof total === 'number' ? total : undefined,
             accessToken: data.session?.access_token,
             accessTokenExpiresAt: data.session?.expires_at,
+            notifySpendEnabled: spendNotifyEnabled,
+            notifySpendThreshold: spendNotifyThreshold,
           },
           {
             type: 'MF_NATIVE_SYNC_ACCOUNT',
@@ -605,11 +702,13 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
             balance: typeof total === 'number' ? total : undefined,
             accessToken: data.session?.access_token,
             accessTokenExpiresAt: data.session?.expires_at,
+            notifySpendEnabled: spendNotifyEnabled,
+            notifySpendThreshold: spendNotifyThreshold,
           },
         );
       } catch { /* native host unavailable — the app falls back to its own stored values */ }
     })();
-  }, [total]);
+  }, [loaded, total, spendNotifyEnabled, spendNotifyThreshold]);
 
   const startCheckout = async () => {
     setCheckoutError(null);
@@ -756,6 +855,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
           <button
             type="button"
             onClick={agreeToSelection}
+            title={t('factCheckButton')}
             className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold transition-colors cursor-pointer"
           >
             {t('factCheckButton')}
@@ -763,6 +863,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
           <button
             type="button"
             onClick={declineSelection}
+            title={t('selectionConfirmCancel')}
             className="flex-1 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-300 hover:border-zinc-700 text-sm font-semibold transition-colors cursor-pointer"
           >
             {t('selectionConfirmCancel')}
@@ -805,6 +906,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
         <button
           type="button"
           onClick={() => persistTab('balance')}
+          title={t('balanceLabel')}
           className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'balance'
               ? 'bg-zinc-800 text-white shadow-sm'
@@ -816,6 +918,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
         <button
           type="button"
           onClick={() => persistTab('factcheck')}
+          title={t('factCheckTab')}
           className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'factcheck'
               ? 'bg-zinc-800 text-white shadow-sm'
@@ -895,6 +998,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
               <div className="flex flex-col border-l border-emerald-500/40">
                 <button
                   onClick={() => stepCustom(1)}
+                  title={t('increase')}
                   aria-label={t('increase')}
                   // Only Apple has a ceiling — Stripe prices the session dynamically.
                   disabled={import.meta.env.SAFARI && customToAmount(customInput) >= APPLE_MAX_TOPUP}
@@ -902,6 +1006,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
                 ><ChevronUp /></button>
                 <button
                   onClick={() => stepCustom(-1)}
+                  title={t('decrease')}
                   aria-label={t('decrease')}
                   disabled={customToAmount(customInput) <= CUSTOM_MIN}
                   className="flex-1 px-2 text-zinc-300 hover:text-white hover:bg-emerald-900/40 border-t border-emerald-500/40 disabled:text-zinc-600 disabled:hover:bg-transparent disabled:hover:text-zinc-600 disabled:cursor-not-allowed"
@@ -912,6 +1017,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
         ) : (
           <button
             onClick={() => { persistSelection('custom'); setTimeout(() => customRef.current?.focus(), 0); }}
+            title={t('customTopup')}
             className="col-span-2 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-300 hover:border-zinc-700 text-sm font-semibold transition-colors"
           >
             {t('customTopup')}
@@ -926,6 +1032,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
         )}
         <button
           onClick={startCheckout}
+          title={t('topUp')}
           disabled={checkoutBusy || !loaded}
           className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-semibold text-sm transition-colors"
         >
@@ -951,6 +1058,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
             <button
               type="button"
               onClick={() => setDisclaimerExpanded(v => !v)}
+              title={disclaimerExpanded ? t('showLess') : t('showMore')}
               aria-expanded={disclaimerExpanded}
               className="mx-auto mt-0.5 flex items-center gap-0.5 rounded px-1 py-0.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 font-semibold"
             >
@@ -961,19 +1069,27 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
         </div>
       </div>
 
-      {/* ── Settings (collapsed): per-extension thresholds for keeping strong
-          false-claim highlights visible while cached visuals stay hidden behind
-          the Reveal button. Both the confidence floor and the veracity ceiling
-          must hold on a claim that carries a complete verdict; a re-check in
-          flight does not revoke a claim that already clears both — revoking on
-          that flag made the highlight flicker, since the flag moves on its own.
-          Content script reads the same storage.local keys live, so a drag flips
-          the tab with no reload. The expanded body scrolls inside a bounded
-          height so opening it never grows the popup window. */}
+        </>
+      )}
+
+      {/* ── Settings (collapsed) ──
+          Outside the tabs, above Sign out, because every setting in it applies to both
+          of them — most of all the appearance, which repaints the whole popup.
+          Per-extension thresholds for keeping strong false-claim highlights visible
+          while cached visuals stay hidden behind the Reveal button. Both the confidence
+          floor and the veracity ceiling must hold on a claim that carries a complete
+          verdict; a re-check in flight does not revoke a claim that already clears both —
+          revoking on that flag made the highlight flicker, since the flag moves on its
+          own. Content script reads the same storage.local keys live, so a drag flips the
+          tab with no reload. The expanded body takes its natural height: a max-height
+          here did not keep the popup small anyway (measured: 679px of content against
+          the popup's hard 600px window cap), it only added a second scrollbar that cut
+          off the delete button and its note. */}
       <div className="flex min-h-0 flex-col rounded-lg border border-zinc-800/70 bg-zinc-900/30">
         <button
           type="button"
           onClick={() => setBypassSettingsOpen(v => !v)}
+          title={t('settings')}
           aria-expanded={bypassSettingsOpen}
           className="flex w-full items-center justify-between gap-2 px-2 py-1 text-left cursor-pointer"
         >
@@ -981,7 +1097,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
           <svg className={`h-2 w-2 text-zinc-500 transition-transform ${bypassSettingsOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
         </button>
         {bypassSettingsOpen && (
-          <div className="flex max-h-48 flex-col gap-2 overflow-y-auto border-t border-zinc-800/70 px-2 py-2">
+          <div className="flex flex-col gap-2 border-t border-zinc-800/70 px-2 py-2">
             {(() => {
               // One readout + one colour for both sliders: the verdict colour of a
               // claim sitting exactly on both thresholds, so the pair reads as one
@@ -1013,6 +1129,7 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
                   role="switch"
                   aria-checked={bypassEnabled}
                   onClick={() => persistBypassEnabled(!bypassEnabled)}
+                  title={t('bypassToggleLabel')}
                   className="flex items-center justify-between gap-2 text-left cursor-pointer"
                 >
                   <span className="text-xs font-semibold text-zinc-200">{t('bypassToggleLabel')}</span>
@@ -1059,14 +1176,153 @@ export default function Dashboard({ user, onSignOut, onSelectionActive }: Dashbo
                 </label>
               </>);
             })()}
+
+            {/* Appearance. Separated from the gate above rather than sitting in its
+                list: that block decides what is SHOWN, this one only how it looks. A
+                three-way segment rather than a switch, because Automatic is a real
+                choice and not the absence of one. */}
+            <div className="mt-4 flex flex-col gap-1.5 border-t border-zinc-800/70 pt-3">
+              <span className="text-[11px] font-medium text-zinc-300">{t('appearanceLabel')}</span>
+              <div role="radiogroup" aria-label={t('appearanceLabel')} className="flex gap-1">
+                {THEME_OPTIONS.map(({ value, labelKey }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="radio"
+                    aria-checked={themePref === value}
+                    onClick={() => setThemePref(value)}
+                    title={t(labelKey)}
+                    className={`flex-1 rounded-lg px-2 py-1.5 text-[11px] font-medium transition-colors cursor-pointer ${
+                      themePref === value
+                        ? 'bg-zinc-800 text-white shadow-sm'
+                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                    }`}
+                  >
+                    {t(labelKey)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Colourblind-friendly mode. A row of its own under the appearance block,
+                because it decides what a page SHOWS rather than how the popup looks —
+                and it applies to every post, hidden or revealed, so it belongs with the
+                gate above and not inside it: the gate narrows which claims are shown at
+                all, this one only stops their badges waiting for the pointer. */}
+            <div className="mt-4 flex flex-col gap-1 border-t border-zinc-800/70 pt-3">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={persistentBadges}
+                aria-label={t('persistentBadgesLabel')}
+                title={t('persistentBadgesTooltip')}
+                onClick={() => persistPersistentBadges(!persistentBadges)}
+                className="flex items-center justify-between gap-2 text-left cursor-pointer"
+              >
+                <span className="text-[11px] font-medium text-zinc-300">{t('persistentBadgesLabel')}</span>
+                <span
+                  aria-hidden="true"
+                  className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${persistentBadges ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+                >
+                  <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${persistentBadges ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                </span>
+              </button>
+              <p className="text-[10px] leading-snug text-zinc-500 px-1">{t('persistentBadgesTooltip')}</p>
+            </div>
+
+            {/* Large popover type. Same section as the badges above and for the same
+                reason: it changes what the claim windows behind the popup read like, not
+                what the popup itself looks like. The label is deliberately longer than
+                the two-word switch it names, because "font size" on its own reads as a
+                setting for the popup, which this is not. */}
+            <div className="mt-4 flex flex-col gap-1 border-t border-zinc-800/70 pt-3">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={largeFont}
+                aria-label={t('largeFontLabel')}
+                title={t('largeFontTooltip')}
+                onClick={() => persistLargeFont(!largeFont)}
+                className="flex items-center justify-between gap-2 text-left cursor-pointer"
+              >
+                <span className="text-[11px] font-medium text-zinc-300">{t('largeFontLabel')}</span>
+                <span
+                  aria-hidden="true"
+                  className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${largeFont ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+                >
+                  <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${largeFont ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                </span>
+              </button>
+              <p className="text-[10px] leading-snug text-zinc-500 px-1">{t('largeFontTooltip')}</p>
+            </div>
+
+            {/* Spend notifications. A toggle and a floor, because the toast reports a
+                DELTA: a single charge can be small enough that money moving is not news,
+                and the alert is the noise worth tuning. The slider is logarithmic (see
+                spendThresholdToSlider) and its label states the amount it sits on. */}
+            <div className="mt-4 flex flex-col gap-1 border-t border-zinc-800/70 pt-3">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={spendNotifyEnabled}
+                aria-label={t('notifySpendLabel')}
+                title={t('notifySpendLabel')}
+                onClick={() => persistSpendNotifyEnabled(!spendNotifyEnabled)}
+                className="flex items-center justify-between gap-2 text-left cursor-pointer"
+              >
+                <span className="text-[11px] font-medium text-zinc-300">{t('notifySpendLabel')}</span>
+                <span
+                  aria-hidden="true"
+                  className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${spendNotifyEnabled ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+                >
+                  <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${spendNotifyEnabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                </span>
+              </button>
+              <label className={`flex flex-col gap-1 ${spendNotifyEnabled ? '' : 'opacity-40'}`}>
+                <span className="text-[11px] font-medium text-zinc-300">
+                  {t('notifySpendThresholdLabel', [formatUsd(spendNotifyThreshold)])}
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.001}
+                  value={spendThresholdToSlider(spendNotifyThreshold)}
+                  disabled={!spendNotifyEnabled}
+                  onChange={(e) => persistSpendNotifyThreshold(spendSliderToThreshold(Number(e.target.value)))}
+                  aria-label={t('notifySpendThresholdLabel', [formatUsd(spendNotifyThreshold)])}
+                  style={{
+                    '--mf-slider-color': '#10b981',
+                    '--mf-slider-fill': `${spendThresholdToSlider(spendNotifyThreshold) * 100}%`,
+                  } as React.CSSProperties}
+                  className="mf-threshold-slider w-full cursor-pointer disabled:cursor-not-allowed"
+                />
+              </label>
+            </div>
+
+            <div className="mt-8 flex flex-col gap-1.5 border-t border-zinc-800/70 pt-4">
+              <button
+                onClick={handleDeleteAccount}
+                title={t('deleteAccount')}
+                disabled={deleteBusy}
+                className="w-full py-2 px-4 text-red-400 hover:text-red-300 bg-red-950/40 hover:bg-red-950/70 border border-red-900/60 hover:border-red-800 text-xs font-medium rounded-xl transition-all duration-150 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {deleteBusy ? t('processing') : t('deleteAccount')}
+              </button>
+              <p className="text-[10px] leading-snug text-zinc-500 px-1">
+                {t('deleteAccountNote')}
+              </p>
+              {deleteError && (
+                <p className="text-[10px] leading-snug text-red-400 px-1">{deleteError}</p>
+              )}
+            </div>
           </div>
         )}
       </div>
-        </>
-      )}
 
       <button
         onClick={onSignOut}
+        title={t('signOut')}
         className="w-full py-2 px-4 text-zinc-400 hover:text-white bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium rounded-xl transition-all duration-150 cursor-pointer"
       >
         {t('signOut')}

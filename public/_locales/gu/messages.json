@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "AI વિશ્લેષણ દ્વારા ટ્વીટ્સમાં ખોટી માહિતી શોધે છે અને હાઇલાઇટ કરે છે."
+    "message": "AI વિશ્લેષણ દ્વારા પોસ્ટ્સમાં ખોટી માહિતી શોધે છે અને હાઇલાઇટ કરે છે."
   },
   "verdictTrue": {
     "message": "સાચું",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "આ ટ્વીટના તમામ દાવાઓને ફરીથી જાહેર કરો",
+    "message": "આ પોસ્ટના તમામ દાવાઓને ફરીથી જાહેર કરો",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "સાઇન આઉટ કરો"
   },
+  "deleteAccount": {
+    "message": "એકાઉન્ટ અને સંબંધિત ડેટા ડિલીટ કરો",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "તમારું બેલેન્સ, તેમજ ગુપ્ત કી દ્વારા સુરક્ષિત તમારા ઈમેલ સરનામાનો ક્રિપ્ટોગ્રાફિક હેશ, એકાઉન્ટ બનાવતી વખતે અપાતા મફત ભંડોળનો દુરુપયોગ અટકાવવા માટે રાખવામાં આવે છે. તે જ એકાઉન્ટથી ફરી સાઇન અપ કરશો તો તમારું બેલેન્સ પાછું મળે છે.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% પર ક્લિક કરવાથી દાવાઓ દેખાશે અને તમારા બેલેન્સમાંથી ચાર્જ લેવાશે"
   },
@@ -285,7 +293,7 @@
     "message": "છેલ્લે વપરાયેલ"
   },
   "cleanupTagline": {
-    "message": "તમારા X ફીડને સાફ કરો."
+    "message": "તમારા ફીડને સાફ કરો."
   },
   "disclaimerJurisdiction": {
     "message": "યુનાઇટેડ સ્ટેટ્સની અંદર, ફક્ત અલાબામા, એરિઝોના, કેલિફોર્નિયા, કોલોરાડો, કનેક્ટિકટ, ડેલાવેર, ફ્લોરિડા, આઇડાહો, ઇલિનોઇ, ઇન્ડિયાના, આયોવા, કેન્સાસ, કેન્ટકી, લુઇઝિયાના, મેઇન, મેસેચ્યુસેટ્સ, મિસિસિપી, મિઝોરી, મોન્ટાના, ન્યૂ હેમ્પશાયર, ન્યૂ મેક્સિકો, ન્યૂ યોર્ક, નોર્થ કેરોલિના, નોર્થ ડાકોટા, ઓક્લાહોમા, ઓરેગોન, પેન્સિલવેનિયા, સાઉથ કેરોલિના, સાઉથ ડાકોટા, ટેનેસી, ટેક્સાસ, યુટા, વોશિંગ્ટન, વિસ્કોન્સિન અને વ્યોમિંગના રહેવાસીઓ DisinfaX નો ઉપયોગ કરી શકે છે અને તેમનું બેલેન્સ ટોપ અપ કરી શકે છે; Washington, D.C., તમામ યુ.એસ. પ્રદેશો અને સૂચિબદ્ધ ન હોય તેવા કોઈપણ રાજ્યો બાકાત છે. યુનાઇટેડ સ્ટેટ્સની બહાર, તે કેનેડા, ઓસ્ટ્રેલિયા, ન્યૂઝીલેન્ડ, સિંગાપોર, દક્ષિણ આફ્રિકા, જાપાન, તાઇવાન, ઇન્ડોનેશિયા, થાઇલેન્ડ, ફિલિપાઇન્સ, મલેશિયા, વિયેતનામ અને સ્વિટ્ઝર્લેન્ડમાં ઉપલબ્ધ છે."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "તે મળી શક્યું નહીં. ફરી પ્રયાસ કરો."
   },
+  "errNoClaims": {
+    "message": "આ ટેક્સ્ટમાં કોઈ ચકાસણીયોગ્ય દાવા મળ્યા નથી.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "સેટિંગ્સ",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "દેખાવ",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "હળવું",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "સ્વયંસંચાલિત",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "ઘેરું",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "હંમેશા ફેક્ટ-ચેક બતાવો જો:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Reddit સાથે ચાલુ રાખો"
+  },
+  "persistentBadgesLabel": {
+    "message": "કલરબ્લાઇન્ડ-અનુકૂળ: કાયમી બેજ",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "હોવર કર્યા વિના પોસ્ટ્સ પર દરેક તથ્ય ચકાસણી બેજ દૃશ્યમાન રાખો. ચુકાદો શબ્દોની જેમ જ હાઇલાઇટ રંગ દ્વારા પણ દર્શાવાય છે, તેથી આ તે રંગોને અલગ ન પારખી શકતા લોકોને મદદ કરે છે.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "મોટું ફોન્ટ સાઇઝ",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "વિન્ડોની અંદરના ટેક્સ્ટ માટે (દાવાઓ, તર્ક...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "બંધ કરો",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "દાવો સંપાદિત કરવા માટે ક્લિક કરો",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "તથ્ય ચકાસણી વિગતો",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "આ પસંદગી ચકાસવા માટે ખૂબ લાંબી છે. વધુમાં વધુ 1,000 અક્ષરો.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "બેલેન્સ ઘટે ત્યારે સૂચિત કરો",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "આનાથી વધુ: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "તથ્ય ચકાસણી કેવી રીતે કરવી",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "કોઈપણ વેબપેજ પર, તમે ચકાસવા માંગતો ટેક્સ્ટ પસંદ કરો.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "પસંદ કરેલા ટેક્સ્ટ પર જમણું ક્લિક કરો અને ચકાસણી પસંદ કરો (ન પસંદ કરેલા ટેક્સ્ટ પર પણ કામ કરે છે).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "પસંદ કરેલા ટેક્સ્ટ પર જમણું ક્લિક કરો અને {1} ચકાસણી પસંદ કરો (ન પસંદ કરેલા ટેક્સ્ટ પર પણ કામ કરે છે).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "ચકાસણી તરત જ શરૂ થાય છે અને તમારા બેલેન્સમાંથી ચાર્જ લેવાય છે.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "ટેક્સ્ટ હજી પણ પસંદ કરેલો રાખીને ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ઍડ્રેસ બારમાંના આઇકન પર ટૅપ કરો, પછી {1} DisinfaX પસંદ કરો.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

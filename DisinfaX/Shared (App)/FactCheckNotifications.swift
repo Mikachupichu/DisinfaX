@@ -41,8 +41,8 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
 
     // MARK: - Tuning
 
-    /// How often the balance is read while work is in flight, until this connection has been seen
-    /// to deliver a funds change.
+    /// How often the balance is read while work is in flight — the first interval of the decay in
+    /// `pollIntervalNow`, and the one every new billable request puts it back to.
     ///
     /// A charge lands at one instant in a run lasting tens of seconds, so this is the delay on the
     /// notification rather than a cadence anyone perceives — and each read is a `get_funds` call,
@@ -50,16 +50,17 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
     /// enough that a run cannot end inside one, and a fifth of what this used to spend.
     private static let pollInterval: TimeInterval = 15
 
-    /// How often it is read once this connection has been seen to deliver a funds change instead.
+    /// The ceiling the interval below doubles toward. Reached after ~11 hours of silence, by which
+    /// point the watch is waiting for a charge that is not coming.
+    private static let maxPollInterval: TimeInterval = 6 * 60 * 60
+
+    /// How long to wait before checking again while the app is not the one the user is looking at.
     ///
-    /// A delivered change is what turns the poll from the way a charge is noticed into a backstop
-    /// for a subscription that goes quiet without saying so — the failure that has no error on it:
-    /// a listener dropped server-side, a token filtered out by row-level security. The backstop
-    /// still has to exist, because a charge it does not read is a charge nobody is told about; it
-    /// only has to be cheap, because the socket is what is carrying it now. And it is billed, which
-    /// is what makes a minute the honest interval: a socket that is silent for a whole minute is
-    /// broken, and one read is what says so.
-    private static let backstopInterval: TimeInterval = 60
+    /// No read is taken at this interval — the poll exists to tell the user about a charge, and
+    /// there is no user to tell while another app is in front. iOS gives this for free by suspending
+    /// the process; macOS does not, which is why the check is explicit. Without it, a run pinned by
+    /// a task that never settles bills for as long as the machine stays awake.
+    private static let backgroundTickInterval: TimeInterval = 300
 
     /// How long the watch outlives the work. The charge is written by the backend, from outside
     /// this app — a hold taken as a worker starts, or a settle as it finishes — so the run's last
@@ -122,6 +123,12 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
     /// Mirrors the model's own view of whether the Fact-Check tab has anything in flight.
     private var working = false
 
+    /// How long the next read waits. Doubles after each one and is put back to `pollInterval` by
+    /// `willBill`, so the poll is fast while a run is buying things and decays toward silence once
+    /// nothing is. A run pinned by a task that never settles looks exactly like a long one from
+    /// here, and the decay is what keeps that indistinguishable state from billing all day.
+    private var pollIntervalNow: TimeInterval = FactCheckNotifier.pollInterval
+
     /// Which pass the model is running, so a notification can name it. Held past the end of the
     /// work rather than cleared with it: the charge that ends a run is written by the backend, from
     /// outside this app, and the last charge of a run is read a moment after the run's own last
@@ -157,6 +164,10 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
     /// registers nothing and leaves the queue aligned with the charges still to come.
     func willBill(_ pass: Activity) {
         pending.append(pass)
+        // A request that has gone out is a run that can be charged for, so the poll goes back to
+        // the fast interval: the decay is there to stop a pinned run from spending for a day, not
+        // to make a live one miss its charge.
+        pollIntervalNow = Self.pollInterval
     }
 
     /// The pass an observed charge belongs to: the oldest pass still waiting for one, or — for a
@@ -275,41 +286,45 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
         // charges already on the screen in front of the user. See `post`.
         guard started else { return }
         // A watch is exactly when a live balance is worth a subscription, and asking for it here is
-        // what makes the socket available to shorten this poll and to post a charge the moment it
-        // is written. Idempotent, and silent without a live token — and then the poll below is the
-        // only way a charge can be seen, which is why it keeps its fast interval until something
-        // has actually been delivered.
+        // what makes the socket available to post a charge the moment it is written. Idempotent,
+        // and silent without a live token — and then the poll below is the only way a charge can be
+        // seen, which is why it starts fast and decays rather than waiting to be proven.
         SupabaseRealtime.shared.ensureFundsChannel()
+        pollIntervalNow = Self.pollInterval
         poll = Task { [weak self] in
-            // The cadence is printed where it is chosen, and only when it changes. Which of the two
-            // speeds a run is on is not visible from the outside at all — and a run that has stopped
-            // reading is the one thing worth being able to rule out from a log.
-            var interval = self?.nextInterval() ?? Self.pollInterval
-            print("[notifications] balance poll: \(Int(interval))s")
             // The baseline comes first, before anything this run can be charged for, so the first
             // charge is measured against the balance as it stood when the work began — and a change
             // made while the app sat idle, in the popup or on a page, is not attributed to it.
             await self?.sample(baseline: true)
             while !Task.isCancelled {
+                guard let self else { return }
+                let interval = self.isForeground ? self.pollIntervalNow : Self.backgroundTickInterval
                 try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
                 guard !Task.isCancelled else { return }
-                await self?.sample(baseline: false)
-                let next = self?.nextInterval() ?? Self.pollInterval
-                if next != interval {
-                    interval = next
-                    print("[notifications] balance poll: \(Int(interval))s")
-                }
+                // Nothing is read while another app is in front. The notice this poll exists to
+                // produce has no reader, and the socket still carries a charge for whoever comes
+                // back — which is the case this watch was built for.
+                guard self.isForeground else { continue }
+                await self.sample(baseline: false)
+                self.decayPollInterval()
             }
         }
     }
 
-    /// How long to wait before the next read. See `backstopInterval`: the long one applies only
-    /// once this connection has been seen to deliver a funds change, so a socket that is joined but
-    /// silent — or absent, or joined under a token that has since rolled — keeps the fast interval
-    /// and behaves exactly as it did before there was a socket at all. Nothing here is made slower
-    /// on the strength of something that has not been observed to work.
-    private func nextInterval() -> TimeInterval {
-        SupabaseRealtime.shared.fundsDelivered ? Self.backstopInterval : Self.pollInterval
+    /// Whether this process is the one the user is looking at. iOS suspends a backgrounded app, so
+    /// its ticks stop on their own; macOS keeps running them, which is the case this guards.
+    private var isForeground: Bool {
+        #if os(macOS)
+        return NSApplication.shared.isActive
+        #else
+        return true
+        #endif
+    }
+
+    /// See `pollIntervalNow`: every read that nothing new was bought against makes the next one
+    /// wait twice as long, so a run that is really pinned decays instead of billing all day.
+    private func decayPollInterval() {
+        pollIntervalNow = min(pollIntervalNow * 2, Self.maxPollInterval)
     }
 
     private func stopPolling() {
@@ -390,7 +405,12 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
             claimPendingPass()
             post(.broke)
         } else {
-            post(.spend, amount: spent, title: claimPendingPass()?.title)
+            // The pass is claimed whether or not a notice follows: the charge happened, and
+            // leaving its entry queued would name the NEXT notice after this pass.
+            let pass = claimPendingPass()
+            guard SharedTopUpStore.spendNotifyEnabled,
+                  spent > SharedTopUpStore.spendNotifyThreshold else { return }
+            post(.spend, amount: spent, title: pass?.title)
         }
     }
 
@@ -404,7 +424,9 @@ final class FactCheckNotifier: NSObject, UNUserNotificationCenterDelegate {
     /// dropped socket could not deliver — one implementation of this RPC, and one place that
     /// defines "the caller's total" as balance + hold.
     static func fetchTotal() async -> Double? {
-        guard let token = SharedTopUpStore.session?.accessToken,
+        // Renewed rather than read raw: this is what seeds the balance the app shows, and a
+        // token that lapsed since the last tick would otherwise read as "no funds to report".
+        guard let token = await AppSession.current()?.accessToken,
               let url = URL(string: "\(FactCheckClient.supabaseBase)/rest/v1/rpc/get_funds") else { return nil }
 
         var request = URLRequest(url: url)

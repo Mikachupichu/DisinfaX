@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "E lemoga le go bontsha tshedimosetso ya maaka mo ditweet ka go dirisa tshekatsheko ya AI.",
+    "message": "E lemoga le go bontsha tshedimosetso ya maaka mo diposting ka go dirisa tshekatsheko ya AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Bontsha gape dintlha tsotlhe tsa tweet eno",
+    "message": "Bontsha gape dintlha tsotlhe tsa posting eno",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Tswa"
   },
+  "deleteAccount": {
+    "message": "Phimola Akhaonto le Data e e Amanang",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Madi a a setseng a gago, le hash ya sephiri ya aterese ya gago ya imeile e e sireleditsweng ka senotlelo sa sephiri, di bolokiwa go thibela tiriso e e bosula ya madi a mahala a a newang fa o ikwadisa. Fa o ingwadisisa gape ka akhaonto e e tshwanang, madi a a setseng a gago a boela.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Go tobetsa %BTN% go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago"
   },
@@ -287,7 +295,7 @@
     "message": "E Dirisitswe la Bofelo"
   },
   "cleanupTagline": {
-    "message": "Phepafatsa X Feed ya gago."
+    "message": "Phepafatsa Feed ya gago."
   },
   "disclaimerJurisdiction": {
     "message": "Mo teng ga United States, ke banni ba Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, le Wyoming fela ba ka dirisang DisinfaX le go oketsa madi a bona; Washington, D.C., dikgaolo tsotlhe tsa U.S., le dinaga dipe tse di sa lokololwang ga di akaretswe. Kwa ntle ga United States, e teng kwa Canada, Australia, New Zealand, Singapore, Aforika Borwa, Japane, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, le Switzerland."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Seo ga se bonwa. Leka gape."
   },
+  "errNoClaims": {
+    "message": "Ga go na dipolelo tse di ka netefadiwang tse di fitlhetsweng mo mokwalong ono.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Ditlhophiso",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Ponagalo",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Lesedi",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Go itirisa",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Lefifi",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Bontsha ditshekatsheko ka metlha fa:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Tswelela ka Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Bofofu jwa mmala: dibeche tsa leruri",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Dira gore beche nngwe le nngwe ya tlholo ya boammaaruri e nne e bonala mo dipolelong ntle le go baya sekwere godimo ga yone. Katlholo e romelwa ka mmala o o tlhagisitsweng fela jaaka mafoko a yone, ka jalo seno se thusa mongwe le mongwe yo o sa kgoneng go farologanya mebala eo.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Bogolo jwa mokwalo jo bogolo",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Bakeng sa mokwalo o mo dipalameng (dikopo, mabaka...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Tswala",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Tobetsa go baakanya maipolelo",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Dintlha tsa tlholo ya boammaaruri",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Tlhopo eno e telele thata gore e ka tlhatlhobiwa. Ditlhaka di le 1,000 fela.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Itsise fa madi a a setseng a fokotsega",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Go feta: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "TSELA YA GO TLHATLHOBA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Mo tsebeng efe kapa efe ya webu, tlhopha mokwalo o o batlang go o tlhatlhoba.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Tobetsa ka konopo ya moja e e kafa mo le letona mo mokwalong o o tlhophilweng mme o tlhophe Tlhatlhoba (e dira gape mo mokwalong o o sa tlhophiwang).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Tobetsa ka konopo ya moja e e kafa mo le letona mo mokwalong o o tlhophilweng mme o tlhophe {1} Tlhatlhoba (e dira gape mo mokwalong o o sa tlhophiwang).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Tlhatlhobo e simolola ka yone fela mme e lefisiwa mo madi a a setseng a gago.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Fa mongwalo o sa ntse o tlhophilwe, tobetse letshwao ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " mo bareng ya atirese, go tswa foo o tlhophe {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

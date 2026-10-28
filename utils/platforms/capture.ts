@@ -28,16 +28,14 @@ export function nameCapturedLanguage(post: MainTweet): MainTweet {
   return post;
 }
 
-/** The app's own UI language, which is what a host translates a post INTO when it shows a
- *  translation at all.
+/** The app's own UI language, which is what a host translates a post INTO by default.
  *
  *  Shared because more than one platform's translate control is like this: nothing on the
  *  page states a post's target language — it is a setting in the host's own UI, and it
- *  leaves no mark on the post it applies to. Telegram's picker under the menu's "Change
- *  language" marks nothing (measured), and Threads' inline control does not either, so on
- *  both this is the app's language rather than the post's. The difference only ever costs
- *  the name a highlight range is filed under: the text itself is read from the DOM and
- *  never inferred.
+ *  leaves no mark on the post it applies to. That is exactly why it is never read as the
+ *  displayed side's language on a platform whose control can pick another target (Telegram,
+ *  Threads): those answer `und` and let the body identify the side. Where a host only ever
+ *  translates into its own UI language (Facebook), this is the key its ranges are filed under.
  *
  *  The base subtag, because the document's tag can carry a region the classifier's locale
  *  keys do not. Null when the document states no language, which is read as "no translation

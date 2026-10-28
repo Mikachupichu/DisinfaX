@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI талдауын қолдана отырып, твиттердегі жалған ақпаратты анықтайды және ерекшелейді.",
+    "message": "AI талдауын қолдана отырып, жазбалардағы жалған ақпаратты анықтайды және ерекшелейді.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -115,7 +115,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Осы твиттегі барлық мәлімдемелерді қайта ашу",
+    "message": "Осы жазбадағы барлық мәлімдемелерді қайта ашу",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -234,6 +234,14 @@
   "signOut": {
     "message": "Шығу"
   },
+  "deleteAccount": {
+    "message": "Аккаунтты және оған қатысты деректерді жою",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Балансыңыз және құпия кілтпен қорғалған электрондық пошта мекенжайыңыздың криптографиялық хэші аккаунт ашқанда берілетін тегін қаражатты теріс пайдалануды болдырмау үшін сақталады. Сол аккаунтпен қайта тіркелсеңіз, балансыңыз қалпына келтіріледі.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% түймесін басу мәлімдемелерді ашады және балансыңыздан ақша алады"
   },
@@ -286,7 +294,7 @@
     "message": "Соңғы қолданылған"
   },
   "cleanupTagline": {
-    "message": "X таспаңызды тазалаңыз."
+    "message": "Таспаңызды тазалаңыз."
   },
   "disclaimerJurisdiction": {
     "message": "Америка Құрама Штаттарында тек Алабама, Аризона, Калифорния, Колорадо, Коннектикут, Делавэр, Флорида, Айдахо, Иллинойс, Индиана, Айова, Канзас, Кентукки, Луизиана, Мэн, Массачусетс, Миссисипи, Миссури, Монтана, Нью-Гэмпшир, Нью-Мексико, Нью-Йорк, Солтүстік Каролина, Солтүстік Дакота, Оклахома, Орегон, Пенсильвания, Оңтүстік Каролина, Оңтүстік Дакота, Теннесси, Техас, Юта, Вашингтон, Висконсин және Вайоминг тұрғындары DisinfaX-ты пайдаланып, балансын толықтыра алады; Вашингтон, D.C., барлық АҚШ аумақтары және тізімде жоқ кез келген штаттар қосылмайды. Америка Құрама Штаттарынан тыс жерде ол Канада, Австралия, Жаңа Зеландия, Сингапур, Оңтүстік Африка, Жапония, Тайвань, Индонезия, Тайланд, Филиппины, Малайзия, Вьетнам және Швейцарияда қолжетімді."
@@ -329,9 +337,29 @@
   "errNotFound": {
     "message": "Бұл табылмады. Қайталап көріңіз."
   },
+  "errNoClaims": {
+    "message": "Бұл мәтінде тексеруге болатын тұжырымдар табылмады.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Баптаулар",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Көрініс",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ашық",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Автоматты",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Қараңғы",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Фактчекингті әрқашан көрсет, егер:",
@@ -416,5 +444,79 @@
   },
   "continueWithReddit": {
     "message": "Reddit арқылы жалғастыру"
+  },
+  "persistentBadgesLabel": {
+    "message": "Дальтониктерге ыңғайлы: тұрақты белгілер",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Курсорды апармай-ақ жазбалардағы фактілерді тексеру белгілерін көрінетін күйде сақтаңыз. Үкім сөздермен ғана емес, ерекшелеу түсімен де беріледі, бұл осы түстерді ажырата алмайтындарға көмектеседі.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Үлкен қаріп өлшемі",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Терезелер ішіндегі мәтін үшін (тұжырымдар, дәйектемелер...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Жабу",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Тұжырымды өңдеу үшін басыңыз",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Фактілерді тексеру мәліметтері",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Бұл таңдау тексеру үшін тым ұзын. Ең көбі 1 000 таңба.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Баланс азайған кезде хабарлау",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Осыдан артық: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "ФАКТІНІ ҚАЛАЙ ТЕКСЕРУГЕ БОЛАДЫ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Кез келген веб-бетте тексергіңіз келетін мәтінді таңдаңыз.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Таңдалған мәтінді тінтуірдің оң жақ түймесімен басып, Тексеру таңдаңыз (таңдалмаған мәтінде де жұмыс істейді).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Таңдалған мәтінді тінтуірдің оң жақ түймесімен басып, {1} Тексеру таңдаңыз (таңдалмаған мәтінде де жұмыс істейді).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Тексеру бірден басталады және сома балансыңыздан алынады.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Мәтін таңдалған күйде, ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " белгішесін мекенжай жолағында түртіп, содан кейін {1} DisinfaX-ты таңдаңыз.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

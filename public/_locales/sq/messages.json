@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Zbulon dhe nxjerr në pah dezinformimin në tweet-e duke përdorur analizën e AI.",
+    "message": "Zbulon dhe nxjerr në pah dezinformimin në postime duke përdorur analizën e AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Zbulo sërish të gjitha pretendimet në këtë tweet",
+    "message": "Zbulo sërish të gjitha pretendimet në këtë postim",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Dil"
   },
+  "deleteAccount": {
+    "message": "Fshi llogarinë dhe të dhënat e lidhura",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Bilanci juaj, dhe një hash kriptografik i adresës suaj të emailit i mbrojtur nga një çelës sekret, ruhen për të parandaluar abuzimin me fondet falas që jepen gjatë krijimit të llogarisë. Nëse regjistroheni përsëri me të njëjtën llogari, bilanci juaj rikthehet.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Klikimi mbi %BTN% shfaq pretendimet dhe do të ngarkojë bilancin tënd"
   },
@@ -287,7 +295,7 @@
     "message": "Përdorur së fundmi"
   },
   "cleanupTagline": {
-    "message": "Pastro feed-in tënd në X."
+    "message": "Pastro feed-in tënd."
   },
   "disclaimerJurisdiction": {
     "message": "Brenda Shteteve të Bashkuara, vetëm banorët e Alabamës, Arizonës, Kalifornisë, Kolorados, Konektikatit, Delawares, Floridës, Ajdahos, Ilinoisit, Indianës, Ajovës, Kanzasit, Kentakit, Luizianës, Mejnit, Masaçusetsit, Misisipit, Misurit, Montanës, Nju Hempshërit, Nju Meksikos, Nju Jorkut, Karolinës së Veriut, Dakotës së Veriut, Oklahomës, Oregonit, Pensilvanisë, Karolinës së Jugut, Dakotës së Jugut, Tenesit, Teksasit, Jutës, Uashingtonit, Uiskonsinit dhe Uajomingut mund të përdorin DisinfaX dhe të rimbushin bilancin e tyre; Uashington, D.C., të gjitha territoret amerikane dhe çdo shtet i palistuar përjashtohen. Jashtë Shteteve të Bashkuara, ai është i disponueshëm në Kanada, Australi, Zelandën e Re, Singapor, Afrikën e Jugut, Japoni, Tajvan, Indonezi, Tajlandë, Filipine, Malajzi, Vietnam dhe Zvicër."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Kjo nuk u gjet. Provo përsëri."
   },
+  "errNoClaims": {
+    "message": "Nuk u gjetën pretendime të verifikueshme në këtë tekst.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Cilësimet",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Pamja",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "E çelët",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatik",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "E errët",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Shfaq gjithmonë verifikimet nëse:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Vazhdo me Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Për daltonikët: distinktivë të përhershëm",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Mbaj të dukshëm çdo distinktiv verifikimi në postime pa kaluar kursorin. Vendimi përcillet po aq nga ngjyra e theksimit sa edhe nga fjalët, ndaj kjo ndihmon këdo që nuk i dallon dot këto ngjyra.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Madhësi e madhe e shkronjave",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Për tekstin brenda dritareve (pretendime, arsyetime...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Mbyll",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Kliko për të redaktuar pretendimin",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detajet e verifikimit të fakteve",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Ky përzgjedhje është shumë e gjatë për t’u verifikuar. Maksimumi 1 000 karaktere.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Njofto kur bilanci zvogëlohet",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Me më shumë se: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "SI TË VERIFIKOSH FAKTET",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Në çdo faqe interneti, zgjidh tekstin që dëshiron të verifikosh.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Kliko me të djathtën mbi tekstin e zgjedhur dhe zgjidh Disinfakto (funksionon edhe për tekst të pazgjedhur).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Kliko me të djathtën mbi tekstin e zgjedhur dhe zgjidh {1} Disinfakto (funksionon edhe për tekst të pazgjedhur).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Verifikimi fillon menjëherë dhe tarifohet në bilancin tënd.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Me tekstin ende të zgjedhur, trokit ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikonën në shiritin e adresave dhe më pas zgjidh {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

@@ -1,12 +1,19 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { browser } from 'wxt/browser';
 import { isPlatformHost } from './platforms/hosts';
+import { createNativeFetch, publishNativeSession } from './nativeSession';
 
 const supabaseUrl = 'https://pofekzkirnysbuqbxmvp.supabase.co';
 /** Supabase's *publishable* (anon) key. This is designed to ship in client code: it
  *  grants no privileges by itself, and every table is gated by row-level security
  *  policies keyed on auth.uid(). It is not a secret. */
 const supabaseAnonKey = 'sb_publishable_4ZX8ljVPNImnvcpLl60Q_g_zgOK77Ua';
+
+/** The storage slot supabase-js uses for the session: `sb-<project-ref>-auth-token`, which is
+ *  what the library derives from the URL above. Spelled out because the Safari bridge has to
+ *  address the slot directly — to adopt a session the app established, and to publish one this
+ *  profile minted — and a second derivation of the same string is what would drift. */
+export const SUPABASE_AUTH_STORAGE_KEY = `sb-${new URL(supabaseUrl).hostname.split('.')[0]}-auth-token`;
 
 /** Custom storage adapter backed by browser.storage.local so the auth session is
  *  shared across every extension context (popup, background service worker,
@@ -18,9 +25,23 @@ const chromeStorageAdapter = {
   },
   setItem: async (key: string, value: string): Promise<void> => {
     await browser.storage.local.set({ [key]: value });
+    // In Safari the session is not this profile's alone: the app holds the same one and can
+    // renew it, so every write here — a sign-in, or the result of a renewal — is offered to
+    // the shared record. Deliberately not awaited: the write has already landed locally and
+    // nothing about the caller's result depends on the app hearing about it.
+    if (import.meta.env.SAFARI && key === SUPABASE_AUTH_STORAGE_KEY) {
+      void publishNativeSession(SUPABASE_AUTH_STORAGE_KEY);
+    }
   },
   removeItem: async (key: string): Promise<void> => {
     await browser.storage.local.remove(key);
+    // supabase-js removes this slot only when the session is genuinely gone — an explicit
+    // sign-out, an unreadable record, or a refresh the server refused. The app must not keep
+    // selling to an account nobody is signed into any more. (An unreachable app never reaches
+    // this path; see createNativeFetch.)
+    if (import.meta.env.SAFARI && key === SUPABASE_AUTH_STORAGE_KEY) {
+      void browser.runtime.sendMessage({ type: 'MF_NATIVE_CLEAR_ACCOUNT' }).catch(() => {});
+    }
   },
 };
 
@@ -73,6 +94,10 @@ export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKe
         autoRefreshToken: false,  // No timers, no _recoverAndRefresh rotation attempts
         detectSessionInUrl: false,
       },
+  // Safari only, and only where the client owns the session: renewals go through the native
+  // handler so the app and the extension can never rotate the same refresh token twice. The
+  // Chromium and Firefox bundles drop this along with every other `SAFARI` branch.
+  ...(import.meta.env.SAFARI && sessionOwner ? { global: { fetch: createNativeFetch(SUPABASE_AUTH_STORAGE_KEY) } } : null),
 });
 
 /** The sign-in rows we offer, keyed by the name WE use for them.

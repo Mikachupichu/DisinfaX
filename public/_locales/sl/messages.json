@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Zazna in poudari dezinformacije v tweetih z AI analizo."
+    "message": "Zazna in poudari dezinformacije v objavah z AI analizo."
   },
   "verdictTrue": {
     "message": "Resnično",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ponovno razkrij vse trditve v tem tweetu",
+    "message": "Ponovno razkrij vse trditve v tej objavi",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Odjava"
   },
+  "deleteAccount": {
+    "message": "Izbriši račun in povezane podatke",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Vaše dobroimetje in s skrivnim ključem zaščiten kriptografski hash vašega e-poštnega naslova se shranita, da se prepreči zloraba brezplačnih sredstev, dodeljenih ob registraciji. Če se znova registrirate z istim računom, se vaše dobroimetje obnovi.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Klik na %BTN% razkrije trditve in bo obremenil vaše dobroimetje"
   },
@@ -285,7 +293,7 @@
     "message": "Nazadnje uporabljeno"
   },
   "cleanupTagline": {
-    "message": "Počistite svoj vir na X."
+    "message": "Počistite svoj vir."
   },
   "disclaimerJurisdiction": {
     "message": "Znotraj Združenih držav lahko DisinfaX uporabljajo in polnijo dobroimetje samo prebivalci držav Alabama, Arizona, Kalifornija, Kolorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Misisipi, Misuri, Montana, New Hampshire, Nova Mehika, New York, Severna Karolina, Severna Dakota, Oklahoma, Oregon, Pensilvanija, Južna Karolina, Južna Dakota, Tennessee, Teksas, Utah, Washington, Wisconsin in Wyoming; Washington, D.C., vsa ozemlja ZDA in vse nenavedene države so izključene. Zunaj Združenih držav je storitev na voljo v Kanadi, Avstraliji, na Novi Zelandiji, v Singapurju, v Južnoafriški republiki, na Japonskem, na Tajvanu, v Indoneziji, na Tajskem, na Filipinih, v Maleziji, v Vietnamu in v Švici."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Tega ni bilo mogoče najti. Poskusite znova."
   },
+  "errNoClaims": {
+    "message": "V tem besedilu ni bilo najdenih preverljivih trditev.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Nastavitve",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Videz",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Svetla",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Samodejno",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Temna",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Vedno prikaži preverbe, če:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Nadaljujte z Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Za barvno slepe: stalne značke",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ohrani vse značke preverjanja dejstev vidne na objavah brez premika miške. Razsodbo izraža tako barva poudarka kot besedilo, kar pomaga vsem, ki teh barv ne morejo razlikovati.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Velika velikost pisave",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Za besedilo v oknih (trditve, utemeljitve...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Zapri",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Kliknite za urejanje trditve",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Podrobnosti preverjanja dejstev",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Ta izbor je predolg za preverjanje. Največ 1 000 znakov.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Obvesti, ko se dobroimetje zmanjša",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Za več kot: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "KAKO PREVERITI DEJSTVA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Na kateri koli spletni strani izberite besedilo, ki ga želite preveriti.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Kliknite z desno tipko miške na izbrano besedilo in izberite Razkrij (deluje tudi na neizbranem besedilu).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Kliknite z desno tipko miške na izbrano besedilo in izberite {1} Razkrij (deluje tudi na neizbranem besedilu).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Preverjanje se začne takoj in se odšteje od vašega dobroimetja.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Ko je besedilo še izbrano, se dotaknite ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikone v naslovni vrstici in nato izberite {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

@@ -30,6 +30,7 @@
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { sealHostEvents } from '../injecting';
+import { isoDatetime, isoDatetimeFromAge } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import type { CapturedPost, PlatformAdapter } from './types';
 
@@ -136,6 +137,100 @@ function postIdOfElement(root: Element): string | null {
   return null;
 }
 
+/** When the post was written, off the permalink anchor the id above also comes from — the
+ *  first anchor in the container whose href names THIS post, and which states a time.
+ *
+ *  The instant is in the anchor's ACCESSIBILITY label, not in its text: bsky.app renders no
+ *  `<time>` element anywhere, and the anchor's visible words are the age (`· 58m` for a fresh
+ *  post, a day for an older one). Its `aria-label` and `data-tooltip` both spell the moment out
+ *  in the reader's own clock and language (`October 14, 2026 at 12:27 AM`), to the minute.
+ *  Measured 2026-10-14 on a feed and on a profile: every post's anchor carried one, including a
+ *  post from 2024 whose visible text was already a date.
+ *
+ *  The id filter is what keeps the scan from stopping at an anchor that states nothing. A
+ *  post's count links (`/post/<rkey>/reposted-by`, `/quotes`, `/liked-by`) match the same
+ *  shape, name the same post, and carry stat labels rather than times — and on the focused
+ *  post of a thread view they are the ONLY post anchors there are, so returning from the
+ *  first shape match left that post undated on every thread page (measured 2026-10-26: the
+ *  focused item's first three anchors were `Reposts of this post`, `Quotes of this post` and
+ *  `Likes on this post`). Anchors naming a DIFFERENT post are skipped for the older reason:
+ *  a reply can carry a link to the post above it, whose date is not this one's.
+ *
+ *  Where the label is absent or written in a language `Date.parse` cannot read, the anchor's own
+ *  text is read as an age instead — a floor rather than a measurement (`isoDatetimeFromAge`).
+ *  Unreadable either way leaves the reading to `detailDateOf` and, failing that, to the network
+ *  half. */
+function postedTimeOf(root: Element, id: string): string | undefined {
+  for (const anchor of Array.from(root.querySelectorAll('a[href]'))) {
+    const match = (anchor.getAttribute('href') ?? '').match(POST_HREF_RE);
+    if (!match) continue;
+    if (namespaced(canonicalHandle(match[1]), match[2]) !== id) continue;
+    const stated =
+      isoDatetime(anchor.getAttribute('aria-label')) ??
+      isoDatetime(anchor.getAttribute('data-tooltip')) ??
+      isoDatetimeFromAge(anchor.textContent);
+    if (stated) return stated;
+  }
+  return undefined;
+}
+
+/** The focused post's own date, as the page states it to machines.
+ *
+ *  The thread view's focused post is the one post with no anchor for `postedTimeOf` to read:
+ *  it has no bare permalink, and its timestamp is a plain element of locale-formatted words
+ *  (`12:30 PM · Oct 22, 2026`, measured 2026-10-26) that no single parse reads in every
+ *  language the app ships. The page states the moment in machine form once, in the schema.org
+ *  block it writes for that post: `mainEntity.identifier` is the post's at-uri and
+ *  `mainEntity.datePublished` an instant to the millisecond — though not quite the record's
+ *  own: measured 2026-10-26 on bsky.app's own post, `datePublished` read
+ *  `16:30:05.638Z` where the record's `createdAt` is `16:30:02.437Z`, which is the service's
+ *  indexing time, three seconds later. That is the closest this page comes to the post's
+ *  instant, and it is exact to the second rather than the floor a rendered age would give.
+ *
+ *  Scoped by id, because the block belongs to whichever post the server rendered — bsky
+ *  navigates without a reload, so it can outlive the post it describes — and consulted only
+ *  after the post's own markup has stated nothing, so an anchor's reading always wins. */
+function detailDateOf(id: string): string | undefined {
+  const raw = document.querySelector('script[type="application/ld+json"]')?.textContent;
+  if (!raw) return undefined;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+  const main = (parsed as { mainEntity?: unknown } | null)?.mainEntity;
+  for (const entity of Array.isArray(main) ? main : [main]) {
+    if (!entity || typeof entity !== 'object') continue;
+    const { url, identifier, datePublished } = entity as Record<string, unknown>;
+    if (typeof datePublished !== 'string') continue;
+    if (detailPostId(url, identifier) !== id) continue;
+    const stated = isoDatetime(datePublished);
+    if (stated) return stated;
+  }
+  return undefined;
+}
+
+/** Which post a schema.org entity names, keyed the way this adapter keys posts: the `url` it
+ *  states first (it spells the handle out), the at-uri `identifier` second (it names the
+ *  author by DID, which resolves only once the page has told us that DID's handle). */
+function detailPostId(url: unknown, identifier: unknown): string | null {
+  if (typeof url === 'string') {
+    try {
+      const match = new URL(url).pathname.match(POST_HREF_RE);
+      if (match) return namespaced(canonicalHandle(match[1]), match[2]);
+    } catch {
+      // Not a URL: the identifier below is the other spelling.
+    }
+  }
+  if (typeof identifier === 'string') {
+    const rkey = rkeyOfUri(identifier);
+    const author = identifier.match(/^at:\/\/([^/]+)\//);
+    if (rkey && author) return namespaced(canonicalHandle(author[1]), rkey);
+  }
+  return null;
+}
+
 /** Every `did → handle` pair seen in an XRPC response, for the life of the page.
  *
  *  A Bluesky post's uri names its author by DID (`at://did:plc:…/app.bsky.feed.post/…`),
@@ -182,7 +277,9 @@ export interface NetPost {
   langs: string[] | null;
   parentUri: string | null;
   author: NetAuthor;
-  quote: { uri: string; text: string; author: NetAuthor } | null;
+  /** When the author wrote the post, as the record states it. */
+  createdAt: string | null;
+  quote: { uri: string; text: string; author: NetAuthor; createdAt: string | null } | null;
 }
 
 function str(value: unknown): string | null {
@@ -206,8 +303,9 @@ function asNetPost(value: unknown): NetPost | null {
     langs: Array.isArray(o.langs) ? o.langs.filter((l: unknown) => typeof l === 'string') : null,
     parentUri: str(o.parentUri),
     author,
+    createdAt: str(o.createdAt),
     quote: o.quote && quoteAuthor && typeof o.quote.text === 'string' && str(o.quote.uri)
-      ? { uri: str(o.quote.uri)!, text: o.quote.text, author: quoteAuthor }
+      ? { uri: str(o.quote.uri)!, text: o.quote.text, author: quoteAuthor, createdAt: str(o.quote.createdAt) }
       : null,
   };
 }
@@ -302,6 +400,7 @@ function postFromNetwork(record: NetPost): MainTweet | null {
 
   const quoteId = record.quote ? idOfUri(record.quote.uri, record.quote.author.handle) : null;
   const quoteText = record.quote ? record.quote.text.trim() : '';
+  const quoteDatetime = record.quote ? isoDatetime(record.quote.createdAt) : undefined;
   const quoting = record.quote && quoteId && quoteText
     ? {
         id: quoteId,
@@ -310,8 +409,13 @@ function postFromNetwork(record: NetPost): MainTweet | null {
         username: record.quote.author.handle,
         usertype: authorIsVerified(record.quote.author) ? BSKY_VERIFIED : BSKY_UNVERIFIED,
         conversationId: quoteId,
+        ...(quoteDatetime ? { datetime: quoteDatetime } : {}),
       }
     : null;
+
+  // The time the author wrote the post, from the record. A record that states none — the
+  // field is optional in AT Protocol — is a post without one rather than a guessed date.
+  const datetime = isoDatetime(record.createdAt);
 
   const post: MainTweet = {
     id,
@@ -322,6 +426,7 @@ function postFromNetwork(record: NetPost): MainTweet | null {
     conversationId: id,
     quoting,
     replyingTo: null,
+    ...(datetime ? { datetime } : {}),
   };
   const lang = record.langs?.find((l) => typeof l === 'string' && l.length > 0);
   if (lang) post.sourceLanguage = lang;
@@ -595,6 +700,7 @@ export const blueskyAdapter: PlatformAdapter = {
     // live sweep of a feed.
     if (!text) return null;
 
+    const datetime = postedTimeOf(root, id) ?? detailDateOf(id);
     const post = {
       id,
       text,
@@ -624,6 +730,12 @@ export const blueskyAdapter: PlatformAdapter = {
       // conversation in front of the classifier. The real chain exists in the
       // `app.bsky.feed.getPostThread` response, which is what `captureNetwork` reads.
       replyingTo: null,
+      // Read off this post's own permalink anchor, or — for the focused post of a thread
+      // view, which has none — off the page's schema.org block for it (see `postedTimeOf`
+      // and `detailDateOf`). The network half is the exact one and usually the first: every
+      // datetime this platform sends normally comes from the record's `createdAt`
+      // (`postFromNetwork`), and this covers the post no response carried.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     // No language here either, and unlike the parent above there is nothing to go looking

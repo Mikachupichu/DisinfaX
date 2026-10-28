@@ -46,16 +46,35 @@ struct FactCheckView: View {
     /// user returns to, not to the view instance that happened to be on screen.
     @ObservedObject var model: FactCheckModel
 
-    /// Whether to draw the `DisinfaX` / `Fact-Check` name above everything else. True everywhere
-    /// in the app, where this view is the whole of what is on screen and has to say what it is.
-    /// False in the share sheet, which is presented under a bar that already carries the name —
-    /// and which is the reason this is a flag on the name rather than a second view: the rest of
-    /// the surface is the same one the app's tab draws, down to the controls that bill.
+    /// Whether to draw the name above everything else. True everywhere in the app, where this
+    /// view is the whole of what is on screen and has to say what it is. False in the share
+    /// sheet, which is presented under a bar that already carries the name — and which is the
+    /// reason this is a flag on the name rather than a second view: the rest of the surface is
+    /// the same one the app's tab draws, down to the controls that bill.
     var showsHeader = true
+
+    /// What the header's first line says. The app's own name when this view stands alone; the
+    /// pane's name when it is laid out beside the other one, where two "DisinfaX" headings
+    /// would say nothing about which pane is which.
+    var headerTitle: LocalizedStringKey = "DisinfaX"
+
+    /// False wherever `headerTitle` already names the pane, as it does side by side — the
+    /// subtitle's "Fact-Check" would otherwise be the line above it, said twice.
+    var showsHeaderSubtitle = true
+
+    /// Content that belongs to the tab region but to neither pane in particular — the account
+    /// actions. Drawn at the end of this pane's own scroll content, so they scroll with it and
+    /// are covered by the guide's overlay along with the rest of the tab.
+    var footer: AnyView? = nil
 
     /// Re-read rather than captured: the extension rewrites this every time its popup opens, and
     /// that is exactly the action the signed-out state asks the user to take.
     @State private var session: SharedTopUpStore.Session?
+
+    /// Whether the claims the post's link flags are on screen. Collapsed by default: the page
+    /// keeps such a claim out of sight until a selection uncovers that part of the post, so the
+    /// tab must not open with them in the reader's face.
+    @State private var showHiddenClaims = false
 
     /// The editor's own width, which is the width its height is measured at. Read from the
     /// layout rather than assumed: the app's window is one width on macOS and an iOS sheet is
@@ -90,6 +109,7 @@ struct FactCheckView: View {
                         claimsSection
                     }
                 }
+                if let footer { footer }
             }
             .padding(24)
             .tint(Self.accent)
@@ -107,23 +127,26 @@ struct FactCheckView: View {
     /// Drawn everywhere except the share sheet. See `showsHeader`.
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("DisinfaX").font(.system(size: 26, weight: .bold))
-            Text("Fact-Check").font(.subheadline).foregroundStyle(.secondary)
+            Text(headerTitle).font(.system(size: 26, weight: .bold))
+            if showsHeaderSubtitle {
+                Text("Fact-Check").font(.subheadline).foregroundStyle(.secondary)
+            }
         }
     }
 
     // MARK: - States where there is nothing to check with
 
     /// Deliberately the same sentence `TopUpView` uses for its dead-identity case: it is already
-    /// in the catalog, and the remedy is identical — the popup is what refreshes the hand-over.
-    /// The app genuinely cannot tell "never signed in" from "the token expired", since both are
-    /// just an unusable container, and "open the popup" is the right move for either.
+    /// in the catalog, and the remedy is identical — sign in again. Reaching this means the app
+    /// could not renew what it held, which now only happens when nobody is signed in or the
+    /// server has stopped honouring the session; the popup is not part of the answer any more.
     private var signedOutNotice: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: "person.crop.circle.badge.exclamationmark")
                 .font(.title2)
                 .foregroundStyle(.secondary)
-            Text("Your session needs refreshing — open the DisinfaX popup in Safari, then try again.")
+                .accessibilityHidden(true)
+            Text("You're not signed in. Please sign in and try again.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -181,9 +204,10 @@ struct FactCheckView: View {
                     if model.isPreclassifying {
                         HStack(spacing: 8) {
                             ProgressView().controlSize(.small)
+                                .accessibilityLabel(Text("Fact-Checking"))
                             Text("Fact-Checking").foregroundStyle(.secondary)
                         }
-                    } else if model.claims.count > 1, model.hasUnrunClaims {
+                    } else if model.claims.filter({ !$0.isHidden }).count > 1, model.hasUnrunClaims {
                         Button {
                             model.researchAll()
                         } label: {
@@ -253,6 +277,7 @@ struct FactCheckView: View {
         TextEditor(text: $model.inputText)
             .font(.body)
             .scrollContentBackground(.hidden)
+            .accessibilityLabel(Text("Enter a claim"))
             // Return runs the check, Shift+Return breaks the line — see `SubmitOnReturn`.
             .modifier(Self.SubmitOnReturn { model.disinfact() })
             // One line when empty, one more for every line the text wraps to, and scrolling once
@@ -436,6 +461,7 @@ struct FactCheckView: View {
         .padding(4)
         .contentShape(Rectangle())
         .help(Text("Clear"))
+        .accessibilityLabel(Text("Clear"))
         .disabled(model.inputText.isEmpty)
         .opacity(model.inputText.isEmpty ? 0 : 1)
         .offset(y: -Self.clearControlLift)
@@ -495,15 +521,31 @@ struct FactCheckView: View {
 
     private var claimsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ForEach(model.claims) { claim in
-                FactCheckClaimCard(
-                    claim: claim,
-                    accent: Self.accent,
-                    tabIsBusy: model.isBusy,
-                    canSpend: model.canSpend,
-                    onResearch: { model.research(claim.id) },
-                    onAnnotate: { model.annotate(claim.id) }
-                )
+            ForEach(model.claims.filter { !$0.isHidden }) { claim in
+                claimCard(claim)
+            }
+            if !hiddenClaims.isEmpty {
+                // Flagged claims (tweet_claims.is_hidden) live behind this: the page shows them
+                // only where a selection uncovers them, so they are listed on request here.
+                Button {
+                    withAnimation(.easeInOut(duration: 0.15)) { showHiddenClaims.toggle() }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(showHiddenClaims
+                             ? String(localized: "Show less")
+                             : "\(String(localized: "Show more")) (\(hiddenClaims.count))")
+                        Image(systemName: "chevron.down")
+                            .rotationEffect(.degrees(showHiddenClaims ? 180 : 0))
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+            if showHiddenClaims {
+                ForEach(hiddenClaims) { claim in
+                    claimCard(claim)
+                }
             }
         }
         // The session gate is on the cards' own controls rather than on this section, which is
@@ -511,6 +553,19 @@ struct FactCheckView: View {
         // controls that bill that have to come down when a spend cannot be authenticated; a
         // verdict's reasoning, its sources and the percentages behind its badge were all being
         // made unreachable — not merely unspendable — by a stale token. See `canSpend`.
+    }
+
+    private var hiddenClaims: [FactCheckClaim] { model.claims.filter(\.isHidden) }
+
+    private func claimCard(_ claim: FactCheckClaim) -> some View {
+        FactCheckClaimCard(
+            claim: claim,
+            accent: Self.accent,
+            tabIsBusy: model.isBusy,
+            canSpend: model.canSpend,
+            onResearch: { model.research(claim.id) },
+            onAnnotate: { model.annotate(claim.id) }
+        )
     }
 
     private func refreshSession() {
@@ -639,6 +694,7 @@ private struct FactCheckClaimCard: View {
                     } else {
                         if isReclassification {
                             Image(systemName: "arrow.clockwise").font(.system(size: 11))
+                                .accessibilityHidden(true)
                         }
                         Text("Fact-Check")
                     }
@@ -707,6 +763,7 @@ private struct FactCheckClaimCard: View {
                                 // 16pt against an 11pt caption, and a bottom-aligned one sits half
                                 // a line low next to the words it belongs to.
                                 .alignmentGuide(.firstTextBaseline) { $0.height - 2 }
+                                .accessibilityHidden(true)
                             Text(title)
                                 .font(.caption)
                                 .underline()
@@ -993,6 +1050,7 @@ private struct CopyButton: View {
         }
         .buttonStyle(.plain)
         .help(Text("Copy"))
+        .accessibilityLabel(Text("Copy"))
         .onDisappear { resetTimer?.cancel() }
     }
 
@@ -1060,6 +1118,14 @@ private struct VerdictBadgeView: View {
     var body: some View {
         if let confidence {
             let pieces = Self.orderedPieces(Self.parts(confidence: confidence, veracity: veracity), confidence: confidence, veracity: veracity)
+            // What VoiceOver reads in place of the badge's hover-reveal: the words the badge is
+            // showing, and the scores behind them — the numbers a pointer reaches by hovering and
+            // a finger by tapping, neither of which a screen reader can do.
+            let spokenWords = pieces.compactMap(\.text).joined(separator: " ")
+            let spokenScores = FactCheckModel.badgeAccessibilityValue(
+                confidence: pieces.first { $0.role == .conf }?.pct ?? "",
+                veracity: pieces.first { $0.role == .ver }?.pct
+            )
             // Only an adjective-less slot changes the badge's width, so only its reveal moves
             // anything, and only then is there a hover to hold onto. (VerdictBadge.tsx arms its
             // hold under the same condition.) Hovering an adjective swaps it for its percentage
@@ -1090,6 +1156,9 @@ private struct VerdictBadgeView: View {
                     hoveredSlot = nil
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(spokenWords))
+            .accessibilityValue(Text(spokenScores))
         } else {
             // Nothing to be confident about yet, which is its own answer rather than a blank.
             Text("Unknown")
@@ -1444,6 +1513,22 @@ final class FactCheckModel: ObservableObject {
     ///
     /// Substituted by hand rather than through `String(format:)`, because the button's own name is
     /// the only thing going in and nothing about it should be re-read as a format directive.
+    /// The badge's scores as one spoken phrase. Both locality and wording come from the
+    /// catalog; substituting the tokens here rather than through `String(format:)` keeps a
+    /// translation that reorders or repeats them from changing what is handed in (see
+    /// `clickWarning`).
+    static func badgeAccessibilityValue(confidence: String, veracity: String?) -> String {
+        func localized(_ key: String) -> String {
+            Bundle.main.localizedString(forKey: key, value: nil, table: nil)
+        }
+        guard let veracity else {
+            return localized("%1$@ confidence").replacingOccurrences(of: "%1$@", with: confidence)
+        }
+        return localized("%1$@ confidence, %2$@ veracity")
+            .replacingOccurrences(of: "%1$@", with: confidence)
+            .replacingOccurrences(of: "%2$@", with: veracity)
+    }
+
     static func clickWarning(button: String) -> String {
         Bundle.main
             .localizedString(
@@ -1615,25 +1700,29 @@ final class FactCheckModel: ObservableObject {
     /// The browser extension's `CLASSIFICATION_RESERVE` (`entrypoints/background.ts`), derived the
     /// same way rather than copied as a figure. The three terms are `classify-tweets`' own
     /// worst-case hold terms — the Gemini streams, the paid searches, and the post-research
-    /// annotation — summed and fee-recovered once, and then marked up by the margin that worker
-    /// charges. Deliberately the settled charge and NOT the backend hold: the hold excludes the
-    /// margin, so reserving it would size a batch against roughly half of what its runs really
-    /// debit, which is the mistake the extension already made once. The worker's hold carries no
-    /// cap, so this reserve stays the conservative side of it. Change the worker's formula and
-    /// this, and the extension's copy, together.
+    /// annotation — summed and fee-recovered once. The worker charges no margin, so this is the
+    /// settled charge and its hold alike; the worker's hold carries no cap, so this reserve stays
+    /// the conservative side of it. Change the worker's formula and this, and the extension's copy,
+    /// together.
     private static let classificationReserve: Double = {
         let geminiIn = 0.75, geminiOut = 3.75, outputLimit = 2000.0   // gemini-3.6-flash
-        let inputLimit = 6000.0, searchContextTokens = 3500.0, geminiStreams = 4.0
-        let tavilySearchCost = 0.016, exaDeepCost = 0.015
-        let annotIn = 0.99, annotOut = 2.20, annotFee = 1.055          // Qwen 3.8 27B via OpenRouter
+        let inputLimit = 6000.0, searchContextTokens = 4000.0, geminiStreams = 4.0
+        // The research prompt's own scaffolding, sized on the shipped prompt (≈3,760).
+        let researchPromptTokens = 3800.0
+        let tavilySearchCost = 0.016, exaDeepCost = 0.012
+        // The annotation agent tries Gemini 3.6 Flash first (no markup), then the
+        // OpenRouter tiers — qwen3.8-27b's dearest route plus OpenRouter's 5.5%. A Gemini
+        // call that fails to start can still bill its prefill, so both routes are added.
+        let annotGeminiIn = 0.75, annotGeminiOut = 3.75          // gemini-3.6-flash
+        let annotFallbackIn = 0.99, annotFallbackOut = 2.20, annotFallbackFee = 1.055
         let annotInputLimit = 20000.0, annotOutputLimit = 2000.0
         let feeMultiplier = (4.0 / 3.0) * 1.03   // Apple/Stripe take + FX
-        let profitMultiplier = 2.0               // classify-tweets' margin, on the whole charge
 
-        let geminiWorst = ((inputLimit + searchContextTokens) * geminiIn + outputLimit * geminiOut) / 1e6 * geminiStreams
+        let geminiWorst = ((inputLimit + searchContextTokens + researchPromptTokens) * geminiIn + outputLimit * geminiOut) / 1e6 * geminiStreams
         let searchWorst = tavilySearchCost * 2 + exaDeepCost
-        let annotWorst = (annotInputLimit * annotIn + annotOutputLimit * annotOut) / 1e6 * annotFee
-        return (geminiWorst + searchWorst + annotWorst) * feeMultiplier * profitMultiplier
+        let annotWorst = (annotInputLimit * annotGeminiIn + annotOutputLimit * annotGeminiOut) / 1e6
+            + ((annotInputLimit * annotFallbackIn + annotOutputLimit * annotFallbackOut) / 1e6) * annotFallbackFee
+        return (geminiWorst + searchWorst + annotWorst) * feeMultiplier
     }()
 
     /// How long a freshly researched claim waits for Flow A's annotation write before offering to
@@ -1719,6 +1808,14 @@ final class FactCheckModel: ObservableObject {
                 guard !Task.isCancelled else { return }
                 if !rows.isEmpty {
                     claims = rows.map { FactCheckClient.claim(from: $0, body: text, locale: locale) }
+                    // A run writes nothing until it ENDS, so this read is the only place the tab
+                    // can learn that an annotation is already streaming for a claim: the server
+                    // stamps that on the link (is_annotating). Wait on it exactly as Flow A's own
+                    // write is waited on — the same card state and the same bounded window —
+                    // rather than offering, and paying for, a second run over one under way.
+                    for (row, claim) in zip(rows, claims) where row.isAnnotating && claim.isClassified {
+                        markAwaitingAnnotations(on: claim.id)
+                    }
                     // Opened even on a hit, because a hit is exactly when a row is about to be
                     // linked to and researched: the rows above carry ids, but a claim whose row
                     // is already settled still gets Flow A's annotation write, and a claim the
@@ -1861,7 +1958,9 @@ final class FactCheckModel: ObservableObject {
         // A claim already queued is not queued again: the button stays on screen while a batch
         // drains (the claims still waiting have not been researched), so a second press is the
         // ordinary thing to do and must not put the same claim in line twice.
-        for id in claims.filter({ (!$0.isClassified || $0.needsReclassify) && !$0.isResearching }).map(\.id)
+        // A flagged claim (`isHidden`) is not a highlight this tab shows, so the batch leaves
+        // it alone; it has its own card under the expander, where a click researches it.
+        for id in claims.filter({ !$0.isHidden && (!$0.isClassified || $0.needsReclassify) && !$0.isResearching }).map(\.id)
         where !waitlist.contains(id) {
             waitlist.append(id)
         }
@@ -1983,7 +2082,7 @@ final class FactCheckModel: ObservableObject {
     /// Whether the text on screen has any claim left to run, which is what the "Fact-Check All"
     /// button is for.
     var hasUnrunClaims: Bool {
-        claims.contains { (!$0.isClassified || $0.needsReclassify) }
+        claims.contains { !$0.isHidden && (!$0.isClassified || $0.needsReclassify) }
     }
 
     /// Gets annotations onto one claim: the ranges the backend already holds, or a model run if
@@ -2184,13 +2283,18 @@ final class FactCheckModel: ObservableObject {
     /// A lone claim skips the second click, and the row's already-settled answer skips the run:
     /// the same shortcut, with the same exception, the popup takes on its own cached rows.
     private func autoResearchLoneClaim() {
-        guard claims.count == 1, let only = claims.first else { return }
+        // Flagged claims are not highlights this tab shows, so they do not count: one
+        // unflagged claim beside any number of flagged ones is still a lone claim, and it is
+        // the one that is researched.
+        let unflagged = claims.filter { !$0.isHidden }
+        guard unflagged.count == 1, let only = unflagged.first,
+              let index = claims.firstIndex(where: { $0.id == only.id }) else { return }
         guard !only.isClassified || only.needsReclassify else {
             note("lone claim: settled by the row, nothing bought")
             return
         }
         note("lone claim: still unclassified (id=\(only.claimId?.prefix(8) ?? "none") needsReclassify=\(only.needsReclassify)) — buying a run")
-        startResearch(at: 0)
+        startResearch(at: index)
     }
 
     /// - Parameter admitted: Whether "Fact-Check All" admitted this run through its queue, and so

@@ -1,42 +1,27 @@
 /** The Dcard adapter.
  *
- *  Three surfaces are integrated: a **post page** (`/f/<forum>/p/<id>`), a **comment** under
- *  one — including on the comment's own permalink, `/f/<forum>/p/<id>/b/<floor>` — and a
- *  **feed card** in `/f`, which shows the post's title and Dcard's own excerpt of its body.
+ *  Two surfaces are integrated: a **post page** (`/f/<forum>/p/<id>`) and a **comment** under
+ *  one — including on the comment's own permalink, `/f/<forum>/p/<id>/b/<floor>`.
  *
- *  ## A feed card is its own post, not a smaller view of the one it previews
+ *  ## A feed card is a preview, and is not integrated
  *
- *  A card is not the post page in a shorter box: it renders the post's title and an excerpt
- *  Dcard cut for it. Measured on one card whose post runs 846 characters: an 11-character
- *  title beside a 100-character excerpt, matching that post's own text for its first 54
- *  characters and diverging after — a different string, so a different post as far as an id is
- *  concerned. The background caches classifications by id and files them by a hash of the text,
- *  so one id over two texts serves one surface's claims to the other; a card therefore carries
- *  `card:<post>` where the post page carries `p:<post>`. What the two DO share is the
- *  conversation: a card's `conversationId` is the post's own, so a post and its card are one
- *  thread.
+ *  A feed card in `/f` renders the post's title and an excerpt Dcard cut for it, and that is
+ *  not the post page in a shorter box. Measured on one card whose post runs 846 characters: an
+ *  11-character title beside a 100-character excerpt, matching that post's own text for its
+ *  first 54 characters and diverging after. So a card states no post — the excerpt is a string
+ *  the post itself never contains — and it is not capturable, not announceable and carries no
+ *  buttons. It used to be integrated under an id of its own (`card:<post>`), which is what put
+ *  buttons on previews of posts rather than on posts. The post page is where the body renders
+ *  in full and where a reader's marks belong.
  *
  *  ## The clamp
  *
  *  Dcard draws a card's excerpt in a one-line box (`-webkit-line-clamp: 1` with
  *  `overflow: hidden`; measured 20px of box around 60px of text) and renders a post page's own
- *  body and every comment in full (measured `scrollHeight === clientHeight` on both). The
- *  clamp is CSS over text the card is already holding — the clamped `<p>` measured 100
- *  characters, which is exactly what the pagination payload's own `excerpt` field holds for
- *  the same post, while its box shows the first third of them. So there is nothing to read
- *  around it and nothing to drive: the card's whole text is in the DOM, and the card is
- *  captured with all of it. A reader who follows a claim into a clipped excerpt is given the
- *  rest of it by `unclip`, which clears the clamp — presentation only, never the string the
- *  hash is taken over, so the id is the same before and after.
- *
- *  That 100 characters is also the host's cut: the same post's own API record pairs `excerpt:
- *  100` with `content: 573`, so a card at the limit is holding a clipped post rather than a
- *  short one, and a post is never identified by text we know is partial. Such a card is a
- *  long-form post here (`isLongForm`) — which, since the long-post change, means only that a
- *  passage selected inside it stays a passage instead of firing the post whole. It is captured
- *  and announced like every other root and carries the same buttons; a card whose whole body
- *  fits the excerpt is simply not long-form. The buttons on a card are also the only way to
- *  un-clip it: `unclip` runs off a click.
+ *  body and every comment in full (measured `scrollHeight === clientHeight` on both). Nothing
+ *  here meets the clamp: it is drawn on cards, and cards are not integrated. A post page's body
+ *  and a comment's are whole, so no `bodyClipped` and no `bodyControl` — nothing of ours ever
+ *  has a clamped body to paint into or a host control to keep its hands off.
  *
  *  ## Why the DOM, on a platform with a JSON API
  *
@@ -87,6 +72,7 @@
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { passageTextContent } from '../injecting';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -183,7 +169,14 @@ function blocksIn(container: Element, depth = 0): Element[] {
     // (Dcard wraps every image in a `role="button"`), and a body carrying most of the words is
     // the content rather than chrome.
     const timed = !!child.querySelector('time');
-    const chrome = timed || (!!child.querySelector('button, [role="button"]') && len * 2 <= total);
+    // A control Dcard draws over its own media is not chrome: every image and video on this
+    // surface sits inside a `role="button"`, so a comment that is a picture with a few words of
+    // caption reads as a control cluster by the minority test and is dropped whole — measured
+    // 2026-10-26, two comments of a post's 78 were never captured that way, one of them a
+    // 14-character caption. A child whose every control wraps media is a body.
+    const controls = Array.from(child.querySelectorAll('button, [role="button"]'))
+      .filter((control) => !control.querySelector('img, picture, video, iframe'));
+    const chrome = timed || (controls.length > 0 && len * 2 <= total);
     if (chrome) {
       skipped = true;
       continue;
@@ -263,6 +256,21 @@ function bodyBlockElements(root: Element): Element[] {
 function doorplateOf(root: Element): string | null {
   const plate = root.matches(DOORPLATE) ? root : root.querySelector(DOORPLATE);
   return plate?.getAttribute('data-doorplate') ?? null;
+}
+
+/** When the root was written, from the `<time datetime>` Dcard prints for it.
+ *
+ *  Every surface states one, and exactly one, on the root itself: measured on a post page, its
+ *  `<article>` held one `<time>` (the post's own, `2026-10-12T23:32:01.599Z`) and each of the
+ *  page's `div[id^="comment-"]` roots held one (its own). No root in a subtree carries another's
+ *  — a comment list sits BESIDE the article rather than inside it and a reply is a sibling of the
+ *  comment it answers rather than a child — so the first `<time>` in a root is that root's own,
+ *  which is also the element the byline and floor rows are already read off.
+ *
+ *  The value is ISO 8601 in UTC, which is what `isoDatetime` reads directly; a host that stated
+ *  its time another way would leave the field absent rather than wrong. */
+function postedAt(root: Element): string | undefined {
+  return isoDatetime(root.querySelector('time')?.getAttribute('datetime'));
 }
 
 /* ── Author and header ─────────────────────────────────────────────────────────── */
@@ -370,10 +378,8 @@ function buttonSeatOf(root: Element): { row: Element; inline: boolean } | null {
   }
   const byline = bylineRowOf(root);
   if (!byline) return null;
-  if (!cardPostId(root)) {
-    const views = viewsLineOf(root);
-    if (views) return { row: views, inline: true };
-  }
+  const views = viewsLineOf(root);
+  if (views) return { row: views, inline: true };
   return { row: menuLineOf(byline), inline: false };
 }
 
@@ -438,22 +444,6 @@ function nameOf(row: Element | null): string {
   return text;
 }
 
-/* ── The clamp ─────────────────────────────────────────────────────────────────── */
-
-/** Whether Dcard is hiding part of what `el` shows: it holds more content than its box and its
- *  overflow is not visible, which is what a clamp is. An element that is not laid out at all
- *  (an inline box, or one not yet rendered) has no box to judge and is not read as clamped.
- *
- *  Asked only for presentation (`unclip`), never to decide whether a root is a post: the text
- *  behind a clamp is in the DOM, so a clamped root is a post like any other — see this file's
- *  header. */
-function hidesContent(el: Element): boolean {
-  const box = el as HTMLElement;
-  if (box.clientHeight === 0) return false;
-  if (box.scrollHeight <= box.clientHeight + 1) return false;
-  return getComputedStyle(el).overflowY !== 'visible';
-}
-
 /* ── Ids ───────────────────────────────────────────────────────────────────────── */
 
 /** The post a feed card previews: the permalink the card carries in its header, which is its
@@ -476,19 +466,19 @@ function cardPostId(root: Element): string | null {
   return null;
 }
 
-/** The id of an article: the post a card previews, or the post the page is about.
+/** The id of an article, which is the post the page is about — or null, for a feed card.
  *
- *  A card is taken first, and what is left on a post page is the page's own post — which
- *  carries no permalink to itself (measured: the article of a post page holds no `/p/` link at
- *  all, its byline's timestamp linking to the author instead). A byline is required of it, so a
- *  stray article with no post in it is not handed the page's id.
+ *  A card is a PREVIEW, not a post: what it renders is the post's title beside an excerpt Dcard
+ *  cut for it (see this file's header), so it states no post of its own and gets no id, no
+ *  capture and no buttons. It used to be named `card:<post>`, which is what put buttons on
+ *  previews of posts rather than on posts.
  *
- *  A card is named `card:<post>` rather than by the post's own id, because the two surfaces
- *  render different strings — the post's excerpt against the post itself — and an id names
- *  exactly one text (see this file's header). */
+ *  What is left is the page's own post, which carries no permalink to itself (measured: the
+ *  article of a post page holds no `/p/` link at all, its byline's timestamp linking to the
+ *  author instead). A byline is required of it, so a stray article with no post in it is not
+ *  handed the page's id. */
 function articleIdOf(root: Element): string | null {
-  const card = cardPostId(root);
-  if (card) return namespaced(`card:${card}`);
+  if (cardPostId(root)) return null;
   const page = pagePostId();
   return page && root.querySelector('time') ? namespaced(`p:${page}`) : null;
 }
@@ -659,51 +649,22 @@ export const dcardAdapter: PlatformAdapter = {
   // would flatten all of that, so highlights go over the page's own text nodes.
   highlightInPlace: true,
 
-  /** Show the whole text once we have painted marks into it.
-   *
-   *  Dcard clamps a card's excerpt to one line on the excerpt element ITSELF — measured, a
-   *  20px box (`-webkit-line-clamp: 1`, `overflow: hidden`) around 60px of text — so a reader
-   *  who follows a claim past the first third of the excerpt would be reading a hijacked view:
-   *  three claims may be inside the string and one of them visible.
-   *
-   *  Two declarations, the same two LinkedIn needs: clearing `-webkit-line-clamp` and
-   *  `overflow` takes the box to its content's full height. Nothing here changes the text, so
-   *  the hash and the id are untouched; the element is left as it was found apart from the
-   *  clamp, and Dcard's own re-render of the card is free to clamp it again (the hook is
-   *  re-applied with the marks, which is what `unclip` is for).
-   *
-   *  Asked of the element handed in and of everything under it: which level carries the clamp
-   *  is the host's business, and a body is read back from the box that holds it. */
   /** Whether this root is a post Dcard will not show whole — the long-form case, which gets
    *  no buttons and is fact-checked by selecting a passage inside it.
    *
-   *  The number is Dcard's own: a card's excerpt holds the post body's first 100 characters,
+   *  The number is Dcard's own: a card's excerpt held the post body's first 100 characters,
    *  measured, and that is exactly the `excerpt` its pagination payload carries (see the clamp
-   *  note at the top of this file). So 100 characters of body is where the host itself stops
-   *  showing a post whole, and applying it here rather than asking "is this root clamped right
-   *  now" is what keeps the answer the same on every surface — a post page clamps nothing and
-   *  would otherwise never be long-form, though it is the surface where a pill hurts most: the
-   *  entire body is on screen, the reader wants the end of it, and the whole post above would
-   *  be classified and billed before they could act.
+   *  note at the top of this file) — so 100 characters of body is where the host itself stops
+   *  showing a post whole. Asking that question of the length rather than of "is this root
+   *  clamped right now" is what makes the answer the same on every surface: a post page clamps
+   *  nothing and would otherwise never be long-form, though it is the surface where a pill hurts
+   *  most — the entire body is on screen, the reader wants the end of it, and the whole post
+   *  above would be classified and billed before they could act.
    *
-   *  Judged on the text each surface itself files, and the two surfaces agree rather than
-   *  disagree: a card files the excerpt, and an excerpt that reaches 100 characters is a cut
-   *  the host made — measured, every card of a longer post renders exactly 100 characters in
-   *  its excerpt `<p>`, and the same post's own API record pairs `excerpt: 100` with
-   *  `content: 573`. So the card at the limit is a clipped post, not a short one, and it is
-   *  long-form for the same reason its page is.
-   *
-   *  The comparison is `>=` rather than `>` and the direction of the error is deliberate: a
-   *  body of exactly 100 characters shown whole loses its pill, where a clipped 100 that we
-   *  read as short would file a hash taken over text we know is partial. A withheld pill costs
-   *  the reader a click; a clipped hash costs the DB the post.
-   *
-   *  The post's whole body is reachable — `/service/api/v2/posts/<id>` answers with
-   *  `content` — and it is deliberately NOT fetched to put a pill back on the card: a post's
-   *  classified text and the text on screen are the same string everywhere else in this
-   *  integration, and that is what lets `textRegions` paint a claim at an offset. Capturing
-   *  573 characters into a card that renders 100 would leave most of every classification
-   *  with nothing to paint on. */
+   *  The comparison is `>=` rather than `>` and the direction of the error is deliberate: a body
+   *  of exactly 100 characters shown whole loses its pill, where a clipped 100 that we read as
+   *  short would file a hash taken over text we know is partial. A withheld pill costs the
+   *  reader a click; a clipped hash costs the DB the post. */
   isLongForm(root) {
     if (root.matches(COMMENT_ROOT)) return false;
     const title = focalTitleOf(root);
@@ -713,15 +674,6 @@ export const dcardAdapter: PlatformAdapter = {
       body += part.text.length;
     }
     return body >= LONG_FORM_CHARS;
-  },
-
-  unclip(textElement) {
-    for (const el of [textElement, ...Array.from(textElement.querySelectorAll('*'))]) {
-      if (!hidesContent(el)) continue;
-      const box = el as HTMLElement;
-      box.style.webkitLineClamp = 'unset';
-      box.style.overflow = 'visible';
-    }
   },
 
   placeButtons(container, root) {
@@ -827,13 +779,9 @@ export const dcardAdapter: PlatformAdapter = {
     if (!text) return null;
 
     const comment = root.matches(COMMENT_ROOT) ? commentKeyOf(root) : null;
-    // The post is the thread: a comment's is the post it is under, and a feed card's is the post
-    // it previews — the same conversation the post page itself carries, so the three surfaces
-    // are one thread rather than three, even though a card is filed under its own id.
-    const card = comment ? null : cardPostId(root);
-    const conversation = comment ? namespaced(`p:${comment.post}`)
-      : card ? namespaced(`p:${card}`)
-      : id;
+    const datetime = postedAt(root);
+    // The post is the thread: a comment's is the post it is under, and a post page's is itself.
+    const conversation = comment ? namespaced(`p:${comment.post}`) : id;
     const post = {
       id,
       text,
@@ -846,6 +794,7 @@ export const dcardAdapter: PlatformAdapter = {
       conversationId: conversation,
       quoting: null,
       replyingTo: null,
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     // Language deliberately left unset. Dcard carries no per-post language markup — only

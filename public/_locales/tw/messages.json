@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Ɛhwehwɛ na ɛkyerɛ atorɔsɛm a ɛwɔ tweets mu denam AI nhwehwɛmu so.",
+    "message": "Ɛhwehwɛ na ɛkyerɛ atorɔsɛm a ɛwɔ posts mu denam AI nhwehwɛmu so.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "San yi nsɛm a ɛwɔ saa tweet yi mu no adi bio",
+    "message": "San yi nsɛm a ɛwɔ saa post yi mu no adi bio",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Fi Adi"
   },
+  "deleteAccount": {
+    "message": "Yi Akonta ne Data a Ɛka Ho Fi hɔ",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Wo sika a ɛwɔ hɔ, ne w'imɛl adrɛs so nkyerɛwde kriptografi a wɔde saafohyɛ a ɛyɛ ahintasɛm abɔ ho ban, wɔkora so sɛnea ɛbɛyɛ a obiara ntumi mfa sika a wɔde ma wɔ akontaabu bue bere mu nni hyɛ. Sɛ wosan bɛkyerɛw din bio wɔ akontaabu koro no ara mu a, wɔbɛsan de wo sika ama wo.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Sɛ wopia %BTN% no, ɛbɛda nsɛm a wɔaka no adi na wobɛtwa sika afi wo balance mu"
   },
@@ -287,7 +295,7 @@
     "message": "Deɛ Wode Dii Dwuma Akyiri"
   },
   "cleanupTagline": {
-    "message": "Siesie Wo X Feed No."
+    "message": "Siesie Wo Feed No."
   },
   "disclaimerJurisdiction": {
     "message": "Wɔ Amerika Nkabom Aman no mu no, Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne Wyoming amanfoɔ nko ara na wɔbɛtumi de DisinfaX adi dwuma na wɔde sika agu wɔn balance mu; Washington, D.C., Amerika nsase nyinaa, ne aman biara a wɔanka ho asɛm no nni mu. Wɔ Amerika Nkabom Aman no akyi no, ɛwɔ hɔ wɔ Kanada, Australia, New Zealand, Singapore, Anafoɔ Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne Switzerland."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Wɔanhu no. Yɛsrɛ wo, sɔ hwɛ bio."
   },
+  "errNoClaims": {
+    "message": "Wɔanhu nsɛm a wɔbɛtumi ahwɛ biara wɔ saa kyerɛw yi mu.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Nhyehyɛɛ",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Ɛtebea",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Hann",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otomatik",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Esum",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Daa kyerɛ nhwehwɛmu sɛ:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Fa Reddit Kɔ So"
+  },
+  "persistentBadgesLabel": {
+    "message": "Ɛfata anifurafo: ahyɛnsode a ɛtra hɔ daa",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ma nhwehwɛmu ahyɛnsode biara nna adi wɔ nsɛm a wɔapow no so a ɛho nhia sɛ wode kɔsa so. Ahwɛe no nam kɔla a wɔatwe kyerɛ ne asɛmfua no so kyerɛ biribi, enti eyi boa obiara a ontumi nsi kɔla ahorow no ntam kwan.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Nkyerɛwee kɛse",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Ma nsɛm a ɛwɔ mpomma mu (akyede, nteɛso...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "To mu",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Mia so na sesa asɛm no",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Nhwehwɛmu no ho nsɛm",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Saa nsɛm a woayi yi yɛ tenten dodo ma yɛnhwɛ mu. Nkyerɛwde 1,000 pɛ.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Bɔ kɔkɔ bere a sika a aka so te",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Sɛ ɛkɔ fam sen: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "HOW TO FACT-CHECK",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "On any webpage, select the text you want to fact-check.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Right-click the selected text and choose Disinfact (also works on unselected text).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Right-click the selected text and choose {1} Disinfact (also works on unselected text).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "The fact-check starts right away and is charged to your balance.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "With the text still selected, tap the ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " icon in the address bar, then choose {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

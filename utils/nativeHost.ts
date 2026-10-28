@@ -29,18 +29,34 @@ export const NATIVE_APP_ID = 'app.disinfax';
  *  redirect. Must match the `redirectTo` the popup hands to Supabase. */
 export const NATIVE_CALLBACK_SCHEME = 'disinfax';
 
+/** How long a call that must not stall gives the direct transport before the relay takes
+ *  over. Not a deadline on the answer — the relay is the fallback, and a host that answers
+ *  late is no use to a caller waiting now. Opt-in per call, because some calls legitimately
+ *  take minutes: `SIGN_IN` on macOS returns only once the user has finished the provider's
+ *  sheet. */
+export const BOUNDED_DIRECT_ATTEMPT_MS = 1_500;
+
 /** A reply from the Swift host, or `{ error }` if neither transport could reach it. */
 export async function callNativeHost(
   directPayload: Record<string, unknown>,
   relayMessage: Record<string, unknown>,
+  options?: { directAttemptMs?: number },
 ): Promise<any> {
   // 1. Direct.
   try {
-    const res = await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, directPayload);
+    const attempt = (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, directPayload);
+    // Bounded only where asked: iOS can accept the direct call and never call back, which
+    // would otherwise leave "try direct, then relay" stuck on the first transport.
+    const direct = options?.directAttemptMs
+      ? await Promise.race([
+          attempt,
+          new Promise(resolve => setTimeout(() => resolve(undefined), options.directAttemptMs)),
+        ])
+      : await attempt;
     // A host that resolves with nothing is treated as unreachable so the relay still
     // gets a turn, rather than surfacing a confusing empty success to the user.
-    if (res) return res;
-    console.warn('[nativeHost] direct sendNativeMessage resolved empty; trying background relay');
+    if (direct) return direct;
+    console.warn('[nativeHost] direct sendNativeMessage unresolved; trying background relay');
   } catch (e: any) {
     console.warn('[nativeHost] direct sendNativeMessage failed; trying background relay:', e?.message ?? e);
   }

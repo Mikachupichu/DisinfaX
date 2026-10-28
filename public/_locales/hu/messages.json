@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "AI elemzés segítségével érzékeli és kiemeli a félretájékoztatást a tweetekben."
+    "message": "AI elemzés segítségével érzékeli és kiemeli a félretájékoztatást a bejegyzésekben."
   },
   "verdictTrue": {
     "message": "Igaz",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "A tweet összes állításának újra felfedése",
+    "message": "A bejegyzés összes állításának újra felfedése",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Kijelentkezés"
   },
+  "deleteAccount": {
+    "message": "Fiók és kapcsolódó adatok törlése",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Az egyenleged, valamint az e-mail-címed titkos kulccsal védett kriptográfiai hash-e megőrzésre kerül, hogy megakadályozzuk a fióklétrehozáskor adott ingyenes összegekkel való visszaélést. Ha ugyanazzal a fiókkal regisztrálsz újra, az egyenleged helyreáll.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "A(z) %BTN% gombra kattintva megjelennek az állítások, és ez terheli az egyenlegedet"
   },
@@ -285,7 +293,7 @@
     "message": "Utoljára használva"
   },
   "cleanupTagline": {
-    "message": "Tedd rendbe az X-hírfolyamod."
+    "message": "Tedd rendbe a hírfolyamod."
   },
   "disclaimerJurisdiction": {
     "message": "Az Egyesült Államokban csak a következő államok lakosai használhatják a DisinfaX-et és tölthetik fel egyenlegüket: Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Új-Mexikó, New York, Észak-Karolina, Észak-Dakota, Oklahoma, Oregon, Pennsylvania, Dél-Karolina, Dél-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin és Wyoming; Washington, D.C., az összes amerikai terület és minden fel nem sorolt állam ki van zárva. Az Egyesült Államokon kívül elérhető Kanadában, Ausztráliában, Új-Zélandon, Szingapúrban, Dél-Afrikában, Japánban, Tajvanon, Indonéziában, Thaiföldön, a Fülöp-szigeteken, Malajziában, Vietnamban és Svájcban."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Ez nem található. Próbáld újra."
   },
+  "errNoClaims": {
+    "message": "Ebben a szövegben nem találhatók ellenőrizhető állítások.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Beállítások",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Megjelenés",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Világos",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatikus",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Sötét",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Mindig mutassa a tényellenőrzéseket, ha:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Folytatás Reddit-szel"
+  },
+  "persistentBadgesLabel": {
+    "message": "Színtévesztő-barát: állandó jelvények",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "A tényellenőrző jelvények mindig láthatók a bejegyzéseken anélkül, hogy rájuk vinné az egeret. Az ítéletet a kiemelés színe éppúgy kifejezi, mint a szavak, így ez segít mindenkinek, aki nem tudja megkülönböztetni ezeket a színeket.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Nagy betűméret",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Az ablakokon belüli szöveghez (állítások, indoklások...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Bezárás",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Kattintson az állítás szerkesztéséhez",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Tényellenőrzés részletei",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Ez a kijelölés túl hosszú az ellenőrzéshez. Legfeljebb 1 000 karakter.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Értesítés, ha az egyenleg csökken",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Ennél többel: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "ÍGY ELLENŐRIZZ TÉNYEKET",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Bármelyik weboldalon jelöld ki az ellenőrizni kívánt szöveget.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Kattints jobb gombbal a kijelölt szövegre, és válaszd a Ellenőrzés lehetőséget (nem kijelölt szövegen is működik).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Kattints jobb gombbal a kijelölt szövegre, és válaszd a {1} Ellenőrzés lehetőséget (nem kijelölt szövegen is működik).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Az ellenőrzés azonnal elindul, és az összeg az egyenlegedről kerül levonásra.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "A szöveg kijelölése mellett koppints a ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikonra a címsorban, majd válaszd a {1} DisinfaX-et.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

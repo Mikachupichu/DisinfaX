@@ -62,6 +62,7 @@
  *  character. Two namespaces cannot do that, and cost nothing. */
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -150,6 +151,17 @@ function commentBodyElement(root: Element): Element | null {
 function taglineOf(root: Element): Element | null {
   return root.querySelector(':scope > .entry .tagline')
     ?? root.querySelector(':scope > .tagline');
+}
+
+/** When the post or comment was written, off the `<time datetime>` in its own tagline.
+ *
+ *  Read through `taglineOf` for the reason that function states: the scoping is what makes it
+ *  this thing's time, and old reddit NESTS a comment's replies inside it (measured: a root
+ *  holding its subtree carried 74 `<time>` elements). The attribute is an ISO 8601 instant with
+ *  an offset (`2026-10-08T07:24:10+00:00`), which is the host's own UTC statement of the
+ *  moment — the visible `6 days ago` beside it is a rendering this file never has to read. */
+function postedAt(root: Element): string | undefined {
+  return isoDatetime(taglineOf(root)?.querySelector('time')?.getAttribute('datetime'));
 }
 
 /** The submission a comment belongs to. Read from the comment's own permalink, which names it
@@ -355,6 +367,8 @@ export const oldRedditAdapter: PlatformAdapter = {
     // classification on an empty string.
     if (!text) return null;
 
+    const datetime = postedAt(root);
+
     const post = {
       id: namespaced(fullname),
       text,
@@ -369,6 +383,8 @@ export const oldRedditAdapter: PlatformAdapter = {
       // same finding the shreddit adapter records, and read the same way.
       quoting: null,
       replyingTo: null,
+      // The time the tagline states; absent when a front end renders no `<time>` at all.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     // No language is stated on this front end (see the header), so `sourceLanguage` is left

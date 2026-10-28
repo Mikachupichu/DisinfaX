@@ -110,10 +110,17 @@
  *  but the parent's full text deliberately does NOT reach the hash: Web A renders a window of a
  *  list and drops what leaves it, so a reply's parent is on the page only for a reader who
  *  scrolled past it, and hashing it would give one reply a different hash to each reader.
+ *
+ *  **No datetime here, and that is measured.** Web A renders a message's time as a rendered
+ *  clock string — `<span class="message-time">05:59 AM</span>`, with no `title`, no `<time>`
+ *  element and no time-bearing attribute, in the message view and in the chat list alike
+ *  (measured 2026-10-14) — and the app's own payload holds the source text this extension reads,
+ *  never a timestamp. The clock string is written in the READER's locale and carries no date at
+ *  all, so no instant can be recovered from it; a message here carries no datetime.
  */
 import type { MainTweet, QuotedTweet, Usertype } from '../../data/Tweets';
 import { UNKNOWN_LANGUAGE, Usertype as UsertypeEnum } from '../../data/Tweets';
-import { appLanguage } from './capture';
+import { mfBus } from '../mfBus';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter } from './types';
@@ -182,7 +189,12 @@ const TRANSLATED_MARK = '.message-translated';
  *  of the classified text, because the view count is not the author's and it is not even
  *  stable — classifying it would hash the post against its own traffic and re-classify the
  *  same words every time the count moved. */
-const NON_BODY = '.Reactions, .MessageMeta';
+// `.mf-*` entries are OUR paint, and none of it is the author's: a correction is authored
+// text, a badge is a verdict label. Read back as the body they become the message's own
+// words — measured: an annotation's Russian correction was spliced into the English body,
+// re-filed as `translatedText`, and rendered as prose, shifting every highlight offset past
+// it. Strikes are not here because they hold the body's own words (see `bodyText`).
+const NON_BODY = '.Reactions, .MessageMeta, .mf-corr, .mf-inline-badge, .mf-standalone-spinner, .mf-fc-spinner';
 
 /** The meta row: the view count, the eye, the time. `display: flex`, floated right, on the
  *  last line of the bubble. It is where the buttons ride when a message has no title line —
@@ -381,6 +393,12 @@ function bodyText(root: Element): string {
   if (!body) return '';
   const clone = body.cloneNode(true) as Element;
   for (const junk of Array.from(clone.querySelectorAll(NON_BODY))) junk.remove();
+  // A strike span carries the body's own substring in its dataset, not in its text (its
+  // children are the struck words plus the line we draw), so it is unwrapped rather than
+  // removed — the same accounting `mfPlainText` does for the injector's own reads.
+  for (const strike of Array.from(clone.querySelectorAll('.mf-strike'))) {
+    strike.replaceWith((strike as HTMLElement).dataset.mfStrike ?? strike.textContent ?? '');
+  }
   return textOf(clone);
 }
 
@@ -582,6 +600,100 @@ function languageItem(): HTMLElement | null {
   return null;
 }
 
+/** Our paint out of the way before the host swaps a message's side.
+ *
+ *  Web A renders a translation by writing into the text nodes it rendered, and it leaves
+ *  whatever sits inside an element it did not render alone. Our paint wraps the claimed
+ *  stretches of the body in spans, so a translate under it comes back half-translated:
+ *  measured on a Russian post (2026-10-22), the two claimed passages stayed Russian inside an
+ *  otherwise English body — 188 Cyrillic characters in a 1314-character body, against 0 in
+ *  1073 for the same message translated with no paint standing. It never repairs itself
+ *  either: every later flip skips the same nodes, so the message shows two languages until
+ *  the page is reloaded, and our own reader then files that mixture as the translation.
+ *
+ *  So the paint comes off in the CAPTURE phase, before the host's handler runs, and the paint
+ *  is rebuilt from whichever side lands. X's toggle does exactly this with the same event
+ *  (see `mf-prepare-locale-switch` in injecting.ts and relay.content.ts), which is also what
+ *  hands the page's own text nodes back: `undoInPlacePaint` rewrites the cuts our spans made.
+ *
+ *  The menu is rendered at the document's own root, so the item names no message. The message
+ *  is the one the press before it landed in — a right-click on the body and the bubble's ⋮
+ *  are both presses inside the message whose menu they open. */
+let sideFlipWatching = false;
+let menuMessageId: string | null = null;
+let menuMessageRoot: Element | null = null;
+
+/** The side each message was on when the reader asked the host to swap it.
+ *
+ *  Taking the paint off is only half of it: the host fetches its translation and writes it
+ *  later, and our own sweep is free to run in between — measured, it re-read the source and
+ *  re-painted the body (5 segments) before the translation landed, which put the spans back in
+ *  the host's way and produced the same half-translated body the teardown exists to prevent.
+ *  So a message whose side is being swapped is not captured at all until the swap arrives.
+ *  `at` bounds it, for a swap the host never answers.
+ *
+ *  Neither "the side flipped" nor "the words changed" is the swap arriving on its own. Web A
+ *  writes THREE times: it marks the message translated (a label inside the body, +14 characters
+ *  measured), then appends the translation beside the source, then drops the source. Measured on
+ *  a Russian post (2026-10-23): the side read as flipped at +14 characters, the sweep re-painted
+ *  the still-Russian body 58 ms before the translation was appended over it, and the spans kept
+ *  the source inside the English side — the same 188 Cyrillic characters the teardown removes.
+ *  So both halves are required, and the words have to hold still across two readings before the
+ *  swap counts as landed: one reading of quiet is the gap between two of the host's writes. */
+const sideFlipPending = new Map<string, { translated: boolean; body: string; stable: number; at: number }>();
+const SIDE_FLIP_PENDING_MS = 15_000;
+/** Readings of an unchanged body, after the side flips, that count as the swap having landed. */
+const SIDE_FLIP_STABLE_READS = 2;
+
+function sideFlipSettled(id: string, root: Element): boolean {
+  const pending = sideFlipPending.get(id);
+  if (!pending) return true;
+  if (Date.now() - pending.at > SIDE_FLIP_PENDING_MS) {
+    sideFlipPending.delete(id);
+    return true;
+  }
+  const body = bodyText(root);
+  // Still the side the reader is leaving: whatever moved was the host preparing, not writing.
+  if (isTranslated(root) === pending.translated) {
+    pending.body = body;
+    pending.stable = 0;
+    return false;
+  }
+  if (body !== pending.body) {
+    pending.body = body;
+    pending.stable = 0;
+    return false;
+  }
+  if (++pending.stable < SIDE_FLIP_STABLE_READS) return false;
+  sideFlipPending.delete(id);
+  return true;
+}
+
+function watchSideFlips(): void {
+  if (sideFlipWatching) return;
+  sideFlipWatching = true;
+  const noteMenuTarget = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const root = target.closest(MESSAGE);
+    const id = root ? postIdOf(root) : null;
+    if (id && root) { menuMessageId = id; menuMessageRoot = root; }
+  };
+  document.addEventListener('pointerdown', noteMenuTarget, true);
+  document.addEventListener('mousedown', noteMenuTarget, true);
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const item = target.closest(MENU_ITEM);
+    if (!item || !item.querySelector('i')?.classList.contains(LANGUAGE_ICON)) return;
+    if (!menuMessageId || !menuMessageRoot || !menuMessageRoot.isConnected) return;
+    // Read BEFORE the teardown below: the side and the words the reader is leaving are what
+    // name the swap's arrival, and both are still the old side's.
+    sideFlipPending.set(menuMessageId, { translated: isTranslated(menuMessageRoot), body: bodyText(menuMessageRoot), stable: 0, at: Date.now() });
+    mfBus.dispatchEvent(new CustomEvent('mf-prepare-locale-switch', { detail: { tweetId: menuMessageId } }));
+  }, true);
+}
+
 /** Close the host's menu without choosing anything from it, for the paths that opened one and
  *  then could not use it. Escape is what the app's own menus close on. */
 function dismissMenu(): void {
@@ -710,6 +822,10 @@ export const telegramAdapter: PlatformAdapter = {
   // classified string would flatten all of it, so highlights wrap the page's own text nodes.
   highlightInPlace: true,
 
+  // Web A states no language on a message and its picker marks nothing, so a translated side's
+  // language is unknown: it is reported as `und` and identified by its words, never by a guess.
+  translationLocaleIsGuessed: true,
+
   placeButtons(container, root) {
     // A message with a title line puts its buttons at that line's right-hand end, which is where
     // this platform's own "name · time" bar belongs (and where the spacer Web A already keeps on
@@ -800,11 +916,13 @@ export const telegramAdapter: PlatformAdapter = {
   },
 
   displayedTranslationLocale(root) {
-    // Null while the message shows its own words, and also when the document names no
-    // language: a translation that cannot be named has nothing to file its highlights
-    // under, and `capture` reads such a message as its own source rather than inventing a
-    // key for it.
-    return isTranslated(root) ? appLanguage() : null;
+    // `und` — the translation is showing, and which language it is in cannot be known: Web A
+    // states no language on the message, and its picker only changes the target. The reader's
+    // app language is merely the default that picker starts from, so reporting it would name a
+    // side that may not be the one on screen. Ranges are filed by `<locale>:<hash of the body>`,
+    // so an unknown side under `und` is still told apart from the source and from every other
+    // rendering by its hash alone. Null still means "showing its own words".
+    return isTranslated(root) ? 'und' : null;
   },
 
   displayedText(root) {
@@ -844,6 +962,10 @@ export const telegramAdapter: PlatformAdapter = {
   capture(root): CapturedPost | null {
     const id = postIdOf(root);
     if (!id) return null;
+    watchSideFlips();
+    // Mid-swap: the words on screen are the side the reader is leaving and the host is about to
+    // write over them. Nothing is captured — and so nothing is painted — until it lands.
+    if (!sideFlipSettled(id, root)) return null;
 
     const shown = bodyText(root);
     if (!shown) return null;
@@ -866,12 +988,16 @@ export const telegramAdapter: PlatformAdapter = {
     // different hash in each of its languages: classified, and billed, once per language as
     // if each were a different post.
     const source = sourceBodies.get(id);
-    const destination = isTranslated(root) ? appLanguage() : null;
-    // A translation whose language cannot be named is not worth claiming: the locale is the
-    // key its highlight ranges are filed under, and a key nothing else reads hides them. Such
-    // a message is read as its own source instead, which classifies the text on screen under
-    // the platform's unknown-language key — honest, and exactly what happens anyway when the
-    // source could not be read back.
+    // `und`, never the app language: the translation's language is a guess (see
+    // `displayedTranslationLocale`), and a guessed key files the ranges somewhere nothing else
+    // reads. `und` is the honest name, and it still tells this side apart from the source and
+    // from every other rendering, because the key includes the hash of the body itself.
+    const destination = isTranslated(root) ? 'und' : null;
+    // The side on screen is claimed as the translation only when the post's own words were read
+    // back (`source`): those are what the post is identified and classified by, and the
+    // translation is carried beside them. Without them the message is read as its own source,
+    // which is the honest reading of a post whose other side was never in hand — the client
+    // still reports the side it can see, by body, on top of that.
     const translatedBody = source && destination ? shown : undefined;
     const text = translatedBody ? source! : shown;
 

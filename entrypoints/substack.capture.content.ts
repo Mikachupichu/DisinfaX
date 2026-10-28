@@ -77,6 +77,11 @@ interface NetNote {
    *  `rendered` for every note carrying neither a link nor a mention (measured), and the
    *  only text there is for a note that is never rendered at all. */
   plain: string;
+  /** The note's text in the language the app is showing it in, rebuilt from the payload's own
+   *  `translation` document, or null when the payload states none for the language it says it
+   *  is translating into. Null is a refusal, not a failure: the adapter falls back to the
+   *  page's own reading, which is right whenever the page is showing the whole translation. */
+  translated: string | null;
   language: string | null;
   /** The language the reader is reading this note in, when the app is translating it. */
   autotranslateTo: string | null;
@@ -86,6 +91,17 @@ interface NetNote {
   parent: string | null;
   /** The author's display name, as the payload states it. */
   name: string;
+  /** When the note was written, as the payload states it (`2026-10-01T01:36:50.977Z`), or
+   *  null when it states none. A note's own instant, never its parent's.
+   *
+   *  Copied rather than interpreted: whether an edit time is the one to use is the adapter's
+   *  decision, not this half's (see `asNoteEntity`). The field is not the page's to state —
+   *  a note permalink renders no `<time>` element at all (measured) and its shipped state
+   *  holds no date, so this response is the only place a note's instant exists. */
+  date: string | null;
+  /** When the note was last edited, as the payload states it, or null when it has not been
+   *  edited (measured: null on a note whose `date` was set). */
+  editedAt: string | null;
   /** True for a note reached through `parentComments` — an ancestor of the note this
    *  response is about.
    *
@@ -127,6 +143,18 @@ function isNote(value: unknown): value is Record<string, any> {
     && typeof value.name === 'string' && value.name.trim().length > 0;
 }
 
+/** The node types that lay their children out and carry no text of their own.
+ *
+ *  Substack names these in camelCase — `bulletList`, not ProseMirror's `bullet_list` — and
+ *  a note using one read as none of the types `renderNode` knew, so the whole note was
+ *  refused: a translated or clipped one then had no source to be filed under and got no
+ *  buttons at all. Measured on `c-350058133`, whose markup is
+ *  `<ul><li><p>Revenue: …</p></li>…</ul>`: a bullet is a CSS marker, which `textContent`
+ *  does not carry, so the list reads as exactly its items concatenated — the rule the
+ *  paragraphs already follow. Across 174 notes of a feed these plus `blockquote` and
+ *  `codeBlock` were the only unknown types in use. */
+const LAYOUT_NODES = new Set(['doc', 'paragraph', 'bulletList', 'orderedList', 'listItem', 'blockquote', 'codeBlock']);
+
 /** One ProseMirror node as the text the reader puts on the page, appended to `out`.
  *
  *  Returns false for a node type this does not know, which is what makes `renderedText`
@@ -155,7 +183,7 @@ function renderNode(node: unknown, out: string[]): boolean {
     out.push(label);
     return true;
   }
-  if (type === 'doc' || type === 'paragraph') {
+  if (typeof type === 'string' && LAYOUT_NODES.has(type)) {
     // Blocks are joined with NOTHING between them: the renderer makes one element per
     // paragraph and no whitespace, so a paragraph break is a boundary the page's text does
     // not carry at all.
@@ -188,6 +216,29 @@ function renderedText(doc: unknown): string | null {
   return renderNode(doc, out) ? out.join('') : null;
 }
 
+/** The note's text in the language the app is showing it in, rebuilt from the payload's own
+ *  `translation` document — the counterpart of `rendered` on the other side, and read from the
+ *  same response, which states the note's `body` beside its `translation` for every surface
+ *  that asks for one.
+ *
+ *  Where the page renders the whole translation the two strings are the same (measured on an
+ *  unclipped translated card: 51 characters and 51), so this changes nothing there. Where the
+ *  page CLIPS one it is the only copy of the whole thing: the feed cuts a long card behind a
+ *  `See more` anchor that sits INSIDE the element the adapter files, so the page's reading of
+ *  the displayed side is a prefix of the translation with Substack's own link text on the end
+ *  — which is what a run measured against it classifies, and why its claims stop at the cut.
+ *
+ *  Read only for the language `autotranslate_to` names, which is the one the app is rendering
+ *  (the app rewrites that field itself on a manual flip). A payload whose translation is keyed
+ *  elsewhere states nothing this can use, so it returns null rather than a text of the wrong
+ *  language. */
+function translatedText(value: Record<string, any>): string | null {
+  const target = typeof value.autotranslate_to === 'string' ? value.autotranslate_to.trim().toLowerCase() : '';
+  if (!target || !isRecord(value.translation)) return null;
+  const entry = value.translation[target];
+  return isRecord(entry) ? renderedText(entry.body_json) : null;
+}
+
 /** The id of the note a note directly answers, or null for a top-level one.
  *
  *  `ancestor_path` is the whole chain from the root down, dot-separated and in order, so the
@@ -206,6 +257,7 @@ function compactNote(value: Record<string, any>, ancestor: boolean): NetNote | n
     key: `c-${value.id}`,
     rendered: renderedText(value.body_json),
     plain: value.body.replace(/\n+/g, '').trim(),
+    translated: translatedText(value),
     // Absent, null and empty all mean the same thing here — the platform is not stating a
     // language — so they collapse to null rather than to a string that names nothing.
     language: typeof value.language === 'string' && value.language.trim() ? value.language.trim().toLowerCase() : null,
@@ -214,6 +266,8 @@ function compactNote(value: Record<string, any>, ancestor: boolean): NetNote | n
       : null,
     parent: parentIdFromPath(value.ancestor_path),
     name: value.name.trim(),
+    date: typeof value.date === 'string' && value.date ? value.date : null,
+    editedAt: typeof value.edited_at === 'string' && value.edited_at ? value.edited_at : null,
     ancestor,
   };
 }

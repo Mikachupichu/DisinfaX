@@ -29,7 +29,8 @@
  *  other — and `revealClipped` drives the host's own affordance before `capture` reads it, the
  *  one place in this extension where the reader's page is asked for text rather than merely
  *  read. `capture` refuses a root that is still clipped, so the failure path is a retry on a
- *  later sweep and never a prefix.
+ *  later sweep and never a prefix. On a question page — where Quora clamps nothing — every
+ *  answer is integrated from the start, with no click at all.
  *
  *  Which roots clip is Quora's to decide and it decides per view rather than per length:
  *  measured 2026-10-01, a question page's answer list clamps nothing (0 of 23 answers on three
@@ -70,9 +71,18 @@
  *  positifs" — outside them). So the container is preferred where it exists and the blocks
  *  are the fallback, and the blocks are returned as regions so a claim is painted over the
  *  block it was measured in rather than over the first one.
+ *
+ *  **The datetime is the age label, and that is measured.** An answer's own timestamp is a
+ *  relative label and nothing else — measured 2026-10-14 on a question page: `Updated 6y`, inside
+ *  `a.answer_timestamp`, with no `title`, no `<time>` element anywhere on the page and no date in
+ *  the page's shipped scripts. So the instant is that label read against the clock the post was
+ *  swept at (`isoDatetimeFromAge`), which is a floor rather than a measurement: `6y` dates the
+ *  post to the year, `2h` to the hour. A label in a language these spellings do not cover leaves
+ *  the post undated, which is what it was before, rather than misdated.
  */
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
+import { isoDatetimeFromAge } from '../datetime';
 import { passageTextContent } from '../injecting';
 import { PLATFORM_HOSTS } from './hosts';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -96,6 +106,14 @@ const ANSWER_CONTENT = '[class*="puppeteer_test_answer_content"]';
 const FEED_STORY = '[class*="puppeteer_test_tribe_post_item_feed_story"]';
 /** The action bar under an answer — the anchor the permalink root is measured up from. */
 const PERMALINK_BAR = '[class*="dom_annotate_answer_action_bar_upvote"]';
+/** The question a page is about, as the element carrying its words. In an answer permalink's
+ *  card, in a topic page's answer card and in a search result; above the answers on a question
+ *  page — and on every related-question row as well, which is why nothing here ever takes the
+ *  first one on the page. */
+const QUESTION_TITLE = 'div[class*="puppeteer_test_question_title"]';
+/** The question column of a question page. Present only there, and holding the answers as
+ *  well as the question, so it is read for its title alone. */
+const QUESTION_MAIN = '[class*="puppeteer_test_question_main"]';
 /** One paragraph-level block of an answer's body. Quora's own utility prefixes, on the one
  *  element type its rich-text renderer emits per block. */
 const TEXT_BLOCK = '[class*="qu-display--block"][class*="qu-wordBreak--break-word"]';
@@ -106,6 +124,11 @@ const PROFILE_LINK = 'a[href*="/profile/"]';
 const COMMENT_LINK = 'a[href*="comment_id="]';
 /** Quora's clamp: the "read more" affordance, present only on a truncated post. */
 const TRUNCATED = '.qt_read_more';
+/** A post's own age label — the only statement of when it was written on the page (see the
+ *  datetime note at the top). Relative, so it is read against the clock of the sweep that
+ *  found it. Prefix-matched: the suffix, if the class ever grows one, is not this adapter's
+ *  business. */
+const TIMESTAMP = 'a[class*="answer_timestamp"]';
 /** The content column, used only as the last fallback for `feedCenter`. */
 const CONTENT_COLUMN = '#mainContent';
 /** How two blocks of one answer's body are joined into the classified text. Only the
@@ -137,10 +160,19 @@ let expanding: Promise<void> = Promise.resolve();
  *
  *  This is the shape of a Quora thread read backwards — every comment owns exactly one
  *  comment permalink (its own), and the first ancestor that picks up a SECOND one is the
- *  panel holding the thread rather than any single comment in it. */
+ *  panel holding the thread rather than any single comment in it.
+ *
+ *  The answer's OWN structure ends the ascent before the count rule can decide it: an answer
+ *  with exactly one comment holds exactly one comment permalink too, so the card would
+ *  otherwise be taken for the comment. Measured on a question page, that filed the answer
+ *  under the comment's id — its text answered `quora:c:<comment>` and the comment itself had
+ *  no root, so the pill landed on the answer's byline and the comment got none. A comment
+ *  never holds the answer's action bar or a rendered answer body, so either one is the card. */
 function commentRootOf(link: Element): Element | null {
   let root: Element | null = null;
   for (let el: Element | null = link; el && el !== document.body; el = el.parentElement) {
+    if (el.matches(ANSWER_ITEM) || el.matches(FEED_STORY)) break;
+    if (el.querySelector(PERMALINK_BAR) || el.querySelector(ANSWER_CONTENT)) break;
     const count = el.querySelectorAll(COMMENT_LINK).length;
     if (count > 1) break;
     if (count === 1) root = el;
@@ -251,6 +283,45 @@ function pageAnswerId(): string | null {
   return path ? namespaced(`a:${path}`) : null;
 }
 
+/** The focal answer named by a SHARE URL, as a namespaced id, or null.
+ *
+ *  Quora has a second answer URL shape, and it is the one its own share button copies: the
+ *  answer rendered inside its question's page and named only by the query, `<page>?…&
+ *  target_type=answer&oid=<aid>`, with the path left as the question's (or a space's). There
+ *  is then no `/answer/` path for `pageAnswerId` to read, no answer item, and no `/answer/`
+ *  link anywhere in the page for `answerIdIn` to read either — the query is the only name
+ *  that surface offers.
+ *
+ *  That `oid` is the answer and not the question: measured 2026-10-26 on
+ *  `bulledinformation.quora.com/<Question>-1?…&oid=1477743700615780&target_type=answer`, the
+ *  page's own server-rendered payload states `"__typename":"Answer","aid":1477743700615780`
+ *  and `"oid":1477743700615780` for that answer, while the question carries its own id.
+ *  Namespaced under `a:oid:` so a numeric aid can never be mistaken for a path id: the
+ *  permalink surface names the same answer by its path, and the two are separate names for
+ *  one text, which is what the id-keyed caches tolerate (they never key a name to two texts).
+ *
+ *  Gated on the page rendering exactly one answer, because that is what makes the query's
+ *  claim true of the DOM the caller is about to read: a question page still listing its
+ *  answers as `dom_annotate_question_answer_item`s names those items' own ids (that surface is
+ *  whole on its own), and a page rendering several anonymous answer cards cannot say which of
+ *  them the URL is pointing at, so it names none rather than the wrong one.
+ *
+ *  The answer arrives asynchronously on this surface, so a null is never remembered: the gate
+ *  is re-measured until it holds, and only then is the id cached for this href. */
+let shareAnswer: { href: string; id: string } | null = null;
+function queryAnswerId(): string | null {
+  const href = location.href;
+  if (shareAnswer?.href === href) return shareAnswer.id;
+  const params = new URLSearchParams(location.search);
+  if (params.get('target_type') !== 'answer') return null;
+  const oid = params.get('oid') ?? '';
+  if (!/^\d+$/.test(oid)) return null;
+  if (document.querySelector(ANSWER_ITEM)) return null;
+  if (document.querySelectorAll(PERMALINK_BAR).length !== 1) return null;
+  shareAnswer = { href, id: namespaced(`a:oid:${oid}`) };
+  return shareAnswer.id;
+}
+
 /** The focal answer's root on an answer permalink page.
  *
  *  That answer has no test id of its own, so it is reached from the one thing on it Quora
@@ -262,12 +333,13 @@ function pageAnswerId(): string | null {
  *  wide, eight children — breadcrumb, title, byline, body, an empty node, the metrics line,
  *  the action bar, an empty node — with the metrics line correctly OUTSIDE the body.
  *
- *  Gated on the page being an answer permalink, which is what keeps it from firing on a
- *  question page, where every answer item has one of these bars: there, the answer items are
- *  already the roots and this ascent would invent a second, overlapping root for one of
- *  them. */
+ *  Gated on the page naming one answer as its subject — by its path, or by a share URL's
+ *  query (see `queryAnswerId`) — which is what keeps it from firing on a question page, where
+ *  every answer item has one of these bars: there, the answer items are already the roots and
+ *  this ascent would invent a second, overlapping root for one of them. `queryAnswerId` only
+ *  answers when the page holds no answer item and a single bar, so that case stays closed. */
 function permalinkAnswerRoot(): Element | null {
-  if (!pageAnswerId()) return null;
+  if (!pageAnswerId() && !queryAnswerId()) return null;
   const bar = document.querySelector(PERMALINK_BAR);
   if (!bar) return null;
   let root: Element = bar;
@@ -360,32 +432,92 @@ function bodyScope(root: Element): Element | null {
   return null;
 }
 
+/** The question `root` answers, as the element carrying its words, or null when it answers
+ *  none.
+ *
+ *  Two shapes, told apart by where the title sits. A permalink's answer card, a topic page's
+ *  answer card and a search result each hold the question inside themselves — measured, one
+ *  title in every card. A question page's answer item holds none: there the question is the
+ *  page's own heading above every item, and `QUESTION_MAIN` names that column without matching
+ *  the related-question rows, which carry the same title element as the question itself.
+ *
+ *  A feed story never takes one: `bodyScope` exists because a story's root can hold a related
+ *  answer card, and a question found in there belongs to that card, not to the story. */
+function questionTitleOf(root: Element): Element | null {
+  if (!root.matches(FEED_STORY)) {
+    const own = root.querySelector(QUESTION_TITLE);
+    if (own) return own;
+  }
+  if (!root.matches(ANSWER_ITEM)) return null;
+  return document.querySelector(QUESTION_MAIN)?.querySelector(QUESTION_TITLE) ?? null;
+}
+
+/** The question a root answers, as the parts that open its classified text: the title, then
+ *  any block Quora renders in the same box beside it.
+ *
+ *  Quora splits an answer over two regions the way Reddit splits a submission over its title
+ *  and its body, and the two are ONE post's text — the classifier has to read both or it
+ *  cannot tell what a claim is being made about (an answer saying "it worked" claims something
+ *  about the question it answers). It is not an ancestor: a comment stays chained to the answer
+ *  alone, and reaches the question through it.
+ *
+ *  The box is the highest ancestor of the title that still holds no answer of its own —
+ *  measured, `q-box qu-pb--small` on a question page and the title's own box on a permalink,
+ *  holding the title alone on all thirteen question pages and every permalink measured
+ *  (2026-10-26). So no description is read from today's pages; the read is structural, so that
+ *  a question stating one is classified whole instead of losing the half its answer is about. */
+function questionParts(root: Element): { el: Element; text: string }[] {
+  const title = questionTitleOf(root);
+  if (!title) return [];
+  const titleText = passageTextContent(title as HTMLElement).trim();
+  if (!titleText) return [];
+
+  let box: Element = title;
+  for (let el = title.parentElement; el && el !== document.body; el = el.parentElement) {
+    if (el.querySelector(PERMALINK_BAR) || el.querySelector(ANSWER_CONTENT)) break;
+    box = el;
+  }
+
+  const out = [{ el: title, text: titleText }];
+  for (const block of Array.from(box.querySelectorAll(TEXT_BLOCK))) {
+    if (title.contains(block) || block.contains(title)) continue;
+    const text = passageTextContent(block as HTMLElement).trim();
+    if (text) out.push({ el: block, text });
+  }
+  return out;
+}
+
 /** The blocks a root's body is made of, in document order, each with the text this extension
- *  will classify for it.
+ *  will classify for it. The question it answers opens the list (see `questionParts`).
  *
  *  `passageTextContent` and not `textContent`, for the reason the in-place highlighter reads
  *  the same way: this adapter paints over the page's own nodes, and the two have to agree on
  *  what the visible passage is, or a claim's offsets land on words the reader cannot see.
  *  Text belonging to a comment inside the same root is skipped — an answer's card contains
- *  its comment panel — and so is an empty block. */
+ *  its comment panel — and so is an empty block.
+ *
+ *  A root with no body of its own is not a post, and the question is not its text: a
+ *  picture-only answer stays exactly as it was, unclassified, rather than being filed under
+ *  the question's words. */
 function bodyParts(root: Element): { el: Element; text: string }[] {
   const card = bodyScope(root);
   if (!card) return [];
 
+  const body: { el: Element; text: string }[] = [];
   const container = card.querySelector(ANSWER_CONTENT);
   if (container) {
     const text = passageTextContent(container as HTMLElement).trim();
-    if (text) return [{ el: container, text }];
+    if (text) body.push({ el: container, text });
+  } else {
+    const owned = commentRootsWithin(card);
+    for (const block of Array.from(card.querySelectorAll(TEXT_BLOCK))) {
+      if (owned.some((comment) => comment.contains(block))) continue;
+      const text = passageTextContent(block as HTMLElement).trim();
+      if (text) body.push({ el: block, text });
+    }
   }
-
-  const owned = commentRootsWithin(card);
-  const out: { el: Element; text: string }[] = [];
-  for (const block of Array.from(card.querySelectorAll(TEXT_BLOCK))) {
-    if (owned.some((comment) => comment.contains(block))) continue;
-    const text = passageTextContent(block as HTMLElement).trim();
-    if (text) out.push({ el: block, text });
-  }
-  return out;
+  if (body.length === 0) return [];
+  return [...questionParts(root), ...body];
 }
 
 /** The classified text of a root: its blocks joined as they are joined by `textRegions`. */
@@ -534,8 +666,20 @@ function cornerInset(root: Element, row: Element): number {
  *  (see `revealClipped`). */
 function idOf(root: Element): string | null {
   const comment = commentIdOf(root);
-  const id = comment ? namespaced(`c:${comment}`) : (answerIdIn(root) ?? storyIdIn(root));
+  const id = comment
+    ? namespaced(`c:${comment}`)
+    : (answerIdIn(root) ?? storyIdIn(root) ?? shareAnswerIdOf(root));
   return id && authorLinkOf(root) ? id : null;
+}
+
+/** The id a share URL gives the focal answer, when `root` is that answer's root.
+ *
+ *  The one surface with no `/answer/` link to read an id from (see `queryAnswerId`), so the
+ *  URL stands in — and only for the root `permalinkAnswerRoot` measured, so nothing else on
+ *  the page can borrow the answer's name. */
+function shareAnswerIdOf(root: Element): string | null {
+  const id = queryAnswerId();
+  return id && permalinkAnswerRoot() === root ? id : null;
 }
 
 /** The post a permalink points at, or null when this URL is not one post: an answer
@@ -550,11 +694,28 @@ function postIdFromPath(url: URL): string | null {
 
 /** The post a comment belongs to: the answer it is under. Off a comment's own page that is
  *  the answer root it is rendered inside; on one it is the answer the page is about. Its own
- *  id is the last resort, so a comment always carries the thread it was written in. */
+ *  id is the last resort, so a comment always carries the thread it was written in.
+ *
+ *  The feed is the surface with neither: its answers are cards reached from the action bar
+ *  they own, not answer items, and the page URL is the feed rather than any answer. Measured
+ *  2026-10-26: a story's comments were captured with no parent at all — `replyingTo` null, so
+ *  the chain the hash is built from was empty and the classifier judged each comment with no
+ *  idea what question it answered. The card is found the same way its root is (`cardOf`), from
+ *  the one bar the comment's own ancestors hold. */
 function conversationIdOf(root: Element, id: string): string {
   const answer = root.closest(ANSWER_ITEM);
   if (answer) return idOf(answer) ?? id;
-  return pageAnswerId() ?? id;
+  const page = pageAnswerId() ?? queryAnswerId();
+  if (page) return page;
+  for (let el: Element | null = root.parentElement; el && el !== document.body; el = el.parentElement) {
+    const bars = el.querySelectorAll(PERMALINK_BAR);
+    if (bars.length === 0) continue;
+    if (bars.length > 1) break;
+    const card = cardOf(bars[0]);
+    if (card && card.contains(root)) return idOf(card) ?? id;
+    break;
+  }
+  return id;
 }
 
 /** The comment a reply answers, as a namespaced id, or null for a top-level one.
@@ -637,7 +798,10 @@ export const quoraAdapter: PlatformAdapter = {
   },
 
   textElement(root) {
-    const parts = bodyParts(root);
+    // What the root itself holds: a question page's heading belongs to the page rather than to
+    // any one answer under it (see `questionParts`), and this names the element the gate and
+    // the highlighter measure a side against.
+    const parts = bodyParts(root).filter((part) => root.contains(part.el));
     if (parts.length === 0) return null;
     // The longest block, which is the one a single anchor should point at when the body is
     // spread across several. `textRegions` below carries the whole picture.
@@ -654,7 +818,13 @@ export const quoraAdapter: PlatformAdapter = {
     const regions: TextRegion[] = [];
     let at = 0;
     for (const part of parts) {
-      regions.push({ el: part.el, start: at, end: at + part.text.length });
+      // A part the root does not hold keeps its place in the walk but gets no span to paint.
+      // On a question page the heading above the answers is one element every answer under it
+      // is classified with, and a wrap from one answer's claims would be stripped by another
+      // answer's Hide — the empty span paints nothing (see `sliceSegmentsToRegion`).
+      regions.push(root.contains(part.el)
+        ? { el: part.el, start: at, end: at + part.text.length }
+        : { el: part.el, start: at, end: at });
       at += part.text.length + BLOCK_JOIN.length;
     }
     return regions;
@@ -750,6 +920,15 @@ export const quoraAdapter: PlatformAdapter = {
     return [...answerRoots(), ...Array.from(document.querySelectorAll(FEED_STORY)), ...commentRoots()];
   },
 
+  /** Whether Quora is holding this root's body back behind its own "(more)".
+   *
+   *  Quora is the one platform where the clamp is a CUT rather than a hidden box: clicking
+   *  "(more)" grew an answer's body from 308 to 545 characters, and from 424 to 1667 on a feed
+   *  card, and the text it reveals is in no response the page makes. So a clipped root here is
+   *  one `capture` cannot name at all (see its guard), and one the painter leaves alone: the
+   *  words past the cut are not in the page, so there is nothing to paint them onto until
+   *  someone opens it. Quora's own "(more)" is the only way in, and pressing it is what
+   *  `revealClipped` does — this hook is what tells the sweep which roots still need it. */
   bodyClipped(root) {
     return expanderOf(root) !== null;
   },
@@ -776,6 +955,11 @@ export const quoraAdapter: PlatformAdapter = {
   // answer's body from 308 to 545 characters, and from 424 to 1667 on a feed card — and the
   // text it reveals is in no response the page makes. That is why this hook exists and why it
   // clicks: the alternative is hashing a prefix, which names no post at all.
+  //
+  // The reader is left to press their own "(more)" in the two ways it matters: a root under the
+  // pointer is skipped by the sweep before it ever gets here, and a root's own attempts are
+  // bounded, so a card that opens on the reader's press is captured by an ordinary later sweep
+  // whether or not we were the one who opened it.
   async revealClipped(root, opts) {
     if (!expanderOf(root)) return;
     if (!opts?.onDemand) {
@@ -822,6 +1006,8 @@ export const quoraAdapter: PlatformAdapter = {
     if (!text) return null;
 
     const commentId = commentIdOf(root);
+    // When this post was written, to the precision the page states it in.
+    const datetime = isoDatetimeFromAge(root.querySelector(TIMESTAMP)?.textContent);
     const post = {
       id,
       text,
@@ -835,6 +1021,10 @@ export const quoraAdapter: PlatformAdapter = {
       conversationId: commentId ? conversationIdOf(root, id) : id,
       quoting: null,
       replyingTo: null,
+      // The post's own age, as a floor (see the datetime note at the top). Read off this root
+      // rather than the page: an answer's label sits inside the answer and a comment's inside
+      // the comment, and neither can answer for the other.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     // Language deliberately left unset. Quora carries no per-post language markup at all —

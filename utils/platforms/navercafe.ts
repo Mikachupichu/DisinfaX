@@ -78,9 +78,23 @@
  *  pinned "best" comment is a second rendering of one already in the list (`best_comment`,
  *  measured on a real article), which the digest deliberately collapses onto ONE name, so the
  *  two renderings stay one comment rather than being classified twice.
+ *
+ *  **Datetime.** The article and its comment list render only to a signed-in session — signed
+ *  out, the page is an empty shell (measured 2026-10-14, no text, no `<time>`, no time-bearing
+ *  attribute) — so what instant a comment states could not be established then and none was
+ *  read. It is measured now: each reader prints the comment's own instant as `YYYY.MM.DD. HH:MM`
+ *  under it, and prints it in KST whatever clock the reading machine keeps (see `postedTimeOf`
+ *  for the measurement, and for why the value sent is cut to the minute).
+ *
+ *  **One author's thanks is two comments.** A cafe's article author answers two commenters with
+ *  the same `감사합니다.` (measured), and the mobile reader's word-made names cannot tell those
+ *  apart on words alone: they were ONE name, so the second was classified with the FIRST one's
+ *  ancestor — the wrong person, and the wrong context. A reply's name therefore includes the
+ *  comment it answers (`wordsDigest`).
  */
 import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
+import { isoDatetime } from '../datetime';
 import { passageTextContent } from '../injecting';
 import { PLATFORM_HOSTS } from './hosts';
 import type { CapturedPost, PlatformAdapter } from './types';
@@ -100,6 +114,8 @@ const COMMENT_REPLY = 'CommentItem--reply';
 const COMMENT_NICK_BOX = '.comment_nick_box';
 const COMMENT_NICKNAME = '.comment_nickname';
 const COMMENT_TEXT = 'span.text_comment';
+/** The date line the DESKTOP reader prints a comment's instant on. */
+const COMMENT_DATE = '.comment_info_date';
 
 /** The MOBILE reader, which is a different app rather than the desktop one at a narrow width.
  *
@@ -118,6 +134,8 @@ const COMMENT_REPLY_MOBILE = 'reply';
 const COMMENT_HEADER_MOBILE = '.comment_header';
 const COMMENT_NICKNAME_MOBILE = '.comment_header a.user .nick_name';
 const COMMENT_TEXT_MOBILE = '.comment_content';
+/** The date line the MOBILE reader prints a comment's instant on. */
+const COMMENT_DATE_MOBILE = 'span.date';
 
 /** Marks an id built from a comment's own words rather than read off the element. A decimal
  *  desktop id and a `w`-prefixed digest cannot be mistaken for one another, and they share a key
@@ -140,6 +158,14 @@ const COMMENT_PARAGRAPH_BRS = 2;
  *  article's id is not an id any post here has — it is the namespace a comment's id lives
  *  under, and the conversation every comment on the article belongs to. */
 const ARTICLE_PATH = /\/cafes\/(\d+)\/articles\/(\d+)/;
+
+/** The shape both readers print a comment's instant in: `2026.10.26. 10:12`. Held to the whole
+ *  string, so a line carrying anything else — a relative age, a host marker beside the date —
+ *  reads as no instant at all rather than as the part of it that happens to match. */
+const POSTED_AT = /^(\d{4})\.(\d{1,2})\.(\d{1,2})\.?\s+(\d{1,2}):(\d{2})$/;
+
+/** Korea Standard Time's offset, in minutes. */
+const KST_MINUTES = 9 * 60;
 
 /** Naver Cafe has no verified-account concept. Its marks are cafe-rank cosmetics (a level
  *  icon whose meaning is the cafe's own) and a "written by the author" flag Naver puts on a
@@ -179,6 +205,29 @@ function textOf(el: Element | null | undefined): string {
   return el?.textContent?.trim() ?? '';
 }
 
+/** When a comment was written, from the date line its own reader prints under it.
+ *
+ *  Both readers print the SAME shape — the desktop reader in `span.comment_info_date`, the
+ *  mobile one in `span.date` — and both print it in KST whatever clock the machine reading it
+ *  keeps. Measured 2026-10-26 against the article's own comments API, whose `updateDate` states
+ *  the instant as a Unix millisecond count: on two articles every rendered line was exactly that
+ *  count read at +9h, while the browser that read them was in America/Toronto. So the line is
+ *  the host's own fixed clock rather than a locale rendering, which is what makes it readable
+ *  where PTT's zone-less metadata line is not (`postedAt` there).
+ *
+ *  It states hours and minutes and no seconds. `isoDatetime` cuts a value to what its spelling
+ *  places, so the instant is handed over as a minute-precision ISO string rather than as the
+ *  millisecond count it was computed from — a count would state seconds the page never printed.
+ *  A line that is not that shape (an age, a marker the host has put beside the date) yields no
+ *  datetime rather than a guess at one. */
+function postedTimeOf(root: Element): string | undefined {
+  const match = POSTED_AT.exec(textOf(root.querySelector(COMMENT_DATE) ?? root.querySelector(COMMENT_DATE_MOBILE)));
+  if (!match) return undefined;
+  const [, year, month, day, hour, minute] = match;
+  const wall = Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
+  return isoDatetime(`${new Date(wall - KST_MINUTES * 60_000).toISOString().slice(0, 16)}Z`);
+}
+
 /** The cafe and article a URL names, from either of the two shapes Naver uses. */
 function articleRef(url: URL | Location): ArticleRef | null {
   const path = url.pathname.match(ARTICLE_PATH);
@@ -216,7 +265,7 @@ function mobileFields(root: Element): { username: string; text: string } | null 
   return text && username ? { username, text } : null;
 }
 
-/** The digest of a comment's author and its words.
+/** The digest of a comment's author, its words, and — for a reply — the comment it answers.
  *
  *  The mobile `li` carries no id of any kind — measured: no `id`, no `data-cid`, only Vue scope
  *  attributes (`data-v-…`), which are build hashes and so are exactly what this rollout refuses
@@ -224,10 +273,20 @@ function mobileFields(root: Element): { username: string; text: string } | null 
  *  below it and leave one id naming two different texts, the collision `post-id-names-one-text`
  *  exists to prevent. Its own words survive all of that, and they are what the DB is keyed on.
  *
+ *  The author alone does not separate two comments: an article that thanks its commenters
+ *  answers several of them with the same words, measured — ten comments, three of them the one
+ *  author's `감사합니다.` answering three different people. Named by its words, all three were
+ *  ONE comment: one id, and the chain of whichever was read first, so the second and third were
+ *  classified with somebody else's ancestor. The comment a reply answers is what tells those
+ *  apart, so a reply's name carries its parent's. A root comment needs nothing more — the
+ *  article is its parent, and the article is already in the name (see `postIdOf`).
+ *
  *  Two accumulators rather than one: this is an IDENTITY, and 64 bits over a thread is not a risk
  *  worth taking for four lines. The separator is a unit separator, which no comment can contain. */
-function wordsDigest(username: string, text: string): string {
-  const words = `${username}${text}`;
+function wordsDigest(username: string, text: string, parent: string | null): string {
+  // A root's name is unchanged by this: the parent is appended only when there is one, so the
+  // names of the comments Naver's own list could always tell apart stay what they were.
+  const words = parent ? `${username}${text}${parent}` : `${username}${text}`;
   let a = 5381;
   let b = 2166136261;
   for (let i = 0; i < words.length; i++) {
@@ -241,7 +300,13 @@ function wordsDigest(username: string, text: string): string {
 /** The id a mobile comment is addressed by, or null when it states no words or no name. */
 function mobileCommentId(root: Element): string | null {
   const fields = mobileFields(root);
-  return fields ? WORDS_ID_PREFIX + wordsDigest(fields.username, fields.text) : null;
+  if (!fields) return null;
+  // A reply is named under the comment it answers — see `wordsDigest` for the two comments one
+  // author's identical words collapsed into without it. Resolved through `postIdOf`, so the
+  // parent contributes the name the rest of the pipeline addresses IT by; a reply's parent is
+  // never itself a reply (`commentParentId` walks past those), so this nests one level.
+  const parent = isReply(root) ? commentParentId(root) : null;
+  return WORDS_ID_PREFIX + wordsDigest(fields.username, fields.text, parent);
 }
 
 /** Whether a root is a reply. The two readers mark it differently — a class on the desktop
@@ -462,6 +527,7 @@ export const naverCafeAdapter: PlatformAdapter = {
     // fact-check, and one with no name carries no context to classify it with. Either way
     // it stays out of the batch rather than spending a classification on it.
     if (!text || !username) return null;
+    const datetime = postedTimeOf(root);
     return {
       post: {
         id,
@@ -474,6 +540,8 @@ export const naverCafeAdapter: PlatformAdapter = {
         conversationId: page ? namespaced(page) : id,
         quoting: null,
         replyingTo: null,
+        // Absent rather than zeroed when the reader printed nothing this can read.
+        ...(datetime ? { datetime } : {}),
       } as MainTweet,
       // A reply names the comment above it and a top-level comment names the article, which
       // is the post it is answering and the context a classifier most needs.

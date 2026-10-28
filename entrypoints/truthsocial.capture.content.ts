@@ -22,6 +22,25 @@ const NETWORK_MESSAGE = 'MF_NETWORK_POSTS';
  *  isolated script runs (both are document_start, and the order between them is not
  *  guaranteed), so everything harvested so far is buffered and replayed on this. */
 const HELLO_MESSAGE = 'MF_NETWORK_HELLO';
+/** Says a response whose statuses have not been forwarded yet is in flight (`open: true`)
+ *  or has settled (`open: false`).
+ *
+ *  The isolated half holds its announcements while one is open, because the markup and
+ *  the response describing it race and the markup can win. Measured on Bluesky
+ *  (2026-10-26) the sweep announced the items on screen 58 ms before the response carry-
+ *  ing all of their parents was filed, and an announced post is never amended: its row is
+ *  billed on the chain and the language it went out with. This host is the same shape —
+ *  a Soapbox/Mastodon fork rendering `/api/v…` JSON — so the same race exists here, and a
+ *  post announced a beat early loses the payload's `createdAt` (its datetime) and its
+ *  `in_reply_to_id` (its ancestry) for the rest of its life.
+ *
+ *  The settle is posted AFTER the harvest, in the same task, so the receiver sees the
+ *  payload's statuses before it is told to announce. */
+const PENDING_MESSAGE = 'MF_NETWORK_PENDING';
+/** A path segment for responses that never END: a stream has no settle to wait for, so it
+ *  is never allowed to hold announcements. Caught here rather than at the settle, because
+ *  a hold that outlives its request silences every announce on the page afterwards. */
+const STREAM_MARKER = '/streaming';
 
 /** Every post-bearing response on this site is served from `/api/v<n>/…` under the app's
  *  own origin — the version segment is what the app is on today (v1 for timelines and
@@ -269,32 +288,93 @@ export default defineContentScript({
       return '';
     }
 
+    /** Whether a URL's response is worth holding announcements for. */
+    function holdsAnnounce(url: string): boolean {
+      return url.includes(API_MARKER) && !url.includes(STREAM_MARKER);
+    }
+
+    function postPending(open: boolean): void {
+      window.postMessage({ type: PENDING_MESSAGE, open }, '*');
+    }
+
     const originalFetch = window.fetch;
     window.fetch = function (input: any, init?: any) {
       const promise = originalFetch.call(this, input, init);
       const url = requestUrl(input);
-      if (!url.includes(API_MARKER)) return promise;
+      if (!holdsAnnounce(url)) return promise;
+      postPending(true);
+      let settled = false;
+      const settle = () => {
+        if (settled) return;
+        settled = true;
+        postPending(false);
+      };
       // Read a clone: the response body is a stream, and consuming the original would
       // leave the page's own code with an empty one.
       return promise.then((response: Response) => {
         try {
-          response.clone().text().then((text) => harvest(text, labelOf(url))).catch(() => {});
-        } catch {}
+          // Harvested, then settled, in that order and in one task: the receiver files
+          // these statuses before it is told the hold is over.
+          response.clone().text().then(
+            (text) => {
+              try { harvest(text, labelOf(url)); } finally { settle(); }
+            },
+            settle,
+          );
+        } catch { settle(); }
         return response;
+      }, (error: unknown) => {
+        // A failed request has no statuses to wait for; the page's rejection is passed on.
+        settle();
+        throw error;
       });
     };
+
+    /** The API URL an XHR object was opened on, if it was one. `open` only records it; the
+     *  hold starts at `send`, because an object opened and never sent would otherwise hold
+     *  announcements for a request that does not exist. */
+    const apiHref = new WeakMap<XMLHttpRequest, string>();
 
     const originalOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (_method: string, url: string | URL) {
       const href = String(url);
-      if (href.includes(API_MARKER)) {
-        this.addEventListener('load', () => {
-          try {
-            if (typeof this.responseText === 'string') harvest(this.responseText, labelOf(href));
-          } catch {}
-        });
-      }
+      if (holdsAnnounce(href)) apiHref.set(this, href);
+      else apiHref.delete(this);
       return originalOpen.apply(this, arguments as any);
+    };
+
+    const originalSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function () {
+      const href = apiHref.get(this);
+      apiHref.delete(this);
+      if (!href) return originalSend.apply(this, arguments as any);
+      postPending(true);
+      let settled = false;
+      const settle = () => {
+        if (settled) return;
+        settled = true;
+        postPending(false);
+      };
+      this.addEventListener('load', () => {
+        try {
+          if (typeof this.responseText === 'string') harvest(this.responseText, labelOf(href));
+        } catch {
+          /* Unreadable body: nothing to harvest, but the hold still has to end. */
+        } finally {
+          settle();
+        }
+      });
+      // Every way a sent request can end without a `load`: a send that never reaches the
+      // network, a cancel, a timeout. Each one ends the hold too.
+      this.addEventListener('error', settle);
+      this.addEventListener('abort', settle);
+      this.addEventListener('timeout', settle);
+      try {
+        return originalSend.apply(this, arguments as any);
+      } catch (error) {
+        settle();
+        throw error;
+      }
     };
 
     // The isolated half may not have been listening when the first responses landed.

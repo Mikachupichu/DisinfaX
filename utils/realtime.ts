@@ -42,6 +42,16 @@ export interface ClaimPayload {
   /** Range-keyed annotations {"en": {"start,end": correction}} — only on tweet-scoped
    *  payloads. Present key (even empty) = annotated; absent key = never annotated. */
   annotations?: Record<string, Record<string, string>>;
+  /** This tweet↔claim link's hidden-claim flag (post runs only). True = the post's
+   *  preclassification judged the claim one the old rules would have dropped, so it is
+   *  not painted unless a selection reveals the area. Absent = no opinion (claim-scoped
+   *  payloads): keep whatever the client already holds for this link. */
+  is_hidden?: boolean;
+  /** This tweet↔claim link has an annotation run IN FLIGHT right now (server-stamped,
+   *  window-bounded). Only the pull carries it: a run writes nothing until it ends, so a
+   *  pull is the one place a viewer can learn that an annotation is coming. Absent = no
+   *  opinion (every other payload), not "no run". */
+  is_annotating?: boolean;
   /** Set by settle_tweet_claim_annotations: the claim's post-research annotation run
    *  has ENDED and persisted nothing. Distinct from a key and from {}, because it
    *  asserts neither "annotated" nor "clean" — only that nothing more is coming.
@@ -71,8 +81,13 @@ function asRows(data: any): any[] {
 /** Normalize a raw claim record (build_claim_payload / get_full_claim shape) into
  *  a ClaimPayload. `claims_localized_reasoning` (Realtime/tweet fetch) and
  *  `reasoning` (get_full_claim) both map to `reasoning`. */
-function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, number]>, annotations?: Record<string, Record<string, string>>): ClaimPayload | null {
+function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, number]>, annotations?: Record<string, Record<string, string>>, isHidden?: boolean, isAnnotating?: boolean): ClaimPayload | null {
   if (!raw || typeof raw !== 'object' || !raw.id) return null;
+  // The flag is a link property, so it arrives beside `highlight`, not inside the claim
+  // fields. `undefined` (a payload that states no opinion) must stay undefined: the merge
+  // treats absent as "keep the existing link's flag".
+  const hidden = isHidden ?? raw.is_hidden;
+  const annotating = isAnnotating ?? raw.is_annotating;
   return {
     id: String(raw.id),
     claim: raw.claim ?? {},
@@ -85,6 +100,8 @@ function normalizeClaimRecord(raw: any, highlight?: Record<string, [number, numb
     is_classifying: raw.is_classifying === true,
     highlight: highlight ?? raw.highlight ?? undefined,
     annotations: annotations ?? raw.annotations ?? undefined,
+    is_hidden: hidden === true ? true : (hidden === false ? false : undefined),
+    is_annotating: annotating === true ? true : (annotating === false ? false : undefined),
     annotation_run_settled: raw.annotation_run_settled === true ? true : undefined,
   };
 }
@@ -107,10 +124,12 @@ export async function fetchTweetAndTouchNetwork(hexHash: string): Promise<TweetF
   const claims: ClaimPayload[] = [];
   const tweetClaims = Array.isArray(row.tweet_claims) ? row.tweet_claims : [];
   for (const tweetClaim of tweetClaims) {
-    // Each entry: { highlight, annotations, claims: {<claim fields>} }
+    // Each entry: { highlight, is_hidden, is_annotating, annotations, claims: {<claim fields>} }
     const highlight = (tweetClaim?.highlight && typeof tweetClaim.highlight === 'object') ? tweetClaim.highlight : undefined;
     const annotations = (tweetClaim?.annotations && typeof tweetClaim.annotations === 'object') ? tweetClaim.annotations : undefined;
-    const parsed = normalizeClaimRecord(tweetClaim?.claims, highlight, annotations);
+    const isHidden = typeof tweetClaim?.is_hidden === 'boolean' ? tweetClaim.is_hidden : undefined;
+    const isAnnotating = typeof tweetClaim?.is_annotating === 'boolean' ? tweetClaim.is_annotating : undefined;
+    const parsed = normalizeClaimRecord(tweetClaim?.claims, highlight, annotations, isHidden, isAnnotating);
     if (parsed) claims.push(parsed);
   }
   return {

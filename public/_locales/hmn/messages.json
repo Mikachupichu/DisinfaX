@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Nrhiav thiab qhia cov ntawv tsis tseeb hauv tweets siv AI kev tshuaj xyuas.",
+    "message": "Nrhiav thiab qhia cov ntawv tsis tseeb hauv cov posts siv AI kev tshuaj xyuas.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Rov qhia tag nrho cov lus hais hauv tweet no",
+    "message": "Rov qhia tag nrho cov lus hais hauv post no",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Tawm"
   },
+  "deleteAccount": {
+    "message": "Tshem tawm Tus Account thiab Cov Ntaub Ntawv Ntsig Txog",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Koj cov nyiaj seem, thiab ib qho cryptographic hash ntawm koj tus email chaw nyob uas muaj ib tus yuam sij zais tiv thaiv, raug khaws cia kom tsis txhob muaj kev siv tsis raug ntawm cov nyiaj pub dawb uas muab thaum tsim tus account. Yog koj rov sau npe nrog tib tus account, koj cov nyiaj yuav rov qab los.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Nyem %BTN% yuav qhia cov lus thov thiab yuav them nyiaj ntawm koj tus account"
   },
@@ -287,7 +295,7 @@
     "message": "Siv Zaum Kawg"
   },
   "cleanupTagline": {
-    "message": "Ntxuav koj lub X Feed."
+    "message": "Ntxuav koj lub Feed."
   },
   "disclaimerJurisdiction": {
     "message": "Nyob rau hauv Teb Chaws Meskas, tsuas yog cov neeg nyob hauv Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, thiab Wyoming thiaj li siv tau DisinfaX thiab ntxiv tau lawv cov nyiaj seem; Washington, D.C., tag nrho cov cheeb tsam Meskas, thiab cov xeev uas tsis muaj npe raug txwv. Sab nraum Teb Chaws Meskas, nws muaj nyob rau hauv Kws Nas Das (Canada), Australia, New Zealand, Singapore, South Africa, Nyij Pooj (Japan), Taiwan, Indonesia, Thaib Teb (Thailand), Philippines, Malaysia, Nyab Laj (Vietnam), thiab Switzerland."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Tsis pom qhov ntawd. Sim dua."
   },
+  "errNoClaims": {
+    "message": "Tsis pom muaj cov lus tshaj tawm uas kuaj tau hauv tsab ntawv no.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Chaw",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Qhov tsos",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ci",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Nws tus kheej",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tsaus",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Ib txwm qhia kev tshawb xyuas yog:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Txuas ntxiv nrog Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Tsis paub xim: cov cim ruaj khov",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Khaws txhua lub cim tshawb xyuas qhov tseeb kom pom ntawm cov ntawv tsis tas yuav taw qhia rau. Qhov kev txiav txim yog qhia los ntawm cov xim thiab cov lus, yog li qhov no pab cov uas tsis tuaj yeem paub qhov txawv ntawm cov xim ntawd.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Ntawv loj",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Rau cov ntawv hauv qhov rai (cov lus thov, cov lus qhia...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Kaw",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Nyem los kho cov lus thov",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Cov ntsiab lus tshawb xyuas",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Qhov kev xaiv no ntev dhau lawm rau kev txheeb xyuas. Ntau tshaj 1,000 tsiaj ntawv.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Qhia kuv thaum nyiaj seem poob",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Ntau tshaj: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "TSHWB XYUAS LI CAS",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Nyob rau txhua nplooj ntawv web, xaiv cov ntawv uas koj xav tshawb xyuas.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Rau sab xis ntawm cov ntawv uas xaiv lawm thiab xaiv Tshawb Xyuas (ua haujlwm kuj rau cov ntawv uas tsis tau xaiv).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Rau sab xis ntawm cov ntawv uas xaiv lawm thiab xaiv {1} Tshawb Xyuas (ua haujlwm kuj rau cov ntawv uas tsis tau xaiv).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Kev tshawb xyuas pib tam sim ntawd thiab raug them rau koj cov nyiaj tshuav.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Thaum cov ntawv tseem raug xaiv, kov lub cim ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " hauv kab chaw nyob, tom qab ntawd xaiv {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

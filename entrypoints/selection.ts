@@ -31,16 +31,20 @@ import {
   verdictBadgeHtml,
   verdictLabel,
   wrapClaimSegmentsInPlace,
+  dropPaintsInRange,
   passageTextContent,
   isPassageInvisible,
+  claimSpanPassageNodes,
 } from '../utils/injecting';
 import { mfBus } from '../utils/mfBus';
+import { THEME_DARK_CLASS, THEME_LIGHT_CLASS } from '../utils/theme';
 import { isInstanceOptedIn } from '../utils/mastodonOptIn';
 import { platformForHost } from '../utils/platforms/registry';
 import { mastodonAdapter } from '../utils/platforms/mastodon';
 import type { CapturedPost, PlatformAdapter } from '../utils/platforms/types';
 import type { Claim, Classification, TextSegment } from '../data/Classification';
 import type { MainTweet } from '../data/Tweets';
+import { MAX_CLASSIFY_CHARS } from '../data/Tweets';
 
 export default defineUnlistedScript(() => {
   // Subframes get the file too on older builds that ignore frameIds, and a frame copy is
@@ -168,14 +172,16 @@ export default defineUnlistedScript(() => {
      *  to align character-for-character with the offsets the worker returns ranges in. */
     selected: string;
     wrap: HTMLElement | null;
+    /** The node the range started in, carried only for a capture that has no wrap: it is the
+     *  only thing left of a passage the page must not be restructured for, and naming the post
+     *  the reader selected inside is all the post gesture needs it for. Page memory only — the
+     *  messages this capture produces carry strings, never nodes. */
+    anchor?: Node | null;
     /** Viewport coordinates just under the selection, read in the page's own world while
      *  the selection was still live. Only carried when there is no wrap to anchor to —
      *  without it a surface that cannot be wrapped gets its claims floated at the top of
      *  the window, attached to nothing. */
     rect?: { x: number; y: number } | null;
-    /** Skip the web-select pipeline: the selection only hit X tweets that already
-     *  have button injections, and those tweets were fired as Disinfact instead. */
-    tweetOnly?: boolean;
     /** Reselect of a passage that already had highlights: skip the hash-hit so
      *  the worker re-preclassifies and the new wrap is the only one left. */
     force?: boolean;
@@ -184,11 +190,9 @@ export default defineUnlistedScript(() => {
   /** The capture being fact-checked. Held past the start so the streaming updates that
    *  follow (verdicts landing on the claims already rendered) still have a target. */
   let pending: SelectionCapture | null = null;
-  /** Every in-flight web-select wrap on this page (leftover islands after an X
-   *  tweet split, or a reselect). CLASSIFICATION is matched by id against this. */
+  /** Every in-flight web-select wrap on this page (a first selection, or the reselect
+   *  that replaces it). CLASSIFICATION is matched by id against this. */
   const liveCaptures = new Map<string, SelectionCapture>();
-  /** Extra leftover islands from a split X selection, consumed by begin(). */
-  let extraLeftoverCaptures: SelectionCapture[] = [];
   let port: Browser.runtime.Port | null = null;
   let hud: HTMLElement | null = null;
   /** The last classification the background sent for this selection. Kept so the scroll
@@ -250,10 +254,24 @@ export default defineUnlistedScript(() => {
 @media (prefers-color-scheme: light) {
     .mf-sel-hud { background: #ffffff; color: #0f1419; box-shadow: 0 2px 10px rgba(0,0,0,0.18); }
 }
+/* The two explicit appearances, which beat that media query in both directions — it only
+   has the automatic case. Written here rather than in the shared sheet because the HUD is
+   this bundle's own window; the class on <html> is put there by utils/injecting.ts, which
+   this file imports (see utils/theme.ts). */
+html.${THEME_LIGHT_CLASS} .mf-sel-hud {
+    background: #ffffff;
+    color: #0f1419;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+html.${THEME_DARK_CLASS} .mf-sel-hud {
+    background: #16181c;
+    color: #e7e9ea;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+}
 .mf-sel-hud .mf-spinner { width: 13px; height: 13px; margin-right: 0; }
 .mf-segment-wrap[data-mf-sel-loading="true"] {
     background-color: rgba(29, 155, 240, 0.14) !important;
-    padding: 1px 5px 1px 3px !important;
+    padding: 1px 0 !important;
     -webkit-box-decoration-break: slice !important;
     box-decoration-break: slice !important;
     transition: background-color 0.2s ease !important;
@@ -442,10 +460,11 @@ export default defineUnlistedScript(() => {
     return space < 0 ? text.slice(0, max) : text.slice(0, space);
   }
 
-  /** Strip leading/trailing whitespace from the wrap's own text nodes so
+  /** Move leading/trailing whitespace out of the wrap's own text nodes so
    *  `selected` and the DOM the worker ranges index stay the same string.
-   *  Does not flatten formatting — empty edge text nodes are left (or
-   *  emptied) in place. */
+   *  The characters are set down beside the wrap, never deleted: they are part of the
+   *  post's text, and the wrap sits inside that post. Does not flatten formatting —
+   *  empty edge text nodes are left (or emptied) in place. */
   function trimWrapTextEdges(root: HTMLElement): void {
     const nodes: Text[] = [];
     const walk = (n: Node) => {
@@ -458,20 +477,28 @@ export default defineUnlistedScript(() => {
       }
     };
     walk(root);
+    let lead = '';
     for (const n of nodes) {
       const stripped = n.data.replace(/^\s+/, '');
       if (stripped.length === n.data.length) break;
+      lead += n.data.slice(0, n.data.length - stripped.length);
       n.data = stripped;
       if (n.data.length > 0) break;
     }
+    let tail = '';
     for (let i = nodes.length - 1; i >= 0; i--) {
       const n = nodes[i];
       if (!n.isConnected) continue;
       const stripped = n.data.replace(/\s+$/, '');
       if (stripped.length === n.data.length) break;
+      tail = n.data.slice(stripped.length) + tail;
       n.data = stripped;
       if (n.data.length > 0) break;
     }
+    const parent = root.parentNode;
+    if (!parent) return;
+    if (lead) parent.insertBefore(document.createTextNode(lead), root);
+    if (tail) parent.insertBefore(document.createTextNode(tail), root.nextSibling);
   }
 
   /** Leading/trailing whitespace is never a claim. Trim it off the three
@@ -519,8 +546,17 @@ export default defineUnlistedScript(() => {
     if (NON_PROSE.test((node as Element).tagName)) return false;
     if (isChrome(node as Element)) return false;
     if (isPassageInvisible(node as Element)) return false;
-    for (const kid of Array.from(node.childNodes)) {
-      if (collect(kid, out, side, edge)) return true;
+    const kids = Array.from(node.childNodes);
+    // `after` wants only what FOLLOWS the edge: start at the child holding it. Collecting
+    // the siblings before it returns the block's opening as the "after" window, and in a
+    // bounded post returns the whole post.
+    let start = 0;
+    if (edge && side === 'after') {
+      const at = kids.findIndex((k) => k === edge.container || k.contains(edge.container));
+      if (at > 0) start = at;
+    }
+    for (let i = start; i < kids.length; i++) {
+      if (collect(kids[i], out, side, edge)) return true;
     }
     return false;
   }
@@ -900,11 +936,6 @@ export default defineUnlistedScript(() => {
     return null;
   }
 
-  /** Our own injected chrome, on any platform: the marker that says a post is already
-   *  being handled by the extension. */
-  const INJECTED_CHROME =
-    '[data-mf-charge="disinfact"], [data-mf-charge="refresh-top"], [data-mf-charge="factcheckall"], [data-mf-charge="translate-tweet"], [mf-on-hold-id], [mf-top-bar-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]';
-
   /** The adapter for this host, or null on X and on any ordinary webpage.
    *
    *  Resolved from the hostname rather than read out of the seam `utils/injecting.ts`
@@ -927,9 +958,8 @@ export default defineUnlistedScript(() => {
    *  the reader granted it one origin at a time at runtime (see utils/mastodonOptIn.ts), so
    *  the instance the reader is on is deliberately absent from the static list and the
    *  lookup comes back empty on a page whose posts the coordinator has already put buttons
-   *  on. Without the fallback this file would conclude it is on an ordinary webpage: a
-   *  selection inside a post carrying our pill would be read as a web selection instead of
-   *  being handed to the post, and a passage would lose the post's author and chain as its
+   *  on. Without the fallback this file would conclude it is on an ordinary webpage, and a
+   *  selection inside a post carrying our pill would lose the post's author and chain as its
    *  context — the two things the coordinator's own copy of the adapter resolves correctly.
    *  The coordinator asks the same two questions in the same order (`native.content.ts`), so
    *  the two bundles cannot disagree about which host this is.
@@ -955,219 +985,57 @@ export default defineUnlistedScript(() => {
     return hostAdapterReady;
   }
 
-  /** Whether `post` is one of the platform's long-form posts — the posts that keep the
-   *  passage behaviour even though they carry our buttons.
+  /* ── A post's text read as a passage ──────────────────────────────────────────────
    *
-   *  A long post gets a pill like every other post, and clicking that pill is the fast way
-   *  into the whole post. A SELECTION inside it is the other half of the pair and stays
-   *  what it always was: the reader pays for the passage they asked about, read inside the
-   *  post's own bounds and with the post's chain as its context. So every place below that
-   *  would otherwise treat "carries our chrome" as "we handle this post whole" asks this
-   *  first.
+   *  A selection is ALWAYS the reader's passage: the text they chose, and no more. The
+   *  post it was taken out of keeps its buttons, and clicking one of those is how the
+   *  whole post is asked about; a selection inside it never becomes a click on it, so a
+   *  drag that overshoots the passage pays for the passage rather than for the whole post
+   *  around it.
    *
-   *  Read off the DOM, because the verdict cannot be computed here: the platforms answer
-   *  `isLongForm` from state their coordinator holds, and this script is a separate bundle
-   *  with its own copy of the adapter module (see the note on `hostAdapter`). The
-   *  coordinator stamps the answer on each post as it sweeps, which also makes the
-   *  question free to ask — no character counting, and no capture lookup per selection. */
-  function isLongFormPost(post: Element): boolean {
-    return post.hasAttribute('mf-longform');
-  }
-
-  /** The post one of our own injected elements sits in, as the platform names it.
-   *
-   *  `postElementFor` returns the INNERMOST post, which is the guard the X path below
-   *  spells as `el.closest('article') === article`: a quote card's buttons belong to the
-   *  quote card, never to the post quoting it. */
-  function postOfChrome(el: Element): Element | null {
-    return hostAdapter?.postElementFor(el) ?? null;
-  }
-
-  /** Posts whose Disinfact/refresh chrome is already injected — the only posts
-   *  that must not go through web-select. X articles and posts whose anchors
-   *  were missing stay on the web-select path (a post we could not place buttons on
-   *  renders none, so it is not counted here and its text stays fact-checkable as a web
-   *  selection — see `placeButtons` in utils/platforms/types.ts).
-   *
-   *  On a platform with an adapter the scan runs from our own chrome outwards rather than
-   *  from the page's markup inwards: the chrome is what says "we already handle this
-   *  post", the adapter resolves it to the owning post without this file needing to know
-   *  the platform's post vocabulary, and the posts are then subtracted by root rather than
-   *  by button — subtracting a pill would leave the post's own text behind as a web
-   *  selection. */
-  function injectedNativePostsIntersecting(range: Range): Element[] {
-    const seen = new Set<Element>();
-    for (const slot of Array.from(document.querySelectorAll<HTMLElement>(INJECTED_CHROME))) {
-      const post = postOfChrome(slot);
-      if (!post || seen.has(post)) continue;
-      // A long-form post is left out: its pill is there for a click, but a selection
-      // inside it is still a passage, and subtracting the post here is what would turn
-      // that passage into a click on the whole post.
-      if (isLongFormPost(post)) continue;
-      if (rangeIntersectsElement(range, post)) seen.add(post);
-    }
-    return Array.from(seen).sort((a, b) =>
-      (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1,
-    );
-  }
-
-  /** Tweets whose Disinfact/refresh chrome is already injected — the only tweets
-   *  that must not go through web-select. X articles and tweets whose anchors
-   *  were missing stay on the web-select path. Nested quoted articles are
-   *  their own tweets: a quote's buttons do not count as the outer's. */
-  function ownButton(article: Element, selector: string): HTMLElement | null {
-    for (const el of Array.from(article.querySelectorAll<HTMLElement>(selector))) {
-      if (el.closest('article') === article) return el;
-    }
-    return null;
-  }
-
-  function articleHasButtonInjections(article: Element): boolean {
-    return !!ownButton(article, INJECTED_CHROME);
-  }
-
-  function injectedTweetArticlesIntersecting(range: Range): Element[] {
-    if (!onXHost()) return [];
-    const seen = new Set<Element>();
-    const ancestor = range.commonAncestorContainer;
-    const root = ancestor.nodeType === Node.ELEMENT_NODE
-      ? (ancestor as Element)
-      : ancestor.parentElement;
-    if (!root) return [];
-    const scope = root.closest('article')?.parentElement ?? root;
-    for (const article of Array.from(scope.querySelectorAll('article'))) {
-      if (!articleHasButtonInjections(article)) continue;
-      if (!tweetIdFromArticle(article)) continue;
-      // Same exclusion as the native path: a long tweet keeps its pill AND its passage
-      // behaviour, so a selection inside one is never turned into a click on the tweet.
-      if (isLongFormPost(article)) continue;
-      if (rangeIntersectsElement(range, article)) seen.add(article);
-    }
-    const startArticle = (range.startContainer.nodeType === Node.ELEMENT_NODE
-      ? (range.startContainer as Element)
-      : range.startContainer.parentElement)?.closest('article');
-    const endArticle = (range.endContainer.nodeType === Node.ELEMENT_NODE
-      ? (range.endContainer as Element)
-      : range.endContainer.parentElement)?.closest('article');
-    for (const a of [startArticle, endArticle]) {
-      if (a && articleHasButtonInjections(a) && tweetIdFromArticle(a) && rangeIntersectsElement(range, a)) {
-        seen.add(a);
-      }
-    }
-    return Array.from(seen).sort((a, b) =>
-      (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1,
-    );
-  }
-
-  function fireTweetAsDisinfact(article: Element): void {
-    const disinfact = ownButton(article, 'button[data-mf-charge="disinfact"]');
-    if (disinfact) { disinfact.click(); return; }
-    const refresh = ownButton(article, 'button[data-mf-charge="refresh-top"]');
-    if (refresh) { refresh.click(); return; }
-    const tweetId = tweetIdFromArticle(article);
-    if (!tweetId) return;
-    mfBus.dispatchEvent(new CustomEvent('mf-process-on-hold', { detail: { tweetId } }));
-  }
-
-  /** The post's own controls, in the order a user asking to fact-check this text would
-   *  want them: the on-hold Disinfact first, then a re-run, then the translation a post
-   *  whose fact-checks are waiting on one needs, then the in-flight button last. */
-  const NATIVE_HANDOFF = [
-    'button[data-mf-charge="disinfact"]',
-    'button[data-mf-charge="refresh-top"]',
-    'button[data-mf-charge="translate-tweet"]',
-    'button[data-mf-charge="factcheckall"]',
-    // Last, and only in its "there is something hidden to show" state: a post whose
-    // claims are already classified renders a bar with no charge button at all — just the
-    // Reveal toggle — and a selection inside such a post must still do something. Reveal
-    // is what the post's own chrome offers for it. The state is the attribute's value, not
-    // the label's text, so this stays locale-independent. `hide` is deliberately not here:
-    // it would take claims OFF the post the user just asked about.
-    'button[data-mf-visual="reveal"]',
-  ] as const;
-
-  /** Hand a selection off to the post that already carries our buttons, by clicking the
-   *  post's own control — the same move the X path makes on the two platforms' shared
-   *  chrome, and the only one available to this script: the extension's internal event bus
-   *  is module state, so a dispatch from here would reach no listener in the content
-   *  script that actually owns the post. A real click crosses that boundary through the
-   *  DOM, which is what the X path relies on too.
-   *
-   *  Button-scoped to the post via `postOfChrome` so a quote card nested inside it cannot
-   *  answer for the outer post. A post carrying our buttons but none of these controls is
-   *  a bar state this list has not met: nothing is clicked, and the selection is still
-   *  spent on the post rather than turned into a second, paid web capture of text the post
-   *  already owns. */
-  function fireNativePostAsDisinfact(post: Element): void {
-    for (const selector of NATIVE_HANDOFF) {
-      for (const btn of Array.from(post.querySelectorAll<HTMLElement>(selector))) {
-        if (postOfChrome(btn) !== post) continue;
-        btn.click();
-        return;
-      }
-    }
-  }
-
-  /** The posts to subtract from a selection, whichever platform this is. */
-  function injectedPostsIntersecting(range: Range): Element[] {
-    return hostAdapter ? injectedNativePostsIntersecting(range) : injectedTweetArticlesIntersecting(range);
-  }
-
-  /** Hand one of those posts the user's intent, whichever platform this is. */
-  function firePostAsDisinfact(post: Element): void {
-    if (hostAdapter) fireNativePostAsDisinfact(post);
-    else fireTweetAsDisinfact(post);
-  }
-
-  /* ── A post whose text is read as a passage, not as a post ────────────────────────
-   *
-   *  Two of them. A long-form post, whose pill is the fast way into the whole thing while
-   *  a selection inside it is the slow, cheaper way into the part the reader actually
-   *  wants — and a post whose anchors were missing, which has no pill at all and whose
-   *  text is therefore only ever reachable as a web selection (see `placeButtons` in
-   *  utils/platforms/types.ts). The second is still keyed off the absence of our chrome;
-   *  the first is keyed off the adapter's own verdict, because it HAS chrome now and the
-   *  question is no longer whether we handle the post but which of the two ways the
-   *  reader asked for.
-   *
-   *  Such a selection stays a selection — the reader pays for the passage they asked
-   *  about, not for the post — but the extension KNOWS the post, so the context is the
-   *  post's rather than the page's: the selection is read inside the post's own bounds,
-   *  and `before` opens with the author (badge included), the ancestors and the quotes,
-   *  which is the same context the buttons path sends. It rides in `contextBefore` rather
-   *  than in `replyingTo`/`quoting` because a selection carries its context in those two
-   *  fields alone, and because that is what puts the chain into the selection's hash
+   *  The extension still KNOWS the post, so the passage's context is the post's rather
+   *  than the page's: the selection is read inside the post's own bounds, and `before`
+   *  opens with the author (badge included), the ancestors and the quotes, which is the
+   *  same context the buttons path sends. It rides in `contextBefore` rather than in
+   *  `replyingTo`/`quoting` because a selection carries its context in those two fields
+   *  alone, and because that is what puts the chain into the selection's hash
    *  (`canonicalContext` hashes before + selected + after and nothing else) — the same
-   *  reason a post's own hash covers its whole chain. */
-
-  /** Our own chrome inside `post` — its own, not a nested post's: a comment of a
-   *  buttonless post carries buttons, and that comment is a post of its own. */
-  function hasOwnChrome(post: Element): boolean {
-    for (const slot of Array.from(post.querySelectorAll(INJECTED_CHROME))) {
-      if (postOfChrome(slot) === post) return true;
-    }
-    return false;
-  }
-
-  /** The post `node` sits in, when a selection inside it is to be read as a passage in
-   *  that post rather than as a page-level selection.
+   *  reason a post's own hash covers its whole chain.
    *
-   *  Two kinds of post qualify. One carries none of our chrome — anchors were missing, so
-   *  there is no pill to click and the selection is the only way in. The other is a
-   *  long-form post: it has a pill now, but the pill and the passage are the pair the
-   *  reader chooses between, so the post's own bounds, author and chain are exactly as
-   *  much the passage's context as they were when the post had no pill at all. */
-  function buttonlessPostFor(node: Node): Element | null {
-    const post = hostAdapter?.postElementFor(node) ?? null;
-    if (!post) return null;
-    if (hasOwnChrome(post) && !isLongFormPost(post)) return null;
-    return post;
+   *  A post whose anchors were missing has no buttons at all, so its text is reachable
+   *  this way and no other (see `placeButtons` in utils/platforms/types.ts); every other
+   *  post is reachable both ways. */
+
+  /** The tweet `node` sits in — the X path's answer to `postElementFor`, which is null here
+   *  because the seam excludes X (see `hostAdapter`).
+   *
+   *  Innermost article wins, so a quote card's own text belongs to the quote card, never
+   *  to the post quoting it. Null on every other host, so an ordinary page and the adapter
+   *  platforms keep the answer they had. */
+  function tweetArticleFor(node: Node): Element | null {
+    if (!onXHost()) return null;
+    const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
+    return el?.closest('article[data-testid="tweet"]') ?? null;
   }
 
-  /** A post's author and their badge, in the shape the classifier reads a speaker in. */
-  function speakerOf(post: { username?: string | null; usertype?: string | null }): string {
+  /** The post `node` sits in, so a selection inside it is read inside that post's own
+   *  bounds and with the post's chain as its context rather than as page-level prose.
+   *
+   *  Null for a node sitting in no post, which is what leaves an ordinary webpage's
+   *  selection on the page's own prose walk. */
+  function postForSelection(node: Node): Element | null {
+    return hostAdapter ? hostAdapter.postElementFor(node) : tweetArticleFor(node);
+  }
+
+  /** A post's author and their badge, in the shape the classifier reads a speaker in.
+   *
+   *  `handle` is off for a source whose `username` is a display name rather than an
+   *  @handle, which is X's alone: its payload states `core.name`, and the click path sends
+   *  that name without an `@` (see `data/Tweets.ts`). Every other platform's capture states
+   *  the name the post was filed under, so the default stands. */
+  function speakerOf(post: { username?: string | null; usertype?: string | null }, handle = true): string {
     const badge = post.usertype && !/^(none|regular)$/i.test(post.usertype) ? ` (${post.usertype})` : '';
-    return (post.username ? `@${post.username}` : 'anonymous') + badge;
+    return (post.username ? `${handle ? '@' : ''}${post.username}` : 'anonymous') + badge;
   }
 
   /** A post's quote, as one line — `[quoted] @user (Verified): …`. */
@@ -1176,15 +1044,53 @@ export default defineUnlistedScript(() => {
     return quoted ? [`[quoted] ${speakerOf(quoted)}: ${quoted.text ?? ''}`] : [];
   }
 
-  /** A buttonless post's ancestry and quotes, as the prologue a selection's `before`
-   *  opens with — oldest first, so the chain reads in the order it was written, and the
-   *  post's own line last so the selection's own passage continues it.
+  /** The post the platform's own capture holds under `id`, if this document has one.
    *
-   *  The same walk the coordinator does when it links a batch, done here off the ids the
-   *  DOM states, because this script is its own bundle and cannot see the coordinator's
-   *  captured set. Bounded by the depth the hash is bounded by (20) and by the ids already
-   *  seen, so a platform stating a cycle cannot spin here. */
-  function ancestryPrologue(post: Element): string {
+   *  Read off `globalThis` rather than through the adapter seam because the captured set
+   *  lives in the coordinator's bundle, not this one: two content scripts in one isolated
+   *  world are still two module registries (see `hostAdapter`), so each coordinator
+   *  publishes its own set here — `native.content.ts` for the adapter platforms,
+   *  `relay.content.ts` for X. Absent on an ordinary webpage, and null for a post no
+   *  capture covered. */
+  function memoryPostById(id: string): MainTweet | null {
+    try {
+      const lookup = (globalThis as { __mfPostChainFor?: (id: string) => MainTweet | null }).__mfPostChainFor;
+      return lookup?.(id) ?? null;
+    } catch {
+      /* A lookup that throws answers nothing, which is the DOM's turn. */
+      return null;
+    }
+  }
+
+  /** A chain as the post's own capture nests it, written out as the prologue.
+   *
+   *  `displayName` marks a source that states a display name rather than an @handle, which
+   *  is X's alone (see `speakerOf`). */
+  function chainPrologue(focal: MainTweet, displayName = false): string {
+    const ancestors: MainTweet[] = [];
+    const seen = new Set<string>([focal.id]);
+    for (let n = focal.replyingTo, depth = 0; n && depth < 20 && !seen.has(n.id); n = n.replyingTo, depth++) {
+      seen.add(n.id);
+      ancestors.unshift(n);
+    }
+    const lines: string[] = [];
+    for (const ancestor of ancestors) {
+      lines.push(`[thread] ${speakerOf(ancestor, !displayName)}: ${ancestor.text}`);
+      lines.push(...quotedLine(ancestor));
+    }
+    lines.push(...quotedLine(focal));
+    // No newline after the last line: the post's own text continues it.
+    lines.push(`[post] ${speakerOf(focal, !displayName)}: `);
+    return lines.join('\n');
+  }
+
+  /** The same chain, walked off the ids the DOM states instead — the answer for a post the
+   *  coordinator's capture does not hold, and the one every platform gave before that set
+   *  was reachable from here.
+   *
+   *  Bounded by the depth the hash is bounded by (20) and by the ids already seen, so a
+   *  platform stating a cycle cannot spin here. */
+  function domAncestryPrologue(post: Element): string {
     const seam = hostAdapter;
     if (!seam?.capture || !seam.captureRoots || !seam.postIdOf) return '';
     const id = seam.postIdOf(post);
@@ -1215,14 +1121,32 @@ export default defineUnlistedScript(() => {
     return lines.join('\n');
   }
 
-  /** A selection's context inside a buttonless post: the post's own text either side of the
-   *  passage, its speaker, and the chain it hangs under — and nothing from beyond the post.
+  /** A buttonless post's ancestry and quotes, as the prologue a selection's `before`
+   *  opens with — oldest first, so the chain reads in the order it was written, and the
+   *  post's own line last so the selection's own passage continues it.
    *
-   *  The post is the only bound here, on both sides: these are the post types that are
-   *  buttonless *because* they are long, and a context that stopped short of the post's own
-   *  end would hand the classifier a fragment of a passage rather than the passage in its
-   *  place. The web-select caps (MAX_BEFORE_CHARS/MAX_AFTER_CHARS) bound a page whose prose
-   *  runs past the thing selected; here the post ends the string by itself.
+   *  Taken from the post the platform's own capture holds whenever this document has it,
+   *  on every platform: that is the set a click is answered from, so the two routes into a
+   *  post cannot state different chains, and it is the fuller reading of the two — a
+   *  payload's untruncated text, and ancestors the rendered page no longer holds at all.
+   *  The DOM walk answers for the rest, which is also what X falls back to when the tweet
+   *  is one its XHR capture never covered. */
+  function ancestryPrologue(post: Element): string {
+    const seam = hostAdapter;
+    const id = seam ? (seam.postIdOf?.(post) ?? null) : tweetIdFromArticle(post);
+    const captured = id ? memoryPostById(id) : null;
+    if (captured) return chainPrologue(captured, !seam);
+    return domAncestryPrologue(post);
+  }
+
+  /** A selection's context inside a post: the post's own text either side of the passage,
+   *  its speaker, and the chain it hangs under — and nothing from beyond the post.
+   *
+   *  The post is the only bound on `before`: a selection was made inside it, and a context
+   *  that stopped short of the post's own start would hand the classifier a fragment of a
+   *  passage rather than the passage in its place. `after` stops at the shorter of the
+   *  post's own end and MAX_AFTER_CHARS, so a passage near the post's close carries only
+   *  the words that actually follow it.
    *
    *  The chain is the same prologue a first-class post's click carries, in the order it was
    *  written: ancestors oldest first, each with its speaker and quote, then the selection's
@@ -1234,54 +1158,18 @@ export default defineUnlistedScript(() => {
     if (!post.contains(startEdge.container) || !post.contains(endEdge.container)) return null;
     return {
       before: ancestryPrologue(post) + squash(contextText(post, 'before', startEdge)),
-      after: squash(contextText(post, 'after', endEdge)),
+      after: headChars(squash(contextText(post, 'after', endEdge)), MAX_AFTER_CHARS),
     };
   }
 
   /** `contextAround` and `contextAroundElement` both defer to `postBoundedContext` when
-   *  their selection sits inside one of these posts, and fall through to the page's own
-   *  prose walk otherwise. Returns null whenever the post cannot answer — a selection
-   *  spanning out of the post, an adapter that cannot read the root it names. */
+   *  their selection sits inside a post, and fall through to the page's own prose walk
+   *  otherwise. Returns null whenever the post cannot answer — a selection spanning out of
+   *  the post, an adapter that cannot read the root it names. */
   function postContextAround(startEdge: Edge, endEdge: Edge, node: Node): { before: string; after: string } | null {
-    const post = buttonlessPostFor(node);
+    const post = postForSelection(node);
     if (!post) return null;
     return postBoundedContext(startEdge, endEdge, post);
-  }
-
-  function leftoverRanges(range: Range, holes: Element[]): Range[] {
-    if (holes.length === 0) return [range.cloneRange()];
-    const pieces: Range[] = [];
-    let fromContainer: Node = range.startContainer;
-    let fromOffset = range.startOffset;
-    for (const hole of holes) {
-      try {
-        const piece = document.createRange();
-        piece.setStart(fromContainer, fromOffset);
-        piece.setEndBefore(hole);
-        if (piece.compareBoundaryPoints(Range.START_TO_START, range) < 0) {
-          piece.setStart(range.startContainer, range.startOffset);
-        }
-        if (piece.compareBoundaryPoints(Range.END_TO_END, range) > 0) {
-          piece.setEnd(range.endContainer, range.endOffset);
-        }
-        if (!piece.collapsed && piece.toString().trim()) pieces.push(piece);
-      } catch { /* hole detached or inverted */ }
-      try {
-        const after = document.createRange();
-        after.setStartAfter(hole);
-        fromContainer = after.startContainer;
-        fromOffset = after.startOffset;
-      } catch {
-        return pieces;
-      }
-    }
-    try {
-      const tail = document.createRange();
-      tail.setStart(fromContainer, fromOffset);
-      tail.setEnd(range.endContainer, range.endOffset);
-      if (!tail.collapsed && tail.toString().trim()) pieces.push(tail);
-    } catch { /* inverted */ }
-    return pieces.filter((p) => !holes.some((h) => rangeIntersectsElement(p, h)));
   }
 
   /** Fold a previous web-select wrap back to the page's own nodes so a reselect
@@ -1289,11 +1177,7 @@ export default defineUnlistedScript(() => {
    *  unwrapped. X tweet wraps (no `data-mf-sel-wrap`) are left alone. */
   function foldSelectionWrap(wrap: HTMLElement): void {
     for (const span of Array.from(wrap.querySelectorAll('.mf-segment-claim'))) {
-      for (const chrome of Array.from(span.querySelectorAll('.mf-inline-badge, .mf-standalone-spinner'))) {
-        chrome.remove();
-      }
-      if (span.childNodes.length === 0) span.replaceWith(document.createTextNode(span.textContent ?? ''));
-      else span.replaceWith(...Array.from(span.childNodes));
+      span.replaceWith(...claimSpanPassageNodes(span));
     }
     if (!wrap.parentNode) { wrap.remove(); return; }
     wrap.replaceWith(...Array.from(wrap.childNodes));
@@ -1390,48 +1274,12 @@ export default defineUnlistedScript(() => {
     if (isInEditable(range)) return null;
     if (!range.toString().trim()) return null;
 
-    if (extract) extraLeftoverCaptures = [];
     const overlapping = extract && unwrapOverlappingSelectionWraps(range);
     if (overlapping && (!range.startContainer?.isConnected || !range.endContainer?.isConnected)) {
       const live = sel && sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
       if (live && rangeIsReadable(live) && live.startContainer.isConnected && live.endContainer.isConnected) {
         range = live;
       }
-    }
-    const injectedTweets = extract ? injectedPostsIntersecting(range) : [];
-    if (extract && injectedTweets.length > 0) {
-      for (const article of injectedTweets) firePostAsDisinfact(article);
-      const leftovers = leftoverRanges(range, injectedTweets);
-      sel?.removeAllRanges();
-      extraLeftoverCaptures = [];
-      if (leftovers.length === 0) {
-        return {
-          id: `sel_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-          before: '',
-          after: '',
-          selected: '',
-          wrap: null,
-          tweetOnly: true,
-        };
-      }
-      const leftoverCaptures: SelectionCapture[] = [];
-      for (let i = leftovers.length - 1; i >= 0; i--) {
-        const cap = wrapRange(leftovers[i], overlapping);
-        if (cap) leftoverCaptures.unshift(cap);
-      }
-      if (leftoverCaptures.length === 0) {
-        return {
-          id: `sel_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-          before: '',
-          after: '',
-          selected: '',
-          wrap: null,
-          tweetOnly: true,
-        };
-      }
-      leftoverCaptures[0].force = leftoverCaptures[0].force || overlapping;
-      extraLeftoverCaptures = leftoverCaptures.slice(1).map((c) => ({ ...c, force: c.force || overlapping }));
-      return leftoverCaptures[0];
     }
 
     if (!extract) {
@@ -1486,9 +1334,14 @@ export default defineUnlistedScript(() => {
     if (!range.toString().trim()) return null;
     const { before, after } = contextAround(range);
     const id = `sel_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    // Read before the extraction: `extractContents` collapses the range onto the wrap it is
+    // about to be given, and a capture that cannot be wrapped is the one that needs this.
+    const anchor = range.startContainer;
     if (!rangeWithinOneBlock(range)) {
-      console.log('[selection] selection spans blocks — leaving the page alone and listing claims');
-      return trimCapture({ id, before, after, selected: range.toString(), wrap: null, force, rect: rangeAnchorRect(range) });
+      // Names the wrap decision only. Whether the claims are listed or the post gesture takes
+      // the passage is decided later, by `begin`, and this line used to claim the former.
+      console.log('[selection] selection spans blocks — left unwrapped, page untouched');
+      return trimCapture({ id, before, after, selected: range.toString(), wrap: null, force, rect: rangeAnchorRect(range), anchor });
     }
     let wrap: HTMLElement | null = null;
     let selected = range.toString();
@@ -1496,6 +1349,15 @@ export default defineUnlistedScript(() => {
       wrap = document.createElement('span');
       wrap.className = 'mf-segment-wrap';
       wrap.dataset.mfSelWrap = 'true';
+      // These words are about to leave the post's own nodes. A paint standing on them has to
+      // hand its text back first, or its record describes a passage the extraction has taken
+      // apart (see `dropPaintsInRange`). The range's boundaries can sit in nodes that paint
+      // removes, so it is re-read from the live selection before the words are moved.
+      dropPaintsInRange(range);
+      const live = window.getSelection();
+      if (live && !live.isCollapsed && live.rangeCount > 0 && live.getRangeAt(0).toString().trim()) {
+        range = live.getRangeAt(0);
+      }
       wrap.appendChild(range.extractContents());
       range.insertNode(wrap);
       selected = passageTextContent(wrap) || wrap.textContent || selected;
@@ -1553,23 +1415,8 @@ export default defineUnlistedScript(() => {
    *  makes it this capture's wrap and not an older Disinfact's: the page world writes it
    *  onto the document element and it is consumed here, once. */
   function captureFromPageWorld(): SelectionCapture | null {
-    const tweetOnly = document.documentElement.dataset.mfSelTweetOnly === '1';
     const force = document.documentElement.dataset.mfSelForce === '1';
-    const extraIds = (document.documentElement.dataset.mfSelIds ?? '')
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const tweetIds = (document.documentElement.dataset.mfSelTweetIds ?? '')
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    delete document.documentElement.dataset.mfSelTweetOnly;
     delete document.documentElement.dataset.mfSelForce;
-    delete document.documentElement.dataset.mfSelIds;
-    delete document.documentElement.dataset.mfSelTweetIds;
-    for (const tweetId of tweetIds) {
-      mfBus.dispatchEvent(new CustomEvent('mf-process-on-hold', { detail: { tweetId } }));
-    }
     const collectWrap = (wrapId: string): SelectionCapture | null => {
       const wrap = document.querySelector<HTMLElement>(`[data-mf-sel-id="${wrapId}"]`);
       const selected = wrap ? (passageTextContent(wrap) || wrap.textContent || '') : '';
@@ -1582,25 +1429,10 @@ export default defineUnlistedScript(() => {
     };
     const id = document.documentElement.dataset.mfSelId;
     delete document.documentElement.dataset.mfSelId;
-    const ids = extraIds.length > 0 ? extraIds : (id ? [id] : []);
-    const captures: SelectionCapture[] = [];
-    for (const wrapId of ids) {
-      const cap = collectWrap(wrapId);
-      if (cap) captures.push(cap);
-    }
-    extraLeftoverCaptures = captures.slice(1);
-    if (captures[0]) return captures[0];
-    if (tweetOnly || tweetIds.length > 0) {
-      return {
-        id: `sel_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-        before: '',
-        after: '',
-        selected: '',
-        wrap: null,
-        tweetOnly: true,
-      };
-    }
-    if (id) console.log('[selection] page-world wrap held no text');
+    if (!id) return null;
+    const capture = collectWrap(id);
+    if (capture) return capture;
+    console.log('[selection] page-world wrap held no text');
     return null;
   }
 
@@ -1661,7 +1493,7 @@ export default defineUnlistedScript(() => {
       capture.wrap.style.setProperty('background-color', 'rgba(29, 155, 240, 0.14)', 'important');
       capture.wrap.style.setProperty('-webkit-box-decoration-break', 'slice', 'important');
       capture.wrap.style.setProperty('box-decoration-break', 'slice', 'important');
-      capture.wrap.style.setProperty('padding', '1px 5px 1px 3px', 'important');
+      capture.wrap.style.setProperty('padding', '1px 0', 'important');
       const isRTL = document.dir === 'rtl' || !!capture.wrap.closest?.('[dir="rtl"]');
       if (isRTL) {
         capture.wrap.style.setProperty('border-top-right-radius', '3px', 'important');
@@ -2216,10 +2048,83 @@ export default defineUnlistedScript(() => {
     });
   }
 
-  function begin(): void {
-    if (!pending) return;
-    const extras = extraLeftoverCaptures;
-    extraLeftoverCaptures = [];
+  /** Hand a selection taken inside a post that carries our buttons to the coordinator's
+   *  painter, which owns that post's revealed areas and its repaint.
+   *
+   *  The extraction wrap is folded as part of the hand-off and only when the painter takes
+   *  it: a post too long to carry buttons, a quote card, or a page whose coordinator is not
+   *  running answers false, and the selection must still be there for the passage run it
+   *  was always going to get.
+   *
+   *  A wrap is folded as part of the hand-off and only when the painter takes it; it is never
+   *  REQUIRED. Resolved off the wrap when there is one — it is the node the selection owned and
+   *  the only thing a fold can put back — and off the capture's anchor otherwise: a passage that
+   *  spans blocks cannot be wrapped without restructuring the page (see `rangeWithinOneBlock`),
+   *  and the painter repaints by post id and selected text alone, so a post the reader selected
+   *  inside is named all the same. A capture with neither (the popup probe, a page-world read
+   *  with no range) still has no post to name and answers false. */
+  function routeGestureToPost(capture: SelectionCapture): boolean {
+    const wrap = capture.wrap && capture.wrap.isConnected ? capture.wrap : null;
+    const node = wrap ?? capture.anchor ?? null;
+    if (!node || !node.isConnected) return false;
+    const gesture = (globalThis as { __mfSelectionGesture?: (id: string, selected: string, postEl: Element | null, fold?: () => void) => boolean }).__mfSelectionGesture;
+    if (typeof gesture !== 'function') return false;
+    // The coordinator's own answer first, when there is one. Its copy of the adapter is the one
+    // that classified the post, so it is the one whose id the gesture matches; and it is the one
+    // holding naming state this bundle never had — a card named by a flip carries that name in a
+    // module map, and a card reached already translated resolves through it or not at all.
+    const seam = (globalThis as {
+      __mfPostForSelection?: (node: Node) => { id: string; post: Element } | null;
+    }).__mfPostForSelection;
+    const answered = typeof seam === 'function' ? seam(node) : null;
+    const post = answered?.post ?? postForSelection(node);
+    if (!post || !post.contains(node)) return false;
+    const id =
+      answered?.id ?? (hostAdapter ? (hostAdapter.postIdOf?.(post) ?? null) : tweetIdFromArticle(post));
+    if (!id) return false;
+    try {
+      return gesture(id, capture.selected, post, wrap ? () => foldSelectionWrap(wrap) : undefined) === true;
+    } catch (err) {
+      console.log('[selection] post gesture failed:', err);
+      return false;
+    }
+  }
+
+  /** False when the selection was refused outright — nothing was started, no HUD is waiting
+   *  on a run that is not coming, and the caller owes whoever asked a refusal. */
+  function begin(): boolean {
+    if (!pending) return false;
+    // Refused here, ahead of every other effect, because a selection that is not going to be
+    // fact-checked must not disturb the run that is already on screen: the resets below
+    // belong to a run that starts. Measured on the trimmed capture — the very string
+    // beginCapture sends, since trimming there could otherwise carry it back under the limit.
+    // A passage this long comes back with a handful of the claims it actually makes, so the
+    // reader would wait out a run and be billed for a fraction of an answer.
+    const capture = trimCapture(pending);
+    if (capture.selected.length > MAX_CLASSIFY_CHARS) {
+      console.log(
+        `[selection] refused: ${capture.selected.length} chars selected, over MAX_CLASSIFY_CHARS (${MAX_CLASSIFY_CHARS})`
+      );
+      // Styles, but not the port ensureReady() would open: this page gets a notice and no
+      // run, and must not be left holding a connection for a fact-check it is never sent.
+      injectStyles();
+      showNotification('error', { text: t('errSelectionTooLong', 'This selection is too long to fact-check. 1,000 characters maximum.') });
+      pending = null;
+      return false;
+    }
+    // A selection inside a post that carries our buttons is a gesture on the POST: it
+    // reveals the post's highlights, and asks for the claims under the passage to be
+    // checked, instead of fact-checking the passage as page prose. A gesture on a post with
+    // nothing classified yet starts that post's preclassification. Everything else — a post
+    // too long to carry buttons, a quote card, an ordinary webpage — answers false here and
+    // the passage run below is untouched.
+    if (routeGestureToPost(capture)) {
+      pending = null;
+      arrivedSent = false;
+      latest = null;
+      closePopover();
+      return true;
+    }
     // Per-selection, not per-page: a second Disinfact on the same page must be able to
     // dismiss a popup again.
     arrivedSent = false;
@@ -2233,17 +2138,10 @@ export default defineUnlistedScript(() => {
     // pinned one), and renderClaims opens nothing of its own.
     closePopover();
     ensureReady();
-    if (pending.tweetOnly) {
-      notifyArrived();
-      removeHud();
-      pending = extras[0] ?? null;
-      for (const extra of extras) beginCapture(extra);
-      return;
-    }
     // The background hashes `${before}${selected}${after}` and only preclassifies
     // `selected`; the before/after exist to resolve a claim that is missing its subject.
     beginCapture(pending);
-    for (const extra of extras) beginCapture(extra);
+    return true;
   }
 
   // ── Entry points ───────────────────────────────────────────────────────────
@@ -2337,8 +2235,9 @@ export default defineUnlistedScript(() => {
             // Fall back to what the probe read — unanchored, so the claims render as a list.
             pending = { ...pending, wrap: null };
           }
-          begin();
-          sendResponse({ ok: true });
+          // The refusal is answered rather than swallowed: the popup's indicator is cleared
+          // by `ok: false` alone, and nothing on the page will ever arrive to clear it.
+          sendResponse(begin() ? { ok: true } : { ok: false, reason: 'too-long' });
         } catch (err) {
           // Named, because this reply is the only thing that reaches the background's log:
           // `undefined` there means "no answer came back" and says nothing about why.
