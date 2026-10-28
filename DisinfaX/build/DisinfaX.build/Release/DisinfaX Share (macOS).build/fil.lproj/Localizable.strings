@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> sa address bar, pagkatapos ay i-tap ang Pamahalaan ang mga Extension at i-enable ang DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ kumpiyansa</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ kumpiyansa, %2$@ katotohanan</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PAGKATAPOS MAG-TOP UP</string>
+	<key>Add funds to your balance</key>
+	<string>Magdagdag ng pondo sa iyong balanse</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Isang naunang pagbili na US$%lld ang naghihintay pa ring ma-apply, kaya iyon ang natapos sa halip na muli kang singilin. Bumalik sa Safari at buksan ang popup ng DisinfaX para makita ang na-update mong balanse.</string>
+	<key>Annotate</key>
+	<string>I-annotate</string>
+	<key>Annotating</key>
+	<string>Nag-a-annotate</string>
+	<key>Arguably</key>
+	<string>Mapagdedebatehan</string>
+	<key>BALANCE</key>
+	<string>BALANSE</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Sa pag-top up, sumasang-ayon ka sa aming [Mga Tuntunin ng Serbisyo](https://disinfax.app/terms-of-use) at [Patakaran sa Privacy](https://disinfax.app/privacy-policy). Maaaring magkaroon ng bayad sa pagpapalit ng currency kung magbabayad ka gamit ang currency na hindi USD.</string>
+	<key>Clear</key>
+	<string>Burahin</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>I-tap ang icon ng DisinfaX sa toolbar ng Safari para buksan ang popup.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Ang pag-click sa %@ ay magpapakita ng mga claim at magbabawas ito sa iyong balanse</string>
+	<key>Close</key>
+	<string>Isara</string>
+	<key>Contacting the App Store…</key>
+	<string>Kumokonekta sa App Store…</string>
+	<key>Copy</key>
+	<string>Kopyahin</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Posibleng magkamali ang DisinfaX. I-double-check ang impormasyon.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Hindi pa available ang DisinfaX sa inyong rehiyon dahil sa mga regulatory requirement.</string>
+	<key>Disinfact</key>
+	<string>Suriin</string>
+	<key>Edit</key>
+	<string>I-edit</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>I-enable ang DisinfaX sa Safari, sa Mga Setting → Mga Extension.</string>
+	<key>Enter a claim</key>
+	<string>Maglagay ng pahayag</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Maglagay ng buong halaga sa dolyar sa pagitan ng 1 at 100.</string>
+	<key>Equivocally</key>
+	<string>Malabo</string>
+	<key>Fact-Check</key>
+	<string>Pagtsek ng katotohanan</string>
+	<key>Fact-Check All</key>
+	<string>Suriin Lahat</string>
+	<key>Fact-Checking</key>
+	<string>Sinusuri</string>
+	<key>False</key>
+	<string>Mali</string>
+	<key>Likely</key>
+	<string>Malamang</string>
+	<key>Mostly</key>
+	<string>Karamihan</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Buksan ang mga setting ng extension ng Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Buksan ang Safari at pumunta sa x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Buksan ang popup sa Safari para makita ang na-update mong balanse</string>
+	<key>Partially</key>
+	<string>Bahagyang</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kumpleto na ang bayad. Bumalik sa Safari at buksan ang popup ng DisinfaX para makita ang na-update mong balanse.</string>
+	<key>Possibly</key>
+	<string>Posible</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Hindi nahanap ang produktong %@ sa App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Nakansela ang pagbili.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Naghihintay ng pag-apruba ang pagbili.</string>
+	<key>Reasoning</key>
+	<string>Pangangatwiran</string>
+	<key>Return to Safari</key>
+	<string>Bumalik sa Safari</string>
+	<key>Setup incomplete</key>
+	<string>Hindi kumpleto ang setup</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Mag-sign in mula sa DisinfaX popup sa Safari para magdagdag ng pondo.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>May bahagi ng request na hindi na-recognize. Paki-siguraduhin na updated ang extension.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Nagkaroon ng problema sa aming panig. Subukan ulit sandali.</string>
+	<key>Sources</key>
+	<string>Mga pinagmulan</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>HALAGA NG TOP UP</string>
+	<key>Tap the </key>
+	<string>I-tap ang icon na </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>I-tap ang parehong icon at piliin ang DisinfaX para buksan ang popup.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Hindi mahanap iyon. Subukan ulit.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Hindi valid ang top-up amount na iyon. Pumili ng ibang amount.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Hindi maabot ng build na ito ang shared container nito (App Group %@). Hindi magagamit ang mga top up hanggang maidagdag ang App Groups na kakayahan sa parehong app at extension.</string>
+	<key>Top Up</key>
+	<string>Mag-top Up</string>
+	<key>Top Up Balance</key>
+	<string>I-top up ang balanse</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Kailangan ng top up ng mas bagong bersyon ng iOS. Mag-update, pagkatapos ay buksan muli ang DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Kailangan ng top up ng mas bagong bersyon ng macOS. Mag-update, pagkatapos ay buksan muli ang DisinfaX.</string>
+	<key>True</key>
+	<string>Totoo</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>PAGGAMIT NG DISINFAX SA SAFARI</string>
+	<key>Unknown</key>
+	<string>Hindi Alam</string>
+	<key>Unknown purchase error.</key>
+	<string>Hindi kilalang error sa pagbili.</string>
+	<key>Very Likely</key>
+	<string>Malamang na malamang</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Buong US dollars, 1–100. Sisingilin sa currency ng iyong App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Mayroon ka nang top up na US$%lld na naghihintay na ma-apply — hindi ka na muling siningil. Bumalik sa Safari at buksan ang popup ng DisinfaX para i-apply ito sa iyong balanse.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Hindi ka naka-sign in. Mag-sign in at subukan ulit.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Inaaplay na ang iyong top up na US$%lld.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Mas matagal kaysa karaniwan lumitaw ang iyong top up na US$%lld.</string>
+	<key>Your account has been suspended.</key>
+	<string>Na-suspend ang account mo.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Masyadong mababa ang balanse mo. Mag-top up para magpatuloy.</string>
+</dict>
+</plist>

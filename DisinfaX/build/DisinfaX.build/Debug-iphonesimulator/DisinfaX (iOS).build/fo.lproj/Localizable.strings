@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> í adressubjálkanum, trýst síðan á Stýr Víðkanir og ger DisinfaX virkið.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ at vera %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>EFTIR ÍLEGGING</string>
+	<key>Add funds to your balance</key>
+	<string>Legg pengar afturat tíni jaldu</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Eitt fyrra kaup av US$%lld bíðaði enn eftir at verða brúkt, so tað varð liðugt í stað at tú fekk aftur roknað. Far aftur til Safari og opna DisinfaX-sprettigluggan fyri at síggja dína dagførdu jaldu.</string>
+	<key>Annotate</key>
+	<string>Viðmerkja</string>
+	<key>Annotating</key>
+	<string>Viðmerkjar</string>
+	<key>Arguably</key>
+	<string>Umstrítt</string>
+	<key>BALANCE</key>
+	<string>JALDA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Vit tú íleggur, samtykkir tú okkara [Brúkarigilkor](https://disinfax.app/terms-of-use) og [Privatlívspolitikk](https://disinfax.app/privacy-policy). Gjaldeyrisskiftisgjøld kunnu koma afturat, um tú gjaldir í øðrum gjaldeyri enn USD.</string>
+	<key>Clear</key>
+	<string>Reinsa</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Trýst á DisinfaX-ímyndina í amboðsbjálkanum í Safari fyri at opna sprettigluggan.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>At klikkja á %@ vísir ásagnir og tekur gjald av saldo tínum</string>
+	<key>Contacting the App Store…</key>
+	<string>Sambindur til App Store…</string>
+	<key>Copy</key>
+	<string>Avrita</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX kann gera mistøk. Kanna upplýsingarnar tvær ferðir.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX er ikki enn tøkt á tínum svæði orsakað av myndugleikakrøvum.</string>
+	<key>Disinfact</key>
+	<string>Kanna</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Ger DisinfaX virkið í Safari, undir Stillingar → Víðkanir.</string>
+	<key>Enter a claim</key>
+	<string>Skriva eina ásøgn</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Skriva heilan dollaraupphædd millum 1 og 100.</string>
+	<key>Equivocally</key>
+	<string>Tvírætt</string>
+	<key>Fact-Check</key>
+	<string>Staðfesting</string>
+	<key>Fact-Check All</key>
+	<string>Kanna alt</string>
+	<key>Fact-Checking</key>
+	<string>Kanna</string>
+	<key>False</key>
+	<string>Ósatt</string>
+	<key>Likely</key>
+	<string>Líkligt</string>
+	<key>Mostly</key>
+	<string>Fyri tað mesta</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Opna stillingar fyri Safari-víðkanir…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Opna Safari og far til x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Opna sprettigluggan í Safari fyri at síggja dína dagførdu jaldu</string>
+	<key>Partially</key>
+	<string>Partvíst</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Gjald liðugt. Far aftur til Safari og opna DisinfaX-sprettigluggan fyri at síggja dína dagførdu jaldu.</string>
+	<key>Possibly</key>
+	<string>Møguliga</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Vøran %@ varð ikki funnin í App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kaupið varð avlýst.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kaupið bíðar eftir góðkenning.</string>
+	<key>Reasoning</key>
+	<string>Grundgeving</string>
+	<key>Return to Safari</key>
+	<string>Aftur til Safari</string>
+	<key>Setup incomplete</key>
+	<string>Uppseting er ikki liðug</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Rita inn frá DisinfaX sprettiglugganum í Safari fyri at leggja pengar afturat.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Ein partur av hesi umbøn varð ikki kendur. Vinarliga eftirse um víðkanin er dagført.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Ein villa hendi á okkara síðu. Vinarliga royn aftur eftir eina løtu.</string>
+	<key>Sources</key>
+	<string>Keldur</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ÍLEGGINGARUPPHÆDD</string>
+	<key>Tap the </key>
+	<string>Trýst á ímyndina </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Trýst á somu ímynd og vel DisinfaX fyri at opna sprettigluggan.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Hetta kundi ikki finnast. Vinarliga royn aftur.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Tann áfyllingarupphædd er ikki galdandi. Vinarliga vel eina aðra upphædd.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Henda útgávan kann ikki fáa atgongd til sína deildu goymslu (App Group %@). Íleggingar verða ikki tøkar fyrr enn App Groups møguleikin er lagdur afturat bæði appini og víðkanini.</string>
+	<key>Top Up</key>
+	<string>Fyll upp</string>
+	<key>Top Up Balance</key>
+	<string>Ílegg jaldu</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Íleggingar krevja nýggjari útgávu av iOS. Dagfør, og opna síðani DisinfaX aftur.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Íleggingar krevja nýggjari útgávu av macOS. Dagfør, og opna síðani DisinfaX aftur.</string>
+	<key>True</key>
+	<string>Satt</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>BRÚK AV DISINFAX Í SAFARI</string>
+	<key>Unknown</key>
+	<string>Ókent</string>
+	<key>Unknown purchase error.</key>
+	<string>Ókent kaupsfeilur.</string>
+	<key>Very Likely</key>
+	<string>Ógvuliga líkligt</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Heilir bandarískir dollarar, 1–100. Verður tikið av í gjaldeyri tíns App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Tú hevur nú longu ílegging av US$%lld, sum bíðar eftir at verða brúkt — tú hevur ikki fingið aftur roknað. Far aftur til Safari og opna DisinfaX-sprettigluggan fyri at brúka hana á jaldu tína.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Tú ert ikki loggað inn. Vinarliga logga inn og royn aftur.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ílegging tín av US$%lld verður nú brúkt.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Tað tekur longri enn vanligt fyri íleggingina tína av US$%lld at koma til sjón.</string>
+	<key>Your account has been suspended.</key>
+	<string>Konta tín er steðgað.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Saldo tín er ov lágur. Vinarliga fyll upp fyri at halda áfram.</string>
+</dict>
+</plist>

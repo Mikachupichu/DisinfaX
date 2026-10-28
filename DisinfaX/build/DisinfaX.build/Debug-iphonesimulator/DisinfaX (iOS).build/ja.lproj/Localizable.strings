@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string>アイコンをタップし、「機能拡張を管理」をタップして DisinfaX を有効にします。</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@%2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@%1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@%1$@%2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@という%1$@%2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>チャージ後</string>
+	<key>Add funds to your balance</key>
+	<string>残高にチャージする</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>以前の US$%lld の購入がまだ反映待ちだったため、再度請求する代わりにその購入が完了として処理されました。Safari に戻って DisinfaX のポップアップを開き、最新の残高を確認してください。</string>
+	<key>Annotate</key>
+	<string>注釈する</string>
+	<key>Annotating</key>
+	<string>注釈中</string>
+	<key>Arguably</key>
+	<string>議論の余地がある</string>
+	<key>BALANCE</key>
+	<string>残高</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>チャージすることで、当社の[利用規約](https://disinfax.app/terms-of-use)および[プライバシーポリシー](https://disinfax.app/privacy-policy)に同意したものとみなされます。USD 以外の通貨で支払う場合、為替手数料が発生することがあります。</string>
+	<key>Clear</key>
+	<string>クリア</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Safari のツールバーにある DisinfaX アイコンをタップしてポップアップを開きます。</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@をクリックすると主張が表示され、残高が課金されます</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store に接続しています…</string>
+	<key>Copy</key>
+	<string>コピー</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaXは間違えることがあります。情報は必ずご自身でご確認ください。</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaXは規制上の要件により、お住まいの地域ではまだご利用いただけません。</string>
+	<key>Disinfact</key>
+	<string>ファクトチェック</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari の「設定 → 機能拡張」で DisinfaX を有効にします。</string>
+	<key>Enter a claim</key>
+	<string>主張を入力</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1～100 の整数のドル金額を入力してください。</string>
+	<key>Equivocally</key>
+	<string>あいまい</string>
+	<key>Fact-Check</key>
+	<string>ファクトチェック</string>
+	<key>Fact-Check All</key>
+	<string>すべてファクトチェック</string>
+	<key>Fact-Checking</key>
+	<string>ファクトチェック</string>
+	<key>False</key>
+	<string>虚偽</string>
+	<key>Likely</key>
+	<string>可能性が高い</string>
+	<key>Mostly</key>
+	<string>概ね</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari の機能拡張の設定を開く…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari を開いて x.com にアクセスします。</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Safari でポップアップを開いて、最新の残高を確認してください</string>
+	<key>Partially</key>
+	<string>部分的に</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>お支払いが完了しました。Safari に戻って DisinfaX のポップアップを開き、最新の残高を確認してください。</string>
+	<key>Possibly</key>
+	<string>可能性がある</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect に商品 %@ が見つかりませんでした。</string>
+	<key>Purchase cancelled.</key>
+	<string>購入がキャンセルされました。</string>
+	<key>Purchase is pending approval.</key>
+	<string>購入は承認待ちです。</string>
+	<key>Reasoning</key>
+	<string>根拠</string>
+	<key>Return to Safari</key>
+	<string>Safari に戻る</string>
+	<key>Setup incomplete</key>
+	<string>設定が未完了です</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Safari の DisinfaX ポップアップからサインインして、残高を追加してください。</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>リクエストの内容が認識されませんでした。拡張機能が最新であることをご確認ください。</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>こちらで問題が発生しました。しばらくしてから再度お試しください。</string>
+	<key>Sources</key>
+	<string>出典</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>チャージ額</string>
+	<key>Tap the </key>
+	<string>アドレスバーの</string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>同じアイコンをタップして DisinfaX を選び、ポップアップを開きます。</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>見つかりませんでした。もう一度お試しください。</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>チャージ金額が無効です。別の金額を選択してください。</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>このビルドは共有コンテナ（App Group %@）にアクセスできません。アプリと機能拡張の両方に App Groups 機能が追加されるまで、チャージは利用できません。</string>
+	<key>Top Up</key>
+	<string>チャージ</string>
+	<key>Top Up Balance</key>
+	<string>残高をチャージ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>チャージには新しいバージョンの iOS が必要です。アップデート後、DisinfaX を再度開いてください。</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>チャージには新しいバージョンの macOS が必要です。アップデート後、DisinfaX を再度開いてください。</string>
+	<key>True</key>
+	<string>真実</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI での DISINFAX の使い方</string>
+	<key>Unknown</key>
+	<string>不明</string>
+	<key>Unknown purchase error.</key>
+	<string>不明な購入エラーです。</string>
+	<key>Very Likely</key>
+	<string>非常に可能性が高い</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>米ドルの整数、1～100。App Store の通貨で請求されます。</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>すでに US$%lld のチャージが反映待ちです — 再度請求されることはありません。Safari に戻って DisinfaX のポップアップを開き、残高に反映させてください。</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>サインインしていません。サインインしてもう一度お試しください。</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>US$%lld のチャージを反映しています。</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>US$%lld のチャージの反映に、通常より時間がかかっています。</string>
+	<key>Your account has been suspended.</key>
+	<string>アカウントは停止されています。</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>残高が不足しています。続けるにはチャージしてください。</string>
+</dict>
+</plist>

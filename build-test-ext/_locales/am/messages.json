@@ -44,6 +44,14 @@
   "signOut": {
     "message": "ውጣ"
   },
+  "deleteAccount": {
+    "message": "መለያውን እና ተያያዥ ውሂቡን ሰርዝ",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "የቀሪ ሂሳብዎ መጠን እና በሚስጥር ቁልፍ የተጠበቀው የኢሜይል አድራሻዎ ክሪፕቶግራፊያዊ ሃሽ ይቀመጣሉ፣ ይህም በመመዝገቢያ ጊዜ የሚሰጠውን ነፃ ገንዘብ አላግባብ መጠቀምን ለመከላከል ነው። በዚያው መለያ እንደገና ከገቡ ቀሪ ሂሳብዎ ይመለሳል።",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN%ን ጠቅ ማድረግ የይገባኛል ጥያቄዎችን ያሳያል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል"
   },
@@ -72,7 +80,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "በAI ትንታኔ በመጠቀም በትዊቶች ውስጥ የተሳሳተ መረጃን ይለያል እና ያጎላል።"
+    "message": "በAI ትንታኔ በመጠቀም በልጥፎች ውስጥ የተሳሳተ መረጃን ይለያል እና ያጎላል።"
   },
   "verdictTrue": {
     "message": "እውነት",
@@ -183,7 +191,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "በዚህ ትዊት ውስጥ ያሉትን ሁሉንም የይገባኛል ጥያቄዎች እንደገና አሳይ",
+    "message": "በዚህ ልጥፍ ውስጥ ያሉትን ሁሉንም የይገባኛል ጥያቄዎች እንደገና አሳይ",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -288,7 +296,7 @@
     "message": "መጨረሻ የተጠቀሙበት"
   },
   "cleanupTagline": {
-    "message": "የX ፊድዎን ያፅዱ።"
+    "message": "የፊድዎን ያፅዱ።"
   },
   "factCheckAllButton": {
     "message": "ሁሉንም አጣራ"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "ያ ማግኘት አልተቻለም። እባክዎ እንደገና ይሞክሩ።"
   },
+  "errNoClaims": {
+    "message": "በዚህ ጽሑፍ ውስጥ ሊረጋገጡ የሚችሉ መግለጫዎች አልተገኙም።",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ቅንብሮች",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "መልክ",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ብሩህ",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "በራስ-ሰር",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "ጨለማ",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ሁልጊዜ ማጣራት አሳይ:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "ሰርዝ",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "አጽዳ",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "DisinfaX በ$HOST$ ላይ አስጀምር",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX በ$HOST$ ላይ በርቷል",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "አጥፋ",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "በFacebook ቀጥል"
+  },
+  "continueWithLinkedIn": {
+    "message": "በLinkedIn ቀጥል"
+  },
+  "continueWithReddit": {
+    "message": "በReddit ቀጥል"
+  },
+  "persistentBadgesLabel": {
+    "message": "ቀለም ላላዩ ተስማሚ፡ ቋሚ ባጆች",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "ያለ ማንዣበብ በእያንዳንዱ ልጥፍ ላይ የእውነታ ማረጋገጫ ባጆችን እንዲታዩ ያድርጉ። ውሳኔው በቃላት ብቻ ሳይሆን በማድመቂያ ቀለምም ስለሚገለጽ ይህ ቀለሞችን መለየት ለማይችሉ ይረዳል።",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "ትልቅ የፊደል መጠን",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "የተጻፉትን ጥያቄዎች፣ ምክንያቶቹን እና የመግቢያ ፍንጮችን ያሳድጉ።",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "ዝጋ",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "ይገባኛልን ለማርትዕ ጠቅ ያድርጉ",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "የእውነታ ማረጋገጫ ዝርዝሮች",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ይህ ምርጫ ለማረጋገጥ በጣም ረጅም ነው። ቢበዛ 1,000 ፊደሎች።",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ቀሪ ሂሳብ ሲቀንስ አሳውቅ",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "ከዚህ በላይ ሲቀንስ: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

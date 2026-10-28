@@ -3,22 +3,27 @@ import { supabase, OAUTH_PROVIDERS, SUPABASE_PROVIDER, OAUTH_SCOPES, asOAuthProv
 import type { OAuthProvider } from './supabaseClient';
 import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import Dashboard from './Dashboard';
+import FactCheckGuide from './FactCheckGuide';
+import { dismissFactCheckGuide, factCheckGuideDue } from '../../utils/guideOverlay';
 import { useT, getUiLocale, isRtl } from './i18n';
+import { useResolvedScheme } from './theme';
 import { browser } from 'wxt/browser';
 import { callNativeHost, NATIVE_CALLBACK_SCHEME } from '../../utils/nativeHost';
+import { adoptNativeSession, markPopupOpened, NATIVE_SIGNOUT_KEY, requestNativeSignIn } from '../../utils/nativeSession';
+import { SUPABASE_AUTH_STORAGE_KEY } from '../../utils/supabase';
 
-/** Where the provider sends the user back on the iOS tab-based flow.
+/** Where the provider sends the user back on Safari, on BOTH platforms — and the same value
+ *  the macOS ASWebAuthenticationSession is asked to catch, so one entry in Supabase's Redirect
+ *  URLs allowlist covers the two.
  *
- *  Our own success page — the same path a Stripe checkout returns to — so the callback no
- *  longer rides on host access to x.com. The page's content is irrelevant either way: this
- *  tab exists only for auth-callback.content.ts to harvest the OAuth params at
- *  document_start and for the background to close it. The `disinfax_oauth` marker is what
- *  keeps that harvest off every other visit to the page, the checkout landing included.
- *
- *  Must stay in sync with the `matches` pattern and marker check in
- *  auth-callback.content.ts, and with the Supabase Redirect URLs allowlist, where
- *  `https://disinfax.app/**` must be listed for the provider to accept this target. */
-const AUTH_CALLBACK_URL = 'https://disinfax.app/success?disinfax_oauth=callback';
+ *  iOS used to redirect to our own https://disinfax.app/success so a content script could
+ *  harvest the callback without host access to a social site. That needs a per-site grant on
+ *  disinfax.app, and Safari only offers one through a prompt the user has no reason to expect:
+ *  sign-in then completed only if they happened to open the popup while sitting on that exact
+ *  page, and otherwise did nothing at all. The app relay replaces it — the redirect opens the
+ *  containing app, which parks the callback in the App Group container for the extension to
+ *  collect. See TopUpHandoff.swift and pullPendingNativeAuth in entrypoints/background.ts. */
+const NATIVE_AUTH_CALLBACK_URL = 'disinfax://auth-callback';
 
 /** True on iPhone/iPad. One Safari build serves macOS and iOS, so this cannot be decided
  *  at build time via import.meta.env.SAFARI — and the two need different OAuth transports:
@@ -46,22 +51,30 @@ const LAST_PROVIDER_STORAGE_KEY = 'disinfax_last_oauth_provider';
  *  the user is the one who signed out. Read-and-cleared by the background. */
 const INTENTIONAL_SIGNOUT_KEY = 'mf_intentional_signout';
 
-/** The DisinfaX spray-bottle wordmark logo. Uses the white variant shipped in
+/** The DisinfaX spray-bottle wordmark logo. Uses the variants shipped in
  *  public/icon/ (same source as the toolbar icon and manifest icons) instead of a
- *  hardcoded inline copy, so updating those files updates this too. */
+ *  hardcoded inline copy, so updating those files updates this too.
+ *
+ *  White on the dark panel, black on the light one — a white mark on white is no mark at
+ *  all. Keyed on the resolved scheme, not on the preference, so Automatic picks whichever
+ *  the system is asking for. */
 const DisinfaxLogo = () => (
-  <img src="/icon/96-white.png" alt="" className="w-8 h-8 flex-shrink-0 self-start" />
+  <img
+    src={useResolvedScheme() === 'light' ? '/icon/96-black.png' : '/icon/96-white.png'}
+    alt=""
+    className="w-8 h-8 flex-shrink-0 self-start"
+  />
 );
 
 /** Google's mark keeps its brand colours, so unlike the others it does not use
- *  `fill-current`. */
+ *  `fill-current`.
+ *
+ *  This is Google's own published sign-in artwork (`public/google-logo.png`) rather
+ *  than a transcription of it. A conic gradient masked through a hand-entered letter
+ *  outline was what stood here, and a sweep wraps: its red runs from 289deg round to
+ *  4deg, so the seam lands on the end of the crossbar, where the logo is blue. */
 const GoogleIcon = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24">
-    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-  </svg>
+  <img src="/google-logo.png" alt="" aria-hidden="true" className="w-5 h-5" />
 );
 
 const AppleIcon = () => (
@@ -116,7 +129,9 @@ function OAuthButton({ icon, label, isLastUsed, lastUsedLabel, onClick }: {
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
+      title={label}
       className="relative flex items-center justify-center gap-3 w-full bg-white text-black font-medium py-3 px-4 rounded-xl border border-zinc-200 hover:bg-zinc-50 transition-colors"
     >
       {icon}
@@ -137,6 +152,9 @@ export default function App() {
   /** Set by Dashboard while a webpage-selection fact-check is starting up. Only effect:
    *  the footer below is not rendered, so the popup reads as the indicator alone. */
   const [selectionActive, setSelectionActive] = useState(false);
+  /** Whether the overlay owes its guide — asked of the app on Safari, of extension storage
+   *  everywhere else, because a tap on it has to dismiss the app's copy too. */
+  const [guideDue, setGuideDue] = useState(false);
 
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(() => {
     // Guarded because this runs during the first render: a throwing localStorage
@@ -160,6 +178,19 @@ export default function App() {
 
   useEffect(() => {
     const checkSession = async () => {
+      // Safari: a sign-in this profile never saw — the app's own landing page, or a session
+      // the app renewed while this one was closed — is taken from the shared record before
+      // the signed-out screen can be drawn. Only when there is nothing usable here; a live
+      // session is left to the refresh path, which keeps it in step on its own.
+      if (import.meta.env.SAFARI) {
+        try { await adoptNativeSession(SUPABASE_AUTH_STORAGE_KEY); }
+        catch { /* best-effort: the record is read again at the next refresh */ }
+        // The app tells its Safari instructions apart by whether the popup has ever been
+        // opened — before that, the extension may not even be enabled. So this is the one
+        // moment that fact becomes true.
+        void markPopupOpened();
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
@@ -176,23 +207,20 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // When opened while signed out with text selected in the active tab, immediately
-  // surface the "not signed in" error notification on the page and in the popup.
+  // The guide the app draws over its panes, drawn here too while the same conditions hold.
+  // Asked once per sign-in rather than on a timer: the answer changes when the user does the
+  // thing it describes (or taps it away), and either of those is followed by this component
+  // being closed, so there is nothing to poll for. Keyed on whether there is a user rather
+  // than on the user object, which changes identity on every token refresh.
+  const signedIn = !!user;
   useEffect(() => {
-    if (user || loading) return;
+    if (!signedIn) { setGuideDue(false); return; }
     let cancelled = false;
-    void (async () => {
-      try {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-        if (!tab?.id || cancelled) return;
-        const res = await browser.runtime.sendMessage({ type: 'MF_SELECTION_PREPARE', tabId: tab.id });
-        if (cancelled || !res?.hasSelection) return;
-        setAuthError(t('errNotSignedIn'));
-        await browser.runtime.sendMessage({ type: 'MF_NOTIFY_SIGNED_OUT', tabId: tab.id });
-      } catch { /* best effort */ }
-    })();
+    factCheckGuideDue()
+      .then(due => { if (!cancelled) setGuideDue(due); })
+      .catch(() => { /* the guide is an extra; nothing to report */ });
     return () => { cancelled = true; };
-  }, [user, loading, t]);
+  }, [signedIn]);
 
   /** Record the provider that just worked, so it can be badged next time. */
   const rememberProvider = (provider: OAuthProvider) => {
@@ -214,23 +242,46 @@ export default function App() {
       if (import.meta.env.SAFARI) {
         // -------------------------------------------------------------
         // SAFARI FLOW
+        //   iOS   — the whole sign-in happens in the app. An app extension has no window to
+        //           present the provider's sheet, and a Safari tab is worse than useless: the
+        //           redirect leaves for the app, the popup is long gone, and Safari is left
+        //           showing the provider on a loading page with no way back. So the popup only
+        //           asks the app to start, and the app owns the flow from the first tap. There
+        //           is nothing to collect afterwards either — the extension adopts the shared
+        //           session record the next time it starts.
         //   macOS — the containing app presents ASWebAuthenticationSession and returns
-        //           the callback URL over native messaging.
-        //   iOS   — an app extension has no UIApplication.shared, no UIScene and so no
-        //           window to present that sheet from; the session never appears and the
-        //           call never returns. Open an ordinary Safari tab instead and let
-        //           auth-callback.content.ts + the background finish the exchange.
+        //           the callback URL over native messaging, so this popup finishes the
+        //           exchange itself.
         // -------------------------------------------------------------
-        const useTabFlow = isIosOrIpadOs();
+        const nativeProvider = provider === 'google' || provider === 'apple' ? provider : null;
+        if (isIosOrIpadOs() && nativeProvider) {
+          // Remembered now: the app opens over the popup, so this component will not be alive
+          // to record a success. It is only a badge — the session itself is not in doubt.
+          rememberProvider(provider);
+          const opened = await requestNativeSignIn(nativeProvider);
+          if (!opened) {
+            // The extension is not always allowed to open its containing app — on a device the
+            // native open answers `false` — so the popup page hands the scheme to the system
+            // instead. The same two routes the top-up hand-off already falls back to, and for
+            // the same reason: neither is guaranteed, and only one has to work.
+            const handoffUrl = `disinfax://signin?provider=${nativeProvider}`;
+            try { await browser.tabs.create({ url: handoffUrl }); } catch { /* Safari may refuse a non-http scheme here */ }
+            try { window.open(handoffUrl, '_blank'); } catch { /* popup blocker or scheme refusal */ }
+            // Unconfirmable by design, like the top-up hand-off: if either route opened the app,
+            // it takes focus and this is never seen — so the message only surfaces when nothing
+            // actually opened.
+            throw new Error('Could not open the DisinfaX app to sign in.');
+          }
+          return;
+        }
 
         // 1. Generate OAuth URL & store PKCE verifier in Supabase JS storage. The verifier
-        //    lives in browser.storage.local (see utils/supabase.ts), so the background can
-        //    read it later — which matters for the tab flow, where this popup is gone by
-        //    the time the provider redirects back.
+        //    lives in browser.storage.local (see utils/supabase.ts), which is where the
+        //    exchange below reads it from.
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: SUPABASE_PROVIDER[provider],
           options: {
-            redirectTo: useTabFlow ? AUTH_CALLBACK_URL : 'disinfax://auth-callback',
+            redirectTo: NATIVE_AUTH_CALLBACK_URL,
             skipBrowserRedirect: true,
             scopes: OAUTH_SCOPES[provider],
           },
@@ -238,16 +289,6 @@ export default function App() {
 
         if (error) throw error;
         if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
-
-        if (useTabFlow) {
-          // Remember the provider now: opening the tab dismisses the popup sheet, so this
-          // component will not be alive when sign-in actually succeeds.
-          rememberProvider(provider);
-          await browser.tabs.create({ url: data.url });
-          // Nothing to await — the background establishes the session and closes the tab,
-          // and the user is already signed in when they reopen the popup.
-          return;
-        }
 
         // 2. Pass the generated URL to the Swift host to open via
         //    ASWebAuthenticationSession. callNativeHost() tries the direct call first
@@ -426,19 +467,28 @@ export default function App() {
     }
   };
 
-  const handleSignOut = async () => {
+  // End the session on this device and clear local state. Shared by Sign Out and Delete
+  // Account; the only difference is that on the delete path the account is already gone
+  // server-side, so the sign-out call itself can fail and is tolerated.
+  const endLocalSession = async () => {
     setLoading(true);
-    // Local scope only: the default is 'global', which revokes EVERY session on the
-    // account — signing out on one device silently logged the user out everywhere else.
-    // A Sign Out button should end the session on this device only.
-    //
     // Mark the intent BEFORE the session goes, so the background — which learns of this
     // only from the storage change — can suppress the "you're not signed in" notice it
     // raises when a session disappears unbidden. Awaited so the marker is durable before
     // the slot empties; a failure here is not worth blocking the sign-out over, and
     // degrades to today's behaviour (a notice the user did not strictly need).
     try { await browser.storage.local.set({ [INTENTIONAL_SIGNOUT_KEY]: Date.now() }); } catch { /* best-effort */ }
-    await supabase.auth.signOut({ scope: 'local' });
+    // Safari only, and for the same reason the marker above is written first: emptying the
+    // session slot is what makes the background reach for the shared record, so a sign-out
+    // that does not say it happened here gets adopted straight back from the app. Best-effort
+    // like the marker — without it the app's own clear still ends the session.
+    if (import.meta.env.SAFARI) {
+      try { await browser.storage.local.set({ [NATIVE_SIGNOUT_KEY]: Date.now() }); } catch { /* best-effort */ }
+    }
+    // Local scope only: the default is 'global', which revokes EVERY session on the
+    // account — signing out on one device silently logged the user out everywhere else.
+    // A Sign Out button should end the session on this device only.
+    try { await supabase.auth.signOut({ scope: 'local' }); } catch { /* account already deleted */ }
     // Direct revocation alongside the background relay (storage.onChanged →
     // refreshActiveState → clearNativeAccount): two independent paths because
     // neither is guaranteed — the background may be suspended at this moment.
@@ -454,6 +504,19 @@ export default function App() {
     setLoading(false);
   };
 
+  const handleSignOut = async () => {
+    await endLocalSession();
+  };
+
+  // Deletes the account and its data. Resolves to a message to display, or null on
+  // success — on success the session is already down and this component is unmounting.
+  const handleDeleteAccount = async (): Promise<string | null> => {
+    const { error } = await supabase.rpc('delete_my_account');
+    if (error) return error.message;
+    await endLocalSession();
+    return null;
+  };
+
   if (loading) {
     return (
       <div className="w-full min-h-[360px] flex items-center justify-center bg-zinc-950 text-zinc-200">
@@ -466,7 +529,7 @@ export default function App() {
   // and ends at the very bottom — vertical space is the scarce one, most of all inside the
   // iOS modal sheet at its half-height detent.
   return (
-    <div dir={isRtl(locale) ? 'rtl' : 'ltr'} className="w-full min-h-[360px] px-5 bg-zinc-950 text-zinc-100 flex flex-col justify-between font-sans selection:bg-zinc-800">
+    <div dir={isRtl(locale) ? 'rtl' : 'ltr'} className="relative w-full min-h-[360px] px-5 bg-zinc-950 text-zinc-100 flex flex-col justify-between font-sans selection:bg-zinc-800">
 
       {!user ? (
         <div className="flex flex-col flex-1 justify-center space-y-5 my-auto">
@@ -537,7 +600,7 @@ export default function App() {
           </div>
         </div>
       ) : (
-        <Dashboard user={user} onSignOut={handleSignOut} onSelectionActive={setSelectionActive} />
+        <Dashboard user={user} onSignOut={handleSignOut} onDeleteAccount={handleDeleteAccount} onSelectionActive={setSelectionActive} />
       )}
 
       {/* Footer sits flush against the content above it, hard on the bottom edge. Hidden
@@ -553,6 +616,16 @@ export default function App() {
         {user && <div className="text-[9px] leading-tight text-zinc-600">{t('aiDisclaimer')}</div>}
         {!user && <div className="text-[10px] text-zinc-700">{t('cleanupTagline')}</div>}
       </div>
+      )}
+      {/* Last, so it covers the footer too: the guide is asking to be read before the popup is
+          used, and it is never drawn on the landing page — a signed-out reader has no balance to
+          spend and no session to fact-check with. Suppressed while a selection run is starting,
+          which needs the popup's whole face for its own indicator. */}
+      {signedIn && guideDue && !selectionActive && (
+        <FactCheckGuide
+          ios={import.meta.env.SAFARI && isIosOrIpadOs()}
+          onDismiss={() => { setGuideDue(false); void dismissFactCheckGuide(); }}
+        />
       )}
     </div>
   );

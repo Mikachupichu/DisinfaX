@@ -20,10 +20,12 @@
  */
 import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, backgroundAnnotate, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText, type AnnotLocators, type HighlightAnnotContext } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
-import { supabase, ensureFreshSession, asOAuthProvider } from "../utils/supabase";
-import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision, isLocatedRange, sameLocatedRange } from "../utils/textBreakup";
+import { supabase, ensureFreshSession, asOAuthProvider, SUPABASE_AUTH_STORAGE_KEY } from "../utils/supabase";
+import { adoptNativeSession, markSelectionFactCheck, NATIVE_SIGNOUT_KEY, signedOutInApp } from "../utils/nativeSession";
+import { SELECTION_FACT_CHECK_KEY } from "../utils/guideOverlay";
+import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision, splitHighlightKey, isLocatedRange, sameLocatedRange } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
-import { MainTweet, Tweet } from "../data/Tweets";
+import { MainTweet, Tweet, MAX_CLASSIFY_CHARS, UNKNOWN_LANGUAGE } from "../data/Tweets";
 import { COLOR_SCHEME_MESSAGE, applyToolbarIcon, restoreToolbarIcon, toolbarAction } from "../utils/toolbarIcon";
 import { ERROR_CODES } from "../utils/errorCodes";
 import { NATIVE_APP_ID, NATIVE_CALLBACK_SCHEME } from "../utils/nativeHost";
@@ -122,6 +124,11 @@ export default defineBackground({
   /** Track which highlight locales have been localized per tweet id so we don't
    *  re-run the highlight worker for the same locale repeatedly. */
   const localizedHighlightLocales = new Map<string, Set<string>>();
+  /** Localizations actually running right now, keyed like `localizedHighlightLocales`. A
+   *  press whose body is already in flight is not a second job: it is the reader seeing the
+   *  Localize button before the wheel and clicking again, which used to start a second paid
+   *  run for the same body (the run only joins `localizedHighlightLocales` when it finishes). */
+  const localizationInFlight = new Set<string>();
   /** Track tweets that have already had re-research / background localization fired
    *  in this session, so repeated timeline XHRs don't keep writing to the DB. */
   const reResearchedTweetIds = new Set<string>();
@@ -132,7 +139,7 @@ export default defineBackground({
    *  reconnects and re-sends the batch, but the tap lands before hashing + DB
    *  lookup recreate the entry. Parked here and honored by
    *  flushPendingProcessOnHold when the entry appears; dropped on timeout. */
-  const pendingProcessOnHold = new Map<string, { locale: string; displayedSide: 'TRANSLATED' | 'ORIGINAL' | null; displayedText: string | null; displayedLocale: string | null; timer: ReturnType<typeof setTimeout> }>();
+  const pendingProcessOnHold = new Map<string, { locale: string; displayedSide: 'TRANSLATED' | 'ORIGINAL' | null; displayedText: string | null; displayedLocale: string | null; namedSide: 'alt' | 'translation' | null; fromSelection: boolean; timer: ReturnType<typeof setTimeout> }>();
   /** How long a parked tap waits for its entry before being dropped. Matches the
    *  content-side spinner revert (30s), so a timed-out tap leaves the button
    *  restored and a later tap re-parks cleanly. */
@@ -150,7 +157,7 @@ export default defineBackground({
     clearTimeout(pending.timer);
     onHoldTweets.delete(tweetId);
     console.log(`[background] PROCESS_ON_HOLD (deferred): ${tweetId}`);
-    runPreclassification(entry, pending.locale, "PROCESS_ON_HOLD", false, pending.displayedSide, pending.displayedText, pending.displayedLocale);
+    runPreclassification(entry, pending.locale, "PROCESS_ON_HOLD", false, pending.displayedSide, pending.displayedText, pending.displayedLocale, pending.namedSide, pending.fromSelection);
   }
   /** Track which claims currently have an ongoing forced reclassification,
    *  keyed by `${classificationId}:${claimText}`. Prevents concurrent re-runs. */
@@ -173,26 +180,44 @@ export default defineBackground({
    *  to click the Disinfact badge before starting fresh research.
    *  Keyed by `${classificationId}:${claimText}`. */
   const pendingFreshResearchClaims = new Set<string>();
+  /** Claims the user asked to research while fetch-claim had not written their DB row yet,
+   *  keyed by `${classificationId}:${claimText}`.
+   *
+   *  A streamed claim is on hold by construction: preclassify marks every "research required"
+   *  claim that way before the worker's embed → match → link has run. So the on-hold flag
+   *  alone cannot say whether the DB already answers the claim — only the row says that, and
+   *  the row arrives after the stream. A click (or a Fact-Check All, which uses its own
+   *  per-id flag) made in that window is therefore only recorded here; the row's own
+   *  broadcast decides it: a linked classified claim leaves nothing to research, and a claim
+   *  the row still holds on hold is enqueued then. */
+  const researchRequestedBeforeRow = new Set<string>();
   /** Tweet IDs for which the user clicked "Fact-Check All" on the on-hold button.
    *  Claims in these tweets bypass the per-claim Disinfact badge pause and stream
    *  fresh research immediately after their DB fetch attempt returns no match. */
   const factCheckAllTweetIds = new Set<string>();
-  /** Tweets (and selection passages) whose preclassification drained with exactly ONE
-   *  claim, and which were therefore handed straight to the automatic research run.
+  /** The claims a revealed selection asked for, per tweet id. Absent = the whole post (the
+   *  button's own meaning); present = only the claims under the selection, so the release
+   *  loop below leaves every other on-hold claim of the post alone. */
+  const factCheckAllScopedTexts = new Map<string, Set<string>>();
+  /** Ids whose preclassification was handed straight to the automatic research run, so their
+   *  claims are presented as the researching state they are about to become.
    *
-   *  The drain is the first moment the claim count is known, so it is also the first
-   *  moment a claim can be recognized as the only one — and from there the run researches
-   *  it without any click. But that research starts by waiting on the claim's DB row
-   *  (fetch-claim, up to two seconds), and the drain's own broadcast still left the claim
-   *  wearing the on-hold Fact-Check button the worker's mid-stream row gave it. While an
-   *  id is in this set its claims are presented as the researching state they are about
-   *  to become, so the button is not shown for a wait the user did not ask for; the cache
-   *  keeps the real on-hold flag, so every click path still acts on the state the cache
-   *  holds. The hand-off broadcasts that state itself and this mark is then dropped, which
-   *  is what completes the switch to the loading state.
+   *  For a TWEET that is only its exactly-one-claim case: the drain is the first moment the
+   *  claim count is known, and a lone claim is researched without any click. A tweet with any
+   *  other claim count is never marked — those buttons are the user's to act on, and nothing
+   *  about them is researched automatically.
    *
-   *  Any other claim count is never marked: those buttons are the user's to act on, and
-   *  nothing about them is researched automatically. */
+   *  A selected passage is never marked: its claims are handed over one by one as their own DB
+   *  matches resolve, and they carry the Fact-Check All mask instead, which is the one that can
+   *  outlive the hand-off a waitlist queue puts them in (see startSelectionPipeline).
+   *
+   *  Each claim's research starts by waiting on its DB row (fetch-claim, up to two seconds), so
+   *  without this the claim wears the on-hold Fact-Check button the worker's mid-stream row
+   *  gave it for a wait the user did not ask for. While an id is in this set its claims are
+   *  presented as the researching state they are about to become; the cache keeps the real
+   *  on-hold flag, so every click path still acts on the state the cache holds. The hand-off
+   *  broadcasts that state itself and this mark is then dropped, which is what completes the
+   *  switch to the loading state. */
   const preclassifyRunTweets = new Set<string>();
   /** Track DB results from fetchTweetByHash so TRANSLATE_FACT_CHECKS can
    *  re-fire the localization pipeline. Keyed by tweet id. */
@@ -237,8 +262,14 @@ export default defineBackground({
   const domFetchResolvers = new Map<string, (() => void)[]>();
 
   // ── Realtime subscription state ──
-  /** Teardown fallbacks if no DELETE arrives from the DB. */
-  const PRECLASS_TIMEOUT_MS = 10000;
+  /** Teardown fallbacks if no DELETE arrives from the DB.
+   *
+   *  This bounds how long a tweet subscription waits for a preclassification to say
+   *  anything at all — not how long the run may take. Every delivered claim resets it
+   *  (see `ensureTweetSubscription`), so it only expires over a run that is silent from
+   *  `insert_tweet` onward; 10s cut that stream off before a cold run's first claim, and
+   *  the claims after it were simply never heard. */
+  const PRECLASS_TIMEOUT_MS = 60000;
   const CLASSIFY_TIMEOUT_MS = 25000;
   /** How long a refresh-path tweet subscription stays open for Flow A's annotation
    *  persist. Research takes minutes and the annotation agent runs after it, so neither
@@ -246,6 +277,14 @@ export default defineBackground({
    *  anything still open past that is swept server-side, so a longer timeout would
    *  only pretend to listen. */
   const ANNOTATION_TIMEOUT_MS = 5 * 60 * 1000;
+  /** When Flow A's annotation is looked for in the DB if no delivery has arrived, measured
+   *  from the research stream's close (see reconcileSettledAnnotation).
+   *
+   *  The agent's own persist is normally ~3.3s behind the stream, so the first look is past
+   *  it and a run that was delivered costs nothing. The second exists for the run that was
+   *  slow rather than absent: the read is billed, so it is only spent when the annotation
+   *  really has not landed. */
+  const ANNOTATION_READBACK_MS = [5000, 15000];
   /** How long a research launch waits for a preclassify-origin claim's DB row to be broadcast
    *  before giving up and classifying anyway (see awaitClaimDbRow / pullClaimBeforeClassify).
    *
@@ -256,11 +295,17 @@ export default defineBackground({
    *  broadcast is not coming at all — and waiting the full 10s for it added ten silent seconds
    *  to every affected fact-check (measured: two claims on one tweet cost 20s of pure waiting
    *  on top of ~3.4s of actual research). Expiring early only risks the embedding-less
-   *  duplicate the wait exists to prevent; stalling costs the user the thing they paid for. */
-  const CLAIM_DB_ROW_TIMEOUT_MS = 2000;
+   *  duplicate the wait exists to prevent; stalling costs the user the thing they paid for.
+   *
+   *  Widened 2000 → 3000 on 2026-10-15: the post path is measured expiring this budget in
+   *  practice and classifying anyway (awaitClaimDbRow facebook:1224195383044868: TIMED OUT
+   *  after +2001ms), so the margin was thin against a broadcast that does normally land. The
+   *  extra second is only ever spent in the case this budget governs — the wait is
+   *  signal-driven, so a row that arrives resolves it at once, whatever the budget is. */
+  const CLAIM_DB_ROW_TIMEOUT_MS = 3000;
   /** The same wait as CLAIM_DB_ROW_TIMEOUT_MS, for the SELECTION path only.
    *
-   *  The 2s budget above is calibrated on X, where the claim links to a tweet row that
+   *  The budget above is calibrated on X, where the claim links to a tweet row that
    *  already exists. A selection has no tweet row of its own, so the preclassify worker
    *  creates the routing row and links the claim before its broadcast lands — and that
    *  measures slower than the comment above assumes. Run 2026-09-21: the payload arrived
@@ -281,11 +326,23 @@ export default defineBackground({
   const NATIVE_SYNC_DEBOUNCE_MS = 1500;
   /** Open tweet subscriptions keyed by tweet id. */
   const tweetSubs = new Map<string, SubscriptionHandle>();
+  /** Callbacks to run when a tweet's subscription ends (row DELETE or its own deadline).
+   *  The DB-driven `preclassifying` state (Step 3b) is cleared by a delivered claim, but a
+   *  run that finishes without linking any delivers nothing at all — only the DELETE — so
+   *  without this the wheel outlives the run with nothing left that could clear it. */
+  const tweetSubscriptionEndHooks = new Map<string, Set<() => void>>();
   /** Tweet ids whose leftover preclass handle was already closed and replaced
    *  with an annotation-timeout subscription. Closing again (a second claim's
    *  research) LATE-drops the in-flight annotation UPDATE. Cleared when the
    *  handle actually ends (timeout / forget). */
   const annotationRoutingReady = new Set<string>();
+  /** Handles that gave up their slot in `tweetSubs` to a fresh routing row but are still
+   *  live. The trigger fans a claim row out to EVERY live internal.broadcasts row for the
+   *  tweet, so a handle still holding one is the only delivery path for rows written
+   *  before the replacement row exists. Closing it instead is how a selection's
+   *  Fact-Check-All lost 6 of 8 claim rows: the worker's claim pipeline was still writing
+   *  while admission rotated the row. These end on their own timer. */
+  const lingeringTweetSubs = new Map<string, Set<SubscriptionHandle>>();
   /** Open per-claim (is_classifying) subscriptions keyed by `${tweetId}:${claimId}`. */
   const claimSubs = new Map<string, SubscriptionHandle>();
 
@@ -349,10 +406,33 @@ export default defineBackground({
   const selectionPipelineReady = restoreSelectionPipeline();
   void selectionPipelineReady;
 
+  /** A delivery carrying the localization wheel across it when its sender never stated the
+   *  flag.
+   *
+   *  `localizingHighlights` lives on the one classification the Localize run works from, and
+   *  every path that ENDS the run states it explicitly as false (`restoreAfterLocalizing`,
+   *  `clearLocalizingHighlights`, `mergeHighlightsFor`). Nothing ever writes `undefined`. So a
+   *  delivery that omits the field was built from a snapshot taken before the press — a claim
+   *  merge, a refresh rewrite — and adopting it wholesale takes the wheel down mid-run and
+   *  hands the reader the Localize button again, inviting a second paid press. Carrying the
+   *  cached flag keeps the wheel up until the ranges land, and cannot outlive the run: the
+   *  explicit false an exit broadcasts overrides it here. */
+  function withRunningLocalization(classification: Classification): Classification {
+    if (classification.localizingHighlights !== undefined) return classification;
+    const running = classificationCache.get(classification.id)?.classification.localizingHighlights;
+    return running ? { ...classification, localizingHighlights: true } : classification;
+  }
+
   /** Store a classification under its tweet id, recording the batch that requested it.
    *  A quoted tweet gets its own top-level cache entry too, so a later batch that shows
    *  the quoted tweet on its own can reuse the claims already computed for it. */
   function cacheClassification(classification: Classification, batchId: string) {
+    classification = withRunningLocalization(classification);
+    // Recorded here, not in broadcastClassification: a DB hit is cached and then posted
+    // straight to its port (`safePostToPort`), so it never passes through the broadcast
+    // helper — and a DB hit is exactly the side a later flip has to come back to when the
+    // reader has since localized the other one.
+    rememberSideClaims(classification);
     const existing = classificationCache.get(classification.id);
     if (existing) {
       existing.classification = classification;
@@ -385,6 +465,19 @@ export default defineBackground({
     dbHitCache.delete(tweetId);
     reResearchedTweetIds.delete(tweetId);
     forgetLookup(tweetId, true);
+    // The same post reached by another id — a host that froze a `pfbid…` name on the feed
+    // before the payload named it, and the story's own id in its detail view. Both are served
+    // from the row keyed by the body's hash, so the rewrite this call is covering for is the
+    // same row for both, and a snapshot kept under the other id would serve the verdicts from
+    // before it. The body is what makes them the same post here, exactly as it does in the DB.
+    const text = tweetCache.get(tweetId)?.text;
+    if (!text) return;
+    for (const [id, tweet] of tweetCache) {
+      if (id === tweetId || tweet?.text !== text) continue;
+      dbFetchPromises.delete(id);
+      dbHitCache.delete(id);
+      forgetLookup(id, true);
+    }
   }
 
   /** Read the persisted lookup memo back into memory, once per worker.
@@ -604,7 +697,18 @@ export default defineBackground({
    *  so no locale guessing is involved. Unknown (hash-less) origins pass a null
    *  displayed + empty known, which keeps legacy bare-locale keys and drops every
    *  hashed one. */
-  type RevisionGate = { displayed: string | null; known: Set<string> };
+  type RevisionGate = {
+    displayed: string | null;
+    known: Set<string>;
+    /** Rendering hashes of the side on screen, and hashes of the other side's bodies —
+     *  see `RevisionGate` in textBreakup.ts. */
+    displayedBodies?: Set<string>;
+    otherBodies?: Set<string>;
+    /** Locale prefix the displayed body is filed under — see `RevisionGate` in
+     *  textBreakup.ts. Set from the recorded side (displayedSides), which is the only
+     *  thing that knows it on a host that states no language. */
+    displayedLocale?: string;
+  };
   const NO_REVISION_GATE: RevisionGate = { displayed: null, known: new Set() };
 
   /** The exact tweet body a highlight range is measured against: the Grok translation
@@ -617,13 +721,126 @@ export default defineBackground({
     return (typeof text === 'string' && text.length > 0) ? text : null;
   }
 
+  /** The side the reader is actually looking at, as the content script last stated it
+   *  (`SET_DISPLAYED_LOCALE`). A flip grows no captured text, so no re-capture ever states
+   *  the side it put on screen, and every batch overwrites `tweetCache` with the pre-flip
+   *  post. This record survives both, and the revision gate has to read it: fed the stale
+   *  capture, the gate hashes the source as the displayed body and drops exactly the ranges
+   *  a Localize press has just measured against the translation, so the side the reader is
+   *  looking at comes back bare with its group offering Localize again. */
+  /** Every body reported as on screen for this id, latest first, bounded. One side can be
+   *  reported more than once with different renderings of the same words (Facebook's host
+   *  block is a short clamp of the fetched translation the ranges were measured into), and
+   *  the gate only ever ADDS these hashes, so keeping them all is what stops the shorter
+   *  rendering from hiding the revision the longer one names. */
+  const displayedSides = new Map<string, { text: string; locale: string; texts: string[] }>();
+
+  /** Whether two bodies say the same words, differing only where the host joins or cuts
+   *  them: all whitespace removed, then one must hold the other. `sameBodyRevision` cannot
+   *  answer this — a missing join separator ("PERSON" + "AS") survives every whitespace fold. */
+  function sameBodyWords(a: string, b: string): boolean {
+    const sq = (s: string) => s.replace(/\s+/g, '');
+    const x = sq(a);
+    const y = sq(b);
+    if (!x || !y) return false;
+    return x === y || x.includes(y) || y.includes(x);
+  }
+
+  /** The post with the reader's displayed side laid over whatever the capture states. */
+  function withDisplayedSide<T extends { translatedText?: string; destinationLanguage?: string } | null | undefined>(id: string, tweet: T): T {
+    const recorded = displayedSides.get(id);
+    if (!recorded || !tweet) return tweet;
+    // A capture that already names these words is the side the reader is on — the host's
+    // payload and its DOM are the same body with different separators (LinkedIn writes a line
+    // break where the payload writes nothing, and appends its clamp's "… more"). Laying the
+    // record over it would hand the revision gate a body no stored range was measured into:
+    // every range dropped, `rangesBoundElsewhere` raised, and a side that HAS highlights came
+    // back offering Localize (2026-10-24). The capture's own rendering is also the one the
+    // offsets index, which is what the paint needs to place them.
+    if (tweet.translatedText && tweet.destinationLanguage && sameBodyWords(tweet.translatedText, recorded.text)) return tweet;
+    return { ...tweet, translatedText: recorded.text, destinationLanguage: recorded.locale };
+  }
+
+  /** Record the body now on screen. The renderings kept beside it are only those of the
+   *  SAME revision of the post: a host clamp and its expansion name one side, and a range
+   *  measured into either addresses the words on screen. A body that says different words
+   *  is another side — a host that cannot name its sides files both under one key
+   *  (`translationLocaleIsGuessed`), so carrying its hash here made a later DB read treat
+   *  that side's ranges as this side's: the classification was built naming the English
+   *  body while the claims carried the French offsets (they survived the revision gate as
+   *  "another rendering"), and the reader got French marks over the English words with
+   *  Hide + Fact-Check All instead of Localize (reported 2026-10-23, the monkeypox post).
+   *  That side is not lost — a flip back to it reads its own revisions back through the
+   *  strict hash gate. */
+  function recordDisplayedSide(id: string, text: string, locale: string): void {
+    const prev = displayedSides.get(id);
+    const texts: string[] = [text];
+    for (const t of prev ? [prev.text, ...prev.texts] : []) {
+      if (!t || texts.length >= 4 || texts.includes(t)) continue;
+      if (!sameBodyRevision(t, text)) continue;
+      texts.push(t);
+    }
+    displayedSides.set(id, { text, locale, texts });
+  }
+
+  /** Claims as each side was last measured, keyed by the body they address. `displayedSides`
+   *  remembers which bodies the reader has had on screen; this remembers what was measured
+   *  against them. A host that states no language (Facebook) files both sides' ranges under
+   *  the same locale key, so the live claim list can carry only ONE side's ranges at a time:
+   *  flipping re-points the classification at another body, and flipping back would otherwise
+   *  leave the side already classified — and already paid for — with nothing to paint. The
+   *  persisted rows keep every revision, but they are only reachable while `dbHitCache` holds
+   *  the tweet, which a post first classified this session never was. */
+  const sideClaims = new Map<string, { text: string; locale: string; claims: Claim[] }[]>();
+  const MAX_SIDE_CLAIMS = 4;
+  function rememberSideClaims(cls: Classification): void {
+    const text = typeof cls.translatedText === 'string' ? cls.translatedText.trim() : '';
+    const locale = cls.textLocale ?? cls.translatedLocale;
+    if (!text || !locale || !cls.claims?.length) return;
+    const list = sideClaims.get(cls.id) ?? [];
+    const at = list.findIndex(e => e.text === text);
+    if (at >= 0) list.splice(at, 1);
+    list.unshift({ text, locale, claims: cls.claims });
+    if (list.length > MAX_SIDE_CLAIMS) list.length = MAX_SIDE_CLAIMS;
+    sideClaims.set(cls.id, list);
+  }
+
+  /** Whether two renderings name the same revision of a post's body: equal once whitespace is
+   *  normalized, or one holding the other (a host clamp or cut of the same words). A body that
+   *  does neither is another side — a translation filed as the source, or its reverse. */
+  function sameBodyRevision(a: string, b: string): boolean {
+    // The page writes its own cut into the words it shows it is holding back — `…`, or three
+    // ASCII dots on the mobile surface — so a body read AT a cut is the whole body plus one
+    // mark that is not part of the post. Compared as it stands, that mark made a reader's
+    // clamp look like ANOTHER revision of the post: a post captured whole and then collapsed
+    // with the page's own "See less" handed the clamp over, and the run classified — and
+    // billed — only the words before the cut (reported 2026-10-18). A cut mark at the very
+    // end of either body says nothing about which words they are; a mark inside the text is
+    // left alone.
+    const norm = (s: string) => s.replace(/(?:…|\.{3})\s*$/, '').replace(/\s+/g, ' ').trim();
+    const x = norm(a);
+    const y = norm(b);
+    if (x.length === 0 || y.length === 0) return true;
+    return x === y || x.includes(y) || y.includes(x);
+  }
+
+  /** Whether two renderings are the SAME body — whitespace and a trailing cut mark aside —
+   *  where `sameBodyRevision` also accepts a clamp of the other. A run's ranges are indexed
+   *  into the words it was handed, so only an exact match says a classification already names
+   *  those words (see the TRANSLATE_FACT_CHECKS stamp). */
+  function sameBodyExactly(a: string, b: string): boolean {
+    const norm = (s: string) => s.replace(/(?:…|\.{3})\s*$/, '').replace(/\s+/g, ' ').trim();
+    const x = norm(a);
+    return x.length > 0 && x === norm(b);
+  }
+
   /** Revision gate for payloadToClaim covering a main tweet plus its quoted tweet (the
    *  two bodies any highlight here can address). The ORIGINAL bodies stay held even
    *  while a translation displays (and vice versa) — highlights bound to them are
    *  still genuine tier-2 revisions that apply instantly if the user toggles back.
    *  Null/empty bodies contribute nothing — legacy bare-locale keys never need a
    *  hash to survive. */
-  function revisionGateFor(main: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined, quoted?: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined): RevisionGate {
+  function revisionGateFor(main: { id?: string; text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined, quoted?: { text?: string; translatedText?: string; destinationLanguage?: string } | null | undefined): RevisionGate {
     const mainBody = displayedTweetText(main);
     const known = new Set<string>();
     for (const body of [mainBody, displayedTweetText(quoted)]) {
@@ -636,7 +853,35 @@ export default defineBackground({
     for (const body of [main?.text, quoted?.text, (main as any)?.fullText, (quoted as any)?.fullText]) {
       if (typeof body === 'string' && body.length > 0) known.add(sha256HexSync(body));
     }
-    return { displayed: mainBody !== null ? sha256HexSync(mainBody) : null, known };
+    // The side the reader flipped to, as the page last stated it (see displayedSides).
+    // The capture can hold only the clamped opening of that side — Facebook's appended
+    // translation above all — so without this the revisions measured against the words
+    // on screen (a Localize press, an annotation) hash to a body the gate has never
+    // seen, and every later DB read drops them. Adding a body only ever KEEPS ranges.
+    const recorded = typeof main?.id === 'string' ? displayedSides.get(main.id) : undefined;
+    if (recorded) {
+      for (const text of recorded.texts.length > 0 ? recorded.texts : [recorded.text]) known.add(sha256HexSync(text));
+    }
+    // Which hashes address the side on screen, and which address the other side. The same
+    // body can be recorded in more than one rendering (a host clamp, then its expansion),
+    // and a range measured into any of them addresses the visible side — which is why
+    // this is a set of renderings and not just `displayed`. The capture's body and its
+    // full-text splice are what the OTHER side's ranges were measured against.
+    const displayedBodies = new Set<string>();
+    const otherBodies = new Set<string>();
+    if (mainBody !== null) displayedBodies.add(sha256HexSync(mainBody));
+    if (recorded) {
+      for (const text of [recorded.text, ...recorded.texts]) {
+        if (text) displayedBodies.add(sha256HexSync(text));
+      }
+    }
+    for (const body of [main?.text, (main as any)?.fullText]) {
+      if (typeof body === 'string' && body.length > 0) otherBodies.add(sha256HexSync(body));
+    }
+    // The locale those displayed words are filed under. On a host that states no language
+    // both sides share it, so this is what lets the annotation strip refuse the other
+    // side's corrections there (see selectAnnotationRevision).
+    return { displayed: mainBody !== null ? sha256HexSync(mainBody) : null, known, displayedBodies, otherBodies, ...(recorded?.locale ? { displayedLocale: recorded.locale } : {}) };
   }
 
   /** Convert one claim record (a ClaimPayload from fetch_tweet_and_touch_network /
@@ -674,7 +919,7 @@ export default defineBackground({
     return Math.abs(Number(dbClaim?.veracity ?? 0));
   }
 
-  function payloadToClaim(dbClaim: any, locale: string, gate: RevisionGate = NO_REVISION_GATE): Claim {
+  function payloadToClaim(dbClaim: any, locale: string, gate: RevisionGate = NO_REVISION_GATE, fromDisplayed?: Set<string>): Claim {
     const veracityScore = Number(dbClaim.veracity ?? 0);
     const confidenceScore = dbClaimConfidence(dbClaim);
     const claimText = extractLocaleText(dbClaim.claim, locale) || extractClaimText(dbClaim.claim);
@@ -697,10 +942,7 @@ export default defineBackground({
       // bound to the displayed text (preferring it over other held bodies), re-emitted
       // under its bare locale prefix — the revision binding that stops a stale range
       // ever addressing an edited tweet.
-      const keptHighlight = selectHighlightRevision(raw, gate);
-      // TEMP GATE PROBE — remove once the dropped-range cause is named.
-      const droppedH = Object.keys(raw).filter(k => !(k.split(':')[0] in keptHighlight));
-      if (droppedH.length > 0) console.log(`[misinfo][gate] highlight dropped ${droppedH.join(',')} | displayed=${gate.displayed ? gate.displayed.slice(0, 12) : 'null'} | known=${[...gate.known].map(h => h.slice(0, 12)).join(',') || 'none'}`);
+      const keptHighlight = selectHighlightRevision(raw, gate, fromDisplayed);
       highlight = keptHighlight;
       if (Object.keys(highlight).length === 0) highlight = undefined;
     }
@@ -720,9 +962,6 @@ export default defineBackground({
         if (val !== null && typeof val === 'object' && !Array.isArray(val)) rawA[key] = val as Record<string, string>;
       }
       const stripped = selectAnnotationRevision(rawA, gate);
-      // TEMP GATE PROBE — remove once the dropped-range cause is named.
-      const droppedA = Object.keys(rawA).filter(k => !(k.split(':')[0] in stripped));
-      if (droppedA.length > 0) console.log(`[misinfo][gate] annotations dropped ${droppedA.join(',')} | displayed=${gate.displayed ? gate.displayed.slice(0, 12) : 'null'} | known=${[...gate.known].map(h => h.slice(0, 12)).join(',') || 'none'}`);
       // A kept locale key, even with an empty dict ("annotated, nothing wrong"),
       // must survive: collapsing it to undefined is how the Annotate badge came
       // back after Flow A persisted {}. Absence of every key is "never annotated".
@@ -752,6 +991,9 @@ export default defineBackground({
       dbClaimLocale: getClaimLocale(dbClaim.claim),
       highlight,
       annotations,
+      // Link-scoped and stated by every link-bearing payload; absent from claim-scoped
+      // ones, where "no opinion" must read as undefined rather than false.
+      isHidden: dbClaim.is_hidden === true ? true : (dbClaim.is_hidden === false ? false : undefined),
       claimLocale,
       reasoningLocale,
     };
@@ -843,7 +1085,14 @@ export default defineBackground({
     tweetId: string,
     claims: Claim[] | null | undefined,
     claimText: string,
-    classification: Classification
+    classification: Classification,
+    /** Which of a dual post's two bodies the tap came from, named by the tapped span —
+     *  the only thing that knows which text the correction has to be measured against
+     *  (see annotateSideForSpan). Omitted on every single-bodied surface, where the
+     *  payload's displayed side is the only side there is. */
+    namedSide?: 'alt' | 'translation' | null,
+    sideText?: string | null,
+    sideLocale?: string | null
   ): Promise<AnnotLocators | null> {
     try {
       const ownList = claims ?? [];
@@ -854,7 +1103,10 @@ export default defineBackground({
       // Structural subset: quoted tweets are plain Tweets (no References or translation
       // fields), so this can't be a MainTweet. computeTweetHash takes `any` regardless.
       type TweetSide = { text?: string; translatedText?: string; destinationLanguage?: string; sourceLanguage?: string; quoting?: { id: string } | null } | null | undefined;
-      let tweet: TweetSide = tweetCache.get(tweetId) ?? dbHitCache.get(tweetId)?.tweet ?? null;
+      // The reader's displayed side, over the capture: Flow A hashes `tweetText` into the
+      // annotation's "<locale>:<sha256>" key, and the capture can hold a different rendering
+      // of that side than the one a Localize press measured (see displayedSides).
+      let tweet: TweetSide = withDisplayedSide(tweetId, tweetCache.get(tweetId) ?? dbHitCache.get(tweetId)?.tweet ?? null);
       // Not the main tweet's claim — look in the quoted side (each side annotates
       // against its OWN tweet row, text, and hash).
       if (claimIndex < 0) {
@@ -871,10 +1123,26 @@ export default defineBackground({
       }
       if (!tweet) return null;
       const hasTranslation = !!(tweet.translatedText && tweet.destinationLanguage);
-      const tweetText = hasTranslation ? tweet.translatedText : tweet.text;
-      const textLocale = (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage)
-        ?? classification.textLocale
-        ?? rangedLocale(rangeList);
+      // A named side wins over the payload's displayed side. Both sides of a dual post
+      // paint ONE claim object, so the payload can only name the side it happens to call
+      // displayed; measured off it, a tap on the translation wrote corrections for the
+      // source under the translation's language (and with the clamped capture, not the
+      // words on screen at all). The named translation hands over the live reading, the
+      // same mine the Disinfact and Localize presses measure into.
+      const translationSide = namedSide === 'translation';
+      const altSide = namedSide === 'alt';
+      const tweetText = translationSide
+        ? (sideText?.trim() || tweet.translatedText || tweet.text)
+        : altSide
+          ? tweet.text
+          : hasTranslation ? tweet.translatedText : tweet.text;
+      const textLocale = translationSide
+        ? (sideLocale ?? tweet.destinationLanguage ?? classification.textLocale ?? rangedLocale(rangeList))
+        : altSide
+          ? (tweet.sourceLanguage ?? classification.textLocale ?? rangedLocale(rangeList))
+          : (hasTranslation ? tweet.destinationLanguage : tweet.sourceLanguage)
+            ?? classification.textLocale
+            ?? rangedLocale(rangeList);
       if (typeof tweetText !== 'string' || tweetText.length === 0 || !textLocale) return null;
       const tweetHash = await computeTweetHash(tweet);
       return { tweetHash, tweetText, textLocale, claimIndex: Math.max(0, claimIndex) };
@@ -883,37 +1151,140 @@ export default defineBackground({
     }
   }
 
+  /** Two claims' stored ranges name the same words when any shared locale key holds
+   *  intersecting, located spans. The `[-1,-1]` could-not-locate sentinel is shared by
+   *  every unlocated claim and names nothing, so it never overlaps. */
+  function spansOverlap(
+    a?: Record<string, [number, number]>,
+    b?: Record<string, [number, number]>
+  ): boolean {
+    if (!a || !b) return false;
+    for (const [key, spanA] of Object.entries(a)) {
+      const spanB = b[key];
+      if (!spanB || !isLocatedRange(spanA) || !isLocatedRange(spanB)) continue;
+      if (spanA[0] < spanB[1] && spanB[0] < spanA[1]) return true;
+    }
+    return false;
+  }
+
+  /** Indices of the entries (in order) whose located spans are disjoint. Claims whose
+   *  spans overlap are one claim wearing two rows, and nothing downstream can tell them
+   *  apart: `mergeClaimPayload` matches a payload to a local claim by its range, the
+   *  annotate flight is keyed by the claim's text, and both paint the same words. The
+   *  preclassification contract is that raw spans never overlap (preclassify-tweets: "raw
+   *  claims can NEVER overlap between claims") and the worker now drops an overlapping one
+   *  before it is billed, but a row persisted before that still arrives, so every claim
+   *  list entering from outside passes through here.
+   *  The survivor is the claim carrying a verdict: the other has nothing a reader can act
+   *  on, and left in place it parks a verdict-less row on hold — which is what renders
+   *  Fact-Check All over a post whose only highlight is already green. */
+  function overlappingClaimSurvivors<T extends Claim>(claims: T[]): number[] {
+    if (claims.length < 2) return claims.map((_, i) => i);
+    const keep: number[] = [];
+    for (let i = 0; i < claims.length; i++) {
+      const claim = claims[i];
+      const at = keep.findIndex(k => spansOverlap(claims[k].highlight, claim.highlight));
+      if (at < 0) { keep.push(i); continue; }
+      const replaced = keep[at];
+      const keptHasVerdict = claims[replaced].note != null && claims[replaced].confidence !== undefined;
+      const incomingHasVerdict = claim.note != null && claim.confidence !== undefined;
+      const survivor = incomingHasVerdict && !keptHasVerdict ? i : replaced;
+      const dropped = survivor === i ? replaced : i;
+      keep[at] = survivor;
+      console.log(`[background] dropping claim "${(claims[dropped].rewritten ?? claims[dropped].text).slice(0, 40)}..." — its span already belongs to "${(claims[survivor].rewritten ?? claims[survivor].text).slice(0, 40)}..."`);
+    }
+    return keep.sort((a, b) => a - b);
+  }
+
+  function withoutOverlappingClaims<T extends Claim>(claims: T[]): T[] {
+    const keep = overlappingClaimSurvivors(claims);
+    return keep.length === claims.length ? claims : keep.map(i => claims[i]);
+  }
+
   /** Convert a pulled/subscribed tweet's claims into a Classification for injection.
-   *  If quotedDbClaims is provided, populates classification.quoting.claims as well. */
+   *  If quotedDbClaims is provided, populates classification.quoting.claims as well.
+   *  The surviving ROWS are returned alongside: `localizeHighlights` pairs ranges with
+   *  `classification.claims` by index, so a dropped row has to leave the row list too. */
   function dbClaimsToClassification(
     tweet: MainTweet,
     dbClaims: any[],
     batchId: string,
     locale: string,
     quotedDbClaims?: any[]
-  ): Classification {
+  ): { classification: Classification; dbClaims: any[]; quotedDbClaims: any[] } {
     // X shows Grok-translated text by default when a translation exists.
     // Otherwise the displayed text is the original (source) text.
     const hasTranslation = !!tweet.translatedText && !!tweet.destinationLanguage;
-    const textLocale = hasTranslation ? tweet.destinationLanguage! : tweet.sourceLanguage!;
+    // `sourceLanguage` is NOT evidence that anyone named the source. Every DOM-fed capture is
+    // stamped with the `und` placeholder (`nameCapturedLanguage`), and Facebook's own document
+    // states no post language either — so the field is always present and always saying
+    // nothing. The worker files ranges under whatever locale it was handed, which is exactly
+    // this field, so it stays the right KEY to read them back with.
+    const textLocale = hasTranslation ? tweet.destinationLanguage! : (tweet.sourceLanguage ?? locale);
+    // ...but it names no BODY. A classification with no body cannot be told apart from the
+    // other side: the flip detector only runs when one is named, and the per-side claim record
+    // only remembers a side whose body is known. Leaving it unnamed is why a DB hit's own
+    // ranges vanished the moment the reader flipped away and back — the flip was never seen,
+    // and the localization that followed then left the previously measured side with nothing.
+    const statesSourceLanguage = !!tweet.sourceLanguage && tweet.sourceLanguage !== UNKNOWN_LANGUAGE;
+    const namedBody = tweet.translatedText ?? (statesSourceLanguage ? undefined : tweet.text);
 
     // Strip persisted "<locale>:<hash>" highlight keys to the revision bound to the
     // displayed bodies (main + quoted — the two texts any highlight here can address).
     const gate = revisionGateFor(tweet, tweet.quoting);
-    const claims = dbClaims.map(dbClaim => payloadToClaim(dbClaim, locale, gate));
+    // Locale prefixes whose surviving range is bound to the DISPLAYED body (see
+    // `selectHighlightRevision`). Facebook files both sides' ranges under whatever locale
+    // the run was handed — a Localize press on the translation writes `und:<hash of the
+    // translation>` just as a run on the source writes `und:<hash of the source>`. The
+    // surviving `und` range is the translation's whenever the translation is what's on
+    // screen, so it cannot stand in for the source (see `altBlockedKeys`).
+    const fromDisplayed = new Set<string>();
+    const mappedClaims = dbClaims.map(dbClaim => payloadToClaim(dbClaim, locale, gate, fromDisplayed));
+    const keep = overlappingClaimSurvivors(mappedClaims);
+    const claims = keep.map(i => mappedClaims[i]);
+    const mappedQuoted = quotedDbClaims && quotedDbClaims.length > 0
+      ? quotedDbClaims.map(dbClaim => payloadToClaim(dbClaim, locale, gate))
+      : null;
+    const quotedKeep = mappedQuoted ? overlappingClaimSurvivors(mappedQuoted) : [];
     const quoting = tweet.quoting
       ? {
           id: tweet.quoting.id,
-          claims: quotedDbClaims && quotedDbClaims.length > 0 ? quotedDbClaims.map(dbClaim => payloadToClaim(dbClaim, locale, gate)) : null
+          claims: mappedQuoted ? quotedKeep.map(i => mappedQuoted[i]) : null
         }
       : null;
-    return { id: tweet.id, batchId, claims, quoting, translatedLocale: tweet.destinationLanguage, translatedText: tweet.translatedText, textLocale };
+    // A row whose every stored range is bound to a body this client is not holding has
+    // nothing to paint and nothing to Reveal — the gate above drops all of them, and the
+    // side then looked exactly like a post that had never been highlighted. That is the
+    // state `translateFactChecksOnHold` names, and Localize is its affordance: the press
+    // measures the stored ranges into the words on screen (filing them under `und` when
+    // the platform states no language, which is Facebook's answer). Measured on a stored
+    // row whose ten ranges were all filed against the English translation while the page
+    // showed the Spanish source: no pill, and an on-hold bar with no way back to the paint.
+    // A quoted post is left alone because the flag also tears down the quoted group's bar
+    // (see `syncButtonBarAt`'s isQuoted branch), and these ranges are not that group's.
+    const hadStoredRange = dbClaims.some((dbClaim) => {
+      const h = dbClaim?.highlight;
+      if (!h || typeof h !== 'object') return false;
+      return Object.values(h).some((v) => Array.isArray(v) && v.length === 2);
+    });
+    const keptAnyRange = claims.some((c) => !!c.highlight && Object.keys(c.highlight).length > 0);
+    const rangesBoundElsewhere = hadStoredRange && !keptAnyRange && !tweet.quoting;
+    return {
+      classification: {
+        id: tweet.id, batchId, claims, quoting,
+        translatedLocale: tweet.destinationLanguage, translatedText: namedBody, textLocale,
+        ...(fromDisplayed.size > 0 ? { altBlockedKeys: [...fromDisplayed] } : {}),
+        ...(rangesBoundElsewhere ? { translateFactChecksOnHold: true } : {}),
+      },
+      dbClaims: keep.map(i => dbClaims[i]),
+      quotedDbClaims: mappedQuoted ? quotedKeep.map(i => quotedDbClaims![i]) : (quotedDbClaims ?? []),
+    };
   }
 
   /** Localize highlights for a specific tweet text locale. Used both on initial
    *  load (for the default translated text) and on demand when the user toggles
-   *  X's Show original/Show translation. Skips if this locale was already localized
-   *  for this tweet. */
+   *  X's Show original/Show translation. Skips if this exact body was already
+   *  localized under this locale for this tweet. */
   async function localizeHighlights(
     tweetId: string,
     tweet: Tweet,
@@ -944,63 +1315,116 @@ export default defineBackground({
       seen = new Set<string>();
       localizedHighlightLocales.set(tweetId, seen);
     }
-    if (seen.has(highlightLocale)) {
-      console.log(`[localizeHighlights] ${tweetId}: already localized for ${highlightLocale}, skipping`);
-      return;
-    }
-
-    const tweetHash = await computeTweetHash(tweet);
-    // Claims are stored under the UI locale; use that text for cross-lingual highlight alignment.
-    // Preserve the canonical DB claim text and its actual storage locale so the
-    // highlight persistence worker can match the correct claim row (the RPC matches
-    // c.claim @> jsonb_build_object(source_locale, claim_text)).
-    const allDbClaims = dbClaims.map((d: any) => {
-      const uiText = extractLocaleText(d.claim, uiLocale) || extractClaimText(d.claim);
-      const canonical = d.dbClaimText ?? extractClaimText(d.claim);
-      const storageLocale = d.sourceLocale ?? getClaimLocale(d.claim);
-      return {
-        claim: uiText,
-        rewritten: uiText,
-        dbClaimText: canonical,
-        sourceLocale: storageLocale,
-      };
-    });
-    if (allDbClaims.length === 0) {
-      console.log(`[localizeHighlights] ${tweetId}: no claims to localize`);
-      return;
-    }
-    // The persistence RPC matches claims by `c.claim @> {[source_locale]: claim_text}` — it
-    // needs the locale the claim text is ACTUALLY stored under (allDbClaims[*].sourceLocale,
-    // e.g. "es"), not uiLocale (e.g. "zh-TW"), which was passed here before and silently made
-    // every match fail (0 rows updated, no error) since claims are never stored under the UI
-    // locale. The RPC takes one locale per batch; claims in a batch share a storage locale.
-    const claimStorageLocale = allDbClaims[0]?.sourceLocale ?? uiLocale;
-    const injected = await backgroundHighlightRange(
-      tweetHash,
-      tweetText,
-      allDbClaims,
-      claimStorageLocale,
-      highlightLocale,
-      classification,
-      onHighlightUpdate ?? mergeHighlightsFor(classification),
-      annotContexts
-    );
-    if (injected > 0) {
-      seen.add(highlightLocale);
-      console.log(`[localizeHighlights] ${tweetId}: marked ${highlightLocale} as localized (${injected} range(s))`);
-      return;
-    }
-    // Worker failure or empty stream (transient 500s happen): NOT localized —
-    // the next click retries instead of hitting "already localized, skipping".
-    // The merge callback never fired, so localizingHighlights is still set and
-    // would spin forever: clear it and restore the on-hold flag so the
-    // Localize button comes back.
-    console.warn(`[localizeHighlights] ${tweetId}: no ranges for ${highlightLocale} — restoring Translate Fact-Checks button`);
-    const cur = classificationCache.get(tweetId)?.classification;
-    if (cur) {
-      const restored = { ...cur, localizingHighlights: false, translateFactChecksOnHold: true };
+    // Keyed by the body, not the locale alone. A host that states no language (Facebook) files
+    // BOTH sides' ranges under the same key, so the locale-only guard answered the second
+    // side's Localize press with "already localized" and did nothing: the button stayed, the
+    // side kept no ranges, and no run was ever sent for the words on screen.
+    const seenKey = `${highlightLocale}:${sha256HexSync(tweetText)}`;
+    // Every exit path has to restate `localizingHighlights`, which the press set before
+    // calling here. This used to return bare, so a press that hit either early return
+    // left the bar's wheel spinning with no Hide and no re-classify button, for good.
+    const restoreAfterLocalizing = (holdButton: boolean) => {
+      const cur = classificationCache.get(tweetId)?.classification;
+      if (!cur) return;
+      const restored = { ...cur, localizingHighlights: false };
+      // A side that holds a range over THESE words is what the press was for: the hold that
+      // offered Localize is spent. Re-stated, it outlived its result — Phase 2 returns while a
+      // hold is set, so the run painted nothing, the button came back, and every later press
+      // was this exit's "already localized over this body, skipping" (reported 2026-10-23 on a
+      // side whose locale is a guess, where the hold is set before the run rather than after a
+      // DB read). A side with nothing placed here keeps the hold.
+      const painted = (cur.claims ?? []).some(cl => !!resolveHighlightRange(cl.highlight, highlightLocale));
+      if (holdButton) restored.translateFactChecksOnHold = true;
+      else if (painted) restored.translateFactChecksOnHold = undefined;
       cacheClassification(restored, classification.batchId);
       broadcastClassification(restored);
+    };
+    if (seen.has(seenKey)) {
+      // The marker names a body, not a state this classification is guaranteed to hold: a
+      // flip away drops the ranges the gate keeps only for the side on screen, and if the
+      // flip back could not restore them (the DB snapshot can lag the run), the marker is
+      // all that is left — a Localize button pressed forever over bare words, each press
+      // exiting here and changing nothing (reported 2026-10-23). Identity is
+      // `<locale>:<hash>`, so the marker is only spent while those words still hold a range.
+      const cur = classificationCache.get(tweetId)?.classification;
+      const placed = (cur?.claims ?? []).some(cl => !!resolveHighlightRange(cl.highlight, highlightLocale));
+      if (placed) {
+        console.log(`[localizeHighlights] ${tweetId}: already localized for ${highlightLocale} over this body, skipping`);
+        // Ranges for this body are already filed, so the press has nothing to do — but the
+        // highlight controls are the honest state, not a wheel.
+        if (cur?.localizingHighlights) restoreAfterLocalizing(false);
+        return;
+      }
+      seen.delete(seenKey);
+      console.log(`[localizeHighlights] ${tweetId}: ${highlightLocale} was localized over this body but its ranges are no longer in hand — measuring again`);
+    }
+
+    // A press whose body is already being localized is the reader seeing Localize before the
+    // wheel and clicking again — the run only joins `seen` once it finishes. Leave the wheel
+    // alone: the run in flight owns `localizingHighlights`, and a second press must not start
+    // a second paid job over the same words.
+    if (localizationInFlight.has(seenKey)) {
+      console.log(`[localizeHighlights] ${tweetId}: ${highlightLocale} localization is already in flight over this body — leaving it to finish`);
+      return;
+    }
+    localizationInFlight.add(seenKey);
+    try {
+      const tweetHash = await computeTweetHash(tweet);
+      // Claims are stored under the UI locale; use that text for cross-lingual highlight alignment.
+      // Preserve the canonical DB claim text and its actual storage locale so the
+      // highlight persistence worker can match the correct claim row (the RPC matches
+      // c.claim @> jsonb_build_object(source_locale, claim_text)).
+      const allDbClaims = dbClaims.map((d: any) => {
+        const uiText = extractLocaleText(d.claim, uiLocale) || extractClaimText(d.claim);
+        const canonical = d.dbClaimText ?? extractClaimText(d.claim);
+        const storageLocale = d.sourceLocale ?? getClaimLocale(d.claim);
+        return {
+          claim: uiText,
+          rewritten: uiText,
+          dbClaimText: canonical,
+          sourceLocale: storageLocale,
+        };
+      });
+      if (allDbClaims.length === 0) {
+        console.log(`[localizeHighlights] ${tweetId}: no claims to localize`);
+        // Nothing can be measured, so the Localize affordance is the honest state.
+        if (classificationCache.get(tweetId)?.classification.localizingHighlights) restoreAfterLocalizing(true);
+        return;
+      }
+      // The persistence RPC matches claims by `c.claim @> {[source_locale]: claim_text}` — it
+      // needs the locale the claim text is ACTUALLY stored under (allDbClaims[*].sourceLocale,
+      // e.g. "es"), not uiLocale (e.g. "zh-TW"), which was passed here before and silently made
+      // every match fail (0 rows updated, no error) since claims are never stored under the UI
+      // locale. The RPC takes one locale per batch; claims in a batch share a storage locale.
+      const claimStorageLocale = allDbClaims[0]?.sourceLocale ?? uiLocale;
+      const injected = await backgroundHighlightRange(
+        tweetHash,
+        tweetText,
+        allDbClaims,
+        claimStorageLocale,
+        highlightLocale,
+        classification,
+        onHighlightUpdate ?? mergeHighlightsFor(classification),
+        annotContexts
+      );
+      if (injected > 0) {
+        seen.add(seenKey);
+        console.log(`[localizeHighlights] ${tweetId}: marked ${highlightLocale} as localized (${injected} range(s))`);
+        // The merge can carry forward the hold the press started from; these words now hold a
+        // range, so that hold is spent. Left set, Phase 2 returns for it on every pass and the
+        // bar offers Localize again over a side that was just paid for.
+        if (classificationCache.get(tweetId)?.classification.translateFactChecksOnHold) restoreAfterLocalizing(false);
+        return;
+      }
+      // Worker failure or empty stream (transient 500s happen): NOT localized —
+      // the next click retries instead of hitting "already localized, skipping".
+      // The merge callback never fired, so localizingHighlights is still set and
+      // would spin forever: clear it and restore the on-hold flag so the
+      // Localize button comes back.
+      console.warn(`[localizeHighlights] ${tweetId}: no ranges for ${highlightLocale} — restoring Translate Fact-Checks button`);
+      restoreAfterLocalizing(true);
+    } finally {
+      localizationInFlight.delete(seenKey);
     }
   }
 
@@ -1192,17 +1616,24 @@ export default defineBackground({
    *  list (main + quoting) mapped, never mutated: the cache keeps the clean
    *  claim, and the relay strips the marker before render — it never reaches
    *  the Claim type, the popover, or a worker. Returns null when nothing
-   *  stamped, so the common path skips the copy entirely. */
+   *  stamped, so the common path skips the copy entirely.
+   *
+   *  `claimTexts` is the second source of the same truth: a pull that read the
+   *  server's is_annotating marker for some links (see watchInFlightAnnotation).
+   *  Either way the run is real and under way; the gates below are the same. */
   function stampAnnotateInFlight(
     classification: Classification,
-    opt?: { withLocators?: boolean; claimText?: string }
+    opt?: { withLocators?: boolean; claimText?: string; claimTexts?: Set<string> }
   ): Classification | null {
-    if (!opt?.withLocators) return null;
+    const picked = opt?.claimTexts;
+    const single = opt?.claimText;
+    if (opt?.withLocators !== true && !picked?.size) return null;
     const stampList = (claims: Classification["claims"]) => {
       if (!claims) return { list: claims, stamped: false };
       let stamped = false;
       const list = claims.map(cl => {
-        if (opt.claimText !== undefined && cl.text !== opt.claimText) return cl;
+        if (single !== undefined && cl.text !== single) return cl;
+        if (picked && !picked.has(cl.text)) return cl;
         // Same gate as the background's ANNOTATE_CLAIM handler and the content
         // script's spanNeedsAnnotateBadge: settled + classified + keyless.
         if (cl.reclassifyOnHold || cl.note == null) return cl;
@@ -1226,7 +1657,7 @@ export default defineBackground({
     // identical from the page, and only one of them is this path's doing.
     console.log(
       '[background] stampAnnotateInFlight:', classification.id,
-      '| claim:', (opt.claimText ?? '').slice(0, 40), '| mainStamped:', main.stamped, '| quotedStamped:', q.stamped
+      '| claim:', (single ?? `[${picked?.size ?? 0} pulled]`).slice(0, 40), '| mainStamped:', main.stamped, '| quotedStamped:', q.stamped
     );
     return {
       ...classification,
@@ -1235,35 +1666,46 @@ export default defineBackground({
     };
   }
 
-  function broadcastClassification(classification: Classification, opt?: { withLocators?: boolean; claimText?: string }) {
-    const claimSummary = classification.claims?.map(claim => {
-      const shortLabel = (claim.rewritten ?? claim.text).slice(0, 20);
-      const notePreview = claim.note ? claim.note.slice(0, 15) : 'none';
-      const highlightLocales = claim.highlight ? Object.keys(claim.highlight).join(',') : 'none';
-      // `ann:` is here because an annotation-only update moves nothing else in this
-      // summary, so without it a clean annotation ("annotated, nothing wrong" = an empty
-      // dict under a kept locale key) arriving or NOT arriving looks identical in the log,
-      // and whether it reached the client is exactly what has to be told apart.
-      const annLocales = claim.annotations ? Object.keys(claim.annotations).join(',') : 'none';
-      return `${shortLabel}...=${claim.confidence ?? '?'}(note:${notePreview}...,hl:${highlightLocales},ann:${annLocales})`;
-    }).join(' | ') || 'none';
-    console.log(`[background] broadcasting ${classification.id} with ${activePorts.size} active port(s), claims: ${claimSummary}`);
-
-    // If Fact-Check All was clicked for this tweet, present any claim still showing
-    // a Disinfact button as already "Fact-Checking" (refreshing) in the message we
-    // send to the UI, so it never flashes a Disinfact badge in the brief window
-    // before the auto-release below actually flips it. The cache and the
-    // auto-release loop still operate on the real (reclassifyOnHold) state.
+  /** The copy a classification is delivered to a port with, once the claims a run already
+   *  owns are shown as researching rather than as the on-hold button they really are.
+   *
+   *  Outgoing copy only — the cache keeps the real (reclassifyOnHold) state, so click paths
+   *  and the auto-release loop read what actually happened. Every claim-bearing delivery to
+   *  a port must go through this, not just the broadcast: a DB rebuild posted straight to
+   *  its port is where a parked claim used to come back as a button mid-run.
+   */
+  function maskPendingResearch(classification: Classification): Classification {
+    // A claim the user asked to research — Fact-Check All for this tweet, or a single
+    // Disinfact click recorded in `researchRequestedBeforeRow` — is presented as already
+    // "Fact-Checking" (refreshing) in the message we send to the UI, so it never flashes a
+    // Disinfact badge in the window before its DB row lets the auto-release below start the
+    // run. That window is the point: the request is held until the row says whether the DB
+    // already answers the claim. The cache and the auto-release loop still operate on the
+    // real (reclassifyOnHold) state.
+    const scopedTexts = factCheckAllScopedTexts.get(classification.id);
+    const isRequestedClaim = (claim: Claim): boolean => {
+      const key = `${classification.id}:${claim.text}`;
+      const clicked = researchRequestedBeforeRow.has(key);
+      return claim.reclassifyOnHold === true
+        && !abandonedFactCheckKeys.has(key)
+        && (factCheckAllTweetIds.has(classification.id) || clicked)
+        && (!scopedTexts || scopedTexts.has(claim.text))
+        // The post's Fact-Check All is a batch over the highlights it can see, and a flagged
+        // claim is not one of them — it is researched only by a deliberate click on it, by a
+        // passage's scoped request, or by a selection, whose every claim is its own. A
+        // revealed area's scoped request is that same explicitness for the claims it names.
+        && (clicked || scopedTexts !== null || isSelectionId(classification.id) || claim.isHidden !== true);
+    };
     let outgoing = classification;
-    if (factCheckAllTweetIds.has(classification.id)
-        && classification.claims?.some(claim => claim.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${claim.text}`))) {
-      // Present WAITLISTED/in-flight on-hold claims as "Fact-Checking", but leave ABANDONED
-      // ones (2 failed tries / 30s timeout / broke) showing their real on-hold button so the
-      // user can retry — that's the visible signal the call didn't go through.
+    if (classification.claims?.some(isRequestedClaim)) {
+      // Present WAITLISTED/in-flight/row-pending claims as "Fact-Checking", but leave
+      // ABANDONED ones (2 failed tries / 30s timeout / broke / row never came) showing
+      // their real on-hold button so the user can retry — that's the visible signal the
+      // call didn't go through.
       outgoing = {
         ...classification,
         claims: classification.claims.map(claim =>
-          claim.reclassifyOnHold && !abandonedFactCheckKeys.has(`${classification.id}:${claim.text}`)
+          isRequestedClaim(claim)
             ? { ...claim, reclassifyOnHold: false, refreshing: true, note: null }
             : claim
         ),
@@ -1274,9 +1716,9 @@ export default defineBackground({
     // normally start it is the button this hides. Present it as the researching state
     // it is entering, so it never shows a Fact-Check button for the wait on its DB row.
     // Same shape as the Fact-Check All rewrite above — outgoing copy only, cache
-    // untouched — so every click path stays on the state the cache actually holds, and
-    // the mark (see preclassifyRunTweets) is dropped once the hand-off has broadcast
-    // that state for real.
+    // untouched — so every click path stays on the state the cache actually holds. The
+    // mark only has to cover the wait: the hand-off broadcasts the researching state
+    // itself, and the mark is dropped once it has.
     //
     // A quoted post's claims are masked with the tweet's own: the hand-off counts both,
     // so a quote holding the run's only claim is researched automatically exactly like
@@ -1299,6 +1741,26 @@ export default defineBackground({
           : outgoing.quoting,
       };
     }
+    return outgoing;
+  }
+
+  function broadcastClassification(classification: Classification, opt?: { withLocators?: boolean; claimText?: string }) {
+    classification = withRunningLocalization(classification);
+    const claimSummary = classification.claims?.map(claim => {
+      const shortLabel = (claim.rewritten ?? claim.text).slice(0, 20);
+      const notePreview = claim.note ? claim.note.slice(0, 15) : 'none';
+      const highlightLocales = claim.highlight ? Object.keys(claim.highlight).join(',') : 'none';
+      // `ann:` is here because an annotation-only update moves nothing else in this
+      // summary, so without it a clean annotation ("annotated, nothing wrong" = an empty
+      // dict under a kept locale key) arriving or NOT arriving looks identical in the log,
+      // and whether it reached the client is exactly what has to be told apart.
+      const annLocales = claim.annotations ? Object.keys(claim.annotations).join(',') : 'none';
+      return `${shortLabel}...=${claim.confidence ?? '?'}(note:${notePreview}...,hl:${highlightLocales},ann:${annLocales})`;
+    }).join(' | ') || 'none';
+    console.log(`[background] broadcasting ${classification.id} with ${activePorts.size} active port(s), claims: ${claimSummary}`);
+
+
+    let outgoing = maskPendingResearch(classification);
     // Stamp the Flow A marker onto the OUTGOING copy only (the cache keeps the
     // clean claim): a settled, classified claim with no annotation key whose
     // research ran with locators has a silent post-research annotation run in
@@ -1311,21 +1773,37 @@ export default defineBackground({
       try { port.postMessage({ type: "CLASSIFICATION", data: outgoing }); } catch { /* port closed mid-broadcast */ }
     }
     // Track claims still showing a Disinfact button (reclassifyOnHold) — awaiting
-    // user action. If the user clicked "Fact-Check All" for this tweet, auto-release
-    // EVERY such claim (including change-prone DB claims that carry cached values),
-    // not just fresh no-DB-match ones; otherwise just mark them pending.
+    // user action. If the user asked to research one (Fact-Check All for this tweet, or a
+    // single click recorded in `researchRequestedBeforeRow`), auto-release it — including
+    // change-prone DB claims that carry cached values; otherwise just mark it pending.
+    //
+    // The release NEVER acts on the streamed snapshot: preclassify marks a claim on hold
+    // before the worker's embed → match → link has run, so an on-hold claim with no DB id
+    // may still turn out to be one the DB already answers. The row's own broadcast
+    // re-enters this loop and decides then — a claim it settles is not researched, and one
+    // it still holds on hold is. The request stays recorded across that gap.
+    const scopedTexts = factCheckAllScopedTexts.get(classification.id);
     for (const claim of classification.claims ?? []) {
-      if (claim.reclassifyOnHold) {
-        const key = `${classification.id}:${claim.text}`;
-        if (factCheckAllTweetIds.has(classification.id)) {
-          pendingFreshResearchClaims.delete(key);
-          // Add to the Fact-Check All waitlist (idempotent; skips already-queued/in-flight/
-          // abandoned claims). It is admitted for research only when the balance covers its hold.
-          enqueueFactCheckClaim(classification.id, claim.text, classification.batchId, localeFromClassification());
-        } else {
-          pendingFreshResearchClaims.add(key);
-        }
+      const key = `${classification.id}:${claim.text}`;
+      const clicked = researchRequestedBeforeRow.has(key);
+      const requested = (factCheckAllTweetIds.has(classification.id) || clicked)
+        && (!scopedTexts || scopedTexts.has(claim.text))
+        // Same rule as `isRequestedClaim` above: a batch request does not reach a flagged
+        // claim; an explicit click, a revealed area's scope, a passage's scope or a
+        // selection does.
+        && (clicked || scopedTexts !== null || isSelectionId(classification.id) || claim.isHidden !== true);
+      if (!requested) {
+        if (claim.reclassifyOnHold) pendingFreshResearchClaims.add(key);
+        continue;
       }
+      if (!claim.dbClaimId) continue;
+      pendingFreshResearchClaims.delete(key);
+      researchRequestedBeforeRow.delete(key);
+      // The row has decided: a claim it settled needs nothing.
+      if (!claim.reclassifyOnHold) continue;
+      // Add to the Fact-Check All waitlist (idempotent; skips already-queued/in-flight/
+      // abandoned claims). It is admitted for research only when the balance covers its hold.
+      enqueueFactCheckClaim(classification.id, claim.text, classification.batchId, localeFromClassification());
     }
   }
 
@@ -1395,6 +1873,55 @@ export default defineBackground({
     return Object.keys(merged).length > 0 ? merged : undefined;
   }
 
+  /** Keep only the annotation revision for the one locale being re-researched.
+   *
+   *  An annotation is bound to the classification that produced it. Re-researching a
+   *  claim replaces that classification, but the DB never discards annotations — it
+   *  appends them by text revision — so the cached claim's whole locale-keyed dict
+   *  would go on painting the OTHER side's (the translation of a post, or its source)
+   *  correction, a stale one that only returns again on the next DB read. Pruning it
+   *  here lets that side fall back to the Annotate affordance. The researched side
+   *  keeps its key until the fresh annotation lands and overwrites it over the
+   *  annotation subscription. */
+  function keepAnnotationsForLocale(
+    ann: Record<string, Record<string, string>> | undefined,
+    locale: string
+  ): Record<string, Record<string, string>> | undefined {
+    if (!ann) return undefined;
+    // Same base-language matching the painter uses (`annotationKeysFor`), so a stored
+    // "en-US" key and an annotator locale of "en" still name each other.
+    const full = locale.toLowerCase();
+    const base = full.split("-")[0];
+    const kept: Record<string, Record<string, string>> = {};
+    for (const [k, v] of Object.entries(ann)) {
+      const kl = k.toLowerCase();
+      if (kl === full || kl.split("-")[0] === base) kept[k] = v;
+    }
+    return Object.keys(kept).length > 0 ? kept : undefined;
+  }
+
+  /** The annotation dict minus every entry filed under one locale — the other half of
+   *  keepAnnotationsForLocale. Used when a classification is re-pointed at another BODY
+   *  under the same locale: what was measured into the old words cannot be told apart
+   *  from the new side's once stripped to bare prefixes (see selectAnnotationRevision),
+   *  so it is dropped rather than carried. Absence returns undefined — "never annotated"
+   *  stays distinguishable from "annotated, nothing wrong" ({}) . */
+  function dropAnnotationsForLocale(
+    ann: Record<string, Record<string, string>> | undefined,
+    locale: string
+  ): Record<string, Record<string, string>> | undefined {
+    if (!ann) return undefined;
+    const full = locale.toLowerCase();
+    const base = full.split("-")[0];
+    const kept: Record<string, Record<string, string>> = {};
+    for (const [k, v] of Object.entries(ann)) {
+      const kl = k.toLowerCase();
+      if (kl === full || kl.split("-")[0] === base) continue;
+      kept[k] = v;
+    }
+    return Object.keys(kept).length > 0 ? kept : undefined;
+  }
+
   /** Flow A has no NDJSON: after research the worker persists (even {}) in
    *  ctx.waitUntil. The client path is the same as X — the tweet subscription
    *  (`ensureAnnotationSubscription`) receives `trg_tweet_claim_annotations_updated`.
@@ -1421,6 +1948,106 @@ export default defineBackground({
     } catch (err) {
       console.error('[background] settleFlowAAnnotations: annotation routing re-open failed:', err);
     }
+    reconcileSettledAnnotation(classificationId, claimText, loc);
+  }
+
+  /** The annotation keys a claim holds for `locale`, bare or revision-keyed
+   *  (`<locale>:<sha256>`). A present key counts even with an empty dict — `{}` is the
+   *  refused run's "annotated, nothing wrong". */
+  function sideAnnotationKeys(annotations: Claim['annotations'], locale: string): string[] {
+    const want = locale.toLowerCase();
+    const wantBase = want.split('-')[0];
+    return Object.keys(annotations ?? {}).filter((key) => {
+      const prefix = (splitHighlightKey(key)?.[0] ?? key).toLowerCase();
+      return prefix === want || prefix.split('-')[0] === wantBase;
+    });
+  }
+
+  /** Flow A's persist can land before the row it means to broadcast to exists.
+   *
+   *  The subscription re-opened in settleFlowAAnnotations carries everything written
+   *  after it goes live, and the refused run is the fast case: the worker's gate persists
+   *  its empty review about a tenth of a second behind the stream close, by which time
+   *  the preclassify teardown has usually taken every earlier routing row — so the write
+   *  lands with nobody listening and the badge spins out its whole window on an
+   *  annotation that is already in the DB.
+   *
+   *  So look for it directly once the run has had time to finish, and again if the first
+   *  look was too early. The read is billed, so it is only spent while no annotation key
+   *  for this side has landed. Merging the row back is the path a reload takes. */
+  function reconcileSettledAnnotation(
+    classificationId: string,
+    claimText: string,
+    loc: AnnotLocators
+  ): void {
+    for (const delay of ANNOTATION_READBACK_MS) {
+      setTimeout(() => { void readBackSettledAnnotation(classificationId, claimText, loc); }, delay);
+    }
+  }
+
+  async function readBackSettledAnnotation(
+    classificationId: string,
+    claimText: string,
+    loc: AnnotLocators
+  ): Promise<void> {
+    // Only the main list merges: mergeClaimPayload addresses cls.claims alone, so a
+    // quoted-side payload would arrive as a duplicate. The re-open still covers that side.
+    const claim = classificationCache.get(classificationId)?.classification
+      ?.claims?.find(c => c.text === claimText);
+    if (!claim) return;
+    if (sideAnnotationKeys(claim.annotations, loc.textLocale).length > 0) return;
+    try {
+      const row = await fetchDbTweet(loc.tweetHash);
+      if (!row.success || !row.claims) return;
+      const payload = claim.dbClaimId
+        ? row.claims.find(c => c.id === claim.dbClaimId)
+        : (row.claims.length === 1 ? row.claims[0] : undefined);
+      if (!payload) return;
+      // A skipped run persists nothing but says so (`annotation_run_settled`), which is
+      // also an answer: merging it hands the badge back to its idle Annotate affordance.
+      const settled = payload.annotation_run_settled === true;
+      if (!settled && sideAnnotationKeys(payload.annotations, loc.textLocale).length === 0) return;
+      // The key can land while the read is in flight.
+      const live = classificationCache.get(classificationId)?.classification
+        ?.claims?.find(c => c.text === claimText);
+      if (!live || sideAnnotationKeys(live.annotations, loc.textLocale).length > 0) return;
+      console.log(`[background] annotation never landed for "${claimText.slice(0, 40)}..." — reading back the stored one`);
+      mergeClaimPayload(classificationId, payload, loc.textLocale);
+    } catch (err) {
+      console.error('[background] readBackSettledAnnotation failed:', err);
+    }
+  }
+
+  /** The workers' pre-agent verdict gate (classify-tweets `annotRefusalReason`, and the
+   *  same constant in fetch-claim and highlight-claims): a near-certain TRUE claim has no
+   *  wrong word to mark, and a verdict we barely trust must not strike anything. Both
+   *  persist an empty dict instead of calling an agent. Thresholds are inclusive. */
+  const ANNOT_REFUSE_VERACITY = 0.9, ANNOT_REFUSE_CONFIDENCE = 0.2;
+  function verdictRefusesAnnotation(claim: Claim): boolean {
+    if (typeof claim.veracity === 'number' && claim.veracity >= ANNOT_REFUSE_VERACITY) return true;
+    return typeof claim.confidence === 'number' && claim.confidence <= ANNOT_REFUSE_CONFIDENCE;
+  }
+
+  /** The annotation a refused claim is going to be stored with, written now instead of
+   *  waited for: the worker's gate persists `{}` under this locale and never calls the
+   *  agent, so there is nothing to wait for — only a broadcast that can, and does, land
+   *  before the client's re-opened routing row is listening.
+   *
+   *  The span has to have resolved for this side first. The gate sits BEHIND
+   *  `resolveAnnotationSpan`, so a run with no located range for this locale skips before
+   *  ever reading the verdict and persists nothing at all — pinning a key there would
+   *  assert "annotated, nothing wrong" for a claim nobody annotated (see
+   *  empty-annotation-key), and the Annotate affordance would stay gone. */
+  function predictEmptyAnnotation(claim: Claim, locale: string | undefined): Claim {
+    if (!locale) return claim;
+    if (!verdictRefusesAnnotation(claim)) return claim;
+    if (sideAnnotationKeys(claim.annotations, locale).length > 0) return claim;
+    if (!Array.isArray(claim.highlight?.[locale])) {
+      console.log(`[background] verdict refuses the annotation for "${claim.text.slice(0, 40)}..." but ${locale} has no located range — leaving the wait to the worker`);
+      return claim;
+    }
+    console.log(`[background] verdict settles the annotation for "${claim.text.slice(0, 40)}..." (veracity ${claim.veracity}, confidence ${claim.confidence}) — ${locale} recorded empty`);
+    return { ...claim, annotations: { ...(claim.annotations ?? {}), [locale]: {} } };
   }
 
   function mergeSingleClaimAndBroadcast(
@@ -1428,24 +2055,35 @@ export default defineBackground({
     claimText: string,
     updated: Classification,
     batchId: string,
-    opts?: { withLocators?: boolean }
+    opts?: { withLocators?: boolean; annotatedLocale?: string }
   ) {
     const stampOpt = opts?.withLocators ? { withLocators: true, claimText } : undefined;
     const existing = classificationCache.get(classificationId)?.classification;
     const updatedClaim = updated.claims?.find(c => c.text === claimText);
     if (!existing || !existing.claims || !updatedClaim) {
-      updated.batchId = batchId;
-      cacheClassification(updated, batchId);
-      broadcastClassification(updated, stampOpt);
+      // The verdict may already settle this claim's annotation — see predictEmptyAnnotation.
+      const painted: Classification = {
+        ...updated,
+        claims: updated.claims?.map(c => (c.text === claimText ? predictEmptyAnnotation(c, opts?.annotatedLocale) : c)) ?? updated.claims,
+        batchId,
+      };
+      cacheClassification(painted, batchId);
+      broadcastClassification(painted, stampOpt);
       // Research rewrote the rows — drop the pre-research fetch snapshot.
       markTweetDbStale(classificationId);
       return;
     }
     // Fresh research rebuilds carry no annotations — union so they never clobber the
-    // cached copy's (the fresh result wins per locale key when it has any).
-    const mergedClaims = existing.claims.map(c => (c.text === claimText
-      ? { ...updatedClaim, annotations: unionAnnotations(c.annotations, updatedClaim.annotations) }
-      : c));
+    // cached copy's (the fresh result wins per locale key when it has any). Except for
+    // the side NOT being researched: that annotation belonged to the classification
+    // this run just replaced (and left the DB with it), so it must not survive to keep
+    // painting there — that side falls back to the Annotate affordance.
+    const mergedClaims = existing.claims.map(c => {
+      if (c.text !== claimText) return c;
+      const ann = unionAnnotations(c.annotations, updatedClaim.annotations);
+      const kept = opts?.annotatedLocale ? keepAnnotationsForLocale(ann, opts.annotatedLocale) : ann;
+      return predictEmptyAnnotation({ ...updatedClaim, annotations: kept }, opts?.annotatedLocale);
+    });
     const anyOnHold = mergedClaims.some(c => c.reclassifyOnHold);
     const merged: Classification = {
       ...existing,
@@ -1517,19 +2155,27 @@ export default defineBackground({
         return { ...inc, highlight: mergedHl, annotations: mergedAnn, dbClaimId: prev.dbClaimId ?? inc.dbClaimId };
       });
     };
+    // The worker drops an overlapping claim before persisting it, but the streamed
+    // snapshot is built from the model's own output and can still carry one.
     const claims = mergeList(incoming.claims as any, (existing?.claims as any) ?? null);
     const quoting = incoming.quoting
       ? { ...incoming.quoting, claims: mergeList(incoming.quoting.claims as any, (existing?.quoting?.claims as any) ?? null) }
       : incoming.quoting;
-    const anyOnHold = (claims ?? []).some((c: any) => c.reclassifyOnHold)
-      || (quoting?.claims ?? []).some((c: any) => c.reclassifyOnHold);
-    return { ...incoming, claims, quoting, reclassifyOnHold: anyOnHold || undefined };
+    const deduped = claims ? withoutOverlappingClaims(claims) : claims;
+    const dedupedQuoting = quoting?.claims ? { ...quoting, claims: withoutOverlappingClaims(quoting.claims) } : quoting;
+    const anyOnHold = (deduped ?? []).some((c: any) => c.reclassifyOnHold)
+      || (dedupedQuoting?.claims ?? []).some((c: any) => c.reclassifyOnHold);
+    return { ...incoming, claims: deduped, quoting: dedupedQuoting, reclassifyOnHold: anyOnHold || undefined };
   }
 
   /** Post to a port, ignoring the throw that follows if the content script has since
    *  navigated away or been torn down. A dead port is normal, not an error. */
   function safePostToPort(port: any, msg: any) {
-    try { port.postMessage(msg); } catch { /* port already closed */ }
+    try {
+      port.postMessage(msg?.type === "CLASSIFICATION" && msg.data
+        ? { ...msg, data: withRunningLocalization(msg.data) }
+        : msg);
+    } catch { /* port already closed */ }
   }
 
   /** Set any preclassified claims (verdict but no reasoning note) to "Researching..."
@@ -1563,6 +2209,46 @@ export default defineBackground({
         return;
       }
 
+      // Two bodies matter here, and they are not always the same one. `runBody` is what the
+      // paid run measured its ranges into; the reader may have flipped while it was in
+      // flight, and `displayedSides` is the background's record of what the page shows now.
+      // A range's identity is its body (the DB files it `<locale>:<hash>`), so a result
+      // measured into words that are no longer on screen must not be attached to this
+      // classification, must not re-point it at those words, and must not spend the hold
+      // that belongs to the side the reader is looking at. Left to the plain spread below,
+      // it did all three: a French localization that finished after a flip to English
+      // re-pointed the classification at the French body and cleared the hold, and the
+      // client cut the English words at French offsets with no Localize offered (reported
+      // 2026-10-23).
+      const runBody = upd.translatedText ?? '';
+      const bodyChanged = !!upd.textLocale
+        && !sameBodyRevision(runBody, existing.classification.translatedText ?? '');
+      const shownBody = displayedSides.get(classification.id)?.text;
+      // No record of the page's side means nothing contradicts the run: it measured what the
+      // classification names.
+      const runIsDisplayed = shownBody ? sameBodyRevision(runBody, shownBody) : !bodyChanged;
+      // Both flags are about the shared key a guessed-locale host files every side under
+      // (Telegram, Threads: `und`). When the classification was re-pointed at the side on
+      // screen, the dict it holds under that key is the body just left and the run's ranges
+      // are the displayed body's. When the run measured a side the reader has left, the held
+      // dict describes the screen and it is the run's ranges that are foreign.
+      //
+      // The union also handed back every claim this run did not match: the run's claim list
+      // is the held one re-spread, so an unmatched claim still carried the range it had —
+      // measured into the body the run's locale now names. Identical to the held copy's
+      // range, it is that old measurement and not a new one (2026-10-23: a French
+      // localization matched 5 of 10 claims; the other 5 painted mid-word over the French
+      // text).
+      const dropExistingLocale = bodyChanged && runIsDisplayed;
+      const keepRunLocale = !bodyChanged || runIsDisplayed;
+      const withoutLocale = (hl: Record<string, [number, number]> | undefined, drop: boolean) => {
+        const out = { ...(hl ?? {}) };
+        if (drop && upd.textLocale) delete out[upd.textLocale];
+        return out;
+      };
+      const sameRange = (a?: [number, number], b?: [number, number]) =>
+        !!a && !!b && a[0] === b[0] && a[1] === b[1];
+
       const mergeClaims = (existingClaims: Claim[] | null | undefined, updClaims: Claim[] | null | undefined): Claim[] | null => {
         if (!existingClaims || !updClaims) return existingClaims ?? null;
         return existingClaims.map((existingCl) => {
@@ -1571,14 +2257,25 @@ export default defineBackground({
                    ucl.text === existingCl.text ||
                    (ucl.rewritten && ucl.rewritten === existingCl.rewritten)
           );
-          if (!updCl) return existingCl;
+          if (!updCl) {
+            return dropExistingLocale && existingCl.highlight
+              ? { ...existingCl, highlight: withoutLocale(existingCl.highlight, true) }
+              : existingCl;
+          }
+          const updHl = !keepRunLocale
+            ? withoutLocale(updCl.highlight, true)
+            : dropExistingLocale && upd.textLocale
+              && sameRange(updCl.highlight?.[upd.textLocale], existingCl.highlight?.[upd.textLocale])
+              ? withoutLocale(updCl.highlight, true)
+              : (updCl.highlight ?? {});
           const mergedHighlight = {
-            ...(existingCl.highlight ?? {}),
-            ...(updCl.highlight ?? {})
+            ...withoutLocale(existingCl.highlight, dropExistingLocale),
+            ...updHl
           };
-          const mergedAnnotations = unionAnnotations(existingCl.annotations, updCl.annotations);
+          const updAnn = keepRunLocale ? updCl.annotations : dropAnnotationsForLocale(updCl.annotations, upd.textLocale!);
+          const mergedAnnotations = unionAnnotations(existingCl.annotations, updAnn);
           const hlSize = Object.keys(mergedHighlight).length;
-          const out = hlSize > 0
+          const out = hlSize > 0 || (dropExistingLocale && existingCl.highlight)
             ? { ...existingCl, highlight: mergedHighlight }
             : existingCl;
           return mergedAnnotations ? { ...out, annotations: mergedAnnotations } : out;
@@ -1598,6 +2295,45 @@ export default defineBackground({
           : upd.quoting,
         localizingHighlights: false
       };
+      // Annotations carry the same defect the highlights above now guard against:
+      // corrections measured into the old words paint over the side this run measured, and
+      // `cacheClassification` records them under the new body — which is what a later flip
+      // restores. A side this run has none for is "not annotated here", and its own
+      // revision comes back from the DB.
+      if (dropExistingLocale) {
+        const prune = (claims: Claim[] | null | undefined): Claim[] | null => claims?.map(cl =>
+          cl.annotations ? { ...cl, annotations: dropAnnotationsForLocale(cl.annotations, upd.textLocale!) } : cl
+        ) ?? null;
+        merged.claims = prune(merged.claims);
+        if (merged.quoting) merged.quoting = { ...merged.quoting, claims: prune(merged.quoting.claims) };
+      }
+      if (!runIsDisplayed && shownBody) {
+        // The classification keeps describing the side the reader is on, and keeps that
+        // side's hold: the run's result belongs to another body, and adopting it here was
+        // what re-pointed the post and un-held its Localize.
+        merged.textLocale = existing.classification.textLocale;
+        merged.translatedLocale = existing.classification.translatedLocale;
+        merged.translatedText = existing.classification.translatedText;
+        merged.translateFactChecksOnHold = existing.classification.translateFactChecksOnHold;
+        // Not lost, filed under its own identity: these ranges are `runBody`'s, and this is
+        // the record a flip back to those words restores from without waiting for the DB
+        // snapshot to catch up. Only what the run measured goes in — the caller adds the run's
+        // ranges to the claim list it was handed and leaves every unmatched claim untouched,
+        // so a range equal to the one the press started from is the held measurement
+        // re-spread, not news about these words.
+        const measuredOnly = (upd.claims ?? []).map((cl, i) => {
+          const now = upd.textLocale ? cl.highlight?.[upd.textLocale] : undefined;
+          const before = upd.textLocale ? classification.claims?.[i]?.highlight?.[upd.textLocale] : undefined;
+          return now && !sameRange(now, before) ? cl : { ...cl, highlight: withoutLocale(cl.highlight, true) };
+        });
+        rememberSideClaims({
+          ...merged,
+          translatedText: runBody,
+          textLocale: upd.textLocale,
+          translatedLocale: upd.textLocale,
+          claims: measuredOnly,
+        });
+      }
       cacheClassification(merged, classification.batchId);
       broadcastClassification(merged);
       // Localization persisted new highlight locales — the fetch
@@ -1685,7 +2421,7 @@ export default defineBackground({
       // A payload arrived before the initial classification was cached — seed one.
       const tweet = tweetCache.get(tweetId);
       const seed: Classification = { id: tweetId, batchId: '', claims: [], quoting: null };
-      if (tweet) attachTranslatedLocale(seed, tweet);
+      if (tweet) attachTranslatedLocale(seed, withDisplayedSide(tweetId, tweet));
       cacheClassification(seed, seed.batchId);
       entry = classificationCache.get(tweetId);
       if (!entry) return;
@@ -1699,7 +2435,12 @@ export default defineBackground({
     // restart between batch and broadcast): the classification carries the same
     // displayed body dbClaimsToClassification stored, so the revision still binds.
     const gate = (() => {
-      const direct = tweetCache.get(tweetId);
+      // The reader's side, over the capture — the same record annotLocatorsFor reads. A
+      // broadcast can land after a flip, and the capture still names the side the reader
+      // left; gated off it, "displayed" is that side's body, the strip prefers its
+      // annotation over the words now on screen, and the merge paints the other side's
+      // corrections here.
+      const direct = withDisplayedSide(tweetId, tweetCache.get(tweetId) ?? null);
       let g: RevisionGate | null = null;
       if (direct) {
         g = revisionGateFor(direct, direct.quoting);
@@ -1714,7 +2455,7 @@ export default defineBackground({
       if (!g) {
         if (cls.translatedText) {
           const hash = sha256HexSync(cls.translatedText);
-          g = { displayed: hash, known: new Set([hash]) };
+          g = { displayed: hash, known: new Set([hash]), ...(cls.textLocale ? { displayedLocale: cls.textLocale } : {}) };
         } else {
           g = { displayed: null, known: new Set() };
         }
@@ -1725,20 +2466,6 @@ export default defineBackground({
       return g;
     })();
     const incoming = payloadToClaim(payload, locale, gate);
-    // The worker's post-research annotation run ENDED without persisting: it skipped
-    // (stale / unclassified / no context / over the input ceiling / infra), so no locale
-    // key is coming for this claim and the "Annotating" badge would otherwise spin out
-    // its whole seed window (see stampAnnotateInFlight — the same run, same writer).
-    // Settle it here, at the point the run's outcome is actually known, by reusing the
-    // failure channel: the badge returns to the idle Annotate affordance, which is the
-    // truthful state (nothing was annotated). Never paint {} for this — that asserts
-    // "annotated, clean" (see empty-annotation-key), which a skip does not.
-    if (payload.annotation_run_settled && incoming && !Object.keys(incoming.annotations ?? {}).length) {
-      console.log(`[background] annotation run settled with no key for "${incoming.text.slice(0, 40)}..." — clearing the flight`);
-      for (const port of activePorts) {
-        try { port.postMessage({ type: 'ANNOTATE_FAILED', data: { classificationId: tweetId, claimText: incoming.text } }); } catch {}
-      }
-    }
     // A selection's DB row carrying the worker's "not located in the input" sentinel (or a
     // range outside the passage) describes text the user never selected: the claim pipeline
     // only ever reaches it by having mined the surrounding context. Ignore it here, before
@@ -1812,6 +2539,29 @@ export default defineBackground({
       idx = 0;
     }
 
+    // The worker's post-research annotation run ENDED without persisting: it skipped
+    // (stale / unclassified / no context / over the input ceiling / infra), so no locale
+    // key is coming for this claim and the "Annotating" badge would otherwise spin out
+    // its whole seed window (see stampAnnotateInFlight — the same run, same writer).
+    // Settle it here, at the point the run's outcome is actually known, by reusing the
+    // failure channel: the badge returns to the idle Annotate affordance, which is the
+    // truthful state (nothing was annotated). Never paint {} for this — that asserts
+    // "annotated, clean" (see empty-annotation-key), which a skip does not.
+    //
+    // The key's claim text has to be the LOCAL claim's, which is the one the span carries
+    // (`${dataset.mfCid}:${dataset.claimText}`). The payload's is the DB row's claim, a
+    // different string whenever the worker normalized or rewrote it — and always a
+    // different one for a preclassification, whose claim text is a verbatim slice of the
+    // body. Keyed by the payload's, nothing matched and the wheel only went when some
+    // later pass happened to reconcile that badge.
+    if (payload.annotation_run_settled && incoming && !Object.keys(incoming.annotations ?? {}).length) {
+      const settleText = claims[idx]?.text ?? incoming.text;
+      console.log(`[background] annotation run settled with no key for "${settleText.slice(0, 40)}..." — clearing the flight`);
+      for (const port of activePorts) {
+        try { port.postMessage({ type: 'ANNOTATE_FAILED', data: { classificationId: tweetId, claimText: settleText } }); } catch {}
+      }
+    }
+
     if (idx >= 0) {
       const prev = claims[idx];
       const mergedHl = { ...(prev.highlight ?? {}), ...(incoming.highlight ?? {}) };
@@ -1837,6 +2587,9 @@ export default defineBackground({
           reasoningLocale: incoming.reasoningLocale ?? prev.reasoningLocale,
           highlight: mergedHl,
           annotations: mergedAnn,
+          // Link-scoped: stated by link payloads, absent from claim-scoped ones — absent
+          // means "no opinion", so it must never clear the link's existing flag.
+          isHidden: incoming.isHidden ?? prev.isHidden,
           refreshing: true,
           isClassifying: true,
           reclassifyOnHold: false,
@@ -1863,6 +2616,7 @@ export default defineBackground({
           reasoningLocale: incoming.reasoningLocale ?? prev.reasoningLocale,
           highlight: mergedHl,
           annotations: mergedAnn,
+          isHidden: incoming.isHidden ?? prev.isHidden,
         };
       } else {
         // Diagnostic (error for visibility): a payload with NO verdict (unclassified
@@ -1913,7 +2667,22 @@ export default defineBackground({
         // Nothing is lost by keeping it: the canonical wording still arrives on `rewritten`
         // (what renderClaims displays) and on `dbClaimText` (what DB matching uses), and
         // `dbClaimId` from ...incoming means later merges match by id before text anyway.
-        claims[idx] = { ...incoming, text: prev.text, highlight: mergedHl, annotations: mergedAnn };
+        // A VERDICT-LESS payload (an annotation or link write on the row) must not un-park a
+        // claim a live request is waiting on. `reclassifyOnHold` is what makes the researching
+        // mask (`isRequestedClaim`) and the waitlist entry apply at all, so adopting the
+        // payload's `false` strands the plain Fact-Check button on a claim that is about to be
+        // researched — and no later pass can restore it, because the mask keys on that flag.
+        // A payload that DELIVERS a verdict is untouched: that is the settle.
+        const scopedNow = factCheckAllScopedTexts.get(tweetId);
+        const stillWanted = prev.reclassifyOnHold === true
+          && factCheckAllTweetIds.has(tweetId)
+          && (!scopedNow || scopedNow.has(prev.text))
+          && !abandonedFactCheckKeys.has(`${tweetId}:${prev.text}`)
+          && incoming.note == null
+          && (incoming.confidence === undefined || incoming.confidence === null)
+          && !incoming.isClassifying;
+        claims[idx] = { ...incoming, text: prev.text, highlight: mergedHl, annotations: mergedAnn, isHidden: incoming.isHidden ?? prev.isHidden,
+          ...(stillWanted ? { reclassifyOnHold: true } : {}) };
       }
       // The claim now carries (or already carried) its DB id → the embedded row exists.
       // Release any research launch parked in awaitClaimDbRow for this claim.
@@ -1943,7 +2712,11 @@ export default defineBackground({
             `dbClaimText="${(c.dbClaimText ?? '').slice(0, 40)}", onHold=${!!c.reclassifyOnHold}}`).join(', ') + `]`
         );
       }
-      claims.push(incoming);
+      if (claims.some(c => spansOverlap(c.highlight, incoming.highlight))) {
+        console.log(`[background] claim row ${incoming.dbClaimId ?? 'none'} ("${(incoming.rewritten ?? incoming.text).slice(0, 40)}...") overlaps a claim already on this post — not appending it`);
+      } else {
+        claims.push(incoming);
+      }
     }
 
     // A claim payload arrived, so this tweet is no longer merely "waiting for a
@@ -2013,10 +2786,25 @@ export default defineBackground({
     let handleRef: SubscriptionHandle | null = null;
     const handle = await subscribeRow({
       kind: 'tweet', hash, timeoutMs,
-      onClaim: (payload) => mergeClaimPayload(tweetId, payload, locale),
+      onClaim: (payload) => {
+        // A delivered claim proves the run is still producing, so the deadline (which
+        // only exists to bound one that never speaks) must not cut the stream off.
+        handleRef?.resetTimeout(timeoutMs);
+        mergeClaimPayload(tweetId, payload, locale);
+      },
       onDone: () => {
-        if (tweetSubs.get(tweetId) === handleRef) tweetSubs.delete(tweetId);
-        annotationRoutingReady.delete(tweetId);
+        // Only the handle that currently owns the tweet may clear its routing readiness:
+        // a superseded (lingering) handle ending says nothing about whether the
+        // replacement's routing row is alive.
+        if (tweetSubs.get(tweetId) === handleRef) {
+          tweetSubs.delete(tweetId);
+          annotationRoutingReady.delete(tweetId);
+        }
+        const hooks = tweetSubscriptionEndHooks.get(tweetId);
+        tweetSubscriptionEndHooks.delete(tweetId);
+        for (const hook of hooks ?? []) {
+          try { hook(); } catch (e) { console.error('[tweetSubscription] end hook error:', e); }
+        }
       },
     });
     handleRef = handle;
@@ -2026,6 +2814,83 @@ export default defineBackground({
   /** Fire-and-forget tweet subscription (for callers that don't need to await readiness). */
   function startTweetSubscription(tweetId: string, hash: string, locale: string, timeoutMs: number = PRECLASS_TIMEOUT_MS) {
     ensureTweetSubscription(tweetId, hash, locale, timeoutMs).catch(e => console.error('[startTweetSubscription] error:', e));
+  }
+
+  /** Read a DB-driven preclassifying tweet and, when the run finished with claims linked,
+   *  inject them as the authoritative result.
+   *
+   *  Two callers, same operation: the subscription's end hook below (the run linked no
+   *  claims it could deliver, or its routing row went away) and the read taken the moment
+   *  the subscription goes live. The second one closes a real gap: `subscribe` always
+   *  inserts a fresh routing row, even for a tweet whose preclassification ALREADY
+   *  completed — the completed run deleted its own row and nothing will ever delete the
+   *  replacement, so the wheel would wait out the whole PRECLASS_TIMEOUT_MS while the
+   *  claims sit in the database unbroadcast. Anything other than "settled with claims"
+   *  leaves the exit to the callers. The row comes back so the end hook can describe it
+   *  without buying a second read. */
+  async function injectSettledPreclassification(tweetId: string, hash: string, batchId: string, locale: string): Promise<{ injected: boolean; row: Awaited<ReturnType<typeof fetchDbTweet>> }> {
+    const row = await fetchDbTweet(hash);
+    const after = classificationCache.get(tweetId)?.classification;
+    // Only the batch this was armed for: a forced re-run owns the state now and restates
+    // it itself, so a read of the old row must not answer for the new run.
+    if (!after?.preclassifying || after.batchId !== batchId) return { injected: false, row };
+    if (!row?.success || row.is_preclassifying || !row.claims?.length) return { injected: false, row };
+    const tweet = tweetCache.get(tweetId) ?? dbHitCache.get(tweetId)?.tweet;
+    if (!tweet) return { injected: false, row };
+    const { classification: settled } = dbClaimsToClassification(withDisplayedSide(tweetId, tweet), row.claims, batchId, locale);
+    cacheClassification(settled, batchId);
+    broadcastClassification(settled);
+    console.log(`[preclassifying] ${tweetId}: row complete — injected ${row.claims.length} claim(s)`);
+    return { injected: true, row };
+  }
+
+  /** Settle a DB-driven `preclassifying` classification (Step 3b) when its subscription
+   *  ends. A delivered claim clears that flag, but a run that links no claims delivers
+   *  nothing — its routing row is DELETEd when the run completes — so the subscription's
+   *  own end is the only remaining exit path, and it must restate the state rather than
+   *  leave the wheel standing. */
+  function watchPreclassifyingEnd(tweetId: string, hash: string, batchId: string, locale: string) {
+    let hooks = tweetSubscriptionEndHooks.get(tweetId);
+    if (!hooks) { hooks = new Set(); tweetSubscriptionEndHooks.set(tweetId, hooks); }
+    hooks.add(() => {
+      void (async () => {
+        const cur = classificationCache.get(tweetId)?.classification;
+        if (!cur?.preclassifying || cur.batchId !== batchId) return;
+        const { injected, row } = await injectSettledPreclassification(tweetId, hash, batchId, locale);
+        if (injected) return;
+        const after = classificationCache.get(tweetId)?.classification;
+        if (!after?.preclassifying || after.batchId !== batchId) return;
+        // Everything else — no claims linked, row unreadable, or the row still flagged
+        // after this listener gave up — has no write left that could ever clear the
+        // wheel, and a wheel with nothing behind it is the state being fixed here. The
+        // claims already held stay: the bar keeps Hide and re-classify, which is the
+        // one control that can settle a row a dead run left flagged.
+        const settled: Classification = { ...after, preclassifying: undefined, ...(row?.success ? { claims: null, quoting: null } : {}) };
+        cacheClassification(settled, batchId);
+        broadcastClassification(settled);
+        console.log(`[preclassifying] ${tweetId}: subscription ended (row ${row?.success ? (row.is_preclassifying ? 'still flagged' : `${row.claims?.length ?? 0} claim(s)`) : 'unreadable'}) — cleared the wheel`);
+      })();
+    });
+  }
+
+  /** Take the tweet's current handle out of `tweetSubs` without closing it, so the caller
+   *  can subscribe on a fresh routing row while rows still in flight keep landing on the
+   *  old one. The detached handle ends on its own timer. */
+  function detachTweetSubscription(tweetId: string) {
+    const existing = tweetSubs.get(tweetId);
+    tweetSubs.delete(tweetId);
+    if (!existing || existing.isClosed()) return;
+    const set = lingeringTweetSubs.get(tweetId) ?? new Set<SubscriptionHandle>();
+    for (const s of Array.from(set)) { if (s.isClosed()) set.delete(s); }
+    set.add(existing);
+    lingeringTweetSubs.set(tweetId, set);
+  }
+
+  function closeLingeringTweetSubs(tweetId: string) {
+    const set = lingeringTweetSubs.get(tweetId);
+    if (!set) return;
+    lingeringTweetSubs.delete(tweetId);
+    for (const s of set) { try { s.close(); } catch { /* ignore */ } }
   }
 
   /** Open the tweet subscription Flow A's annotation persist broadcasts to, so a
@@ -2074,16 +2939,19 @@ export default defineBackground({
       // resetTimeout would then never recreate it, and Flow A's persist would
       // have nowhere to broadcast — "Annotating" forever. X avoids this because
       // a settled tweet has no handle, so the first call here inserts a fresh
-      // row. Close that leftover ONCE, then keep the annotation-timeout handle:
+      // row. Rotate that leftover ONCE, then keep the annotation-timeout handle:
       // closing it again (a second claim's research, a reclassify) LATE-drops
       // the in-flight annotation UPDATE for the claim that just finished.
+      //
+      // The old handle is DETACHED, not closed. While preclassification's claim
+      // rows are still landing, its routing row is where they are written, and
+      // only one handle per tweet fits in tweetSubs — closing it dropped every
+      // row that arrived before the replacement row went live.
       if (force || !annotationRoutingReady.has(sideTweetId)) {
         if (force && annotationRoutingReady.has(sideTweetId)) {
           console.log(`[background] ensureAnnotationSubscription ${sideTweetId}: re-opening on a fresh routing row for Flow A`);
         }
-        const existing = tweetSubs.get(sideTweetId);
-        if (existing && !existing.isClosed()) existing.close();
-        tweetSubs.delete(sideTweetId);
+        detachTweetSubscription(sideTweetId);
         annotationRoutingReady.delete(sideTweetId);
       }
       await ensureTweetSubscription(sideTweetId, hash, locale, ANNOTATION_TIMEOUT_MS);
@@ -2098,6 +2966,36 @@ export default defineBackground({
     for (const claim of claims ?? []) {
       if (claim.is_classifying && claim.id) watchClassifyingClaim(tweetId, claim.id, locale);
     }
+  }
+
+  /** A pull found a link whose is_annotating marker is live: a run is streaming for this
+   *  claim right now, and the claim has no key for the displayed revision yet.
+   *
+   *  Subscribe to the tweet so the run's persist has a routing row to broadcast to (a
+   *  settled tweet has no open subscription anywhere), then read once more — the same
+   *  subscribe-then-read order, and the same reason, as watchClassifyingClaim: the write
+   *  can land between the pull that reported the marker and the subscription going live,
+   *  and a broadcast with no routing row reaches nobody.
+   *
+   *  Main list only: mergeClaimPayload addresses cls.claims, so a quoted-side payload
+   *  would be seeded as a separate classification rather than merged into the parent. */
+  function watchInFlightAnnotation(tweetId: string, claimText: string, dbClaimId: string, hash: string, locale: string) {
+    void (async () => {
+      await ensureAnnotationSubscription(tweetId, claimText, locale);
+      const row = await fetchDbTweet(hash);
+      if (!row.success || !row.claims) return;
+      const payload = row.claims.find(c => c.id === dbClaimId);
+      if (!payload) return;
+      const live = classificationCache.get(tweetId)?.classification?.claims?.find(c => c.text === claimText);
+      // The key can land while the read is in flight, and the merge below would then be
+      // redundant at best.
+      if (!live || sideAnnotationKeys(live.annotations, locale).length > 0) return;
+      // Nothing landed and nothing said so: the run is still streaming, and the
+      // subscription just opened is what will deliver it.
+      if (!payload.annotation_run_settled && sideAnnotationKeys(payload.annotations, locale).length === 0) return;
+      console.log(`[background] annotation was already in flight for "${claimText.slice(0, 40)}..." — read back the stored one`);
+      mergeClaimPayload(tweetId, payload, locale);
+    })().catch(e => console.error('[watchInFlightAnnotation] error:', e));
   }
 
   /** Fact-Check a single claim: subscribe FIRST (so an in-flight classification by
@@ -2144,6 +3042,55 @@ export default defineBackground({
         r();
       }, timeoutMs)),
     ]);
+  }
+
+  /** Register (or reuse) the waiter `claimDbRowSignal` releases once a claim's DB row has been
+   *  broadcast, with no timeout of its own — the CALLER bounds the wait.
+   *
+   *  Separating the two is what lets a selection start a claim's wait the moment the claim
+   *  arrives while still giving up on the drain-anchored clock: a row the worker broadcasts
+   *  mid-stream releases the wait at once, and a claim that arrived early is not thereby given
+   *  less time to be matched (see claimAfterRowLands). Resolves immediately when the row is
+   *  already known. Registration is synchronous with respect to `mergeClaimPayload` (both run
+   *  on the single JS thread), so no broadcast can slip the gap between the check and the
+   *  waiter being registered. */
+  function claimDbRowArrival(tweetId: string, claimText: string): Promise<void> {
+    const cls = classificationCache.get(tweetId)?.classification;
+    const claim = cls?.claims?.find(c => c.text === claimText) ?? cls?.quoting?.claims?.find(c => c.text === claimText);
+    if (claim?.dbClaimId) return Promise.resolve(); // Row already known — no wait.
+    const key = `${tweetId}:${claimText}`;
+    let waiter = claimDbRowWaiters.get(key);
+    if (!waiter) {
+      let resolve!: () => void;
+      const promise = new Promise<void>(r => { resolve = r; });
+      waiter = { promise, resolve };
+      claimDbRowWaiters.set(key, waiter);
+    }
+    return waiter.promise;
+  }
+
+  /** The preclassify stream has drained: the only thing left outstanding for its claims is
+   *  fetch-claim's embed → match → link, which writes each claim's DB row or nothing at all.
+   *  A research request still waiting on a row when the give-up window closes is released back
+   *  to its own Fact-Check button — nothing was spent, and the user can press it again. A
+   *  request whose row does arrive was already decided and its entry dropped, so this only
+   *  ever touches claims the worker never answered. */
+  function armRowPendingGiveUp(classificationId: string, batchId: string): void {
+    setTimeout(() => {
+      const claims = classificationCache.get(classificationId)?.classification.claims;
+      if (!claims) return;
+      for (const claim of claims) {
+        if (claim.dbClaimId) continue;
+        const key = `${classificationId}:${claim.text}`;
+        if (!factCheckAllTweetIds.has(classificationId) && !researchRequestedBeforeRow.has(key)) continue;
+        // A run under way on this claim owns its state; only an unanswered wait is ours.
+        if (ongoingClaimRefreshes.has(key)) continue;
+        researchRequestedBeforeRow.delete(key);
+        abandonedFactCheckKeys.add(key);
+        console.log(`[background] row give-up ${classificationId}: "${claim.text.slice(0, 40)}..." never got a DB row — back to its button`);
+        revertClaimToOnHold(classificationId, claim.text, batchId);
+      }
+    }, SELECTION_DB_ROW_TIMEOUT_MS);
   }
 
   /** Resolve the claim's DB row (waiting for it if a preclassify insert is still in flight),
@@ -2220,7 +3167,7 @@ export default defineBackground({
    *  the worker persist the tweet + claims itself. Shared by the two paid entry points:
    *
    *  - PROCESS_ON_HOLD (the Disinfact button) passes `force = false`.
-   *  - BATCH_REFRESH_FORCE (the "Re-reveal this tweet's claims" button) passes `force = true`.
+   *  - BATCH_REFRESH_FORCE (the "Re-reveal this post's claims" button) passes `force = true`.
    *
    *  Neither re-checks the DB first any more (that cost a billed fetch on every click to
    *  cover a rare race); `force` now only controls whether the top-of-tweet spinner is shown,
@@ -2236,8 +3183,8 @@ export default defineBackground({
     logTag: string,
     force: boolean,
     /** Which side of a translation the user is looking at, read off X's toggle row by the
-     *  content script. `null`/omitted means unknown — callers that cannot observe the DOM
-     *  (e.g. BATCH_REFRESH_FORCE) pass nothing and keep the original inference exactly. */
+     *  content script. `null`/omitted means unknown — a caller that cannot observe the DOM
+     *  passes nothing and keeps the original inference exactly. */
     displayedSide?: 'TRANSLATED' | 'ORIGINAL' | null,
     /** The text the page is actually rendering, sent only when `displayedSide` is
      *  'TRANSLATED'. Used as a last resort when the captured payload has no
@@ -2245,7 +3192,15 @@ export default defineBackground({
     displayedText?: string | null,
     /** The language that text is in, read off the page by the content script. Used only
      *  when the payload names no destination language — see `destinationLocale` below. */
-    displayedLocaleHint?: string | null
+    displayedLocaleHint?: string | null,
+    /** Which text a dual post's button group stands over, named by the group itself. A
+     *  `'translation'` group is seated in the appended translation, so the words it hands
+     *  over are that copy's live rendering. */
+    namedSide?: 'alt' | 'translation' | null,
+    /** The run answers a passage's gesture rather than a click on the post: the reader
+     *  asked for the claims under their selection, so the one-claim hand-off below (which
+     *  would research a claim anywhere on the post) does not apply. */
+    fromSelection: boolean = false
   ): void {
     const { tweet, hash } = entry;
     const tweetId = tweet.id;
@@ -2264,9 +3219,34 @@ export default defineBackground({
     // locale — which for a French-UI user reading an English original would file English
     // ranges under "fr" and recreate the exact bug this fixes. When we cannot name the
     // original's language we decline to correct and leave the old inference untouched.
-    const readingOriginal = displayedSide === 'ORIGINAL' && !!tweet.sourceLanguage;
+    // The words the page is showing, when they are not the ones the capture holds. A host
+    // that translates without the adapter being able to name the side (Facebook) leaves a
+    // post captured before its translation landed holding the source, and the click then
+    // classifies the hidden side: the ranges address words the reader is not looking at, the
+    // side on screen has nothing and offers a paid Localize, and the run that was paid for
+    // paints under a body the page is not showing. The reading is compared with the capture,
+    // never trusted on its own — a clamp or an expansion of the same words changes nothing.
+    // A side the page cannot NAME (LinkedIn's labels unlearned, its state stale, its words too
+    // short to judge) arrives as a body and nothing else. The body is still the answer: it is
+    // compared with the capture and, when it says other words, it is the side on screen. Read
+    // as the source instead, the press classified the text behind the translation while the
+    // reader read the translation, filed every range against the wrong body, and left the side
+    // on screen with nothing (reported 2026-10-25).
+    const otherBody = displayedText && tweet.text && !sameBodyRevision(displayedText, tweet.text)
+      ? displayedText.trim() || undefined
+      : undefined;
+    const shownBody = displayedSide === 'ORIGINAL' || displayedSide == null ? otherBody : undefined;
+    // The side is named structurally by the adapter, not inferred from a language field: an
+    // adapter answers ORIGINAL only while the post shows its own words (Telegram says as much
+    // in its own comment on `displayedTranslationLocale`), so a missing `sourceLanguage` means
+    // the payload never carried it — Facebook states no language anywhere — not that the side
+    // is unknown. Requiring the field left every Facebook post reading its source with no
+    // locale named: `attachTranslatedLocale` then stamped the payload's translation onto claims
+    // measured against the source, the client preferred that body, found none of the ranges in
+    // it and refused every segment, and the flip detector (which needs a named body) never ran.
+    const readingOriginal = displayedSide === 'ORIGINAL' && !shownBody;
     if (displayedSide === 'ORIGINAL' && !tweet.sourceLanguage) {
-      console.log(`[background] ${logTag} ${tweetId}: user is on the ORIGINAL side but the payload has no sourceLanguage — cannot name the locale, leaving the inference unchanged`);
+      console.log(`[background] ${logTag} ${tweetId}: ORIGINAL side with no sourceLanguage in the payload — naming its ranges under the UI locale (${locale})`);
     }
 
     // The translated body to preclassify. Prefer the captured payload; fall back to what X
@@ -2279,8 +3259,20 @@ export default defineBackground({
     // text, the render guard refuses them, and the user is billed for nothing.
     // The payload is still preferred because the DOM copy is `textContent`, which drops
     // emoji rendered as <img> and would shift every offset after one.
-    const fallbackTranslation = displayedSide === 'TRANSLATED' ? (displayedText?.trim() || undefined) : undefined;
-    const displayedTranslation = tweet.translatedText || fallbackTranslation;
+    // An unnamed side's body is only ever the one the capture does not hold (see `shownBody`),
+    // so it is this run's other side and nothing else.
+    const fallbackTranslation = displayedSide === 'TRANSLATED'
+      ? (displayedText?.trim() || undefined)
+      : (displayedSide == null ? shownBody : undefined);
+    // A group seated over the translation names its side, and the live reading wins over
+    // the captured payload. The capture holds the translation as it stood when the post was
+    // announced; on Facebook that is the host's clamp, and upgradeCapture refuses every post
+    // whose translation locale is set, so it stays the clamped fragment for the post's whole
+    // life while the page shows the expanded body. Preferring the payload there classified
+    // that fragment — a few sentences the reader can see went to the worker as a couple of
+    // hundred characters and came back with no claims.
+    const liveTranslation = namedSide === 'translation' ? (displayedText?.trim() || undefined) : undefined;
+    const displayedTranslation = liveTranslation ?? tweet.translatedText ?? fallbackTranslation;
 
     // The language the displayed side is in. The captured payload names it for a post that
     // was already translated when it was announced, and for those the hint is ignored. It
@@ -2289,26 +3281,34 @@ export default defineBackground({
     // source of it. Without that second source `displayedLocale` falls through to
     // `sourceLanguage`, which files every range under a language the reader is not looking
     // at, against text whose offsets belong to the source.
+    // An unnamed side that names no language either (LinkedIn's wrapper states the target, but
+    // a page that will not name its side has no hint to give here) falls through to the
+    // capture's own locale — `und` for a source not yet read — which is exactly the key the
+    // annotate run and the painter already address that side by.
     const destinationLocale = tweet.destinationLanguage
-      ?? (displayedSide === 'TRANSLATED' ? (displayedLocaleHint ?? undefined) : undefined);
+      ?? (displayedSide === 'TRANSLATED' || (displayedSide == null && shownBody)
+        ? (displayedLocaleHint ?? undefined)
+        : undefined);
 
     // Build the display tweet (translated text when translated) — the worker
     // computes highlight ranges against its `text`. Only the root tweet can use the DOM
     // fallback: `displayedText` is the main tweet's element, not a quoted or parent post.
     function tweetForDisplay(t: MainTweet, isRoot = false): MainTweet {
-      const body = isRoot ? displayedTranslation : t.translatedText;
+      const body = isRoot ? (shownBody ?? displayedTranslation) : t.translatedText;
       const dest = isRoot ? destinationLocale : t.destinationLanguage;
       const hasTranslationInner = !!body && !!dest && !readingOriginal;
       return {
         ...t,
-        text: hasTranslationInner ? body! : t.text,
+        text: (hasTranslationInner || (isRoot && !!shownBody)) ? body! : t.text,
         quoting: t.quoting ? tweetForDisplay(t.quoting as MainTweet) : null,
         replyingTo: t.replyingTo ? tweetForDisplay(t.replyingTo as MainTweet) : null,
       } as MainTweet;
     }
     const hasTranslation = !!displayedTranslation && !!destinationLocale && !readingOriginal;
     const displayedLocale = (hasTranslation ? destinationLocale : tweet.sourceLanguage) ?? locale;
-    const bodySource = !hasTranslation ? 'original' : (tweet.translatedText ? 'translated (payload)' : 'translated (DOM fallback)');
+    const bodySource = shownBody ? 'shown body (side not stated)'
+      : !hasTranslation ? 'original'
+      : (liveTranslation ? 'translated (named side)' : (tweet.translatedText ? 'translated (payload)' : 'translated (DOM fallback)'));
     console.log(`[background] ${logTag} ${tweetId}: displayedSide=${displayedSide ?? 'unknown'} -> preclassifying ${bodySource} text, highlights keyed ${displayedLocale}`);
 
     gatedSpend(async () => {
@@ -2344,8 +3344,52 @@ export default defineBackground({
         // Pass the hash as the same bytea literal (\x…) used by the fetch/subscribe
         // RPCs so the row the worker inserts matches what we later query.
         for await (const cls of preClassify(tweetForDisplay(tweet, true), hashToBytea(hash), displayedLocale, locale)) {
+          // A streamed claim is proof the worker's row for this hash exists. The session's miss
+          // cache is hash-keyed and shared by every surface that renders this post, so without
+          // this the lookup that missed before the click keeps answering "no row" to the post's
+          // OTHER views for the rest of the worker's life: Facebook's search card and its detail
+          // view name the same post by different host ids, so no id-keyed cache or memo joins
+          // them — only the hash does — and the detail view shows Disinfact over a preclassified
+          // post. A failed run streams nothing and leaves the miss in place.
+          dbMissHashes.delete(hash);
           cls.batchId = batchId;
           attachTranslatedLocale(cls, tweet);
+          // ...except when this run read the ORIGINAL side of a post that has a translation.
+          // attachTranslatedLocale infers from the payload alone, and all a payload says is
+          // that a translation EXISTS: it stamps the destination locale and the translated
+          // body onto claims the worker measured against the SOURCE. The client then prefers
+          // that translated body, finds none of the claims' ranges in it — they are keyed to
+          // the source's locale — and upgradeToSegments refuses the segments it builds, so
+          // the click lands its claims and paints nothing, on every broadcast, for as long
+          // as the reader stays on the original. The run knows the side it classified, so it
+          // stamps it, exactly as SET_DISPLAYED_LOCALE does for this same flip.
+          if (shownBody) {
+            // The worker measured against the words on screen, so the classification names
+            // THOSE — the client resolves ranges through these two fields, and the capture
+            // still holds the side the page is not showing.
+            cls.textLocale = displayedLocale;
+            cls.translatedLocale = displayedLocale;
+            cls.translatedText = shownBody;
+          } else if (readingOriginal && tweet.text) {
+            // `displayedLocale` is the key the ranges are filed under by the call above, so the
+            // stamp names exactly that whatever its source: the payload's source language when
+            // one is stated, the UI locale when none is.
+            cls.textLocale = displayedLocale;
+            cls.translatedLocale = displayedLocale;
+            cls.translatedText = tweet.text;
+          } else if (hasTranslation && displayedTranslation) {
+            // The same stamp for the other side, and for the same reason: attachTranslatedLocale
+            // infers from the captured payload alone, and a post captured BEFORE the reader
+            // translated it holds only the source — it then names the source body and the
+            // source's language on claims the worker measured against the translation. The
+            // client prefers that body and that locale, builds segments over the source with
+            // offsets that belong to the translation, and files them as the source side
+            // (alignDualSideSegments), so the click paints the wrong body. This run knows what
+            // it measured, so it names that.
+            cls.textLocale = displayedLocale;
+            cls.translatedLocale = displayedLocale;
+            cls.translatedText = displayedTranslation;
+          }
           // Merge (don't overwrite): a later cumulative snapshot must not reset a claim
           // that already got a verdict or is mid-research back to a Fact-Check spinner.
           const merged = mergePreclassIntoCache(cls);
@@ -2357,6 +3401,10 @@ export default defineBackground({
           latest = merged;
         }
 
+        // The stream is over; only the worker's row writes remain outstanding. A click made
+        // from here on is decided by its claim's row (see armRowPendingGiveUp).
+        armRowPendingGiveUp(tweetId, batchId);
+
         if (!latest || !latest.claims || latest.claims.length === 0) {
           // Preclassification produced no claims (or failed after retries). Broadcast
           // empty (clears the Fact-Check All button) and leave it retryable.
@@ -2366,7 +3414,22 @@ export default defineBackground({
           broadcastClassification(empty);
           onHoldTweets.set(tweetId, entry);
           clearInterval(keepAlive);
+          // An empty result used to say nothing at all: the button simply went back to
+          // "Disinfact" and the user was left to guess whether the click had registered.
+          // `preclassifyFailed` is the failed retry loop's empty result, whose own error
+          // was already reported — naming "no claims" over it would blame the wrong thing.
+          if (!latest?.preclassifyFailed) notifyError(browser.i18n.getMessage('errNoClaims'));
           return;
+        }
+
+        // Every claim this run found is flagged (`isHidden`) — a claim the strict filtering
+        // categories pulled out of the post's affordances. The run did find claims, but the
+        // reader sees none of them: no highlight, no Reveal/Hide, no Localize, no Fact-Check
+        // All, so the press ends with the button it started from and nothing else. That is
+        // the same outcome an empty run names, stated over the claim list the bar can see
+        // rather than the one the worker returned, so it says so the same way.
+        if (latest.claims.every(cl => cl.isHidden === true)) {
+          notifyError(browser.i18n.getMessage('errNoClaims'));
         }
 
         reResearchedTweetIds.add(tweetId);
@@ -2380,8 +3443,15 @@ export default defineBackground({
         // loading state now (see preclassifyRunTweets). Nothing else here needs to
         // re-broadcast: any other claim count leaves the buttons the user acts on exactly
         // as the drain left them.
-        const soleClaims = [...(latest.claims ?? []), ...(latest.quoting?.claims ?? [])];
-        if (soleClaims.length === 1) {
+        // A flagged claim (`isHidden`) is not a highlight of the post: the reader never sees
+        // it, so it does not make a one-claim text plural, and a post whose only visible
+        // claim is unflagged gets that claim researched without a second click.
+        const soleClaims = [...(latest.claims ?? []), ...(latest.quoting?.claims ?? [])]
+          .filter((cl) => cl.isHidden !== true);
+        // A selection's run classifies the claims under the passage and nothing else: the
+        // scoped hand-off (`maybeRunSelectionCheck`) is the whole of its request, so no
+        // claim is researched on the post's behalf.
+        if (!fromSelection && soleClaims.length === 1) {
           preclassifyRunTweets.add(tweetId);
           const settled = classificationCache.get(tweetId)?.classification;
           if (settled) broadcastClassification(settled);
@@ -2394,8 +3464,16 @@ export default defineBackground({
         // Step 4: a tweet that yields exactly one claim is researched without waiting
         // for a second click. Awaited so the keepAlive interval above spans the
         // research — otherwise the service worker could be reaped mid-call.
-        if (soleClaims.length === 1) {
-          await autoClassifySoleClaim(tweetId, soleClaims[0], batchId, locale);
+        //
+        // `annotateIfSettled` only for the Disinfact click (force = false, the run whose
+        // hash was NOT in the DB): when the worker links this claim to one the DB already
+        // answers, there is no research left to do, but the claim can still be keyless for
+        // the displayed text — and then the annotation is run for it too, because the user
+        // asked us to handle this post and should not have to press Annotate as well. A
+        // forced re-reveal (force = true) is a post the DB does hold and keeps its old
+        // behaviour exactly. */
+        if (!fromSelection && soleClaims.length === 1) {
+          await autoClassifyClaim(tweetId, soleClaims[0], batchId, locale, { annotateIfSettled: !force });
         }
       } catch (err: any) {
         console.error(`[background] ${logTag} error:`, err);
@@ -2417,19 +3495,51 @@ export default defineBackground({
     });
   }
 
-  /** Research a tweet's only claim without waiting for the user to click Fact-Check.
+  /** Research a claim without waiting for the user to click Fact-Check. Called for a tweet's
+   *  only claim, and for every claim of a webpage selection — the rule is the same however
+   *  many claims there are, and one claim's run is not affected by another's.
    *
    *  Runs the same DB-first-then-research sequence a claim click runs: pullClaimBeforeClassify
    *  short-circuits on a row that is already settled, and anything else goes through
    *  refreshClaim. The claim is flipped to `refreshing` up front so the Fact-Check
    *  affordance can't be clicked a second time (and billed twice) while the automatic run
-   *  is in flight; any failure reverts it to its on-hold button for a manual retry. */
-  function autoClassifySoleClaim(tweetId: string, claim: Claim, batchId: string, locale: string): Promise<void> {
+   *  is in flight; any failure reverts it to its on-hold button for a manual retry.
+   *
+   *  Safe to call for several of a tweet's claims at once — `ongoingClaimRefreshes` is keyed
+   *  per claim, and the flip below maps the cache keeping every other claim as it was.
+   *
+   *  `annotateIfSettled` is for a post whose lone claim the DB already answers (a linked
+   *  variant of a claim it holds, or one answered while the stream was still running): there
+   *  is no research to run and nothing to spend, but the claim can still be keyless for the
+   *  text on screen — which is showing the user an Annotate button they should not have to
+   *  press. Only the tweet flow asks for it (see the lone-claim hand-off in
+   *  runPreclassification); selections and Fact-Check All are untouched. */
+  async function autoClassifyClaim(
+    tweetId: string, claim: Claim, batchId: string, locale: string,
+    opts?: { annotateIfSettled?: boolean }
+  ): Promise<void> {
     const refreshKey = `${tweetId}:${claim.text}`;
-    if (ongoingClaimRefreshes.has(refreshKey)) return Promise.resolve();
+    if (ongoingClaimRefreshes.has(refreshKey)) return;
 
     const hit = classificationCache.get(tweetId);
-    if (!hit) return Promise.resolve();
+    if (!hit) return;
+
+    // The DB row is the decision: a streamed claim is on hold before the worker has matched
+    // it, so researching on that reading charges for a verdict the DB may already hold. The
+    // caller is already past the drain, so wait for the row (bounded, with a direct pull as
+    // the fallback) and decide on what it says. A row that never lands hands the streamed
+    // claim back, and research then proceeds exactly as it always has.
+    if (!claim.dbClaimId) {
+      claim = await claimAfterRowLands(tweetId, claim, '', locale);
+      // The wait spans the cache being torn down (sign-out / freeze).
+      if (!classificationCache.get(tweetId)) return;
+    }
+    // Re-read after the wait: the row's own broadcast rewrote the cache, and the flip below
+    // must not start from the snapshot taken before it.
+    const live = classificationCache.get(tweetId)?.classification ?? hit.classification;
+    // Another launch may have taken the claim during the wait (the row's broadcast can
+    // release the waitlist); it owns the claim then.
+    if (ongoingClaimRefreshes.has(refreshKey)) return;
 
     // Already carrying a readable verdict → there is nothing to spend on. A change-prone
     // row (reclassifyOnHold) is deliberately NOT settled, so it falls through to research.
@@ -2439,18 +3549,23 @@ export default defineBackground({
     // no cause. The verdict the settle needs can also be sitting one field away in
     // `cachedVerdict` (a refresh-path stash), which reads identically to "no verdict" today.
     console.log(
-      `[background] autoClassifySoleClaim ${tweetId}:`,
+      `[background] autoClassifyClaim ${tweetId}:`,
       claim.verdict && claim.verdict !== 'research required' && hasNote && !claim.reclassifyOnHold
         ? 'already settled — no spend'
         : `RESEARCHING (verdict=${claim.verdict ?? 'none'}, note=${hasNote}, onHold=${claim.reclassifyOnHold === true}, cachedVerdict=${claim.cachedVerdict ?? 'none'})`
     );
     if (claim.verdict && claim.verdict !== 'research required' && hasNote && !claim.reclassifyOnHold) {
+      // The DB already answers this claim: nothing to research, nothing to spend. It may
+      // still carry no annotation for the displayed text, though, and that is the whole
+      // reason it is wearing the idle Annotate button — run that pass from here rather than
+      // leaving the user to press it (see annotateSettledClaim).
+      if (opts?.annotateIfSettled) return annotateSettledClaim(tweetId, claim.text, locale);
       return Promise.resolve();
     }
 
     // Flip to researching, restoring whatever cached values the claim carries so a
     // change-prone row keeps showing its previous verdict while the new one streams in.
-    const updatedClaims = hit.classification.claims?.map(cl =>
+    const updatedClaims = live.claims?.map(cl =>
       cl.text === claim.text
         ? {
             ...cl,
@@ -2465,7 +3580,7 @@ export default defineBackground({
         : cl
     ) ?? null;
     const anyOnHold = updatedClaims?.some(cl => cl.reclassifyOnHold) ?? false;
-    const restored: Classification = { ...hit.classification, claims: updatedClaims, reclassifyOnHold: anyOnHold || undefined };
+    const restored: Classification = { ...live, claims: updatedClaims, reclassifyOnHold: anyOnHold || undefined };
     restored.batchId = batchId;
     cacheClassification(restored, batchId);
     broadcastClassification(restored);
@@ -2491,12 +3606,12 @@ export default defineBackground({
             gotUpdate = true;
             // Locators rode along, so the worker's silent post-research run is in
             // flight — tell the content script to show "Annotating", not idle Annotate.
-            mergeSingleClaimAndBroadcast(tweetId, claim.text, updated, batchId, { withLocators: !!annotLoc });
+            mergeSingleClaimAndBroadcast(tweetId, claim.text, updated, batchId, { withLocators: !!annotLoc, annotatedLocale: annotLoc?.textLocale });
           }
           if (annotLoc) await settleFlowAAnnotations(tweetId, claim.text, annotLoc, batchId);
         }
       } catch (err: any) {
-        console.error(`[background] autoClassifySoleClaim error for "${claim.text.slice(0, 40)}":`, err);
+        console.error(`[background] autoClassifyClaim error for "${claim.text.slice(0, 40)}":`, err);
       } finally {
         ongoingClaimRefreshes.delete(refreshKey);
         // Not `!(handled || gotUpdate)`: a run that streamed a snapshot and then died
@@ -2506,6 +3621,121 @@ export default defineBackground({
     });
     trackClaimResearch(refreshKey, promise);
     return promise;
+  }
+
+  /** The annotations-only pass for a claim the DB already answers — Flow B (the Annotate
+   *  button's run), started without a click.
+   *
+   *  A settled claim the DB holds no annotation for under the text being displayed is showing
+   *  the idle Annotate button. On a post whose lone claim we just handled for free there is no
+   *  reason to make the user press it: the run costs one annotations-only pass — no research,
+   *  no searches — and it is exactly the pass the button would have started.
+   *
+   *  Same preconditions as the button enforces: settled, classified, and keyless for this
+   *  revision. A present key, even an empty dict ("annotated, nothing wrong"), means this text
+   *  is already annotated and nothing is started. Recent edits to a tweet are why a DB claim
+   *  can be settled and still keyless here (see payloadToClaim's revision gate). */
+  function annotateSettledClaim(tweetId: string, claimText: string, locale: string): Promise<void> {
+    const hit = classificationCache.get(tweetId);
+    if (!hit) return Promise.resolve();
+    const claim = hit.classification.claims?.find(c => c.text === claimText)
+      ?? hit.classification.quoting?.claims?.find(c => c.text === claimText);
+    if (!claim || claim.reclassifyOnHold || claim.note == null) return Promise.resolve();
+    if (claim.annotations && Object.keys(claim.annotations).length > 0) return Promise.resolve();
+    const annotKey = `annot:${tweetId}:${claimText}`;
+    // In flight already — the button's own run, or this one. Both keys: the bare key is a
+    // research run's, and a research run annotates on its own.
+    if (ongoingClaimRefreshes.has(annotKey) || ongoingClaimRefreshes.has(`${tweetId}:${claimText}`)) return Promise.resolve();
+
+    // The same marker Flow A stamps, for the same reasons: without it the claim keeps showing
+    // the idle Annotate button for the length of the run, and the button's own tap is refused
+    // by the in-flight gate above — a button that does nothing when clicked. It is dropped
+    // when the run's broadcast lands, or by the pending timeout.
+    broadcastClassification(hit.classification, { withLocators: true, claimText });
+
+    ongoingClaimRefreshes.add(annotKey);
+    const anyBatchId = hit.batchIds.values().next().value ?? hit.classification.batchId ?? '';
+    const refuse = () => {
+      for (const port of activePorts) {
+        try { port.postMessage({ type: "ANNOTATE_FAILED", data: { classificationId: tweetId, claimText } }); } catch { /* port closed */ }
+      }
+    };
+    // Awaited by the caller so the tweet flow's keep-alive interval spans the run — the same
+    // reason the research hand-off is awaited.
+    return gatedSpendAttributed(async () => {
+      try {
+        const freshCls = classificationCache.get(tweetId)?.classification ?? hit.classification;
+        const loc = await annotLocatorsFor(tweetId, freshCls.claims, claimText, freshCls)
+          ?? await annotLocatorsFor(tweetId, freshCls.quoting?.claims, claimText, freshCls);
+        if (!loc) {
+          console.log(`[background] annotateSettledClaim: could not resolve locators for "${claimText.slice(0, 40)}...", skipping`);
+          refuse();
+          return;
+        }
+        // The routing row the worker's persist broadcasts land on.
+        await ensureAnnotationSubscription(tweetId, claimText, locale);
+        const freshClaim = freshCls.claims?.find(c => c.text === claimText)
+          ?? freshCls.quoting?.claims?.find(c => c.text === claimText);
+        const finalAcc = await backgroundAnnotate(
+          loc.tweetHash, loc.tweetText, loc.textLocale,
+          freshClaim?.dbClaimId, loc.claimIndex, locale,
+          (acc) => paintAnnotationsLive(tweetId, claimText, anyBatchId, loc.textLocale, acc)
+        );
+        // null = transport failure or a server-side skip (stale/unclassified/forged revision).
+        // Either way the badge stays rather than claiming a clean pass that never ran.
+        if (finalAcc === null) { refuse(); return; }
+        paintAnnotationsLive(tweetId, claimText, anyBatchId, loc.textLocale, finalAcc);
+      } catch (err: any) {
+        console.error('[background] annotateSettledClaim error:', err);
+        refuse();
+      } finally {
+        ongoingClaimRefreshes.delete(annotKey);
+      }
+    });
+  }
+
+  /** Live-paint streamed annotation pairs onto a claim's cached copy and broadcast, so the
+   *  page shows corrections as they arrive rather than only when the worker's persist
+   *  broadcast lands. Shared: the Annotate button's run and the automatic one
+   *  (annotateSettledClaim) paint identically through here.
+   *
+   *  Each pair is written under this revision's FULL-locale key (the same `${textLocale}:${hash}`
+   *  shape the worker persists — the DB broadcast strips to bare prefixes at read time, and
+   *  painting the full key lets that strip land on exactly this dict), plus every existing key,
+   *  so a retag keeps older revisions visible. Union, never replace. */
+  function paintAnnotationsLive(
+    classificationId: string,
+    claimText: string,
+    anyBatchId: string,
+    textLocale: string,
+    acc: Record<string, string>
+  ): void {
+    const entry = classificationCache.get(classificationId);
+    if (!entry) return;
+    const liveKeys = new Set<string>();
+    for (const list of [entry.classification.claims, entry.classification.quoting?.claims]) {
+      for (const k of Object.keys(list?.find(c => c.text === claimText)?.annotations ?? {})) liveKeys.add(k);
+    }
+    liveKeys.add(textLocale);
+    const paint = (list: Claim[] | null): Claim[] | null => {
+      if (!list) return list;
+      return list.map(c => {
+        if (c.text !== claimText) return c;
+        const merged = { ...(c.annotations ?? {}) };
+        for (const k of liveKeys) merged[k] = { ...(merged[k] ?? {}), ...acc };
+        return { ...c, annotations: merged };
+      });
+    };
+    const painted: Classification = {
+      ...entry.classification,
+      claims: paint(entry.classification.claims),
+      quoting: entry.classification.quoting
+        ? { ...entry.classification.quoting, claims: paint(entry.classification.quoting.claims) }
+        : entry.classification.quoting,
+    };
+    painted.batchId = anyBatchId;
+    cacheClassification(painted, anyBatchId);
+    broadcastClassification(painted);
   }
 
   /** True only when a Supabase session exists. The whole pipeline is gated on this so
@@ -2527,6 +3757,11 @@ export default defineBackground({
    *  originating timeline XHR, used to fetch the first few eagerly and defer the rest
    *  until the relay reports them visible in the DOM. */
   function processFullBatch(port: any, tweets: MainTweet[], batchId: string, keepAlive: NodeJS.Timeout, localeOverride?: string | null, xhrBatchIndex?: number) {
+    // A post whose own body runs past MAX_CLASSIFY_CHARS gets no buttons on any platform and
+    // is never classified — see that constant for why, and the filter below for what a
+    // dropped post keeps. Measured on the post's own body: `text`, which for X's long tweets
+    // is the note_tweet expansion the agents are sent, and on every DOM-captured platform is
+    // the same string as `fullText`.
     // [ttft-ext] Covers the whole batch: DB hash+lookup, then either a DB-hit
     // injection or the preclassify/research pipeline for a miss.
     const tBatchStart = performance.now();
@@ -2540,6 +3775,27 @@ export default defineBackground({
           return;
         }
         const locale = localeOverride ?? getUiLocale();
+        // The filter sits at the top of this function because every path that can put
+        // buttons on a post — the timeline announce, a refresh, a forced batch, a
+        // reconnect — ends here, and because the client paints only what this function
+        // sends it: a post dropped here is one with no pill and nothing billed. Nothing
+        // else about it changes. It is still captured, still hashed, and still travels as
+        // the quoted post or the ancestor of the posts that carry it, so it keeps its place
+        // in another post's chain and context exactly as it always did. A web selection is
+        // a different message and never this path — a passage the reader selects is
+        // classified by the selection pipeline whatever the length of the post it was cut
+        // from.
+        const bodyOf = (t: MainTweet) => t.text || t.fullText || '';
+        const overLong = tweets.filter((t) => bodyOf(t).length > MAX_CLASSIFY_CHARS);
+        if (overLong.length > 0) {
+          tweets = tweets.filter((t) => bodyOf(t).length <= MAX_CLASSIFY_CHARS);
+          console.log(`[background] batch ${batchId}: no buttons on ${overLong.length} post(s) over ${MAX_CLASSIFY_CHARS} chars: [${overLong.map((t) => t.id).join(',')}]`);
+          if (tweets.length === 0) {
+            clearInterval(keepAlive);
+            safePostToPort(port, { type: "DONE" });
+            return;
+          }
+        }
         const firstTweetText = tweets[0]?.text?.slice(0, 80) ?? '(no text)';
         console.log(`[pipeline fires] batch=${batchId} tweets=${tweets.length} ids=[${tweets.map(t => t.id).join(',')}] firstTweet="${firstTweetText}"`);
 
@@ -2624,6 +3880,12 @@ export default defineBackground({
             {
               const t = String(tweet.fullText ?? '');
               console.log(`[ttft-ext] hash-input ${tweet.id}: user=${JSON.stringify(String(tweet.username ?? ''))} len=${t.length} head=${JSON.stringify(t.slice(0, 40))} tail=${JSON.stringify(t.slice(-60))} hash=${hash}`);
+              // What head and tail cannot show: a join that differs by characters invisible on
+              // screen. The row key normalises and the raw text is not, so two renders of one
+              // post can agree on the hash and still carry different raw text. Runs are printed
+              // as code points — `a0` is a no-break space where `20` is a space.
+              const runs = t.match(/\s+/g) ?? [];
+              console.log(`[ttft-ext] hash-ws ${tweet.id}: nl=${(t.match(/\n/g) ?? []).length} runs=${runs.length} first=${JSON.stringify(runs.slice(0, 8).map(run => [...run].map(c => c.codePointAt(0)!.toString(16)).join(',')))} mid=${JSON.stringify(t.slice(600, 660))}`);
             }
             let dbResult: any;
             if (dbMissHashes.has(hash)) {
@@ -2683,7 +3945,14 @@ export default defineBackground({
         // Step 3: Process DB hits — inject immediately, re-research in background
         for (const hit of dbHits) {
           const quotedClaims = hit.quotedDbResult?.success ? hit.quotedDbResult.claims : undefined;
-          const classification = dbClaimsToClassification(hit.tweet, hit.dbResult.claims, batchId, locale, quotedClaims);
+          // The side the reader is looking at comes from the record, not from this batch's
+          // copy (see `displayedSides`): a flip grows no captured text, so the sweep never
+          // re-delivers the post and every batch here carries the pre-flip capture.
+          const {
+            classification,
+            dbClaims: survivingDbClaims,
+            quotedDbClaims: survivingQuotedDbClaims,
+          } = dbClaimsToClassification(withDisplayedSide(hit.tweet.id, tweetCache.get(hit.tweet.id) ?? hit.tweet), hit.dbResult.claims, batchId, locale, quotedClaims);
           // Do NOT preserve textLocale from previous sessions/page loads. X's displayed
           // language may have changed (e.g. Chinese -> English), and the default displayed
           // text for this load is determined by dbClaimsToClassification. Only live toggle
@@ -2691,19 +3960,44 @@ export default defineBackground({
           // Preserve any claims already seeded by the subscription (linked in the tiny
           // window after the fetch snapshot) so this authoritative build doesn't clobber them.
           const seeded = classificationCache.get(hit.tweet.id)?.classification;
+          // ...but a LIVE flip does outrank it, and this rebuild is where one lands. `seeded` is
+          // this session's cache — the selection pipeline is the only thing restored across
+          // sessions and it is sel_/pw_-keyed, so a post id's entry cannot be a previous page
+          // load's — hence a textLocale disagreeing with the build above is a toggle the reader
+          // just made. It matters here because a host-page text swap destroys our wrap, the
+          // re-announce re-sweeps, and this DB-hit rebuild is what answers it: re-stating the
+          // captured side broadcasts it over the DOM the reader is looking at, and the segments
+          // mismatch guard then refuses the paint, leaving the flipped side with no highlights.
+          if (seeded?.textLocale && seeded.textLocale !== classification.textLocale) {
+            classification.textLocale = seeded.textLocale;
+            if (seeded.translatedLocale) classification.translatedLocale = seeded.translatedLocale;
+            if (seeded.translatedText) classification.translatedText = seeded.translatedText;
+          }
           if (seeded?.claims?.length && classification.claims) {
             const have = new Set(classification.claims.map(c => c.dbClaimId).filter(Boolean));
             const extra = seeded.claims.filter(c => c.dbClaimId && !have.has(c.dbClaimId));
             if (extra.length) classification.claims = [...classification.claims, ...extra];
+            // A DB row is the snapshot taken before any run started, so this rebuild must
+            // not restate a claim a live run owns: the row still says reclassify_after has
+            // passed, and adopting that would drop `refreshing` mid-batch — the badge falls
+            // back to the Fact-Check button until the run's first chunk recolours it.
+            const live = new Map(
+              seeded.claims
+                .filter(c => c.dbClaimId && (c.refreshing === true || c.isClassifying === true))
+                .map(c => [c.dbClaimId as string, c])
+            );
+            if (live.size) {
+              classification.claims = classification.claims.map(c => {
+                const l = c.dbClaimId ? live.get(c.dbClaimId) : undefined;
+                if (!l || !c.reclassifyOnHold) return c;
+                return {
+                  ...c, reclassifyOnHold: false, refreshing: true, isClassifying: l.isClassifying,
+                  verdict: l.verdict, confidence: l.confidence, veracity: l.veracity,
+                  note: l.note, sources: l.sources,
+                };
+              });
+            }
           }
-          cacheClassification(classification, batchId);
-
-          // Cache DB result for TRANSLATE_FACT_CHECKS handler
-          dbHitCache.set(classification.id, { tweet: hit.tweet, dbClaims: hit.dbResult.claims });
-          if (hit.tweet.quoting && hit.quotedDbResult?.success && hit.quotedDbResult.claims?.length > 0) {
-            dbHitCache.set(hit.tweet.quoting.id, { tweet: hit.tweet.quoting as MainTweet, dbClaims: hit.quotedDbResult.claims });
-          }
-
           // Check if translate-fact-checks is needed: tweet has translation data AND
           // displayed text locale differs from claim storage locale by primary language.
           const hasTranslation = hit.tweet.translatedText && hit.tweet.sourceLanguage && hit.tweet.destinationLanguage;
@@ -2724,8 +4018,43 @@ export default defineBackground({
             classification.translateFactChecksOnHold = true;
             console.log(`[background] DB hit ${classification.id}: translateFactChecksOnHold (displayed=${displayedLocale}, stored=${claimStorageLocale})`);
           }
+          cacheClassification(classification, batchId);
 
-          safePostToPort(port, { type: "CLASSIFICATION", data: classification });
+          // Cache DB result for TRANSLATE_FACT_CHECKS handler. The surviving rows, not every
+          // row read: the handler pairs the worker's ranges with `classification.claims` by
+          // index, and a row dropped as an overlap would shift every range after it.
+          dbHitCache.set(classification.id, { tweet: hit.tweet, dbClaims: survivingDbClaims });
+          if (hit.tweet.quoting && hit.quotedDbResult?.success && survivingQuotedDbClaims.length > 0) {
+            dbHitCache.set(hit.tweet.quoting.id, { tweet: hit.tweet.quoting as MainTweet, dbClaims: survivingQuotedDbClaims });
+          }
+
+          // A run writes nothing until it ENDS, so this pull is the only place a viewer can
+          // learn that an annotation is already streaming for a claim — the server stamps
+          // that on the link (is_annotating, see add_tweet_claim_is_annotating.sql). Without
+          // it a second viewer paints the Annotate button over a run in flight and pays for
+          // a duplicate. Stamped on an OUTGOING copy (the cache keeps the clean claim, the
+          // relay strips the marker) with the same gates stampAnnotateInFlight applies to
+          // Flow A: settled, classified, and no key for the displayed revision.
+          const inFlightAnnotations = new Map<string, string>();
+          const mainClaims = classification.claims ?? [];
+          for (let i = 0; i < mainClaims.length; i++) {
+            const cl = mainClaims[i];
+            const link = survivingDbClaims[i];
+            if (link?.is_annotating !== true || !link.id) continue;
+            if (cl.reclassifyOnHold || cl.note == null || cl.refreshing || cl.isClassifying) continue;
+            if (cl.annotations && Object.keys(cl.annotations).length > 0) continue;
+            inFlightAnnotations.set(cl.text, String(link.id));
+          }
+          const posted = maskPendingResearch(classification);
+          safePostToPort(port, {
+            type: "CLASSIFICATION",
+            data: inFlightAnnotations.size
+              ? (stampAnnotateInFlight(posted, { claimTexts: new Set(inFlightAnnotations.keys()) }) ?? posted)
+              : posted,
+          });
+          for (const [claimText, dbClaimId] of inFlightAnnotations) {
+            watchInFlightAnnotation(classification.id, claimText, dbClaimId, hit.hash, locale);
+          }
 
           // Subscribe only while the tweet is still preclassifying — claims are only ever
           // linked during that window, and fetchForTweet already opened this subscription
@@ -2800,12 +4129,25 @@ export default defineBackground({
           // runPreclassification(force = true) already sets, so this reuses that existing,
           // tested injection path in injectClassification rather than adding a new state.
           if (isPreclassifying) classification.preclassifying = true;
-          attachTranslatedLocale(classification, empty.tweet);
+          attachTranslatedLocale(classification, withDisplayedSide(empty.tweet.id, empty.tweet));
           cacheClassification(classification, batchId);
           safePostToPort(port, { type: "CLASSIFICATION", data: classification });
           // Subscribe only while it IS preclassifying: a settled claim-free tweet has
           // nothing more coming, and subscribe() would delete itself immediately anyway.
-          if (isPreclassifying) startTweetSubscription(classification.id, empty.hash, locale);
+          if (isPreclassifying) {
+            watchPreclassifyingEnd(classification.id, empty.hash, batchId, locale);
+            // Subscribe-then-read, the same order watchClassifyingClaim uses: `subscribe`
+            // inserts a routing row even when the run has ALREADY finished, and a finished
+            // run left nothing that will ever delete that row — so without this read the
+            // wheel waits out PRECLASS_TIMEOUT_MS on claims that are already in the DB.
+            // Awaiting readiness first is what makes the read worth taking: a claim that
+            // lands after the routing row exists is delivered by the subscription, so the
+            // read only has to answer for everything before it. A still-running run
+            // answers nothing and is carried by the subscription as before.
+            void ensureTweetSubscription(classification.id, empty.hash, locale)
+              .then(() => injectSettledPreclassification(classification.id, empty.hash, batchId, locale))
+              .catch(e => console.error('[preclassifying] early read failed:', e));
+          }
         }
 
         // Step 4: Existing cached/uncached split for remaining DB misses
@@ -2842,7 +4184,7 @@ export default defineBackground({
             const onHoldClassification: Classification = {
               id: tweet.id, batchId, claims: null, quoting: null, onHold: true
             };
-            attachTranslatedLocale(onHoldClassification, tweet);
+            attachTranslatedLocale(onHoldClassification, withDisplayedSide(tweet.id, tweet));
             cacheClassification(onHoldClassification, batchId);
             safePostToPort(port, { type: "CLASSIFICATION", data: onHoldClassification });
             // A tap parked while the worker was dead (backgrounded / long idle)
@@ -2853,7 +4195,7 @@ export default defineBackground({
         }
 
         for (const cachedClassification of cached)
-          safePostToPort(port, { type: "CLASSIFICATION", data: cachedClassification });
+          safePostToPort(port, { type: "CLASSIFICATION", data: maskPendingResearch(cachedClassification) });
 
         const allProcessed = dbHits.length + dbEmpty.length;
         if (allProcessed > 0 && uncached.length === 0) {
@@ -2944,6 +4286,11 @@ export default defineBackground({
 
   /** Last total written into the App Group, so an unchanged value costs nothing. */
   let lastNativeSyncedTotal: number | null = null;
+  /** Last spend-notification setting sent along with it. Travels with the balance
+   *  because the app's own Fact-Check tab raises its own charge notifications and
+   *  cannot read extension storage; a change here alone is still worth a round trip,
+   *  or a reader who just moved the slider would keep the old floor in the app. */
+  let lastNativeSyncedSpend: string | null = null;
   /** Whether the app currently holds an identity from us, so sign-out is sent exactly once. */
   let nativeAccountShared = false;
   let nativeSyncTimer: ReturnType<typeof setTimeout> | undefined;
@@ -2990,20 +4337,64 @@ export default defineBackground({
   const NATIVE_SESSION_EXPIRES_KEY = 'nativeSessionExpiresAt';
 
   /**
+   * Ends the Safari session when the app has ended it.
+   *
+   * Safari only, and the reverse of `clearNativeAccount` above: that one tells the app, this one
+   * finds out. The app's sign-out clears the shared record, but this profile holds its own copy
+   * and keeps working on a still-valid access token until its refresh fails — up to an hour
+   * later, during which the buttons stay injected and every run is charged to an account the
+   * user has left. Nothing native runs app → extension, so the app stamps the shared container
+   * instead and this asks for the stamp (see `signedOutInApp`).
+   *
+   * The two markers before the slot empties are the same pair the popup writes on a sign-out it
+   * performs itself, and for the same two reasons: the first stops `refreshActiveState` from
+   * announcing a sign-out nobody in this browser chose, the second stops the shared record from
+   * being adopted straight back into the slot.
+   *
+   * One at a time: it is called from both a timer and every evaluation, and two sign-outs racing
+   * would only clear the same slot twice — but the last one would also stamp the markers after
+   * the first had emptied it, which is how a second account's session could be the one cleared.
+   */
+  let appSignOutChecking = false;
+  async function endSessionSignedOutInApp(): Promise<boolean> {
+    if (!import.meta.env.SAFARI || appSignOutChecking) return false;
+    appSignOutChecking = true;
+    try {
+      if (!(await signedOutInApp(SUPABASE_AUTH_STORAGE_KEY))) return false;
+      const now = Date.now();
+      try {
+        await browser.storage.local.set({
+          [INTENTIONAL_SIGNOUT_KEY]: now,
+          [NATIVE_SIGNOUT_KEY]: now,
+        });
+      } catch { /* best-effort: the marker only suppresses a notice */ }
+      // Local scope only, like the popup's own sign-out: the global default would revoke the
+      // token family and sign the user out of their other devices, which they did not ask for.
+      await supabase.auth.signOut({ scope: 'local' });
+      return true;
+    } catch (e: any) {
+      console.warn('[background] app sign-out check failed:', e?.message || e);
+      return false;
+    } finally {
+      appSignOutChecking = false;
+    }
+  }
+
+  /**
    * A Supabase access token for the app to authenticate its own fact-checks with, or nil.
    *
-   * The app cannot mint one: it is given an access token and no refresh token (see
-   * `SharedTopUpStore.setSession`), so once its copy lapses the Fact-Check tab is dead until the
-   * popup is opened — which was the only thing that ever handed one over. The background can
-   * refresh, so it does, and hands the result on: the app's copy is then never far behind a live
-   * one, and that state goes back to meaning what it says — the browser is not running.
+   * The refresh token rides along, which is what lets the app renew the session itself rather
+   * than waiting for this side to notice. Both processes publish to the same record, so a
+   * handover is one more writer of a value that already exists — never the only source of it.
+   * (See `AppSession` in SharedTopUpStore.swift for how two writers stay safe: one lock, one
+   * rotation, last write wins on expiry.)
    *
    * Nil means there is nothing worth handing over, on any of three counts: nobody is signed in;
    * the token is at or near its end, which covers a refresh that just failed and which the app
    * would refuse anyway (`FactCheckClient.liveSession` wants 30 seconds of life left in it); or the
    * app already holds this same one.
    */
-  async function nativeSessionHandover(): Promise<{ accessToken: string; expiresAt: number } | null> {
+  async function nativeSessionHandover(): Promise<{ accessToken: string; refreshToken?: string; expiresAt: number } | null> {
     await ensureFreshSession();
     const { data } = await supabase.auth.getSession();
     const session = data.session;
@@ -3016,7 +4407,11 @@ export default defineBackground({
     // no newer than the last handover means the app is already holding the best we have.
     if (typeof stored === 'number' && session.expires_at <= stored) return null;
 
-    return { accessToken: session.access_token, expiresAt: session.expires_at };
+    return {
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token,
+      expiresAt: session.expires_at,
+    };
   }
 
   /**
@@ -3048,21 +4443,29 @@ export default defineBackground({
           // Read even when the balance has not moved: a session that has just been refreshed is a
           // reason to send on its own, and the balance coming along costs nothing.
           const session = await nativeSessionHandover();
-          // The app already has both halves of this message.
-          if (total === lastNativeSyncedTotal && !session) return;
+          const spendSync = `${spendNotifySettings.enabled}:${spendNotifySettings.threshold}`;
+          // The app already has every part of this message.
+          if (total === lastNativeSyncedTotal && spendSync === lastNativeSyncedSpend && !session) return;
 
           await (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, {
             action: 'SYNC_ACCOUNT',
             userId,
             balance: total,
+            notifySpendEnabled: spendNotifySettings.enabled,
+            notifySpendThreshold: spendNotifySettings.threshold,
             ...(session
-              ? { accessToken: session.accessToken, accessTokenExpiresAt: session.expiresAt }
+              ? {
+                  accessToken: session.accessToken,
+                  accessTokenExpiresAt: session.expiresAt,
+                  refreshToken: session.refreshToken,
+                }
               : {}),
           });
           // Only after the app has it. A send that failed leaves the mark where it was, so the
           // next tick tries again rather than counting a token as delivered when it was not.
           if (session) await browser.storage.local.set({ [NATIVE_SESSION_EXPIRES_KEY]: session.expiresAt });
           lastNativeSyncedTotal = total;
+          lastNativeSyncedSpend = spendSync;
           nativeAccountShared = true;
         } catch (e: any) {
           // The app not being installed, or the host not answering, must never disturb the
@@ -3081,6 +4484,58 @@ export default defineBackground({
       if (maybe && typeof maybe.catch === 'function') maybe.catch(() => { /* no popup listening */ });
     } catch { /* no popup listening */ }
   }
+
+  // ── Spend-notification settings ───────────────────────────────────────────
+  /** Written by the popup. `enabled` turns the balance-decrease toast off entirely;
+   *  when it is on, only a decrease LARGER than `threshold` (USD) raises one. Defaults
+   *  to on above US$0.001: the toast reports money, and a charge smaller than a
+   *  tenth of a cent is noise. Read here rather than in the content scripts because
+   *  this is the one place a decrease becomes a broadcast. */
+  const SPEND_NOTIFY_ENABLED_KEY = 'mf_spend_notify_enabled';
+  const SPEND_NOTIFY_THRESHOLD_KEY = 'mf_spend_notify_threshold';
+  const SPEND_NOTIFY_DEFAULT_ENABLED = true;
+  const SPEND_NOTIFY_DEFAULT_THRESHOLD = 0.001;
+  const SPEND_NOTIFY_MIN_THRESHOLD = 0.0001;
+  const SPEND_NOTIFY_MAX_THRESHOLD = 1;
+  const spendNotifySettings = {
+    enabled: SPEND_NOTIFY_DEFAULT_ENABLED,
+    threshold: SPEND_NOTIFY_DEFAULT_THRESHOLD,
+  };
+  /** Narrow an arbitrary stored value into the slider's own range, so a stale or
+   *  hand-edited storage entry can't put the floor somewhere the UI cannot. */
+  function clampSpendNotifyThreshold(value: unknown): number {
+    return typeof value === 'number' && Number.isFinite(value)
+      ? Math.min(SPEND_NOTIFY_MAX_THRESHOLD, Math.max(SPEND_NOTIFY_MIN_THRESHOLD, value))
+      : SPEND_NOTIFY_DEFAULT_THRESHOLD;
+  }
+  try {
+    browser.storage.local
+      .get([SPEND_NOTIFY_ENABLED_KEY, SPEND_NOTIFY_THRESHOLD_KEY])
+      .then((r: any) => {
+        if (typeof r?.[SPEND_NOTIFY_ENABLED_KEY] === 'boolean') {
+          spendNotifySettings.enabled = r[SPEND_NOTIFY_ENABLED_KEY];
+        }
+        spendNotifySettings.threshold = clampSpendNotifyThreshold(r?.[SPEND_NOTIFY_THRESHOLD_KEY]);
+      })
+      .catch(() => {});
+    browser.storage.onChanged.addListener((changes: Record<string, any>, area: string) => {
+      if (area !== 'local') return;
+      let touched = false;
+      if (SPEND_NOTIFY_ENABLED_KEY in changes && typeof changes[SPEND_NOTIFY_ENABLED_KEY]?.newValue === 'boolean') {
+        spendNotifySettings.enabled = changes[SPEND_NOTIFY_ENABLED_KEY].newValue;
+        touched = true;
+      }
+      if (SPEND_NOTIFY_THRESHOLD_KEY in changes) {
+        spendNotifySettings.threshold = clampSpendNotifyThreshold(changes[SPEND_NOTIFY_THRESHOLD_KEY]?.newValue);
+        touched = true;
+      }
+      // Carry a fresh floor to the app now rather than at the next balance move: its
+      // charge notices read the value from the App Group, and nothing else would send
+      // it until money happened to change. Skipped before the first sync, where there
+      // is no total to pair it with.
+      if (touched && lastNativeSyncedTotal !== null) syncFundsToNativeApp(lastNativeSyncedTotal);
+    });
+  } catch { /* ignore */ }
 
   /** Single entry point for every balance change, wherever it came from (Realtime push,
    *  a one-off getFunds(), or post-checkout polling). Ordering matters here: the freeze
@@ -3126,7 +4581,14 @@ export default defineBackground({
     const roundedDelta = Math.round(Math.abs(delta) * 10000) / 10000;
     if (roundedDelta >= 0.0001) {
       lastVisibleTotal = total;
-      broadcastNotification({ kind: delta > 0 ? 'increase' : 'decrease', amount: roundedDelta });
+      // A decrease is announced only above the reader's own floor (popup setting). The
+      // baseline still advances, so the floor judges each change rather than letting
+      // small charges accumulate unnoticed. The empty-balance notice is not a delta and
+      // keeps firing: it is what explains the frozen buttons after a crossing.
+      const hiddenSpend = delta < 0 && (
+        !spendNotifySettings.enabled || roundedDelta <= spendNotifySettings.threshold
+      );
+      if (!hiddenSpend) broadcastNotification({ kind: delta > 0 ? 'increase' : 'decrease', amount: roundedDelta });
       if (wasPositive && total <= 0) broadcastNotification({ kind: 'broke' });
     }
   }
@@ -3162,6 +4624,7 @@ export default defineBackground({
     // Cleared too, or the next user's identical total would be suppressed as "unchanged" and
     // the app would keep showing the previous account's balance.
     lastNativeSyncedTotal = null;
+    lastNativeSyncedSpend = null;
     fundsInitPromise = null;
     // Cleared alongside the rest so "hub torn down" always implies "belongs to nobody";
     // callers that are rebuilding assign the new owner immediately after.
@@ -3210,12 +4673,11 @@ export default defineBackground({
   }
 
   // ── Fact-Check All waitlist ─────────────────────────────────────────────────
-  // Each admitted claim reserves the WORST-CASE settled charge (not the backend hold — see
-  // CLASSIFICATION_RESERVE), so the balance is sized for what actually leaves it rather than for
-  // what the backend merely held. Claims the balance funds in full run in parallel; once it can't,
-  // they run ONE at a time, draining whatever is left. That still dispatches no wasted 402s: the
-  // backend refuses a hold only while the balance is ≤ 0, so the partly-funded claim runs and it
-  // is the SECOND one in parallel that would 402.
+  // Each admitted claim reserves the WORST-CASE settled charge (see CLASSIFICATION_RESERVE), so the
+  // balance is sized for what actually leaves it. Claims the balance funds in full run in parallel;
+  // once it can't, they run ONE at a time, draining whatever is left. That still dispatches no
+  // wasted 402s: the backend refuses a hold only while the balance is ≤ 0, so the partly-funded
+  // claim runs and it is the SECOND one in parallel that would 402.
   const FACTCHECK_BATCH_TIMEOUT_MS = 30000;
   const MAX_CLASSIFY_ATTEMPTS = 2; // 1 initial + at most 1 retry after a backend balance-too-low
   type WaitlistItem = { classificationId: string; claimText: string; batchId: string; locale: string; reserve: number; attempts: number };
@@ -3240,24 +4702,31 @@ export default defineBackground({
   let factCheckBatchTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Worst-case settled charge for one Fact-Check All classification — the reserve each admitted
-   *  claim holds against the balance. Deliberately NOT the backend hold: classify-tweets settles at
-   *  `cost * FEE_MULTIPLIER * PROFIT_MULTIPLIER`, and the ×2 margin is excluded from the hold (an
-   *  overrun eats the margin rather than the operator's money). Both sides sum the SAME three
-   *  terms — Gemini streams, paid searches, and the post-research annotation — and apply
+   *  claim holds against the balance. classify-tweets settles at `cost * FEE_MULTIPLIER` with no
+   *  margin, so this is the same fee-recovered worst case as its own hold. Both sides sum the SAME
+   *  three terms — Gemini streams, paid searches, and the post-research annotation — and apply
    *  fee-recovery once to the total; the terms mirror classify-tweets' `const INPUT_LIMIT` block
    *  plus its `annotWorstAtLimit`. Change the backend formula and this together. */
   const CLASSIFICATION_RESERVE = (() => {
     const GEMINI_IN = 0.75, GEMINI_OUT = 3.75, OUTPUT_LIMIT = 2000;   // gemini-3.6-flash
-    const INPUT_LIMIT = 6000, SEARCH_CONTEXT_TOKENS = 3500, GEMINI_STREAMS = 4;
-    const TAVILY_SEARCH_COST = 0.016, EXA_DEEP_COST = 0.015;
-    const ANNOT_IN = 0.99, ANNOT_OUT = 2.20, ANNOT_FEE = 1.055;   // Qwen 3.8 27B via OpenRouter
+    const INPUT_LIMIT = 6000, SEARCH_CONTEXT_TOKENS = 4000, GEMINI_STREAMS = 4;
+    // The research prompt's own scaffolding — synthesizer header, return schema, verdict
+    // instructions and the date note — rides in every stream. Sized on the shipped prompt
+    // in classify-tweets (≈3,760 by its own estimateTokens for a typical locale).
+    const RESEARCH_PROMPT_TOKENS = 3800;
+    const TAVILY_SEARCH_COST = 0.016, EXA_DEEP_COST = 0.012;
+    // The annotation agent tries Gemini 3.6 Flash first (no markup), then the
+    // OpenRouter tiers — qwen3.8-27b's dearest route plus OpenRouter's 5.5%. A Gemini
+    // call that fails to start can still bill its prefill, so both routes are added.
+    const ANNOT_GEMINI_IN = 0.75, ANNOT_GEMINI_OUT = 3.75;   // gemini-3.6-flash
+    const ANNOT_FALLBACK_IN = 0.99, ANNOT_FALLBACK_OUT = 2.20, ANNOT_FALLBACK_FEE = 1.055;
     const ANNOT_INPUT_LIMIT = 20000, ANNOT_OUTPUT_LIMIT = 2000;
     const FEE_MULTIPLIER = (4 / 3) * 1.03;   // Apple/Stripe take + FX
-    const PROFIT_MULTIPLIER = 2;             // classify-tweets' margin, on the whole charge
-    const geminiWorst = (((INPUT_LIMIT + SEARCH_CONTEXT_TOKENS) * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) * GEMINI_STREAMS;
+    const geminiWorst = (((INPUT_LIMIT + SEARCH_CONTEXT_TOKENS + RESEARCH_PROMPT_TOKENS) * GEMINI_IN + OUTPUT_LIMIT * GEMINI_OUT) / 1e6) * GEMINI_STREAMS;
     const searchWorst = TAVILY_SEARCH_COST * 2 + EXA_DEEP_COST;
-    const annotWorst = ((ANNOT_INPUT_LIMIT * ANNOT_IN + ANNOT_OUTPUT_LIMIT * ANNOT_OUT) / 1e6) * ANNOT_FEE;
-    return (geminiWorst + searchWorst + annotWorst) * FEE_MULTIPLIER * PROFIT_MULTIPLIER;
+    const annotWorst = (ANNOT_INPUT_LIMIT * ANNOT_GEMINI_IN + ANNOT_OUTPUT_LIMIT * ANNOT_GEMINI_OUT) / 1e6
+      + ((ANNOT_INPUT_LIMIT * ANNOT_FALLBACK_IN + ANNOT_OUTPUT_LIMIT * ANNOT_FALLBACK_OUT) / 1e6) * ANNOT_FALLBACK_FEE;
+    return (geminiWorst + searchWorst + annotWorst) * FEE_MULTIPLIER;
   })();
 
   /** Money free to commit now, in lag-invariant terms (unknown funds → optimistic). */
@@ -3275,6 +4744,10 @@ export default defineBackground({
     const hit = classificationCache.get(classificationId);
     const claim = hit?.classification.claims?.find(cl => cl.text === claimText);
     if (!claim || !claim.reclassifyOnHold) return;
+    // Only a claim whose DB row is known can be decided here: the row is what says whether a
+    // classified claim already answers this text. A claim still waiting on its row is
+    // re-enqueued by the broadcast that delivers the row (see broadcastClassification).
+    if (!claim.dbClaimId) return;
     const reserve = CLASSIFICATION_RESERVE;
     factCheckWaitlist.push({ classificationId, claimText, batchId, locale, reserve, attempts: 0 });
     factCheckWaitlistKeys.add(key);
@@ -3469,7 +4942,7 @@ export default defineBackground({
             gotUpdate = true;
             // Locators rode along, so the worker's silent post-research run is in
             // flight — tell the content script to show "Annotating", not idle Annotate.
-            mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId, { withLocators: !!annotLoc });
+            mergeSingleClaimAndBroadcast(classificationId, claimText, updated, batchId, { withLocators: !!annotLoc, annotatedLocale: annotLoc?.textLocale });
           }
           if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, batchId);
         }
@@ -3513,6 +4986,10 @@ export default defineBackground({
   function clearAllPipelineState() {
     for (const sub of tweetSubs.values()) { try { sub.close(); } catch { /* ignore */ } }
     tweetSubs.clear();
+    for (const set of lingeringTweetSubs.values()) {
+      for (const sub of set) { try { sub.close(); } catch { /* ignore */ } }
+    }
+    lingeringTweetSubs.clear();
     for (const sub of claimSubs.values()) { try { sub.close(); } catch { /* ignore */ } }
     claimSubs.clear();
     classificationCache.clear();
@@ -3531,7 +5008,9 @@ export default defineBackground({
     claimResearchPromises.clear();
     heldReclassifications.clear();
     pendingFreshResearchClaims.clear();
+    researchRequestedBeforeRow.clear();
     factCheckAllTweetIds.clear();
+    factCheckAllScopedTexts.clear();
     // Reset the Fact-Check All waitlist so a logout/freeze leaves no stale holds or timer.
     factCheckWaitlist.length = 0;
     factCheckWaitlistKeys.clear();
@@ -3556,6 +5035,9 @@ export default defineBackground({
   // also tear the funds hub down; on a mere zero-balance we keep it running so a
   // later top-up is detected and re-activates the extension.
   let lastActive: boolean | null = null;
+  /** Whether the last evaluation saw a session. Distinct from `lastActive`, which is also
+   *  false for a signed-in user with no balance. See the `clearNativeAccount` call below. */
+  let lastSignedIn = false;
   let activeEvalChain: Promise<void> = Promise.resolve();
   /** Re-evaluate whether the extension should be active (signed in AND in credit) and,
    *  when that answer flips, either resume the content scripts or tear the pipeline down.
@@ -3565,6 +5047,20 @@ export default defineBackground({
    *  the relays with the wrong state. */
   function refreshActiveState() {
     activeEvalChain = activeEvalChain.then(async () => {
+      // Safari: the app may have signed in, or renewed, while this context was asleep.
+      // Taking the shared record before anything reads the session is what keeps a device
+      // signed in through the app from being evaluated here as signed out — which would
+      // freeze every relay and drop every injection. A profile that already holds a live
+      // session is untouched: this only fills an empty or expired slot.
+      if (import.meta.env.SAFARI) {
+        // Before adoption, not after: a sign-out in the app is what makes this profile's copy
+        // the last one standing, and adopting first would only hand it back the session the
+        // user just ended.
+        try { await endSessionSignedOutInApp(); }
+        catch { /* best-effort: the poll below asks again */ }
+        try { await adoptNativeSession(SUPABASE_AUTH_STORAGE_KEY); }
+        catch { /* best-effort: the record is read again at the next refresh */ }
+      }
       const signed = await isSignedIn();
       /** The state we are leaving. Read BEFORE the account-switch block below, which
        *  sets `lastActive = null` whenever the uid changes — and a uid change is exactly
@@ -3589,7 +5085,17 @@ export default defineBackground({
       // Revoke the app's copy of the identity the moment we know nobody is signed in. Placed here
       // because this runs on sign-out, on sign-in, and on every account switch — the three events
       // after which the app's stored identity could otherwise be someone else's.
-      if (!signed) clearNativeAccount();
+      //
+      // Only on a transition OUT of a session, and only now that the app can hold one the
+      // extension does not: adoption above is a native round trip, and one that fails while
+      // the app is signed in leaves `signed` false with a perfectly good session on the
+      // other side. Unconditional, this call turned that hiccup into a sign-out the user
+      // never asked for — the one thing sharing the session is meant to make impossible.
+      // A chosen sign-out reaches the app directly from the popup as well, so nothing is
+      // lost by waiting for a transition here.
+      const signedBefore = lastSignedIn;
+      lastSignedIn = signed;
+      if (!signed && signedBefore) clearNativeAccount();
       const active = signed && balanceOk();
       if (lastActive === active) return;
       /** Whether the extension was live a moment ago, so the sign-out notification further
@@ -3687,6 +5193,147 @@ export default defineBackground({
     return await fetchAndStoreMessages();
   }
 
+  // ── Collecting an iOS sign-in hand-off ──
+  //
+  // On iOS the provider redirects into the containing app, because an app extension cannot
+  // present the ASWebAuthenticationSession that would catch it (see utils/nativeHost.ts and
+  // TopUpHandoff.swift). The app can only PARK what it caught; building the session needs this
+  // side, which holds the PKCE verifier. So the flow ends with the extension asking, and there
+  // are two askers by design: the popup on open — the fast path, since that is where the user
+  // already is — and the funds alarm below, which is what makes sign-in complete without the
+  // user having to open anything at all.
+
+  /** Written by the popup before the provider's tab opens; see it for why. */
+  const AUTH_PENDING_KEY = 'mf_auth_pending_at';
+
+  /** How long a started hand-off is worth collecting.
+   *
+   *  The authorization code inside expires long before this, so the real job is to bound the
+   *  polling: an abandoned sign-in must not leave a native round trip running on a one-minute
+   *  alarm for the rest of the session. */
+  const AUTH_PENDING_MAX_AGE_MS = 30 * 60 * 1000;
+
+  /** Whether a hand-off may still be waiting. Read-and-cleared once stale, so an abandoned
+   *  marker cannot outlive the flow it described and keep both askers asking forever. */
+  async function isAuthPending(): Promise<boolean> {
+    try {
+      const stored = await browser.storage.local.get(AUTH_PENDING_KEY);
+      const at = stored?.[AUTH_PENDING_KEY];
+      if (typeof at !== 'number') return false;
+      if (Date.now() - at <= AUTH_PENDING_MAX_AGE_MS) return true;
+      await browser.storage.local.remove(AUTH_PENDING_KEY);
+      return false;
+    } catch { return false; }
+  }
+
+  /** The hand-off is over, whatever it did — nothing left for either asker to collect. */
+  async function clearAuthPending(): Promise<void> {
+    try { await browser.storage.local.remove(AUTH_PENDING_KEY); } catch { /* best-effort */ }
+  }
+
+  /** The provider tab the popup opened for an iOS sign-in; see it for why. */
+  const AUTH_TAB_KEY = 'mf_auth_tab_id';
+
+  /** Closes the tab a finished iOS sign-in leaves behind.
+   *
+   *  Safari takes the `disinfax://` redirect into the containing app and abandons the tab on the
+   *  provider's last page, still spinning — so a sign-in that worked looks exactly like one that
+   *  hung. Closing it is the only signal the flow gives, and it is the one the old callback page
+   *  used to give by closing itself.
+   *
+   *  Called on success only. A failed exchange leaves the tab where it is on purpose: the popup
+   *  reports the failure when the user next opens it, and pulling the tab out from under a
+   *  rejection they are still reading would take away the only thing on screen.
+   *
+   *  Key removed before the attempt, so a tab that is already gone cannot leave the id sitting
+   *  there to be closed twice on some later sign-in. */
+  async function closeAuthTab(): Promise<void> {
+    try {
+      const stored = await browser.storage.local.get(AUTH_TAB_KEY);
+      const tabId = stored?.[AUTH_TAB_KEY];
+      await browser.storage.local.remove(AUTH_TAB_KEY);
+      if (typeof tabId === 'number') await browser.tabs.remove(tabId);
+    } catch { /* already closed, or never recorded — nothing to undo */ }
+  }
+
+  /** Turns a provider callback URL into a session. Both Safari transports end here — macOS is
+   *  handed the URL by ASWebAuthenticationSession, iOS collects it from the app — so the two
+   *  cannot drift apart about which half carries the credential.
+   *
+   *  PKCE puts `?code=` in the query and the implicit grant puts the tokens in the fragment;
+   *  utils/supabase.ts sets no flowType, so the default applies and both are read.
+   *
+   *  Returns an error message, or null once the session is established. */
+  async function completeOAuthCallbackUrl(callbackUrl: string): Promise<string | null> {
+    let parsed: URL;
+    try { parsed = new URL(callbackUrl); } catch { return 'The sign-in reply was not a usable URL.'; }
+    const hashParams = new URLSearchParams(parsed.hash.replace(/^#/, ''));
+
+    // A provider-side rejection rides in either half; its own message is more use than ours.
+    const errorDescription = parsed.searchParams.get('error_description')
+      ?? hashParams.get('error_description');
+    if (errorDescription) return errorDescription;
+
+    const code = parsed.searchParams.get('code');
+    if (code) {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      return error?.message ?? null;
+    }
+    const accessToken = hashParams.get('access_token') ?? parsed.searchParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token') ?? parsed.searchParams.get('refresh_token');
+    if (accessToken && refreshToken) {
+      const { error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+      return error?.message ?? null;
+    }
+    return 'The sign-in reply carried no code or tokens.';
+  }
+
+  /** Asks the app whether it is holding a callback, and completes the sign-in if it is. */
+  async function pullPendingNativeAuth(): Promise<{ ok?: boolean; pending?: boolean; error?: string }> {
+    // A real timeout, unlike the popup-initiated calls it otherwise mirrors: there is no UI
+    // sheet to wait on here, and the alarm tick must not hang because an app that is not
+    // running never answers. Long enough to cover the appex being woken from cold.
+    const NATIVE_TIMEOUT_MS = 30 * 1000;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const res: any = await Promise.race([
+        (browser.runtime as any).sendNativeMessage(NATIVE_APP_ID, { action: 'GET_PENDING_AUTH' }),
+        new Promise((_resolve, reject) => {
+          timeoutId = setTimeout(
+            () => reject(new Error('The DisinfaX app did not respond.')),
+            NATIVE_TIMEOUT_MS,
+          );
+        }),
+      ]).finally(() => { if (timeoutId !== undefined) clearTimeout(timeoutId); });
+
+      const callbackUrl = res?.callbackUrl;
+      // Nothing parked yet — the user may still be on the provider's page. The pending marker
+      // stays, so the next read asks again.
+      if (typeof callbackUrl !== 'string' || !callbackUrl) return { pending: false };
+
+      const error = await completeOAuthCallbackUrl(callbackUrl);
+      // Cleared either way. The app hands a parked callback over once and forgets it, and a
+      // code that failed to exchange cannot be exchanged again — so a marker left set would
+      // only have the alarm keep asking for something that is already gone.
+      await clearAuthPending();
+      if (error) return { error };
+      // The user is signed in, so the tab they were left staring at has done its job. Closing
+      // it is the completion signal the flow otherwise does not have.
+      await closeAuthTab();
+      // Bring the pipeline up for the newly signed-in account before the user gets back to
+      // the popup, so the balance is already known when they reopen it.
+      refreshActiveState();
+      return { ok: true };
+    } catch (e: any) {
+      // Deliberately NOT cleared: an unreachable app is transient, and the marker is what
+      // gives the next tick the right to try again — until it ages out.
+      return { error: e?.message || 'Could not reach the DisinfaX app.' };
+    }
+  }
+
   // Refresh on startup and every 24 hours.
   fetchAndStoreMessages();
   try {
@@ -3715,6 +5362,14 @@ export default defineBackground({
         if (alarm.name !== FUNDS_SYNC_ALARM) return;
         (async () => {
           try {
+            // A hand-off the user completed on the provider's page is sitting in the app, and
+            // this tick is the only thing that can reach it without the user reopening the
+            // popup. Checked BEFORE the signed-in gate below, because being signed out is
+            // exactly the state it runs in — that gate would return first and never look.
+            if (await isAuthPending()) {
+              const pulled = await pullPendingNativeAuth();
+              if (pulled.error) console.warn('[background] pending sign-in hand-off failed:', pulled.error);
+            }
             if (!(await isSignedIn())) return;
             // Before the funds read, not after: `get_funds` authenticates with the same token, so
             // an expired one fails the read and the sync below never runs at all — which is how a
@@ -3729,6 +5384,17 @@ export default defineBackground({
           }
         })();
       });
+
+      // The app's sign-out, asked for rather than waited on. The alarm above is the floor on
+      // staleness once this page is suspended — Safari's minimum period, and a page woken from
+      // cold re-runs `refreshActiveState`, which asks too. This is what makes it immediate while
+      // the page is awake, which on a Mac and in Split View is the whole time: without it the
+      // app's sign-out would not reach Safari until the access token expired, an hour on.
+      //
+      // Cheap enough to run at this cadence: the check reads this profile's own storage first
+      // and only then asks the app, so a signed-out profile costs nothing at all.
+      const APP_SIGN_OUT_POLL_MS = 10_000;
+      setInterval(() => { void endSessionSignedOutInApp(); }, APP_SIGN_OUT_POLL_MS);
     }
   } catch (e) { console.error('[background] alarms setup error:', e); }
 
@@ -4115,9 +5781,6 @@ export default defineBackground({
         if (!range.startContainer.isConnected || !range.endContainer.isConnected) {
           return fail('detached', { text, rect });
         }
-        const hostName = location.hostname.replace(/^www\./, '');
-        const onX = hostName === 'x.com' || hostName === 'twitter.com'
-          || hostName.endsWith('.x.com') || hostName.endsWith('.twitter.com');
         const intersects = (el: Element) => {
           try {
             const nr = document.createRange();
@@ -4128,28 +5791,6 @@ export default defineBackground({
             return el.contains(range!.startContainer) || el.contains(range!.endContainer);
           }
         };
-        const tweetIdOf = (article: Element): string | null => {
-          const links = article.querySelectorAll('a[href*="/status/"]');
-          for (let i = 0; i < links.length; i++) {
-            const link = links[i] as HTMLAnchorElement;
-            if (link.closest('article') !== article) continue;
-            const m = (link.getAttribute('href') || '').match(/\/status\/(\d+)/);
-            if (m) return m[1];
-          }
-          return null;
-        };
-        const ownEl = (article: Element, selector: string): HTMLElement | null => {
-          const found = article.querySelectorAll(selector);
-          for (let i = 0; i < found.length; i++) {
-            const el = found[i] as HTMLElement;
-            if (el.closest('article') === article) return el;
-          }
-          return null;
-        };
-        const hasButtons = (article: Element) => !!ownEl(
-          article,
-          '[data-mf-charge="disinfact"], [data-mf-charge="refresh-top"], [data-mf-charge="factcheckall"], [data-mf-charge="translate-tweet"], [mf-on-hold-id], [mf-top-bar-id], [translate-fc-id], [mf-refresh-id], [mf-visual-id]',
-        );
         const foldWrap = (wrapEl: HTMLElement) => {
           const claims = wrapEl.querySelectorAll('.mf-segment-claim');
           for (let i = 0; i < claims.length; i++) {
@@ -4172,80 +5813,6 @@ export default defineBackground({
             range = live;
           }
         }
-        const injected: Element[] = [];
-        if (onX) {
-          const ancestor = range.commonAncestorContainer;
-          const root = ancestor.nodeType === 1 ? (ancestor as Element) : ancestor.parentElement;
-          const scope = root?.closest('article')?.parentElement ?? root;
-          if (scope) {
-            const articles = scope.querySelectorAll('article');
-            for (let i = 0; i < articles.length; i++) {
-              const a = articles[i];
-              if (hasButtons(a) && tweetIdOf(a) && intersects(a)) injected.push(a);
-            }
-          }
-          const startA = (range.startContainer.nodeType === 1
-            ? (range.startContainer as Element)
-            : range.startContainer.parentElement)?.closest('article');
-          const endA = (range.endContainer.nodeType === 1
-            ? (range.endContainer as Element)
-            : range.endContainer.parentElement)?.closest('article');
-          for (const a of [startA, endA]) {
-            if (a && hasButtons(a) && tweetIdOf(a) && intersects(a) && !injected.includes(a)) injected.push(a);
-          }
-          injected.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
-        }
-        const fireTweet = (article: Element): string | null => {
-          const disinfact = ownEl(article, 'button[data-mf-charge="disinfact"]');
-          if (disinfact) { disinfact.click(); return null; }
-          const refresh = ownEl(article, 'button[data-mf-charge="refresh-top"]');
-          if (refresh) { refresh.click(); return null; }
-          return tweetIdOf(article);
-        };
-        const leftoverFrom = (src: Range, holes: Element[]): Range[] => {
-          if (holes.length === 0) return [src.cloneRange()];
-          const pieces: Range[] = [];
-          let fromContainer: Node = src.startContainer;
-          let fromOffset = src.startOffset;
-          for (const hole of holes) {
-            try {
-              const piece = document.createRange();
-              piece.setStart(fromContainer, fromOffset);
-              piece.setEndBefore(hole);
-              if (piece.compareBoundaryPoints(Range.START_TO_START, src) < 0) {
-                piece.setStart(src.startContainer, src.startOffset);
-              }
-              if (piece.compareBoundaryPoints(Range.END_TO_END, src) > 0) {
-                piece.setEnd(src.endContainer, src.endOffset);
-              }
-              if (!piece.collapsed && piece.toString().trim()) pieces.push(piece);
-            } catch { /* inverted */ }
-            try {
-              const after = document.createRange();
-              after.setStartAfter(hole);
-              fromContainer = after.startContainer;
-              fromOffset = after.startOffset;
-            } catch {
-              return pieces;
-            }
-          }
-          try {
-            const tail = document.createRange();
-            tail.setStart(fromContainer, fromOffset);
-            tail.setEnd(src.endContainer, src.endOffset);
-            if (!tail.collapsed && tail.toString().trim()) pieces.push(tail);
-          } catch { /* inverted */ }
-          return pieces.filter((p) => !holes.some((h) => {
-            try {
-              const nr = document.createRange();
-              nr.selectNodeContents(h);
-              return p.compareBoundaryPoints(Range.START_TO_END, nr) < 0
-                && p.compareBoundaryPoints(Range.END_TO_START, nr) > 0;
-            } catch {
-              return false;
-            }
-          }));
-        };
         /** The block a range edge sits in. Mirrors `edgeBlock` in entrypoints/selection.ts
          *  (this function is serialized into the page's world and cannot call it). */
         const edgeBlock = (node: Node): Element | null => {
@@ -4289,45 +5856,23 @@ export default defineBackground({
           }
           return wrapId;
         };
-        const pendingTweetIds: string[] = [];
-        let wrapIds: string[] = [];
-        if (injected.length > 0) {
-          for (const article of injected) {
-            const missed = fireTweet(article);
-            if (missed) pendingTweetIds.push(missed);
-          }
-          const leftovers = leftoverFrom(range, injected);
-          for (let i = leftovers.length - 1; i >= 0; i--) {
-            const wrapId = wrapOne(leftovers[i]);
-            if (wrapId) wrapIds.unshift(wrapId);
-          }
-        } else if (spansBlocks(range)) {
+        // A selection is always the reader's own passage: it is wrapped and fact-checked,
+        // never handed to a post whose buttons the drag happened to cross.
+        if (spansBlocks(range)) {
           // Refused rather than wrapped: the page keeps its layout and the page script
           // fact-checks the text with its claims listed at the selection. `text` and `rect`
           // are what make that possible, so this is a fallback and not a failure.
           return fail('selection spans block boundaries', { text, rect });
-        } else {
-          const wrapId = wrapOne(range);
-          if (wrapId) wrapIds.push(wrapId);
         }
-        if (wrapIds.length === 0 && injected.length === 0) {
+        const wrapId = wrapOne(range);
+        if (!wrapId) {
           return fail(`range extracted nothing (collapsed=${range.collapsed}, rangeText=${range.toString().length})`, { text, rect });
         }
-        if (pendingTweetIds.length) document.documentElement.dataset.mfSelTweetIds = pendingTweetIds.join(',');
-        else delete document.documentElement.dataset.mfSelTweetIds;
         if (overlapping) document.documentElement.dataset.mfSelForce = '1';
         else delete document.documentElement.dataset.mfSelForce;
-        if (wrapIds.length === 0) {
-          document.documentElement.dataset.mfSelTweetOnly = '1';
-          delete document.documentElement.dataset.mfSelId;
-          delete document.documentElement.dataset.mfSelIds;
-        } else {
-          delete document.documentElement.dataset.mfSelTweetOnly;
-          document.documentElement.dataset.mfSelId = wrapIds[0];
-          document.documentElement.dataset.mfSelIds = wrapIds.join(',');
-        }
+        document.documentElement.dataset.mfSelId = wrapId;
         sel?.removeAllRanges();
-        return { ok: true, id: wrapIds[0] ?? 'tweet-only', len: text.length, tweetOnly: wrapIds.length === 0, leftoverCount: wrapIds.length };
+        return { ok: true, id: wrapId, len: text.length };
       } catch (err) {
         return fail(String(err));
       }
@@ -4774,10 +6319,78 @@ export default defineBackground({
 
   type SelectionRequest = { id: string; before: string; selected: string; after: string; locale: string; force?: boolean };
 
+  /** Hand a selected passage's claims to the automatic research, without waiting for a click.
+   *
+   *  EVERY claim is researched, not only a lone one: the drain no longer has to be counted,
+   *  because the rule does not depend on the count any more. How they are handed over does:
+   *
+   *    One claim goes to `autoClassifyClaim` directly — the hand-off the lone-claim case has
+   *    always used, unchanged.
+   *
+   *    Several go to the balance-aware waitlist, which is the client's mechanism for fanning
+   *    many classifications out at once (Fact-Check All uses it for the same reason). N runs
+   *    dispatched in parallel against one balance send N 402s as soon as it cannot cover them,
+   *    each reverting its claim and notifying; the waitlist admits in parallel only while the
+   *    balance covers every admitted claim in full and drains one at a time after that.
+   *
+   *  Either way the DB decides per claim first — the caller has already waited on each row, so
+   *  a claim the DB answers carries no on-hold flag by now and `enqueueFactCheckClaim` skips it
+   *  rather than paying to research a verdict that exists.
+   *
+   *  Returns the direct run's promise so the caller can hold the service worker across it; the
+   *  waitlist holds the worker itself, on the batch timer it arms for the claims it queues. */
+  function handOffSelectionClaims(
+    selectionId: string, claims: Claim[], batchId: string, locale: string
+  ): Promise<void> | void {
+    if (claims.length === 1) return autoClassifyClaim(selectionId, claims[0], batchId, locale);
+    for (const claim of claims) enqueueFactCheckClaim(selectionId, claim.text, batchId, locale);
+  }
+
+  /** Wait on one arriving claim's DB row and hand it to the Fact-Check All waitlist the moment
+   *  that wait resolves — mid-stream, when the worker's own claim pipeline beats the drain,
+   *  which is the common case. Nothing here waits for the stream to end, and no claim queues
+   *  behind another claim's match.
+   *
+   *  The waitlist, not a direct run, is what the claim is handed to: how many may run at once
+   *  has to follow the remaining balance, and the number of claims a passage will yield is not
+   *  known while the stream is still running. `enqueueFactCheckClaim` re-reads the cached claim,
+   *  so a row the DB answered leaves it off the waitlist rather than paying to research a
+   *  verdict that already exists. */
+  async function handOffSelectionClaim(
+    selectionId: string, claim: Claim, hash: string, locale: string, batchId: string, drainedGate: Promise<void>
+  ): Promise<void> {
+    try {
+      await claimAfterRowLands(selectionId, claim, hash, locale, drainedGate);
+      enqueueFactCheckClaim(selectionId, claim.text, batchId, locale);
+    } catch (err: any) {
+      console.error('[background] handOffSelectionClaim error:', err);
+    }
+  }
+
+  /** Rebuild the tweet-scoped routing row a selection's claim broadcasts land on.
+   *
+   *  Preclassification complete deletes `internal.broadcasts` in Postgres, so the handle
+   *  opened before the stream is detached from routing by the time the worker links the
+   *  claims it just preclassified — the row waits below would then never be released and
+   *  every claim would settle on the timeout path. Detaching the old handle makes
+   *  ensureTweetSubscription create a fresh routing row via public.subscribe, and leaves
+   *  the old one open until its own timer: rows written before the replacement row is
+   *  live still route to it.
+   *
+   *  Called once per selection, before any of its claims is waited on: the rebuild belongs to
+   *  the routing row rather than to a claim, and claims racing to close each other's handle
+   *  would leave the last one holding a row the others' broadcasts never reach. */
+  async function refreshSelectionRouting(selectionId: string, hash: string, locale: string): Promise<void> {
+    detachTweetSubscription(selectionId);
+    annotationRoutingReady.delete(selectionId);
+    await ensureTweetSubscription(selectionId, hash, locale, ANNOTATION_TIMEOUT_MS);
+    annotationRoutingReady.add(selectionId);
+  }
+
   /** The claim to decide on, once its DB row has landed: the DB's version of it when the row
    *  arrives, and the claim passed in when nothing can be learned.
    *
-   *  A lone claim is researched without a second click, and the one question that has to be
+   *  A claim is researched without a second click, and the one question that has to be
    *  settled first is whether the DB already answers it. That cannot be answered by looking:
    *  the worker replies by LINKING, and the write that links runs detached from the stream just
    *  consumed — preclassify-tweets closes the stream (`data: [DONE]`, then `writer.close()`)
@@ -4789,30 +6402,45 @@ export default defineBackground({
    *  The row that link produces is broadcast to the tweet subscription and merged into the
    *  cached claim by `mergeClaimPayload` — verdict and all — so waiting is what turns the
    *  question into an answer, and the wait costs no request. The subscription that carries it
-   *  is opened by the caller before its stream starts (startSelectionPipeline); the call below
-   *  only refreshes that timer, which is the longer window this wait needs, and re-opens it if
-   *  the run reached here without one.
+   *  is opened by the caller before its stream starts (startSelectionPipeline), and rebuilt by
+   *  `refreshSelectionRouting` once the stream has drained — the routing row preclassification
+   *  complete deletes is what the rebuild replaces. It is rebuilt once for the passage, not
+   *  once per claim, because it belongs to the row rather than to a claim; this call then only
+   *  waits on it.
    *
    *  Bounded, but a timeout is NOT free: the claim handed back is the one passed in, and the
    *  one passed in comes off the preclassify stream, so it carries verdict "research required"
-   *  with `reclassifyOnHold` — which is precisely the shape `autoClassifySoleClaim`'s settle
-   *  guard refuses. Timing out therefore re-researches a claim the DB may already hold a
-   *  verdict for. That is why this wait gets the longer SELECTION_DB_ROW_TIMEOUT_MS. A row
-   *  that does arrive settles the claim through that same guard, without spending. */
+   *  with `reclassifyOnHold` — which is precisely the shape the hand-off's guard refuses a
+   *  claim for being already answered (`autoClassifyClaim`'s settle guard, and the on-hold test
+   *  `enqueueFactCheckClaim` makes). Timing out therefore re-researches a claim the DB may
+   *  already hold a verdict for. That is why this wait gets the longer
+   *  SELECTION_DB_ROW_TIMEOUT_MS. A row that does arrive settles the claim through those same
+   *  guards, without spending. */
   async function claimAfterRowLands(
-    selectionId: string, claim: Claim, hash: string, locale: string
+    selectionId: string, claim: Claim, hash: string, locale: string, drainedGate?: Promise<void>
   ): Promise<Claim> {
+    const waiterKey = `${selectionId}:${claim.text}`;
     try {
-      // Preclassification complete deletes internal.broadcasts in Postgres, so any
-      // pre-existing client handle is now detached from routing. Close it so
-      // ensureTweetSubscription creates a fresh routing row via public.subscribe.
-      const existing = tweetSubs.get(selectionId);
-      if (existing && !existing.isClosed()) existing.close();
-      tweetSubs.delete(selectionId);
-      annotationRoutingReady.delete(selectionId);
-      await ensureTweetSubscription(selectionId, hash, locale, ANNOTATION_TIMEOUT_MS);
-      annotationRoutingReady.add(selectionId);
-      await awaitClaimDbRow(selectionId, claim.text, SELECTION_DB_ROW_TIMEOUT_MS);
+      // The wait is REGISTERED the moment the claim arrives, so a row the worker's own
+      // pipeline broadcasts mid-stream releases it at once — that is what lets a claim be
+      // researched while the stream is still running. The give-up clock is anchored to the
+      // drain rather than to the arrival, though: the row still lands only after the worker's
+      // stream closes (the pipeline is awaited in its `finally`, after `writer.close()`), so
+      // counting from the arrival would let an early claim time out where the drain-anchored
+      // wait would not — handing back a streamed claim the DB may already answer, which is a
+      // charge (see the note above).
+      const arrived = claimDbRowArrival(selectionId, claim.text);
+      let gotRow = false;
+      arrived.then(() => { gotRow = true; });
+      await Promise.race([
+        arrived,
+        (drainedGate ?? Promise.resolve()).then(
+          () => new Promise<void>(r => setTimeout(r, SELECTION_DB_ROW_TIMEOUT_MS))
+        ),
+      ]);
+      // Nothing will ever signal a waiter we gave up on; drop it rather than leave the entry
+      // in the map for the next run to reuse.
+      if (!gotRow) claimDbRowWaiters.delete(waiterKey);
       // Fallback: if broadcast didn't land dbClaimId, pull directly from DB
       const currentClaims = classificationCache.get(selectionId)?.classification.claims;
       const currentClaim = currentClaims?.find(c => c.text === claim.text);
@@ -4947,6 +6575,11 @@ export default defineBackground({
         clearInterval(keepAlive);
         return;
       }
+      // Resolved once the stream has drained — or the run ended any other way. Every waiting
+      // claim's give-up clock is anchored to it (see claimAfterRowLands), so the error paths
+      // must release it too, or a wait nothing will ever resolve would hold the run open.
+      let releaseDrain: (() => void) | null = null;
+      const drainedGate = new Promise<void>(r => { releaseDrain = r; });
       void gatedSpend(async () => {
         try {
           const hash = await computeTweetHash(tweet);
@@ -4957,44 +6590,17 @@ export default defineBackground({
         cacheClassification(spinning, batchId);
         broadcastClassification(spinning);
 
-        // Hash-hit first (same rule as processFullBatch). insert_tweet ON CONFLICT
-        // DELETE's tweet_claims — re-preclassifying a passage the DB already holds
-        // is what wiped the annotation key and brought the Annotate badge back.
-        // A reselect (`force`) is the user's way to re-preclassify without a
-        // button: skip the hit so the worker runs again and the new wrap is
-        // the only highlight left on that passage.
-        const dbResult = req.force ? { success: false as const } : await fetchDbTweet(hash);
-        if (dbResult.success && dbResult.claims && dbResult.claims.length > 0) {
-          const classification = dbClaimsToClassification(
-            tweetCache.get(selectionId) as MainTweet,
-            dbResult.claims,
-            batchId,
-            req.locale
-          );
-          classification.id = selectionId;
-          classification.preclassifying = undefined;
-          if (classification.claims) {
-            classification.claims = classification.claims.filter(
-              (c: any) => !unlocatedSelectionClaim(selectionId, c, false)
-            );
-          }
-          cacheClassification(classification, batchId);
-          dbHitCache.set(selectionId, { tweet: tweetCache.get(selectionId) as MainTweet, dbClaims: dbResult.claims });
-          broadcastClassification(classification);
-          // Same as X's research path: Flow A persists after the stream, and
-          // the only client delivery is trg_tweet_claim_annotations_updated on
-          // this routing row. A settled hash-hit used to skip the sub entirely
-          // (`is_preclassifying` only), so the annotation never arrived.
-          await ensureTweetSubscription(selectionId, hash, req.locale, ANNOTATION_TIMEOUT_MS);
-          watchClassifyingClaims(selectionId, dbResult.claims, req.locale);
-          const sole = classification.claims;
-          if (sole && sole.length === 1) {
-            await autoClassifySoleClaim(selectionId, sole[0], batchId, req.locale);
-          }
-          return;
-        }
+        // No DB lookup on this path, deliberately. A selection's hash covers the passage
+        // AND the prose around it (`${before}${selected}${after}` — see `canonicalContext`),
+        // so a row is only ever found when somebody fact-checked the same words inside the
+        // same surrounding context. Nothing else produced a hit, so the lookup was a round
+        // trip charged to every reader before the run they are actually waiting on.
+        //
+        // It has no replacement: the passage is preclassified, always. The one thing the
+        // route did that this does not is keep a settled row's annotation key, which the
+        // worker's own `insert_tweet ON CONFLICT DELETE` clears on a re-run.
 
-        // Miss: subscribe BEFORE streaming starts, exactly like the tweet flow (see
+        // Subscribe BEFORE streaming starts, exactly like the tweet flow (see
         // its own note at the same point). link_tweet_claim broadcasts only land on
         // an existing routing row, and a routing row is written by a NEW subscription
         // on this hash; the claim pipeline runs mid-stream, so subscribing afterwards
@@ -5006,6 +6612,11 @@ export default defineBackground({
         await ensureTweetSubscription(selectionId, hash, req.locale, ANNOTATION_TIMEOUT_MS);
 
         let latest: Classification | null = null;
+        // Claim texts whose automatic hand-off has already been started. Every snapshot is
+        // cumulative, so this is what makes the loop below act on each claim exactly once.
+        const handedOff = new Set<string>();
+        const handOffs: Promise<void>[] = [];
+
         for await (const cls of preClassify(tweet, hashToBytea(hash), req.locale, req.locale)) {
           cls.batchId = batchId;
           // The selection is the only thing that may yield claims: the surrounding prose
@@ -5023,42 +6634,75 @@ export default defineBackground({
           const merged = mergePreclassIntoCache(cls);
           merged.batchId = batchId;
           merged.preclassifying = undefined;
+          // The claims this snapshot brings that no earlier one did. Every one of them is bound
+          // for the automatic research, so the mask goes up with the first of them — before the
+          // broadcast below paints them — and none of them shows a Fact-Check button: not for the
+          // wait on its own DB row, and not for a balance that holds it back in the waitlist.
+          //
+          // It is the Fact-Check All mask, not the lone-claim one, because the mask has to
+          // outlive the hand-off: a claim the gate queues is still on hold in the cache, and only
+          // this mask both keeps painting it as researching and lets it go the moment the
+          // waitlist abandons it (see broadcastClassification). The waitlist is the only thing
+          // that ends the passage's claims, so nothing here has to drop the mask.
+          const fresh = (merged.claims ?? []).filter((c: any) => !handedOff.has(c.text));
+          if (fresh.length) factCheckAllTweetIds.add(selectionId);
+          for (const c of fresh) handedOff.add(c.text);
           cacheClassification(merged, batchId);
           broadcastClassification(merged);
           latest = merged;
+          // Hand each one off as its own match resolves — mid-stream whenever the worker's own
+          // claim pipeline beats the drain. Nothing here waits for the stream to end, and no
+          // claim queues behind another claim's match.
+          for (const c of fresh) {
+            handOffs.push(handOffSelectionClaim(selectionId, c, hash, req.locale, batchId, drainedGate));
+          }
         }
+
+        // The stream is over; only the worker's row writes remain outstanding. A request
+        // still waiting on one is released by the row, or by this give-up window
+        // (see armRowPendingGiveUp).
+        armRowPendingGiveUp(selectionId, batchId);
 
         if (!latest || !latest.claims || latest.claims.length === 0) {
           const empty: Classification = latest ?? { id: selectionId, batchId, claims: null, quoting: null };
           cacheClassification(empty, batchId);
           broadcastClassification(empty);
+          // The selection surface drops its HUD on this broadcast; without this the pass
+          // just unwrapped itself and left the user with nothing to read. A failed run
+          // has already reported its own error — see the tweet flow's twin of this check.
+          if (!latest?.preclassifyFailed) notifyError(browser.i18n.getMessage('errNoClaims'));
           return;
         }
 
-        // The stream has drained — see the tweet flow's note at the same point.
-        const sole = latest.claims;
-        if (sole.length === 1) {
-          // This passage's claim is the only one, so it is researched from here without
-          // waiting for a click: mark it and re-broadcast so it enters the loading state
-          // now, rather than showing a Fact-Check button through the wait on its DB row
-          // (see preclassifyRunTweets).
-          preclassifyRunTweets.add(selectionId);
-          const settled = classificationCache.get(selectionId)?.classification;
-          if (settled) broadcastClassification(settled);
+        // The routing row a claim's broadcast lands on is deleted once the preclassify worker
+        // settles, so the handle opened before the stream is detached by the time the worker
+        // links the claims it just preclassified (see refreshSelectionRouting). Rebuilt once
+        // for the passage, before the waits still pending can be released by it.
+        await refreshSelectionRouting(selectionId, hash, req.locale);
 
-          // Decide on the claim the DB has, not on the one the stream stopped at — the
-          // difference is a verdict that already exists (see the helper).
-          const claim = await claimAfterRowLands(selectionId, sole[0], hash, req.locale);
-          // Awaited so keepAlive spans the research, or the worker could be reaped mid-call.
-          await autoClassifySoleClaim(selectionId, claim, batchId, req.locale);
-        }
+        // The stream has drained AND routing is back: start the give-up clock every claim that
+        // is still waiting on its row has been holding off (see claimAfterRowLands). Claims
+        // whose rows the worker broadcast mid-stream resolved and were handed over long before
+        // this point; this only bounds the ones still outstanding.
+        releaseDrain?.();
+
+        // Every claim has now been waited on and handed over. The claims still being researched
+        // are the WAITLIST's to hold — it keeps the service worker alive on its own batch timer
+        // — so nothing here waits on a run, only on each claim's match. The mask stays up with
+        // them: a claim the balance queued keeps looking like the research it is waiting for,
+        // and the waitlist drops it back to its own button if it gives up (see the stream loop).
+        await Promise.all(handOffs);
       } catch (err: any) {
         console.error('[background] startSelectionPipeline error:', err);
       } finally {
-        // Safety net, same as the tweet flow's: the mark is dropped whatever else
-        // happened, so a hand-off that threw can't strand the passage's claim looking
-        // still-researching with nothing researching it.
-        preclassifyRunTweets.delete(selectionId);
+        // A run that threw mid-stream must still free every pending claim's give-up clock,
+        // or a wait nothing will ever resolve would hold the pipeline open past the point the
+        // worker is meant to be reaped. Idempotent: the drain path releases it first.
+        releaseDrain?.();
+        // The passage's mask is deliberately NOT dropped here: a claim the waitlist is holding
+        // is still on hold in the cache, and the mask is what keeps it looking like the research
+        // it is queued for. The waitlist releases it — to the researching state or back to its
+        // own button — when it admits or abandons the claim.
         clearInterval(keepAlive);
         const cur = classificationCache.get(selectionId)?.classification;
         // The page's "Disinfacting" indicator and the popup both wait for a terminal,
@@ -5225,13 +6869,6 @@ export default defineBackground({
       })();
       return true; // async sendResponse
     }
-    if (message?.type === 'MF_NOTIFY_SIGNED_OUT' && typeof message.tabId === 'number') {
-      (async () => {
-        await notifyTabSignedOut(message.tabId, 0);
-        sendResponse({ ok: true });
-      })();
-      return true; // async sendResponse
-    }
     // The page script's two routes to the page's own world, asked for by name because it
     // has no way to run code there itself: `scripting` is not an API a content script gets.
     // The tab is the sender's — the script in question is running in it — so neither of
@@ -5311,7 +6948,13 @@ export default defineBackground({
       message?.type === 'MF_NATIVE_CLEAR_ACCOUNT' ||
       message?.type === 'MF_NATIVE_SYNC_ACCOUNT' ||
       message?.type === 'MF_NATIVE_FINISH_TX' ||
-      message?.type === 'MF_NATIVE_PENDING_TX'
+      message?.type === 'MF_NATIVE_PENDING_TX' ||
+      message?.type === 'MF_NATIVE_GET_SESSION' ||
+      message?.type === 'MF_NATIVE_REFRESH_SESSION' ||
+      message?.type === 'MF_NATIVE_PUBLISH_SESSION' ||
+      message?.type === 'MF_NATIVE_POPUP_OPENED' ||
+      message?.type === 'MF_NATIVE_MARK_SELECTION_FACTCHECK' ||
+      message?.type === 'MF_NATIVE_OPEN_SIGN_IN'
     )) {
       (async () => {
         try {
@@ -5340,7 +6983,25 @@ export default defineBackground({
               ? { action: 'CLEAR_ACCOUNT' }
             : message.type === 'MF_NATIVE_SYNC_ACCOUNT'
               ? { action: 'SYNC_ACCOUNT', userId: message.userId, balance: message.balance,
-                  accessToken: message.accessToken, accessTokenExpiresAt: message.accessTokenExpiresAt }
+                  accessToken: message.accessToken, accessTokenExpiresAt: message.accessTokenExpiresAt,
+                  refreshToken: message.refreshToken,
+                  notifySpendEnabled: message.notifySpendEnabled, notifySpendThreshold: message.notifySpendThreshold }
+            // The shared session, relayed rather than sent direct: the popup reports that
+            // Safari does not answer its own sendNativeMessage calls (see nativeHost.ts), and
+            // a refresh is exactly the call that must not silently disappear.
+            : message.type === 'MF_NATIVE_GET_SESSION'
+              ? { action: 'GET_SESSION' }
+            : message.type === 'MF_NATIVE_REFRESH_SESSION'
+              ? { action: 'REFRESH_SESSION' }
+            : message.type === 'MF_NATIVE_PUBLISH_SESSION'
+              ? { action: 'PUBLISH_SESSION', accessToken: message.accessToken,
+                  refreshToken: message.refreshToken, expiresAt: message.expiresAt, userId: message.userId }
+            : message.type === 'MF_NATIVE_POPUP_OPENED'
+              ? { action: 'POPUP_OPENED' }
+            : message.type === 'MF_NATIVE_MARK_SELECTION_FACTCHECK'
+              ? { action: 'MARK_SELECTION_FACTCHECK' }
+            : message.type === 'MF_NATIVE_OPEN_SIGN_IN'
+              ? { action: 'OPEN_SIGN_IN', provider: message.provider }
             : { action: 'PREPARE_TOPUP', amount: message.amount, userId: message.userId, balance: message.balance };
           // The host drives UI the user has to complete (ASWebAuthenticationSession, the
           // StoreKit sheet), so this ceiling is deliberately generous — it is not a
@@ -5447,39 +7108,15 @@ export default defineBackground({
       return true;
     }
 
-    if (import.meta.env.SAFARI && message?.type === 'MF_AUTH_CALLBACK') {
+    // The iOS sign-in hand-off, collected on demand — from the popup when it opens, which is
+    // the fast path, or from the funds alarm when the user never does. Nothing is heard from
+    // the app unprompted: a callback only reaches us when we ask for it.
+    if (import.meta.env.SAFARI && message?.type === 'MF_AUTH_PULL') {
       (async () => {
-        const closeCallbackTab = () => {
-          const tabId = _sender?.tab?.id;
-          if (tabId != null) { try { browser.tabs.remove(tabId); } catch { /* already gone */ } }
-        };
         try {
-          if (message.errorDescription) {
-            console.error('[background] OAuth provider rejected sign-in:', message.errorDescription);
-            closeCallbackTab();
-            sendResponse({ error: message.errorDescription });
-            return;
-          }
-          if (message.code) {
-            const { error } = await supabase.auth.exchangeCodeForSession(message.code);
-            if (error) throw error;
-          } else if (message.accessToken && message.refreshToken) {
-            const { error } = await supabase.auth.setSession({
-              access_token: message.accessToken,
-              refresh_token: message.refreshToken,
-            });
-            if (error) throw error;
-          } else {
-            throw new Error('Callback carried no code or tokens.');
-          }
-          // Bring the pipeline up for the newly signed-in account before the user gets
-          // back to the popup, so the balance is already known when they reopen it.
-          refreshActiveState();
-          closeCallbackTab();
-          sendResponse({ ok: true });
+          sendResponse(await pullPendingNativeAuth());
         } catch (e: any) {
-          console.error('[background] OAuth callback exchange failed:', e);
-          closeCallbackTab();
+          console.error('[background] pending auth pull failed:', e);
           sendResponse({ error: e?.message || 'Sign-in could not be completed.' });
         }
       })();
@@ -5547,6 +7184,15 @@ export default defineBackground({
             notifyError(ERROR_CODES.NOT_SIGNED_IN);
             return;
           }
+          // A selection fact-check that reached this point was confirmed and is signed in,
+          // which is the whole of what the app's second guide overlay is asking about. Sent
+          // before the run so it is recorded even if the run itself then fails — the user
+          // did perform one.
+          if (import.meta.env.SAFARI) void markSelectionFactCheck();
+          // The same fact where there is no app to report it to. The popup gates its own copy
+          // of the guide on it, so without this the guide would keep returning on a build that
+          // has no shared container to ask.
+          else void browser.storage.local.set({ [SELECTION_FACT_CHECK_KEY]: true }).catch(() => {});
           startSelectionPipeline({
             id: data.id,
             before: typeof data.before === "string" ? data.before : "",
@@ -5648,7 +7294,10 @@ export default defineBackground({
       }
 
       if (message.type === "BATCH_REFRESH_FORCE") {
-        const { batchId, tweetId: targetTweetId, newBatchId, locale: msgLocale } = message.data;
+        const {
+          batchId, tweetId: targetTweetId, newBatchId, locale: msgLocale,
+          side: refreshSide, sideText: refreshSideText, sideLocale: refreshSideLocale,
+        } = message.data;
 
         // Retrieve stored tweets FIRST, before clearing the batch cache.
         // If targetTweetId was supplied by the click, refresh ONLY that tweet.
@@ -5689,6 +7338,7 @@ export default defineBackground({
           reResearchedTweetIds.delete(id);
           localizedHighlightLocales.delete(id);
           factCheckAllTweetIds.delete(id);
+          factCheckAllScopedTexts.delete(id);
           // Purge any queued waitlist items or in-flight refreshes for this tweet
           // so refreshing never auto-triggers research or classifications on claims.
           for (let i = factCheckWaitlist.length - 1; i >= 0; i--) {
@@ -5704,8 +7354,12 @@ export default defineBackground({
           for (const k of Array.from(abandonedFactCheckKeys)) {
             if (k.startsWith(`${id}:`)) abandonedFactCheckKeys.delete(k);
           }
+          for (const k of Array.from(researchRequestedBeforeRow)) {
+            if (k.startsWith(`${id}:`)) researchRequestedBeforeRow.delete(k);
+          }
           const sub = tweetSubs.get(id);
           if (sub) { sub.close(); tweetSubs.delete(id); }
+          closeLingeringTweetSubs(id);
           annotationRoutingReady.delete(id);
         };
         for (const t of tweets) {
@@ -5723,11 +7377,27 @@ export default defineBackground({
         // pre-check; everything else (hold/spend gating, streaming, persistence, the
         // no-claims retry path) is the same shared helper the Disinfact button uses.
         const refreshLocale = msgLocale ?? getUiLocale();
+        // The pressed group names the side it stands over, exactly as the Disinfact button
+        // does. The captured tweet reports whatever translation the host had on screen as
+        // "displayed", so without this the group seated over the source re-classified the
+        // translation beside it and the two sides swapped what they offered.
+        const refreshDisplayedSide = refreshSide === 'alt' ? 'ORIGINAL'
+          : refreshSide === 'translation' ? 'TRANSLATED' : null;
+        // A press the seam cannot name a side for (`refreshSide` undefined) still hands the
+        // words on screen, and they are what decides: the run compares them with the capture
+        // and classifies the side actually being read (see `runPreclassification`). Left out,
+        // the press reclassified the capture's source while the reader read the translation.
+        const refreshSideArgs = [
+          refreshDisplayedSide,
+          refreshDisplayedSide === 'ORIGINAL' ? null : (refreshSideText ?? null),
+          refreshDisplayedSide === 'TRANSLATED' ? (refreshSideLocale ?? null) : null,
+          refreshSide === 'alt' || refreshSide === 'translation' ? refreshSide : null,
+        ] as const;
         (async () => {
           for (const t of tweets) {
             try {
               const hash = await computeTweetHash(t);
-              runPreclassification({ tweet: t, hash }, refreshLocale, "BATCH_REFRESH_FORCE", true);
+              runPreclassification({ tweet: t, hash }, refreshLocale, "BATCH_REFRESH_FORCE", true, ...refreshSideArgs);
             } catch (err: any) {
               console.error(`[background] BATCH_REFRESH_FORCE: hash failed for ${t.id}:`, err);
             }
@@ -5745,7 +7415,7 @@ export default defineBackground({
       // get_annotation_context re-derive everything trust-sensitive server-side.
       if (message.type === "ANNOTATE_CLAIM") {
         void (async () => {
-          const { classificationId, claimText, locale: msgLocale, selection: msgSelection } = message.data;
+          const { classificationId, claimText, locale: msgLocale, selection: msgSelection, side: namedSide, sideText, sideLocale } = message.data;
           let hit = classificationCache.get(classificationId);
           if (!hit) {
             await restoreSelectionPipeline();
@@ -5833,7 +7503,7 @@ export default defineBackground({
         gatedSpendAttributed(async (onBalanceError) => {
           try {
             const freshCls = classificationCache.get(classificationId)?.classification ?? classification;
-            const loc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+            const loc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls, namedSide ?? null, sideText ?? null, sideLocale ?? null)
               ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
             if (!loc) {
               console.log(`[background] ANNOTATE_CLAIM: could not resolve locators for "${claimText.slice(0, 40)}...", skipping`);
@@ -5846,40 +7516,9 @@ export default defineBackground({
             // Ensure tweet subscription is open so worker's DB persist broadcasts reach the client
             await ensureAnnotationSubscription(classificationId, claimText, locale);
 
-            // Live-paint each streamed pair under this revision's FULL-locale key
-            // (same `${textLocale}:${hash}` shape the worker persists — the DB
-            // broadcast strips to bare prefixes at read time, and painting the
-            // full key lets that strip land on exactly this dict), plus every
-            // existing key (a retag keeps older revisions visible). The badge
-            // flips to corrections without waiting for the broadcast, which
-            // still arrives later via the annotations trigger and merges the
-            // same values — union, never replace.
-            const liveKeys = new Set<string>();
-            for (const k of Object.keys(claim.annotations ?? {})) liveKeys.add(k);
-            liveKeys.add(loc.textLocale);
-            const paintLive = (acc: Record<string, string>) => {
-              const entry = classificationCache.get(classificationId);
-              if (!entry) return;
-              const paint = (list: Claim[] | null): Claim[] | null => {
-                if (!list) return list;
-                return list.map(c => {
-                  if (c.text !== claimText) return c;
-                  const merged = { ...(c.annotations ?? {}) };
-                  for (const k of liveKeys) merged[k] = { ...(merged[k] ?? {}), ...acc };
-                  return { ...c, annotations: merged };
-                });
-              };
-              const painted: Classification = {
-                ...entry.classification,
-                claims: paint(entry.classification.claims),
-                quoting: entry.classification.quoting
-                  ? { ...entry.classification.quoting, claims: paint(entry.classification.quoting.claims) }
-                  : entry.classification.quoting,
-              };
-              painted.batchId = anyBatchId;
-              cacheClassification(painted, anyBatchId);
-              broadcastClassification(painted);
-            };
+            // See paintAnnotationsLive for the key shape and why the merge is a union.
+            const paintLive = (acc: Record<string, string>) =>
+              paintAnnotationsLive(classificationId, claimText, anyBatchId, loc.textLocale, acc);
             const finalAcc = await backgroundAnnotate(
               loc.tweetHash, loc.tweetText, loc.textLocale,
               claim.dbClaimId, loc.claimIndex, locale,
@@ -5912,7 +7551,7 @@ export default defineBackground({
       }
 
       if (message.type === "REFRESH_CLAIM") {
-        const { classificationId, claimText, locale: msgLocale } = message.data;
+        const { classificationId, claimText, locale: msgLocale, side, sideText, sideLocale } = message.data;
         const hit = classificationCache.get(classificationId);
         if (!hit) {
           console.log(`[background] REFRESH_CLAIM: no cached classification for ${classificationId}`);
@@ -5947,7 +7586,7 @@ export default defineBackground({
         };
         fcClassification.batchId = anyBatchId;
         cacheClassification(fcClassification, anyBatchId);
-        port.postMessage({ type: "CLASSIFICATION", data: fcClassification });
+        safePostToPort(port, { type: "CLASSIFICATION", data: fcClassification });
         broadcastClassification(fcClassification);
 
         // Guard: prevent concurrent reclassification of the same claim
@@ -5979,13 +7618,18 @@ export default defineBackground({
               // Flow A's annotation persist broadcasts tweet-scoped, so it needs a
               // live tweet subscription to reach the client (see helper).
               await ensureAnnotationSubscription(classificationId, claimText, msgLocale ?? getUiLocale());
-              const annotLoc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls)
+              // The tapped span names the side it was painted on. Without it the locators read
+              // the payload's DISPLAYED side, which on a dual post is whichever body the host
+              // calls displayed — and a reclassify on the source then measures its correction
+              // into the translation and files it under the translation's locale. That also
+              // decides which side's old annotation survives the supersession below.
+              const annotLoc = await annotLocatorsFor(classificationId, freshCls.claims, claimText, freshCls, side ?? null, sideText ?? null, sideLocale ?? null)
                 ?? await annotLocatorsFor(classificationId, freshCls.quoting?.claims, claimText, freshCls);
               for await (const updated of refreshClaim(freshCls, claimText, researchCache, msgLocale ?? getUiLocale(), tweetUrls, onBalanceError, annotLoc)) {
                 gotUpdate = true;
                 // Locators rode along, so the worker's silent post-research run is
                 // in flight — "Annotating", not idle Annotate (see call site above).
-                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
+                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc, annotatedLocale: annotLoc?.textLocale });
               }
               if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, anyBatchId);
             }
@@ -6010,7 +7654,7 @@ export default defineBackground({
       }
 
       if (message.type === "PROCESS_ON_HOLD") {
-        const { tweetId, locale: msgLocale, displayedSide, displayedText, displayedLocale } = message.data;
+        const { tweetId, locale: msgLocale, displayedSide, displayedText, displayedLocale, side: namedSide, fromSelection } = message.data;
         const locale = msgLocale ?? getUiLocale();
         const entry = onHoldTweets.get(tweetId);
         if (!entry) {
@@ -6028,6 +7672,8 @@ export default defineBackground({
             displayedSide: displayedSide ?? null,
             displayedText: displayedText ?? null,
             displayedLocale: displayedLocale ?? null,
+            namedSide: namedSide ?? null,
+            fromSelection: fromSelection === true,
             timer: setTimeout(() => {
               pendingProcessOnHold.delete(tweetId);
               console.log(`[background] PROCESS_ON_HOLD: parked tap for ${tweetId} timed out, dropped`);
@@ -6049,14 +7695,22 @@ export default defineBackground({
         // first captured and has no idea the user switched sides since, so without it
         // runPreclassification would key highlights under the translation's locale for a
         // user reading the original.
-        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false, displayedSide ?? null, displayedText ?? null, displayedLocale ?? null);
+        runPreclassification(entry, locale, "PROCESS_ON_HOLD", false, displayedSide ?? null, displayedText ?? null, displayedLocale ?? null, namedSide ?? null, fromSelection === true);
         return;
       }
 
       if (message.type === "FACT_CHECK_ALL") {
-        const { tweetId, locale: msgLocale } = message.data;
+        const { tweetId, locale: msgLocale, claimTexts } = message.data;
+        // A revealed area hands over only the claims under it; the button hands over every
+        // claim still on hold. Either way the mask below is the Fact-Check All one: the
+        // claims are painted as researching for the whole wait, not just their own row's.
+        const scoped = Array.isArray(claimTexts) && claimTexts.length > 0
+          ? new Set(claimTexts.filter((t: unknown): t is string => typeof t === 'string'))
+          : null;
         factCheckAllTweetIds.add(tweetId);
-        console.log(`[background] FACT_CHECK_ALL for ${tweetId}`);
+        if (scoped) factCheckAllScopedTexts.set(tweetId, scoped);
+        else factCheckAllScopedTexts.delete(tweetId);
+        console.log(`[background] FACT_CHECK_ALL for ${tweetId}${scoped ? ` (${scoped.size} claim(s) scoped)` : ''}`);
         // A fresh Fact-Check All is a deliberate retry: clear any claims abandoned on a prior
         // batch for this tweet so they can be waitlisted again.
         for (const k of Array.from(abandonedFactCheckKeys)) if (k.startsWith(`${tweetId}:`)) abandonedFactCheckKeys.delete(k);
@@ -6069,10 +7723,21 @@ export default defineBackground({
           const batchId = hit.batchIds.values().next().value ?? '';
           const locale = msgLocale ?? getUiLocale();
           for (const cl of classification.claims ?? []) {
-            if (cl.reclassifyOnHold) {
+            // Flagged claims are not part of the post's highlights, so the button's batch
+            // leaves them alone; a passage's scoped request names its own claims, flagged
+            // ones included.
+            if (cl.reclassifyOnHold && (!scoped || scoped.has(cl.text)) && (scoped || cl.isHidden !== true)) {
               enqueueFactCheckClaim(tweetId, cl.text, batchId, locale);
             }
           }
+          // The researching paint is a broadcast-time mask (`isRequestedClaim`), and the loop
+          // above may have admitted nothing — a claim still waiting on its DB row is only
+          // waitlisted by the broadcast that delivers that row. Without a repaint here the
+          // client keeps whatever it last painted, which for a parked claim is the Fact-Check
+          // button: the "button while loading" a scoped request must never show. Read the
+          // cache back, because an admission inside the loop has already replaced it.
+          const latest = classificationCache.get(tweetId)?.classification;
+          if (latest) broadcastClassification(latest);
         }
         return;
       }
@@ -6093,10 +7758,28 @@ export default defineBackground({
         const holdKey = `${classificationId}:${claimText}`;
         pendingFreshResearchClaims.delete(holdKey);
 
+        const claimObj = classification.claims?.find(cl => cl.text === claimText);
+        // The claim's DB row decides this click: until fetch-claim has written it there is no
+        // way to tell a claim that needs research from one a classified claim already
+        // answers. Record the request, present the claim as researching, and let the row's
+        // broadcast start — or rule out — the run (see broadcastClassification). Without
+        // this the click researches the streamed claim, which is on hold by construction.
+        if (claimObj && !claimObj.dbClaimId) {
+          researchRequestedBeforeRow.add(holdKey);
+          const pendingClaims = classification.claims?.map(cl =>
+            cl.text === claimText ? { ...cl, reclassifyOnHold: false, refreshing: true } : cl
+          ) ?? null;
+          const pending: Classification = { ...classification, claims: pendingClaims };
+          pending.batchId = anyBatchId;
+          cacheClassification(pending, anyBatchId);
+          broadcastClassification(pending);
+          console.log(`[background] RECLASSIFY_ON_HOLD_CLICK ${classificationId}: "${claimText.slice(0, 40)}..." has no DB row yet — deferring research to it`);
+          return;
+        }
+
         // Pipeline claim: the user clicked the Disinfact badge while the
         // fetch-claim call was still in-flight or before the reclassifyOnHold
         // broadcast arrived. Set the claim to refreshing and start fresh research.
-        const claimObj = classification.claims?.find(cl => cl.text === claimText);
         if (claimObj && !claimObj.reclassifyOnHold && !claimObj.refreshing && (claimObj.verdict === "research required" || !claimObj.note)) {
           const pipelineUpdated = classification.claims?.map(cl =>
             cl.text === claimText
@@ -6138,7 +7821,7 @@ export default defineBackground({
                   gotUpdate = true;
                   // Locators rode along, so the worker's silent post-research run is
                   // in flight — "Annotating", not idle Annotate (see admit site).
-                  mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
+                  mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc, annotatedLocale: annotLoc?.textLocale });
                 }
                 if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, anyBatchId);
               }
@@ -6225,7 +7908,7 @@ export default defineBackground({
                 gotUpdate = true;
                 // Locators rode along, so the worker's silent post-research run is
                 // in flight — "Annotating", not idle Annotate (see admit site).
-                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc });
+                mergeSingleClaimAndBroadcast(classificationId, claimText, updated, anyBatchId, { withLocators: !!annotLoc, annotatedLocale: annotLoc?.textLocale });
               }
               if (annotLoc) await settleFlowAAnnotations(classificationId, claimText, annotLoc, anyBatchId);
             }
@@ -6244,9 +7927,15 @@ export default defineBackground({
       }
 
       if (message.type === "TRANSLATE_FACT_CHECKS") {
-        const { tweetId, locale: msgLocale } = message.data;
+        const { tweetId, locale: msgLocale, side, sideText, sideLocale } = message.data;
         const hit = classificationCache.get(tweetId);
-        if (!hit) return;
+        if (!hit) {
+          // A press that reaches here has a bar on screen, so this means the cache no longer
+          // names the id that bar carries. Say so: the press is otherwise indistinguishable
+          // from a button that did nothing (the bar re-syncs to its idle Localize at once).
+          console.warn(`[background] TRANSLATE_FACT_CHECKS: no cached classification for ${tweetId} (side=${side ?? 'none'})`);
+          return;
+        }
         const classification = hit.classification;
         const locale = msgLocale ?? getUiLocale();
         const anyBatchId = hit.batchIds.values().next().value ?? '';
@@ -6263,9 +7952,37 @@ export default defineBackground({
         // Get tweet data: from dbHitCache if available, otherwise from tweetCache
         const dbEntry = dbHitCache.get(tweetId);
         const cachedTweet = tweetCache.get(tweetId);
-        const tweet = dbEntry?.tweet ?? cachedTweet;
+        const tweet = withDisplayedSide(tweetId, dbEntry?.tweet ?? cachedTweet);
         const dbClaims = dbEntry?.dbClaims;
-        const displayedLocale = unheld.textLocale ?? tweet?.destinationLanguage ?? tweet?.sourceLanguage;
+        // Which body this press is for. A platform showing both sides at once paints each from
+        // the same claims, but the ranges are filed under one language, so the side they were
+        // not filed under has nothing to paint — and its group offers this action rather than
+        // the highlight controls (see `syncButtonBarAt`). Pressed there, the words to localize
+        // INTO are the post's own (`text`, which is what names it) and the key to file under is
+        // its own language, which most platforms state and Facebook does not: it answers `und`
+        // there, and `und` is still the right key — the worker aligns the claims to whatever
+        // text it is handed, and every later read of that side looks the ranges up by the same
+        // name.
+        const altSide = side === 'alt';
+        // The translation-row group names its own side, and with it the copy it is painted
+        // over. Both are load-bearing here: this classification was built for the OTHER
+        // side, so its `textLocale` and `translatedText` name that side's words — a source
+        // run stamps both with the source — and reading them for the translation's Localize
+        // localizes the source while filing its ranges under the translation's language.
+        const translationSide = side === 'translation';
+        // The body the localizing press handed over, which only says something when it is a
+        // DIFFERENT revision than the capture holds (see displayedText): a host auto-translation
+        // the extension never fetched gets filed as the post's own words, so switching back to
+        // the source leaves the capture naming the wrong side. Localizing against it measured
+        // ranges into words the page no longer showed — charged, painted nothing.
+        const cachedBody = unheld.translatedText ?? tweet?.translatedText ?? tweet?.text ?? '';
+        const handedBody = !altSide && !translationSide && typeof sideText === 'string' ? sideText.trim() : '';
+        const swappedBody = handedBody && !sameBodyRevision(handedBody, cachedBody) ? handedBody : undefined;
+        const displayedLocale = altSide
+          ? tweet?.sourceLanguage
+          : translationSide
+            ? (sideLocale ?? tweet?.destinationLanguage ?? locale)
+            : unheld.textLocale ?? tweet?.destinationLanguage ?? tweet?.sourceLanguage;
 
         const clearLocalizingHighlights = () => {
           const cur = classificationCache.get(tweetId)?.classification;
@@ -6289,10 +8006,20 @@ export default defineBackground({
         // displayed revision (revisionGateFor holds the originals since the
         // spurious-Localize fix), and the union keeps the freshly-streamed `es`
         // highlights — both land in one broadcast.
-        const backfillAnnotations = () => {
+        const backfillAnnotations = (body: string, runLocale: string) => {
           const gate = revisionGateFor(tweet, tweet?.quoting);
           const cur = classificationCache.get(tweetId)?.classification;
           if (!cur?.claims) return;
+          // Under the locale this run filed, only THIS run's body may come back. The gate is
+          // deliberately wider — "another held body" is still a genuine revision — but a host
+          // that states no language (Facebook) files both sides of a post under one locale
+          // prefix, so there the wider tier hands this side the OTHER side's corrections and
+          // they paint over words they never addressed, which is the annotation that lands
+          // when the agent found nothing here. Other locales are left exactly as the gate
+          // reads them: on a host that names each side's language they can only paint there.
+          const bodyHash = sha256HexSync(body);
+          const runFull = runLocale.toLowerCase();
+          const runBase = runFull.split('-')[0];
           const dbByText = new Map<string, any>();
           for (const d of dbClaims ?? []) {
             const key = extractClaimText((d as any).claim);
@@ -6303,7 +8030,17 @@ export default defineBackground({
             const d = dbByText.get(cl.dbClaimText ?? cl.text) ?? dbByText.get(cl.text);
             const rawA = d?.annotations;
             if (!d || !rawA || typeof rawA !== 'object') return cl;
-            const stripped = selectAnnotationRevision(rawA, gate);
+            const ownA: Record<string, Record<string, string>> = {};
+            for (const [k, v] of Object.entries(rawA as Record<string, unknown>)) {
+              if (v === null || typeof v !== 'object' || Array.isArray(v)) continue;
+              const split = splitHighlightKey(k);
+              if (split) {
+                const prefix = split[0].toLowerCase();
+                if ((prefix === runFull || prefix.split('-')[0] === runBase) && split[1] !== bodyHash) continue;
+              }
+              ownA[k] = v as Record<string, string>;
+            }
+            const stripped = selectAnnotationRevision(ownA, gate);
             const merged = unionAnnotations(cl.annotations, Object.keys(stripped).length > 0 ? stripped : undefined);
             if (JSON.stringify(merged ?? {}) === JSON.stringify(cl.annotations ?? {})) return cl;
             touched = true;
@@ -6325,17 +8062,61 @@ export default defineBackground({
         };
 
         if (displayedLocale && tweet) {
-          const tweetText = unheld.translatedText ?? tweet.translatedText ?? tweet.text;
+          const tweetText = altSide
+            ? tweet.text
+            : translationSide
+              ? (sideText ?? tweet?.translatedText ?? tweet.text)
+              : swappedBody ?? unheld.translatedText ?? tweet.translatedText ?? tweet.text;
+          // The classification that carries these ranges must name the side they were
+          // measured against. `unheld` names the OTHER side — this run was built for it, so
+          // its `textLocale` and `translatedText` point at that side's words — and the client
+          // resolves ranges through exactly those two fields, not through the map they are
+          // filed in. Merged unstamped, a named side's fresh ranges were resolved against the
+          // other body, matched nothing, and were never painted: the Localize press landed its
+          // ranges silently and the page stayed bare. Only a successful run merges this
+          // (mergeHighlightsFor spreads it over the cached classification), so a failed one
+          // leaves the classification exactly as it was.
+          //
+          // ...except the source group of a post showing BOTH sides. There `textElement` still
+          // names the translation, and these two fields are what the client cuts `segments`
+          // from — the ranges it paints into that translation. Stamped with the source, the
+          // client's `alignDualSideSegments` moved them onto the post's own words (correctly),
+          // left `segments` plain, and the translation's group read no ranges of its own and
+          // offered Localize again over a side it had just reclassified (reported 2026-10-19).
+          // The source's fresh ranges do not need the stamp: they are filed under
+          // `displayedLocale` (`und` on Facebook), the key `altSegments` resolves them by, and
+          // they reach that side without moving the classification's named body.
+          //
+          // ...unless that named body IS the one the run measured. A classification can name
+          // the source's own words under another key — a side reported by a host state that
+          // lagged the markup, or a flip restored from a body-matched record — and then the
+          // key it carries holds no range for those words at all: `segments` cut the source,
+          // resolved the old locale, found nothing, and the press painted nothing until a flip
+          // away and back re-pointed the classification at the same words under the new key
+          // (reported 2026-10-25 on a LinkedIn comment localized from its source side). The
+          // stamp moves nothing: it names the body already named, under the key this run filed
+          // its ranges with, which is the one honest name for them.
+          const namesRunBody = altSide && !!displayedLocale
+            && typeof tweetText === 'string' && typeof unheld.translatedText === 'string'
+            && sameBodyExactly(tweetText, unheld.translatedText);
+          const stamped: Classification = (translationSide || swappedBody || namesRunBody)
+            ? { ...unheld, textLocale: displayedLocale, translatedLocale: displayedLocale, translatedText: tweetText }
+            : unheld;
+          // The swapped body survives later DB reads only through displayedSides: the revision
+          // gate hashes every body recorded there, and the capture still holds the other side.
+          if (swappedBody && displayedLocale) {
+            recordDisplayedSide(tweetId, swappedBody, displayedLocale);
+          }
           if (dbClaims) {
             // DB hit path: use cached claims for highlight localization
             gatedSpend(async () => {
               try {
                 await warmAnnotationSubs();
-                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, unheld, locale, mergeHighlightsFor(unheld));
+                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, stamped, locale, mergeHighlightsFor(stamped));
                 // Retry with annotations already persisted: Flow C's
                 // annotations_present gate skips re-writing (no UPDATE → no
                 // broadcast), so pull the stored dicts in directly.
-                backfillAnnotations();
+                backfillAnnotations(tweetText, displayedLocale);
               } catch (e) {
                 console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e);
                 clearLocalizingHighlights();
@@ -6347,8 +8128,8 @@ export default defineBackground({
             gatedSpend(async () => {
               try {
                 await warmAnnotationSubs();
-                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, clsDbClaims, unheld, locale, mergeHighlightsFor(unheld));
-                backfillAnnotations();
+                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, clsDbClaims, stamped, locale, mergeHighlightsFor(stamped));
+                backfillAnnotations(tweetText, displayedLocale);
               } catch (e) {
                 console.error('[TRANSLATE_FACT_CHECKS] highlight error:', e);
                 clearLocalizingHighlights();
@@ -6472,7 +8253,7 @@ export default defineBackground({
       }
 
       if (message.type === "SET_DISPLAYED_LOCALE") {
-        const { tweetId, textLocale: requestedLocale, displayedText } = message.data;
+        const { tweetId, textLocale: requestedLocale, displayedText, bodyOnly } = message.data;
         const hit = classificationCache.get(tweetId);
         if (!hit) {
           console.log(`[background] SET_DISPLAYED_LOCALE: no cached classification for ${tweetId}`);
@@ -6484,7 +8265,6 @@ export default defineBackground({
           console.log(`[background] SET_DISPLAYED_LOCALE: no cached tweet for ${tweetId}`);
           return;
         }
-
         // Content script may send symbolic 'original'/'translated' or an actual locale code.
         const textLocale = requestedLocale === 'original'
           ? (tweet.sourceLanguage ?? requestedLocale)
@@ -6493,6 +8273,250 @@ export default defineBackground({
             : requestedLocale;
 
         console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} displayed locale -> ${textLocale}`);
+
+        // A host that states no language (Facebook) can report only the body that is on
+        // screen. No locale decides anything here: the side now showing is found by measuring
+        // the persisted revisions against this exact body, and only when the classification
+        // names a different one — which is the reader having flipped sides. Without this the
+        // classification keeps naming the side that was flipped AWAY from, the paint guard
+        // refuses its segments on the words now shown, and the side that does have ranges
+        // (already paid for, or the preclassification's) comes back offering Localize.
+        // A platform that cannot name the side it shows files BOTH sides under `und` (see
+        // `translationLocaleIsGuessed`), so the locale on the way back to the source names
+        // nothing: `hl.und` is whatever the last paid run measured, into the side just left.
+        // The named path below reads its mere presence as "this side is already placed" and
+        // broadcasts it over the source — the ranges cut into the words that were on screen
+        // before (reported 2026-10-23: Telegram's French marks landed on the Russian body).
+        // The source's own words are in hand — the capture files them whatever the markup
+        // shows — so this flip is answered exactly like a body-first report: the side is
+        // found, held or restored by the body it addresses, never by the locale.
+        const sourceBody = typeof tweet.text === 'string' ? tweet.text.trim() : '';
+        const sharedKeySourceFlip = !bodyOnly
+          && requestedLocale === 'original'
+          && textLocale.toLowerCase().split('-')[0] === UNKNOWN_LANGUAGE
+          // The side just left was filed under that same `und` key — which is what makes its
+          // ranges unreadable as this side's. A host whose source is unknown but whose
+          // translation is named (Facebook files it under its UI locale) keeps its own path:
+          // its two sides never share a key, so a range under one cannot be the other's.
+          && (classification.textLocale ?? '').toLowerCase().split('-')[0] === UNKNOWN_LANGUAGE
+          && !!sourceBody
+          && !!classification.translatedText
+          && !sameBodyRevision(classification.translatedText, sourceBody);
+
+        if (bodyOnly || sharedKeySourceFlip) {
+          const shownBody = sharedKeySourceFlip
+            ? sourceBody
+            : (typeof displayedText === 'string' ? displayedText.trim() : '');
+          if (!shownBody) {
+            // Nothing to re-read, but the reader's flip still has to be answered: the client
+            // drops its own copy of this classification the moment the flip is asked for
+            // (`mf-prepare-locale-switch`), and only a delivery replaces it. Left silent, the
+            // bar spins over a bare post with nothing running — and since nothing is in
+            // flight, no later delivery is owed either (reported 2026-10-23).
+            console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} side reported with no body — nothing to re-read, answering so the client's swap state ends`);
+            broadcastClassification(classification);
+            return;
+          }
+          // A capture holding no translation at all still has to answer for a side the seam
+          // reports as one: a post announced before the reader translated it holds only its
+          // own words, and this report IS the other side. It falls through to the gate below,
+          // which files it by its body — recovering any revision measured against these words
+          // and holding the rest for Localize. The one case that is not news is words the
+          // classification was built from (they still carry their ranges, and a flip report
+          // over them would re-point the classification for nothing).
+          const unheldTranslation = !classification.translatedText
+            && (!tweet.text || !sameBodyRevision(shownBody, tweet.text));
+          if (unheldTranslation) {
+            console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} side reported by its body, capture holds no translation — reading it against the persisted claims`);
+          } else if (!classification.translatedText || sameBodyRevision(shownBody, classification.translatedText)) {
+            // Back on the side the classification names. A hold recorded when the reader
+            // flipped AWAY from it is about a body that is no longer on screen: left set, the
+            // Localize button sits over a side whose ranges are right there, and pressing it is
+            // a second paid run. Cleared only when this side actually holds a range, so a side
+            // that is genuinely waiting on a localization keeps its hold.
+            const classifiedLocale = classification.textLocale;
+            if (classification.translateFactChecksOnHold && classifiedLocale
+              && (classification.claims ?? []).some(cl => !!resolveHighlightRange(cl.highlight, classifiedLocale))) {
+              const back: Classification = { ...classification, translateFactChecksOnHold: undefined };
+              cacheClassification(back, hit.batchIds.values().next().value ?? '');
+              broadcastClassification(back);
+              console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} back on the classified side — clearing the flip's hold`);
+            } else {
+              // Answer the flip even though there is nothing to re-read: see the no-body exit
+              // above. This one is the common case on a post this session classified.
+              console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} body unchanged, nothing to re-read, answering so the client's swap state ends`);
+              broadcastClassification(classification);
+            }
+            return;
+          }
+          // The side now on screen may be one this session already measured, and then its
+          // claims are still in hand. The persisted rows below only answer while
+          // `dbHitCache` holds the tweet — a post first classified this session never was a
+          // DB hit — and even then a host that states no language files both sides' ranges
+          // under one key, so that read can only ever recover one of them.
+          // A memo speaks for a side only while it names the claims the post still holds: a
+          // reclassification REPLACES the whole claim list, so a run that came back empty
+          // (or with a different set) leaves every other side's entry describing a
+          // classification the reader has since retired. Restored ungated, the flip painted
+          // highlights the reclassification had discarded — a side whose bar should have
+          // offered only the re-run button came back showing the old claims.
+          const heldTexts = new Set((classification.claims ?? []).map(cl => cl.text));
+          const namesHeldClaims = (e: { claims: any[] }) =>
+            heldTexts.size > 0 && e.claims.length === heldTexts.size
+            && e.claims.every(cl => heldTexts.has(cl.text));
+          const remembered = !classification.preclassifying
+            ? sideClaims.get(tweetId)?.find(e =>
+                namesHeldClaims(e)
+                && sameBodyRevision(e.text, shownBody)
+                && e.claims.some(cl => !!resolveHighlightRange(cl.highlight, e.locale)))
+            : undefined;
+          if (remembered) {
+            const restored: Classification = {
+              ...classification,
+              textLocale: remembered.locale,
+              translatedLocale: remembered.locale,
+              translatedText: remembered.text,
+              claims: remembered.claims.map(cl => ({ ...cl })),
+              translateFactChecksOnHold: undefined,
+              // NOT `localizingHighlights: false`: a localization can be running while this
+              // side is re-read (the paint itself triggers this pass), and this broadcast used
+              // to drop the wheel mid-run — the Localize button came back over a job still in
+              // flight, and the reader's second press was a second paid run. The run's own
+              // exits clear the flag; inheriting it here leaves it alone.
+            };
+            // The restored body is on screen now, so a later DB read must keep its revision
+            // (and the renderings recorded before it) rather than the capture's.
+            recordDisplayedSide(tweetId, remembered.text, remembered.locale);
+            cacheClassification(restored, hit.batchIds.values().next().value ?? '');
+            broadcastClassification(restored);
+            console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} flipped side — restored the ${remembered.locale} claims this session measured against the body on screen (${restored.claims?.length ?? 0})`);
+            return;
+          }
+          const dbEntry = dbHitCache.get(tweetId);
+          if (!dbEntry?.dbClaims?.length) {
+            // Nothing to read this side's ranges back from, and the classification must not be
+            // re-pointed at the new body without them — that would aim the old side's offsets at
+            // words they never addressed (see above). But saying nothing was its own wrong
+            // answer: the reader IS on a side with nothing localized, which is exactly
+            // `translateFactChecksOnHold`, and Localize is its affordance. Left silent, the bar
+            // offered no Localize at all and the stale paint stayed over the new words.
+            //
+            // Only when there IS something to localize. A post that has never been classified
+            // arrives here holding no claims at all — the flip is still news (it decides which
+            // side the next tap classifies), but its affordance is the ordinary Disinfact
+            // button, not Localize: that press would have no claims to measure and would
+            // answer with the same button, doing nothing, forever (reported 2026-10-23 on a
+            // fresh post flipped to its translation before any classification).
+            const hasClaims = (classification.claims?.length ?? 0) > 0;
+            // Recorded even though there is nothing to re-read: what is ON SCREEN is what
+            // tells a localization that finishes later (or a press made now) whether the
+            // body it measured is still the one being shown. Unrecorded, this report left
+            // the previous side standing as the page's side, and a run the reader started
+            // here looked foreign to it. `bodyOnly` arrives from hosts that cannot name
+            // their sides, so the key this side is filed under is the unknown language.
+            recordDisplayedSide(tweetId, shownBody, classification.textLocale ?? textLocale);
+            console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} flipped side with no persisted claims to re-read — ${hasClaims ? 'holding for Localize' : 'no claims to localize, leaving the Disinfact button'}`);
+            if (hasClaims !== !!classification.translateFactChecksOnHold) {
+              const held: Classification = { ...classification, translateFactChecksOnHold: hasClaims || undefined };
+              cacheClassification(held, hit.batchIds.values().next().value ?? '');
+              broadcastClassification(held);
+            } else {
+              // Answer the flip even though the hold state did not change: see the no-body exit
+              // above. A post first classified this session has no row to read this side back
+              // from, so this is the branch a flip on a new post lands in.
+              broadcastClassification(classification);
+            }
+            return;
+          }
+          // Strict gate: only a revision measured against the body now on screen survives.
+          const bodyHash = sha256HexSync(shownBody);
+          const known = new Set([bodyHash]);
+          const gate: RevisionGate = { displayed: bodyHash, known };
+          const byId = new Map<string, any>();
+          const byText = new Map<string, any>();
+          for (const d of dbEntry.dbClaims) {
+            if (d?.id != null) byId.set(String(d.id), d);
+            const key = extractClaimText(d?.claim);
+            if (key && !byText.has(key)) byText.set(key, d);
+          }
+          let recovered = 0;
+          let dropped = 0;
+          // Which side this is comes from the revisions that SURVIVED the gate, never from the
+          // locale the message names: the content script sends the locale of the side being
+          // flipped AWAY from (`classification.textLocale`). A host that keys each side by its
+          // own language files the side now showing under a different key — Telegram files the
+          // source under `und` and the translation under the host's UI locale — so reading the
+          // named locale's key discarded the range the gate had just kept, while the departing
+          // side's range was deleted from the live claims: a side holding ranges painted none,
+          // its bar offered Localize over a result already paid for, and the flip wrote that
+          // wrong locale back into `sideClaims`, which poisoned the in-session rescue for every
+          // later flip. When both sides share one key (Facebook) the vote lands on the named
+          // locale and nothing below changes.
+          const gateResults = (classification.claims ?? []).map(cl => {
+            const d = (cl.dbClaimId ? byId.get(cl.dbClaimId) : undefined) ?? byText.get(cl.dbClaimText ?? cl.text);
+            const kept = d?.highlight && typeof d.highlight === 'object'
+              ? selectHighlightRevision(d.highlight as Record<string, unknown>, gate)
+              : {};
+            return { d, kept };
+          });
+          const votes = new Map<string, number>();
+          for (const { kept } of gateResults) {
+            for (const [key, val] of Object.entries(kept)) {
+              if (isLocatedRange(val)) votes.set(key, (votes.get(key) ?? 0) + 1);
+            }
+          }
+          const sideLocale = [...votes].sort((a, b) => b[1] - a[1])[0]?.[0] ?? textLocale;
+          const flipped: Classification = {
+            ...classification,
+            textLocale: sideLocale,
+            translatedText: shownBody,
+            translatedLocale: sideLocale,
+            claims: (classification.claims ?? []).map((cl, i) => {
+              const { d, kept } = gateResults[i];
+              // Annotations persist under the same "<locale>:<hash>" binding as highlights,
+              // and this host files both sides under ONE locale key — so the dict carried on
+              // the claim survives a flip unchanged and its corrections paint over the words
+              // now on screen. The gate keeps only the shown body's revision; a side it has
+              // none for is "not annotated here", which is what brings that side's Annotate
+              // affordance back.
+              const keptAnn = d?.annotations && typeof d.annotations === 'object' && !Array.isArray(d.annotations)
+                ? selectAnnotationRevision(d.annotations as Record<string, Record<string, string>>, gate)
+                : {};
+              const annotations = Object.keys(keptAnn).length > 0 ? keptAnn : undefined;
+              const range = kept[sideLocale] as [number, number] | undefined;
+              const hl = { ...(cl.highlight ?? {}) };
+              if (range && isLocatedRange(range)) {
+                hl[sideLocale] = range;
+                recovered++;
+                return { ...cl, highlight: hl, annotations };
+              }
+              if (hl[sideLocale]) {
+                delete hl[sideLocale];
+                dropped++;
+                return { ...cl, highlight: Object.keys(hl).length > 0 ? hl : undefined, annotations };
+              }
+              return { ...cl, annotations };
+            }),
+          };
+          const flippedClaims = flipped.claims ?? [];
+          const localizedAny = flippedClaims.some(cl => !!resolveHighlightRange(cl.highlight, sideLocale));
+          if (!localizedAny && flippedClaims.length > 0) flipped.translateFactChecksOnHold = true;
+          else if (flipped.translateFactChecksOnHold) flipped.translateFactChecksOnHold = undefined;
+          // The side now on screen is what later taps are measured against: `withDisplayedSide`
+          // lays this record over the capture, and the annotate path reads the body to correct
+          // and the hash to file it under from there (see annotLocatorsFor). Unrecorded, a tap
+          // on the side the reader flipped TO measured the capture's side instead — a comment
+          // captured while its source showed had every correction on its translation filed
+          // into the source's words, and the annotation the reader got back was the other
+          // side's. Same record the other two flip outcomes keep (below, and the `remembered`
+          // branch above); the gate also holds these words as the displayed revision from here
+          // on, which is what lets a DB read keep what this side is measured with.
+          recordDisplayedSide(tweetId, shownBody, sideLocale);
+          cacheClassification(flipped, hit.batchIds.values().next().value ?? '');
+          broadcastClassification(flipped);
+          console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} flipped side — recovered ${recovered} persisted ${sideLocale} highlight(s), dropped ${dropped} measured against the other side`);
+          return;
+        }
 
         // WHICH side supplied the text decides what the next paid localization measures
         // its ranges against, and the three are indistinguishable from the outside, so it
@@ -6542,9 +8566,22 @@ export default defineBackground({
         // ever FILLS a translation side that was missing and only ever ADDS a highlight, so
         // a tweet whose payload carried both sides is untouched.
         if (displayedText && textLocale) {
+          // The durable record of the side on screen. Only a side that is NOT the captured
+          // source is recorded: the source's own body is already what the capture holds, and
+          // its DOM copy can be truncated, which would hash differently from the payload and
+          // drop the ranges that address the source legitimately.
+          if (textLocale !== tweet.sourceLanguage) {
+            recordDisplayedSide(tweetId, displayedText, textLocale);
+          }
           const cached = tweetCache.get(tweetId);
           if (cached && !(cached.translatedText && cached.destinationLanguage)) {
             tweetCache.set(tweetId, { ...cached, translatedText: displayedText, destinationLanguage: textLocale });
+            // The DB-hit entry holds its own copy of the same post, and the localization paths
+            // read THAT one (TRANSLATE_FACT_CHECKS, backfillAnnotations). Left stale, it gates
+            // the freshly localized ranges against the source and drops them, so the record of
+            // the side on screen has to reach both copies.
+            const dbHit = dbHitCache.get(tweetId);
+            if (dbHit) dbHitCache.set(tweetId, { ...dbHit, tweet: { ...dbHit.tweet, translatedText: displayedText, destinationLanguage: textLocale } });
           }
           const shownTweet = tweetCache.get(tweetId);
           const dbEntry = dbHitCache.get(tweetId);
@@ -6558,18 +8595,37 @@ export default defineBackground({
               if (key && !byText.has(key)) byText.set(key, d);
             }
             let recovered = 0;
+            let reannotated = 0;
             updatedCls.claims = (updatedCls.claims ?? []).map(cl => {
-              if (resolveHighlightRange(cl.highlight, textLocale)) return cl;
               const d = (cl.dbClaimId ? byId.get(cl.dbClaimId) : undefined) ?? byText.get(cl.dbClaimText ?? cl.text);
-              if (!d?.highlight || typeof d.highlight !== 'object') return cl;
+              // The DB-hit rebuild that precedes a flip reads its gate off the side that WAS
+              // on screen, so the side now showing comes back carrying neither its ranges nor
+              // its annotations. Both are restored here, under one rule: only ADD, and only
+              // what this side has none of already — a present dict is the fresher one, and
+              // the per-side record only survives the flip for one of the two sides.
+              let next = cl;
+              const annKnown = !!cl.annotations && Object.keys(cl.annotations).some(k => sameLanguage(k, textLocale));
+              if (!annKnown && d?.annotations && typeof d.annotations === 'object' && !Array.isArray(d.annotations)) {
+                const keptAnn = selectAnnotationRevision(d.annotations as Record<string, Record<string, string>>, gate);
+                const annKey = Object.keys(keptAnn).find(k => sameLanguage(k, textLocale));
+                if (annKey !== undefined) {
+                  next = { ...cl, annotations: { ...(cl.annotations ?? {}), [annKey]: keptAnn[annKey] } };
+                  reannotated++;
+                }
+              }
+              if (resolveHighlightRange(next.highlight, textLocale)) return next;
+              if (!d?.highlight || typeof d.highlight !== 'object') return next;
               const kept = selectHighlightRevision(d.highlight as Record<string, unknown>, gate);
               const range = kept[textLocale] as [number, number] | undefined;
-              if (!isLocatedRange(range)) return cl;
+              if (!isLocatedRange(range)) return next;
               recovered++;
-              return { ...cl, highlight: { ...(cl.highlight ?? {}), [textLocale]: range } };
+              return { ...next, highlight: { ...(next.highlight ?? {}), [textLocale]: range } };
             });
             if (recovered > 0) {
               console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} recovered ${recovered} persisted ${textLocale} highlight(s) for the body now on screen`);
+            }
+            if (reannotated > 0) {
+              console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} recovered ${reannotated} persisted ${textLocale} annotation(s) for the body now on screen`);
             }
           }
         }
@@ -6586,10 +8642,14 @@ export default defineBackground({
         // translateFactChecksOnHold — leaving one delivery in between that carried neither the
         // on-hold flag nor the content script's streaming suppression, which is long enough for
         // the fallback area to flash before the Disinfact button appears. The final state is
-        // identical either way; the two conditions are complements (some claim missing a
-        // highlight for this locale vs. some claim having one).
-        const needsLocalization = (updatedCls.claims ?? []).some(cl => !resolveHighlightRange(cl.highlight, textLocale));
-        console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} text=${textSource} needsLocalization=${needsLocalization}`);
+        // identical either way.
+        //
+        // The button is offered only when the side has NOTHING localized: a paid run that
+        // placed most of its claims is still the result the reader bought, and re-offering
+        // over it charges again for the same run while the side already shows those ranges.
+        const localizedAny = (updatedCls.claims ?? []).some(cl => !!resolveHighlightRange(cl.highlight, textLocale));
+        const needsLocalization = !localizedAny && (updatedCls.claims ?? []).length > 0;
+        console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} text=${textSource} needsLocalization=${needsLocalization} (localizedAny=${localizedAny})`);
         if (needsLocalization) {
           console.log(`[background] SET_DISPLAYED_LOCALE: ${tweetId} no cached highlights for ${textLocale} → holding for Translate Fact-Checks button`);
           updatedCls.translateFactChecksOnHold = true;

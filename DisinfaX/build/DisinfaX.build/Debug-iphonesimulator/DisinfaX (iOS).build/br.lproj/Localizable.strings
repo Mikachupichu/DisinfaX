@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> e barrenn ar chomlec'h, ha goude-se stokit war Merañ an Astennoù ha gweredekait DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ da vezañ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>GOUDE AR C'HARGADENN</string>
+	<key>Add funds to your balance</key>
+	<string>Ouzhpennañ arc'hant d'ho koust</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ur prenañ kent US$%lld a c'hortoze c'hoazh bezañ arloet, dre-se eo bet echuet an hini-se e-lec'h ho tan en-dro. Distroit da Safari ha digorit prenestr diflugellañ DisinfaX evit gwelet ho koust hizivaet.</string>
+	<key>Annotate</key>
+	<string>Notennañ</string>
+	<key>Annotating</key>
+	<string>O notennañ</string>
+	<key>Arguably</key>
+	<string>Tabutus</string>
+	<key>BALANCE</key>
+	<string>KOUST</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Dre gargañ, emaoc'h asantus d'hor [Divizoù ar Servij](https://disinfax.app/terms-of-use) ha d'hor [Politikerezh Prevezded](https://disinfax.app/privacy-policy). Feurmoù eskemm moneiz a c'hallfe bezañ arloet ma paeit gant ur moneiz all eget an USD.</string>
+	<key>Clear</key>
+	<string>Skarzhañ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Stokit war arlun DisinfaX e barrenn ostilhoù Safari evit digeriñ ar prenestr diflugellañ.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>O klikañ war %@ e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont</string>
+	<key>Contacting the App Store…</key>
+	<string>O kevreañ ouzh an App Store…</string>
+	<key>Copy</key>
+	<string>Eilañ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX a c'hall ober fazioù. Gwiriit an titouroù div wech.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>N'eo ket hegerz c'hoazh DisinfaX en ho rannvro abalamour da rekizadurioù reoliadel.</string>
+	<key>Disinfact</key>
+	<string>Difalsaat</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Gweredekait DisinfaX e Safari, e Arventennoù → Astennoù.</string>
+	<key>Enter a claim</key>
+	<string>Skriv un arguzenn</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Enankit ur soumm dollar klok etre 1 ha 100.</string>
+	<key>Equivocally</key>
+	<string>A-zivseurt</string>
+	<key>Fact-Check</key>
+	<string>Gwiriañ ar fedoù</string>
+	<key>Fact-Check All</key>
+	<string>Gwiriañ pep tra</string>
+	<key>Fact-Checking</key>
+	<string>Gwiriañ</string>
+	<key>False</key>
+	<string>Gaou</string>
+	<key>Likely</key>
+	<string>Moarvat</string>
+	<key>Mostly</key>
+	<string>Peurliesañ</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Digeriñ arventennoù astennoù Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Digoret Safari ha kit da x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Digorit ar prenestr diflugellañ e Safari evit gwelet ho koust hizivaet</string>
+	<key>Partially</key>
+	<string>Darnel</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Paeamant echu. Distroit da Safari ha digorit prenestr diflugellañ DisinfaX evit gwelet ho koust hizivaet.</string>
+	<key>Possibly</key>
+	<string>Marteze</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>N'eo ket bet kavet ar produ %@ e App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Prenañ nullet.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Prenañ a c'hortoz asant.</string>
+	<key>Reasoning</key>
+	<string>Poelladenn</string>
+	<key>Return to Safari</key>
+	<string>Distreiñ da Safari</string>
+	<key>Setup incomplete</key>
+	<string>Kefluniadur diglok</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Kevrit diwar prenestr diflugellañ DisinfaX e Safari evit ouzhpennañ arc'hant.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>N'eo ket bet anavezet un darn eus ar goulenn-mañ. Marplij gwiriañ ma'z eo hizivaet an astenn.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Ur fazi zo bet war hor tu. Marplij klaskit en-dro a-benn ur pennadig.</string>
+	<key>Sources</key>
+	<string>Mammennoù</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SOUMM AR C'HARGADENN</string>
+	<key>Tap the </key>
+	<string>Stokit war an arlun </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Stokit war an hevelep arlun ha dibabit DisinfaX evit digeriñ ar prenestr diflugellañ.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>N'eo ket bet kavet an dra-se. Marplij klaskit en-dro.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>N'eo ket talvoudek ar sammad-se. Marplij dibab ur sammad all.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ne c'hell ket ar savadur-mañ tizhout e endalc'her rannet (App Group %@). N'e vo ket posupl kargañ ken na vo ouzhpennet ar galloud App Groups d'an arload ha d'an astenn war-un-dro.</string>
+	<key>Top Up</key>
+	<string>Kargañ</string>
+	<key>Top Up Balance</key>
+	<string>Kargañ ar goust</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Ar c'hargadennoù a c'houlenn ur stumm nevesoc'h eus iOS. Hizivait, ha goude digorit DisinfaX en-dro.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Ar c'hargadennoù a c'houlenn ur stumm nevesoc'h eus macOS. Hizivait, ha goude digorit DisinfaX en-dro.</string>
+	<key>True</key>
+	<string>Gwir</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>OBERIAÑ DISINFAX E SAFARI</string>
+	<key>Unknown</key>
+	<string>Dianav</string>
+	<key>Unknown purchase error.</key>
+	<string>Fazi prenañ dianav.</string>
+	<key>Very Likely</key>
+	<string>Moarvat-tre</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollar Stadoù-Unanet klok, 1–100. Bez e vo taolet en arc'hant hoc'h App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ho peus dija ur c'hargadenn US$%lld hag a c'hortoz bezañ arloet — n'oc'h ket bet taolet en-dro. Distroit da Safari ha digorit prenestr diflugellañ DisinfaX evit e arloañ d'ho koust.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>N'oc'h ket kevreet. Kevreit ha klaskit en-dro, mar plij.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ho kargadenn US$%lld a zo en em arloañ.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Hirocʼh eget boaz eo diskouez ho kargadenn US$%lld.</string>
+	<key>Your account has been suspended.</key>
+	<string>Harzet eo bet ho kont.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Re izel eo ho soum. Marplij lakait arc'hant evit kenderc'hel.</string>
+</dict>
+</plist>

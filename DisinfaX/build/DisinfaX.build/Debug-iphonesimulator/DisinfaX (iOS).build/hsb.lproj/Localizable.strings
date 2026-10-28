@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> w adresowej lajsće, potom podótkń Rozšěrjenja rjadować a zmóžń DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PO NAPJELNJENJU</string>
+	<key>Add funds to your balance</key>
+	<string>Přidaj pjenjezy k swojemu stawej</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Zežerše kupjenje US$%lld je hišće na nałoženje čakało, tohodla bu tute dokónčene město toho, zo by so ći hišće raz wobličiło. Wróć so k Safari a wočin wuskakowace wokno DisinfaX, zo by swój aktualizowany staw widźał.</string>
+	<key>Annotate</key>
+	<string>Komentaruj</string>
+	<key>Annotating</key>
+	<string>Komentuje so</string>
+	<key>Arguably</key>
+	<string>Diskutabelny</string>
+	<key>BALANCE</key>
+	<string>STAW</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Z napjelnjenjom přihłosuješ našim [Wužiwanskim wuměnjenjam](https://disinfax.app/terms-of-use) a našej [Priwatnostnej směrnicy](https://disinfax.app/privacy-policy). Móža so měnjenske popłatki wobličić, jeli w druhej měnje hač USD płaćiš.</string>
+	<key>Clear</key>
+	<string>Wumazać</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Podótkń symbol DisinfaX w symbolowej lajsće Safari, zo by wuskakowace wokno wočinił.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Kliknjenje na %@ pokazuje twjerdźenja a wotćehnje pjenjezy z wašeho konta</string>
+	<key>Contacting the App Store…</key>
+	<string>Zwjazuje so z App Store…</string>
+	<key>Copy</key>
+	<string>Kopěrować</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX móže zmylki činić. Přepruwaj informacije dwójce.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX hišće njeje w twojim regionje k dispoziciji přeradźenskich naprašowanjow dla.</string>
+	<key>Disinfact</key>
+	<string>Pruwowanje</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Zmóžń DisinfaX w Safari pod Nastajenja → Rozšěrjenja.</string>
+	<key>Enter a claim</key>
+	<string>Zapisaj twjerdźenje</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Zapodaj cyłu dolarowu sumu mjez 1 a 100.</string>
+	<key>Equivocally</key>
+	<string>Dwuznačny</string>
+	<key>Fact-Check</key>
+	<string>Fakty přepruwowanje</string>
+	<key>Fact-Check All</key>
+	<string>Wšo pruwować</string>
+	<key>Fact-Checking</key>
+	<string>Pruwowanje</string>
+	<key>False</key>
+	<string>Njewěrny</string>
+	<key>Likely</key>
+	<string>Prawdźepodobny</string>
+	<key>Mostly</key>
+	<string>Zwjetša</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Nastajenja rozšěrjenjow Safari wočinić…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Wočin Safari a přeńdź na x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Wočin wuskakowace wokno w Safari, zo by swój aktualizowany staw widźał</string>
+	<key>Partially</key>
+	<string>Dźělnje</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Płaćenje dokónčene. Wróć so k Safari a wočin wuskakowace wokno DisinfaX, zo by swój aktualizowany staw widźał.</string>
+	<key>Possibly</key>
+	<string>Snano</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produkt %@ njeje so w App Store Connect namakał.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kupjenje wotskazane.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kupjenje čaka na wobkrućenje.</string>
+	<key>Reasoning</key>
+	<string>Zdowodowanje</string>
+	<key>Return to Safari</key>
+	<string>Wróćo k Safari</string>
+	<key>Setup incomplete</key>
+	<string>Konfiguracija njedokónčena</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Přizjew so přez wuskakowace wokno DisinfaX w Safari, zo by pjenjezy přidał.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Dźěl tuteje naprošenja njebu spóznaty. Prošu kontrolěruj, hač rozšěrjenje je aktualne.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Na naším boku je zmylk nastał. Prošu spytaj hišće raz za wokomik.</string>
+	<key>Sources</key>
+	<string>Žórła</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SUMA NAPJELNJENJA</string>
+	<key>Tap the </key>
+	<string>Podótkń symbol </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Podótkń samsny symbol a wubjer DisinfaX, zo by wuskakowace wokno wočinił.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>To njebu namakane. Spytaj hišće raz.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ta suma dopołnjenja njeje płaćiwa. Prošu wubjer druhu sumu.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Tuta wersija njemóže na swój zhromadny kontejner (App-skupina %@) přistupić. Napjelnjenja njebudu k dispoziciji, doniž funkcija App-skupiny njeje k aplikaciji a rozšěrjenju přidata.</string>
+	<key>Top Up</key>
+	<string>Připołnić</string>
+	<key>Top Up Balance</key>
+	<string>Staw napjelnić</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Napjelnjenja trjebaja nowšu wersiju iOS. Aktualizuj, potom wočin DisinfaX zaso.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Napjelnjenja trjebaja nowšu wersiju macOS. Aktualizuj, potom wočin DisinfaX zaso.</string>
+	<key>True</key>
+	<string>Wěrny</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>WUŽIWANJE DISINFAX W SAFARI</string>
+	<key>Unknown</key>
+	<string>Njeznaty</string>
+	<key>Unknown purchase error.</key>
+	<string>Njeznaty zmylk kupjenja.</string>
+	<key>Very Likely</key>
+	<string>Jara prawdźepodobny</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Cyle ameriske dolary, 1–100. Wobličeno w měnje twojeho App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ty maš hižo napjelnjenje US$%lld, kotrež čaka na nałoženje — njeje so ći hišće raz wobličiło. Wróć so k Safari a wočin wuskakowace wokno DisinfaX, zo by je na swój staw nałožił.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Njejsy přizjewjeny. Prošu přizjew so a spytaj hišće raz.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Twoje napjelnjenje US$%lld so runje nałožuje.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Twoje napjelnjenje US$%lld traje dlěje hač wšědnje, doniž so njepokazuje.</string>
+	<key>Your account has been suspended.</key>
+	<string>Twoje konto bu zablokowane.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Twój dobytk je přeco snadny. Prošu dopołń dobytk, zo by dale zaběhał.</string>
+</dict>
+</plist>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ጠውቕ፣ ድሕሪኡ Manage Extensions ጠውቕ ከምኡ DisinfaX ኣወለው።</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ክኸውን %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ድሕሪ ምምላእ</string>
+	<key>Add funds to your balance</key>
+	<string>ናብ ቀሪ ሒሳብካ ገንዘብ ወስኽ</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ቅድሚ ሕጂ ዝተገበረ US$%lld ዕድጊት ገና ንኣፈጻጺም ይጽበይ ነበረ፣ ስለዚ ንዳግም ክፍሊት ኣብ ክንዲ፣ ንሱ ተፈጺሙ። ንዝተመሓደሰ ቀሪ ሒሳብካ ንምርኣይ ናብ Safari ተመለስ ከምኡ ናይ DisinfaX ብቅ ባይ መስኮት ክፈት።</string>
+	<key>Annotate</key>
+	<string>ማብራሪያ ጨምር</string>
+	<key>Annotating</key>
+	<string>ማብራሪያ ይወሰኻል</string>
+	<key>Arguably</key>
+	<string>ብክርክር</string>
+	<key>BALANCE</key>
+	<string>ቀሪ ሒሳብ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>ብምምላእ፣ ንናትና [ውዑላት ኣገልግሎት](https://disinfax.app/terms-of-use) ከምኡ [ፖሊሲ ውሑስነት](https://disinfax.app/privacy-policy) ትቕበል ኣለኻ። ብ USD ዘይኮነ ባጤራ ትኸፍል እንተኾንካ፣ ናይ ምልውዋጥ ባጤራ ክፍሊት ክትግበር ይኽእል።</string>
+	<key>Clear</key>
+	<string>ኣጽሪ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>ንምኽፋት ብቅ ባይ መስኮት ኣብ DisinfaX ኣይኮን ኣብ Safari toolbar ጠውቕ።</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>ኣብ %@ ምጥዋቕ ነቶም መግለጺታት የርኢ እሞ ካብ ሒሳብካ ገንዘብ ክቕነስ እዩ</string>
+	<key>Contacting the App Store…</key>
+	<string>ምስ App Store ይራኸብ ኣሎ…</string>
+	<key>Copy</key>
+	<string>ቅዳሕ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ጌጋታት ክፍጠር ይኽእል እዩ። ሓበሬታ ደጊምካ ኣረጋግጽ።</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ብሰንኪ ቁጽጽራዊ ጠለባት ኣብ ከባቢኻ ገና የለን።</string>
+	<key>Disinfact</key>
+	<string>ግለጽ</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX ኣብ Safari ኣወለው፣ ኣብ ሰቲንግስ → ኤክስተንሽንስ።</string>
+	<key>Enter a claim</key>
+	<string>ሕቶ ኣእቱ</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>ካብ 1 ክሳብ 100 ዝኾነ ምሉእ ናይ ዶላር መጠን ኣእቱ።</string>
+	<key>Equivocally</key>
+	<string>ዘይንጹር</string>
+	<key>Fact-Check</key>
+	<string>ምርግጋጽ ሓበሬታ</string>
+	<key>Fact-Check All</key>
+	<string>ኩሉ መርምር</string>
+	<key>Fact-Checking</key>
+	<string>ምርምር</string>
+	<key>False</key>
+	<string>ሓሰት</string>
+	<key>Likely</key>
+	<string>ክኸውን ዝኽእል</string>
+	<key>Mostly</key>
+	<string>ብዝበዝሐ</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>ናይ Safari extension ሰቲንግስ ክፈት…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari ክፈት ናብ x.com ኪድ።</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>ንዝተመሓደሰ ቀሪ ሒሳብካ ንምርኣይ ኣብ Safari ብቅ ባይ መስኮት ክፈት</string>
+	<key>Partially</key>
+	<string>ብኸፊል</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ክፍሊት ተፈጺሙ። ንዝተመሓደሰ ቀሪ ሒሳብካ ንምርኣይ ናብ Safari ተመለስ ከምኡ ናይ DisinfaX ብቅ ባይ መስኮት ክፈት።</string>
+	<key>Possibly</key>
+	<string>ምናልባት</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>ፍርያት %@ ኣብ App Store Connect ኣይተረኸበን።</string>
+	<key>Purchase cancelled.</key>
+	<string>ዕድጊት ተሰሪዙ።</string>
+	<key>Purchase is pending approval.</key>
+	<string>ዕድጊት ናይ ምስምማዕ ይጽበይ ኣሎ።</string>
+	<key>Reasoning</key>
+	<string>ምኽንያት</string>
+	<key>Return to Safari</key>
+	<string>ናብ Safari ተመለስ</string>
+	<key>Setup incomplete</key>
+	<string>ምድላው ኣይተጠናቐቐን</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>ገንዘብ ንምውሳኽ ብ Safari ውሽጢ ካብ DisinfaX ብቅ ባይ መስኮት እቶ።</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ገለ ካብዚ ጠለብ ኣይተፈለጠን። በጃኻ እቲ ኤክስተንሽን ዘመናዊ ምዃኑ ኣረጋግጽ።</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>ካብ ወገንና ጌጋ ተፈጢሩ። በጃኻ ድሕሪ ሓጺር ግዜ ደጊምካ ፈትን።</string>
+	<key>Sources</key>
+	<string>ምንጭታት</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>መጠን ምምላእ</string>
+	<key>Tap the </key>
+	<string>ኣብ address bar ዘሎ ኣይኮን </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>ንዕኡ ኣይኮን ጠውቕ DisinfaX ንምኽፋት ብቅ ባይ መስኮት ምረጽ።</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>እዚ ክርከብ ኣይተኻእለን። በጃኻ ደጊምካ ፈትን።</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>እቲ ናይ ምምላእ መጠን ግቡእ ኣይኮነን። በጃኻ ካልእ መጠን ምረጽ።</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>እዚ ቢልድ ናይ ሓባር ኮንተይነሩ (App Group %@) ክበጽሕ ኣይክእልን። ናብ ክልቲኡ app ከምኡ extension ናይ App Groups ክእለት ክውሰኽ ክሳብ ዝኽእል፣ ምምላኣት ኣይክርከብ።</string>
+	<key>Top Up</key>
+	<string>ምላእ</string>
+	<key>Top Up Balance</key>
+	<string>ቀሪ ሒሳብ ምላእ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>ምምላኣት ሓድሽ ስሪት iOS ይደሊ። ኣሓድስ፣ ድሕሪኡ DisinfaX ደጊም ክፈት።</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>ምምላኣት ሓድሽ ስሪት macOS ይደሊ። ኣሓድስ፣ ድሕሪኡ DisinfaX ደጊም ክፈት።</string>
+	<key>True</key>
+	<string>ሓቂ</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ኣብ SAFARI ናይ DISINFAX ኣጠቓቕማ</string>
+	<key>Unknown</key>
+	<string>ዘይፍለጥ</string>
+	<key>Unknown purchase error.</key>
+	<string>ዘይፍለጥ ናይ ዕድጊት ጌጋ።</string>
+	<key>Very Likely</key>
+	<string>ኣዝዩ ክኸውን ዝኽእል</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>ምሉእ ናይ ኣሜሪካ ዶላር፣ 1–100። ብ App Store ናትካ ባጤራ ክኽፈል እዩ።</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>ንኣፈጻጺም ዝጽበይ US$%lld ምምላእ ኣለካ ኣሎ — ደጊም ኣይተኸፈልካን። ኣብ ቀሪ ሒሳብካ ንኣፈጻጺም ናብ Safari ተመለስ ከምኡ ናይ DisinfaX ብቅ ባይ መስኮት ክፈት።</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>ኣይኣተውካን። በጃኻ እቶ እሞ ደጊምካ ፈትን።</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>US$%lld ምምላእካ ይትግበር ኣሎ።</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>US$%lld ምምላእካ ካብ ልምዲ ንላዕሊ ግዜ ይወስድ ኣሎ ንኽርአ።</string>
+	<key>Your account has been suspended.</key>
+	<string>ኣካውንትካ ተኣጊዱ ኣሎ።</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>ቀሪ ሒሳብካ ትሑት እዩ። ንምቕጻል በጃኻ መልእ።</string>
+</dict>
+</plist>

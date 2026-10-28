@@ -1,0 +1,328 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "DisinfaX",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Check",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your session needs refreshing — open the DisinfaX popup in Safari, then try again.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "DisinfaX can make mistakes. Double-check information.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 244
+        }
+      },
+      {
+        "comment": "",
+        "key": "Enter a claim",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 258
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disinfact",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 168
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disinfact",
+        "location": {
+          "startingColumn": 80,
+          "startingLine": 214
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disinfact",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Checking",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 185
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Checking",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Check All",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disinfact",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 201
+        }
+      },
+      {
+        "comment": "",
+        "key": "Enter a claim",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 358
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 441
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 442
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annotating",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 583
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annotating",
+        "location": {
+          "startingColumn": 65,
+          "startingLine": 627
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annotate",
+        "location": {
+          "startingColumn": 99,
+          "startingLine": 627
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Checking",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 642
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Check",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 648
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reasoning",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 667
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sources",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 679
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 1001
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 1002
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unknown",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 1113
+        }
+      },
+      {
+        "comment": "",
+        "key": "True",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 1255
+        }
+      },
+      {
+        "comment": "",
+        "key": "False",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 1256
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unknown",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 1260
+        }
+      },
+      {
+        "comment": "",
+        "key": "Very Likely",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 1228
+        }
+      },
+      {
+        "comment": "",
+        "key": "Likely",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 1229
+        }
+      },
+      {
+        "comment": "",
+        "key": "Possibly",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 1230
+        }
+      },
+      {
+        "comment": "",
+        "key": "Mostly",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 1231
+        }
+      },
+      {
+        "comment": "",
+        "key": "Arguably",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 1232
+        }
+      },
+      {
+        "comment": "",
+        "key": "Partially",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 1233
+        }
+      },
+      {
+        "comment": "",
+        "key": "Equivocally",
+        "location": {
+          "startingColumn": 57,
+          "startingLine": 1234
+        }
+      },
+      {
+        "comment": "",
+        "key": "That couldn't be found. Please try again.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 2051
+        }
+      },
+      {
+        "comment": "",
+        "key": "That couldn't be found. Please try again.",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 2065
+        }
+      },
+      {
+        "comment": "",
+        "key": "Something went wrong on our end. Please try again in a moment.",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 2281
+        }
+      }
+    ]
+  },
+  "version": 1
+}

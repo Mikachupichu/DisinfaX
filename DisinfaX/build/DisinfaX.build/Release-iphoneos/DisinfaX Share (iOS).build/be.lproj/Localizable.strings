@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> у адрасным радку, потым дакраніцеся да «Кіраваць пашырэннямі» і ўключыце DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ упэўненасць</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ упэўненасць, %2$@ праўдзівасць</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ быць %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ПАСЛЯ ПОПАЎНЕННЯ</string>
+	<key>Add funds to your balance</key>
+	<string>Дадайце сродкі да свайго балансу</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Больш ранняя пакупка на US$%lld усё яшчэ чакала прымянення, таму менавіта яна была завершана замест паўторнага спісання. Вярніцеся ў Safari і адкрыйце ўсплывальнае акно DisinfaX, каб убачыць абноўлены баланс.</string>
+	<key>Annotate</key>
+	<string>Анатаваць</string>
+	<key>Annotating</key>
+	<string>Анатуецца</string>
+	<key>Arguably</key>
+	<string>Спрэчна</string>
+	<key>BALANCE</key>
+	<string>БАЛАНС</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Папаўняючы рахунак, вы згаджаецеся з нашымі [Умовамі абслугоўвання](https://disinfax.app/terms-of-use) і [Палітыкай канфідэнцыйнасці](https://disinfax.app/privacy-policy). Пры аплаце не ў USD можа спаганяцца камісія за канвертацыю валюты.</string>
+	<key>Clear</key>
+	<string>Ачысціць</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Дакраніцеся да значка DisinfaX на панэлі прылад Safari, каб адкрыць усплывальнае акно.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Націск на %@ раскрывае сцвярджэнні і спісвае сродкі з вашага балансу</string>
+	<key>Close</key>
+	<string>Закрыць</string>
+	<key>Contacting the App Store…</key>
+	<string>Злучэнне з App Store…</string>
+	<key>Copy</key>
+	<string>Капіяваць</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX можа памыляцца. Двойчы правярайце інфармацыю.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX пакуль недаступны ў вашым рэгіёне з-за нарматыўных вымог.</string>
+	<key>Disinfact</key>
+	<string>Праверыць</string>
+	<key>Edit</key>
+	<string>Рэдагаваць</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Уключыце DisinfaX у Safari, у Налады → Пашырэнні.</string>
+	<key>Enter a claim</key>
+	<string>Увядзіце сцвярджэнне</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Увядзіце цэлую суму ў доларах ад 1 да 100.</string>
+	<key>Equivocally</key>
+	<string>Неадназначна</string>
+	<key>Fact-Check</key>
+	<string>Праверка фактаў</string>
+	<key>Fact-Check All</key>
+	<string>Праверыць усё</string>
+	<key>Fact-Checking</key>
+	<string>Праверка</string>
+	<key>False</key>
+	<string>Няпраўда</string>
+	<key>Likely</key>
+	<string>Верагодна</string>
+	<key>Mostly</key>
+	<string>Пераважна</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Адкрыць налады пашырэнняў Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Адкрыйце Safari і перайдзіце на x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Адкрыйце ўсплывальнае акно ў Safari, каб убачыць абноўлены баланс</string>
+	<key>Partially</key>
+	<string>Часткова</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Аплата завершана. Вярніцеся ў Safari і адкрыйце ўсплывальнае акно DisinfaX, каб убачыць абноўлены баланс.</string>
+	<key>Possibly</key>
+	<string>Магчыма</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Тавар %@ не знойдзены ў App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Пакупка скасавана.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Пакупка чакае пацвярджэння.</string>
+	<key>Reasoning</key>
+	<string>Абгрунтаванне</string>
+	<key>Return to Safari</key>
+	<string>Вярнуцца ў Safari</string>
+	<key>Setup incomplete</key>
+	<string>Наладка не завершана</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Увайдзіце праз усплывальнае акно DisinfaX у Safari, каб дадаць сродкі.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Частка гэтага запыту не была распазнана. Пераканайцеся, што пашырэнне абноўленае.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>На нашым баку адбылася памылка. Паспрабуйце зноў праз хвіліну.</string>
+	<key>Sources</key>
+	<string>Крыніцы</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>СУМА ПОПАЎНЕННЯ</string>
+	<key>Tap the </key>
+	<string>Дакраніцеся да значка </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Дакраніцеся да таго ж значка і выберыце DisinfaX, каб адкрыць усплывальнае акно.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Не ўдалося гэта знайсці. Калі ласка, паспрабуйце зноў.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Гэтая сума папаўнення недапушчальная. Калі ласка, выберыце іншую суму.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Гэтая зборка не можа атрымаць доступ да супольнага кантэйнера (група праграм %@). Папаўненні будуць недаступныя, пакуль функцыя «Групы праграм» не будзе дададзена і ў праграму, і ў пашырэнне.</string>
+	<key>Top Up</key>
+	<string>Папоўніць</string>
+	<key>Top Up Balance</key>
+	<string>Папоўніць баланс</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Для папаўненняў патрэбна больш новая версія iOS. Абнавіце сістэму, а потым зноў адкрыйце DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Для папаўненняў патрэбна больш новая версія macOS. Абнавіце сістэму, а потым зноў адкрыйце DisinfaX.</string>
+	<key>True</key>
+	<string>Праўда</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ВЫКАРЫСТАННЕ DISINFAX У SAFARI</string>
+	<key>Unknown</key>
+	<string>Невядома</string>
+	<key>Unknown purchase error.</key>
+	<string>Невядомая памылка пакупкі.</string>
+	<key>Very Likely</key>
+	<string>Вельмі верагодна</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Цэлыя долары ЗША, ад 1 да 100. Спісваецца ў валюце вашага App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>У вас ужо ёсць папаўненне на US$%lld, якое чакае прымянення — паўторнае спісанне не адбылося. Вярніцеся ў Safari і адкрыйце ўсплывальнае акно DisinfaX, каб прымяніць яго да балансу.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Вы не ўвайшлі ў сістэму. Увайдзіце і паспрабуйце зноў.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ваша папаўненне на US$%lld зараз прымяняецца.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Адлюстраванне вашага папаўнення на US$%lld займае больш часу, чым звычайна.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ваш акаунт быў прыпынены.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ваш баланс занадта нізкі. Папаўніце баланс, каб працягнуць.</string>
+</dict>
+</plist>

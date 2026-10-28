@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string>-ikonen i adressfältet, tryck sedan på Hantera tillägg och aktivera DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ att vara %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>EFTER PÅFYLLNING</string>
+	<key>Add funds to your balance</key>
+	<string>Lägg till pengar på ditt saldo</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ett tidigare köp på US$%lld väntade fortfarande på att tillämpas, så det slutfördes i stället för att debitera dig igen. Gå tillbaka till Safari och öppna DisinfaX-popupen för att se ditt uppdaterade saldo.</string>
+	<key>Annotate</key>
+	<string>Annotera</string>
+	<key>Annotating</key>
+	<string>Annoterar</string>
+	<key>Arguably</key>
+	<string>Diskutabelt</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Genom att fylla på godkänner du våra [Användarvillkor](https://disinfax.app/terms-of-use) och vår [Integritetspolicy](https://disinfax.app/privacy-policy). Växlingsavgifter kan tillkomma om du betalar i en annan valuta än USD.</string>
+	<key>Clear</key>
+	<string>Rensa</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tryck på DisinfaX-ikonen i Safaris verktygsfält för att öppna popupen.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Genom att klicka på %@ visas påståenden och ditt saldo debiteras</string>
+	<key>Contacting the App Store…</key>
+	<string>Ansluter till App Store…</string>
+	<key>Copy</key>
+	<string>Kopiera</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX kan göra fel. Dubbelkolla informationen.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX är ännu inte tillgängligt i din region på grund av regulatoriska krav.</string>
+	<key>Disinfact</key>
+	<string>Disinfact</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Aktivera DisinfaX i Safari, under Inställningar → Tillägg.</string>
+	<key>Enter a claim</key>
+	<string>Ange ett påstående</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Ange ett helt dollarbelopp mellan 1 och 100.</string>
+	<key>Equivocally</key>
+	<string>Tvetydigt</string>
+	<key>Fact-Check</key>
+	<string>Faktakontroll</string>
+	<key>Fact-Check All</key>
+	<string>Faktakolla allt</string>
+	<key>Fact-Checking</key>
+	<string>Kontrollerar</string>
+	<key>False</key>
+	<string>Falskt</string>
+	<key>Likely</key>
+	<string>Troligt</string>
+	<key>Mostly</key>
+	<string>Mestadels</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Öppna inställningar för Safari-tillägg…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Öppna Safari och gå till x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Öppna popupen i Safari för att se ditt uppdaterade saldo</string>
+	<key>Partially</key>
+	<string>Delvis</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Betalning slutförd. Gå tillbaka till Safari och öppna DisinfaX-popupen för att se ditt uppdaterade saldo.</string>
+	<key>Possibly</key>
+	<string>Möjligen</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produkten %@ hittades inte i App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Köpet avbröts.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Köpet väntar på godkännande.</string>
+	<key>Reasoning</key>
+	<string>Resonemang</string>
+	<key>Return to Safari</key>
+	<string>Tillbaka till Safari</string>
+	<key>Setup incomplete</key>
+	<string>Konfigurationen är ofullständig</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Logga in via DisinfaX-popupen i Safari för att lägga till pengar.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Något i den här förfrågan kändes inte igen. Se till att tillägget är uppdaterat.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Något gick fel på vår sida. Försök igen om en liten stund.</string>
+	<key>Sources</key>
+	<string>Källor</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>PÅFYLLNADSBELOPP</string>
+	<key>Tap the </key>
+	<string>Tryck på </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tryck på samma ikon och välj DisinfaX för att öppna popupen.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Det kunde inte hittas. Försök igen.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Det påfyllningsbeloppet är inte giltigt. Välj ett annat belopp.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Den här versionen kan inte nå sin delade behållare (App-grupp %@). Påfyllningar är inte möjliga förrän funktionen App-grupper har lagts till i både appen och tillägget.</string>
+	<key>Top Up</key>
+	<string>Fyll på</string>
+	<key>Top Up Balance</key>
+	<string>Fyll på saldo</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Påfyllningar kräver en nyare version av iOS. Uppdatera och öppna sedan DisinfaX igen.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Påfyllningar kräver en nyare version av macOS. Uppdatera och öppna sedan DisinfaX igen.</string>
+	<key>True</key>
+	<string>Sant</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ANVÄNDA DISINFAX I SAFARI</string>
+	<key>Unknown</key>
+	<string>Okänt</string>
+	<key>Unknown purchase error.</key>
+	<string>Okänt köpfel.</string>
+	<key>Very Likely</key>
+	<string>Mycket troligt</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Hela amerikanska dollar, 1–100. Debiteras i din App Store-valuta.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Du har redan en påfyllning på US$%lld som väntar på att tillämpas — du har inte debiterats igen. Gå tillbaka till Safari och öppna DisinfaX-popupen för att tillämpa den på ditt saldo.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Du är inte inloggad. Logga in och försök igen.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Din påfyllning på US$%lld tillämpas just nu.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Din påfyllning på US$%lld tar längre tid än vanligt att visas.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ditt konto har stängts av.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ditt saldo är för lågt. Fyll på för att fortsätta.</string>
+</dict>
+</plist>

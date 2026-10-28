@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> tí ó wà ní ọ̀pá àdírẹ́sì, lẹ́yìn náà tẹ Ṣàkóso Àwọn Àfikún kí o sì mú DisinfaX ṣiṣẹ́.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ìgbàgbọ́</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ìgbàgbọ́, %2$@ òtítọ́</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ láti jẹ́ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>LẸ́YIN ÌKÓWÓ</string>
+	<key>Add funds to your balance</key>
+	<string>Fi owó kún ìwọ̀ntúnwọ̀nsì rẹ</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ìríra US$%lld tẹ́lẹ̀ ń dúró de fífi ìṣe hàn síi, nítorí náà ni a ṣe parí ìyẹn dípò gbígba owó lọ́wọ́ rẹ mọ́. Padà sí Safari kí o sì ṣí fèrèsé tí ń ṣẹ́ jáde ti DisinfaX láti wo ìwọ̀ntúnwọ̀nsì rẹ tí ó di tuntun.</string>
+	<key>Annotate</key>
+	<string>Ṣàlàyé</string>
+	<key>Annotating</key>
+	<string>Ń ṣàlàyé</string>
+	<key>Arguably</key>
+	<string>Àríyànjiyàn</string>
+	<key>BALANCE</key>
+	<string>ÌWỌ̀NTÚNWỌ̀NSÌ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Nípa kíkó owó, ìwọ ń gbà pé o fara mọ́ [Àwọn Òfin Iṣẹ́ Wa](https://disinfax.app/terms-of-use) àti [Ìlànà Ìṣọ́ra Wa](https://disinfax.app/privacy-policy). Owó ìpààrọ̀ owó ilẹ̀ òkèèrè lè wáyé bí o bá ń sanwó ní owó tí kì í ṣe USD.</string>
+	<key>Clear</key>
+	<string>Paarẹ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tẹ àmì DisinfaX nínú ọ̀pá irinṣẹ́ Safari láti ṣí fèrèsé tí ń ṣẹ́ jáde.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Títẹ %@ yóò ṣí àwọn ẹ̀sùn payá, yóò sì gba owó lára ìyókù owó rẹ</string>
+	<key>Close</key>
+	<string>Pa dé</string>
+	<key>Contacting the App Store…</key>
+	<string>Ń so pọ̀ mọ́ App Store…</string>
+	<key>Copy</key>
+	<string>Dakọ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX lè ṣe àṣìṣe. Ṣàyẹ̀wò àlàyé náà lẹ́ẹ̀kejì.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX kò tí ì wà ní àgbègbè rẹ nítorí àwọn ìlànà òfin.</string>
+	<key>Disinfact</key>
+	<string>Ṣàyẹ̀wò</string>
+	<key>Edit</key>
+	<string>Ṣàtúnṣe</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Mú DisinfaX ṣiṣẹ́ nínú Safari, ní Ètò → Àfikún.</string>
+	<key>Enter a claim</key>
+	<string>Tẹ ẹ̀sùn kan</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Tẹ iye dọ́là tí ó pé láàrin 1 àti 100 sí i.</string>
+	<key>Equivocally</key>
+	<string>Àìdájú</string>
+	<key>Fact-Check</key>
+	<string>Ìjẹ́rìí òtítọ́</string>
+	<key>Fact-Check All</key>
+	<string>Ṣàyẹ̀wò Gbogbo</string>
+	<key>Fact-Checking</key>
+	<string>Ń Ṣàyẹ̀wò</string>
+	<key>False</key>
+	<string>Irọ́</string>
+	<key>Likely</key>
+	<string>Ó ṣeéṣe</string>
+	<key>Mostly</key>
+	<string>Púpọ̀ jùlọ</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Ṣí àwọn ètò àfikún Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Ṣí Safari kí o sì lọ sí x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Ṣí fèrèsé tí ń ṣẹ́ jáde nínú Safari láti wo ìwọ̀ntúnwọ̀nsì rẹ tí ó di tuntun</string>
+	<key>Partially</key>
+	<string>Apakan</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ìsanwó ti parí. Padà sí Safari kí o sì ṣí fèrèsé tí ń ṣẹ́ jáde ti DisinfaX láti wo ìwọ̀ntúnwọ̀nsì rẹ tí ó di tuntun.</string>
+	<key>Possibly</key>
+	<string>Bóyá</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>A kò rí ọjà %@ nínú App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>A ti fagilé ìríra.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Ìríra ń dúró de ìfọwọ́sí.</string>
+	<key>Reasoning</key>
+	<string>Ìrònú</string>
+	<key>Return to Safari</key>
+	<string>Padà sí Safari</string>
+	<key>Setup incomplete</key>
+	<string>Ìṣètò kò tíì parí</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Wọlé láti inú fèrèsé tí ń ṣẹ́ jáde ti DisinfaX nínú Safari láti fi owó kún.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>A kò dá apá kan nínú ìbéèrè yìí mọ̀. Jọ̀wọ́ rí i dájú pé ìfikún náà ti ní ìmúdójúìwọ̀n tuntun.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Àṣìṣe kan ṣẹlẹ̀ ní ẹ̀gbẹ́ wa. Jọ̀wọ́ tún gbìyànjú láìpẹ́.</string>
+	<key>Sources</key>
+	<string>Àwọn orísun</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>OWÓ TÍ A Ó KÓ</string>
+	<key>Tap the </key>
+	<string>Tẹ àmì </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tẹ àmì kan náà kí o sì yan DisinfaX láti ṣí fèrèsé tí ń ṣẹ́ jáde.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>A kò rí i. Jọ̀wọ́ tún gbìyànjú.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Iye ìsanwó yẹn kò tọ̀nà. Jọ̀wọ́ yan iye míì.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ìkọ́lé yìí kò lè dé ibi àpótí tí a ṣàjọpín (App Group %@). Àwọn ìkówó kò níí wà títí tí a óò fi kún agbára App Groups sí ohun èlò àti àfikún méjèèjì.</string>
+	<key>Top Up</key>
+	<string>Fi Owó Kún</string>
+	<key>Top Up Balance</key>
+	<string>Ko owó sí ìwọ̀ntúnwọ̀nsì</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Àwọn ìkówó nílò ẹ̀dà iOS tuntun. Ṣàtúnbọ̀, lẹ́yìn náà ṣí DisinfaX padà.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Àwọn ìkówó nílò ẹ̀dà macOS tuntun. Ṣàtúnbọ̀, lẹ́yìn náà ṣí DisinfaX padà.</string>
+	<key>True</key>
+	<string>Òtítọ́</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ÌLÒ DISINFAX NÍNÚ SAFARI</string>
+	<key>Unknown</key>
+	<string>Àìmọ̀</string>
+	<key>Unknown purchase error.</key>
+	<string>Àṣìṣe ìríra tí a kò mọ̀.</string>
+	<key>Very Likely</key>
+	<string>Ó ṣeéṣe gidigidi</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dọ́là Amẹ́ríkà tí ó pé, 1–100. A óò gba owó lọ́wọ́ rẹ nínú owó App Store rẹ.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>O ti ní ìkówó US$%lld tí ń dúró de fífi ìṣe hàn — a kò gba owó lọ́wọ́ rẹ mọ́. Padà sí Safari kí o sì ṣí fèrèsé tí ń ṣẹ́ jáde ti DisinfaX láti fi ìṣe hàn sí ìwọ̀ntúnwọ̀nsì rẹ.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>O kò ti wọlé. Jọ̀wọ́ wọlé kí o sì tún gbìyànjú.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ìkówó rẹ ti US$%lld ń fi ìṣe hàn.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Ìfarahàn ìkówó rẹ ti US$%lld ń gbà àkókò ju bí ó ti máa ń rí lọ.</string>
+	<key>Your account has been suspended.</key>
+	<string>A ti dá àkọọ́lẹ̀ rẹ dúró.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ìyókù owó rẹ kéré jù. Jọ̀wọ́ fi owó kún un láti tẹ̀ síwájú.</string>
+</dict>
+</plist>

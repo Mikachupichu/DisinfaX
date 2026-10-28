@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI ခွဲခြမ်းစိတ်ဖြာမှုသုံး၍ tweet များတွင် မှားယွင်းသောသတင်းများကို ရှာဖွေပြီး မီးမောင်းထိုးပြသည်။",
+    "message": "AI ခွဲခြမ်းစိတ်ဖြာမှုသုံး၍ ပို့စ်များတွင် မှားယွင်းသောသတင်းများကို ရှာဖွေပြီး မီးမောင်းထိုးပြသည်။",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ဤ tweet ရှိ claim များအားလုံးကို ပြန်လည်ဖော်ပြပါ",
+    "message": "ဤ ပို့စ် ရှိ claim များအားလုံးကို ပြန်လည်ဖော်ပြပါ",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "ထွက်ရန်"
   },
+  "deleteAccount": {
+    "message": "အကောင့်နှင့် ဆက်စပ်ဒေတာများကို ဖျက်ပါ",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "သင့်လက်ကျန်ငွေနှင့် လျှို့ဝှက်ကီးဖြင့် အကာအကွယ်ပေးထားသော သင့်အီးမေးလ်လိပ်စာ၏ ကုဒ်ဝှက်ထားသော hash ကို အကောင့်ဖွင့်ချိန်တွင် ပေးသည့် အခမဲ့ရန်ပုံငွေကို အလွဲသုံးစားလုပ်ခြင်းမှ ကာကွယ်ရန် သိမ်းဆည်းထားပါသည်။တူညီသောအကောင့်ဖြင့် ပြန်လည်စာရင်းသွင်းပါက သင့်လက်ကျန်ငွေကို ပြန်လည်ရရှိမည်ဖြစ်ပါသည်။",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% ကို နှိပ်လိုက်ပါက ပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်"
   },
@@ -287,7 +295,7 @@
     "message": "နောက်ဆုံးအသုံးပြုမှု"
   },
   "cleanupTagline": {
-    "message": "သင့် X ဖိဒ်ကို ရှင်းလင်းပါ။"
+    "message": "သင့် ဖိဒ်ကို ရှင်းလင်းပါ။"
   },
   "disclaimerJurisdiction": {
     "message": "အမေရိကန်ပြည်ထောင်စုအတွင်း၌ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin နှင့် Wyoming ပြည်နယ်များတွင် နေထိုင်သူများသာလျှင် DisinfaX ကိုအသုံးပြု၍ လက်ကျန်ငွေဖြည့်နိုင်သည်။ Washington, D.C.၊ အမေရိကန်ပိုင်နက်များအားလုံးနှင့် ဖော်ပြမထားသော ပြည်နယ်များကို ချန်လှပ်ထားသည်။ အမေရိကန်ပြည်ထောင်စုပြင်ပတွင် Canada, Australia, New Zealand, Singapore, တောင်အာဖရိက, ဂျပန်, ထိုင်ဝမ်, အင်ဒိုနီးရှား, ထိုင်း, ဖိလစ်ပိုင်, မလေးရှား, ဗီယက်နမ် နှင့် ဆွစ်ဇာလန် တို့တွင် ရရှိနိုင်ပါသည်။"
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "ရှာမတွေ့ပါ။ ထပ်စမ်းကြည့်ပါ။"
   },
+  "errNoClaims": {
+    "message": "ဤစာသားတွင် အတည်ပြုနိုင်သော အဆိုများ မတွေ့ရှိပါ။",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ဆက်တင်များ",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "အသွင်အပြင်",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "လင်း",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "အလိုအလျောက်",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "မှောင်",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Fact-check ကို အမြဲပြပါ:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Reddit ဖြင့် ဆက်လက်လုပ်ဆောင်ရန်"
+  },
+  "persistentBadgesLabel": {
+    "message": "အရောင်မခွဲနိုင်သူများအတွက်- အမြဲပြတံဆိပ်",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "မောက်စ်မတင်ဘဲ ပို့စ်များပေါ်တွင် အချက်အလက်စစ်ဆေးမှု တံဆိပ်တိုင်းကို အမြဲမြင်သာစေသည်။ ဆုံးဖြတ်ချက်ကို စကားလုံးများကဲ့သို့ပင် ပေါ်လွင်သည့်အရောင်ဖြင့် ဖော်ပြထားသောကြောင့် ဤအရောင်များကို မခွဲခြားနိုင်သူများအတွက် အထောက်အကူပြုသည်။",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "ဖောင့်အရွယ်အစား ကြီး",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ဝင်းဒိုးအတွင်းရှိ စာသားအတွက် (အခိုင်အမာချက်များ၊ ကျိုးကြောင်းဆင်ခြင်ချက်များ...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "ပိတ်ပါ",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "ပြောဆိုချက်ကို ပြင်ဆင်ရန် နှိပ်ပါ",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "အချက်အလက် စစ်ဆေးမှု အသေးစိတ်",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ဤရွေးချယ်မှုသည် စစ်ဆေးရန် ရှည်လွန်းနေသည်။ အများဆုံး 1,000 အက္ခရာ။",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "လက်ကျန်ငွေ လျော့နည်းသွားပါက အသိပေးရန်",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "ဒီထက်ပိုပါက: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "အချက်အလက် စစ်ဆေးနည်း",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "မည်သည့်ဝဘ်စာမျက်နှာတွင်မဆို စစ်ဆေးလိုသော စာသားကို ရွေးပါ။",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "ရွေးထားသော စာသားပေါ်တွင် ညာကလစ်နှိပ်ပြီး စစ်ဆေးခြင်း ကို ရွေးပါ (မရွေးထားသော စာသားတွင်လည်း အလုပ်လုပ်ပါသည်)။",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "ရွေးထားသော စာသားပေါ်တွင် ညာကလစ်နှိပ်ပြီး {1} စစ်ဆေးခြင်း ကို ရွေးပါ (မရွေးထားသော စာသားတွင်လည်း အလုပ်လုပ်ပါသည်)။",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "စစ်ဆေးခြင်းသည် ချက်ချင်းစတင်ပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်။",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "စာသားကို ရွေးထားသည့်အတိုင်း ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " လိပ်စာဘားရှိ သင်္ကေတကို တို့ပြီး ထို့နောက် {1} DisinfaX ကို ရွေးပါ။",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

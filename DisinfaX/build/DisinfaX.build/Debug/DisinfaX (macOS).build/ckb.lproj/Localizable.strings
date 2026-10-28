@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> لە شریتی ناونیشان دەست بنێ، پاشان دەست بنێ لەسەر بەڕێوەبردنی ئێکستێنشنەکان و DisinfaX چالاک بکە.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@ بێت</string>
+	<key>AFTER TOP-UP</key>
+	<string>پاش پڕکردنەوە</string>
+	<key>Add funds to your balance</key>
+	<string>پارە زیاد بکە بۆ باڵانسەکەت</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>کڕینێکی پێشووی US$%lld هێشتا چاوەڕێی جێبەجێکردن بوو، بۆیە ئەوە تەواو کرا لەبری ئەوەی دووبارە پارەت لێ بدرێتەوە. بگەڕێوە بۆ Safari و پەنجەرەی داتکاوی DisinfaX بکەرەوە بۆ بینینی باڵانسی نوێکراوەت.</string>
+	<key>Annotate</key>
+	<string>شرۆڤە بکە</string>
+	<key>Annotating</key>
+	<string>خەریکە شرۆڤە دەکات</string>
+	<key>Arguably</key>
+	<string>بەگفتوگۆوە</string>
+	<key>BALANCE</key>
+	<string>باڵانس</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>بە پڕکردنەوە، تۆ ڕازیت لەسەر [مەرجەکانی خزمەتگوزاری](https://disinfax.app/terms-of-use) و [سیاسەتی تایبەتمەندی](https://disinfax.app/privacy-policy) ئێمە. ئەگەر بە دراوێکی جیاواز لە USD پارە بدەیت، لەوانەیە کرێی گۆڕینی دراو بەکاربهێنرێت.</string>
+	<key>Clear</key>
+	<string>پاککردنەوە</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>لەسەر ئایکۆنی DisinfaX لە تووڵامرازی Safari دەست بنێ بۆ کردنەوەی پەنجەرەی داتکاو.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>کرتەکردن لەسەر %@ بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە</string>
+	<key>Contacting the App Store…</key>
+	<string>پەیوەندی بە App Store دەکرێت…</string>
+	<key>Copy</key>
+	<string>کۆپی بکە</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX دەتوانێت هەڵە بکات. زانیارییەکان دووبارە پشکنین بکە.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>لەبەر داواکارییەکانی ڕێکخستن، DisinfaX هێشتا لە ناوچەکەتدا بەردەست نییە.</string>
+	<key>Disinfact</key>
+	<string>ئاشکراکردن</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX لە Safari چالاک بکە، لە ڕێکخستنەکان ← ئێکستێنشنەکان.</string>
+	<key>Enter a claim</key>
+	<string>دەقێک بنووسە</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>بڕێکی تەواوی دۆلار لە نێوان ١ و ١٠٠ بنووسە.</string>
+	<key>Equivocally</key>
+	<string>نادیار</string>
+	<key>Fact-Check</key>
+	<string>پشکنینی ڕاستی</string>
+	<key>Fact-Check All</key>
+	<string>هەمووی ڕاستی پشکنین بکە</string>
+	<key>Fact-Checking</key>
+	<string>ڕاستیپشکنین</string>
+	<key>False</key>
+	<string>هەڵە</string>
+	<key>Likely</key>
+	<string>ئەگەری هەیە</string>
+	<key>Mostly</key>
+	<string>زۆربەی کات</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>ڕێکخستنەکانی ئێکستێنشنی Safari بکەرەوە…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari بکەرەوە و بڕۆ بۆ x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>پەنجەرەی داتکاو لە Safari بکەرەوە بۆ بینینی باڵانسی نوێکراوەت</string>
+	<key>Partially</key>
+	<string>بەشێکی</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>پارەدان تەواو بوو. بگەڕێوە بۆ Safari و پەنجەرەی داتکاوی DisinfaX بکەرەوە بۆ بینینی باڵانسی نوێکراوەت.</string>
+	<key>Possibly</key>
+	<string>لەوانەیە</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>بەرهەمی %@ لە App Store Connect نەدۆزرایەوە.</string>
+	<key>Purchase cancelled.</key>
+	<string>کڕین هەڵوەشێنرایەوە.</string>
+	<key>Purchase is pending approval.</key>
+	<string>کڕین چاوەڕوانی پەسەندکردنە.</string>
+	<key>Reasoning</key>
+	<string>هۆکار</string>
+	<key>Return to Safari</key>
+	<string>بگەڕێوە بۆ Safari</string>
+	<key>Setup incomplete</key>
+	<string>ڕێکخستن تەواو نییە</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>لە پەنجەرەی داتکاوی DisinfaX لە Safari بچۆرە ژوورەوە بۆ زیادکردنی پارە.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>بەشێک لەم داواکارییە نەناسرا. تکایە دڵنیابەرەوە کە زیادکراوەکە نوێکراوەتەوە.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>هەڵەیەک لە لایەن ئێمەوە ڕوویدا. تکایە دووبارە هەوڵبدەرەوە دوای کەمێک.</string>
+	<key>Sources</key>
+	<string>سەرچاوەکان</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>بڕی پڕکردنەوە</string>
+	<key>Tap the </key>
+	<string>لەسەر ئایکۆنی </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>لەسەر هەمان ئایکۆن دەست بنێ و DisinfaX هەڵبژێرە بۆ کردنەوەی پەنجەرەی داتکاو.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>ئەوە نەدۆزرایەوە. تکایە دووبارە هەوڵبدەرەوە.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ئەو بڕە بۆ پڕکردنەوە دروست نییە. تکایە بڕێکی تر هەڵبژێرە.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>ئەم بیڵدە ناتوانێت بگاتە هاوپشتی هاوبەشی خۆی (App Group %@). پڕکردنەوەکان بەردەست نابن تاکو تواناکانی App Groups زیاد بکرێت بۆ هەم ئەپ و هەم ئێکستێنشن.</string>
+	<key>Top Up</key>
+	<string>پڕکردنەوە</string>
+	<key>Top Up Balance</key>
+	<string>باڵانس پڕ بکەرەوە</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>پڕکردنەوەکان پێویستیان بە وەشانێکی نوێتری iOS هەیە. نوێ بکەرەوە، پاشان DisinfaX دووبارە بکەرەوە.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>پڕکردنەوەکان پێویستیان بە وەشانێکی نوێتری macOS هەیە. نوێ بکەرەوە، پاشان DisinfaX دووبارە بکەرەوە.</string>
+	<key>True</key>
+	<string>ڕاست</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>بەکارهێنانی DISINFAX لە SAFARI</string>
+	<key>Unknown</key>
+	<string>نەزانراو</string>
+	<key>Unknown purchase error.</key>
+	<string>هەڵەیەکی نەناسراوی کڕین.</string>
+	<key>Very Likely</key>
+	<string>زۆر ئەگەری هەیە</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>دۆلاری ئەمریکی تەواو، ١–١٠٠. بە دراوی App Store‌ی تۆ کرێی لێ وەردەگیرێت.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>پێشتر بڕی US$%lld پڕکردنەوەت هەیە کە چاوەڕوانی جێبەجێکردنە — دووبارە پارە لێت نەبراوەتەوە. بگەڕێوە بۆ Safari و پەنجەرەی داتکاوی DisinfaX بکەرەوە بۆ جێبەجێکردنی لەسەر باڵانسەکەت.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>تۆ نەچوویتەتە ژوورەوە. تکایە بچۆ ژوورەوە و دووبارە هەوڵبدەرەوە.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>پڕکردنەوەی US$%lld تۆ ئێستا جێبەجێ دەکرێت.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>دەرکەوتنی پڕکردنەوەی US$%lld تۆ کاتی زیاتر لە ئاسایی دەخایەنێت.</string>
+	<key>Your account has been suspended.</key>
+	<string>هەژماری تۆ ڕاگیراوە.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>باڵانسەکەت زۆر کەمە. تکایە بۆ بەردەوامبوون باڵانسەکەت پڕ بکەرەوە.</string>
+</dict>
+</plist>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> mumutsara wekero, wobva wabaya Tonga Zvidzikisirwo wobva wabatidza DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ kuvimba</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ kuvimba, %2$@ chokwadi</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ kuva %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>MUSHURE MEKUCHAJA</string>
+	<key>Add funds to your balance</key>
+	<string>Wedzera mari kubhurenzi rako</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kutenga kwekare kweUS$%lld kwaive kuchimirira kushandiswa, saka ndiko kwakapedzwa panzvimbo pekukubhadharisa zvakare. Dzokera kuSafari uvhure popup yeDisinfaX kuti uone bhurenzi rako rakagadziridzwa.</string>
+	<key>Annotate</key>
+	<string>Tsanangura</string>
+	<key>Annotating</key>
+	<string>Kurikutsanangura</string>
+	<key>Arguably</key>
+	<string>Zvinopokana</string>
+	<key>BALANCE</key>
+	<string>BHURENZI</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Kana uchichaja, unobvuma [Mitemo yeSevhisi](https://disinfax.app/terms-of-use) ne[Mutemo weChakavanzika](https://disinfax.app/privacy-policy) yedu. Mhindu dzokuchinjanisa mari dzinogona kushandiswa kana uchibhadhara nemari isiri USD.</string>
+	<key>Clear</key>
+	<string>Dzima</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Baya chiratidzo cheDisinfaX mumudziyo weSafari kuti uvhure popup.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Kudzvanya %@ kunoratidza zvirevo uye kuchabvisa mari pabhalansi yako</string>
+	<key>Close</key>
+	<string>Vhara</string>
+	<key>Contacting the App Store…</key>
+	<string>Kubatanidza neApp Store…</string>
+	<key>Copy</key>
+	<string>Kopa</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX inogona kukanganisa. Ongorora ruzivo kaviri.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX haisati yakwanisa kushandiswa mudunhu rako, nekuda kwezvinodiwa nemitemo.</string>
+	<key>Disinfact</key>
+	<string>Ongorora chokwadi</string>
+	<key>Edit</key>
+	<string>Gadzirisa</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Batidza DisinfaX muSafari, mune Zvirongwa → Zvidzikisirwo.</string>
+	<key>Enter a claim</key>
+	<string>Isa chirevo</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Isa mari yedhora yakakwana pakati pe1 ne100.</string>
+	<key>Equivocally</key>
+	<string>Kusajeka</string>
+	<key>Fact-Check</key>
+	<string>Ongorora chokwadi</string>
+	<key>Fact-Check All</key>
+	<string>Ongorora zvese</string>
+	<key>Fact-Checking</key>
+	<string>Kuongorora</string>
+	<key>False</key>
+	<string>Nhema</string>
+	<key>Likely</key>
+	<string>Zvinogona kuitika</string>
+	<key>Mostly</key>
+	<string>Kazhinji</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Vhura zvirongwa zvezvidzikisirwo zveSafari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Vhura Safari uende ku x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Vhura popup muSafari kuti uone bhurenzi rako rakagadziridzwa</string>
+	<key>Partially</key>
+	<string>Chidimbu</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kubhadhara kwapera. Dzokera kuSafari uvhure popup yeDisinfaX kuti uone bhurenzi rako rakagadziridzwa.</string>
+	<key>Possibly</key>
+	<string>Pamwe</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Chigadzirwa %@ hachina kuwanikwa muApp Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kutenga kwakanzurwa.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kutenga kuri kumirira kutenderwa.</string>
+	<key>Reasoning</key>
+	<string>Kufunga</string>
+	<key>Return to Safari</key>
+	<string>Dzokera kuSafari</string>
+	<key>Setup incomplete</key>
+	<string>Kugadzirira hakupera</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Pinda uchishandisa DisinfaX popup iri muSafari kuti uwedzere mari.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Pane chimwe chinhu pachikumbiro ichi chisina kunzwisiswa. Ndapota ona kuti chiwedzero chako chiri patsva.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Chikanganiso chaitika kudivi redu. Ndapota edza zvakare mushure mekanguva.</string>
+	<key>Sources</key>
+	<string>Matsime</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>MARI YOKUCHAJA</string>
+	<key>Tap the </key>
+	<string>Baya chiratidzo </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Baya chiratidzo chimwe chetecho wosarudza DisinfaX kuti uvhure popup.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Izvi hazvina kuwanikwa. Ndapota edza zvakare.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Mari iyoyo yekuwedzera haisi yakanaka. Ndapota sarudza mari yakasiyana.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Kuvakwa uku hakusvika kune chirongo chinogoveranwa (App Group %@). Kuchaja hakuzowanikwa kusvikira hunyanzvi hweApp Groups hwawedzerwa kune app neyekudzikisirwa zvose.</string>
+	<key>Top Up</key>
+	<string>Wedzera Mari</string>
+	<key>Top Up Balance</key>
+	<string>Chaja bhurenzi</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Kuchaja kunoda vhezheni nyowani yeiOS. Gadziridza, wobva wavhurazve DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Kuchaja kunoda vhezheni nyowani yemacOS. Gadziridza, wobva wavhurazve DisinfaX.</string>
+	<key>True</key>
+	<string>Chokwadi</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>KUSHANDISA DISINFAX MUSAFARI</string>
+	<key>Unknown</key>
+	<string>Hazvizivikanwi</string>
+	<key>Unknown purchase error.</key>
+	<string>Chikanganiso chekutenga chisingazivikanwe.</string>
+	<key>Very Likely</key>
+	<string>Zvinonyanya kuitika</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Madhora echiUS akakwana, 1–100. Achabhadharwa mumari yeApp Store yako.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Une kare kuchaja kweUS$%lld kwakamirira kushandiswa — hausina kubhadharwa zvakare. Dzokera kuSafari uvhure popup yeDisinfaX kuti uishandise kubhurenzi rako.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Hausati wapinda. Ndapota pinda wozoedza zvakare.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Kuchaja kwako kweUS$%lld kuri kushandiswa.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Kuoneka kwekuchaja kwako kweUS$%lld kuri kutora nguva yakawandisa kupfuura yakajairika.</string>
+	<key>Your account has been suspended.</key>
+	<string>Akaunti yako yakamiswa.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Bhalansi yako yakaderera kwazvo. Ndapota wedzera mari kuti uenderere mberi.</string>
+</dict>
+</plist>

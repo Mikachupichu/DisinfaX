@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> din bara de adrese, apoi atinge Gestionare extensii și activează DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ încredere</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ încredere, %2$@ veridicitate</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ să fie %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>DUPĂ REALIMENTARE</string>
+	<key>Add funds to your balance</key>
+	<string>Adaugă fonduri în soldul tău</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>O achiziție anterioară de US$%lld era încă în așteptare, așa că aceasta a fost finalizată în loc să fii taxat din nou. Revino la Safari și deschide fereastra pop-up DisinfaX pentru a vedea soldul actualizat.</string>
+	<key>Annotate</key>
+	<string>Adnotează</string>
+	<key>Annotating</key>
+	<string>Se adnotează</string>
+	<key>Arguably</key>
+	<string>Discutabil</string>
+	<key>BALANCE</key>
+	<string>SOLD</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Prin realimentare, ești de acord cu [Termenii serviciului](https://disinfax.app/terms-of-use) și [Politica de confidențialitate](https://disinfax.app/privacy-policy). Se pot aplica taxe de schimb valutar dacă plătești într-o altă monedă decât USD.</string>
+	<key>Clear</key>
+	<string>Golește</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Atinge pictograma DisinfaX din bara de instrumente Safari pentru a deschide fereastra pop-up.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Apăsarea pe %@ dezvăluie afirmațiile și va debita soldul tău</string>
+	<key>Close</key>
+	<string>Închide</string>
+	<key>Contacting the App Store…</key>
+	<string>Se conectează la App Store…</string>
+	<key>Copy</key>
+	<string>Copiază</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX poate face greșeli. Verifică informațiile din nou.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX nu este încă disponibil în regiunea ta din cauza cerințelor de reglementare.</string>
+	<key>Disinfact</key>
+	<string>Verifică</string>
+	<key>Edit</key>
+	<string>Editează</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Activează DisinfaX în Safari, la Setări → Extensii.</string>
+	<key>Enter a claim</key>
+	<string>Introduceți o afirmație</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Introdu o sumă întreagă în dolari între 1 și 100.</string>
+	<key>Equivocally</key>
+	<string>Echivoc</string>
+	<key>Fact-Check</key>
+	<string>Verificarea faptelor</string>
+	<key>Fact-Check All</key>
+	<string>Verifică tot</string>
+	<key>Fact-Checking</key>
+	<string>Verificare</string>
+	<key>False</key>
+	<string>Fals</string>
+	<key>Likely</key>
+	<string>Probabil</string>
+	<key>Mostly</key>
+	<string>În mare parte</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Deschide setările extensiilor Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Deschide Safari și accesează x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Deschide fereastra pop-up în Safari pentru a vedea soldul actualizat</string>
+	<key>Partially</key>
+	<string>Parțial</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Plată finalizată. Revino la Safari și deschide fereastra pop-up DisinfaX pentru a vedea soldul actualizat.</string>
+	<key>Possibly</key>
+	<string>Posibil</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produsul %@ nu a fost găsit în App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Achiziție anulată.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Achiziția așteaptă aprobarea.</string>
+	<key>Reasoning</key>
+	<string>Raționament</string>
+	<key>Return to Safari</key>
+	<string>Înapoi la Safari</string>
+	<key>Setup incomplete</key>
+	<string>Configurare incompletă</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Conectează-te din fereastra pop-up DisinfaX din Safari pentru a adăuga fonduri.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>O parte din această cerere nu a fost recunoscută. Asigură-te că extensia este actualizată.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>A apărut o eroare din partea noastră. Încearcă din nou peste puțin timp.</string>
+	<key>Sources</key>
+	<string>Surse</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SUMA DE REALIMENTARE</string>
+	<key>Tap the </key>
+	<string>Atinge pictograma </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Atinge aceeași pictogramă și alege DisinfaX pentru a deschide fereastra pop-up.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Nu s-a putut găsi. Încearcă din nou.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Suma de reîncărcare nu este validă. Alege o altă sumă.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Această versiune nu poate accesa containerul partajat (Grup de aplicații %@). Realimentările nu vor fi disponibile până când funcția Grupuri de aplicații nu este adăugată atât la aplicație, cât și la extensie.</string>
+	<key>Top Up</key>
+	<string>Adaugă fonduri</string>
+	<key>Top Up Balance</key>
+	<string>Realimentează soldul</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Realimentările necesită o versiune mai nouă de iOS. Actualizează, apoi redeschide DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Realimentările necesită o versiune mai nouă de macOS. Actualizează, apoi redeschide DisinfaX.</string>
+	<key>True</key>
+	<string>Adevărat</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>UTILIZAREA DISINFAX ÎN SAFARI</string>
+	<key>Unknown</key>
+	<string>Necunoscut</string>
+	<key>Unknown purchase error.</key>
+	<string>Eroare de achiziție necunoscută.</string>
+	<key>Very Likely</key>
+	<string>Foarte probabil</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolari americani întregi, 1–100. Se taxează în moneda App Store-ului tău.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ai deja o realimentare de US$%lld în așteptare — nu ai fost taxat din nou. Revino la Safari și deschide fereastra pop-up DisinfaX pentru a o aplica soldului tău.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Nu ești conectat. Conectează-te și încearcă din nou.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Realimentarea ta de US$%lld este în curs de aplicare.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Realimentarea ta de US$%lld durează mai mult decât de obicei să apară.</string>
+	<key>Your account has been suspended.</key>
+	<string>Contul tău a fost suspendat.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Soldul tău este prea mic. Reîncarcă pentru a continua.</string>
+</dict>
+</plist>

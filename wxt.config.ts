@@ -10,6 +10,10 @@ export default defineConfig({
     // silence the unpacked `.output/` the user loads while developing. Logs stay
     // unless STRIP_LOGS=1 (`npm run release` sets it). KEEP_LOGS=1 still wins if
     // both are set, so a mistaken env cannot silently strip.
+    // `__STRIP_LOGS__` carries the same decision to code that sets up logging: esbuild's
+    // `drop` removes `console.*` CALLS, so a shim that assigns `console.log` survives it and
+    // ships the marker string a strip build must not carry (see `rememberDiagnosticLines`).
+    define: { __STRIP_LOGS__: JSON.stringify(!!(process.env.STRIP_LOGS && !process.env.KEEP_LOGS)) },
     esbuild: env.mode === 'production'
       ? { drop: (process.env.STRIP_LOGS && !process.env.KEEP_LOGS) ? ['console', 'debugger'] : ['debugger'] }
       : {},
@@ -52,7 +56,7 @@ export default defineConfig({
   },
   manifest: (env) => ({
     name: 'DisinfaX',
-    description: "Identifies and highlights disinformation in tweets using fast and intelligent research.",
+    description: "Identifies and highlights disinformation in posts on social media and across the web using fast and intelligent research.",
     version: '1.1.0',
     default_locale: 'en',
     // Static icons (chrome://extensions, the extensions menu, the Web Store
@@ -108,10 +112,10 @@ export default defineConfig({
     ],
     // No host_permissions entry: noticing a return needs no host API. The checkout landing
     // is a plain `tabs.onRemoved` on the tab we opened, and that event carries no URL; the
-    // OAuth callback is read by a content script whose own `matches` grant it, which is the
-    // only reason it can sit on disinfax.app — a second domain the extension is now allowed
-    // on, taken deliberately (see AUTH_CALLBACK_URL in popup/App.tsx). Still no broad 'tabs'
-    // permission, so no "read your browsing history" warning.
+    // OAuth callback is handed over by the containing app rather than read off a page (see
+    // NATIVE_AUTH_CALLBACK_URL in popup/App.tsx), so nothing has to be allowed on
+    // disinfax.app or on any other site. Still no broad 'tabs' permission, so no "read your
+    // browsing history" warning.
     // `mastodon.social` alone: the default instance, and the only Mastodon host with a
     // static match. It is one named host, so it does not raise the all-sites install
     // warning, and it is where the majority of the network's readers are.
@@ -129,6 +133,30 @@ export default defineConfig({
     // per-site grants are handled in the containing app. Omitted there rather than shipped
     // as a no-op, so the manifest stays honest about what each target can do.
     ...(env.browser !== 'safari' ? { optional_host_permissions: ['*://*/*'] } : {}),
+    // The coordinator, registered a second time for the ONE platform whose posts live in a
+    // child frame: Naver Cafe renders each article inside a same-origin
+    // `cafe.naver.com/ca-fe/…` iframe. It points at the same bundled file as the main
+    // registration in entrypoints/native.content.ts; WXT appends these to the ones it
+    // generates, so nothing is duplicated on disk.
+    //
+    // It is a separate registration rather than `allFrames` on the main one because that
+    // flag is per registration and would then apply to every host. Safari decides whether
+    // it may inject into a frame by that frame's origin and asks the reader to grant it —
+    // the gating `execInFrame` in entrypoints/background.ts records for an unscoped
+    // executeScript. On the main registration that turned every third-party iframe of
+    // every platform page into such a request: an embedded player's
+    // `signaler-pa.clients6.google.com` frame drew a prompt for a host this extension never
+    // reads, while the frame's own coordinator copy bailed on its first line. Scoped here,
+    // the only frame Safari is ever asked about is Naver's, and it is on the same origin
+    // the reader already granted to see the page at all.
+    content_scripts: [
+      {
+        matches: ['*://cafe.naver.com/*', '*://*.cafe.naver.com/*'],
+        all_frames: true,
+        run_at: 'document_start',
+        js: ['content-scripts/native.js'],
+      },
+    ],
     browser_specific_settings: {
       gecko: {
         id: "disinfax@disinfax.app", // Must be unique (email format recommended)

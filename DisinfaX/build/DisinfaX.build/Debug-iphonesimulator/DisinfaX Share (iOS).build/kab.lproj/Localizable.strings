@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> deg tjeṛṛumt n taseddast, sit ɣef Sefrek Isiɣzaf tremdeḍ DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ad yili %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>MENNAW UMLILI</string>
+	<key>Add funds to your balance</key>
+	<string>Rnu idrimen ɣer usemsari-inek</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Aseɣti aqbuṛ n US$%lld yella yettrağu ad yettwaskidb, ihi wagi i ittwakemlen deg umkan n aseqdec-inek tikkelt-nniḍen. Uɣal ɣer Safari tleddiḍ asfaylu ur-d-ffɣen n DisinfaX akken ad twaliḍ asemsari-inek amaynut.</string>
+	<key>Annotate</key>
+	<string>Annoti</string>
+	<key>Annotating</key>
+	<string>Yettannoti</string>
+	<key>Arguably</key>
+	<string>S wawal</string>
+	<key>BALANCE</key>
+	<string>ASEMSARI</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>S umlili, tqebleḍ [Tiwtilin n Uselkim](https://disinfax.app/terms-of-use) akked [Tasertit n tbaḍnit](https://disinfax.app/privacy-policy) nneɣ. Isuraf n usnifel n tedrimt zemren ad ttwaskiddben ma tettxelseḍ s tedrimt nniḍen ala USD.</string>
+	<key>Clear</key>
+	<string>Sfeḍ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Sit ɣef tignit n DisinfaX deg tjeṛṛumt n ifecka n Safari akken ad teldiḍ asfaylu ur-d-ffɣen.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Asiti ɣef %@ ad d-issken tignisin yerna ad iqecc amuḍin-ik</string>
+	<key>Contacting the App Store…</key>
+	<string>Yettqennaɛ ar App Store…</string>
+	<key>Copy</key>
+	<string>Nɣel</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Yezmer DisinfaX ad yeɛreq. Senqed talɣut snat n tikkal.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX urɛad yelli ara di temnaḍt-ik, ilmend n tuttriwin n usebḥer.</string>
+	<key>Disinfact</key>
+	<string>Senqed</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Rmed DisinfaX deg Safari, deg Iɣewwaren → Isiɣzaf.</string>
+	<key>Enter a claim</key>
+	<string>Sekcem tukkist</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Sekcem aqeddar ummid n idularen gar 1 d 100.</string>
+	<key>Equivocally</key>
+	<string>S ttḥiṛa</string>
+	<key>Fact-Check</key>
+	<string>Asenqed n tidett</string>
+	<key>Fact-Check All</key>
+	<string>Senqed kullec</string>
+	<key>Fact-Checking</key>
+	<string>Asenqed</string>
+	<key>False</key>
+	<string>D tikerkas</string>
+	<key>Likely</key>
+	<string>Yezmer</string>
+	<key>Mostly</key>
+	<string>S waṭas</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Ldi iɣewwaren n isiɣzaf n Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Ldi Safari tekkeḍ ɣer x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Ldi asfaylu ur-d-ffɣen deg Safari akken ad twaliḍ asemsari-inek amaynut</string>
+	<key>Partially</key>
+	<string>S waḥric</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Aselkem yemmed. Uɣal ɣer Safari tleddiḍ asfaylu ur-d-ffɣen n DisinfaX akken ad twaliḍ asemsari-inek amaynut.</string>
+	<key>Possibly</key>
+	<string>Ahat</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Afaris %@ ur d-yettwaf ara deg App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Aseɣti yettwasefsex.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Aseɣti yettrağu tuɣzift.</string>
+	<key>Reasoning</key>
+	<string>Asteqsi</string>
+	<key>Return to Safari</key>
+	<string>Uɣal ɣer Safari</string>
+	<key>Setup incomplete</key>
+	<string>Awennaḍ mačči d ummid</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Qqen seg usfaylu DisinfaX ur-d-ffɣent deg Safari akken ad ternuḍ idrimen.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Kra deg ssuter-agi ur yettwassen ara. Ttxil-k senqed ma yella usnas-ik d amaynut.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Yella wugur deg tama-nneɣ. Ttxil-k ɛreḍ tikkelt-nniḍen ɣef kra n wakud.</string>
+	<key>Sources</key>
+	<string>Iɣbula</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>AQEDDER N UMLILI</string>
+	<key>Tap the </key>
+	<string>Sit ɣef tignit </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Sit ɣef yiwet n tignit terwleḍ fell-as tferneḍ DisinfaX akken ad teldiḍ asfaylu ur-d-ffɣen.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ayen-nni ur d-ittwaf ara. Ttxil-k ɛreḍ tikkelt-nniḍen.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Azal-agi n uɛemmer mačči d aṣeḥḥi. Ttxil-k fren azal nniḍen.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Lqem-agi ur izmir ara ad d-yaweḍ ɣer umidag amcirek-ines (App Group %@). Imlilan ur d-ttilin ara alama tulmis n App Groups yettwarna ɣer usnas d usiɣzaf.</string>
+	<key>Top Up</key>
+	<string>Ɛemmer</string>
+	<key>Top Up Balance</key>
+	<string>Sekcem amlili ɣer usemsari</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Imlilan sranin lqem amaynut n iOS. Lqem, sakkin ldi tikkelt-nniḍen DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Imlilan sranin lqem amaynut n macOS. Lqem, sakkin ldi tikkelt-nniḍen DisinfaX.</string>
+	<key>True</key>
+	<string>D tideț</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ASEQDAC N DISINFAX DEG SAFARI</string>
+	<key>Unknown</key>
+	<string>Ur yettwassen ara</string>
+	<key>Unknown purchase error.</key>
+	<string>Tuccḍa n useɣti arussin.</string>
+	<key>Very Likely</key>
+	<string>Yezmer aṭas</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Idularen imirikaniyen ummiden, 1–100. Ad d-ttwaksen deg tedrimt n App Store-inek.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Sɛiḍ yakan amlili n US$%lld yettrağu ad yettwaskidb — ur k-id-ttwakcemen ara idrimen tikkelt-nniḍen. Uɣal ɣer Safari tleddiḍ asfaylu ur-d-ffɣen n DisinfaX akken ad t-tskidbeḍ ɣer usemsari-inek.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ur teqqneḍ ara. Ttxil-k qqen sakin ɛreḍ tikkelt-nniḍen.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Amlili-inek n US$%lld ittwaskidb tura.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Timeẓri n umlili-inek n US$%lld tettxeddim ugar n wakud i yettwassnen.</string>
+	<key>Your account has been suspended.</key>
+	<string>Amiḍan-ik yettwaḥbas.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Amuḍin-ik yedrus aṭas. Ttxil-k ɛemmer-it akken ad tkemmleḍ.</string>
+</dict>
+</plist>

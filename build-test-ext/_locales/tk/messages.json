@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI seljermesini ulanyp, twitlerdäki dezinformasiýany ýüze çykarýar we belleýär.",
+    "message": "AI seljermesini ulanyp, ýazgylardaky dezinformasiýany ýüze çykarýar we belleýär.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Bu twitiň beýanlaryny täzeden aç",
+    "message": "Bu ýazgydaky beýanlary täzeden aç",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Ulgamdan çyk"
   },
+  "deleteAccount": {
+    "message": "Hasaby we bagly maglumatlary poz",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Balansyňyz we gizlin açar bilen goralan e-poçta adresiňiziň kriptografik heşi saklanýar, hasap döredilende berilýän mugt serişdeleriň hyýanatçylykly ulanylmagynyň öňüni almak üçin. Şol bir hasap bilen täzeden girseňiz, balansyňyz dikeldilýär.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% üstüne basmak beýanlary ýüze çykarar we balansyňyzdan pul tutar"
   },
@@ -287,7 +295,7 @@
     "message": "Iň soňky ulanylan"
   },
   "cleanupTagline": {
-    "message": "X akymyňyzy arassalaň."
+    "message": "Akymyňyzy arassalaň."
   },
   "disclaimerJurisdiction": {
     "message": "Amerikanyň Birleşen Ştatlarynyň içinde diňe Alabama, Arizona, Kaliforniýa, Kolorado, Konnektikut, Delawer, Florida, Aýdaho, Illinoýs, Indiana, Aýowa, Kanzas, Kentukki, Luiziana, Meýn, Massaçusets, Missisipi, Missuri, Montana, Nýu-Gempşir, Nýu-Meksiko, Nýu-Ýork, Demirgazyk Karolina, Demirgazyk Dakota, Oklahoma, Oregon, Pensilwaniýa, Günorta Karolina, Günorta Dakota, Tennessi, Tehas, Ýuta, Waşington, Wiskonsin we Waýoming ştatlarynyň ýaşaýjylary DisinfaX-i ulanyp we balansyny doldurup bilýär; Waşington, D.C., ähli ABŞ territoriýalary we sanawda görkezilmedik islendik ştatlar muňa girmeýär. Amerikanyň Birleşen Ştatlarynyň daşynda ol Kanada, Awstraliýa, Täze Zelandiýa, Singapur, Günorta Afrika, Ýaponiýa, Taýwan, Indoneziýa, Taýland, Filippinler, Malaýziýa, Wýetnam we Şweýsariýada elýeterlidir."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Bu tapylmady. Gaýtadan synanyşyň."
   },
+  "errNoClaims": {
+    "message": "Bu tekstde barlap boljak hiç hili beýanat tapylmady.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Sazlamalar",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Görnüşi",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ýagty",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Awtomatik",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Garaňky",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Hemişe barlaglary görkez, eger:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Ýatyrmak",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Arassala",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ saýtynda DisinfaX-y işjeňleşdir",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX $HOST$ saýtynda işjeň",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Öçür",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook bilen dowam et"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn bilen dowam et"
+  },
+  "continueWithReddit": {
+    "message": "Reddit bilen dowam et"
+  },
+  "persistentBadgesLabel": {
+    "message": "Reňk körlügi üçin: hemişelik nyşanlar",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Kursory üstüne eltmän, ýazgylardaky her bir fakt barlagy nyşanyny görnüp duran saklaň. Netije diňe bir sözler bilen däl, eýsem reňk arkaly hem berilýär, şonuň üçin bu şol reňkleri tapawutlandyryp bilmeýänlere kömek edýär.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Улы шрифт өлчеги",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Täzeden ýazylan beýanlaryň, delillendirmäniň we başlangyç maslahatlaryň ölçegini ulaldýar.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Ýap",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Beýany düzetmek üçin basyň",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Fakt barlagynyň jikme-jikleri",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Bu saýlama barlamak üçin gaty uzyn. Iň köp 1 000 nyşan.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Balans azalanda habar ber",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Şondan köp: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

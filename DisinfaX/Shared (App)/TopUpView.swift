@@ -24,6 +24,15 @@ import UIKit
 @available(macOS 13.0, iOS 16.0, *)
 struct TopUpView: View {
 
+    /// What the header calls this pane. The app's own name when it stands alone; the pane's name
+    /// when it is laid out beside the other one, where two "DisinfaX" headings say nothing.
+    var headerTitle: LocalizedStringKey = "DisinfaX"
+
+    /// Content that belongs to the tab region but to neither pane in particular — the account
+    /// actions. Drawn at the end of this pane's own scroll content, so they scroll with it and
+    /// are covered by the guide's overlay along with the rest of the tab.
+    var footer: AnyView? = nil
+
     /// Product ids exist for 1...100 only (com.disinfax.topup.v6.N), so the field is bounded to
     /// match. Anything outside it would fail the StoreKit lookup with an opaque error.
     private static let minAmount = 1
@@ -96,23 +105,25 @@ struct TopUpView: View {
     private static let pollInterval: TimeInterval = 2
     private let ticker = Timer.publish(every: pollInterval, on: .main, in: .common).autoconnect()
 
-    /// Whether the shared container holds an identity fresh enough to sell against: the stamp the
-    /// popup writes, younger than SharedTopUpStore's freshness window.
+    /// Whether the shared container holds a session this app may sell against.
     ///
-    /// Selling requires a FRESH identity, not just a present one: the whole top-up card (balance
-    /// included) renders only on fresh — a stale figure is never passed off as current. Failing
-    /// closed costs at most a trip to the popup, which is precisely what re-freshens it.
+    /// The whole top-up card (balance included) renders only with a session, because that
+    /// session is what the backend authenticates the purchase as — without it there is no
+    /// account to attach `appAccountToken` to and nobody to credit.
     ///
     /// State, and re-read by the ticker, rather than read from the store where the card renders.
     /// The store is not observable, so a body that read it directly was only ever as live as its
-    /// last render: a pane drawn while the stamp was stale went on asking the user to open the
-    /// popup after the popup had already re-freshened it, and nothing the ticker writes had
-    /// changed — so switching tabs, which re-renders the tree, was the only thing that made the
-    /// pane appear to correct itself. See `refreshFromStore`.
+    /// last render: a pane drawn while signed out went on showing the signed-out sentence after
+    /// a sign-in that nothing had re-rendered — so switching tabs, which re-renders the tree, was
+    /// the only thing that made the pane appear to correct itself. See `refreshFromStore`.
     /// Seeded from the store like `balance` above, so the first draw is the state the store is
     /// actually in: starting at `false` and letting `onAppear` correct it would flash the sign-in
     /// sentence over a card that then appears.
-    @State private var hasFreshSession = SharedTopUpStore.freshUserId != nil
+    @State private var hasSession = SharedTopUpStore.signedInUserId != nil
+
+    /// Whether this pane has already asked the server for a figure it found missing. Reset by a
+    /// change of session and by coming back to the app; see `readBalanceIfMissing`.
+    @State private var didReadFunds = false
 
     var body: some View {
         ScrollView {
@@ -120,39 +131,32 @@ struct TopUpView: View {
                 header
 
                 // The top-up card appears only when a purchase could actually be credited.
-                // Without a FRESH user id from the shared container there is no account
-                // to attach `appAccountToken` to and the backend has nobody to credit,
-                // so showing an amount field would be an invitation to pay into a void.
-                // "Fresh" rather than merely "present": revocation is a best-effort push
-                // that needs a live extension process, while staleness is observable
-                // locally — the moment the stamp goes quiet, selling stops. In that
-                // case opening the popup IS the next step (it re-freshens the stamp), and
-                // the Safari guide RootView keeps below both tabs says so.
-                if SharedTopUpStore.isAvailable && hasFreshSession {
+                // Without a session in the shared container there is no account to attach
+                // `appAccountToken` to and the backend has nobody to credit, so showing an
+                // amount field would be an invitation to pay into a void.
+                //
+                // There is no longer a third state between "signed in" and "signed out": the app
+                // holds the refresh token too (`AppSession`), so a session it can see is one it
+                // can keep alive, and the ticker's renewal is what moves this between the two.
+                if SharedTopUpStore.isAvailable && hasSession {
                     topUpCard
                 } else if !SharedTopUpStore.isAvailable {
                     misconfiguredNotice
-                } else if SharedTopUpStore.userId != nil {
-                    // An account this app has been told about, whose stamp has since gone quiet:
-                    // the popup has not reported in for longer than the freshness window. Its own
-                    // sentence rather than the sign-in one below, which would be wrong about what
-                    // the user has to do — they are signed in, and the popup is what tells this app
-                    // so. Reaches the reader only while it is true, because freshness is what
-                    // decides the branch and the ticker re-reads it. See `hasFreshSession`.
-                    Text("Your session needs refreshing — open the DisinfaX popup in Safari, then try again.")
-                        .font(.callout).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    Text("Sign in from the DisinfaX popup in Safari to add funds.")
+                    Text("You're not signed in. Please sign in and try again.")
                         .font(.callout).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+
+                if let footer { footer }
             }
             .padding(24)
             .tint(Self.accent)
-            // A fixed content width rather than a flexible one: the window's own width is chosen
-            // to match it (see `PaneHeights`), so letting this stretch would make the two disagree.
-            .frame(width: 392, alignment: .leading)
+            // A ceiling rather than a fixed width, like `FactCheckView`'s: the macOS window is
+            // sized to 440 (see `applyMeasuredHeight`), so this still stops at 392 there, while a
+            // phone narrower than 392 gets its own width instead of a canvas hanging over both
+            // edges — which also drags the guide's heading off the padding it asks for.
+            .frame(maxWidth: 392, alignment: .leading)
             // How tall the balance view is when nothing is squeezing it. Measured here, inside
             // the scroll, because the ScrollView around this reports only the space it was given
             // and so can never say how much it wanted. Read by `ViewController` to size the
@@ -164,8 +168,29 @@ struct TopUpView: View {
         .onAppear {
             amountText = String(amount)
             refreshFromStore()
+            // Started for the user rather than by them. An incoming `disinfax://topup` means they
+            // already picked this amount and pressed Top Up in the Safari popup, so the same button
+            // on this screen would only be asking them to say it twice — and the app is the only
+            // surface that can actually charge, so the second tap is pure ceremony.
+            //
+            // Ordered after `refreshFromStore`, which is what brings in the identity the sale has
+            // to be bound to, and consumed whether or not the sale can proceed: an appearance that
+            // cannot sell (a stamp that has aged past the freshness window, no shared container)
+            // clears the intent and leaves the user the sentence explaining what to do instead.
+            // Parking it would arm a purchase to fire at some later launch they never asked for.
+            //
+            // Every launch that can sell is a correct one: the flag and the amount are written by
+            // `handleTopUp` before this view exists, and a hand-off to an already-running app
+            // rebuilds the tree through `.disinfaxTopUpRequested`, which constructs a new
+            // `TopUpView` — seeded from the store — before this runs again.
+            if SharedTopUpStore.takeAutoStartPurchase() {
+                Task { await purchase() }
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: Self.didBecomeActive)) { _ in
+            // Coming back is when a read that failed — a launch with no network, a session the
+            // server had not finished minting — is worth taking again.
+            didReadFunds = false
             refreshFromStore()
         }
         .onReceive(ticker) { _ in
@@ -177,7 +202,7 @@ struct TopUpView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("DisinfaX").font(.system(size: 26, weight: .bold))
+            Text(headerTitle).font(.system(size: 26, weight: .bold))
             Text("Add funds to your balance")
                 .font(.subheadline).foregroundStyle(.secondary)
         }
@@ -213,6 +238,7 @@ struct TopUpView: View {
                     TextField("", text: $amountText)
                         .textFieldStyle(.roundedBorder)
                         .font(.system(size: 17, weight: .medium)).monospacedDigit()
+                        .accessibilityLabel(Text("TOP-UP AMOUNT"))
                         .frame(width: 78)
                         .multilineTextAlignment(.trailing)
 #if os(iOS)
@@ -240,6 +266,7 @@ struct TopUpView: View {
 
                     Stepper("") { increment(1) } onDecrement: { increment(-1) }
                         .labelsHidden()
+                        .accessibilityLabel(Text("TOP-UP AMOUNT"))
 
                     // Suffix counterpart to the "US$" prefix above: in suffix locales the
                     // currency group sits after the field (e.g. "5 US$").
@@ -262,7 +289,7 @@ struct TopUpView: View {
                 Task { await purchase() }
             } label: {
                 HStack {
-                    if isPurchasing { ProgressView().controlSize(.small) }
+                    if isPurchasing { ProgressView().controlSize(.small).accessibilityHidden(true) }
                     Text(isPurchasing ? "Contacting the App Store…" : "Top Up Balance")
                         .fontWeight(.semibold)
                 }
@@ -339,6 +366,7 @@ struct TopUpView: View {
         Image(systemName: name)
             .font(.system(size: 13, weight: .semibold))
             .foregroundStyle(.tertiary)
+            .accessibilityHidden(true)
     }
 
     /// The same fine print the popup shows under its own Top Up button, and for the same reason:
@@ -460,18 +488,29 @@ struct TopUpView: View {
     private func refreshFromStore() {
         // Before the ask below, because what it authenticates with is what this brings in.
         SharedTopUpStore.reloadFromDisk()
-        // Ask for the balance to be pushed rather than waiting to be told it: idempotent and a
-        // no-op once the channel is up. Here rather than in `onAppear` because the token this
-        // needs can be handed over while the tab is already on screen.
-        SupabaseRealtime.shared.ensureFundsChannel()
         let latestBalance = SharedTopUpStore.balance
 
         // The session is re-read here rather than where the card renders, so the pane's verdict on
         // it moves with the store instead of with the last re-render the tab switch happened to
-        // cause. Nothing else in this function observes it, and the freshness window is minutes
-        // wide, so this is the transition that matters and not a per-tick flip.
-        let latestFresh = SharedTopUpStore.freshUserId != nil
-        if latestFresh != hasFreshSession { hasFreshSession = latestFresh }
+        // cause. Nothing else in this function observes it, so this is the transition that matters
+        // and not a per-tick flip.
+        let latestSignedIn = SharedTopUpStore.signedInUserId != nil
+        if latestSignedIn != hasSession {
+            hasSession = latestSignedIn
+            // A session this pane has not asked for yet — the next tick reads the figure for it.
+            didReadFunds = false
+        }
+
+        // Renew, then ask for the balance to be pushed. Renewal comes first because this channel
+        // authenticates with whatever token is on disk, and one that lapsed since the last tick
+        // joins a channel that row-level security then keeps silent — healthy socket, no events.
+        // Both are no-ops when the token is live and the channel is up, so every tick can do this.
+        Task { @MainActor in
+            _ = await AppSession.current()
+            SharedTopUpStore.reloadFromDisk()
+            SupabaseRealtime.shared.ensureFundsChannel()
+            readBalanceIfMissing()
+        }
 
         if latestBalance != balance {
             // The balance moved, so the purchase has landed: drop the notice, unblock the button and
@@ -485,6 +524,26 @@ struct TopUpView: View {
             pendingTicks += 1
         }
         balance = latestBalance
+    }
+
+    /// One direct read of the funds row, when the shared container has no figure to show.
+    ///
+    /// The socket's join already reads the row once, and that is the ordinary path — but it is a
+    /// channel that has to join first, and a sign-in this app performed itself has no other
+    /// reader behind it. The figure then stayed blank until the popup was opened, which is a
+    /// dependency on the extension for something the app has everything it needs to ask for:
+    /// the session, the RPC and the store. Once per session, and again on each return to the
+    /// app, because `get_funds` bills a `funds` unit every time it is called.
+    @MainActor
+    private func readBalanceIfMissing() {
+        guard hasSession, !didReadFunds, SharedTopUpStore.balance == nil else { return }
+        didReadFunds = true
+        Task { @MainActor in
+            guard let total = await FactCheckNotifier.fetchTotal() else { return }
+            SharedTopUpStore.balance = total
+            SharedTopUpStore.reloadFromDisk()
+            if let stored = SharedTopUpStore.balance { balance = stored }
+        }
     }
 
     private func increment(_ delta: Int) {
@@ -505,6 +564,7 @@ struct TopUpView: View {
     private func notice(title: Text, body: Text, systemImage: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: systemImage).font(.title2).foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
                 title.font(.headline)
                 body.font(.callout).foregroundStyle(.secondary)
@@ -518,17 +578,17 @@ struct TopUpView: View {
     // MARK: - Purchase
 
     private func purchase() async {
-        // Double-check freshness at the moment of sale, not just at render: the
-        // stamp can age past the window between the view appearing and the user
-        // tapping. Re-reads the store rather than trusting @State, and refreshes
-        // so the next render shows the signed-out screen instead of a dead button.
+        // Double-check the session at the moment of sale, not just at render: it can be dropped
+        // between the view appearing and the user tapping. Re-reads the store rather than
+        // trusting @State, and refreshes so the next render shows the signed-out screen instead
+        // of a dead button.
         //
-        // The refresh is the whole of the answer: it moves `hasFreshSession`, which is what the
-        // card and the sentence about the session are chosen by, so the card is replaced by that
-        // sentence as the tap returns rather than by a message set here — a message would outlive
-        // the state it was about, which is exactly the sentence a user could dismiss by leaving
-        // the tab and coming back.
-        guard let saleUserId = SharedTopUpStore.freshUserId, !saleUserId.isEmpty else {
+        // The refresh is the whole of the answer: it moves `hasSession`, which is what the card
+        // and the sentence are chosen by, so the card is replaced by that sentence as the tap
+        // returns rather than by a message set here — a message would outlive the state it was
+        // about, which is exactly the sentence a user could dismiss by leaving the tab and
+        // coming back.
+        guard let saleUserId = SharedTopUpStore.signedInUserId, !saleUserId.isEmpty else {
             refreshFromStore()
             return
         }

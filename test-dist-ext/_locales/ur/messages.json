@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI تجزیے کی مدد سے ٹویٹس میں غلط معلومات کا پتہ لگاتا اور نمایاں کرتا ہے۔",
+    "message": "AI تجزیے کی مدد سے پوسٹس میں غلط معلومات کا پتہ لگاتا اور نمایاں کرتا ہے۔",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "اس ٹویٹ کے دعوے دوبارہ ظاہر کریں",
+    "message": "اس پوسٹ کے دعوے دوبارہ ظاہر کریں",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "سائن آؤٹ کریں"
   },
+  "deleteAccount": {
+    "message": "اکاؤنٹ اور متعلقہ ڈیٹا حذف کریں",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "آپ کا بیلنس، اور خفیہ کلید سے محفوظ آپ کے ای میل پتے کا کرپٹوگرافک ہیش اس لیے رکھا جاتا ہے تاکہ سائن اپ کے وقت ملنے والی مفت رقم کا غلط استعمال روکا جا سکے۔ اسی اکاؤنٹ سے دوبارہ سائن اپ کرنے پر آپ کا بیلنس بحال ہو جاتا ہے۔",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% پر کلک کرنے سے دعوے ظاہر ہوں گے اور آپ کے بیلنس سے رقم کٹے گی"
   },
@@ -287,7 +295,7 @@
     "message": "آخری بار استعمال شدہ"
   },
   "cleanupTagline": {
-    "message": "اپنی X فیڈ کو صاف کریں۔"
+    "message": "اپنی فیڈ کو صاف کریں۔"
   },
   "disclaimerJurisdiction": {
     "message": "ریاستہائے متحدہ کے اندر، صرف الاباما، ایریزونا، کیلیفورنیا، کولوراڈو، کنیکٹی کٹ، ڈیلاویئر، فلوریڈا، ایڈاہو، الینوائے، انڈیانا، آئیووا، کنساس، کینٹکی، لوزیانا، مین، میساچوسٹس، مسیسیپی، میسوری، مونٹانا، نیو ہیمپشائر، نیو میکسیکو، نیو یارک، شمالی کیرولائنا، شمالی ڈکوٹا، اوکلاہوما، اوریگون، پنسلوانیا، جنوبی کیرولائنا، جنوبی ڈکوٹا، ٹینیسی، ٹیکساس، یوٹاہ، واشنگٹن، وسکونسن اور وایومنگ کے رہائشی DisinfaX استعمال کر سکتے ہیں اور اپنا بیلنس ٹاپ اپ کر سکتے ہیں؛ واشنگٹن D.C.، تمام امریکی علاقے اور کوئی بھی غیر درج ریاستیں مستثنیٰ ہیں۔ ریاستہائے متحدہ کے باہر، یہ کینیڈا، آسٹریلیا، نیوزی لینڈ، سنگاپور، جنوبی افریقہ، جاپان، تائیوان، انڈونیشیا، تھائی لینڈ، فلپائن، ملائیشیا، ویتنام اور سوئٹزرلینڈ میں دستیاب ہے۔"
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "یہ نہیں ملا۔ براہ کرم دوبارہ کوشش کریں۔"
   },
+  "errNoClaims": {
+    "message": "اس متن میں کوئی قابلِ تصدیق دعویٰ نہیں ملا۔",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ترتیبات",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "ظاہری شکل",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "روشن",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "خودکار",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "گہرا",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ہمیشہ فیکٹ چیک دکھائیں اگر:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Reddit کے ساتھ جاری رکھیں"
+  },
+  "persistentBadgesLabel": {
+    "message": "کلر بلائنڈ افراد کے لیے: مستقل بیجز",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "پوسٹس پر ہوور کیے بغیر حقائق کی جانچ کے تمام بیجز کو نمایاں رکھیں۔ فیصلہ الفاظ کے ساتھ ساتھ نمایاں رنگ سے بھی ظاہر ہوتا ہے، اس لیے یہ ان افراد کے لیے مددگار ہے جو ان رنگوں میں فرق نہیں کر سکتے۔",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "بڑا فونٹ سائز",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ونڈوز کے اندر موجود متن کے لیے (دعوے، استدلال...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "بند کریں",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "دعویٰ میں ترمیم کے لیے کلک کریں",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "حقائق کی جانچ کی تفصیلات",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "یہ انتخاب جانچنے کے لیے بہت طویل ہے۔ زیادہ سے زیادہ 1,000 حروف۔",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "بیلنس کم ہونے پر اطلاع دیں",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "اس سے زیادہ: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "حقائق کی جانچ کیسے کریں",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "کسی بھی ویب صفحے پر، وہ متن منتخب کریں جس کی آپ تصدیق کرنا چاہتے ہیں۔",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "منتخب شدہ متن پر رائٹ کلک کریں اور تصدیق کریں منتخب کریں (غیر منتخب متن پر بھی کام کرتا ہے)۔",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "منتخب شدہ متن پر رائٹ کلک کریں اور {1} تصدیق کریں منتخب کریں (غیر منتخب متن پر بھی کام کرتا ہے)۔",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "تصدیق فوراً شروع ہو جاتی ہے اور اس کا خرچ آپ کے بیلنس سے کاٹا جاتا ہے۔",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "متن ابھی بھی منتخب ہونے کی حالت میں ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ایڈریس بار میں موجود آئیکن پر تھپتھپائیں، پھر {1} DisinfaX کو منتخب کریں۔",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

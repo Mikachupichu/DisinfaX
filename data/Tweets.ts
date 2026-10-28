@@ -17,6 +17,32 @@ export interface Tweet {
     /** Id of the thread this tweet belongs to; falls back to the tweet's own id when X
      *  omits it. */
     conversationId?: string;
+    /** When the post was written, as an ISO 8601 instant in UTC (`2026-10-14T13:27:04Z`), or
+     *  the last time it was edited when the host states that and the authoring time is the older
+     *  of the two.
+     *
+     *  Stated only as far down as the platform stated it. A host handing over a time is believed
+     *  for that time and no further, so one whose own value reads `1:14 PM` produces
+     *  `2026-10-14T13:14Z` and not a `:00` it never looked at; a host that states only an AGE
+     *  states no instant at all, and the value carries that age's own unit: `2026-10-14T04Z` for
+     *  `5h`, `2026-10-11` for `3d`, `2020` for `6y`. Fields neither could place are ABSENT rather
+     *  than zeroed — a zero is indistinguishable from a post written at exactly that second, and
+     *  the prompt is told to read this value as the present moment, so a defaulted one would be
+     *  read as fact. Consumers must therefore not assume a full instant is always present.
+     *
+     *  What reads it is the preclassify prompt's "today is" note: a post saying "this morning" or
+     *  "last month" is only resolvable against the moment it was WRITTEN, so the note is built
+     *  from this rather than from the wall clock the request happens to arrive at. The agent's
+     *  own JSON never carries it (`agentView` drops it) — the note is the one place the model
+     *  sees it.
+     *
+     *  Absent rather than guessed when there is nothing to read: a host that states no absolute
+     *  time for a post, a label in a spelling the age reader does not cover, and everything that
+     *  is not a post at all (a claim typed into the popup, a passage selected on a page) all
+     *  leave it out. It is deliberately outside the hash (`canonicalContext` covers
+     *  the username and the text alone), so a post classified before this field existed keeps
+     *  its row and its cache key. */
+    datetime?: string;
 }
 
 /** A quoted tweet carries no references of its own — nesting stops at one level. */
@@ -61,6 +87,20 @@ export type MainTweet = Tweet & References & {
  *  seen. It is deliberately not "NA" (the obvious-looking spelling): `na` is Nauruan's
  *  ISO 639-1 code, so a key spelled that way would claim to be a real language. */
 export const UNKNOWN_LANGUAGE = 'und';
+
+/** The longest text a fact-check run will accept, on every platform and on every surface:
+ *  a post's own body, or a passage the reader has selected.
+ *
+ *  A capability limit, not a layout one. Past roughly this length both agents come back
+ *  with a handful of the claims the text actually makes, so the reader waits out a run and
+ *  is billed for a fraction of an answer. It is read in two places — the background drops a
+ *  post over it before anything else runs (see `processFullBatch`), and the selection script
+ *  refuses a passage over it before a run starts — which is why the number lives here rather
+ *  than beside either one of them.
+ *
+ *  Deliberately not `LONG_FORM_CHARS` (500), a different number measuring a different thing,
+ *  and deciding nothing. */
+export const MAX_CLASSIFY_CHARS = 1500;
 
 /** Account standing, mirroring X's `verification.verified_type` values. `Regular` uses
  *  X's own "None" string so an unverified account round-trips through the raw payload. */

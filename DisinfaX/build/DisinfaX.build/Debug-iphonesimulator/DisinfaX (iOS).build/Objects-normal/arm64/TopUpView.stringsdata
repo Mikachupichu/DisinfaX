@@ -1,0 +1,264 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/TopUpView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Your session needs refreshing — open the DisinfaX popup in Safari, then try again.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 142
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sign in from the DisinfaX popup in Safari to add funds.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Setup incomplete",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 502
+        }
+      },
+      {
+        "comment": "",
+        "key": "This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 503
+        }
+      },
+      {
+        "comment": "",
+        "key": "DisinfaX",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 180
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add funds to your balance",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 181
+        }
+      },
+      {
+        "comment": "",
+        "key": "TOP-UP AMOUNT",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 201
+        }
+      },
+      {
+        "comment": "",
+        "key": "Whole US dollars, 1–100. Charged in your App Store currency.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 258
+        }
+      },
+      {
+        "comment": "",
+        "key": "TOP-UP AMOUNT",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 216
+        }
+      },
+      {
+        "comment": "",
+        "key": "TOP-UP AMOUNT",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 244
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 213
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 242
+        }
+      },
+      {
+        "comment": "",
+        "key": "You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 570
+        }
+      },
+      {
+        "comment": "",
+        "key": "An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 572
+        }
+      },
+      {
+        "comment": "",
+        "key": "Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 574
+        }
+      },
+      {
+        "comment": "",
+        "key": "Enter a whole dollar amount between 1 and 100.",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 541
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contacting the App Store…",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 268
+        }
+      },
+      {
+        "comment": "",
+        "key": "Top Up Balance",
+        "location": {
+          "startingColumn": 73,
+          "startingLine": 268
+        }
+      },
+      {
+        "comment": "",
+        "key": "By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 355
+        }
+      },
+      {
+        "comment": "",
+        "key": "BALANCE",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 323
+        }
+      },
+      {
+        "comment": "",
+        "key": "AFTER TOP-UP",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 325
+        }
+      },
+      {
+        "comment": "",
+        "key": "BALANCE",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 328
+        }
+      },
+      {
+        "comment": "",
+        "key": "AFTER TOP-UP",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 330
+        }
+      },
+      {
+        "comment": "",
+        "key": "—",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 375
+        }
+      },
+      {
+        "comment": "",
+        "key": "US",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 394
+        }
+      },
+      {
+        "comment": "",
+        "key": " $",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 408
+        }
+      },
+      {
+        "comment": "",
+        "key": "$",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 427
+        }
+      },
+      {
+        "comment": "",
+        "key": "$",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 431
+        }
+      },
+      {
+        "comment": "",
+        "key": "BALANCE",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 444
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open the popup in Safari to view your updated balance",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 447
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your US$%lld top-up is being applied.",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 451
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your US$%lld top-up is taking longer than usual to appear.",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 452
+        }
+      }
+    ]
+  },
+  "version": 1
+}

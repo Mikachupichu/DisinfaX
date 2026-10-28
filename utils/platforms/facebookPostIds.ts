@@ -48,6 +48,11 @@ export interface NetPostId {
    *  id differs from its `post_id` by one digit). So the text is what binds that panel to the
    *  id the payload files it under, the same way a permalink binds a feed post. */
   message: string | null;
+  /** When the payload says this story was written, in the Unix seconds it states times in, or
+   *  null when the node states none. Carried for the preclassify prompt's "today is" note, which
+   *  resolves a relative reference ("this morning", "last week") against the moment a post was
+   *  written (see `statedTime`). */
+  createdAt: number | null;
 }
 
 export interface NetCommentText {
@@ -56,6 +61,28 @@ export interface NetCommentText {
   commentId: string;
   /** The comment's words, whole — the field a truncated comment is completed from. */
   text: string;
+  /** When the payload says this comment was written, in the Unix seconds it states times in, or
+   *  null when the node states none (see `statedTime`). A comment's own time, never the story's
+   *  it hangs under. */
+  createdAt: number | null;
+}
+
+/** The instant a payload states for a node, in the Unix SECONDS it states times in, or null for
+ *  anything else.
+ *
+ *  A story states it as `creation_time` and a comment as `created_time` — two field names for the
+ *  same count. Measured on one post page: the story node carrying `post_id` also carried
+ *  `creation_time`, and every one of that page's ten `Comment` nodes carrying `legacy_fbid`
+ *  carried `created_time` (ten values, all seconds — 1791650151 for a story three days old). No
+ *  node states a time in milliseconds, which is why the count is passed on as seconds rather than
+ *  guessed at.
+ *
+ *  Validated as a positive whole number of seconds, because this is page-authored data and what
+ *  reads it is the date the preclassify prompt resolves relative references against: a string, a
+ *  float, a zero or a negative is dropped rather than filed as 1970. */
+function statedTime(value: unknown): number | null {
+  const seconds = typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value;
+  return typeof seconds === 'number' && Number.isInteger(seconds) && seconds > 0 ? seconds : null;
 }
 
 /** A story's `pfbid…`, wherever the payload spells one out — `permalink_url` carries it, and
@@ -185,7 +212,7 @@ export function collectCommentTexts(value: unknown): NetCommentText[] {
     const commentId = typeof raw === 'string' ? raw : typeof raw === 'number' ? String(raw) : '';
     if (text.length > 0 && /^\d+$/.test(commentId) && !seen.has(commentId)) {
       seen.add(commentId);
-      out.push({ commentId, text });
+      out.push({ commentId, text, createdAt: statedTime(record.created_time) });
     }
     for (const child of Object.values(record)) {
       if (child && typeof child === 'object') stack.push({ node: child, depth: depth + 1 });
@@ -198,7 +225,7 @@ export function collectCommentTexts(value: unknown): NetCommentText[] {
  *  Stories that state neither are left out: they are joinable to nothing, and the markup already
  *  states an id for them. */
 export function collectPostIds(value: unknown): NetPostId[] {
-  const byPostId = new Map<string, { aliases: Set<string>; message: string | null }>();
+  const byPostId = new Map<string, { aliases: Set<string>; message: string | null; createdAt: number | null }>();
   // One story is referenced from many places in one response (`edges[node]` plus whatever
   // holds it), so a node is walked once.
   const walked = new Set<object>();
@@ -215,18 +242,28 @@ export function collectPostIds(value: unknown): NetPostId[] {
     const record = node as Record<string, unknown>;
     if (typeof record.post_id === 'string') {
       let entry = byPostId.get(record.post_id);
-      if (!entry) byPostId.set(record.post_id, (entry = { aliases: new Set<string>(), message: null }));
+      if (!entry) byPostId.set(record.post_id, (entry = { aliases: new Set<string>(), message: null, createdAt: null }));
       for (const child of Object.values(record)) collectAliases(child, entry.aliases, depth + 1, record.post_id);
       entry.message ??= collectMessage(record, depth, record.post_id);
+      // The story's own node states it, read here rather than off a copy: the payload repeats a
+      // story's body and its sections under several nodes of its own, and only the node that
+      // carries the `post_id` carries the time beside it (measured: the `Story` node held both,
+      // the three others naming the same post held neither). A copy that states none therefore
+      // does not overwrite one that does — `??=`, the same rule `message` follows.
+      entry.createdAt ??= statedTime(record.creation_time);
     }
     for (const child of Object.values(record)) {
       if (child && typeof child === 'object') stack.push({ node: child, depth: depth + 1 });
     }
   }
   const out: NetPostId[] = [];
-  for (const [postId, { aliases, message }] of byPostId) {
-    if (aliases.size === 0 && !message) continue;
-    out.push({ postId, aliases: [...aliases], message });
+  for (const [postId, { aliases, message, createdAt }] of byPostId) {
+    // A record states where the story is joinable FROM, or when it was written. The time joins
+    // nothing on its own, but a root that resolved its number off the markup — a permalink that
+    // spells the story's own decimal, which is one the payload need not alias — still takes the
+    // time from here, so a record stating only that is kept rather than dropped.
+    if (aliases.size === 0 && !message && createdAt === null) continue;
+    out.push({ postId, aliases: [...aliases], message, createdAt });
   }
   return out;
 }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> në shiritin e adresave, pastaj trokit Menaxho Zgjerimet dhe aktivizo DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ që të jetë %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PAS RIMBUSHJES</string>
+	<key>Add funds to your balance</key>
+	<string>Shto fonde në bilancin tënd</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Një blerje e mëparshme prej US$%lld ende priste të aplikohej, kështu që ajo u përfundua në vend që të faturoheshe përsëri. Kthehu te Safari dhe hap dritaren kërcyese të DisinfaX për të parë bilancin e përditësuar.</string>
+	<key>Annotate</key>
+	<string>Shëno</string>
+	<key>Annotating</key>
+	<string>Po shënohet</string>
+	<key>Arguably</key>
+	<string>E diskutueshme</string>
+	<key>BALANCE</key>
+	<string>BILANCI</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Duke rimbushur, pranon [Kushtet e Shërbimit](https://disinfax.app/terms-of-use) dhe [Politikën e Privatësisë](https://disinfax.app/privacy-policy) tona. Mund të aplikohen tarifa këmbimi valutor nëse paguan në një monedhë tjetër përveç USD.</string>
+	<key>Clear</key>
+	<string>Pastro</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Trokit ikonën e DisinfaX në shiritin e veglave të Safari për të hapur dritaren kërcyese.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Klikimi mbi %@ shfaq pretendimet dhe do të ngarkojë bilancin tënd</string>
+	<key>Contacting the App Store…</key>
+	<string>Po lidhet me App Store…</string>
+	<key>Copy</key>
+	<string>Kopjo</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX mund të bëjë gabime. Kontrollo informacionin edhe një herë.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX nuk është ende i disponueshëm në rajonin tënd për shkak të kërkesave rregullatore.</string>
+	<key>Disinfact</key>
+	<string>Disinfakto</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Aktivizo DisinfaX në Safari, te Cilësimet → Zgjerimet.</string>
+	<key>Enter a claim</key>
+	<string>Futni një pretendim</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Fut një shumë të plotë në dollarë midis 1 dhe 100.</string>
+	<key>Equivocally</key>
+	<string>E paqartë</string>
+	<key>Fact-Check</key>
+	<string>Verifikimi i fakteve</string>
+	<key>Fact-Check All</key>
+	<string>Verifiko gjithçka</string>
+	<key>Fact-Checking</key>
+	<string>Verifikim</string>
+	<key>False</key>
+	<string>E rremë</string>
+	<key>Likely</key>
+	<string>E mundshme</string>
+	<key>Mostly</key>
+	<string>Kryesisht</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Hap cilësimet e zgjerimeve të Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Hap Safari dhe shko te x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Hap dritaren kërcyese në Safari për të parë bilancin e përditësuar</string>
+	<key>Partially</key>
+	<string>Pjesërisht</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pagesa u përfundua. Kthehu te Safari dhe hap dritaren kërcyese të DisinfaX për të parë bilancin e përditësuar.</string>
+	<key>Possibly</key>
+	<string>Ndoshta</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produkti %@ nuk u gjet në App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Blerja u anulua.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Blerja pret miratim.</string>
+	<key>Reasoning</key>
+	<string>Arsyetimi</string>
+	<key>Return to Safari</key>
+	<string>Kthehu te Safari</string>
+	<key>Setup incomplete</key>
+	<string>Konfigurimi i paplotë</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Identifikohu nga dritarja kërcyese e DisinfaX në Safari për të shtuar fonde.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Diçka në këtë kërkesë nuk u njoh. Sigurohu që shtesa është e përditësuar.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Ndodhi një gabim nga ana jonë. Provo përsëri pas pak.</string>
+	<key>Sources</key>
+	<string>Burimet</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SHUMA E RIMBUSHJES</string>
+	<key>Tap the </key>
+	<string>Trokit ikonën </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Trokit të njëjtën ikonë dhe zgjidh DisinfaX për të hapur dritaren kërcyese.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Kjo nuk u gjet. Provo përsëri.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Kjo shumë rimbushjeje nuk është e vlefshme. Zgjidh një shumë tjetër.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ky build nuk mund të arrijë kontejnerin e tij të përbashkët (Grupi i Aplikacionit %@). Rimbushjet nuk do të jenë të mundshme derisa aftësia Grupet e Aplikacioneve të shtohet si te aplikacioni ashtu edhe te zgjerimi.</string>
+	<key>Top Up</key>
+	<string>Rimbush</string>
+	<key>Top Up Balance</key>
+	<string>Rimbush bilancin</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Rimbushjet kërkojnë një version më të ri të iOS. Përditëso, pastaj rihap DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Rimbushjet kërkojnë një version më të ri të macOS. Përditëso, pastaj rihap DisinfaX.</string>
+	<key>True</key>
+	<string>E vërtetë</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>PËRDORIMI I DISINFAX NË SAFARI</string>
+	<key>Unknown</key>
+	<string>E panjohur</string>
+	<key>Unknown purchase error.</key>
+	<string>Gabim i panjohur blerjeje.</string>
+	<key>Very Likely</key>
+	<string>Shumë e mundshme</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollarë të plotë amerikanë, 1–100. Faturohet në monedhën e App Store tënd.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Tashmë ke një rimbushje prej US$%lld që pret të aplikohet — nuk je faturuar përsëri. Kthehu te Safari dhe hap dritaren kërcyese të DisinfaX për ta aplikuar në bilancin tënd.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Nuk je i identifikuar. Identifikohu dhe provo përsëri.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Rimbushja jote prej US$%lld po aplikohet.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Shfaqja e rimbushjes sate prej US$%lld po zgjat më shumë se zakonisht.</string>
+	<key>Your account has been suspended.</key>
+	<string>Llogaria jote është pezulluar.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Bilanci yt është shumë i ulët. Rimbushe atë për të vazhduar.</string>
+</dict>
+</plist>

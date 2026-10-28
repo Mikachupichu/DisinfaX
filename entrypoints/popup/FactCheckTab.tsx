@@ -54,6 +54,10 @@ export interface FactCheckClaimState {
   };
   claimLocale?: string;
   reasoningLocale?: string;
+  /** The post's link to this claim carries tweet_claims.is_hidden: the strict filtering
+   *  categories dropped it, and only a selection over that part of the post reveals it
+   *  on the page. The tab lists such claims under a collapsed expander. */
+  isHidden?: boolean;
 }
 
 const GlobeIcon = () => (
@@ -355,6 +359,8 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
   // Preclassified claims
   const [claims, setClaims] = useState<FactCheckClaimState[]>([]);
   const [classificationObj, setClassificationObj] = useState<Classification | null>(null);
+  // Collapsed by default: the claims the post's link flags are listed only on request.
+  const [showHiddenClaims, setShowHiddenClaims] = useState<boolean>(false);
 
   // Global busy locking
   const [isBusy, setIsBusy] = useState<boolean>(false);
@@ -1007,6 +1013,13 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
   const isRedisinfact =
     claims.length > 0 && inputText.trim() === lastPreclassifiedText.trim();
 
+  // The app wrapper's "Fact-Check All", mirrored here: the tab's highlights that still have
+  // work left, run together. A flagged claim is not one of the tab's highlights — it sits
+  // behind the collapsed expander — so it neither makes the count plural nor joins the run.
+  const unflaggedClaims = claims.filter((c) => c.isHidden !== true);
+  const showFactCheckAll = unflaggedClaims.length > 1
+    && unflaggedClaims.some((c) => !c.isClassified || c.needsReclassify);
+
   // Handle Disinfact preclassification
   const handleDisinfact = async () => {
     const trimmed = inputText.trim();
@@ -1053,7 +1066,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
         // Not on a re-Disinfact: the refresh-icon button is a deliberate re-run of the same
         // text (see isRedisinfact), and this read would answer it with the rows this tab is
         // already showing — the click would come back with nothing to show, which is what a
-        // dead button looks like. The on-page equivalent (the "Re-reveal this tweet's
+        // dead button looks like. The on-page equivalent (the "Re-reveal this post's
         // claims" button) dropped its DB check for the same reason. So the run goes ahead:
         // preclassification re-derives the claims and re-links them, and the rows it links
         // to are folded back in below, so the verdicts the tab was showing return with them.
@@ -1107,6 +1120,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                   rewritten,
                   range,
                   dbClaimId: dc.id,
+                  isHidden: dc.is_hidden,
                   needsReclassify: true,
                   isClassified: false,
                   missingAnnotations: !hasAnnotations,
@@ -1126,6 +1140,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                   rewritten,
                   range,
                   dbClaimId: dc.id,
+                  isHidden: dc.is_hidden,
                   needsReclassify: false,
                   isClassified: true,
                   missingAnnotations: !hasAnnotations,
@@ -1144,6 +1159,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                 rewritten,
                 range,
                 dbClaimId: dc.id,
+                isHidden: dc.is_hidden,
                 needsReclassify: false,
                 isClassified: false,
                 missingAnnotations: false,
@@ -1153,6 +1169,23 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
           });
 
           setClaims(dbClaims);
+          // A run writes nothing until it ENDS, so this row read is the only place this tab
+          // can learn that an annotation is already streaming for a claim: the server stamps
+          // that on the link (is_annotating). Wait on it exactly as Flow A's own write is
+          // waited on — mark the claim "Annotating" and open the routing row its persist
+          // broadcasts to — rather than offering, and billing, a second run over the top of
+          // one that is under way.
+          const inFlightIdx = tweetResult.claims
+            .map((dc, i) => i)
+            .filter((i) => tweetResult.claims[i]?.is_annotating === true
+              && dbClaims[i]?.isClassified === true
+              && dbClaims[i]?.missingAnnotations === true);
+          if (inFlightIdx.length > 0) {
+            openAnnotationSubscription(hash).catch((e) =>
+              console.error('[FactCheckTab] annotation subscription failed:', e)
+            );
+            for (const i of inFlightIdx) markAwaitingAnnotations(i);
+          }
           const dbCls = {
             id: tweetResult.tweetId || `popup_${Date.now()}`,
             batchId: 'popup_db_batch',
@@ -1181,11 +1214,16 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
           foundDbClaims = true;
 
           // A lone claim skips the second click: classify it right away unless the DB
-          // already holds a settled verdict for it.
-          if (dbClaims.length === 1 && (!dbClaims[0].isClassified || dbClaims[0].needsReclassify)) {
+          // already holds a settled verdict for it. Flagged claims are not highlights this
+          // tab is showing, so they are not counted — one unflagged claim beside any number
+          // of flagged ones is still a lone claim, and it is the one that gets classified.
+          const unflagged = dbClaims.filter((c) => c.isHidden !== true);
+          const lone = unflagged.length === 1 ? unflagged[0] : null;
+          const loneIdx = lone ? dbClaims.indexOf(lone) : -1;
+          if (lone && (!lone.isClassified || lone.needsReclassify)) {
             setBusyMessage(t('researchingText') || 'Fact-Checking…');
-            setActiveClaimIndex(0);
-            await classifyClaim(0, dbClaims[0], dbCls, { hash, text: trimmed, allClaims: dbClaims });
+            setActiveClaimIndex(loneIdx);
+            await classifyClaim(loneIdx, lone, dbCls, { hash, text: trimmed, allClaims: dbClaims });
           }
         }
       } catch (dbErr) {
@@ -1236,6 +1274,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
               rewritten: cl.rewritten || cl.text,
               range,
               dbClaimId: cl.dbClaimId,
+              isHidden: cl.isHidden,
               isClassified: false,
               needsReclassify: false,
               // The preclassifier rewrites claims in the UI locale and does not annotate
@@ -1384,17 +1423,22 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
           // DB has: an answer and nothing to do, a stale answer to re-run, or a claim genuinely
           // never researched. Several claims are left to the user, as this tab does with any
           // claim it did not set out to research.
-          if (initialClaims.length === 1) {
+          // Flagged claims are not this tab's highlights, so they do not count towards the
+          // lone-claim rule: one unflagged claim beside them is still a lone claim.
+          const unflagged = initialClaims.filter((c) => c.isHidden !== true);
+          if (unflagged.length === 1) {
+            const lone = unflagged[0];
+            const loneIdx = initialClaims.indexOf(lone);
             const row =
-              rowFor(initialClaims[0]) ??
-              arrived.find((r) => claimRowIs(r, initialClaims[0], locale, trimmed));
+              rowFor(lone) ??
+              arrived.find((r) => claimRowIs(r, lone, locale, trimmed));
             if (!rowAnswers(row)) {
               setBusyMessage(t('researchingText') || 'Fact-Checking…');
-              setActiveClaimIndex(0);
+              setActiveClaimIndex(loneIdx);
               // The folded claim, so a stale row reaches classifyClaim as the cached result it
               // is — and so its id travels: a reclassification re-runs the row that exists, and
               // an id-less run makes both lookups that follow fail on text never stored.
-              await classifyClaim(0, foldRow(initialClaims[0], row), latestCls, {
+              await classifyClaim(loneIdx, foldRow(lone, row), latestCls, {
                 hash,
                 text: trimmed,
                 allClaims: initialClaims,
@@ -1584,6 +1628,32 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
     }
   };
 
+  // The tab's Fact-Check All. Each claim goes through the same path a card's own button
+  // takes, one at a time: the app wrapper's queue exists because these runs share the
+  // balance and each takes a hold, and a fan-out would take them all at once.
+  const handleFactCheckAll = async () => {
+    if (isBusy) return;
+    const targets = claims
+      .map((claim, index) => ({ claim, index }))
+      .filter(({ claim }) => claim.isHidden !== true && (!claim.isClassified || claim.needsReclassify));
+    if (targets.length === 0) return;
+
+    markOnboardingClicked('factcheck');
+    setIsBusy(true);
+    setRunError(null);
+    setBusyMessage(t('researchingText') || 'Fact-Checking…');
+    try {
+      for (const { claim, index } of targets) {
+        setActiveClaimIndex(index);
+        await classifyClaim(index, claim, classificationObj);
+      }
+    } finally {
+      setIsBusy(false);
+      setActiveClaimIndex(null);
+      setBusyMessage('');
+    }
+  };
+
   // Annotate specific claim (Flow B)
   const handleAnnotateClaim = async (index: number) => {
     const claim = claims[index];
@@ -1751,14 +1821,20 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
       <div className="relative w-full">
         {hasFreshClassifiedClaim && !isEditing ? (
           <div
+            role="button"
+            tabIndex={0}
+            aria-label={t('editClaimTooltip')}
             onClick={() => {
               setIsEditing(true);
               setTimeout(() => {
                 textareaRef.current?.focus();
               }, 0);
             }}
-            className="w-full min-h-[80px] p-3 pr-9 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm text-white font-medium leading-relaxed cursor-text transition-colors hover:border-zinc-700 select-text whitespace-pre-wrap break-words"
-            title="Click to edit claim"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); }
+            }}
+            className="w-full min-h-[80px] p-3 pr-9 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm text-white font-medium leading-relaxed cursor-text transition-colors hover:border-zinc-700 select-text whitespace-pre-wrap break-words focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500"
+            title={t('editClaimTooltip')}
           >
             <AnnotatedText
               text={inputText}
@@ -1834,8 +1910,10 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
       {showDisinfactButton && (
         <div className="flex flex-col gap-2">
           <button
+            type="button"
             onMouseDown={(e) => e.preventDefault()}
             onClick={handleDisinfact}
+            title={t('disinfactButton')}
             disabled={isBusy || !inputText.trim()}
             className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-sm transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
           >
@@ -1869,6 +1947,18 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
       {/* ── Preclassified Claims List ── */}
       {claims.length > 0 && !isEditing && (
         <div className="flex flex-col gap-3">
+          {showFactCheckAll && (
+            <button
+              type="button"
+              onClick={handleFactCheckAll}
+              disabled={isBusy}
+              title={t('factCheckAllButton')}
+              className="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {t('factCheckAllButton') || 'Fact-Check All'}
+            </button>
+          )}
+
           {/* Top of list Fact-Check disclaimer */}
           {onboardingActive('factcheck') && (
             <Disclaimer
@@ -1878,7 +1968,8 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
             />
           )}
 
-          {claims.map((claim, idx) => {
+          {(() => {
+          const claimCards = claims.map((claim, idx) => {
             const isOperating = isBusy && activeClaimIndex === idx;
             const segStart = claim.range ? claim.range[0] : 0;
             // Translate is offered only for a text in some other language than the one it is
@@ -1964,16 +2055,20 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                   <div className="flex gap-2">
                     {claim.missingAnnotations && claim.isClassified && !claim.awaitingAnnotations && (
                       <button
+                        type="button"
                         onClick={() => handleAnnotateClaim(idx)}
                         disabled={isBusy}
+                        title={t('annotateButton')}
                         className="flex-1 py-1.5 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                       >
                         {isOperating ? busyMessage : t('annotateButton') || 'Annotate'}
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={() => handleFactCheckClaim(idx)}
                       disabled={isBusy}
+                      title={t('factCheckButton')}
                       className="flex-1 py-1.5 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
                     >
                       {/* The card's own busy text, as on the Annotate button: the popup runs one
@@ -2076,7 +2171,33 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                 )}
               </div>
             );
-          })}
+          });
+          // Flagged claims (tweet_claims.is_hidden) go behind a collapsed expander at the
+          // bottom: the page keeps them out of sight until a selection uncovers that part
+          // of the post, so the tab must not open with them in the reader's face.
+          const hiddenClaimIdx = claims.reduce<number[]>((acc, c, i) => {
+            if (c.isHidden === true) acc.push(i);
+            return acc;
+          }, []);
+          return (
+            <>
+              {claimCards.filter((_, i) => !hiddenClaimIdx.includes(i))}
+              {hiddenClaimIdx.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowHiddenClaims((v) => !v)}
+                  title={showHiddenClaims ? t('showLess') : t('showMore')}
+                  aria-expanded={showHiddenClaims}
+                  className="mx-auto flex items-center gap-0.5 rounded px-1 py-0.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 text-xs font-semibold"
+                >
+                  {showHiddenClaims ? t('showLess') : `${t('showMore')} (${hiddenClaimIdx.length})`}
+                  <svg className={`w-2.5 h-2.5 transition-transform ${showHiddenClaims ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+                </button>
+              )}
+              {showHiddenClaims && hiddenClaimIdx.map((i) => claimCards[i])}
+            </>
+          );
+          })()}
         </div>
       )}
     </div>

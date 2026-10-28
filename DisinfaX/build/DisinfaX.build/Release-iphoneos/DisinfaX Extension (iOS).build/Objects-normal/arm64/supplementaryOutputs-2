@@ -1,0 +1,12 @@
+{
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/StoreKitManager.swift" : {
+    "abi-baseline-json" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX_Extension.abi.json",
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary.dia",
+    "objc-header" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX_Extension-Swift.h",
+    "swiftdoc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX_Extension.swiftdoc",
+    "swiftmodule" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX_Extension.swiftmodule",
+    "swiftsourceinfo" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX_Extension.swiftsourceinfo"
+  }
+}

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> בשורת הכתובת, ולאחר מכן הקש על ניהול הרחבות והפעל את DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ביטחון</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ביטחון, %2$@ אמיתות</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>לאחר הטענה</string>
+	<key>Add funds to your balance</key>
+	<string>הוסף כספים ליתרה שלך</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>רכישה קודמת של US$%lld עדיין המתינה להחלה, ולכן היא זו שהושלמה במקום לחייב אותך שוב. חזור ל-Safari ופתח את החלון הקופץ של DisinfaX כדי לראות את היתרה המעודכנת שלך.</string>
+	<key>Annotate</key>
+	<string>הוסף הערות</string>
+	<key>Annotating</key>
+	<string>מוסיף הערות</string>
+	<key>Arguably</key>
+	<string>שנוי במחלוקת</string>
+	<key>BALANCE</key>
+	<string>יתרה</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>בהטענה, אתה מסכים ל[תנאי השירות](https://disinfax.app/terms-of-use) ול[מדיניות הפרטיות](https://disinfax.app/privacy-policy) שלנו. עמלות המרת מטבע עלולות לחול אם אתה משלם במטבע שאינו דולר אמריקאי.</string>
+	<key>Clear</key>
+	<string>נקה</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>הקש על סמל DisinfaX בסרגל הכלים של Safari כדי לפתוח את החלון הקופץ.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>לחיצה על %@ תחשוף טענות ותחייב את היתרה שלך</string>
+	<key>Close</key>
+	<string>סגור</string>
+	<key>Contacting the App Store…</key>
+	<string>מתחבר ל-App Store…</string>
+	<key>Copy</key>
+	<string>העתק</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>ל-DisinfaX ייתכן שיהיו טעויות. יש לבדוק את המידע פעמיים.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>‏DisinfaX עדיין לא זמין באזורך בשל דרישות רגולטוריות.</string>
+	<key>Disinfact</key>
+	<string>בדיקה</string>
+	<key>Edit</key>
+	<string>עריכה</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>הפעל את DisinfaX ב-Safari, בהגדרות ← הרחבות.</string>
+	<key>Enter a claim</key>
+	<string>הזינו טענה</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>הזן סכום דולר שלם בין 1 ל-100.</string>
+	<key>Equivocally</key>
+	<string>מעורפל</string>
+	<key>Fact-Check</key>
+	<string>בדיקת עובדות</string>
+	<key>Fact-Check All</key>
+	<string>בדוק הכול</string>
+	<key>Fact-Checking</key>
+	<string>בדיקה</string>
+	<key>False</key>
+	<string>שקר</string>
+	<key>Likely</key>
+	<string>סביר</string>
+	<key>Mostly</key>
+	<string>בעיקר</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>פתח את הגדרות ההרחבות של Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>פתח את Safari ועבור אל x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>פתח את החלון הקופץ ב-Safari כדי לראות את היתרה המעודכנת שלך</string>
+	<key>Partially</key>
+	<string>חלקית</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>התשלום הושלם. חזור ל-Safari ופתח את החלון הקופץ של DisinfaX כדי לראות את היתרה המעודכנת שלך.</string>
+	<key>Possibly</key>
+	<string>ייתכן</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>המוצר %@ לא נמצא ב-App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>הרכישה בוטלה.</string>
+	<key>Purchase is pending approval.</key>
+	<string>הרכישה מחכה לאישור.</string>
+	<key>Reasoning</key>
+	<string>נימוק</string>
+	<key>Return to Safari</key>
+	<string>חזרה ל-Safari</string>
+	<key>Setup incomplete</key>
+	<string>ההגדרה לא הושלמה</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>היכנס דרך חלון הקופץ של DisinfaX ב-Safari כדי להוסיף כספים.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>חלק מהבקשה הזו לא זוהה. יש לוודא שההרחבה מעודכנת.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>אירעה שגיאה בצד שלנו. נסה שוב בעוד רגע.</string>
+	<key>Sources</key>
+	<string>מקורות</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>סכום ההטענה</string>
+	<key>Tap the </key>
+	<string>הקש על הסמל </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>הקש על אותו סמל ובחר ב-DisinfaX כדי לפתוח את החלון הקופץ.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>לא ניתן היה למצוא זאת. נסה שוב.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>סכום הטעינה אינו תקין. יש לבחור סכום אחר.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>גרסה זו לא מצליחה להגיע למאגר המשותף שלה (App Group %@). הטענות לא יהיו זמינות עד שיכולת App Groups תיווסף גם לאפליקציה וגם להרחבה.</string>
+	<key>Top Up</key>
+	<string>טעינה</string>
+	<key>Top Up Balance</key>
+	<string>הטען יתרה</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>הטענות דורשות גרסה חדשה יותר של iOS. עדכן, ולאחר מכן פתח מחדש את DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>הטענות דורשות גרסה חדשה יותר של macOS. עדכן, ולאחר מכן פתח מחדש את DisinfaX.</string>
+	<key>True</key>
+	<string>אמת</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>שימוש ב-DISINFAX ב-SAFARI</string>
+	<key>Unknown</key>
+	<string>לא ידוע</string>
+	<key>Unknown purchase error.</key>
+	<string>שגיאת רכישה לא ידועה.</string>
+	<key>Very Likely</key>
+	<string>סביר מאוד</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>דולרים אמריקאיים שלמים, 1–100. יחויב במטבע ה-App Store שלך.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>יש לך כבר הטענה של US$%lld שמחכה להחלה — לא חויבת שוב. חזור ל-Safari ופתח את החלון הקופץ של DisinfaX כדי להחיל אותה על היתרה שלך.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>לא נכנסת לחשבון. היכנס ונסה שוב.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>ההטענה שלך של US$%lld מוחלת כרגע.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>ההטענה שלך של US$%lld מתעכבת יותר מהרגיל להופיע.</string>
+	<key>Your account has been suspended.</key>
+	<string>החשבון שלך הושבת.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>היתרה שלך נמוכה מדי. יש לטעון כדי להמשיך.</string>
+</dict>
+</plist>

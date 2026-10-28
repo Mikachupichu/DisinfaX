@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> dins l' bår d' adresse, adon tchôkîz so Manaedjî les Ekstinsions eyet metoz DisinfaX en alaedje.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ d' esse %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>APRÈS RATCHARDJER</string>
+	<key>Add funds to your balance</key>
+	<string>Radjouter des liârds à vosse solde</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>On ratchat di dvant di US$%lld ratindeut co d' esse aplikêye, adon c' est ç' ci ki fout fini å lieu di vos fé payî co ene fice. Rivnoz sol Safari eyet drovoz l' purnea ki sôte foû di DisinfaX po veyî vosse solde metou a djoû.</string>
+	<key>Annotate</key>
+	<string>Anoter</string>
+	<key>Annotating</key>
+	<string>Anotaedje</string>
+	<key>Arguably</key>
+	<string>Discutåvlumint</string>
+	<key>BALANCE</key>
+	<string>SOLDE</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Tot ratchardjant, vos-astoz d'acoird avou nos [Condicions do Siervice](https://disinfax.app/terms-of-use) eyet nosse [Politike di Privéye](https://disinfax.app/privacy-policy). Des tchèdje di candje di manoye pôrént esse aplicåyes si vos paiez dins ene ôte manoye ki l' USD.</string>
+	<key>Clear</key>
+	<string>Netyî</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tchôkîz l' imådjete DisinfaX su l' bår d' usteyes di Safari po drovi l' purnea ki sôte foû.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Cliker so %@ mostere les afirmåcions eyet cotêyerè vosse solde</string>
+	<key>Contacting the App Store…</key>
+	<string>Elodjant avou l' App Store…</string>
+	<key>Copy</key>
+	<string>Copyî</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX pout si mesprinde. Verifyîz tocôps l' informåcion.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX n' est nén co disponibe dins vosse redjon a cåze des egzijances reglementaires.</string>
+	<key>Disinfact</key>
+	<string>Verifyî</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Metoz DisinfaX en alaedje dins Safari, dins Apontiaedjes → Ekstinsions.</string>
+	<key>Enter a claim</key>
+	<string>Intrez ene afirmåcion</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Intrez on montant etîr e dolârs inte 1 eyet 100.</string>
+	<key>Equivocally</key>
+	<string>Ecwivokmint</string>
+	<key>Fact-Check</key>
+	<string>Verifyî les fets</string>
+	<key>Fact-Check All</key>
+	<string>Verifyî tot</string>
+	<key>Fact-Checking</key>
+	<string>Verifiaedje</string>
+	<key>False</key>
+	<string>Fås</string>
+	<key>Likely</key>
+	<string>Probåblumint</string>
+	<key>Mostly</key>
+	<string>Po l'pus par</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Drovi les apontiaedjes des ekstinsions di Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Drovoz Safari eyet vinoz so x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Drovoz l' purnea ki sôte foû dins Safari po veyî vosse solde metou a djoû</string>
+	<key>Partially</key>
+	<string>Pårtielmint</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Payement fini. Rivnoz sol Safari eyet drovoz l' purnea ki sôte foû di DisinfaX po veyî vosse solde metou a djoû.</string>
+	<key>Possibly</key>
+	<string>Possibmint</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Li produit %@ n' a nén stî trové dins App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ratchat rovoyî.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Li ratchat ratind ene apreuvåcion.</string>
+	<key>Reasoning</key>
+	<string>Råjhonmint</string>
+	<key>Return to Safari</key>
+	<string>Rivni sol Safari</string>
+	<key>Setup incomplete</key>
+	<string>Apontiaedje nén fini</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Elodjîz-vs foû dè purnea DisinfaX ki sôte foû dins Safari po radjouter des liârds.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Ene pårt di ç' dimande ci n' a nén stî riconoxhowe. S' i vs plait, verifyîz ki l' ecstinsion est bén metowe a djoû.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Ene aroke a arivé di nosse costé. S' i vs plait, rissayîz dins on moumint.</string>
+	<key>Sources</key>
+	<string>Sourdants</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>MONTANT DÔ RATCHARDJADJE</string>
+	<key>Tap the </key>
+	<string>Tchôkîz l' imådjete </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tchôkîz l' minme imådjete eyet tchoezixhoz DisinfaX po drovi l' purnea ki sôte foû.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Çoula n' a nén stî trové. Rissayîz, s' i vs plait.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ci monteu la di ricoirdjaedje n' est nén valide. S' i vs plait, tchoezixhoz on ôte monteu.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ci modêye ci ni pout nén arivé å contneu pårti (App Group %@). Les ratchardjadjes n' seront nén disponibes disk' a ç' k' li fonccionålité App Groups soeye radjoutêye a l' aplikêye eyet a l' ekstinsion.</string>
+	<key>Top Up</key>
+	<string>Ricoirdjî</string>
+	<key>Top Up Balance</key>
+	<string>Ratchardjî l' solde</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Les ratchardjadjes dmandèt ene modêye pus nouve d' iOS. Metoz a djoû, adon rovroz DisinfaX co ene fice.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Les ratchardjadjes dmandèt ene modêye pus nouve di macOS. Metoz a djoû, adon rovroz DisinfaX co ene fice.</string>
+	<key>True</key>
+	<string>Vrai</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>EMÅYE DI DISINFAX DINS SAFARI</string>
+	<key>Unknown</key>
+	<string>Nén cnoxhou</string>
+	<key>Unknown purchase error.</key>
+	<string>Aroke di ratchat nén cnoxhou.</string>
+	<key>Very Likely</key>
+	<string>Foirt probåblumint</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolârs amerikins tot etîr, 1–100. Payî dins l' manoye di vosse App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Vos avoz dedja on ratchardjadje di US$%lld ki ratind d' esse aplikêye — vos n' avoz nén stî payî co ene fice. Rivnoz sol Safari eyet drovoz l' purnea ki sôte foû di DisinfaX po l' aplikî à vosse solde.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Vos n' estez nén loguî. S' i vs plait, loguîz vos eyet rissayîz.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Vosse ratchardjadje di US$%lld est en trin d' esse aplikêye.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>L' aparucion di vosse ratchardjadje di US$%lld pete pus long timp k' å normå.</string>
+	<key>Your account has been suspended.</key>
+	<string>Vosse conte a stî sospindou.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Vosse solde est trop bas. S' i vs plait, ricoirdjîz vosse solde po continouwer.</string>
+</dict>
+</plist>

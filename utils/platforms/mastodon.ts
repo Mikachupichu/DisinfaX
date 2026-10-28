@@ -40,6 +40,7 @@
 import type { MainTweet, QuotedTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { passageTextContent, sealHostEvents } from '../injecting';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -84,6 +85,43 @@ const QUOTE_SELECTOR = '.status__quote';
  *  (Mastodon's `legacy/content.jsx`). */
 const TRANSLATE_BAR_SELECTOR = '.translate-button';
 const TRANSLATE_IDLE_SELECTOR = '.status__content__translate-button';
+
+/** The same app's NEW renderer (`v5.0.0-nightly.2026-10-22` on mastodon.social, shipped
+ *  2026-10-20), which drops the whole vocabulary above. Its names are CSS-module tokens of the
+ *  form `_comp_<file>__<name>` — still class names, and read for the same reason: the host gives
+ *  nothing better, and every lookup below fails closed.
+ *
+ *  What the new renderer changes, all measured on mastodon.social:
+ *
+ *  - a post root is an `article[data-variant]` carrying the component's root class (variants
+ *    `feed`, `page`, `thread`). The virtualized feed keeps an off-screen item in the DOM as an
+ *    `article[data-variant][data-id]` with NO class holding only the screen reader's spans —
+ *    same id, no post markup — so the root class is what separates a rendered post from that
+ *    placeholder;
+ *  - the byline is `header > contents > p.status_header__name`, a flex row holding the profile
+ *    link and then the timestamp link, with the handle on a second line below;
+ *  - the body is `status_content__root > status_content__text`, whose `<p>`s are the blocks;
+ *  - a quote is a `card__root` beside the text, with the quoted post's canonical link, body and
+ *    time inside it — not a nested post element;
+ *  - a content warning is a `status__spoiler` callout that does NOT take the body out of the
+ *    DOM: it names the subtree it governs through `aria-controls` and marks that subtree
+ *    `inert` until the reader opens it. Both states measured; see `bodyClipped`.
+ *
+ *  The legacy selectors above stay: every instance other than mastodon.social still serves the
+ *  old client, and some may keep it. Translation is the one part NOT ported — the new
+ *  renderer's translate control was not measurable signed out, and guessing a clickable node
+ *  there could press something else, so the legacy selectors simply find nothing and the
+ *  translation half stays dormant until a signed-in reading names the control. */
+const ROOT_V5_SELECTOR = 'article[data-variant][data-id][class*="status__root"]';
+const META_V5_SELECTOR = 'p[class*="status_header__name"]';
+const NAME_LINK_V5_SELECTOR = 'a[class*="status_header__nameLink"]';
+const DATE_V5_SELECTOR = 'a[class*="status_header__date"]';
+const CONTENT_V5_SELECTOR = '[class*="status_content__root"]';
+const TEXT_V5_SELECTOR = '[class*="status_content__text"]';
+const SPOILER_V5_SELECTOR = '[class*="status__spoiler"]';
+const CARD_V5_SELECTOR = '[class*="card__root"]';
+const QUOTE_BODY_V5_SELECTOR = '[class*="status_quote__body"]';
+const QUOTE_ACCOUNT_V5_SELECTOR = 'a[class*="status_quote__accountLink"]';
 
 /** Paragraphs of one post are joined with a blank line, the same join Reddit, Quora and
  *  Hacker News use, so the worker reads them as separate paragraphs rather than as one run of
@@ -150,13 +188,11 @@ const MAX_REMEMBERED_SOURCES = 256;
 
 /** Attempts per post per control, so a control the host is refusing to accept is not clicked
  *  at forever. */
-const revealAttempts = new Map<string, number>();
 const sourceAttempts = new Map<string, number>();
 
 /** One host-driven interaction at a time for the whole page. Every flip this adapter makes —
- *  opening a warned body, switching a body's language — replaces the body it acts on and
- *  waits for the re-render, and two in flight at once is a race the reader would see. One
- *  chain rather than one per kind, because the two kinds act on the same posts. */
+ *  switching a body's language — replaces the body it acts on and waits for the re-render, and
+ *  two in flight at once is a race the reader would see. */
 let hostInteraction: Promise<void> = Promise.resolve();
 
 function sleep(ms: number): Promise<void> {
@@ -176,7 +212,7 @@ function isElement(node: unknown): node is Element {
 /** Whether this element is one of the two shapes a post root takes: a row in a list, or the
  *  focal post of a permalink. Both are addressed the same way everywhere else in this file. */
 function isPostRoot(el: Element): boolean {
-  return el.matches(STATUS_SELECTOR) || el.matches(DETAIL_SELECTOR);
+  return el.matches(STATUS_SELECTOR) || el.matches(DETAIL_SELECTOR) || el.matches(ROOT_V5_SELECTOR);
 }
 
 /** The nearest post root containing `node`, itself included. */
@@ -201,18 +237,54 @@ function ownWithin(root: Element, selector: string): Element | null {
 
 /** The post's own content block, or null when the host is not rendering one. */
 function ownContent(root: Element): Element | null {
-  return ownWithin(root, CONTENT_SELECTOR);
+  return ownWithin(root, CONTENT_SELECTOR) ?? ownWithin(root, CONTENT_V5_SELECTOR);
 }
 
 /** The element the host put the post's own language on. */
 function textContainer(root: Element): Element | null {
-  return ownWithin(root, TEXT_SELECTOR);
+  return ownWithin(root, TEXT_SELECTOR) ?? ownWithin(root, TEXT_V5_SELECTOR);
+}
+
+/** The post's own posted time, off the `<time datetime>` the host renders inside the
+ *  timestamp link it publishes.
+ *
+ *  Read through `ownWithin`, so the card of a post this one quotes is never the source: both
+ *  links carry a `<time datetime>`, and the quoted post's is written at its own time. Either
+ *  link will do for the post itself — `.detailed-status__datetime` is the permalink view's
+ *  focal byline and `.status__relative-time` is a row's — and the order below is the same one
+ *  `statedId` uses, for the same reason: on a surface that renders both, the relative-time
+ *  class is the one that can belong to a nested card.
+ *
+ *  This is what the preclassify prompt's "today is" note is built from, so a shape the host
+ *  does not state — an instance that renders no `<time>` — leaves the field out rather than
+ *  inferring it from the words "3h", which are the reader's locale's rendering of a value the
+ *  host already knows and we do not. */
+function postedAt(root: Element): string | undefined {
+  const link =
+    ownWithin(root, DETAIL_DATETIME_SELECTOR) ??
+    ownWithin(root, RELATIVE_TIME_SELECTOR) ??
+    ownWithin(root, DATE_V5_SELECTOR);
+  return isoDatetime(link?.querySelector('time[datetime]')?.getAttribute('datetime'));
 }
 
 /** The host's own statement that it is holding this post's body back, on the two warnings that
  *  hold one: the content warning and the reader's own keyword filter. */
 function warningElement(root: Element): Element | null {
-  return ownWithin(root, WARNING_SELECTOR);
+  return ownWithin(root, WARNING_SELECTOR) ?? ownWithin(root, SPOILER_V5_SELECTOR);
+}
+
+/** The subtree a content-warning control names as the thing it governs, when it names one.
+ *
+ *  Measured on the new renderer: the callout carries `aria-controls`, and that wrapper holds the
+ *  post's body and attachments and is marked `inert` while the warning is up. Resolved through
+ *  `getElementById` rather than by class, because the id is the host's own statement about which
+ *  subtree it means — the same wrapper carries a `hasContentWarning` modifier that ALSO appears
+ *  on an opened post's attachment wrapper, so the modifier alone answers the wrong question. */
+function governedBody(warning: Element): Element | null {
+  const id = warning.getAttribute('aria-controls');
+  if (!id) return null;
+  const target = document.getElementById(id);
+  return target instanceof Element ? target : null;
 }
 
 /** The post's paragraphs — the blocks `postText` joins and `textRegions` maps back onto the
@@ -308,7 +380,10 @@ function postIdOfElement(root: Element): string | null {
  *  name's words, because it is the same string the permalink is built from: two surfaces
  *  showing one post then state one author. */
 function handleOf(root: Element): string {
-  const link = ownWithin(root, NAME_SELECTOR) ?? ownWithin(root, DETAIL_NAME_SELECTOR);
+  const link =
+    ownWithin(root, NAME_SELECTOR) ??
+    ownWithin(root, DETAIL_NAME_SELECTOR) ??
+    ownWithin(root, NAME_LINK_V5_SELECTOR);
   const href = link?.getAttribute('href') ?? '';
   return href.startsWith('/@') ? (href.slice(2).split('/')[0] ?? '') : '';
 }
@@ -318,25 +393,26 @@ function handleOf(root: Element): string {
  *  This is NOT a CSS clamp. On a post the host has gated — a content warning, or the reader's
  *  own keyword filter — it renders no `.status__content` at all until asked, so the words are
  *  nowhere in the DOM and there is nothing to hash. Measured, the host's control is a clean
- *  toggle: one click renders the body, the next takes it away again.
+ *  toggle: one click renders the body, the next takes it away again. The new renderer instead
+ *  keeps the body in the DOM behind the callout, so the gate is read from the `inert` the
+ *  callout's own `aria-controls` subtree carries (see `governedBody`).
  *
- *  A FILTERED post is not ours to open: the reader's own filter setting is what put the
- *  warning there, and clicking through it would undo a choice they made about their own
- *  reading — so it is left alone, and the post stays uncaptured until the reader opens it
- *  themselves.
+ *  Neither kind is ours to open. A filter is the reader's own setting, and a content warning is
+ *  the reader's agreement to see the post — clicking through either would undo a choice they
+ *  made about their own reading — so a gated post stays uncaptured and carries no buttons until
+ *  the reader opens it themselves.
  *
  *  Cheap by construction — two queries and an ancestor walk, no text read — because it is
  *  asked for every root on every sweep. */
 function bodyClipped(root: Element): boolean {
   const warning = warningElement(root);
   if (!warning || warning.matches(FILTER_WARNING_SELECTOR)) return false;
+  // The new renderer's warning keeps the body in the DOM and marks the subtree it names
+  // `inert`; the reader's open is what drops that attribute, so it is the gate, read off the
+  // host's own statement rather than off the presence of words nobody has agreed to show.
+  const governed = governedBody(warning);
+  if (governed) return governed.hasAttribute('inert');
   return ownContent(root) === null;
-}
-
-/** The host's own control for opening a warned body: the button inside the warning. */
-function warningButton(root: Element): HTMLElement | null {
-  const button = warningElement(root)?.querySelector('button');
-  return button instanceof HTMLElement ? button : null;
 }
 
 /** The host's own control for switching a post between its translation and its source: the
@@ -357,7 +433,7 @@ function translateControl(root: Element): HTMLElement | null {
  *
  *  The source's own language is read on the way through, while the source is the side on
  *  screen and the `lang` attribute therefore belongs to it. Assumes it is already inside the
- *  host-interaction queue; both the hook that owns the flip and the warning gate use it. */
+ *  host-interaction queue. */
 async function readSourceSide(root: Element, id: string): Promise<void> {
   if (sourceBodies.has(id)) return;
   if (!shownTranslationLocale(root)) return;
@@ -415,12 +491,13 @@ function shownBody(root: Element): string | null {
  *  quotes another is classified in the context of what it quotes, and its hash covers it. */
 function quotedPost(root: Element): QuotedTweet | null {
   const card = ownWithin(root, QUOTE_SELECTOR)?.querySelector(STATUS_SELECTOR) ?? null;
-  if (!card) return null;
+  if (!card) return quotedPostV5(root);
   const raw = statedId(card);
   if (!raw) return null;
   const text = postText(card);
   if (!text) return null;
   const id = ID_PREFIX + raw;
+  const datetime = postedAt(card);
   return {
     id,
     text,
@@ -431,7 +508,48 @@ function quotedPost(root: Element): QuotedTweet | null {
     // here and none is invented.
     usertype: MASTODON_REGULAR,
     conversationId: id,
+    ...(datetime ? { datetime } : {}),
   };
+}
+
+/** The same quote in the new renderer, where the card is a `card__root` beside the text rather
+ *  than a nested post: the quoted post's canonical link is one of the card's anchors, its words
+ *  are the `<p>`s of `status_quote__body` (the card's other body block is the link preview, and
+ *  is deliberately not read), and its time is in the title row. A plain link-preview card has no
+ *  quote body, which is what separates the two. */
+function quotedPostV5(root: Element): QuotedTweet | null {
+  for (const card of Array.from(root.querySelectorAll(CARD_V5_SELECTOR))) {
+    if (rootOf(card) !== root) continue;
+    const body = card.querySelector(QUOTE_BODY_V5_SELECTOR);
+    if (!body) continue;
+    let raw: string | null = null;
+    for (const link of Array.from(card.querySelectorAll('a[href]'))) {
+      const match = (link.getAttribute('href') ?? '').match(CANONICAL_PATH_RE);
+      if (match) {
+        raw = match[1];
+        break;
+      }
+    }
+    if (!raw) return null;
+    const text = Array.from(body.querySelectorAll('p'))
+      .map(blockText)
+      .filter(Boolean)
+      .join(POST_JOIN);
+    if (!text) return null;
+    const id = ID_PREFIX + raw;
+    const href = card.querySelector(QUOTE_ACCOUNT_V5_SELECTOR)?.getAttribute('href') ?? '';
+    const datetime = isoDatetime(card.querySelector('time[datetime]')?.getAttribute('datetime'));
+    return {
+      id,
+      text,
+      fullText: text,
+      username: href.startsWith('/@') ? (href.slice(2).split('/')[0] ?? '') : '',
+      usertype: MASTODON_REGULAR,
+      conversationId: id,
+      ...(datetime ? { datetime } : {}),
+    };
+  }
+  return null;
 }
 
 /** Every post currently rendered, outermost only. A root nested inside another is a quote card
@@ -442,7 +560,9 @@ function quotedPost(root: Element): QuotedTweet | null {
  *  next sweep, since rendering a post is itself a mutation. */
 function allPostRoots(): Element[] {
   const out: Element[] = [];
-  for (const el of Array.from(document.querySelectorAll(`${STATUS_SELECTOR}, ${DETAIL_SELECTOR}`))) {
+  for (const el of Array.from(
+    document.querySelectorAll(`${STATUS_SELECTOR}, ${DETAIL_SELECTOR}, ${ROOT_V5_SELECTOR}`),
+  )) {
     if (el.parentElement && rootOf(el.parentElement)) continue;
     if (el.getBoundingClientRect().width <= 0) continue;
     out.push(el);
@@ -454,7 +574,11 @@ function allPostRoots(): Element[] {
  *  focal post. Both are flex rows that already hold the post's name. */
 function headerRow(root: Element): Element | null {
   if (root.matches(DETAIL_SELECTOR)) return ownWithin(root, DETAIL_NAME_SELECTOR);
-  return root.querySelector(`:scope > ${INFO_SELECTOR}`);
+  const info = root.querySelector(`:scope > ${INFO_SELECTOR}`);
+  if (info) return info;
+  // New renderer: the byline's first line — the profile link and then the timestamp — is the
+  // flex row the pill joins; the handle sits on the second line, below it.
+  return ownWithin(root, META_V5_SELECTOR);
 }
 
 /** Sit the pill on the timestamp's words rather than in the middle of the row.
@@ -541,18 +665,17 @@ export const mastodonAdapter: PlatformAdapter = {
       alignToTrailingWords(container, trailing);
       return;
     }
+    // New renderer: the meta line is name-then-time with the rest of the row empty, so the
+    // time is where that line's content ENDS and the pill closes it — floating it to the row's
+    // far edge would strand it pixels away from the words it belongs beside.
+    const date = ownWithin(root, DATE_V5_SELECTOR);
+    if (date && date.parentElement === header) {
+      container.style.marginLeft = '6px';
+      date.insertAdjacentElement('afterend', container);
+      alignToTrailingWords(container, date);
+      return;
+    }
     header.appendChild(container);
-  },
-
-  /** The host clamps a long body with `max-height` and keeps the whole string in the DOM, so a
-   *  painted claim can be sitting in text the reader cannot see. Clearing the clamp is the
-   *  whole of what this owes: the host's own "read more" button is left where it is, and
-   *  nothing about the text changes. */
-  unclip(textElement: Element): void {
-    const content = textElement.closest(CONTENT_SELECTOR);
-    if (!(content instanceof HTMLElement)) return;
-    content.style.maxHeight = 'none';
-    content.style.overflow = 'visible';
   },
 
   feedCenter(): number | null {
@@ -594,47 +717,44 @@ export const mastodonAdapter: PlatformAdapter = {
     return allPostRoots();
   },
 
+  /** Whether the host is holding this post's body back behind one of its own controls.
+   *
+   *  The gate, and only the gate: a reader's own filter is not ours to open (see the helper
+   *  above), and a body the host merely clamps with CSS has every word in the DOM, so it is
+   *  captured whole and painted like any other — the host's own box does the clipping, and the
+   *  marks past it appear when the reader opens the post.
+   *
+   *  No `revealClipped` accompanies this, and that pairing is the rule: a content warning is the
+   *  READER's agreement to see the post, so nothing of ours opens it — not the sweep, not a
+   *  press of ours — and a gated post carries no buttons until they have opened it themselves.
+   *  `capture` refuses it meanwhile (`if (bodyClipped(root)) return null`), so there is no
+   *  prefix to hash and no pill to place on a body nobody has agreed to read. Once the reader
+   *  opens the gate the body is in the DOM like any other, and the next sweep files the post
+   *  whole and gives it its buttons. */
   bodyClipped(root: Element): boolean {
     return bodyClipped(root);
   },
 
-  /** Open a gated post the reader has reached, so its whole body can be read and hashed.
+  /** Nothing — this host's read-more is never inside the element the painter wraps.
    *
-   *  The host renders no content element at all while the gate is shut, so the words are
-   *  nowhere in the DOM and there is nothing to hash; its control is a toggle — measured, one
-   *  click renders the body and the next takes it away again — and this leaves it open, which
-   *  is what this hook's contract asks: there is nothing to put back, the reader is owed the
-   *  text. It also has to stay open: everything downstream reads the body out of the page —
-   *  the hash, the highlight ranges, the text anchor the buttons are placed against — so a
-   *  gate shut again after the read would leave a classified post with no buttons on it at
-   *  all (measured: the shared injector no-ops a post whose text anchor is missing).
+   *  Declared because declaring it is what lets a clamped body be painted at all (see
+   *  `bodyControl` on the adapter type), and here that is safe by construction rather than by
+   *  naming: the painter's element is a paragraph inside `.status__content__text`, and the
+   *  host renders its read-more button as a SIBLING of `.status__content` itself — outside the
+   *  body the painter touches, and outside its parent's children too. Read off the host's own
+   *  bundle, not inferred: the button is built as `status__content__read-more-button` beside
+   *  the content div in the `onClick` branch. Its CSS agrees — `.status__content .status__
+   *  content__text` defaults to `display: none`, so the button cannot live inside a node that
+   *  is hidden until the body renders. So the painter can wrap every word it was handed
+   *  without ever moving a node the host reconciles against, whether or not the body is
+   *  clamped.
    *
-   *  If the post is ALSO showing a translation, the source is read through the host's own
-   *  control first, while the gate is open. This hook runs after `revealSource`, and that one
-   *  finds no control to drive when the gate is shut — the translation bar lives inside the
-   *  body the gate was hiding.
-   *
-   *  Retried a bounded number of times: a gate the host is refusing to open is one nothing can
-   *  hash, and is left for a later sweep rather than clicked at forever. */
-  async revealClipped(root: Element, opts?: { onDemand?: boolean }): Promise<void> {
-    const id = postIdOfElement(root);
-    if (!id) return;
-    if (!opts?.onDemand) {
-      if ((revealAttempts.get(id) ?? 0) >= MAX_REVEAL_ATTEMPTS) return;
-      revealAttempts.set(id, (revealAttempts.get(id) ?? 0) + 1);
-    }
-    return queueHostInteraction(async () => {
-      if (!bodyClipped(root)) return;
-      const open = warningButton(root);
-      if (!open) return;
-      open.click();
-      for (let i = 0; i < REVEAL_POLLS; i++) {
-        await sleep(REVEAL_POLL_MS);
-        if (!bodyClipped(root)) break;
-      }
-      if (bodyClipped(root)) return;
-      await readSourceSide(root, id);
-    });
+   *  Opening the post leaves the wrapper where it is: the expand toggles the class on
+   *  `.status__content` and re-renders the text node with the SAME html string, which
+   *  `dangerouslySetInnerHTML` does not write on — so the marks are already on the words when
+   *  the clamp comes off. */
+  bodyControl(): Element | null {
+    return null;
   },
 
   displayedTranslationLocale(root: Element): string | null {
@@ -669,8 +789,8 @@ export const mastodonAdapter: PlatformAdapter = {
   capture(root: Element): CapturedPost | null {
     const id = postIdOfElement(root);
     if (!id) return null;
-    // A body the host is still holding back has no words to hash; `revealClipped` opens it and
-    // a later sweep files it.
+    // A gated body has no words to hash, and the gate is the reader's to open: the post carries
+    // no buttons until they do, and the sweep after that files it whole (see `bodyClipped`).
     if (bodyClipped(root)) return null;
 
     const shown = postText(root);
@@ -683,6 +803,7 @@ export const mastodonAdapter: PlatformAdapter = {
     if (!text) return null;
 
     const language = remembered ? (sourceLanguages.get(id) ?? '') : (textContainer(root)?.getAttribute('lang') ?? '');
+    const datetime = postedAt(root);
     const post = {
       id,
       text,
@@ -705,6 +826,8 @@ export const mastodonAdapter: PlatformAdapter = {
       // Absent rather than guessed when the host states none, so the shared unknown-language
       // fallback keys the highlights instead of the reader's own UI locale.
       ...(language ? { sourceLanguage: language } : {}),
+      // The timestamp the row renders — the post's own, never a quote card's.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     return { post, replyParentId: threadParents.get(id) ?? null };

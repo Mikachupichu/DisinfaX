@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> en la trav d'adressa, lura tutga Administrar extensiuns ed activescha DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>DAPI IL CHARGIAMENT</string>
+	<key>Add funds to your balance</key>
+	<string>Agiunta daners a tia bilanza</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>In'anteriura cumpra da US$%lld spetgava anc dad esser applitgada, uschia questa è vegnida cumplettada empè da ta scarichar puspè. Turna a Safari ed avra il pop-up da DisinfaX per vesair tia bilanza actualisada.</string>
+	<key>Annotate</key>
+	<string>Annotar</string>
+	<key>Annotating</key>
+	<string>Annotaziun</string>
+	<key>Arguably</key>
+	<string>Discussionevel</string>
+	<key>BALANCE</key>
+	<string>BILANZA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Cun il chargiament acceptas noss [Cundizions da Servetsch](https://disinfax.app/terms-of-use) e nossa [Politica da Protecziun da Datas](https://disinfax.app/privacy-policy). Cumissiuns da barat da valuta pon vegnir applitgadas sche ti pajas en ina autra valuta che USD.</string>
+	<key>Clear</key>
+	<string>Stizzar</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tutga l'icona da DisinfaX en la trav dad utensils da Safari per avrir il pop-up.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Cliccar sin %@ mussa las affirmaziuns e chargia il conto</string>
+	<key>Contacting the App Store…</key>
+	<string>Connectond cun l'App Store…</string>
+	<key>Copy</key>
+	<string>Copiar</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX po far errurs. Controllar l'infurmaziun anc'ina giada.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX n'è anc betg disponibel en tia regiun pervi da pretensiuns regulatoricas.</string>
+	<key>Disinfact</key>
+	<string>Verificaziun</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Activescha DisinfaX en Safari, sut Reglaschs → Extensiuns.</string>
+	<key>Enter a claim</key>
+	<string>Endatescha ina pretensiun</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Endatescha ina summa entira en dollars tar 1 e 100.</string>
+	<key>Equivocally</key>
+	<string>Equivoc</string>
+	<key>Fact-Check</key>
+	<string>Controlla fatgs</string>
+	<key>Fact-Check All</key>
+	<string>Verifitgar tut</string>
+	<key>Fact-Checking</key>
+	<string>Verificaziun</string>
+	<key>False</key>
+	<string>Fals</string>
+	<key>Likely</key>
+	<string>Probabel</string>
+	<key>Mostly</key>
+	<string>Per gronda part</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Avrir ils reglaschs da las extensiuns da Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Avra Safari ed ir a x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Avra il pop-up en Safari per vesair tia bilanza actualisada</string>
+	<key>Partially</key>
+	<string>Parzialmain</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pajament cumplettà. Turna a Safari ed avra il pop-up da DisinfaX per vesair tia bilanza actualisada.</string>
+	<key>Possibly</key>
+	<string>Pussiblamain</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Il product %@ n'è betg vegnì chattà en App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Cumpra annullada.</string>
+	<key>Purchase is pending approval.</key>
+	<string>La cumpra spetga approvaziun.</string>
+	<key>Reasoning</key>
+	<string>Ragiunament</string>
+	<key>Return to Safari</key>
+	<string>Turnar a Safari</string>
+	<key>Setup incomplete</key>
+	<string>Configuraziun betg cumplettada</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Annunzia tge en il pop-up da DisinfaX en Safari per agiuntar daners.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Ina part da questa dumonda n'è betg vegnida renconuschida. Controllescha per plaschair sche l'extensiun è actualisada.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Sin nossa vart è succedì in error. Emprova per plaschair anc ina giada après in mument.</string>
+	<key>Sources</key>
+	<string>Funtaunas</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SUMMA DA CHARGIAMENT</string>
+	<key>Tap the </key>
+	<string>Tutga l'icona </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tutga la medema icona e tscherna DisinfaX per avrir il pop-up.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Quai n'ha betg pudì vegnir chattà. Emprova anc ina giada.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Quest import da recarghientar n'è betg valid. Tscherna per plaschair in auter import.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Questa versiun na po betg cuntanscher ses container cundivis (App Group %@). Chargiaments na vegnan betg a stad disponibels enfin che la funcziun App Groups è vegnida agiuntada a l'app ed a l'extensiun.</string>
+	<key>Top Up</key>
+	<string>Augmentar la bilantscha</string>
+	<key>Top Up Balance</key>
+	<string>Chargiar la bilanza</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Chargiaments dumondan ina versiun pli nova dad iOS. Actualisescha, lura avra puspè DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Chargiaments dumondan ina versiun pli nova da macOS. Actualisescha, lura avra puspè DisinfaX.</string>
+	<key>True</key>
+	<string>Vair</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>UTILISAZIUN DA DISINFAX EN SAFARI</string>
+	<key>Unknown</key>
+	<string>Enconuschent</string>
+	<key>Unknown purchase error.</key>
+	<string>Errur da cumpra nunenconuschenta.</string>
+	<key>Very Likely</key>
+	<string>Fitg probabel</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollars americans entirs, 1–100. Vegn scarià en la valuta da tia App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ti has gia in chargiament da US$%lld che spetga dad esser applitgà — na has betg puspè vegnì scarià. Turna a Safari ed avra il pop-up da DisinfaX per applitgar quel a tia bilanza.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ti n'es betg annunzià. Annunzia tai per plaschair e emprova anc ina giada.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Tes chargiament da US$%lld vegn actualmain applitgà.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Tes chargiament da US$%lld dovra dapli temp che normal per cumparair.</string>
+	<key>Your account has been suspended.</key>
+	<string>Tes conto è vegnì suspendì.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Tia bilantscha è memia bassa. Per plaschair recarga per cuntinuar.</string>
+</dict>
+</plist>

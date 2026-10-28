@@ -44,6 +44,14 @@
   "signOut": {
     "message": "Amaitu saioa"
   },
+  "deleteAccount": {
+    "message": "Ezabatu kontua eta erlazionatutako datuak",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Zure saldoa, eta gako sekretu batez babestutako zure helbide elektronikoaren hash kriptografikoa, gordetzen dira kontua sortzean ematen diren doako funtsen erabilera okerra saihesteko. Kontu berarekin berriro erregistratuz gero, zure saldoa berreskuratzen da.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% klikatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du"
   },
@@ -73,7 +81,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI analisia erabiliz tweet-etan desinformazioa detektatu eta nabarmentzen du.",
+    "message": "AI analisia erabiliz bidalketetan desinformazioa detektatu eta nabarmentzen du.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -185,7 +193,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Berriz agerian jarri txio honetako baieztapen guztiak",
+    "message": "Berriz agerian jarri bidalketa honetako baieztapen guztiak",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -290,7 +298,7 @@
     "message": "Azken erabilera"
   },
   "cleanupTagline": {
-    "message": "Garbitu zure X jarioa."
+    "message": "Garbitu zure jarioa."
   },
   "factCheckAllButton": {
     "message": "Egiaztatu guztia"
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Hori ezin izan da aurkitu. Saiatu berriro."
   },
+  "errNoClaims": {
+    "message": "Ez da baieztapen egiaztagarririk aurkitu testu honetan.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Ezarpenak",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Itxura",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Argia",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatikoa",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Iluna",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Erakutsi beti egiaztapenak, baldin:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Jarraitu Reddit-ekin"
+  },
+  "persistentBadgesLabel": {
+    "message": "Daltonikoentzat: bereizgarri finkoak",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Mantendu egiaztapen-bereizgarri guztiak ikusgai argitalpenetan kurtsorea gainetik pasa gabe. Epaia nabarmentze-koloreak zein hitzek adierazten dute, beraz, kolore horiek bereizten ez dituztenei laguntzen die.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Letra-tamaina handia",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Leihoen barruko testurako (baieztapenak, arrazoibideak...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Itxi",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klikatu baieztapena editatzeko",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Egiaztapenaren xehetasunak",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Hautapen hau luzeegia da egiaztatzeko. Gehienez 1 000 karaktere.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Jakinarazi saldoa jaisten denean",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Baino gehiago: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "NOLA EGIAZTATU DATUAK",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Edozein web-orritan, hautatu egiaztatu nahi duzun testua.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Egin klik eskuineko botoiarekin hautatutako testuan eta hautatu Desinfaktatu (hautatuta ez dagoen testuan ere funtzionatzen du).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Egin klik eskuineko botoiarekin hautatutako testuan eta hautatu {1} Desinfaktatu (hautatuta ez dagoen testuan ere funtzionatzen du).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Egiaztapena berehala hasten da eta zure saldoaren kontura kargatzen da.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Testua hautatuta daukazula, sakatu ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikonoa helbide-barran, eta gero hautatu {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

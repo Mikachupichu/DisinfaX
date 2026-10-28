@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "រកឃើញ និងបន្លិចព័ត៌មានមិនពិតនៅក្នុង tweet ដោយប្រើការវិភាគ AI។",
+    "message": "រកឃើញ និងបន្លិចព័ត៌មានមិនពិតនៅក្នុងប្រកាស ដោយប្រើការវិភាគ AI។",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -115,7 +115,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "បង្ហាញការអះអាងទាំងអស់នៃ tweet នេះឡើងវិញ",
+    "message": "បង្ហាញការអះអាងទាំងអស់នៃប្រកាសនេះឡើងវិញ",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -234,6 +234,14 @@
   "signOut": {
     "message": "ចាកចេញ"
   },
+  "deleteAccount": {
+    "message": "លុបគណនី និងទិន្នន័យពាក់ព័ន្ធ",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "សមតុល្យរបស់អ្នក និង hash គ្រីបតូក្រាហ្វិកនៃអាសយដ្ឋានអ៊ីមែលរបស់អ្នកដែលត្រូវបានការពារដោយសោសម្ងាត់ ត្រូវបានរក្សាទុកដើម្បីការពារការប្រើប្រាស់ខុសនៃមូលនិធិឥតគិតថ្លៃដែលផ្ដល់ពេលបង្កើតគណនី។ ប្រសិនបើអ្នកចូលម្ដងទៀតដោយគណនីដូចគ្នា សមតុល្យរបស់អ្នកនឹងត្រូវបានស្ដារឡើងវិញ។",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "ការចុច %BTN% នឹងបង្ហាញការអះអាង ហើយនឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក"
   },
@@ -286,7 +294,7 @@
     "message": "ប្រើចុងក្រោយ"
   },
   "cleanupTagline": {
-    "message": "សម្អាតព័ត៌មាន X របស់អ្នក។"
+    "message": "សម្អាតព័ត៌មានរបស់អ្នក។"
   },
   "disclaimerJurisdiction": {
     "message": "នៅក្នុងសហរដ្ឋអាមេរិក មានតែអ្នករស់នៅក្នុងរដ្ឋ Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin និង Wyoming ប៉ុណ្ណោះដែលអាចប្រើ DisinfaX និងបញ្ចូលទឹកប្រាក់ក្នុងសមតុល្យរបស់ខ្លួនបាន។ Washington, D.C., ដែនដីទាំងអស់របស់សហរដ្ឋអាមេរិក និងរដ្ឋណាមួយដែលមិនបានរាយបញ្ជីត្រូវបានដកចេញ។ នៅក្រៅសហរដ្ឋអាមេរិក វាមានផ្តល់ជូននៅកាណាដា, អូស្ត្រាលី, នូវែលសេឡង់, សិង្ហបុរី, អាហ្វ្រិកខាងត្បូង, ជប៉ុន, តៃវ៉ាន់, ឥណ្ឌូនេស៊ី, ថៃ, ហ្វីលីពីន, ម៉ាឡេស៊ី, វៀតណាម និង ស្វីស។"
@@ -329,9 +337,29 @@
   "errNotFound": {
     "message": "រកមិនឃើញវានោះទេ។ សូមព្យាយាមម្ដងទៀត។"
   },
+  "errNoClaims": {
+    "message": "រកមិនឃើញការអះអាងដែលអាចផ្ទៀងផ្ទាត់បាននៅក្នុងអត្ថបទនេះទេ។",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ការកំណត់",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "រូបរាង",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ភ្លឺ",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "ស្វ័យប្រវត្តិ",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "ងងឹត",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "បង្ហាញការត្រួតពិនិត្យជានិច្ចប្រសិនបើ:",
@@ -381,5 +409,86 @@
   "selectionConfirmCancel": {
     "message": "បោះបង់",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "សម្អាត",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "បើក DisinfaX នៅលើ $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX កំពុងបើកនៅលើ $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "បិទ",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "បន្តជាមួយ Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "បន្តជាមួយ LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "បន្តជាមួយ Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "សម្រាប់អ្នកពិការភ្នែកពណ៌៖ ស្លាកអចិន្ត្រៃយ៍",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "រក្សាស្លាកផ្ទៀងផ្ទាត់ការពិតទាំងអស់ឱ្យមើលឃើញលើការបង្ហោះដោយមិនបាច់ដាក់ទស្សន៍ទ្រនិចលើ។ សេចក្តីសន្និដ្ឋានត្រូវបានបង្ហាញតាមរយៈពណ៌រំលេចស្មើនឹងពាក្យសម្ដី ដូច្នេះវាជួយអ្នកដែលមិនអាចបែងចែកពណ៌ទាំងនោះបាន។",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "ទំហំអក្សរធំ",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ពង្រីកការអះអាងដែលបានសរសេរឡើងវិញ ហេតុផល និងការណែនាំចាប់ផ្តើម។",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "បិទ",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "ចុចដើម្បីកែសម្រួលការអះអាង",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "ព័ត៌មានលម្អិតនៃការផ្ទៀងផ្ទាត់",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ជម្រើសនេះវែងពេកក្នុងការផ្ទៀងផ្ទាត់។ អតិបរមា 1,000 តួអក្សរ។",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ជូនដំណឹងពេលសមតុល្យធ្លាក់ចុះ",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "លើសពី: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

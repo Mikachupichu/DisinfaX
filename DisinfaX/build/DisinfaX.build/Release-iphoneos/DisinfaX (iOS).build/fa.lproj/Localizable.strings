@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> در نوار آدرس ضربه بزنید، سپس روی مدیریت افزونه‌ها ضربه بزنید و DisinfaX را فعال کنید.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ اطمینان</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ اطمینان، %2$@ درستی</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ که %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>پس از شارژ</string>
+	<key>Add funds to your balance</key>
+	<string>به موجودی خود وجه اضافه کنید</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>خرید قبلی به مقدار US$%lld همچنان منتظر اعمال شدن بود، بنابراین به‌جای دریافت هزینه دوباره از شما، همان تکمیل شد. به Safari بازگردید و پنجرهٔ بازشوی DisinfaX را برای مشاهدهٔ موجودی به‌روزشدهٔ خود باز کنید.</string>
+	<key>Annotate</key>
+	<string>حاشیه‌نویسی کن</string>
+	<key>Annotating</key>
+	<string>در حال حاشیه‌نویسی</string>
+	<key>Arguably</key>
+	<string>قابل بحث</string>
+	<key>BALANCE</key>
+	<string>موجودی</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>با شارژ کردن، شما با [شرایط خدمات](https://disinfax.app/terms-of-use) و [سیاست حریم خصوصی](https://disinfax.app/privacy-policy) ما موافقت می‌کنید. اگر با ارزی غیر از USD پرداخت کنید، ممکن است کارمزد تبدیل ارز اعمال شود.</string>
+	<key>Clear</key>
+	<string>پاک کردن</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>برای باز کردن پنجرهٔ بازشو، روی نماد DisinfaX در نوار ابزار Safari ضربه بزنید.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>کلیک روی %@ ادعاها را نمایش می‌دهد و از موجودی شما کسر می‌کند</string>
+	<key>Close</key>
+	<string>بستن</string>
+	<key>Contacting the App Store…</key>
+	<string>در حال اتصال به App Store…</string>
+	<key>Copy</key>
+	<string>کپی</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>‏DisinfaX ممکن است اشتباه کند. اطلاعات را دوباره بررسی کنید.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>‏DisinfaX هنوز به دلیل الزامات نظارتی در منطقه شما در دسترس نیست.</string>
+	<key>Disinfact</key>
+	<string>راستی‌آزمایی</string>
+	<key>Edit</key>
+	<string>ویرایش</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX را در Safari، در تنظیمات ← افزونه‌ها فعال کنید.</string>
+	<key>Enter a claim</key>
+	<string>یک ادعا وارد کنید</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>مقدار دلار صحیحی بین ۱ و ۱۰۰ وارد کنید.</string>
+	<key>Equivocally</key>
+	<string>مبهم</string>
+	<key>Fact-Check</key>
+	<string>راستی‌آزمایی</string>
+	<key>Fact-Check All</key>
+	<string>همه را راستی‌آزمایی کن</string>
+	<key>Fact-Checking</key>
+	<string>راستی‌آزمایی</string>
+	<key>False</key>
+	<string>نادرست</string>
+	<key>Likely</key>
+	<string>محتمل</string>
+	<key>Mostly</key>
+	<string>عمدتاً</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>باز کردن تنظیمات افزونه‌های Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari را باز کنید و به x.com بروید.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>پنجرهٔ بازشو را در Safari باز کنید تا موجودی به‌روزشدهٔ خود را ببینید</string>
+	<key>Partially</key>
+	<string>تا حدی</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>پرداخت کامل شد. به Safari بازگردید و پنجرهٔ بازشوی DisinfaX را برای مشاهدهٔ موجودی به‌روزشدهٔ خود باز کنید.</string>
+	<key>Possibly</key>
+	<string>احتمالاً</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>محصول %@ در App Store Connect یافت نشد.</string>
+	<key>Purchase cancelled.</key>
+	<string>خرید لغو شد.</string>
+	<key>Purchase is pending approval.</key>
+	<string>خرید در انتظار تأیید است.</string>
+	<key>Reasoning</key>
+	<string>استدلال</string>
+	<key>Return to Safari</key>
+	<string>بازگشت به Safari</string>
+	<key>Setup incomplete</key>
+	<string>راه‌اندازی ناقص است</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>برای افزودن وجه، از پنجرهٔ بازشوی DisinfaX در Safari وارد شوید.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>بخشی از این درخواست شناسایی نشد. لطفاً بررسی کنید که افزونه به‌روز باشد.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>در سمت ما خطایی رخ داد. لطفاً کمی بعد دوباره تلاش کنید.</string>
+	<key>Sources</key>
+	<string>منابع</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>مقدار شارژ</string>
+	<key>Tap the </key>
+	<string>روی نماد </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>روی همان نماد ضربه بزنید و DisinfaX را برای باز کردن پنجرهٔ بازشو انتخاب کنید.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>موردی پیدا نشد. لطفاً دوباره تلاش کنید.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>مقدار شارژ واردشده معتبر نیست. لطفاً مقدار دیگری انتخاب کنید.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>این ساخت نمی‌تواند به ظرف مشترک خود (گروه برنامهٔ %@) دسترسی پیدا کند. تا زمانی که قابلیت گروه‌های برنامه به هر دو برنامه و افزونه اضافه نشود، شارژها در دسترس نخواهند بود.</string>
+	<key>Top Up</key>
+	<string>شارژ</string>
+	<key>Top Up Balance</key>
+	<string>شارژ موجودی</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>شارژها به نسخهٔ جدیدتری از iOS نیاز دارند. به‌روزرسانی کنید، سپس DisinfaX را دوباره باز کنید.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>شارژها به نسخهٔ جدیدتری از macOS نیاز دارند. به‌روزرسانی کنید، سپس DisinfaX را دوباره باز کنید.</string>
+	<key>True</key>
+	<string>درست</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>استفاده از DISINFAX در SAFARI</string>
+	<key>Unknown</key>
+	<string>نامشخص</string>
+	<key>Unknown purchase error.</key>
+	<string>خطای ناشناختهٔ خرید.</string>
+	<key>Very Likely</key>
+	<string>بسیار محتمل</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>دلار آمریکای کامل، ۱ تا ۱۰۰. به ارز App Store شما محاسبه می‌شود.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>شما از قبل شارژی به مقدار US$%lld دارید که منتظر اعمال شدن است — دوباره از شما هزینه دریافت نشده است. به Safari بازگردید و پنجرهٔ بازشوی DisinfaX را برای اعمال آن به موجودی خود باز کنید.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>شما وارد نشده‌اید. لطفاً وارد شوید و دوباره تلاش کنید.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>شارژ US$%lld شما در حال اعمال شدن است.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>نمایان شدن شارژ US$%lld شما بیش از حد معمول طول می‌کشد.</string>
+	<key>Your account has been suspended.</key>
+	<string>حساب شما تعلیق شده است.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>موجودی شما بسیار کم است. لطفاً برای ادامه شارژ کنید.</string>
+</dict>
+</plist>

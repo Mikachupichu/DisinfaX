@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> yn y bar cyfeiriad, yna tapiwch Rheoli Estyniadau a galluogi DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ hyder</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ hyder, %2$@ cywirdeb</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ i fod yn %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>AR ÔL AIL-LENWI</string>
+	<key>Add funds to your balance</key>
+	<string>Ychwanegwch arian at eich balans</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Roedd pryniant US$%lld cynharach yn dal i aros i gael ei gymhwyso, felly cwblhawyd hwnnw yn hytrach na chodi tâl arnoch eto. Ewch yn ôl i Safari ac agor naidlen DisinfaX i weld eich balans wedi'i ddiweddaru.</string>
+	<key>Annotate</key>
+	<string>Anodi</string>
+	<key>Annotating</key>
+	<string>Yn anodi</string>
+	<key>Arguably</key>
+	<string>Dadleuol</string>
+	<key>BALANCE</key>
+	<string>BALANS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Trwy ail-lenwi, rydych yn cytuno i'n [Telerau Gwasanaeth](https://disinfax.app/terms-of-use) a'n [Polisi Preifatrwydd](https://disinfax.app/privacy-policy). Gall ffioedd cyfnewid arian tramor fod yn berthnasol os talwch mewn arian cyfred heblaw USD.</string>
+	<key>Clear</key>
+	<string>Clirio</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tapiwch eicon DisinfaX ym mar offer Safari i agor y naidlen.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Bydd clicio %@ yn dangos honiadau a bydd yn codi tâl ar eich balans</string>
+	<key>Close</key>
+	<string>Cau</string>
+	<key>Contacting the App Store…</key>
+	<string>Yn cysylltu â'r App Store…</string>
+	<key>Copy</key>
+	<string>Copïo</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Gall DisinfaX wneud camgymeriadau. Gwiriwch y wybodaeth eto.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Nid yw DisinfaX ar gael yn eich rhanbarth eto oherwydd gofynion rheoleiddiol.</string>
+	<key>Disinfact</key>
+	<string>Ffeithwirio</string>
+	<key>Edit</key>
+	<string>Golygu</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Galluogwch DisinfaX yn Safari, o dan Gosodiadau → Estyniadau.</string>
+	<key>Enter a claim</key>
+	<string>Rhowch honiad</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Rhowch swm dolar cyfan rhwng 1 a 100.</string>
+	<key>Equivocally</key>
+	<string>Amwys</string>
+	<key>Fact-Check</key>
+	<string>Gwirio ffeithiau</string>
+	<key>Fact-Check All</key>
+	<string>Ffeithwirio popeth</string>
+	<key>Fact-Checking</key>
+	<string>Ffeithwirio</string>
+	<key>False</key>
+	<string>Anghywir</string>
+	<key>Likely</key>
+	<string>Tebygol</string>
+	<key>Mostly</key>
+	<string>Yn bennaf</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Agor gosodiadau estyniadau Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Agorwch Safari ac ewch i x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Agorwch y naidlen yn Safari i weld eich balans wedi'i ddiweddaru</string>
+	<key>Partially</key>
+	<string>Yn rhannol</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Taliad wedi'i gwblhau. Ewch yn ôl i Safari ac agor naidlen DisinfaX i weld eich balans wedi'i ddiweddaru.</string>
+	<key>Possibly</key>
+	<string>O bosib</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Ni ddaethpwyd o hyd i'r cynnyrch %@ yn App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Diddymwyd y pryniant.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Mae'r pryniant yn aros am gymeradwyaeth.</string>
+	<key>Reasoning</key>
+	<string>Rhesymu</string>
+	<key>Return to Safari</key>
+	<string>Yn ôl i Safari</string>
+	<key>Setup incomplete</key>
+	<string>Sefydlu heb ei gwblhau</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Mewngofnodwch o'r naidlen DisinfaX yn Safari i ychwanegu arian.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Doedd rhan o'r cais hwn ddim yn adnabyddus. Sicrhewch fod yr estyniad wedi'i ddiweddaru.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Digwyddodd gwall ar ein rhan ni. Ceisiwch eto mewn ychydig.</string>
+	<key>Sources</key>
+	<string>Ffynonellau</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SWM AIL-LENWI</string>
+	<key>Tap the </key>
+	<string>Tapiwch yr eicon </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tapiwch yr un eicon a dewis DisinfaX i agor y naidlen.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ni ellid dod o hyd i hynny. Ceisiwch eto.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Nid yw'r swm ychwanegu hwnnw'n ddilys. Dewiswch swm gwahanol.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ni all y fersiwn hon gyrraedd ei chynhwysydd a rennir (Grŵp Ap %@). Ni fydd ail-lenwi ar gael nes bod y gallu Grwpiau Apiau wedi'i ychwanegu at yr ap a'r estyniad fel ei gilydd.</string>
+	<key>Top Up</key>
+	<string>Ychwanegu</string>
+	<key>Top Up Balance</key>
+	<string>Ail-lenwi balans</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Mae ail-lenwi angen fersiwn newydd o iOS. Diweddarwch, yna ailagor DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Mae ail-lenwi angen fersiwn newydd o macOS. Diweddarwch, yna ailagor DisinfaX.</string>
+	<key>True</key>
+	<string>Gwir</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DEFNYDDIO DISINFAX YN SAFARI</string>
+	<key>Unknown</key>
+	<string>Anhysbys</string>
+	<key>Unknown purchase error.</key>
+	<string>Gwall pryniant anhysbys.</string>
+	<key>Very Likely</key>
+	<string>Tebygol iawn</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolar UDA cyfan, 1–100. Codir tâl yn arian cyfred eich App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Mae gennych ail-lenwad US$%lld eisoes yn aros i gael ei gymhwyso — nid ydych wedi cael eich codi arno eto. Ewch yn ôl i Safari ac agor naidlen DisinfaX i'w gymhwyso i'ch balans.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Nid ydych wedi mewngofnodi. Mewngofnodwch a cheisiwch eto.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Mae eich ail-lenwad US$%lld yn cael ei gymhwyso.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Mae eich ail-lenwad US$%lld yn cymryd mwy o amser na'r arfer i ymddangos.</string>
+	<key>Your account has been suspended.</key>
+	<string>Mae eich cyfrif wedi'i atal.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Mae eich balans yn rhy isel. Ychwanegwch arian i barhau.</string>
+</dict>
+</plist>

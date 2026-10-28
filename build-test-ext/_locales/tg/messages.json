@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Бо истифода аз таҳлили AI иттилооти бардурӯғро дар твитҳо муайян ва қайд мекунад.",
+    "message": "Бо истифода аз таҳлили AI иттилооти бардурӯғро дар постҳо муайян ва қайд мекунад.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Аз нав ошкор кардани ҳамаи даъвоҳо дар ин твит",
+    "message": "Аз нав ошкор кардани ҳамаи даъвоҳо дар ин пост",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Баромадан"
   },
+  "deleteAccount": {
+    "message": "Ҳисоб ва маълумоти марбутро нест кунед",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Баланси шумо ва ҳеши криптографии суроғаи почтаи электронии шумо, ки бо калиди махфӣ ҳифз шудааст, нигоҳ дошта мешаванд, то ки сӯиистифода аз маблағҳои ройгоне, ки ҳангоми сохтани ҳисоб дода мешаванд, пешгирӣ карда шавад. Агар бо ҳамон ҳисоб дубора ворид шавед, баланси шумо барқарор мегардад.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Клик кардан ба %BTN% даъвоҳоро ошкор мекунад ва аз бақияи шумо маблағ гирифта мешавад"
   },
@@ -287,7 +295,7 @@
     "message": "Охирин истифодашуда"
   },
   "cleanupTagline": {
-    "message": "Лентаи X-и худро тоза кунед."
+    "message": "Лентаи худро тоза кунед."
   },
   "disclaimerJurisdiction": {
     "message": "Дар дохили Иёлоти Муттаҳидаи Америка танҳо сокинони Алабама, Аризона, Калифорния, Колорадо, Коннектикут, Делавэр, Флорида, Айдахо, Иллинойс, Индиана, Айова, Канзас, Кентуккӣ, Луизиана, Мэн, Массачусетс, Миссисипи, Миссурӣ, Монтана, Ню-Гемпшир, Ню-Мексико, Ню-Йорк, Каролинаи Шимолӣ, Дакотаи Шимолӣ, Оклахома, Орегон, Пенсилвания, Каролинаи Ҷанубӣ, Дакотаи Ҷанубӣ, Теннесси, Техас, Юта, Вашингтон, Висконсин ва Вайоминг метавонанд DisinfaX-ро истифода баранд ва бақияи худро пур кунанд; Вашингтон, D.C., ҳамаи қаламравҳои ИМА ва ҳар гуна иёлотҳое, ки номбар нашудаанд, истисно мебошанд. Берун аз Иёлоти Муттаҳидаи Америка он дар Канада, Австралия, Зеландияи Нав, Сингапур, Африкаи Ҷанубӣ, Ҷопон, Тайван, Индонезия, Таиланд, Филиппин, Малайзия, Ветнам ва Швейтсария дастрас аст."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Он ёфт нашуд. Лутфан боз кӯшиш кунед."
   },
+  "errNoClaims": {
+    "message": "Дар ин матн ягон даъвои қобили тасдиқ ёфт нашуд.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Танзимот",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Намуд",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Равшан",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Худкор",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Торик",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Ҳамеша фактчекингро нишон деҳ, агар:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Бекор кардан",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Тоза кардан",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Дар $HOST$ DisinfaX-ро фаъол кунед",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX дар $HOST$ фаъол аст",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Хомӯш кунед",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Бо Facebook идома додан"
+  },
+  "continueWithLinkedIn": {
+    "message": "Бо LinkedIn идома додан"
+  },
+  "continueWithReddit": {
+    "message": "Бо Reddit идома додан"
+  },
+  "persistentBadgesLabel": {
+    "message": "Барои кӯррангҳо: нишонҳои доимӣ",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ҳамаи нишонҳои тафтиши далелҳоро дар паёмҳо бидуни бурдани курсор намоён нигоҳ доред. Хулоса ҳам тавассути ранги таъкид ва ҳам тавассути матн интиқол меёбад, аз ин рӯ ин ба касоне, ки ин рангҳоро фарқ намекунанд, кӯмак мерасонад.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Андозаи калони ҳарф",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Даъвоҳои аз нав навишташуда, асосноккунӣ ва ишораҳои оғозиро калон мекунад.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Пӯшидан",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Барои таҳрири даъво клик кунед",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Тафсилоти тафтиши далелҳо",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Ин интихоб барои санҷиш хеле дароз аст. Ҳадди аксар 1 000 аломат.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Огоҳӣ ҳангоми кам шудани бақия",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Бештар аз: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

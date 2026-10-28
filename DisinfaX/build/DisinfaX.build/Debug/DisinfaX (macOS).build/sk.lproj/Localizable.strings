@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> na paneli s adresou, potom klepnite na Spravovať rozšírenia a povoľte DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@, že je %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PO DOBITÍ</string>
+	<key>Add funds to your balance</key>
+	<string>Pridajte prostriedky na svoj zostatok</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Skorší nákup US$%lld stále čakal na uplatnenie, takže bol dokončený namiesto opätovného účtovania. Vráťte sa do Safari a otvorte vyskakovacie okno DisinfaX a zobrazte si aktualizovaný zostatok.</string>
+	<key>Annotate</key>
+	<string>Anotovať</string>
+	<key>Annotating</key>
+	<string>Anotovanie</string>
+	<key>Arguably</key>
+	<string>Diskutabilné</string>
+	<key>BALANCE</key>
+	<string>ZOSTATOK</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Dobitím súhlasíte s našimi [Podmienkami služby](https://disinfax.app/terms-of-use) a [Zásadami ochrany osobných údajov](https://disinfax.app/privacy-policy). Ak platíte v inej mene ako USD, môžu sa účtovať poplatky za výmenu meny.</string>
+	<key>Clear</key>
+	<string>Vymazať</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Klepnutím na ikonu DisinfaX na paneli s nástrojmi Safari otvorte vyskakovacie okno.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Kliknutím na %@ zobrazíte tvrdenia a z vášho zostatku bude strhnutý poplatok</string>
+	<key>Contacting the App Store…</key>
+	<string>Pripája sa k App Store…</string>
+	<key>Copy</key>
+	<string>Kopírovať</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX môže robiť chyby. Informácie si vždy overte.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX zatiaľ nie je vo vašom regióne k dispozícii z dôvodu regulačných požiadaviek.</string>
+	<key>Disinfact</key>
+	<string>Overiť</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Povoľte DisinfaX v Safari v časti Nastavenia → Rozšírenia.</string>
+	<key>Enter a claim</key>
+	<string>Zadajte tvrdenie</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Zadajte celú sumu v dolároch medzi 1 a 100.</string>
+	<key>Equivocally</key>
+	<string>Nejednoznačné</string>
+	<key>Fact-Check</key>
+	<string>Overovanie faktov</string>
+	<key>Fact-Check All</key>
+	<string>Overiť všetko</string>
+	<key>Fact-Checking</key>
+	<string>Kontrola</string>
+	<key>False</key>
+	<string>Nepravda</string>
+	<key>Likely</key>
+	<string>Pravdepodobné</string>
+	<key>Mostly</key>
+	<string>Väčšinou</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Otvoriť nastavenia rozšírení Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Otvorte Safari a prejdite na x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Otvorte vyskakovacie okno v Safari a zobrazte si aktualizovaný zostatok</string>
+	<key>Partially</key>
+	<string>Čiastočne</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Platba dokončená. Vráťte sa do Safari a otvorte vyskakovacie okno DisinfaX a zobrazte si aktualizovaný zostatok.</string>
+	<key>Possibly</key>
+	<string>Možné</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produkt %@ sa v App Store Connect nenašiel.</string>
+	<key>Purchase cancelled.</key>
+	<string>Nákup zrušený.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Nákup čaká na schválenie.</string>
+	<key>Reasoning</key>
+	<string>Odôvodnenie</string>
+	<key>Return to Safari</key>
+	<string>Späť do Safari</string>
+	<key>Setup incomplete</key>
+	<string>Nastavenie nie je dokončené</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Prihláste sa vo vyskakovacom okne DisinfaX v Safari a pridajte prostriedky.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Časť tejto požiadavky nebola rozpoznaná. Uistite sa, že máte aktuálnu verziu rozšírenia.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Na našej strane nastala chyba. Skúste to znova za chvíľu.</string>
+	<key>Sources</key>
+	<string>Zdroje</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SUMA DOBITIA</string>
+	<key>Tap the </key>
+	<string>Klepnite na ikonu </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Klepnite na tú istú ikonu a vyberte DisinfaX na otvorenie vyskakovacieho okna.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>To sa nepodarilo nájsť. Skúste to znova.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Táto suma dobitia nie je platná. Vyberte inú sumu.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Táto verzia sa nedokáže dostať k svojmu zdieľanému kontajneru (skupina aplikácií %@). Dobíjanie nebude možné, kým sa funkcia Skupiny aplikácií nepridá do aplikácie aj rozšírenia.</string>
+	<key>Top Up</key>
+	<string>Dobiť</string>
+	<key>Top Up Balance</key>
+	<string>Dobiť zostatok</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Dobíjanie vyžaduje novšiu verziu iOS. Aktualizujte a potom znova otvorte DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Dobíjanie vyžaduje novšiu verziu macOS. Aktualizujte a potom znova otvorte DisinfaX.</string>
+	<key>True</key>
+	<string>Pravda</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>POUŽÍVANIE DISINFAX V SAFARI</string>
+	<key>Unknown</key>
+	<string>Neznáme</string>
+	<key>Unknown purchase error.</key>
+	<string>Neznáma chyba nákupu.</string>
+	<key>Very Likely</key>
+	<string>Veľmi pravdepodobné</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Celé americké doláre, 1 – 100. Účtované v mene vášho App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Už máte dobitie US$%lld čakajúce na uplatnenie — nebola vám opäť naúčtovaná platba. Vráťte sa do Safari a otvorte vyskakovacie okno DisinfaX, aby ste ho uplatnili na svojom zostatku.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Nie ste prihlásení. Prihláste sa a skúste to znova.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Vaše dobitie US$%lld sa práve uplatňuje.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Zobrazenie vášho dobitia US$%lld trvá dlhšie ako zvyčajne.</string>
+	<key>Your account has been suspended.</key>
+	<string>Váš účet bol pozastavený.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Váš zostatok je príliš nízky. Dobite si kredit a pokračujte.</string>
+</dict>
+</plist>

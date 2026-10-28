@@ -44,6 +44,14 @@
   "signOut": {
     "message": "সাইন আউট"
   },
+  "deleteAccount": {
+    "message": "অ্যাকাউন্ট এবং সংশ্লিষ্ট ডেটা মুছুন",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "আপনার ব্যালেন্স, এবং আপনার ইমেল ঠিকানার একটি ক্রিপ্টোগ্রাফিক হ্যাশ যা একটি গোপন কী দ্বারা সুরক্ষিত, অ্যাকাউন্ট তৈরির সময় দেওয়া বিনামূল্যের তহবিলের অপব্যবহার রোধ করতে সংরক্ষণ করা হয়। একই অ্যাকাউন্টে আবার সাইন ইন করলে আপনার ব্যালেন্স ফিরে আসে।",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN%-এ ক্লিক করলে দাবিগুলি প্রকাশ করবে এবং আপনার ব্যালেন্স থেকে টাকা কাটা হবে"
   },
@@ -72,7 +80,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "AI বিশ্লেষণের মাধ্যমে টুইটে ভুল তথ্য সনাক্ত করে এবং হাইলাইট করে।"
+    "message": "AI বিশ্লেষণের মাধ্যমে পোস্টে ভুল তথ্য সনাক্ত করে এবং হাইলাইট করে।"
   },
   "verdictTrue": {
     "message": "সত্য",
@@ -183,7 +191,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "এই টুইটের সব দাবি আবার প্রকাশ করুন",
+    "message": "এই পোস্টের সব দাবি আবার প্রকাশ করুন",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -288,7 +296,7 @@
     "message": "সর্বশেষ ব্যবহৃত"
   },
   "cleanupTagline": {
-    "message": "আপনার X ফিড পরিষ্কার করুন।"
+    "message": "আপনার ফিড পরিষ্কার করুন।"
   },
   "factCheckAllButton": {
     "message": "সব যাচাই করুন"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "সেটি খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
+  "errNoClaims": {
+    "message": "এই লেখায় যাচাইযোগ্য কোনো দাবি পাওয়া যায়নি।",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "সেটিংস",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "রূপ",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "হালকা",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "স্বয়ংক্রিয়",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "গাঢ়",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "সর্বদা ফ্যাক্ট-চেক দেখাও যদি:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "বাতিল",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "মুছুন",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$-এ DisinfaX চালু করুন",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$-এ DisinfaX চালু আছে",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "বন্ধ করুন",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook দিয়ে চালিয়ে যান"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn দিয়ে চালিয়ে যান"
+  },
+  "continueWithReddit": {
+    "message": "Reddit দিয়ে চালিয়ে যান"
+  },
+  "persistentBadgesLabel": {
+    "message": "বর্ণান্ধ-বান্ধব: স্থায়ী ব্যাজ",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "হোভ্যার না করেই পোস্টে প্রতিটি তথ্য যাচাই ব্যাজ দৃশ্যমান রাখুন। রায়টি যেমন শব্দের মাধ্যমে তেমনি হাইলাইটের রঙের মাধ্যমেও প্রকাশিত হয়, তাই এটি রঙের পার্থক্য বুঝতে না পারা ব্যক্তিদের সাহায্য করে।",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "বড় ফন্ট আকার",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "পুনরায় লেখা দাবি, যুক্তি এবং প্রারম্ভিক ইঙ্গিতের আকার বড় করুন।",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "বন্ধ করুন",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "দাবি সম্পাদনা করতে ক্লিক করুন",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "তথ্য যাচাইয়ের বিবরণ",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "এই নির্বাচনটি যাচাই করার জন্য অনেক দীর্ঘ। সর্বোচ্চ 1,000 অক্ষর।",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ব্যালেন্স কমলে জানান",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "এর বেশি হলে: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

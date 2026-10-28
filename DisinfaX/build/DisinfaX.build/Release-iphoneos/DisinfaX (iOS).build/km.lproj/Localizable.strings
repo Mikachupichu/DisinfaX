@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> នៅក្នុងរបារអាសយដ្ឋាន បន្ទាប់មកចុច គ្រប់គ្រងផ្នែកបន្ថែម ហើយបើក DisinfaX។</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ទំនុកចិត្ត</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ទំនុកចិត្ត, %2$@ ភាពត្រឹមត្រូវ</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>បន្ទាប់ពីបញ្ចូលទឹកប្រាក់</string>
+	<key>Add funds to your balance</key>
+	<string>បន្ថែមមូលនិធិទៅសមតុល្យរបស់អ្នក</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ការទិញ US$%lld មុននេះនៅតែកំពុងរង់ចាំអនុវត្ត ដូច្នេះការទិញនោះត្រូវបានបញ្ចប់ជំនួសឱ្យការគិតថ្លៃអ្នកម្តងទៀត។ ត្រឡប់ទៅ Safari ហើយបើកផ្ទាំងលេចឡើង DisinfaX ដើម្បីមើលសមតុល្យដែលបានធ្វើបច្ចុប្បន្នភាព។</string>
+	<key>Annotate</key>
+	<string>អត្ថាធិប្បាយ</string>
+	<key>Annotating</key>
+	<string>កំពុងអត្ថាធិប្បាយ</string>
+	<key>Arguably</key>
+	<string>អាចជជែកបាន</string>
+	<key>BALANCE</key>
+	<string>សមតុល្យ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>ដោយបញ្ចូលទឹកប្រាក់ អ្នកយល់ព្រមតាម [លក្ខខណ្ឌប្រើប្រាស់](https://disinfax.app/terms-of-use) និង [គោលការណ៍​ភាព​ឯកជន](https://disinfax.app/privacy-policy) របស់យើង។ ថ្លៃប្តូររូបិយប័ណ្ណអាចអនុវត្តប្រសិនបើអ្នកបង់ជារូបិយប័ណ្ណក្រៅពី USD។</string>
+	<key>Clear</key>
+	<string>សម្អាត</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>ចុចលើរូបតំណាង DisinfaX នៅក្នុងរបារឧបករណ៍ Safari ដើម្បីបើកផ្ទាំងលេចឡើង។</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>ការចុច %@ នឹងបង្ហាញការអះអាង ហើយនឹងកាត់ប្រាក់ពីសមតុល្យរបស់អ្នក</string>
+	<key>Close</key>
+	<string>បិទ</string>
+	<key>Contacting the App Store…</key>
+	<string>កំពុងភ្ជាប់ទៅ App Store…</string>
+	<key>Copy</key>
+	<string>ចម្លង</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX អាចធ្វើកំហុសបាន។ ពិនិត្យព័ត៌មានឡើងវិញ។</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX មិនទាន់អាចប្រើបានក្នុងតំបន់របស់អ្នកនៅឡើយទេ ដោយសារតម្រូវការបញ្ញត្តិ។</string>
+	<key>Disinfact</key>
+	<string>ត្រួតពិនិត្យ</string>
+	<key>Edit</key>
+	<string>កែសម្រួល</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>បើក DisinfaX ក្នុង Safari នៅក្នុង ការកំណត់ → ផ្នែកបន្ថែម។</string>
+	<key>Enter a claim</key>
+	<string>បញ្ចូលការអះអាង</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>បញ្ចូលចំនួនទឹកប្រាក់ដុល្លារពេញចន្លោះពី ១ ដល់ ១០០។</string>
+	<key>Equivocally</key>
+	<string>មិនច្បាស់លាស់</string>
+	<key>Fact-Check</key>
+	<string>ការផ្ទៀងផ្ទាត់ការពិត</string>
+	<key>Fact-Check All</key>
+	<string>ត្រួតពិនិត្យទាំងអស់</string>
+	<key>Fact-Checking</key>
+	<string>ការត្រួតពិនិត្យ</string>
+	<key>False</key>
+	<string>មិនពិត</string>
+	<key>Likely</key>
+	<string>ទំនង</string>
+	<key>Mostly</key>
+	<string>ភាគច្រើន</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>បើកការកំណត់ផ្នែកបន្ថែម Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>បើក Safari ហើយចូលទៅកាន់ x.com។</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>បើកផ្ទាំងលេចឡើងក្នុង Safari ដើម្បីមើលសមតុល្យដែលបានធ្វើបច្ចុប្បន្នភាព</string>
+	<key>Partially</key>
+	<string>ដោយផ្នែក</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ការទូទាត់បានបញ្ចប់។ ត្រឡប់ទៅ Safari ហើយបើកផ្ទាំងលេចឡើង DisinfaX ដើម្បីមើលសមតុល្យដែលបានធ្វើបច្ចុប្បន្នភាព។</string>
+	<key>Possibly</key>
+	<string>អាចទៅរួច</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>រកមិនឃើញផលិតផល %@ នៅក្នុង App Store Connect ទេ។</string>
+	<key>Purchase cancelled.</key>
+	<string>ការទិញត្រូវបានលុបចោល។</string>
+	<key>Purchase is pending approval.</key>
+	<string>ការទិញកំពុងរង់ចាំការអនុម័ត។</string>
+	<key>Reasoning</key>
+	<string>ហេតុផល</string>
+	<key>Return to Safari</key>
+	<string>ត្រឡប់ទៅ Safari</string>
+	<key>Setup incomplete</key>
+	<string>ការដំឡើងមិនទាន់ចប់</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>ចូលគណនីពីផ្ទាំង​លេចឡើង DisinfaX ក្នុង Safari ដើម្បីបន្ថែមមូលនិធិ។</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ផ្នែកមួយនៃសំណើនេះមិនត្រូវបានទទួលស្គាល់ទេ។ សូមប្រាកដថាកម្មវិធីបន្ថែមទាន់សម័យ។</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>មានកំហុសនៅខាងយើង។ សូមព្យាយាមម្ដងទៀតបន្តិចទៀត។</string>
+	<key>Sources</key>
+	<string>ប្រភព</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ចំនួនទឹកប្រាក់បញ្ចូល</string>
+	<key>Tap the </key>
+	<string>ចុចលើរូបតំណាង </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>ចុចលើរូបតំណាងដដែល ហើយជ្រើសរើស DisinfaX ដើម្បីបើកផ្ទាំងលេចឡើង។</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>រកមិនឃើញវានោះទេ។ សូមព្យាយាមម្ដងទៀត។</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ចំនួនបញ្ចូលទឹកប្រាក់នោះមិនត្រឹមត្រូវទេ។ សូមជ្រើសរើសចំនួនផ្សេង។</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>កំណែនេះមិនអាចចូលដំណើរការឧបករណ៍ផ្ទុករួម (App Group %@) របស់ខ្លួនបានទេ។ ការបញ្ចូលទឹកប្រាក់នឹងមិនអាចប្រើបានទេ រហូតដល់មុខងារ App Groups ត្រូវបានបន្ថែមទៅទាំងកម្មវិធីនិងផ្នែកបន្ថែម។</string>
+	<key>Top Up</key>
+	<string>បញ្ចូលទឹកប្រាក់</string>
+	<key>Top Up Balance</key>
+	<string>បញ្ចូលទឹកប្រាក់ទៅសមតុល្យ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>ការបញ្ចូលទឹកប្រាក់ត្រូវការកំណែ iOS ថ្មីជាង។ ធ្វើបច្ចុប្បន្នភាព រួចបើក DisinfaX ម្តងទៀត។</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>ការបញ្ចូលទឹកប្រាក់ត្រូវការកំណែ macOS ថ្មីជាង។ ធ្វើបច្ចុប្បន្នភាព រួចបើក DisinfaX ម្តងទៀត។</string>
+	<key>True</key>
+	<string>ពិត</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ការប្រើប្រាស់ DISINFAX ក្នុង SAFARI</string>
+	<key>Unknown</key>
+	<string>មិនដឹង</string>
+	<key>Unknown purchase error.</key>
+	<string>កំហុសក្នុងការទិញដែលមិនស្គាល់។</string>
+	<key>Very Likely</key>
+	<string>ទំនងខ្លាំង</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>ដុល្លារអាមេរិកពេញ ១–១០០។ គិតថ្លៃជារូបិយប័ណ្ណ App Store របស់អ្នក។</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>អ្នកមានការបញ្ចូលទឹកប្រាក់ US$%lld រួចហើយកំពុងរង់ចាំអនុវត្ត — អ្នកមិនត្រូវបានគិតថ្លៃម្តងទៀតទេ។ ត្រឡប់ទៅ Safari ហើយបើកផ្ទាំងលេចឡើង DisinfaX ដើម្បីអនុវត្តវាទៅសមតុល្យរបស់អ្នក។</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>អ្នកមិនបានចូលទេ។ សូមចូល និងព្យាយាមម្ដងទៀត។</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>ការបញ្ចូលទឹកប្រាក់ US$%lld របស់អ្នកកំពុងត្រូវបានអនុវត្ត។</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>ការបញ្ចូលទឹកប្រាក់ US$%lld របស់អ្នកចំណាយពេលយូរជាងធម្មតាដើម្បីបង្ហាញ។</string>
+	<key>Your account has been suspended.</key>
+	<string>គណនីរបស់អ្នកត្រូវបានផ្អាក។</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>សមតុល្យរបស់អ្នកទាបពេក។ សូមបញ្ចូលទឹកប្រាក់ដើម្បីបន្ត។</string>
+</dict>
+</plist>

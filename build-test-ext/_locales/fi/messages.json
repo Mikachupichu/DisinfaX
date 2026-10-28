@@ -44,6 +44,14 @@
   "signOut": {
     "message": "Kirjaudu ulos"
   },
+  "deleteAccount": {
+    "message": "Poista tili ja siihen liittyvät tiedot",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Saldosi sekä salaisella avaimella suojattu sähköpostiosoitteesi kryptografinen tiiviste tallennetaan, jotta tilin luonnissa annettujen ilmaisten varojen väärinkäyttö estetään. Jos kirjaudut uudelleen samalla tilillä, saldosi palautetaan.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN%-painikkeen napsauttaminen näyttää väitteet ja veloittaa saldoasi"
   },
@@ -72,7 +80,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Tunnistaa ja korostaa väärää tietoa twiiteissä tekoälyanalyysin avulla."
+    "message": "Tunnistaa ja korostaa väärää tietoa julkaisuissa tekoälyanalyysin avulla."
   },
   "verdictTrue": {
     "message": "Totta",
@@ -183,7 +191,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Paljasta tämän twiitin väitteet uudelleen",
+    "message": "Paljasta tämän julkaisun väitteet uudelleen",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -288,7 +296,7 @@
     "message": "Viimeksi käytetty"
   },
   "cleanupTagline": {
-    "message": "Siisti X-syötteesi."
+    "message": "Siisti syötteesi."
   },
   "factCheckAllButton": {
     "message": "Tarkista kaikki"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Sitä ei löytynyt. Yritä uudelleen."
   },
+  "errNoClaims": {
+    "message": "Tästä tekstistä ei löytynyt tarkistettavia väitteitä.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Asetukset",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Ulkoasu",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Vaalea",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automaattinen",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tumma",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Näytä faktantarkistukset aina jos:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "Peruuta",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Tyhjennä",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Ota DisinfaX käyttöön sivustolla $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX on käytössä sivustolla $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Poista käytöstä",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Jatka Facebook:llä"
+  },
+  "continueWithLinkedIn": {
+    "message": "Jatka LinkedIn:llä"
+  },
+  "continueWithReddit": {
+    "message": "Jatka Reddit:llä"
+  },
+  "persistentBadgesLabel": {
+    "message": "Värisokeille: pysyvät merkit",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Pidä kaikki faktantarkistusmerkit näkyvissä julkaisuissa ilman osoittimen viemistä päälle. Tuomio välittyy yhtä lailla korostusvärillä kuin sanoin, mikä auttaa niitä, jotka eivät erota värejä.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Suuri fonttikoko",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Suurentaa uudelleenkirjoitettuja väitteitä, perusteluja ja käyttöönottovihjeitä.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Sulje",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Napsauta muokataksesi väitettä",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktantarkistuksen tiedot",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Tämä valinta on liian pitkä tarkistettavaksi. Enintään 1 000 merkkiä.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Ilmoita, kun saldo pienenee",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Yli: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

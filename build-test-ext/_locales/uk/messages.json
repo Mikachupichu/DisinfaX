@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Виявляє та виділяє дезінформацію в твітах за допомогою ШІ-аналізу."
+    "message": "Виявляє та виділяє дезінформацію в дописах за допомогою ШІ-аналізу."
   },
   "verdictTrue": {
     "message": "Правда",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Знову розкрити всі твердження в цьому твіті",
+    "message": "Знову розкрити всі твердження в цьому дописі",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Вийти"
   },
+  "deleteAccount": {
+    "message": "Видалити обліковий запис і пов'язані дані",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Ваш баланс та криптографічний хеш вашої електронної пошти, захищений таємним ключем, зберігаються, щоб запобігти зловживанню безкоштовними коштами, які надаються під час створення облікового запису. Якщо ви ввійдете знову з тим самим записом, ваш баланс відновиться.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Натискання на %BTN% показує твердження і спише кошти з вашого балансу"
   },
@@ -285,7 +293,7 @@
     "message": "Востаннє використано"
   },
   "cleanupTagline": {
-    "message": "Очистіть свою стрічку X."
+    "message": "Очистіть свою стрічку."
   },
   "disclaimerJurisdiction": {
     "message": "На території Сполучених Штатів користуватися DisinfaX і поповнювати баланс можуть лише жителі штатів Алабама, Аризона, Каліфорнія, Колорадо, Коннектикут, Делавер, Флорида, Айдахо, Іллінойс, Індіана, Айова, Канзас, Кентуккі, Луїзіана, Мен, Массачусетс, Міссісіпі, Міссурі, Монтана, Нью-Гемпшир, Нью-Мексико, Нью-Йорк, Північна Кароліна, Північна Дакота, Оклахома, Орегон, Пенсільванія, Південна Кароліна, Південна Дакота, Теннессі, Техас, Юта, Вашингтон, Вісконсин і Вайомінг; округ Колумбія, усі території США та будь-які штати, не зазначені в списку, виключено. За межами Сполучених Штатів сервіс доступний у Канаді, Австралії, Новій Зеландії, Сінгапурі, Південно-Африканській Республіці, Японії, Тайвані, Індонезії, Таїланді, на Філіппінах, у Малайзії, В'єтнамі та Швейцарії."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Не вдалося це знайти. Спробуйте ще раз."
   },
+  "errNoClaims": {
+    "message": "У цьому тексті не знайдено тверджень, які можна перевірити.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Налаштування",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Вигляд",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Світла",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Автоматично",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Темна",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Завжди показувати перевірки, якщо:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "Скасувати",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Очистити",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Увімкнути DisinfaX на $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX увімкнено на $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Вимкнути",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Продовжити з Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Продовжити з LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Продовжити з Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Для дальтоніків: постійні значки",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Показувати всі значки перевірки фактів у дописах без наведення курсора. Вердикт передається як кольором виділення, так і словами, тому це допомагає всім, хто не розрізняє ці кольори.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Великий розмір шрифту",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Збільшує розмір переписаних тверджень, обґрунтувань і початкових підказок.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Закрити",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Натисніть, щоб змінити твердження",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Деталі перевірки фактів",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Цей фрагмент занадто довгий для перевірки. Максимум 1 000 символів.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Сповіщати, коли баланс зменшується",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Більше ніж на: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

@@ -1,0 +1,51 @@
+{
+  "" : {
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.dia",
+    "emit-module-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary-emit-module.dia",
+    "pch" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.swiftdeps"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckClient.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckClient.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckClient.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckClient.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckNotifications.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckNotifications.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckNotifications.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckNotifications.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckView.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckView.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckView.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/FactCheckView.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/Realtime.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/Realtime.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/Realtime.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/Realtime.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/SharedTopUpStore.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/SharedTopUpStore.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/SharedTopUpStore.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/SharedTopUpStore.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/UsdFormat.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/UsdFormat.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/UsdFormat.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/UsdFormat.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (Share)/ShareFactCheckView.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/ShareFactCheckView.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/ShareFactCheckView.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/ShareFactCheckView.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (Share)/ShareViewController.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/ShareViewController.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/ShareViewController.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/ShareViewController.o"
+  }
+}

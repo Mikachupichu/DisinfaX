@@ -27,7 +27,7 @@
     "message": "Defnyddiwyd ddiwethaf"
   },
   "cleanupTagline": {
-    "message": "Glanhewch eich ffrwd X."
+    "message": "Glanhewch eich ffrwd."
   },
   "disclaimerJurisdiction": {
     "message": "O fewn yr Unol Daleithiau, dim ond preswylwyr Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, Efrog Newydd, Gogledd Carolina, Gogledd Dakota, Oklahoma, Oregon, Pennsylvania, De Carolina, De Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, a Wyoming a gaiff ddefnyddio DisinfaX ac ychwanegu at eu balans; mae Washington, D.C., holl diriogaethau'r Unol Daleithiau, ac unrhyw daleithiau nad ydynt wedi'u rhestru wedi'u heithrio. Y tu allan i'r Unol Daleithiau, mae ar gael yng Nghanada, Awstralia, Seland Newydd, Singapore, De Affrica, Japan, Taiwan, Indonesia, Gwlad Thai, Ynysoedd y Philipinau, Malaysia, Fietnam, a'r Swistir."
@@ -37,7 +37,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Yn canfod ac yn amlygu camwybodaeth mewn trydariadau gan ddefnyddio dadansoddiad AI.",
+    "message": "Yn canfod ac yn amlygu camwybodaeth mewn postiadau gan ddefnyddio dadansoddiad AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -149,7 +149,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Datgelu pob honiad eto yn y trydariad hwn",
+    "message": "Datgelu pob honiad eto yn y postiad hwn",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -268,6 +268,14 @@
   "signOut": {
     "message": "Allgofnodi"
   },
+  "deleteAccount": {
+    "message": "Dileu Cyfrif a Data Cysylltiedig",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Cedwir eich balans, a hash cryptograffig o'ch cyfeiriad e-bost a ddiogelir gan allwedd gyfrinachol, i atal camddefnydd o'r cronfeydd am ddim a roddir wrth greu cyfrif. Os byddwch yn mewngofnodi eto gyda'r un cyfrif, bydd eich balans yn cael ei adfer.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Bydd clicio %BTN% yn dangos honiadau a bydd yn codi tâl ar eich balans"
   },
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Ni ellid dod o hyd i hynny. Ceisiwch eto."
   },
+  "errNoClaims": {
+    "message": "Ni chanfuwyd unrhyw honiadau y gellir eu gwirio yn y testun hwn.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Gosodiadau",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Golwg",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Golau",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Awtomatig",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tywyll",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Dangos gwiriadau ffeithiau bob amser os:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Canslo",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Clirio",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Galluogi DisinfaX ar $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "Mae DisinfaX ymlaen ar gyfer $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Diffodd",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Parhau gyda Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Parhau gyda LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Parhau gyda Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Dallineb lliw: bathodynnau parhaus",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Cadw pob bathodyn ffeithwirio'n weladwy ar bostiadau heb hofran. Caiff dyfarniad ei gyfleu gan liw'r amlygiad cymaint â chan ei eiriau, felly mae hyn o gymorth i unrhyw un na all wahaniaethu rhwng y lliwiau hynny.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Maint ffont mawr",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Chwyddo maint yr honiadau wedi'u hailysgrifennu, y rhesymu a'r awgrymiadau cychwyn.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Cau",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Cliciwch i olygu'r honiad",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Manylion ffeithwirio",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Mae’r detholiad hwn yn rhy hir i’w wirio. Uchafswm 1 000 nod.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Hysbysu pan fydd y balans yn gostwng",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Am fwy na: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

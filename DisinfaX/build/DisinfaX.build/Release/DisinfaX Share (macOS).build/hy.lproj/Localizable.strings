@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> պատկերակին, ապա հպեք «Կառավարել ընդլայնումները» և ակտիվացրեք DisinfaX-ը։</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ վստահություն</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ վստահություն, %2$@ ճշմարտացիություն</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ԼՐԱՑՈՒՄԻՑ ՀԵՏՈ</string>
+	<key>Add funds to your balance</key>
+	<string>Ավելացրեք գումար ձեր հաշվեկշռին</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ավելի վաղ US$%lld գնումը դեռ սպասում էր կիրառման, ուստի հենվեց դա, փոխանակ ձեզից կրկին գումար գանձելու։ Վերադարձեք Safari և բացեք DisinfaX-ի ելնող պատուհանը՝ ձեր թարմացված հաշվեկշիռը տեսնելու համար։</string>
+	<key>Annotate</key>
+	<string>Ծանոթագրել</string>
+	<key>Annotating</key>
+	<string>Ծանոթագրվում է</string>
+	<key>Arguably</key>
+	<string>Վիճելի</string>
+	<key>BALANCE</key>
+	<string>ՀԱՇՎԵԿՇԻՌ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Լրացնելով՝ դուք համաձայնվում եք մեր [Ծառայության պայմաններին](https://disinfax.app/terms-of-use) և [Գաղտնիության քաղաքականությանը](https://disinfax.app/privacy-policy)։ Եթե վճարում եք USD-ից տարբեր արժույթով, կարող են գործադրվել արժույթի փոխարկման վճարներ։</string>
+	<key>Clear</key>
+	<string>Մաքրել</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Հպեք DisinfaX պատկերակին Safari-ի գործիքագոտում՝ ելնող պատուհանը բացելու համար։</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@-ի վրա սեղմելը կբացահայտի պնդումները և կգանձի գումար ձեր հաշվեկշռից</string>
+	<key>Close</key>
+	<string>Փակել</string>
+	<key>Contacting the App Store…</key>
+	<string>Միանում է App Store-ին…</string>
+	<key>Copy</key>
+	<string>Պատճենել</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX-ը կարող է սխալվել։ Կրկնակի ստուգեք տեղեկությունը։</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Կանոնակարգային պահանջների պատճառով DisinfaX-ը դեռ հասանելի չէ ձեր տարածաշրջանում:</string>
+	<key>Disinfact</key>
+	<string>Ստուգում</string>
+	<key>Edit</key>
+	<string>Խմբագրել</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Ակտիվացրեք DisinfaX-ը Safari-ում, Կարգավորումներ ← Ընդլայնումներ բաժնում։</string>
+	<key>Enter a claim</key>
+	<string>Մուտքագրեք պնդում</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Մուտքագրեք 1-ից 100 միջակայքում ամբողջական դոլարային գումար։</string>
+	<key>Equivocally</key>
+	<string>Երկիմաստ</string>
+	<key>Fact-Check</key>
+	<string>Փաստերի ստուգում</string>
+	<key>Fact-Check All</key>
+	<string>Ստուգել բոլորը</string>
+	<key>Fact-Checking</key>
+	<string>Ստուգում</string>
+	<key>False</key>
+	<string>Կեղծ</string>
+	<key>Likely</key>
+	<string>Հավանական</string>
+	<key>Mostly</key>
+	<string>Հիմնականում</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Բացել Safari ընդլայնումների կարգավորումները…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Բացեք Safari-ը և գնացեք x.com։</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Բացեք ելնող պատուհանը Safari-ում՝ ձեր թարմացված հաշվեկշիռը տեսնելու համար</string>
+	<key>Partially</key>
+	<string>Մասամբ</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Վճարումն ամբողջացվեց։ Վերադարձեք Safari և բացեք DisinfaX-ի ելնող պատուհանը՝ ձեր թարմացված հաշվեկշիռը տեսնելու համար։</string>
+	<key>Possibly</key>
+	<string>Հնարավոր է</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>%@ ապրանքը App Store Connect-ում չի գտնվել։</string>
+	<key>Purchase cancelled.</key>
+	<string>Գնումը չեղարկվեց։</string>
+	<key>Purchase is pending approval.</key>
+	<string>Գնումը սպասում է հաստատման։</string>
+	<key>Reasoning</key>
+	<string>Հիմնավորում</string>
+	<key>Return to Safari</key>
+	<string>Վերադառնալ Safari</string>
+	<key>Setup incomplete</key>
+	<string>Կարգավորումն ամբողջական չէ</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Մուտք գործեք DisinfaX-ի ելնող պատուհանից Safari-ում՝ գումար ավելացնելու համար։</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Այս հարցման մի մասը չհասկացվեց: Համոզվեք, որ ընդլայնումը թարմացված է:</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Մեր կողմից սխալ առաջացավ: Խնդրում ենք մի փոքր ուշ նորից փորձել:</string>
+	<key>Sources</key>
+	<string>Աղբյուրներ</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ԼՐԱՑՄԱՆ ՉԱՓԱԾ</string>
+	<key>Tap the </key>
+	<string>Հպեք հասցեագոտու </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Հպեք նույն պատկերակին և ընտրեք DisinfaX-ը՝ ելնող պատուհանը բացելու համար։</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Դա հնարավոր չեղավ գտնել: Կրկին փորձեք:</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Այդ համալրման գումարը վավեր չէ: Խնդրում ենք ընտրել այլ գումար:</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Այս կառուցումը չի կարողանում հասնել իր ընդհանուր բեռնարանին (App Group %@)։ Լրացումները հասանելի չեն լինի, մինչև App Groups հատկությունը ավելացվի ինչպես հավելվածին, այնպես էլ ընդլայնմանը։</string>
+	<key>Top Up</key>
+	<string>Լիցքավորել</string>
+	<key>Top Up Balance</key>
+	<string>Լրացրեք հաշվեկշիռը</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Լրացումների համար անհրաժեշտ է iOS-ի ավելի նոր տարբերակ։ Թարմացրեք, ապա նորից բացեք DisinfaX-ը։</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Լրացումների համար անհրաժեշտ է macOS-ի ավելի նոր տարբերակ։ Թարմացրեք, ապա նորից բացեք DisinfaX-ը։</string>
+	<key>True</key>
+	<string>Ճիշտ</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX-Ի ՕԳՏԱԳՈՐԾՈՒՄԸ SAFARI-ՈՒՄ</string>
+	<key>Unknown</key>
+	<string>Անհայտ</string>
+	<key>Unknown purchase error.</key>
+	<string>Անհայտ գնման սխալ։</string>
+	<key>Very Likely</key>
+	<string>Շատ հավանական</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Ամբողջ ԱՄՆ դոլար, 1–100։ Գանձվում է ձեր App Store-ի արժույթով։</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Դուք արդեն ունեք US$%lld լրացում, որը սպասում է կիրառման — ձեզից կրկին գումար չի գանձվել։ Վերադարձեք Safari և բացեք DisinfaX-ի ելնող պատուհանը՝ այն ձեր հաշվեկշռին կիրառելու համար։</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Դուք մուտք չեք գործել: Խնդրում ենք մուտք գործել և կրկին փորձել:</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ձեր US$%lld լրացումը կիրառվում է։</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Ձեր US$%lld լրացումի հայտնվելը սովորականից ավելի ժամանակ է խլում։</string>
+	<key>Your account has been suspended.</key>
+	<string>Ձեր հաշիվը կասեցվել է:</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ձեր հաշվեկշիռը շատ ցածր է: Խնդրում ենք համալրել՝ շարունակելու համար:</string>
+</dict>
+</plist>

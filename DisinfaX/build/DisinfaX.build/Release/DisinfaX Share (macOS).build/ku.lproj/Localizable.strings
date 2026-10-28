@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> di darikê navnîşanê de bitikîne, paşê li ser Rêvebirina Pêvekan bitikîne û DisinfaX çalak bike.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ bawerî</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ bawerî, %2$@ rastî</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PIŞTÎ TOP-UP</string>
+	<key>Add funds to your balance</key>
+	<string>Pere li balansê xwe zêde bike</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kirînek berê ya US$%lld hîn jî li benda sepandinê bû, ji ber vê yekê ew hate temamkirin li şûna ku te dîsa hesab bike. Vegere Safari û pop-up-a DisinfaX veke da ku balansê xwe yê rojanekirî bibînî.</string>
+	<key>Annotate</key>
+	<string>Şîrove bike</string>
+	<key>Annotating</key>
+	<string>Şîrove dike</string>
+	<key>Arguably</key>
+	<string>Nîqaşbar</string>
+	<key>BALANCE</key>
+	<string>BALANS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Bi top-up kirinê, tu bi [Şertên Karûbarê](https://disinfax.app/terms-of-use) û [Siyaseta Nihêniyê](https://disinfax.app/privacy-policy) ya me razî dibî. Heke tu bi diravek ji bilî USD bidî, mumkin e mesrefên veguhastina dirav bikar bên.</string>
+	<key>Clear</key>
+	<string>Paqij bike</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Ji bo vekirina pop-up-ê li ser îkona DisinfaX di darikê amûran a Safari de bitikîne.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Klîk kirin li ser %@ dê angaştan nîşan bide û dê ji balansê te bêt kirin</string>
+	<key>Close</key>
+	<string>Bigire</string>
+	<key>Contacting the App Store…</key>
+	<string>Bi App Store ve tê girêdan…</string>
+	<key>Copy</key>
+	<string>Kopî bike</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX dikare xeletiyan bike. Zanyariyê du caran kontrol bike.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX bi sedema pêwistiyên rêziknameyê hê li herêma te tune ye.</string>
+	<key>Disinfact</key>
+	<string>Kontrol</string>
+	<key>Edit</key>
+	<string>Biguherîne</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX di Safari de, di Sazkarî → Pêvek de çalak bike.</string>
+	<key>Enter a claim</key>
+	<string>Daxwazek binivîse</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Mezaxeke dolar a tam di navbera 1 û 100 de binivîse.</string>
+	<key>Equivocally</key>
+	<string>Ne diyar</string>
+	<key>Fact-Check</key>
+	<string>Piştrastkirina rastiyan</string>
+	<key>Fact-Check All</key>
+	<string>Hemî kontrol bike</string>
+	<key>Fact-Checking</key>
+	<string>Kontrol</string>
+	<key>False</key>
+	<string>Nerast</string>
+	<key>Likely</key>
+	<string>Îhtîmal</string>
+	<key>Mostly</key>
+	<string>Bi piranî</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Sazkariyên pêvekên Safari veke…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari veke û here x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Pop-up-ê di Safari de veke da ku balansê xwe yê rojanekirî bibînî</string>
+	<key>Partially</key>
+	<string>Bi qismî</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Peredan temam bû. Vegere Safari û pop-up-a DisinfaX veke da ku balansê xwe yê rojanekirî bibînî.</string>
+	<key>Possibly</key>
+	<string>Mimkun</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Berhema %@ di App Store Connect de nehat dîtin.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kirîn hate betalkirin.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kirîn li benda pejirandinê ye.</string>
+	<key>Reasoning</key>
+	<string>Sedem</string>
+	<key>Return to Safari</key>
+	<string>Vegere Safari</string>
+	<key>Setup incomplete</key>
+	<string>Sazkirin ne temam e</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Ji pop-up-a DisinfaX di Safari de têkeve da ku pere lê zêde bikî.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Perçeyek ji vê daxwazê nehat naskirin. Ji kerema xwe kontrol bike ku pêvek rojane ye.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Li aliyê me çewtiyek çêbû. Ji kerema xwe piştî demek kurt dîsa biceribîne.</string>
+	<key>Sources</key>
+	<string>Çavkanî</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>MEZAXÊ TOP-UP</string>
+	<key>Tap the </key>
+	<string>Li ser îkona </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Li ser heman îkonê bitikîne û ji bo vekirina pop-up-ê DisinfaX hilbijêre.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ev nehat dîtin. Dîsa biceribîne.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ew mîqdara dagirtinê ne derbasdar e. Ji kerema xwe mîqdareke din hilbijêre.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ev build nikare bigihîje kaseta hevpar a xwe (App Group %@). Top-up dê ne li ber dest bin heta ku taybetmendiya App Groups li her du aplîkasyon û pêvekê were zêdekirin.</string>
+	<key>Top Up</key>
+	<string>Bar bike</string>
+	<key>Top Up Balance</key>
+	<string>Balansê top-up bike</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Top-up pêdiviya bi guhertoya nûtir a iOS heye. Rojane bike, paşê DisinfaX dîsa veke.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Top-up pêdiviya bi guhertoya nûtir a macOS heye. Rojane bike, paşê DisinfaX dîsa veke.</string>
+	<key>True</key>
+	<string>Rast</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>BIKARANÎNA DISINFAX LI SAFARI</string>
+	<key>Unknown</key>
+	<string>Nenas</string>
+	<key>Unknown purchase error.</key>
+	<string>Xeletiyeke kirînê ya nenas.</string>
+	<key>Very Likely</key>
+	<string>Pir îhtîmal</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolarê Amerîkî yê tam, 1–100. Di dirava App Store-a te de tê hesabkirin.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Berê top-up-a US$%lld a te heye ku li benda sepandinê ye — te ne careke din hesab kirî. Vegere Safari û pop-up-a DisinfaX veke da ku wê li balansê xwe bisepînî.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Tu têketî nînî. Ji kerema xwe têkeve û dîsa biceribîne.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Top-up-a te ya US$%lld tê sepandin.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Xuyabûna top-up-a te ya US$%lld ji normalê dirêjtir digire.</string>
+	<key>Your account has been suspended.</key>
+	<string>Hesabê te hatiye rawestandin.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Balansê te pir kêm e. Ji kerema xwe dagirtin bike da ku bidomînî.</string>
+</dict>
+</plist>

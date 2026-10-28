@@ -24,6 +24,7 @@
 import type { MainTweet, QuotedTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { passageTextContent, sealHostEvents } from '../injecting';
+import { isoDatetime } from '../datetime';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter, TextRegion } from './types';
@@ -183,10 +184,41 @@ function canonicalLink(root: Element): Element | null {
   return null;
 }
 
+/** The post the page's own URL names, when this page IS a post's permalink.
+ *
+ *  Both permalink forms, the same two `postIdFromUrl` accepts. Read from the pathname rather
+ *  than from a link, because on this surface the URL is the only statement of it — see
+ *  `permalinkOf`. */
+function urlPost(): { handle: string; id: string } | null {
+  const posts = location.pathname.match(POST_HREF_RE);
+  if (posts) return { handle: posts[1], id: posts[2] };
+  const canonical = location.pathname.match(CANONICAL_PATH_RE);
+  return canonical ? { handle: canonical[1], id: canonical[2] } : null;
+}
+
+/** The handle the SHOWN byline publishes on its own profile link, as rendered.
+ *
+ *  The rendered spelling, not the URL's: a permalink's URL lowercases the handle (`/@newsmax`)
+ *  while the byline still renders it as the author does (`/@NewsMax`), and the author string is
+ *  part of what a post hashes on — so it must read the same here as it does on a feed row. */
+function bylineHandle(root: Element): string {
+  const href = shownAccount(root)?.querySelector('a[href^="/@"]')?.getAttribute('href') ?? '';
+  return href.startsWith('/@') ? (href.slice(2).split('/')[0] ?? '') : '';
+}
+
 /** The post's handle and id, from whichever permalink this surface publishes.
  *
  *  The timestamp's `/@handle/posts/<id>` first, because that is what every feed, thread and
- *  quoted card renders; the canonical `/@handle/<id>` only where there is no timestamp. */
+ *  quoted card renders; the canonical `/@handle/<id>` only where there is no timestamp.
+ *
+ *  The permalink view publishes NEITHER (measured 2026-10-22: no `<time>` anywhere on the
+ *  page, and no canonical self-link), which is why its focal post is the one root named from
+ *  the page URL instead. That reading is only accepted for the detail container, and only
+ *  when the URL and the byline agree on the author — the one way to tell this page's post
+ *  from a card that shows somebody else's. A retruth's detail view is the exception that
+ *  proves it: its URL names the SHARER while the card shows the original, so an id the
+ *  payload has already paired with a wrapper is taken as that wrapper and resolved by
+ *  `postIdOfElement`, exactly as it is on a feed. */
 function permalinkOf(root: Element): { handle: string; id: string } | null {
   const fromTime = (timeLink(root)?.getAttribute('href') ?? '').match(POST_HREF_RE);
   if (fromTime) return { handle: fromTime[1], id: fromTime[2] };
@@ -194,7 +226,28 @@ function permalinkOf(root: Element): { handle: string; id: string } | null {
   const fromCanonical = canonical
     ? new URL(canonical.getAttribute('href') ?? '', document.baseURI).pathname.match(CANONICAL_PATH_RE)
     : null;
-  return fromCanonical ? { handle: fromCanonical[1], id: fromCanonical[2] } : null;
+  if (fromCanonical) return { handle: fromCanonical[1], id: fromCanonical[2] };
+  if (!isDetailRoot(root)) return null;
+  const fromUrl = urlPost();
+  if (!fromUrl) return null;
+  if (retruthShows.has(ID_PREFIX + fromUrl.id)) return fromUrl;
+  const byline = bylineHandle(root);
+  return byline && byline.toLowerCase() === fromUrl.handle.toLowerCase()
+    ? { handle: byline, id: fromUrl.id }
+    : null;
+}
+
+/** The post's own posted time, read off the timestamp it renders.
+ *
+ *  The `<time>` inside the post's OWN account element, which is the same element `timeLink`
+ *  names: reading it any wider would take the embedded post's time on a card that shows one,
+ *  and the embedded post is written at its own time, not the card's.
+ *
+ *  What reads this is the preclassify prompt's "today is" note — a post saying "yesterday" is
+ *  only resolvable against when it was written — so an absent value is a post without it
+ *  rather than a wrong date. */
+function postedAt(root: Element): string | undefined {
+  return isoDatetime(ownAccount(root)?.querySelector('time')?.getAttribute('datetime'));
 }
 
 /** The header band: the row inside the SHOWN byline that holds the name column and the
@@ -658,34 +711,35 @@ export const truthSocialAdapter: PlatformAdapter = {
     return bodyClamped(root) || postText(root).length >= LONG_FORM_CHARS;
   },
 
-  /** Show the whole body once we have painted marks into it.
+  /** Whether the host is showing less of this post's body than it holds.
    *
-   *  The host clamps a long body with `max-h-40` and `overflow-hidden` ON THE BODY ELEMENT
-   *  ITSELF — measured on a live tag feed, a 646-character post laid out 160px tall with
-   *  136px of its text behind the clamp — and keeps the whole string in the DOM, so a painted
-   *  claim can be sitting in words the reader cannot see. The clamp above the fold on a
-   *  multi-paragraph post is on `markup`, which is the PARENT of the block `textElement`
-   *  hands back, so the search goes through `closest` rather than clearing on the element it
-   *  is given: clearing the child would leave the clamp exactly where it was. (On a
-   *  one-paragraph post the two are the same element, so this covers both.)
+   *  The host clamps a long body with `max-h-40` and `overflow-hidden` — measured on a live tag
+   *  feed, a 646-character post laid out 160px tall with 136px of its text behind the clamp —
+   *  and keeps the whole string in the DOM. A body under it is painted like any other: the
+   *  host's own box does the clipping, a mark the cut runs through is simply cut with it, and
+   *  the marks past the cut appear when the reader presses the host's "Show More". Nothing here
+   *  opens the clamp — the reader's own press does. See `bodyControl` for why that press cannot
+   *  catch the painter out. */
+  bodyClipped(root) {
+    return bodyClamped(root);
+  },
+
+  /** Nothing — this host's "Show More" is never inside the element the painter wraps.
    *
-   *  Cleared on the body, and nowhere else. Measured afterwards for twelve seconds: the box
-   *  stayed open (160px -> 292px, `max-height` reading `none` throughout), so the host does
-   *  not re-clamp behind us and this need not be re-applied. Unlike LinkedIn's, this host does
-   *  NOT withdraw its own "Show More" when the body stops overflowing — it stays, and is
-   *  left there: it is React's node inside the very subtree our `<span class="mf-segment-wrap">`
-   *  lives in, and a node deleted from outside React is the classic way to break
-   *  reconciliation on the host's next render. It is also harmless — the body is already
-   *  fully shown, so a reader who presses it only sets the state the render is already in,
-   *  and it goes then.
+   *  Declared because declaring it is what lets a clamped body be painted at all (see
+   *  `bodyControl` on the adapter type). Measured on a live feed, the clamped post was a
+   *  `<p data-testid="markup">` at 160px with 1490 characters behind the clamp, and its
+   *  "Show More" button sat in `div[relative -mt-7 w-full text-center]` — a different subtree
+   *  under the status root, with `markup.contains(button)` false. What the painter is handed is
+   *  a block from inside the markup (`postBlocks`), so the control is outside both the wrapped
+   *  element and its parent. The compact reply cards carry no such control at all — the whole
+   *  card is the permalink — so they are no different.
    *
-   *  Nothing here changes the text — the clamped body already holds all of it — so the hash
-   *  and the id are untouched either way. */
-  unclip(textElement) {
-    const body = textElement.closest(MARKUP_SELECTOR) ?? textElement;
-    if (!(body instanceof HTMLElement)) return;
-    body.style.maxHeight = 'none';
-    body.style.overflow = 'visible';
+   *  Painting is therefore no riskier under the clamp than off it: the clamp is a class and a
+   *  max-height on an ancestor, and it changes neither which element the painter wraps nor what
+   *  the host reconciles. */
+  bodyControl() {
+    return null;
   },
 
   // A Truth Social body is markup the fork rendered: paragraphs, live links and mentions
@@ -761,6 +815,7 @@ export const truthSocialAdapter: PlatformAdapter = {
     // A media-only status carries nothing to fact-check. Returning null keeps it out of
     // the batch rather than spending a classification on an empty string.
     if (!text) return null;
+    const datetime = postedAt(root);
 
     const post = {
       id,
@@ -782,6 +837,9 @@ export const truthSocialAdapter: PlatformAdapter = {
       // post: `in_reply_to_id` is the platform's own statement of the parent, and the DOM
       // has no such pointer — the byline names the handle it answers, not the id.
       replyingTo: null,
+      // The timestamp the row renders, which is this half's only source for it. An absent
+      // value (a byline with no timestamp) is a post without a stated time.
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     // No language in the markup either: the only `lang` in the page is `<html lang>`, the
@@ -843,6 +901,7 @@ export const truthSocialAdapter: PlatformAdapter = {
       const root = postRoots(id)[0] ?? null;
       const text = root ? postText(root) : blocksFromContent(record.content).join(POST_JOIN);
       if (!text) continue;
+      const datetime = isoDatetime(record.createdAt);
 
       const post = {
         id,
@@ -861,6 +920,10 @@ export const truthSocialAdapter: PlatformAdapter = {
         // when the platform did not give one, so the shared unknown-language fallback keys
         // the highlights instead of the reader's UI locale.
         ...(record.language ? { sourceLanguage: record.language } : {}),
+        // The payload's own `created_at`, preferred to the row's rendering whenever there is
+        // one: the markup states the time as a `<time datetime>` anyway, and this half is the
+        // one that runs when the post is not on screen yet.
+        ...(datetime ? { datetime } : {}),
       } as MainTweet;
 
       captured.push({

@@ -27,7 +27,7 @@
     "message": "Implijet da ziwezhañ"
   },
   "cleanupTagline": {
-    "message": "Naetaat ho red X."
+    "message": "Naetaat ho red."
   },
   "disclaimerJurisdiction": {
     "message": "E-barzh ar Stadoù-Unanet, ne c'hall nemet annezidi Alabama, Arizona, Kalifornia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Karolina an Norzh, Dakota an Norzh, Oklahoma, Oregon, Pennsylvania, Karolina ar Su, Dakota ar Su, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming implijout DisinfaX hag ouzhpennañ arc'hant d'o c'hont; ezlakaet eo Washington, D.C., holl dachennoù ar Stadoù-Unanet, hag ar stadoù n'int ket rollet. Er-maez eus ar Stadoù-Unanet, ez eo hegerz e Kanada, Aostralia, Zeland-Nevez, Singapour, Suafrika, Japan, Taiwan, Indonezia, Thailand, ar Filipinez, Malaysia, Vietnam, ha Suis."
@@ -149,7 +149,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Diskouez adarre holl afirmadennoù an tweet-mañ",
+    "message": "Diskouez adarre holl afirmadennoù ar post-mañ",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -268,6 +268,14 @@
   "signOut": {
     "message": "Digevreañ"
   },
+  "deleteAccount": {
+    "message": "Dilemel ar gont hag ar roadennoù stag outi",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Mirout a reer ho soland, hag ur hash kriptografek eus ho chomlec'h postel gwarezet gant un alc'hwez kuzh, evit mirout ouzh ar gwallimplij eus an arc'hant digoust roet pa vez krouet ur gont. Mar adenskrivet gant ar memes kont, e vo adlakaet ho soland.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "O klikañ war %BTN% e teu war-wel an afirmadennoù hag e vo tennet arc'hant diwar ho kont"
   },
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "N'eo ket bet kavet an dra-se. Marplij klaskit en-dro."
   },
+  "errNoClaims": {
+    "message": "N'eus ket bet kavet diskleriadurioù gwiriekadus ebet en destenn-mañ.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Arventennoù",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Neuz",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Sklaer",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Emgefreek",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Teñval",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Diskouez bepred ar gwiriadennoù ma:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Kenderc'hel gant Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Dall-liv : balizennoù padus",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Derc'hel pep balizenn wiriañ war wel war ar c'hemennadennoù hep tremen warno. Douget eo ar varnadenn koulz gant liv an ussked ha gant he gerioù, ar pezh a skoazell an neb na ziforc'h ket al livioù-se.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Ment vras an nodrezh",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Evit an test e-barzh ar prenesterioù (arzelloù, poelladennoù...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Serriñ",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klikañ evit kemmañ an afirmadenn",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Munudoù gwiriañ ar fedoù",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Re hir eo an diuzad-mañ da wiriañ. 1 000 arouez d’ar muiañ.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Kemenn pa zigresk ar soum",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Ouzhpenn: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "PENAOS GWIRIAÑ AR FEDOÙ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "War forzh pe bajenn web, diuzit an destenn a fell deoc'h gwiriañ.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Klikit gant ar bouton dehou war an destenn diuzet ha dibabit Difalsaat (a ra ivez war an destenn nann-diuzet).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Klikit gant ar bouton dehou war an destenn diuzet ha dibabit {1} Difalsaat (a ra ivez war an destenn nann-diuzet).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Kregiñ a ra ar gwiriañ diouzhtu hag e vo tennet arc'hant diwar ho kont.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Gant an destenn c'hoazh diuzet, stokit war ar ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " e-barzh ar varrenn chomlec'h, ha dibabit {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

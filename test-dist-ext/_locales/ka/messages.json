@@ -27,7 +27,7 @@
     "message": "ბოლოს გამოყენებული"
   },
   "cleanupTagline": {
-    "message": "გაასუფთავე შენი X-ის ფიდი."
+    "message": "გაასუფთავე შენი ფიდი."
   },
   "disclaimerJurisdiction": {
     "message": "შეერთებული შტატების შიგნით DisinfaX-ის გამოყენება და ბალანსის შევსება შეუძლიათ მხოლოდ ალაბამის, არიზონის, კალიფორნიის, კოლორადოს, კონექტიკუტის, დელავერის, ფლორიდის, აიდაჰოს, ილინოისის, ინდიანის, აიოვის, კანზასის, კენტუკის, ლუიზიანის, მეინის, მასაჩუსეტსის, მისისიპის, მისურის, მონტანის, ნიუ-ჰემფშირის, ნიუ-მექსიკოს, ნიუ-იორკის, ჩრდილოეთ კაროლინის, ჩრდილოეთ დაკოტის, ოკლაჰომის, ორეგონის, პენსილვანიის, სამხრეთ კაროლინის, სამხრეთ დაკოტის, ტენესის, ტეხასის, იუტის, ვაშინგტონის, ვისკონსინისა და ვაიომინგის მკვიდრებს; ვაშინგტონი D.C., აშშ-ის ყველა ტერიტორია და ნებისმიერი ჩამოუთვლელი შტატი გამორიცხულია. შეერთებული შტატების გარეთ ის ხელმისაწვდომია კანადაში, ავსტრალიაში, ახალ ზელანდიაში, სინგაპურში, სამხრეთ აფრიკაში, იაპონიაში, ტაივანში, ინდონეზიაში, ტაილანდში, ფილიპინებში, მალაიზიაში, ვიეტნამში და შვეიცარიაში."
@@ -37,7 +37,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI ანალიზის გამოყენებით ტვიტებში დეზინფორმაციის აღმოჩენა და ხაზგასმა.",
+    "message": "AI ანალიზის გამოყენებით პოსტებში დეზინფორმაციის აღმოჩენა და ხაზგასმა.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -148,7 +148,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ამ ტვიტის ყველა მტკიცების ხელახლა გამოვლენა",
+    "message": "ამ პოსტის ყველა მტკიცების ხელახლა გამოვლენა",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -267,6 +267,14 @@
   "signOut": {
     "message": "გასვლა"
   },
+  "deleteAccount": {
+    "message": "ანგარიშის და მასთან დაკავშირებული მონაცემების წაშლა",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "თქვენი ბალანსი და თქვენი ელფოსტის მისამართის საიდუმლო გასაღებით დაცული კრიპტოგრაფიული ჰეში ინახება, რათა აღიკვეთოს რეგისტრაციისას მოცემული უფასო თანხების ბოროტად გამოყენება. იმავე ანგარიშით ხელახლა რეგისტრაციისას თქვენი ბალანსი აღდგება.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN%-ზე დაწკაპუნება გამოავლენს მტკიცებებს და დაგერიცხებათ საფასური ბალანსიდან"
   },
@@ -329,9 +337,29 @@
   "errNotFound": {
     "message": "ეს ვერ მოიძებნა. გთხოვთ, სცადოთ ხელახლა."
   },
+  "errNoClaims": {
+    "message": "ამ ტექსტში შესამოწმებელი მტკიცებები ვერ მოიძებნა.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "პარამეტრები",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "გარეგნობა",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ღია",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "ავტომატური",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "მუქი",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ყოველთვის აჩვენე შემოწმებები, თუ:",
@@ -416,5 +444,79 @@
   },
   "continueWithReddit": {
     "message": "გაგრძელება Reddit-ით"
+  },
+  "persistentBadgesLabel": {
+    "message": "დალტონიკებისთვის: მუდმივი ნიშნები",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "ფაქტების შემოწმების ყველა ნიშანი პოსტებზე კურსორის მიტანის გარეშე გამოჩნდება. ვერდიქტი გადმოიცემა როგორც მონიშვნის ფერით, ისე სიტყვებით, რაც ეხმარება მათ, ვისაც ფერების გარჩევა უჭირს.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "დიდი შრიფტის ზომა",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ფანჯრებში არსებული ტექსტისთვის (მტკიცებები, მსჯელობები...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "დახურვა",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "დააწკაპუნეთ მტკიცების ჩასასწორებლად",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "ფაქტების შემოწმების დეტალები",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ეს არჩევანი ძალიან გრძელია შესამოწმებლად. მაქსიმუმ 1 000 სიმბოლო.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "შეტყობინება ბალანსის შემცირებისას",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "მეტი ვიდრე: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "როგორ შევამოწმოთ ფაქტი",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "ნებისმიერ ვებგვერდზე აირჩიეთ ტექსტი, რომლის შემოწმებაც გსურთ.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "დააწკაპუნეთ მარჯვენა ღილაკით არჩეულ ტექსტზე და აირჩიეთ გამოვლენა (მუშაობს ასევე არარჩეულ ტექსტზე).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "დააწკაპუნეთ მარჯვენა ღილაკით არჩეულ ტექსტზე და აირჩიეთ {1} გამოვლენა (მუშაობს ასევე არარჩეულ ტექსტზე).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "შემოწმება დაუყოვნებლივ იწყება და თანხა ჩამოგეჭრებათ ბალანსიდან.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "ტექსტის არჩეულ მდგომარეობაში შეეხეთ ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ხატულას მისამართების ზოლში, შემდეგ აირჩიეთ {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

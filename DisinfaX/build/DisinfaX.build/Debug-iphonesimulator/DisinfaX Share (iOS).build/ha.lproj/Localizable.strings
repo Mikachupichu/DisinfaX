@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> a layin adireshi, sannan danna Sarrafa Ƙari sannan a kunna DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>BAYAN CIKA KUƊI</string>
+	<key>Add funds to your balance</key>
+	<string>Ƴara kuɗi zuwa ma'aunin ku</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Wani sayayya na baya na US$%lld har yanzu yana jiran aiwatarwa, don haka an cika wannan maimakon sake cajin ku. Koma zuwa Safari kuma buɗe tagar tsallakewar DisinfaX don ganin sabon ma'aunin ku.</string>
+	<key>Annotate</key>
+	<string>Yi bayani</string>
+	<key>Annotating</key>
+	<string>Ana yi bayani</string>
+	<key>Arguably</key>
+	<string>Mai jayayya</string>
+	<key>BALANCE</key>
+	<string>MA'AUNI</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Ta wajen cika kuɗi, kun yarda da [Sharuɗɗan Sabis](https://disinfax.app/terms-of-use) da [Manufar Sirri](https://disinfax.app/privacy-policy) namu. Ana iya sanya kuɗin canjin waje idan kun biya da kuɗin da ba na USD ba.</string>
+	<key>Clear</key>
+	<string>Goge</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Danna alamar DisinfaX a jerin kayan aikin Safari don buɗe tagar tsallakewa.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Danna %@ zai bayyana da'awoyi kuma zai cire kudi daga ma'aunin ku</string>
+	<key>Contacting the App Store…</key>
+	<string>Ana haɗawa da App Store…</string>
+	<key>Copy</key>
+	<string>Kwafi</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX na iya yin kuskure. Bincika bayanan sau biyu.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX bai kasance a shirye a yankinka ba tukuna saboda buƙatun ka'idoji.</string>
+	<key>Disinfact</key>
+	<string>Bincike</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Kunna DisinfaX a Safari, a Saituna → Ƙari.</string>
+	<key>Enter a claim</key>
+	<string>Shigar da da'awa</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Shigar da adadin dalar gaba ɗaya tsakanin 1 da 100.</string>
+	<key>Equivocally</key>
+	<string>Mai shubguhu</string>
+	<key>Fact-Check</key>
+	<string>Tabbatar da gaskiya</string>
+	<key>Fact-Check All</key>
+	<string>Bincika duka</string>
+	<key>Fact-Checking</key>
+	<string>Bincike</string>
+	<key>False</key>
+	<string>Ƙarya</string>
+	<key>Likely</key>
+	<string>Mai yiwuwa</string>
+	<key>Mostly</key>
+	<string>Mafi yawa</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Buɗe saitunan ƙarin Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Buɗe Safari kuma je zuwa x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Buɗe tagar tsallakewa a Safari don ganin sabon ma'aunin ku</string>
+	<key>Partially</key>
+	<string>Wani ɓangare</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>An kammala biyan kuɗi. Koma zuwa Safari kuma buɗe tagar tsallakewar DisinfaX don ganin sabon ma'aunin ku.</string>
+	<key>Possibly</key>
+	<string>Watakila</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Ba a samu kayan %@ a App Store Connect ba.</string>
+	<key>Purchase cancelled.</key>
+	<string>An soke sayayya.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Sayayya na jiran amincewa.</string>
+	<key>Reasoning</key>
+	<string>Dalili</string>
+	<key>Return to Safari</key>
+	<string>Koma zuwa Safari</string>
+	<key>Setup incomplete</key>
+	<string>Saitin bai cika ba</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Shiga daga taga tsallakewar DisinfaX a Safari don ƴara kuɗi.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Wani bangare na wannan buƙatar bai gane ba. Tabbatar cewa extension ɗin yana da sabuntar zamani.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>An samu matsala a bangaren mu. Da fatan za a sake gwadawa bayan ɗan lokaci.</string>
+	<key>Sources</key>
+	<string>Tushe</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ADADIN CIKA KUƊI</string>
+	<key>Tap the </key>
+	<string>Danna alamar </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Danna wannan alama kuma zaɓi DisinfaX don buɗe tagar tsallakewa.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ba a samu wannan ba. Sake gwadawa.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Adadin caji ba daidai ba ne. Da fatan za a zaɓi adadi daban.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ginin nan bai iya isa ga akwatin da aka raba (App Group %@) ba. Cika kuɗi ba za su kasance ba sai an ƴara ikon App Groups zuwa aikace-aikacen da ƙarin duka.</string>
+	<key>Top Up</key>
+	<string>Ƙara Kuɗi</string>
+	<key>Top Up Balance</key>
+	<string>Cika ma'auni</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Cika kuɗi na buƙatar sabon sigar iOS. Sabunta, sannan buɗe DisinfaX kuma.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Cika kuɗi na buƙatar sabon sigar macOS. Sabunta, sannan buɗe DisinfaX kuma.</string>
+	<key>True</key>
+	<string>Gaskiya</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>AMFANI DA DISINFAX A SAFARI</string>
+	<key>Unknown</key>
+	<string>Ba a sani ba</string>
+	<key>Unknown purchase error.</key>
+	<string>Kuskuren sayayya da ba a sani ba.</string>
+	<key>Very Likely</key>
+	<string>Mai yiwuwa sosai</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dalar Amurka gaba ɗaya, 1–100. Za a caje ku a kuɗin App Store naku.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Kun riga kuna da cika kuɗin US$%lld da ke jira aiwatarwa — ba a sake cajin ku ba. Koma zuwa Safari kuma buɗe tagar tsallakewar DisinfaX don aiwatar da shi a ma'aunin ku.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ba ka shiga ba. Da fatan za a shiga sannan a sake gwadawa.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ana aiwatar da cika kuɗin ku na US$%lld.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Bayyanar cika kuɗin ku na US$%lld yana ɗaukar lokaci fiye da yadda aka saba.</string>
+	<key>Your account has been suspended.</key>
+	<string>An dakatar da asusun ka.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ma'aunin ka ya yi ƙasa sosai. Da fatan za a caje don ci gaba.</string>
+</dict>
+</plist>

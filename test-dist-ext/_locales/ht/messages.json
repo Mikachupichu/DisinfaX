@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detekte ak mete aksan sou dezinfòmasyon nan tweet lè l sèvi ak analiz AI.",
+    "message": "Detekte ak mete aksan sou dezinfòmasyon nan pòs lè l sèvi ak analiz AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Revele ankò tout deklarasyon nan tweet sa a",
+    "message": "Revele ankò tout deklarasyon nan pòs sa a",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Dekonekte"
   },
+  "deleteAccount": {
+    "message": "Efase Kont ak Done ki Asosye",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Balans ou, ansanm ak yon hash kriptografik nan adrès imèl ou ki pwoteje pa yon kle sekrè, kenbe pou anpeche abi sou lajan gratis yo bay lè w enskri a. Si w enskri ankò ak menm kont lan, balans ou retabli.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Klike sou %BTN% ap devwale reklamasyon yo epi l ap chaje balans ou"
   },
@@ -287,7 +295,7 @@
     "message": "Dènye itilize"
   },
   "cleanupTagline": {
-    "message": "Netwaye fil X ou a."
+    "message": "Netwaye fil ou a."
   },
   "disclaimerJurisdiction": {
     "message": "Nan peyi Etazini, se sèlman rezidan Alabama, Arizona, Kalifòni, Kolorado, Connecticut, Delaware, Florid, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Lwizyàn, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Nouvo Meksik, New York, Kawolin di Nò, Dakota di Nò, Oklahoma, Oregon, Pennsilvani, Kawolin di Sid, Dakota di Sid, Tennessee, Texas, Utah, Washington, Wisconsin, ak Wyoming ki ka itilize DisinfaX epi mete lajan nan balans yo ; Washington, D.C., tout teritwa Etazini yo, ak nenpòt eta ki pa nan lis la eskli. Andeyò Etazini, li disponib nan Kanada, Ostrali, Nouvèl Zeland, Singapou, Afrik di Sid, Japon, Taywan, Endonezi, Tayland, Filipin yo, Malezi, Vyetnam, ak Swis."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Nou pa jwenn sa a. Eseye ankò."
   },
+  "errNoClaims": {
+    "message": "Pa jwenn okenn deklarasyon ki ka verifye nan tèks sa a.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Paramèt",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aparans",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Klè",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otomatik",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Fonse",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Toujou montre verifikasyon yo si:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Kontinye ak Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Pou daltonyen: badj pèmanan",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Kenbe chak badj verifikasyon enfòmasyon vizib sou piblikasyon yo san ou pa pase sou li. Yon vèdik transmèt pa koulè soulignaj la menm jan ak mo yo, sa ede nenpòt moun ki pa ka distenge koulè sa yo.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Gwo gwosè polis",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Pou tèks andedan fenèt yo (deklarasyon, rezònman...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Fèmen",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klike pou modifye deklarasyon an",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detay verifikasyon enfòmasyon",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Seleksyon sa a twò long pou verifye. Maksimòm 1 000 karaktè.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Notifye lè balans lan desann",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Pou plis pase: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "KOMAN POU VERIFYE ENFÒMASYON",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Sou nenpòt paj wèb, seleksyone tèks ou vle verifye a.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Fè yon klik dwa sou tèks seleksyone a epi chwazi Verifye (li fonksyone tou sou tèks ki pa seleksyone).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Fè yon klik dwa sou tèks seleksyone a epi chwazi {1} Verifye (li fonksyone tou sou tèks ki pa seleksyone).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Verifikasyon an kòmanse touswit epi li chaje sou balans ou.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Pandan tèks la toujou seleksyone, tape ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikòn nan ba adrès la epi chwazi {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

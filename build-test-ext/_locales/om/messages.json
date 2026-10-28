@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Qorannoo AI fayyadamuun oduu sobaa tweets keessatti argatee ifa taasisa.",
+    "message": "Qorannoo AI fayyadamuun oduu sobaa postoota keessatti argatee ifa taasisa.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Himannoo tweet kana keessaa hunda deebisii mul'isi",
+    "message": "Himannoo post kana keessaa hunda deebisii mul'isi",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Ba'i"
   },
+  "deleteAccount": {
+    "message": "Herrega fi Daataa Walitti Dhufeenya Qabu Haqi",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Baalaansiin kee, fi hash kiriptogiraafii teessoo imeelii kee kan furtuu icciitiitiin eegamu, maallaqa bilisaa herrega uumuu irratti kennamu miidhaa irraa ittisuuf ni tursiifamu. Yoo herrega sanaanaan ammas seente, baalaansiin kee ni deebi'a.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% cuqaasuun himannoo ni mul'isa, herrega keessaniis ni kaffalchiisa"
   },
@@ -287,7 +295,7 @@
     "message": "Dhumarratti fayyadame"
   },
   "cleanupTagline": {
-    "message": "Feedii X kee qulqulleessi."
+    "message": "Feedii kee qulqulleessi."
   },
   "disclaimerJurisdiction": {
     "message": " Meeshaalee Tokkoomanii keessatti, jiraattonni Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, fi Wyoming qofatu DisinfaX fayyadamuu fi baalaansii isaanii guutuu danda'a; Washington, D.C., naannolee U.S. hunda, fi kutaawwan hin tarreeffamin kamiyyuu hin dabalatan. Ala Meeshaalee Tokkoomanii, Canada, Australia, New Zealand, Singapore, Afrikaa Kibbaa, Jaappaan, Taayiwaan, Indoneshiyaa, Taayilaand, Filippiins, Maleeshiyaa, Vietnaam, fi Iswiizerlaand keessatti argama."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Kun hin argamne. Deebi'ii yaali."
   },
+  "errNoClaims": {
+    "message": "Barreeffama kana keessatti yaadota mirkanaa'uu danda'an hin argamne.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Sajoo",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Bifa",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ifa",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Ofumaan",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Dukkana",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Yeroo hundaa mirkanaa'ewwan agarsiis yoo:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Haqi",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Haqi",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "DisinfaX $HOST$ irratti dandeessisi",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX $HOST$ irratti banameera",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Dhaamsi",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook waliin itti fufi"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn waliin itti fufi"
+  },
+  "continueWithReddit": {
+    "message": "Reddit waliin itti fufi"
+  },
+  "persistentBadgesLabel": {
+    "message": "Halluu-jaamaaf: baajiiwwan dhaabbataa",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Irra osoo hin qubatin baajii sakatta'iinsa dhugaa hunda maxxansoota irratti mul'isaa tursiisaa. Murtiin akka jechootaa halluu calaqqisiisuunis waan dabarfamuuf, kun namoota halluuwwan sana adda baasuu hin dandeenye gargaara.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Hamma qubee guddaa",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Hamma dubbiiwwan irra deebi'anii barreeffamanii, sababa, fi gorsa jalqabaa guddisi.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Cufi",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Himannoo gulaaluuf cuqaasi",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Bal'ina sakatta'iinsa dhugaa",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Filannoon kun baay’ee dheeraadha sakatta’uuf. Hangafaa arfii 1,000.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Yeroo baalaansiin hir'u beeksisi",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Kana caalaa: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

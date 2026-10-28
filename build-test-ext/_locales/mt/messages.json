@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Jiskopri u jenfasizza informazzjoni ħażina fit-tweets permezz ta' analiżi tal-AI.",
+    "message": "Jiskopri u jenfasizza informazzjoni ħażina fil-postijiet permezz ta' analiżi tal-AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Uri mill-ġdid l-allegazzjonijiet kollha f'dan it-tweet",
+    "message": "Uri mill-ġdid l-allegazzjonijiet kollha f'dan il-post",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Oħroġ"
   },
+  "deleteAccount": {
+    "message": "Ħassar il-Kont u d-Data Assoċjata",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Il-bilanċ tiegħek, u hash kriptografiku tal-indirizz tal-email tiegħek li huwa protett b'ċavetta sigrieta, jinżammu biex jiġi evitat l-abbuż tal-fondi b'xejn li jingħataw meta jinħoloq il-kont. Jekk terġa' tidħol bl-istess kont, il-bilanċ tiegħek jerġa' jiġi rrestawrat.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Tikklikkja %BTN% turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek"
   },
@@ -287,7 +295,7 @@
     "message": "L-aħħar użat"
   },
   "cleanupTagline": {
-    "message": "Naddaf il-feed tiegħek fuq X."
+    "message": "Naddaf il-feed tiegħek."
   },
   "disclaimerJurisdiction": {
     "message": "Fl-Istati Uniti, huma biss ir-residenti ta' Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, il-Karolina ta' Fuq, id-Dakota ta' Fuq, Oklahoma, Oregon, Pennsylvania, il-Karolina t'Isfel, id-Dakota t'Isfel, Tennessee, Texas, Utah, Washington, Wisconsin, u Wyoming li jistgħu jużaw DisinfaX u jiċċarġjaw il-bilanċ tagħhom; Washington, D.C., it-territorji Amerikani kollha, u kwalunkwe stat mhux elenkat huma esklużi. Barra mill-Istati Uniti, huwa disponibbli fil-Kanada, l-Awstralja, iż-Żelanda l-Ġdida, Singapor, l-Afrika t'Isfel, il-Ġappun, it-Tajwan, l-Indoneżja, it-Tajlandja, il-Filippini, il-Malasja, il-Vjetnam, u l-Iżvizzera."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Dan ma setax jinstab. Jekk jogħġbok erġa' pprova."
   },
+  "errNoClaims": {
+    "message": "Ma nstabux stqarrijiet verifikabbli f'dan it-test.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Issettjar",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Dehra",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ċar",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Awtomatiku",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Skur",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Uri l-verifiki dejjem jekk:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Ikkanċella",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Ħassar",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Attiva DisinfaX fuq $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX huwa attiv fuq $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Itfi",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Kompli b'Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Kompli b'LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Kompli b'Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Għad-daltoniċi: badges persistenti",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Żomm kull badge tal-verifika tal-fatti viżibbli fuq il-postijiet mingħajr ma tgħaddi l-maws fuqhom. Verdett jintwera bil-kulur tal-enfasi daqs kemm bil-kliem, u dan jgħin lil dawk li ma jagħrfux dawn il-kuluri minn xulxin.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Daqs tal-font kbir",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Jkabbar il-claims miktuba mill-ġdid, ir-raġunament u s-suġġerimenti tal-bidu.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Agħlaq",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Ikklikkja biex teditja l-allegazzjoni",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Dettalji tal-verifika tal-fatti",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Din l-għażla hija twila wisq biex tiġi vverifikata. Massimu ta’ 1 000 karattru.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Innotifika meta l-bilanċ jonqos",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "B'aktar minn: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

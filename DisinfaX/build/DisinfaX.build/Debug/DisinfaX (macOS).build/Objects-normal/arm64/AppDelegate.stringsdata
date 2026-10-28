@@ -1,0 +1,24 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/macOS (App)/AppDelegate.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 61
+        }
+      }
+    ]
+  },
+  "version": 1
+}

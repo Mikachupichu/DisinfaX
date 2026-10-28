@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> i le pusa tuatusi, ona tapi lea o Fa'atonutonu Fa'alauteleina ma fa'agaoioia DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ talitonu</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ talitonu, %2$@ moni</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>A MAE'A LE FA'ATUMU</string>
+	<key>Add funds to your balance</key>
+	<string>Fa'aopoopo tupe i lau paleni</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>O se fa'atauga muamua e US$%lld sa fa'atali pea mo le fa'aogaina, o lea na fa'amae'aina ai lea nai lo le toe totogiina oe. Toe fo'i i Safari ma tatala le faamalama fa'aoso a DisinfaX e va'ai ai i lau paleni fa'afouina.</string>
+	<key>Annotate</key>
+	<string>Fa'amatala</string>
+	<key>Annotating</key>
+	<string>O lo'o fa'amatala</string>
+	<key>Arguably</key>
+	<string>Felafolafoa'i</string>
+	<key>BALANCE</key>
+	<string>PALENI</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>I le fa'atumuina, e te ioe i a matou [Tuutuuga o Auaunaga](https://disinfax.app/terms-of-use) ma le matou [Faiga Fa'apolokiki o le Faalilolilo](https://disinfax.app/privacy-policy). E ono fa'aogaina totogi mo le suia o tupe pe a e totogi i se isi tupe e le o le USD.</string>
+	<key>Clear</key>
+	<string>Solo</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tapi le ata DisinfaX i le pusa meafaigaluega a Safari e tatala ai le faamalama fa'aoso.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>O le kiliki i le %@ e faʻaalia ai tautinoga ma o le a totogia ai lau paleni</string>
+	<key>Close</key>
+	<string>Tapuni</string>
+	<key>Contacting the App Store…</key>
+	<string>O lo'o feso'ota'i i le App Store…</string>
+	<key>Copy</key>
+	<string>Kopi</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>E mafai e le DisinfaX ona sese. Toe siaki fa'amatalaga.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>E leʻi avanoa le DisinfaX i lou itulagi ona o manaoga faatonutonu.</string>
+	<key>Disinfact</key>
+	<string>Fa'aali</string>
+	<key>Edit</key>
+	<string>Sui</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Fa'agaoioia DisinfaX i Safari, i lalo o Fa'atonuga → Fa'alauteleina.</string>
+	<key>Enter a claim</key>
+	<string>Tu'u se fa'amatalaga</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Ulufale se aofa'i tala atoa i le va o le 1 ma le 100.</string>
+	<key>Equivocally</key>
+	<string>Le manino</string>
+	<key>Fact-Check</key>
+	<string>Siaki o mea moni</string>
+	<key>Fact-Check All</key>
+	<string>Siaki uma</string>
+	<key>Fact-Checking</key>
+	<string>Siaki</string>
+	<key>False</key>
+	<string>Sō</string>
+	<key>Likely</key>
+	<string>Masani</string>
+	<key>Mostly</key>
+	<string>Tele</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Tatala fa'atonuga o fa'alauteleina a Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Tatala Safari ma alu i x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Tatala le faamalama fa'aoso i Safari e va'ai ai i lau paleni fa'afouina</string>
+	<key>Partially</key>
+	<string>Vaega</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ua mae'a le totogi. Toe fo'i i Safari ma tatala le faamalama fa'aoso a DisinfaX e va'ai ai i lau paleni fa'afouina.</string>
+	<key>Possibly</key>
+	<string>Atonu</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>E le'i maua le oloa %@ i le App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ua fa'aleaogaina le fa'atauga.</string>
+	<key>Purchase is pending approval.</key>
+	<string>O lo'o fa'atali le fa'atauga i le fa'amaonia.</string>
+	<key>Reasoning</key>
+	<string>Mafua'aga</string>
+	<key>Return to Safari</key>
+	<string>Toe fo'i i Safari</string>
+	<key>Setup incomplete</key>
+	<string>E le'i atoatoa le fa'atulagaga</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Saini mai i le faamalama fa'aoso a DisinfaX i totonu o Safari ina ia fa'aopoopo tupe.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>E leʻi iloa se vaega o lenei talosaga. Faamolemole mautinoa ua faafouina le faaopoopoga.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Na tupu se faʻafitauli i le itu o matou. Faamolemole toe taumafai i se taimi laititi.</string>
+	<key>Sources</key>
+	<string>Puna'oa</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>AOFA'I O LE FA'ATUMU</string>
+	<key>Tap the </key>
+	<string>Tapi le ata </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tapi le ata lava lea ma filifili DisinfaX e tatala ai le faamalama fa'aoso.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>E leʻi mafai ona maua lena. Faʻamolemole toe taumafai.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>E le aoga lena aofaʻi o le faʻatumuina. Faamolemole filifili se aofaʻi eseese.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>E le mafai e lenei fausaga e o'o atu i lana atigipusa fa'asoa (App Group %@). O le a le maua fa'atumuga se'ia fa'aopoopoina le agava'a App Groups i le talosaga ma le fa'alauteleina uma.</string>
+	<key>Top Up</key>
+	<string>Faatumu</string>
+	<key>Top Up Balance</key>
+	<string>Fa'atumu le paleni</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>E mana'omia e fa'atumuga se lomiga fou o iOS. Fa'afou, ona toe tatala lea o DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>E mana'omia e fa'atumuga se lomiga fou o macOS. Fa'afou, ona toe tatala lea o DisinfaX.</string>
+	<key>True</key>
+	<string>E Moni</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>FA'AAOGAINA O DISINFAX I SAFARI</string>
+	<key>Unknown</key>
+	<string>Lē iloa</string>
+	<key>Unknown purchase error.</key>
+	<string>O se mea sese i le fa'atauga e le'i iloa.</string>
+	<key>Very Likely</key>
+	<string>Manino lava</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Tala atoa a Amerika, 1–100. O le a totogia i le tupe a lau App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>E iai ia oe se fa'atumu US$%lld o lo'o fa'atali mo le fa'aogaina — e le'i toe totogia oe. Toe fo'i i Safari ma tatala le faamalama fa'aoso a DisinfaX e fa'aoga ai i lau paleni.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ete lei saini ulufale. Faamolemole saini ulufale ma toe taumafai.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>O lo'o fa'aogaina nei lau fa'atumu US$%lld.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>E umi atu nai lo le masani ona fa'aali mai lau fa'atumu US$%lld.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ua faamotu lou tautusi.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>E maualalo tele lau paleni. Faamolemole faʻatumu ina ia mafai ai ona faaauau.</string>
+</dict>
+</plist>

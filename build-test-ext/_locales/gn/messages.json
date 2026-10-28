@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Ohecha ha omomba'eguasu marandu japu tweets-pe AI análisis rupive.",
+    "message": "Ohecha ha omomba'eguasu marandu japu post-pe AI análisis rupive.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ehechauka jey opaite mba'e he'i ko tweet-pe",
+    "message": "Ehechauka jey opaite mba'e he'i ko post-pe",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Ejesẽ"
   },
+  "deleteAccount": {
+    "message": "Emboguete nde cuenta ha umi mba'e ojoajúva",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Nde saldo, ha peteĩ hash criptográfico nde koréo kundaharape rehegua oñemo'ãva peteĩ clave secreta rupive, oñeñongatu ani haguã ojejapo vai umi pirapire reigua oñeme'ẽva ojejapo jave nde cuenta. Reike jeýramo pe cuenta mismo rehe, oñembojevy jeýta nde saldo.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Eikutu ramo %BTN%, ojehechauka umi mba'ekuaa ha ojejapata ne saldo"
   },
@@ -287,7 +295,7 @@
     "message": "Ojeporu paha"
   },
   "cleanupTagline": {
-    "message": "Emopotĩ ne feed X-pe."
+    "message": "Emopotĩ ne feed."
   },
   "disclaimerJurisdiction": {
     "message": "Estados Unidos ryepýpe, umi oikóva Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina del Norte, Dakota del Norte, Oklahoma, Oregon, Pennsylvania, Carolina del Sur, Dakota del Sur, Tennessee, Texas, Utah, Washington, Wisconsin, ha Wyoming-pe añoite ikatu oiporu DisinfaX ha omyanyhẽ ipirapire; Washington, D.C., opa umi tetã'i Estados Unidos mba'éva, ha opa estado ndojeheróiva oñemboyke. Estados Unidos okápe, oĩ Canadá, Australia, Nueva Zelanda, Singapur, Sudáfrica, Japón, Taiwán, Indonesia, Tailandia, Filipinas, Malasia, Vietnam, ha Suiza-pe."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Ndojejuhúi upéva. Ejapyhy jey."
   },
+  "errNoClaims": {
+    "message": "Ndojejuhúi ko jehaipýpe mba'e oje'e va'ekue ikatúva oñemboaje.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Ñemboheko",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Techa",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Hesakã",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Ijehegui",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Pytũ",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Ehechauka tapia ojehechakuaáva:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Heja",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Ñemopotĩ",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Emohenda DisinfaX $HOST$pe",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX oĩ $HOST$pe",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Mbogue",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Eku'e Facebook ndive"
+  },
+  "continueWithLinkedIn": {
+    "message": "Eku'e LinkedIn ndive"
+  },
+  "continueWithReddit": {
+    "message": "Eku'e Reddit ndive"
+  },
+  "persistentBadgesLabel": {
+    "message": "Sa'yhesatũme g̃uarã: techaukaha tapiaite",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Eheja opaite jehechakuaa techaukaha ojehecha umi marandúpe rehasa'ỹre hi'ári. Pe je'epyre oñembohasa sa'y jehecharamo ha ñe'ẽ rupive, upévare oipytyvõ umi ndoikuaáivape mba'éichapa ojoavy umi sa'y.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Kuatiañe'ẽ tuichavéva",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Omotuicha umi jehai pyahu, ñeimo'ã ha umi ñe'ẽme'ẽ oñepyrũrã.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Mboty",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Eikutu emoambue hag̃ua pe ñe'ẽ",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Jehechakuaa mba'emimi",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Ko ojeiporavóva ipukueterei ojejesareko hag̃ua. 1,000 tai añónte.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Momarandu saldo oñemomichĩrõ",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Hetave: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> στη γραμμή διευθύνσεων, μετά πάτησε Διαχείριση Επεκτάσεων και ενεργοποίησε το DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ εμπιστοσύνη</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ εμπιστοσύνη, %2$@ εγκυρότητα</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ να είναι %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ΜΕΤΑ ΤΗΝ ΑΝΑΝΕΩΣΗ</string>
+	<key>Add funds to your balance</key>
+	<string>Πρόσθεσε κεφάλαια στο υπόλοιπό σου</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Μια προηγούμενη αγορά US$%lld περίμενε ακόμη να εφαρμοστεί, επομένως αυτή ολοκληρώθηκε αντί να χρεωθείς ξανά. Επίστρεψε στο Safari και άνοιξε το αναδυόμενο παράθυρο του DisinfaX για να δεις το ενημερωμένο υπόλοιπό σου.</string>
+	<key>Annotate</key>
+	<string>Σχολίασε</string>
+	<key>Annotating</key>
+	<string>Σχολιασμός</string>
+	<key>Arguably</key>
+	<string>Αμφισβητήσιμα</string>
+	<key>BALANCE</key>
+	<string>ΥΠΟΛΟΙΠΟ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Με την ανανέωση, αποδέχεσαι τους [Όρους Χρήσης](https://disinfax.app/terms-of-use) και την [Πολιτική Απορρήτου](https://disinfax.app/privacy-policy) μας. Ενδέχεται να ισχύουν χρεώσεις συναλλάγματος αν πληρώσεις σε νόμισμα διαφορετικό του USD.</string>
+	<key>Clear</key>
+	<string>Καθαρισμός</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Πάτησε το εικονίδιο DisinfaX στη γραμμή εργαλείων του Safari για να ανοίξεις το αναδυόμενο παράθυρο.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Το κλικ στο %@ εμφανίζει τους ισχυρισμούς και θα χρεώσει το υπόλοιπό σας</string>
+	<key>Close</key>
+	<string>Κλείσιμο</string>
+	<key>Contacting the App Store…</key>
+	<string>Σύνδεση με το App Store…</string>
+	<key>Copy</key>
+	<string>Αντιγραφή</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Το DisinfaX μπορεί να κάνει λάθη. Επιβεβαιώστε τις πληροφορίες.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Το DisinfaX δεν είναι ακόμη διαθέσιμο στην περιοχή σας λόγω κανονιστικών απαιτήσεων.</string>
+	<key>Disinfact</key>
+	<string>Έλεγχος Γεγονότων</string>
+	<key>Edit</key>
+	<string>Επεξεργασία</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Ενεργοποίησε το DisinfaX στο Safari, στις Ρυθμίσεις → Επεκτάσεις.</string>
+	<key>Enter a claim</key>
+	<string>Εισαγάγετε έναν ισχυρισμό</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Εισήγαγε ένα ακέραιο ποσό σε δολάρια μεταξύ 1 και 100.</string>
+	<key>Equivocally</key>
+	<string>Αμφίσημα</string>
+	<key>Fact-Check</key>
+	<string>Έλεγχος γεγονότων</string>
+	<key>Fact-Check All</key>
+	<string>Έλεγχος όλων</string>
+	<key>Fact-Checking</key>
+	<string>Έλεγχος</string>
+	<key>False</key>
+	<string>Ψευδές</string>
+	<key>Likely</key>
+	<string>Πιθανόν</string>
+	<key>Mostly</key>
+	<string>Κατά κύριο λόγο</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Άνοιγμα ρυθμίσεων επεκτάσεων Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Άνοιξε το Safari και μετάβα στο x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Άνοιξε το αναδυόμενο παράθυρο στο Safari για να δεις το ενημερωμένο υπόλοιπό σου</string>
+	<key>Partially</key>
+	<string>Μερικώς</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Η πληρωμή ολοκληρώθηκε. Επίστρεψε στο Safari και άνοιξε το αναδυόμενο παράθυρο του DisinfaX για να δεις το ενημερωμένο υπόλοιπό σου.</string>
+	<key>Possibly</key>
+	<string>Πιθανώς</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Το προϊόν %@ δεν βρέθηκε στο App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Η αγορά ακυρώθηκε.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Η αγορά εκκρεμεί προς έγκριση.</string>
+	<key>Reasoning</key>
+	<string>Συλλογισμός</string>
+	<key>Return to Safari</key>
+	<string>Επιστροφή στο Safari</string>
+	<key>Setup incomplete</key>
+	<string>Ημιτελής ρύθμιση</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Συνδέσου από το αναδυόμενο παράθυρο του DisinfaX στο Safari για να προσθέσεις κεφάλαια.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Κάποιο μέρος αυτού του αιτήματος δεν αναγνωρίστηκε. Βεβαιωθείτε ότι η επέκταση είναι ενημερωμένη.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Παρουσιάστηκε σφάλμα από την πλευρά μας. Δοκιμάστε ξανά σε λίγο.</string>
+	<key>Sources</key>
+	<string>Πηγές</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ΠΟΣΟ ΑΝΑΝΕΩΣΗΣ</string>
+	<key>Tap the </key>
+	<string>Πάτησε το εικονίδιο </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Πάτησε το ίδιο εικονίδιο και επίλεξε DisinfaX για να ανοίξεις το αναδυόμενο παράθυρο.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Δεν ήταν δυνατή η εύρεσή του. Δοκιμάστε ξανά.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Αυτό το ποσό ανανέωσης δεν είναι έγκυρο. Επιλέξτε διαφορετικό ποσό.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Αυτή η έκδοση δεν μπορεί να προσπελάσει τον κοινόχρηστο περιέκτη της (Ομάδα εφαρμογών %@). Οι ανανεώσεις δεν θα είναι διαθέσιμες μέχρι να προστεθεί η δυνατότητα Ομάδων εφαρμογών τόσο στην εφαρμογή όσο και στην επέκταση.</string>
+	<key>Top Up</key>
+	<string>Ανανέωση</string>
+	<key>Top Up Balance</key>
+	<string>Ανανέωση υπολοίπου</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Οι ανανεώσεις απαιτούν νεότερη έκδοση iOS. Ενημέρωσε και μετά άνοιξε ξανά το DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Οι ανανεώσεις απαιτούν νεότερη έκδοση macOS. Ενημέρωσε και μετά άνοιξε ξανά το DisinfaX.</string>
+	<key>True</key>
+	<string>Αληθές</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ΧΡΗΣΗ ΤΟΥ DISINFAX ΣΤΟ SAFARI</string>
+	<key>Unknown</key>
+	<string>Άγνωστο</string>
+	<key>Unknown purchase error.</key>
+	<string>Άγνωστο σφάλμα αγοράς.</string>
+	<key>Very Likely</key>
+	<string>Πολύ πιθανόν</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Ακέραια δολάρια ΗΠΑ, 1–100. Χρεώνεται στο νόμισμα του App Store σου.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Έχεις ήδη μια ανανέωση US$%lld που περιμένει να εφαρμοστεί — δεν χρεώθηκες ξανά. Επίστρεψε στο Safari και άνοιξε το αναδυόμενο παράθυρο του DisinfaX για να την εφαρμόσεις στο υπόλοιπό σου.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Δεν έχετε συνδεθεί. Συνδεθείτε και δοκιμάστε ξανά.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Η ανανέωσή σου US$%lld εφαρμόζεται αυτή τη στιγμή.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Η εμφάνιση της ανανέωσής σου US$%lld καθυστερεί περισσότερο από το συνηθισμένο.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ο λογαριασμός σας έχει ανασταλεί.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Το υπόλοιπό σας είναι πολύ χαμηλό. Κάντε ανανέωση για να συνεχίσετε.</string>
+</dict>
+</plist>

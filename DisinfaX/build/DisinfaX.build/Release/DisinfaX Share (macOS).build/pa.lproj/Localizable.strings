@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ਆਈਕਨ 'ਤੇ ਟੈਪ ਕਰੋ, ਫਿਰ ਐਕਸਟੈਂਸ਼ਨਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ 'ਤੇ ਟੈਪ ਕਰੋ ਅਤੇ DisinfaX ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ।</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ਭਰੋਸਾ</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ਭਰੋਸਾ, %2$@ ਸੱਚਾਈ</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ਟਾਪ-ਅੱਪ ਤੋਂ ਬਾਅਦ</string>
+	<key>Add funds to your balance</key>
+	<string>ਆਪਣੇ ਬੈਲੰਸ ਵਿੱਚ ਫੰਡ ਸ਼ਾਮਲ ਕਰੋ</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ਪਹਿਲਾਂ ਦੀ US$%lld ਖਰੀਦਦਾਰੀ ਅਜੇ ਵੀ ਲਾਗੂ ਹੋਣ ਦੀ ਉਡੀਕ ਕਰ ਰਹੀ ਸੀ, ਇਸ ਲਈ ਤੁਹਾਡੇ ਤੋਂ ਦੁਬਾਰਾ ਚਾਰਜ ਲੈਣ ਦੀ ਬਜਾਏ ਉਹੀ ਪੂਰੀ ਕੀਤੀ ਗਈ। ਆਪਣਾ ਅੱਪਡੇਟ ਕੀਤਾ ਬੈਲੰਸ ਦੇਖਣ ਲਈ Safari 'ਤੇ ਵਾਪਸ ਜਾਓ ਅਤੇ DisinfaX ਪੌਪਅੱਪ ਖੋਲ੍ਹੋ।</string>
+	<key>Annotate</key>
+	<string>ਵਿਆਖਿਆ ਕਰੋ</string>
+	<key>Annotating</key>
+	<string>ਵਿਆਖਿਆ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ</string>
+	<key>Arguably</key>
+	<string>ਵਿਵਾਦਗ੍ਰਸਤ</string>
+	<key>BALANCE</key>
+	<string>ਬੈਲੰਸ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>ਟਾਪ ਅੱਪ ਕਰਕੇ, ਤੁਸੀਂ ਸਾਡੀਆਂ [ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ](https://disinfax.app/terms-of-use) ਅਤੇ [ਪਰਦੇਦਾਰੀ ਨੀਤੀ](https://disinfax.app/privacy-policy) ਨਾਲ ਸਹਿਮਤ ਹੁੰਦੇ ਹੋ। ਜੇ ਤੁਸੀਂ USD ਤੋਂ ਇਲਾਵਾ ਕਿਸੇ ਹੋਰ ਕਰੰਸੀ ਵਿੱਚ ਭੁਗਤਾਨ ਕਰਦੇ ਹੋ ਤਾਂ ਵਿਦੇਸ਼ੀ ਮੁਦਰਾ ਵਟਾਂਦਰਾ ਫੀਸ ਲਾਗੂ ਹੋ ਸਕਦੀ ਹੈ।</string>
+	<key>Clear</key>
+	<string>ਸਾਫ਼ ਕਰੋ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>ਪੌਪਅੱਪ ਖੋਲ੍ਹਣ ਲਈ Safari ਟੂਲਬਾਰ ਵਿੱਚ DisinfaX ਆਈਕਨ 'ਤੇ ਟੈਪ ਕਰੋ।</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ ਉੱਤੇ ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਦਾਅਵੇ ਦਿਖਾਈ ਦੇਣਗੇ ਅਤੇ ਤੁਹਾਡੇ ਬਕਾਏ ਵਿੱਚੋਂ ਪੈਸੇ ਕੱਟੇ ਜਾਣਗੇ</string>
+	<key>Close</key>
+	<string>ਬੰਦ ਕਰੋ</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store ਨਾਲ ਕਨੈਕਟ ਹੋ ਰਿਹਾ ਹੈ…</string>
+	<key>Copy</key>
+	<string>ਕਾਪੀ ਕਰੋ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ਗਲਤੀਆਂ ਕਰ ਸਕਦਾ ਹੈ। ਜਾਣਕਾਰੀ ਦੀ ਦੁਬਾਰਾ ਜਾਂਚ ਕਰੋ।</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>ਰੈਗੂਲੇਟਰੀ ਲੋੜਾਂ ਕਾਰਨ DisinfaX ਹਾਲੇ ਤੁਹਾਡੇ ਖੇਤਰ ਵਿੱਚ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।</string>
+	<key>Disinfact</key>
+	<string>ਤੱਥ ਜਾਂਚ</string>
+	<key>Edit</key>
+	<string>ਸੋਧੋ</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari ਵਿੱਚ ਸੈਟਿੰਗਾਂ → ਐਕਸਟੈਂਸ਼ਨਾਂ ਵਿੱਚ DisinfaX ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ।</string>
+	<key>Enter a claim</key>
+	<string>ਦਾਅਵਾ ਦਰਜ ਕਰੋ</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 ਅਤੇ 100 ਵਿਚਕਾਰ ਪੂਰੀ ਡਾਲਰ ਰਕਮ ਦਰਜ ਕਰੋ।</string>
+	<key>Equivocally</key>
+	<string>ਅਸਪਸ਼ਟ</string>
+	<key>Fact-Check</key>
+	<string>ਤੱਥ-ਜਾਂਚ</string>
+	<key>Fact-Check All</key>
+	<string>ਸਭ ਦੀ ਤੱਥ ਜਾਂਚ ਕਰੋ</string>
+	<key>Fact-Checking</key>
+	<string>ਜਾਂਚ</string>
+	<key>False</key>
+	<string>ਝੂਠ</string>
+	<key>Likely</key>
+	<string>ਸੰਭਾਵਿਤ</string>
+	<key>Mostly</key>
+	<string>ਜ਼ਿਆਦਾਤਰ</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari ਐਕਸਟੈਂਸ਼ਨ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari ਖੋਲ੍ਹੋ ਅਤੇ x.com 'ਤੇ ਜਾਓ।</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>ਆਪਣਾ ਅੱਪਡੇਟ ਕੀਤਾ ਬੈਲੰਸ ਦੇਖਣ ਲਈ Safari ਵਿੱਚ ਪੌਪਅੱਪ ਖੋਲ੍ਹੋ</string>
+	<key>Partially</key>
+	<string>ਅੰਸ਼ਕ ਤੌਰ 'ਤੇ</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ਭੁਗਤਾਨ ਪੂਰਾ ਹੋਇਆ। ਆਪਣਾ ਅੱਪਡੇਟ ਕੀਤਾ ਬੈਲੰਸ ਦੇਖਣ ਲਈ Safari 'ਤੇ ਵਾਪਸ ਜਾਓ ਅਤੇ DisinfaX ਪੌਪਅੱਪ ਖੋਲ੍ਹੋ।</string>
+	<key>Possibly</key>
+	<string>ਸੰਭਵ ਤੌਰ 'ਤੇ</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect ਵਿੱਚ %@ ਉਤਪਾਦ ਨਹੀਂ ਮਿਲਿਆ।</string>
+	<key>Purchase cancelled.</key>
+	<string>ਖਰੀਦਦਾਰੀ ਰੱਦ ਕੀਤੀ ਗਈ।</string>
+	<key>Purchase is pending approval.</key>
+	<string>ਖਰੀਦਦਾਰੀ ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ ਵਿੱਚ ਹੈ।</string>
+	<key>Reasoning</key>
+	<string>ਤਰਕ</string>
+	<key>Return to Safari</key>
+	<string>Safari 'ਤੇ ਵਾਪਸ ਜਾਓ</string>
+	<key>Setup incomplete</key>
+	<string>ਸੈੱਟਅੱਪ ਅਧੂਰਾ ਹੈ</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>ਫੰਡ ਸ਼ਾਮਲ ਕਰਨ ਲਈ Safari ਵਿੱਚ DisinfaX ਪੌਪਅੱਪ ਤੋਂ ਸਾਈਨ ਇਨ ਕਰੋ।</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ਇਸ ਬੇਨਤੀ ਦਾ ਕੁਝ ਹਿੱਸਾ ਪਛਾਣਿਆ ਨਹੀਂ ਗਿਆ। ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਐਕਸਟੈਂਸ਼ਨ ਅੱਪਡੇਟ ਹੈ।</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>ਸਾਡੇ ਪਾਸੇ ਤੋਂ ਇੱਕ ਗੜਬੜ ਹੋ ਗਈ। ਕਿਰਪਾ ਕਰਕੇ ਥੋੜ੍ਹੀ ਦੇਰ ਬਾਅਦ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+	<key>Sources</key>
+	<string>ਸਰੋਤ</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ਟਾਪ-ਅੱਪ ਰਕਮ</string>
+	<key>Tap the </key>
+	<string>ਐਡਰੈੱਸ ਬਾਰ ਵਿੱਚ </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>ਉਹੀ ਆਈਕਨ ਟੈਪ ਕਰੋ ਅਤੇ ਪੌਪਅੱਪ ਖੋਲ੍ਹਣ ਲਈ DisinfaX ਚੁਣੋ।</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>ਇਹ ਨਹੀਂ ਲੱਭਿਆ ਜਾ ਸਕਿਆ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ਉਹ ਟਾਪ-ਅੱਪ ਰਕਮ ਜਾਇਜ਼ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਹੋਰ ਰਕਮ ਚੁਣੋ।</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>ਇਹ ਬਿਲਡ ਆਪਣੇ ਸਾਂਝੇ ਕੰਟੇਨਰ (App Group %@) ਤੱਕ ਨਹੀਂ ਪਹੁੰਚ ਸਕਦਾ। ਜਦੋਂ ਤੱਕ ਐਪ ਅਤੇ ਐਕਸਟੈਂਸ਼ਨ ਦੋਵਾਂ ਵਿੱਚ App Groups ਸਮਰੱਥਾ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤੀ ਜਾਂਦੀ, ਟਾਪ-ਅੱਪ ਉਪਲਬਧ ਨਹੀਂ ਹੋਣਗੇ।</string>
+	<key>Top Up</key>
+	<string>ਟੌਪ ਅੱਪ</string>
+	<key>Top Up Balance</key>
+	<string>ਬੈਲੰਸ ਟਾਪ ਅੱਪ ਕਰੋ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>ਟਾਪ-ਅੱਪ ਲਈ iOS ਦੇ ਨਵੇਂ ਵਰਜਨ ਦੀ ਲੋੜ ਹੈ। ਅੱਪਡੇਟ ਕਰੋ, ਫਿਰ DisinfaX ਨੂੰ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>ਟਾਪ-ਅੱਪ ਲਈ macOS ਦੇ ਨਵੇਂ ਵਰਜਨ ਦੀ ਲੋੜ ਹੈ। ਅੱਪਡੇਟ ਕਰੋ, ਫਿਰ DisinfaX ਨੂੰ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।</string>
+	<key>True</key>
+	<string>ਸੱਚ</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI ਵਿੱਚ DISINFAX ਦੀ ਵਰਤੋਂ</string>
+	<key>Unknown</key>
+	<string>ਅਣਜਾਣ</string>
+	<key>Unknown purchase error.</key>
+	<string>ਅਣਪਛਾਤੀ ਖਰੀਦ ਗਲਤੀ।</string>
+	<key>Very Likely</key>
+	<string>ਬਹੁਤ ਸੰਭਾਵਿਤ</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>ਪੂਰੇ US ਡਾਲਰ, 1–100। ਤੁਹਾਡੇ App Store ਦੀ ਕਰੰਸੀ ਵਿੱਚ ਚਾਰਜ ਕੀਤਾ ਜਾਵੇਗਾ।</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>ਤੁਹਾਡੇ ਕੋਲ ਪਹਿਲਾਂ ਹੀ US$%lld ਦਾ ਟਾਪ-ਅੱਪ ਲਾਗੂ ਹੋਣ ਦੀ ਉਡੀਕ ਵਿੱਚ ਹੈ — ਤੁਹਾਡੇ ਤੋਂ ਦੁਬਾਰਾ ਚਾਰਜ ਨਹੀਂ ਲਿਆ ਗਿਆ। ਇਸਨੂੰ ਆਪਣੇ ਬੈਲੰਸ 'ਤੇ ਲਾਗੂ ਕਰਨ ਲਈ Safari 'ਤੇ ਵਾਪਸ ਜਾਓ ਅਤੇ DisinfaX ਪੌਪਅੱਪ ਖੋਲ੍ਹੋ।</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>ਤੁਸੀਂ ਸਾਈਨ ਇਨ ਨਹੀਂ ਹੋ। ਕਿਰਪਾ ਕਰਕੇ ਸਾਈਨ ਇਨ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>ਤੁਹਾਡਾ US$%lld ਟਾਪ-ਅੱਪ ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ।</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>ਤੁਹਾਡੇ US$%lld ਟਾਪ-ਅੱਪ ਨੂੰ ਦਿਖਣ ਵਿੱਚ ਆਮ ਨਾਲੋਂ ਵੱਧ ਸਮਾਂ ਲੱਗ ਰਿਹਾ ਹੈ।</string>
+	<key>Your account has been suspended.</key>
+	<string>ਤੁਹਾਡਾ ਖਾਤਾ ਮੁਅੱਤਲ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>ਤੁਹਾਡਾ ਬੈਲੇਂਸ ਬਹੁਤ ਘੱਟ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਟਾਪ ਅੱਪ ਕਰੋ।</string>
+</dict>
+</plist>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> چېكىڭ، ئاندىن كېڭەيتىلمىلەرنى باشقۇرۇشنى چېكىپ DisinfaX نى قوزغىتىڭ.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ بولۇشى %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>تولدۇرغاندىن كېيىن</string>
+	<key>Add funds to your balance</key>
+	<string>قالدۇقىڭىزغا پۇل قوشۇڭ</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>بۇرۇنقى US$%lld سېتىۋېلىش تېخى قوللىنىلىشنى ساقلاۋاتقانىدى، شۇڭا سىزدىن قايتا ھەق ئېلىشنىڭ ئورنىغا شۇ تاماملاندى. يېڭىلانغان قالدۇقىڭىزنى كۆرۈش ئۈچۈن Safari گە قايتىپ DisinfaX قاڭقىش كۆزنىكىنى ئېچىڭ.</string>
+	<key>Annotate</key>
+	<string>ئىزاھات قوشۇش</string>
+	<key>Annotating</key>
+	<string>ئىزاھات قوشۇلماقتا</string>
+	<key>Arguably</key>
+	<string>تالاش-تارتىشلىق</string>
+	<key>BALANCE</key>
+	<string>قالدۇق</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>تولدۇرۇش ئارقىلىق، سىز بىزنىڭ [مۇلازىمەت شەرتلىرىمىزگە](https://disinfax.app/terms-of-use) ۋە [شەخسىي مەخپىيەتلىك سىياسىتىمىزگە](https://disinfax.app/privacy-policy) قوشۇلىسىز. ئەگەر سىز USD دىن باشقا پۇل بىرلىكىدە تۆلىسىڭىز، چەت ئەل پۇلىنى ئالماشتۇرۇش ھەققى ئىشلىتىلىشى مۇمكىن.</string>
+	<key>Clear</key>
+	<string>تازىلاش</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>قاڭقىش كۆزنىكىنى ئېچىش ئۈچۈن Safari قورال بالدىقىدىكى DisinfaX سىنبەلگىسىنى چېكىڭ.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ نى چېكىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store بىلەن ئۇلىنىۋاتىدۇ…</string>
+	<key>Copy</key>
+	<string>كۆچۈرۈش</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX خاتالىقلارغا يول قويۇشى مۇمكىن. ئۇچۇرنى قايتا تەكشۈرۈڭ.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>قانۇنىي تەلەپلەر سەبەبىدىن DisinfaX تېخى رايونىڭىزدا ئىشلىتىلمەيدۇ.</string>
+	<key>Disinfact</key>
+	<string>ئاشكارىلاش</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari دا DisinfaX نى تەڭشەكلەر → كېڭەيتىلمىلەردە قوزغىتىڭ.</string>
+	<key>Enter a claim</key>
+	<string>بىر دەۋانى كىرگۈزۈڭ</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 بىلەن 100 ئارىسىدا پۈتۈن دوللار سوممىسىنى كىرگۈزۈڭ.</string>
+	<key>Equivocally</key>
+	<string>ئېنىقسىز</string>
+	<key>Fact-Check</key>
+	<string>پاكىت تەكشۈرۈش</string>
+	<key>Fact-Check All</key>
+	<string>ھەممىنى پاكىت تەكشۈرۈش</string>
+	<key>Fact-Checking</key>
+	<string>پاكىت تەكشۈرۈش</string>
+	<key>False</key>
+	<string>يالغان</string>
+	<key>Likely</key>
+	<string>چوقۇمدەك</string>
+	<key>Mostly</key>
+	<string>كۆپىنچە</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari كېڭەيتىلمە تەڭشەكلىرىنى ئېچىش…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari نى ئېچىپ x.com گا بېرىڭ.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>يېڭىلانغان قالدۇقىڭىزنى كۆرۈش ئۈچۈن Safari دا قاڭقىش كۆزنىكىنى ئېچىڭ</string>
+	<key>Partially</key>
+	<string>قىسمەن</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>تۆلەم تاماملاندى. يېڭىلانغان قالدۇقىڭىزنى كۆرۈش ئۈچۈن Safari گە قايتىپ DisinfaX قاڭقىش كۆزنىكىنى ئېچىڭ.</string>
+	<key>Possibly</key>
+	<string>ئېھتىمال</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect تا %@ مەھسۇلاتى تېپىلمىدى.</string>
+	<key>Purchase cancelled.</key>
+	<string>سېتىۋېلىش بىكار قىلىندى.</string>
+	<key>Purchase is pending approval.</key>
+	<string>سېتىۋېلىش تەستىقلاشنى ساقلاۋاتىدۇ.</string>
+	<key>Reasoning</key>
+	<string>ئاساس</string>
+	<key>Return to Safari</key>
+	<string>Safari گە قايتىش</string>
+	<key>Setup incomplete</key>
+	<string>تەڭشەك تاماملانمىدى</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>پۇل قوشۇش ئۈچۈن Safari دىكى DisinfaX قاڭقىش كۆزنىكىدىن كىرىڭ.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>بۇ ئىلتىماسنىڭ بىر قىسمى تونۇلمىدى. كېڭەيتىلمىنىڭ يېڭىلانغانلىقىنى جەزملەشتۈرۈڭ.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>بىز تەرەپتە بىر خاتالىق يۈز بەردى. ئازراق ۋاقىتتىن كېيىن قايتا سىناڭ.</string>
+	<key>Sources</key>
+	<string>مەنبەلەر</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>تولدۇرۇش سوممىسى</string>
+	<key>Tap the </key>
+	<string>ئادرېس بالدىقىدىكى سىنبەلگىنى </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>ئوخشاش سىنبەلگىنى چېكىپ قاڭقىش كۆزنىكىنى ئېچىش ئۈچۈن DisinfaX نى تاللاڭ.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>بۇ تېپىلمىدى. قايتا سىناڭ.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>بۇ تولۇقلاش سوممىسى ئىناۋەتسىز. باشقا سومما تاللاڭ.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>بۇ قۇرۇلۇش ئورتاق ساقلىغۇچىسىغا (App Group %@) يېتەلمەيدۇ. App Groups ئىقتىدارى ھەم ئەپكە ھەم كېڭەيتىلمىگە قوشۇلغۇچە تولدۇرۇشلار ئىشلىتىلمەيدۇ.</string>
+	<key>Top Up</key>
+	<string>تولۇقلاش</string>
+	<key>Top Up Balance</key>
+	<string>قالدۇقنى تولدۇرۇش</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>تولدۇرۇشلار iOS نىڭ يېڭىراق نەشرىنى تەلەپ قىلىدۇ. يېڭىلاڭ، ئاندىن DisinfaX نى قايتا ئېچىڭ.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>تولدۇرۇشلار macOS نىڭ يېڭىراق نەشرىنى تەلەپ قىلىدۇ. يېڭىلاڭ، ئاندىن DisinfaX نى قايتا ئېچىڭ.</string>
+	<key>True</key>
+	<string>راست</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI دا DISINFAX نى ئىشلىتىش</string>
+	<key>Unknown</key>
+	<string>نامەلۇم</string>
+	<key>Unknown purchase error.</key>
+	<string>نامەلۇم سېتىۋېلىش خاتالىقى.</string>
+	<key>Very Likely</key>
+	<string>ئىنتايىن چوقۇمدەك</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>پۈتۈن AQŞ دوللارى، 1–100. App Store پۇل بىرلىكىڭىزدە ھېسابلىنىدۇ.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>سىزدە ئاللىبۇرۇن قوللىنىلىشنى ساقلاۋاتقان US$%lld تولدۇرۇش بار — سىزدىن قايتا ھەق ئېلىنمىدى. ئۇنى قالدۇقىڭىزغا قوللىنىش ئۈچۈن Safari گە قايتىپ DisinfaX قاڭقىش كۆزنىكىنى ئېچىڭ.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>سىز كىرمىدىڭىز. كىرىپ قايتا سىناڭ.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>سىزنىڭ US$%lld تولدۇرۇشىڭىز ھازىر قوللىنىلىۋاتىدۇ.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>سىزنىڭ US$%lld تولدۇرۇشىڭىزنىڭ كۆرۈنۈشى ئادەتتىكىدىن كۆپرەك ۋاقىت ئالماقتا.</string>
+	<key>Your account has been suspended.</key>
+	<string>ھېساباتىڭىز توختىتىلدى.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>قالدۇقىڭىز بەك ئاز. داۋاملاشتۇرۇش ئۈچۈن قايتا تولۇقلاڭ.</string>
+</dict>
+</plist>

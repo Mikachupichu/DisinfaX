@@ -116,6 +116,7 @@ export default function SiteOptIn() {
           type="button"
           onClick={disable}
           disabled={busy}
+          title={t('turnOff')}
           className="flex-shrink-0 text-[11px] font-semibold text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer disabled:opacity-50"
         >
           {t('turnOff')}
@@ -129,6 +130,7 @@ export default function SiteOptIn() {
       type="button"
       onClick={enable}
       disabled={busy}
+      title={t('enableOnInstance', [host])}
       className="flex items-center gap-2 w-full p-2.5 bg-emerald-950/40 border border-emerald-900 hover:border-emerald-700 rounded-xl text-xs font-semibold text-emerald-300 transition-colors cursor-pointer disabled:opacity-50 text-left"
     >
       <span className="flex-1 leading-relaxed break-words">{t('enableOnInstance', [host])}</span>

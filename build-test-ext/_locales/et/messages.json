@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Tuvastab ja tõstab esile väärinfo säutsudes AI-analüüsi abil."
+    "message": "Tuvastab ja tõstab esile väärinfo postitustes AI-analüüsi abil."
   },
   "verdictTrue": {
     "message": "Tõene",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Paljasta uuesti kõik selle säutsu väited",
+    "message": "Paljasta uuesti kõik selle postituse väited",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Logi välja"
   },
+  "deleteAccount": {
+    "message": "Kustuta konto ja seotud andmed",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Sinu saldo ja salajase võtmega kaitstud e-posti aadressi krüptograafiline räsi säilitatakse, et vältida registreerumisel antavate tasuta vahendite väärkasutust. Samasse kontosse uuesti sisse logides taastatakse sinu saldo.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% klõpsamine kuvab väited ja arvab tasu maha sinu saldost"
   },
@@ -285,7 +293,7 @@
     "message": "Viimati kasutatud"
   },
   "cleanupTagline": {
-    "message": "Korrasta oma X-i voog."
+    "message": "Korrasta oma voog."
   },
   "disclaimerJurisdiction": {
     "message": "Ameerika Ühendriikides saavad DisinfaX-i kasutada ja oma saldot täiendada ainult järgmiste osariikide elanikud: Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Põhja-Carolina, Põhja-Dakota, Oklahoma, Oregon, Pennsylvania, Lõuna-Carolina, Lõuna-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin ja Wyoming; Washington, D.C., kõik USA territooriumid ja kõik loetlemata osariigid on välistatud. Väljaspool Ameerika Ühendriike on see saadaval Kanadas, Austraalias, Uus-Meremaal, Singapuris, Lõuna-Aafrika Vabariigis, Jaapanis, Taiwanis, Indoneesias, Tais, Filipiinidel, Malaisias, Vietnamis ja Šveitsis."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Seda ei leitud. Proovi uuesti."
   },
+  "errNoClaims": {
+    "message": "Sellest tekstist ei leitud ühtegi kontrollitavat väidet.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Seaded",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Välimus",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Hele",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automaatne",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tume",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Kuva alati faktikontrolle kui:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "Loobu",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Tühjenda",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Luba DisinfaX saidil $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX on saidil $HOST$ sees",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Lülita välja",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Jätka Facebook-iga"
+  },
+  "continueWithLinkedIn": {
+    "message": "Jätka LinkedIn-iga"
+  },
+  "continueWithReddit": {
+    "message": "Jätka Reddit-iga"
+  },
+  "persistentBadgesLabel": {
+    "message": "Värvipimedate sõbralik: püsivad märgised",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Hoia iga faktikontrolli märgis postitustel nähtavana ilma kursorit peale viimata. Otsust väljendab esiletõstu värv sama palju kui sõnad, mistõttu aitab see kõiki, kes neid värve ei erista.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Suur fondisuurus",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Suurendab ümberkirjutatud väiteid, põhjendusi ja tutvustusvihjeid.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Sulge",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klõpsa väite muutmiseks",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktikontrolli üksikasjad",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "See valik on kontrollimiseks liiga pikk. Maksimaalselt 1 000 tähemärki.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Teavita, kui saldo väheneb",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Rohkem kui: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

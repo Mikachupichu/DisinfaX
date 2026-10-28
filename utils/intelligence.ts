@@ -202,7 +202,9 @@ export async function* preClassify(
     console.error(`[preClassify] all ${maxAttempts} attempts failed, yielding empty classification`, lastError);
     console.log(`[ttft-ext] preClassify ${displayTweet.id}: FAILED, +${(performance.now() - tStart).toFixed(0)}ms total`);
     if (lastError?.message) reportWorkerError(String(lastError.message));
-    yield makePreclassification(displayTweet, [], displayedLocale, effectiveLocale);
+    // Flagged, because this empty result is a FAILURE's: the caller must not report it to
+    // the user as "no claims found" on top of the error just reported above.
+    yield { ...makePreclassification(displayTweet, [], displayedLocale, effectiveLocale), preclassifyFailed: true };
 }
 
 /** Build a Classification from the worker's streamed preclassification claims.
@@ -233,6 +235,9 @@ function makePreclassification(tweet: ClaimInput, allClaims: any[], displayedLoc
             note: null,
             highlight,
             claimLocale: uiLocale,
+            // The worker marks (rather than drops) a post claim its strict categories
+            // reject; passage runs state nothing, so absent reads as "no opinion".
+            ...(typeof raw.is_hidden === 'boolean' ? { isHidden: raw.is_hidden } : {}),
         } as Claim;
     });
     const classification: Classification = {

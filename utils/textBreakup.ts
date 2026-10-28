@@ -435,6 +435,20 @@ export function splitHighlightKey(key: string): [string, string] | null {
 export type RevisionGate = {
     displayed: string | null;
     known: Set<string>;
+    /** Hashes of every rendering the client holds of the side ON SCREEN (see
+     *  `displayedSides.texts`). A range bound to one of these addresses words the reader
+     *  can see, whichever rendering it was measured into. */
+    displayedBodies?: Set<string>;
+    /** Hashes of the bodies that are the OTHER side of the same post (the capture's own
+     *  body). A host that shows both sides files the two sides' ranges under one locale
+     *  key, so a hash here is what tells a range bound to the visible side apart from one
+     *  that genuinely addresses the other side. */
+    otherBodies?: Set<string>;
+    /** The locale prefix the displayed body's ranges are filed under, when the caller
+     *  knows it. A host that states no language (Facebook) files BOTH sides of a post
+     *  under one prefix, so under that prefix the tiers below cannot tell the sides
+     *  apart — see selectAnnotationRevision. */
+    displayedLocale?: string;
 };
 
 /** Strip revision hashes from a DB highlight object, re-emitting survivors under
@@ -447,21 +461,50 @@ export type RevisionGate = {
  *  Unknown-hash revisions (stale translations/edits, appended forever server-side)
  *  are dropped — the missing-highlight checks downstream then route through the
  *  Translate Fact-Checks flow. Hash equality IS string equality here, so no locale
- *  guessing is involved. */
+ *  guessing is involved. The second tier is withheld where the prefix is the
+ *  displayed side's OWN locale yet the range was measured into a body only the
+ *  other side carries (see the guard below). */
 export function selectHighlightRevision<T>(
     highlight: Record<string, T>,
-    gate: RevisionGate
+    gate: RevisionGate,
+    fromDisplayed?: Set<string>
 ): Record<string, T> {
-    const best = new Map<string, { tier: number; val: T }>();
+    const best = new Map<string, { tier: number; val: T; hash: string | null }>();
+    const base = (tag: string) => tag.toLowerCase().split('-')[0];
     for (const [key, val] of Object.entries(highlight)) {
         const split = splitHighlightKey(key);
         const prefix = split ? split[0] : key;
-        const tier = !split ? 0 : split[1] === gate.displayed ? 2 : gate.known.has(split[1]) ? 1 : -1;
+        const hash = split ? split[1] : null;
+        const tier = hash === null ? 0 : hash === gate.displayed ? 2 : gate.known.has(hash) ? 1 : -1;
         if (tier < 0) continue;
-        if ((best.get(prefix)?.tier ?? -1) <= tier) best.set(prefix, { tier, val });
+        // Both sides filed under ONE prefix — Telegram states no language (`und`), Facebook
+        // files both sides under the UI locale — so a held body from the OTHER side carries
+        // this prefix too. Its offsets address words this side does not have: painted here
+        // they land mid-word and run past the claim, or a side that was never localized
+        // shows another language's marks instead of the Localize hold. A tier-1 range
+        // survives when its body is also a rendering of the displayed side (a recorded
+        // flip-to, the paid-localization case) or when both sides carry it — its words
+        // match. Hosts with per-side prefixes never take this branch: their languages differ.
+        if (tier === 1 && hash !== null && !!gate.displayedBodies && !!gate.displayedLocale
+            && base(prefix) === base(gate.displayedLocale)
+            && !!gate.otherBodies?.has(hash) && !gate.displayedBodies.has(hash)) continue;
+        if ((best.get(prefix)?.tier ?? -1) <= tier) best.set(prefix, { tier, val, hash });
     }
     const out: Record<string, T> = {};
-    for (const [prefix, { val }] of best) out[prefix] = val;
+    for (const [prefix, { val, tier, hash }] of best) {
+        out[prefix] = val;
+        // The surviving range under this prefix indexes the side ON SCREEN — the displayed
+        // body itself (tier 2) or another rendering of it. A caller laying out the other
+        // side must not use it, whatever locale the prefix says (see `altBlockedKeys` in
+        // the Classification). A hash the other side's body also carries is left alone:
+        // the two sides say the same words there, so the pairing cannot place a mark on a
+        // word it does not name.
+        if (fromDisplayed && (tier === 2 || (
+            hash !== null
+            && !!gate.displayedBodies?.has(hash)
+            && !gate.otherBodies?.has(hash)
+        ))) fromDisplayed.add(prefix);
+    }
     return out;
 }
 
@@ -475,7 +518,29 @@ export function selectAnnotationRevision(
     annotations: Record<string, Record<string, string>>,
     gate: RevisionGate
 ): Record<string, Record<string, string>> {
-    return selectHighlightRevision(annotations, gate);
+    // Under the prefix the displayed body's own corrections are filed under, only that
+    // body's revision may come back. The second tier above ("another held body") is right
+    // for highlights, whose other side sits under a DIFFERENT key, but a host that states
+    // no language (Facebook) files both sides of a post under one prefix: there the tier
+    // hands this side the other side's corrections, and they paint over words they never
+    // addressed. Where the sides do sit under different prefixes, a key under the displayed
+    // one can only be another revision of the words on screen — so another RENDERING of
+    // those words (a recorded side, see `displayedBodies`) is that revision and stays;
+    // only a body the other side owns is refused.
+    if (!gate.displayedLocale || !gate.displayed) return selectHighlightRevision(annotations, gate);
+    const full = gate.displayedLocale.toLowerCase();
+    const base = full.split('-')[0];
+    const own: Record<string, Record<string, string>> = {};
+    for (const [k, v] of Object.entries(annotations)) {
+        const split = splitHighlightKey(k);
+        if (split) {
+            const prefix = split[0].toLowerCase();
+            if ((prefix === full || prefix.split('-')[0] === base) && split[1] !== gate.displayed
+                && !(gate.displayedBodies?.has(split[1]) && !gate.otherBodies?.has(split[1]))) continue;
+        }
+        own[k] = v;
+    }
+    return selectHighlightRevision(own, gate);
 }
 
 /**

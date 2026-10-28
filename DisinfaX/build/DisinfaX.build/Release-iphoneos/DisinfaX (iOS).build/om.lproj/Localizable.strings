@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> kan sararaa teessoo keessatti tuqi, ergasii Dabalataalee Bulchi tuqiitii DisinfaX dandeessisi.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ amanamummaa</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ amanamummaa, %2$@ dhugaa</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ERGA GUUTUUN BOODA</string>
+	<key>Add funds to your balance</key>
+	<string>Baalansii keetitti maallaqa dabali</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Bittaan US$%lld duraanii ammayyuu hojii irra oolfamuu eegaa ture, kanaafuu sirra deebiʼuu kaffalchiisuu mannaa kun xumurameera. Baalansii keeti haaromsame ilaaluuf gara Safari deebiʼi foddaa ol-baʼu DisinfaX banuufi.</string>
+	<key>Annotate</key>
+	<string>Yaadachi</string>
+	<key>Annotating</key>
+	<string>Yaadachaa jira</string>
+	<key>Arguably</key>
+	<string>Falmii qabu</string>
+	<key>BALANCE</key>
+	<string>BAALANSII</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Guutuu keessatti, [Heera Tajaajilaa](https://disinfax.app/terms-of-use) fi [Imaammata Iccitii](https://disinfax.app/privacy-policy) keenya keeytee jirta. Yoo maallaqa USD hin taane kaffaltee, kaffaltiin jijjiirraa maallaqaa ni fayyadamuu dandaʼa.</string>
+	<key>Clear</key>
+	<string>Haqi</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Foddaa ol-baʼu banuuf mallattoo DisinfaX kan bulchiinsa meeshaalee Safari keessatti tuqi.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ cuqaasuun himannoo ni mul'isa, herrega keessaniis ni kaffalchiisa</string>
+	<key>Close</key>
+	<string>Cufi</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store waliin walquunnamaa jira…</string>
+	<key>Copy</key>
+	<string>Kaappii</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX dogoggora hojjechuu dandaʼa. Odeeffannoo irra deebiʼii ilaali.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX sababa qajeelfama seeraatiin naannoo keessatti amma illee hin argamne.</string>
+	<key>Disinfact</key>
+	<string>Mirkaneessa</string>
+	<key>Edit</key>
+	<string>Gulaali</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX Safari keessatti, Qindaainaa → Dabalataalee jalatti dandeessisi.</string>
+	<key>Enter a claim</key>
+	<string>Yaada galchi</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Hanga doolaaraa guutuu 1 fi 100 gidduu jiru galchi.</string>
+	<key>Equivocally</key>
+	<string>Ifa miti</string>
+	<key>Fact-Check</key>
+	<string>Sakatta'iinsa dhugaa</string>
+	<key>Fact-Check All</key>
+	<string>Hunda mirkaneessi</string>
+	<key>Fact-Checking</key>
+	<string>Mirkaneessa</string>
+	<key>False</key>
+	<string>Soba</string>
+	<key>Likely</key>
+	<string>Danda'ama</string>
+	<key>Mostly</key>
+	<string>Irra caalaa</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Qindaainaa dabalataalee Safari bani…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari bani, x.com deemi.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Baalansii keeti haaromsame ilaaluuf Safari keessatti foddaa ol-baʼu bani</string>
+	<key>Partially</key>
+	<string>Gartokkeen</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kaffaltiin xumurameera. Baalansii keeti haaromsame ilaaluuf gara Safari deebiʼi foddaa ol-baʼu DisinfaX banuufi.</string>
+	<key>Possibly</key>
+	<string>Tarii</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Oomishni %@ App Store Connect keessatti hin argamne.</string>
+	<key>Purchase cancelled.</key>
+	<string>Bittaan haqameera.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Bittaan mirkaneeffannaa eegaa jira.</string>
+	<key>Reasoning</key>
+	<string>Sababa</string>
+	<key>Return to Safari</key>
+	<string>Gara Safari deebiʼi</string>
+	<key>Setup incomplete</key>
+	<string>Qindaainaan hin xumuramne</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Maallaqa dabaluuf DisinfaX foddaa ol-baʼu Safari keessatti seeni.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Kutaa gaaffii kanaa hin beekamne. Maaloo dabalataan haaromsameera taʼuu mirkaneessi.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Dogoggorri gama keenyaan uumameera. Maaloo yeroo xiqqoo booda deebi'ii yaali.</string>
+	<key>Sources</key>
+	<string>Madda</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>HANGA GUUTUU</string>
+	<key>Tap the </key>
+	<string>Mallattoo </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Mallattoo wal fakkaataa tuqiitii foddaa ol-baʼu banuuf DisinfaX filadhu.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Kun hin argamne. Deebi'ii yaali.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Baay'inni guutuu kun sirrii miti. Maaloo baay'ina biraa filadhu.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ijaarsi kun qabduu waliin qooddatame isaa (App Group %@) gahuu hin dandaʼu. Guutuun hin argamu hanga dandeettii App Groups appii fi dabalataa lamaaniif dabalamu.</string>
+	<key>Top Up</key>
+	<string>Guuti</string>
+	<key>Top Up Balance</key>
+	<string>Baalansii guuti</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Guutuun sarara iOS haaraa barbaada. Haaromsi, ergasii DisinfaX irra deebiʼii bani.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Guutuun sarara macOS haaraa barbaada. Haaromsi, ergasii DisinfaX irra deebiʼii bani.</string>
+	<key>True</key>
+	<string>Dhugaa</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX SAFARI KEESSATTI FAYYADAMUU</string>
+	<key>Unknown</key>
+	<string>Hin beekamu</string>
+	<key>Unknown purchase error.</key>
+	<string>Dogoggora bittaa hin beekamne.</string>
+	<key>Very Likely</key>
+	<string>Baay'ee danda'ama</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Doolaara Ameerikaa guutuu, 1–100. Maallaqa App Store keetiin kaffalama.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>US$%lld guutuu fayyadamuu eegaa kan qabdu tokko duraan qabda — irra deebiin sirraa hin kaffalamne. Baalansii keetti hojii irra oolchuuf gara Safari deebiʼi foddaa ol-baʼu DisinfaX banuufi.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Hin seenne. Maaloo seenii deebi'ii yaali.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Guutuun US$%lld kee hojii irra oolfamaa jira.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Mulʼachuun guutuu US$%lld keessan yeroo baayʼee caalaa fudhachaa jira.</string>
+	<key>Your account has been suspended.</key>
+	<string>Herregni kee dhaabbateera.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Baankiin kee baay'ee gadi bu'aadha. Maaloo itti fufuuf guuti.</string>
+</dict>
+</plist>

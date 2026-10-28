@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> bareng ea aterese, ebe u tobetsa Laola Ditlatsetso ebe u nolofatsa DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ tshepo</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ tshepo, %2$@ nnete</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ho ba %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>KAMORA HO TLATSA</string>
+	<key>Add funds to your balance</key>
+	<string>Eketsa chelete tekanyong ea hao</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Theko ea pele ea US$%lld e ne e sa emetse ho sebelisoa, kahoo ke eona e phethelletsoeng ho e-na le ho u lefisa hape. Khutlela ho Safari ebe u bula fensetere e hlahang ea DisinfaX ho bona tekanyo ea hao e ntjhafalitsoeng.</string>
+	<key>Annotate</key>
+	<string>Hlalosa</string>
+	<key>Annotating</key>
+	<string>Ho hlaloswa</string>
+	<key>Arguably</key>
+	<string>E ka phehisanoa</string>
+	<key>BALANCE</key>
+	<string>TEKANYO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Ka ho tlatsa, u dumela [Melao ea Tshebeletso](https://disinfax.app/terms-of-use) le [Leano la Lekunutu](https://disinfax.app/privacy-policy) tsa rona. Litefiso tsa phapanyetsano ea lichelete li ka sebetsa haeba u lefa ka chelete e seng ea USD.</string>
+	<key>Clear</key>
+	<string>Hlakola</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tobetsa letshwao la DisinfaX bareng ea lisebelisoa ea Safari ho bula fensetere e hlahang.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Ho tobetsa %@ ho bontša liqoso mme ho tla lefisa tjhelete boemong ba hao</string>
+	<key>Close</key>
+	<string>Koala</string>
+	<key>Contacting the App Store…</key>
+	<string>E hokahana le App Store…</string>
+	<key>Copy</key>
+	<string>Kopitsa</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX e ka etsa liphoso. Sheba tlhahisoleseling habedi.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ha e so fumaneha sebakeng sa hao ka lebaka la ditlhoko tsa taolo.</string>
+	<key>Disinfact</key>
+	<string>Hlahloba</string>
+	<key>Edit</key>
+	<string>Fetola</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Nolofatsa DisinfaX ka Safari, tlas'a Litlhophiso → Ditlatsetso.</string>
+	<key>Enter a claim</key>
+	<string>Kenya polelo</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Kenya chelete e felletseng ea dolara pakeng tsa 1 le 100.</string>
+	<key>Equivocally</key>
+	<string>Ha e hlake</string>
+	<key>Fact-Check</key>
+	<string>Ho hlahloba nnete</string>
+	<key>Fact-Check All</key>
+	<string>Hlahloba kaofela</string>
+	<key>Fact-Checking</key>
+	<string>Ho hlahloba</string>
+	<key>False</key>
+	<string>Leshano</string>
+	<key>Likely</key>
+	<string>E ka etsahala</string>
+	<key>Mostly</key>
+	<string>Boholo</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Bula litlhophiso tsa ditlatsetso tsa Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Bula Safari ebe u ea ho x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Bula fensetere e hlahang ka Safari ho bona tekanyo ea hao e ntjhafalitsoeng</string>
+	<key>Partially</key>
+	<string>Karolo e itseng</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Tefo e phethelletse. Khutlela ho Safari ebe u bula fensetere e hlahang ea DisinfaX ho bona tekanyo ea hao e ntjhafalitsoeng.</string>
+	<key>Possibly</key>
+	<string>Mohlomong</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Sehlahisoa %@ ha se fumanoe ho App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Theko e hlakoloe.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Theko e emetse tumello.</string>
+	<key>Reasoning</key>
+	<string>Mabaka</string>
+	<key>Return to Safari</key>
+	<string>Khutlela ho Safari</string>
+	<key>Setup incomplete</key>
+	<string>Tlhophiso ha e phethehile</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Kena ho tswa fensetereng e hlahang ea DisinfaX ka Safari ho eketsa chelete.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Karolo ya kopo ena ha e tsejwe. Netefatsa hore tlatsetso e ntjhafalitswe.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Phoso e hlahile lehlakoreng la rona. Ka kopo leka hape kamora nakwana.</string>
+	<key>Sources</key>
+	<string>Mehloli</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>CHELETE EA HO TLATSA</string>
+	<key>Tap the </key>
+	<string>Tobetsa letshwao </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tobetsa letshwao le tshoanang ebe u khetha DisinfaX ho bula fensetere e hlahang.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Seo ha se fumanwe. Ka kopo leka hape.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Chelete eo ya tlatsetso ha e nepahale. Ka kopo kgetha chelete e fapaneng.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Kaho ena ha e fihlelle sejana sa eona se arolelanoang (App Group %@). Ho tlatsa ho ke ke ha fumaneha ho fihlela bokhoni ba App Groups bo kenyellelitsoe ho app le tlatsetso.</string>
+	<key>Top Up</key>
+	<string>Eketsa Chelete</string>
+	<key>Top Up Balance</key>
+	<string>Tlatsa tekanyo</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Ho tlatsa ho hloka mofuta o mocha oa iOS. Ntjhafatsa, ebe u bula DisinfaX hape.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Ho tlatsa ho hloka mofuta o mocha oa macOS. Ntjhafatsa, ebe u bula DisinfaX hape.</string>
+	<key>True</key>
+	<string>'Nete</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>TSEBELISO EA DISINFAX KA SAFARI</string>
+	<key>Unknown</key>
+	<string>Ha e tsejoe</string>
+	<key>Unknown purchase error.</key>
+	<string>Phoso e sa tsejoang ea theko.</string>
+	<key>Very Likely</key>
+	<string>E ka etsahala haholo</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolara tse felletseng tsa US, 1–100. Di tla lefshoa ka chelete ea App Store ea hao.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>U se u na le ho tlatsa ha US$%lld ho emetseng ho sebelisoa — ha o lefisoe hape. Khutlela ho Safari ebe u bula fensetere e hlahang ea DisinfaX ho e sebelisa tekanyong ea hao.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ha o kene. Ka kopo kena, ebe o leka hape.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ho tlatsa ha hao ha US$%lld ho ntse ho sebelisoa.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Ho bonahala ha ho tlatsa ha hao ha US$%lld ho nka nako e telele ho feta tloaelo.</string>
+	<key>Your account has been suspended.</key>
+	<string>Akhaonto ya hao e emisitswe.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Chelete ya hao e setseng e tlaase haholo. Ka kopo e tlatse ho tswela pele.</string>
+</dict>
+</plist>

@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detecte eyet mete e vedete li disinformåcion dins les tweets, avou l' analize IA.",
+    "message": "Detecte eyet mete e vedete li disinformåcion dins les posts, avou l' analize IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Rimostrer co les afirmåcions di ç' tweet ci",
+    "message": "Rimostrer co les afirmåcions di ç' post ci",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Si disloguer"
   },
+  "deleteAccount": {
+    "message": "Disfacer li conte et les dnêyes ki vont avou",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Vosse sôde, eyet on hash criptografike di vosse sicrît e-mail k' est waeranti pa ene sicrete clé, sont wårdés po espaitchî l' abus des cwårs dinés cwand on ahive on conte. Si vs vos raloyîz avou l' minme conte, vosse sôde est rmetou.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Cliker so %BTN% mostere les afirmåcions eyet cotêyerè vosse solde"
   },
@@ -287,7 +295,7 @@
     "message": "Dièrin eployî"
   },
   "cleanupTagline": {
-    "message": "Rnetyîz vosse fil X."
+    "message": "Rnetyîz vosse fil."
   },
   "disclaimerJurisdiction": {
     "message": "Ås Estats-Unis, seulmint les cîtoyéns d' l'Alabama, di l'Arizona, di l' Californeye, do Colorado, do Connecticut, do Delaware, di l' Floride, di l'Idaho, di l'Illinois, di l'Indiana, di l'Iowa, do Kansas, do Kentucky, di l' Louisiane, do Maine, do Massachusetts, do Mississippi, do Missouri, do Montana, do New Hampshire, do Nouvea-Mèxike, di New York, di l' Caroline do Nôr, do Dakota do Nôr, di l'Oklahoma, di l'Oregon, di l' Pensilvaneye, di l' Caroline do Sud, do Dakota do Sud, do Tennessee, do Texas, di l'Utah, di Washington, do Wisconsin eyet do Wyoming polèt eployî DisinfaX eyet ristoker leu solde ; Washington, D.C., tos les teritwaires amerikins eyet tos les Estats nén lîstés sont exclus. Foû des Estats-Unis, c' est disponibe å Canada, e l'Australeye, e l' Nouvele-Zelande, a Singapour, e l' Afrike do Sud, å Djapon, a Taiwan, e l'Indonezeye, e l' Tayilande, ås Filipenes, e l' Malèzeye, å Vietnam eyet e l' Suisse."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Çoula n' a nén stî trové. Rissayîz, s' i vs plait."
   },
+  "errNoClaims": {
+    "message": "On n' a trové nole afirmåcion a verifyî dins ci tecse ci.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Reglaedjes",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aspect",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Clair",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otomatike",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Noer",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Mostrer todi les verifiaedjes se:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Rinoncî",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Netyî",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Activer DisinfaX so $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX est activé so $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Disactiver",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Continuwer avou Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Continuwer avou LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Continuwer avou Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Po les daltonyins: badges permanints",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Wårder tchaeke badge di verifiaedje veyåve so les messaedjes sins passer dsu. Li djudjmint est dné ostant pal coleur ki pa les mots; çoula aidéve tertos ki n' polèt nén ricnoxhe ces coleurs la.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grande groxheur des letes",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Fwait crexhe les afiermåcions riscrijhowes, li raizonmint eyet les prumîs conseys.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Clôre",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Clitchîz po candjî l' afirmåcion",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detays del verificåcion",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Ci selecciona la est trop longue po verifyî. 1 000 caractères å mî.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Notifier quand l' solde dmihe",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Di pus di: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> නිරූපකය තට්ටු කර, පසුව දිගු කළමනාකරණය කරන්න තට්ටු කර DisinfaX සබල කරන්න.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ විශ්වාසය</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ විශ්වාසය, %2$@ සත්‍යතාව</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ වීමට %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>රීචාජ් කිරීමෙන් පසු</string>
+	<key>Add funds to your balance</key>
+	<string>ඔබේ ශේෂයට අරමුදල් එකතු කරන්න</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>පෙර US$%lld මිලදී ගැනීමක් තවමත් යෙදවීමට රැඳී සිටියේය, එබැවින් ඔබෙන් නැවත අය කරනවා වෙනුවට එය සම්පූර්ණ කරන ලදී. ඔබේ යාවත්කාලීන ශේෂය බැලීමට Safari වෙත ආපසු ගොස් DisinfaX උත්පතන කවුළුව විවෘත කරන්න.</string>
+	<key>Annotate</key>
+	<string>විවරණය කරන්න</string>
+	<key>Annotating</key>
+	<string>විවරණය කරමින්</string>
+	<key>Arguably</key>
+	<string>විවාදාත්මක</string>
+	<key>BALANCE</key>
+	<string>ශේෂය</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>රීචාජ් කිරීමෙන්, ඔබ අපගේ [සේවා නියමයන්](https://disinfax.app/terms-of-use) සහ [පෞද්ගලිකත්ව ප්‍රතිපත්තිය](https://disinfax.app/privacy-policy) වලට එකඟ වේ. ඔබ USD හැර වෙනත් මුදල් ඒකකයකින් ගෙවන්නේ නම් විදේශ විනිමය ගාස්තු අදාළ විය හැක.</string>
+	<key>Clear</key>
+	<string>හිස් කරන්න</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>උත්පතන කවුළුව විවෘත කිරීමට Safari මෙවලම් තීරුවේ DisinfaX නිරූපකය තට්ටු කරන්න.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ ක්ලික් කිරීමෙන් ප්‍රකාශයන් හෙළි වන අතර ඔබේ ශේෂයෙන් අය කරගනු ලැබේ</string>
+	<key>Close</key>
+	<string>වසන්න</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store වෙත සම්බන්ධ වෙමින්…</string>
+	<key>Copy</key>
+	<string>පිටපත් කරන්න</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX වරදවා ගත හැක. තොරතුරු නැවත පරීක්ෂා කරන්න.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>නියාමන අවශ්‍යතා නිසා DisinfaX තවම ඔබේ කලාපයේ නොමැත.</string>
+	<key>Disinfact</key>
+	<string>පරීක්ෂාව</string>
+	<key>Edit</key>
+	<string>සංස්කරණය</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari හි සැකසීම් → දිගු වල DisinfaX සබල කරන්න.</string>
+	<key>Enter a claim</key>
+	<string>ප්‍රකාශයක් ඇතුළත් කරන්න</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 සහ 100 අතර සම්පූර්ණ ඩොලර් මුදලක් ඇතුළත් කරන්න.</string>
+	<key>Equivocally</key>
+	<string>අපැහැදිලි</string>
+	<key>Fact-Check</key>
+	<string>සත්‍ය පරීක්ෂාව</string>
+	<key>Fact-Check All</key>
+	<string>සියල්ල පරීක්ෂා කරන්න</string>
+	<key>Fact-Checking</key>
+	<string>පරීක්ෂාව</string>
+	<key>False</key>
+	<string>අසත්‍ය</string>
+	<key>Likely</key>
+	<string>සම්භාවිතා</string>
+	<key>Mostly</key>
+	<string>බොහෝ දුරට</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari දිගු සැකසීම් විවෘත කරන්න…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari විවෘත කර x.com වෙත යන්න.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>ඔබේ යාවත්කාලීන ශේෂය බැලීමට Safari හි උත්පතන කවුළුව විවෘත කරන්න</string>
+	<key>Partially</key>
+	<string>අර්ධ වශයෙන්</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ගෙවීම සම්පූර්ණයි. ඔබේ යාවත්කාලීන ශේෂය බැලීමට Safari වෙත ආපසු ගොස් DisinfaX උත්පතන කවුළුව විවෘත කරන්න.</string>
+	<key>Possibly</key>
+	<string>සමහරවිට</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect හි %@ නිෂ්පාදනය හමු නොවීය.</string>
+	<key>Purchase cancelled.</key>
+	<string>මිලදී ගැනීම අවලංගු කරන ලදී.</string>
+	<key>Purchase is pending approval.</key>
+	<string>මිලදී ගැනීම අනුමැතිය සඳහා රැඳී සිටී.</string>
+	<key>Reasoning</key>
+	<string>තර්කය</string>
+	<key>Return to Safari</key>
+	<string>Safari වෙත ආපසු යන්න</string>
+	<key>Setup incomplete</key>
+	<string>සැකසීම අසම්පූර්ණයි</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>අරමුදල් එකතු කිරීමට Safari හි DisinfaX උත්පතන කවුළුවෙන් පුරන්න.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>මෙම ඉල්ලීමේ කොටසක් හඳුනාගත නොහැකි විය. දිගුව යාවත්කාලීන බව තහවුරු කරන්න.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>අපගේ පැත්තෙන් දෝෂයක් සිදු විය. මොහොතකින් නැවත උත්සාහ කරන්න.</string>
+	<key>Sources</key>
+	<string>මූලාශ්‍ර</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>රීචාජ් මුදල</string>
+	<key>Tap the </key>
+	<string>ලිපින තීරුවේ </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>එම නිරූපකයම තට්ටු කර උත්පතන කවුළුව විවෘත කිරීමට DisinfaX තෝරන්න.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>එය සොයාගත නොහැකි විය. නැවත උත්සාහ කරන්න.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>එම ගාස්තු එකතු කිරීමේ ප්‍රමාණය වැරදිය. කරුණාකර වෙනත් ප්‍රමාණයක් තෝරන්න.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>මෙම බිල්ඩ් එකට එහි බෙදාගත් බහාලුමට (App Group %@) ළඟා විය නොහැක. යෙදුම සහ දිගුව යන දෙකටම App Groups හැකියාව එකතු කරන තෙක් රීචාජ් කිරීම් ලබා ගත නොහැක.</string>
+	<key>Top Up</key>
+	<string>ශේෂය පිරවීම</string>
+	<key>Top Up Balance</key>
+	<string>ශේෂය රීචාජ් කරන්න</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>රීචාජ් කිරීම් සඳහා iOS හි නව අනුවාදයක් අවශ්‍යයි. යාවත්කාලීන කර, පසුව DisinfaX නැවත විවෘත කරන්න.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>රීචාජ් කිරීම් සඳහා macOS හි නව අනුවාදයක් අවශ්‍යයි. යාවත්කාලීන කර, පසුව DisinfaX නැවත විවෘත කරන්න.</string>
+	<key>True</key>
+	<string>සත්‍ය</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI හි DISINFAX භාවිතය</string>
+	<key>Unknown</key>
+	<string>නොදනී</string>
+	<key>Unknown purchase error.</key>
+	<string>නොදන්නා මිලදී ගැනීමේ දෝෂයකි.</string>
+	<key>Very Likely</key>
+	<string>ඉතා සම්භාවිතා</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>සම්පූර්ණ US ඩොලර්, 1–100. ඔබේ App Store මුදල් ඒකකයෙන් අය කරනු ලැබේ.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>ඔබට දැනටමත් යෙදවීමට රැඳී සිටින US$%lld රීචාජ් එකක් ඇත — ඔබෙන් නැවත අය කර නොමැත. එය ඔබේ ශේෂයට යෙදීමට Safari වෙත ආපසු ගොස් DisinfaX උත්පතන කවුළුව විවෘත කරන්න.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>ඔබ පුරන ලද නැත. කරුණාකර ලොග් වී නැවත උත්සාහ කරන්න.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>ඔබේ US$%lld රීචාජ් එක යෙදෙමින් පවතී.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>ඔබේ US$%lld රීචාජ් එක පෙන්වීමට සාමාන්‍යයට වඩා වැඩි කාලයක් ගතවේ.</string>
+	<key>Your account has been suspended.</key>
+	<string>ඔබේ ගිණුම අත්හිටුවා ඇත.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>ඔබේ ශේෂය ඉතා අඩුයි. ඉදිරියට යාමට කරුණාකර මුදල් එකතු කරන්න.</string>
+</dict>
+</plist>

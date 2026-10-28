@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Erkennt a markéiert Desinformatioun an Tweeten mat Hëllef vun AI-Analyse.",
+    "message": "Erkennt a markéiert Desinformatioun an Beiträg mat Hëllef vun AI-Analyse.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -115,7 +115,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Weis nach eng Kéier all Behaaptungen an dësem Tweet",
+    "message": "Weis nach eng Kéier all Behaaptungen an dësem Beitrag",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -234,6 +234,14 @@
   "signOut": {
     "message": "Ofmellen"
   },
+  "deleteAccount": {
+    "message": "Kont an verbonne Daten läschen",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Däi Solde an e kryptografeschen Hash vun denger E-Mail-Adress, dee vun engem geheime Schlëssel geschützt ass, gi versuergt, fir de Mëssbrauch vun de gratis Suen, déi bei der Konterstellung ginn, ze verhënneren. Mell dech erëm mat demselwe Kont un, gëtt däi Solde restauréiert.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Wann Dir op %BTN% klickt, ginn d'Behaaptungen ugewisen a vun Ärem Saldo ofgezunn"
   },
@@ -286,7 +294,7 @@
     "message": "Fir d'lescht benotzt"
   },
   "cleanupTagline": {
-    "message": "Raum däi X-Feed op."
+    "message": "Raum däi Feed op."
   },
   "disclaimerJurisdiction": {
     "message": "Bannent den USA kënnen nëmmen Awunner vun Alabama, Arizona, Kalifornien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Nordkarolina, Norddakota, Oklahoma, Oregon, Pennsylvania, Südkarolina, Süddakota, Tennessee, Texas, Utah, Washington, Wisconsin a Wyoming DisinfaX benotzen an hire Solde oplueden; Washington, D.C., all US-Territoirë an all net opgezielte Staaten sinn ausgeschloss. Ausserhalb vun den USA ass et verfügbar zu Kanada, Australien, Neiséiland, Singapur, Südafrika, Japan, Taiwan, Indonesien, Thailand, de Philippinen, Malaysia, Vietnam an der Schwäiz."
@@ -329,9 +337,29 @@
   "errNotFound": {
     "message": "Dat konnt net fonnt ginn. Probéier w.e.g. nach eng Kéier."
   },
+  "errNoClaims": {
+    "message": "An dësem Text goufen keng iwwerpréifbar Behauptungen fonnt.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Astellungen",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Ausgesinn",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Hell",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatesch",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Donkel",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Weis ëmmer d'Iwwerpréiwungen wann:",
@@ -381,5 +409,86 @@
   "selectionConfirmCancel": {
     "message": "Ofbriechen",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Läschen",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "DisinfaX op $HOST$ aktivéieren",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX ass op $HOST$ aktivéiert",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Ausschalten",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Weider mat Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Weider mat LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Weider mat Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Farwenblind-frëndlech: permanent Badgen",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "All Faktencheck-Badge op Bäiträg ouni Driwwerfueren siichtbar halen. En Urteel gëtt souwuel duerch d'Hervorheewungsfaarf wéi och duerch Wierder vermëttelt; dat hëlleft jidderengem, deen dës Faarwen net ausernee hale kann.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grouss Schrëftgréisst",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Vergréissert déi nei geschriwwen Behauptungen, d'Begrënnung an d'Ufankshiweiser.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Zoumaachen",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klickt fir d'Behauptung ze beaarbechten",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktencheck-Detailer",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Dës Auswiel ass ze laang fir ze iwwerpréiwen. Maximal 1 000 Zeechen.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Benachrichtigen, wann d'Guthaben sënnkt",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Ëm méi wéi: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

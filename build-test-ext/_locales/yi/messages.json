@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "דעטעקטירט און הייבט אַרויס פֿאַלשע אינפֿאָרמאַציע אין טוויטס מיט אַ AI-אַנאַליז.",
+    "message": "דעטעקטירט און הייבט אַרויס פֿאַלשע אינפֿאָרמאַציע אין פּאָסטס מיט אַ AI-אַנאַליז.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "אַנטפּלעקן ווידער די טענות פֿון דעם טוויט",
+    "message": "אַנטפּלעקן ווידער די טענות פֿון דעם פּאָסט",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "אַרויסלאָגירן"
   },
+  "deleteAccount": {
+    "message": "אויסמעקן דעם חשבון און די פארבונדענע דאטן",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "דיין באַלאַנס, און אַ קראַפּטאָגראַפֿישער האַש פֿון דיין אימעיל־אַדרעס וואָס איז באַשיצט דורך אַ געהיימען שליסל, ווערן געהאַלטן, צו פֿאַרמײַדן מיסברויך מיט די פֿרײַע געלטער וואָס ווערן געגעבן בײַם שאַפֿן אַ חשבון. אויב דו מעלדסט זיך ווידער איין מיט דעם זעלבן חשבון, ווערט דיין באַלאַנס צוריקגעשטעלט.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "אַ קליק אויף %BTN% אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס"
   },
@@ -287,7 +295,7 @@
     "message": "צולעצט גענוצט"
   },
   "cleanupTagline": {
-    "message": "רייניק אײַער X פֿיד."
+    "message": "רייניק אײַער פֿיד."
   },
   "disclaimerJurisdiction": {
     "message": "אין די פֿאַראייניקטע שטאַטן, נאָר תושבֿים פֿון אַלאַבאַמאַ, אַריזאָנאַ, קאַליפֿאָרניע, קאָלאָראַדאָ, קאָנעטיקאָט, דעלאַוער, פֿלאָרידאַ, איידאַהאָ, אילינוי, אינדיאַנאַ, אייאָוואַ, קאַנזאַס, קענטאָקי, לואיזיאַנאַ, מיין, מאַסאַטשוסעטס, מיסיסיפּי, מיזורי, מאָנטאַנאַ, ניו העמפּשיר, ניו מעקסיקאָ, ניו יאָרק, צפֿון קאַראָלינאַ, צפֿון דאַקאָטאַ, אָקלאַהאָמאַ, אָרעגאָן, פּענסילוועיניע, דרום קאַראָלינאַ, דרום דאַקאָטאַ, טענעסי, טעקסאַס, יוטאַ, וואַשינגטאָן, וויסקאָנסין, און וויאָמינג קענען ניצן DisinfaX און אָנפֿילן זייער באַלאַנס; וואַשינגטאָן, D.C., אַלע אַמעריקאַנער טעריטאָריעס, און אַלע שטאַטן וואָס זענען נישט דערמאָנט זענען אויסגעשלאָסן. אינדרויסן פֿון די פֿאַראייניקטע שטאַטן, איז עס פֿאַראַן אין קאַנאַדע, אויסטראַליע, ניו זילאַנד, סינגאַפּור, דרום־אַפֿריקע, יאַפּאַן, טײַוואַן, אינדאָנעזיע, טײַלאַנד, די פֿיליפּינען, מאַלייזיע, וויעטנאַם, און שווייץ."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "דאָס האָט מען נישט געפֿונען. ביטע פּרוּווט נאָך אַ מאָל."
   },
+  "errNoClaims": {
+    "message": "אין דעם טעקסט האָט מען נישט געפונען קיין טענות וואָס מען קען באַשטעטיקן.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "איינשטעלונגען",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "אויסזען",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ליכטיק",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "אויטאמאטיש",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "פינצטער",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "וויַז שטענדיק פֿאַקט־טשעקס אויב:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "אַנולירן",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "אויסרייניקן",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "אַקטיווירן DisinfaX אויף $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX איז אַקטיוו אויף $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "אויסשאַלטן",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "פֿאָרזעץ מיט Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "פֿאָרזעץ מיט LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "פֿאָרזעץ מיט Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "פֿאַר פֿאַרבנבלינדע: שטענדיקע בעדזשעס",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "האַלטן יעדן פֿאַקט־קאָנטראָל בעדזש קענטיק אויף פּאָסטס אָן שוועבן מיט דער מויז. אַ פסק ווערט איבערגעגעבן סײַ דורך דער פֿאַרב פֿונעם אונטערשטרײַך סײַ דורך די ווערטער, דעריבער העלפֿט דאָס יעדן וואָס קען נישט פֿאַנאַנדערקלײַבן די דאָזיקע פֿאַרבן.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "גרויסע שריפֿט גרייס",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "פֿאַרגרעסערט די איבערגעשריבענע טענות, די באַגרינדונג און די אָנהייבערישע אָנווייזונגען.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "פֿאַרמאַכן",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "קליקט צו רעדאַגירן די טענה",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "פֿאַקט־קאָנטראָל פּרטים",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "דער אויסקלייב איז צו לאנג צו פֿאַריפֿיצירן. מאקסימום 1,000 אותיות.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "מאַלד ווען דער באַלאַנס פֿאַלט",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "מיט מער ווי: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

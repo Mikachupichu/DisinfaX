@@ -1,0 +1,2 @@
+/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/Debug/DisinfaX.app
+/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/Release/DisinfaX.app

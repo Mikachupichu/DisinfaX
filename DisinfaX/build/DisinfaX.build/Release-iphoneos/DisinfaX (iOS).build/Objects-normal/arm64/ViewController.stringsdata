@@ -1,0 +1,96 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/ViewController.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Fact-Check",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Top Up",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "USING DISINFAX IN SAFARI",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 243
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap the ",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": " icon in the address bar, then Manage Extensions, and turn on DisinfaX.",
+        "location": {
+          "startingColumn": 96,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap the ",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 265
+        }
+      },
+      {
+        "comment": "",
+        "key": " icon in the address bar, then Manage Extensions, and turn on DisinfaX.",
+        "location": {
+          "startingColumn": 92,
+          "startingLine": 265
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Safari and go to x.com.",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 247
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap the same icon and choose DisinfaX to open the popup.",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 266
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 274
+        }
+      },
+      {
+        "comment": "",
+        "key": "Top-ups need a newer version of iOS. Update, then reopen DisinfaX.",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 323
+        }
+      }
+    ]
+  },
+  "version": 1
+}

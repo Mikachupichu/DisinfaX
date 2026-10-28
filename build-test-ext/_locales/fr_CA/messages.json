@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Détecte et met en évidence la désinformation dans les tweets grâce à l'analyse par IA.",
+    "message": "Détecte et met en évidence la désinformation dans les publications grâce à l'analyse par IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Révéler à nouveau les affirmations de ce tweet",
+    "message": "Révéler à nouveau les affirmations de cette publication",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Se déconnecter"
   },
+  "deleteAccount": {
+    "message": "Supprimer le compte et les données associées",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Votre solde, ainsi qu'un hachage cryptographique de votre adresse e-mail protégé par une clé secrète, sont conservés afin d'éviter l'abus des fonds gratuits accordés à l'inscription. Si vous vous reconnectez avec le même compte, votre solde est restauré.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Cliquer sur %BTN% révèle les affirmations et débitera votre solde"
   },
@@ -287,7 +295,7 @@
     "message": "Dernière utilisation"
   },
   "cleanupTagline": {
-    "message": "Nettoyez votre fil X."
+    "message": "Nettoyez votre fil."
   },
   "disclaimerJurisdiction": {
     "message": "Aux États-Unis, seuls les résidents de l'Alabama, de l'Arizona, de la Californie, du Colorado, du Connecticut, du Delaware, de la Floride, de l'Idaho, de l'Illinois, de l'Indiana, de l'Iowa, du Kansas, du Kentucky, de la Louisiane, du Maine, du Massachusetts, du Mississippi, du Missouri, du Montana, du New Hampshire, du Nouveau-Mexique, de New York, de la Caroline du Nord, du Dakota du Nord, de l'Oklahoma, de l'Oregon, de la Pennsylvanie, de la Caroline du Sud, du Dakota du Sud, du Tennessee, du Texas, de l'Utah, de Washington, du Wisconsin et du Wyoming peuvent utiliser DisinfaX et recharger leur solde ; Washington, D.C., tous les territoires américains et tout État non répertorié sont exclus. En dehors des États-Unis, l'application est disponible au Canada, en Australie, en Nouvelle-Zélande, à Singapour, en Afrique du Sud, au Japon, à Taïwan, en Indonésie, en Thaïlande, aux Philippines, en Malaisie, au Vietnam et en Suisse."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Impossible de trouver cet élément. Veuillez réessayer."
   },
+  "errNoClaims": {
+    "message": "Aucune affirmation vérifiable n'a été trouvée dans ce texte.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Paramètres",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Apparence",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Clair",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatique",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Sombre",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Toujours afficher les vérifications si :",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Annuler",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Effacer",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Activer DisinfaX sur $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX est activé pour $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Désactiver",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Continuer avec Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Continuer avec LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Continuer avec Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Pour daltoniens : badges persistants",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Garder chaque badge de vérification des faits visible sur les publications sans les survoler. Le verdict est transmis autant par la couleur de surlignage que par les mots, ce qui aide les personnes qui ne distinguent pas ces couleurs.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grande taille de police",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Agrandit les affirmations réécrites, le raisonnement et les astuces d'introduction.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Fermer",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Cliquer pour modifier l'affirmation",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Détails de la vérification des faits",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Cette sélection est trop longue à vérifier. 1 000 caractères maximum.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Notifier lorsque le solde diminue",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "De plus de : $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

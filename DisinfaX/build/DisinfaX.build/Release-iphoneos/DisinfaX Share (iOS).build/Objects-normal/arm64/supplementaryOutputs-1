@@ -1,0 +1,12 @@
+{
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (Share)/ShareViewController.swift" : {
+    "abi-baseline-json" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX_Share.abi.json",
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX Share (iOS)-primary.dia",
+    "objc-header" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX_Share-Swift.h",
+    "swiftdoc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX_Share.swiftdoc",
+    "swiftmodule" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX_Share.swiftmodule",
+    "swiftsourceinfo" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release-iphoneos/DisinfaX Share (iOS).build/Objects-normal/arm64/DisinfaX_Share.swiftsourceinfo"
+  }
+}

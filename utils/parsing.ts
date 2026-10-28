@@ -9,6 +9,7 @@
  */
 
 import { MainTweet, TweetType, TweetFieldType, Usertype, QuotedTweet } from '../data/Tweets';
+import { isoDatetime } from './datetime';
 
 /** Entry-id fragments for timeline rows that are not user tweets (ads, carousels,
  *  cursors, follow suggestions). Matched as substrings against `entryId`. */
@@ -311,6 +312,13 @@ function parseTweet(tweetResults: any, tweetType: TweetType, mainId: string | nu
     const replyParentId: string | null = legacy.in_reply_to_status_id_str ?? mainId ?? null;
     const conversationId = legacy.conversation_id_str ?? id;
 
+    // The posted time, which is what the preclassify prompt resolves a relative reference
+    // against ("this morning", "last month"). X states it on every tweet node in the payload,
+    // quoted ones included, so each node of a thread carries its own. `created_at` is how X
+    // states it — an RFC 2822-shaped string, which `isoDatetime` normalizes. An edited tweet's
+    // edit time is not read: the payload's own time for it is this one.
+    const datetime = isoDatetime(legacy.created_at);
+
     // Extract Grok auto-translation data if available
     const grokData = tweetResults.grok_translated_post_with_availability?.data;
     const isTranslatable = tweetResults.is_translatable === true || tweetResults.grok_translated_post_with_availability != null;
@@ -333,7 +341,7 @@ function parseTweet(tweetResults: any, tweetType: TweetType, mainId: string | nu
     // PARENT TWEET OBJECT using the transient __replyParentId marker below (stripped
     // before the tweet leaves the parser). We never emit a bare status ID — quoted
     // tweets and unresolvable parents simply keep replyingTo = null.
-    const tweet = { id, text, fullText, username, quoting, replyingTo: null, usertype, conversationId, translatedText, sourceLanguage, destinationLanguage } as MainTweet;
+    const tweet = { id, text, fullText, username, quoting, replyingTo: null, usertype, conversationId, translatedText, sourceLanguage, destinationLanguage, ...(datetime ? { datetime } : {}) } as MainTweet;
     if (replyParentId) (tweet as any).__replyParentId = replyParentId;
     return tweet;
 }

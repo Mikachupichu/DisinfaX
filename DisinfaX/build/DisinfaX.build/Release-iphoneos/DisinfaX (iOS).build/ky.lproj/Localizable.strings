@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> сүрөтчөсүн басыңыз, андан кийин Кеңейтүүлөрдү башкаруу дегенди басып, DisinfaX'ты күйгүзүңүз.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ишеним</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ишеним, %2$@ чындык</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ТОЛТУРУУДАН КИЙИН</string>
+	<key>Add funds to your balance</key>
+	<string>Балансыңызга каражат кошуңуз</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Мурунку US$%lld сатып алуу дагы эле колдонулушун күтүп жатты, ошондуктан сизден кайра акча алуунун ордуна ошол бүтүрүлдү. Жаңыртылган балансыңызды көрүү үчүн Safari'ге кайтып, DisinfaX копчо терезесин ачыңыз.</string>
+	<key>Annotate</key>
+	<string>Аннотациялоо</string>
+	<key>Annotating</key>
+	<string>Аннотацияланууда</string>
+	<key>Arguably</key>
+	<string>Талаштуу</string>
+	<key>BALANCE</key>
+	<string>БАЛАНС</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Толтуруу менен сиз биздин [Кызмат көрсөтүү шарттарыбызга](https://disinfax.app/terms-of-use) жана [Купуялуулук саясатыбызга](https://disinfax.app/privacy-policy) макул болосуз. USD'ден башка валютада төлөсөңүз, валюта алмаштыруу төлөмдөрү колдонулушу мүмкүн.</string>
+	<key>Clear</key>
+	<string>Тазалоо</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Копчо терезени ачуу үчүн Safari аспаптар тактасындагы DisinfaX сүрөтчөсүн басыңыз.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ баскычын басуу дооматтарды көрсөтөт жана балансыңыздан акча алат</string>
+	<key>Close</key>
+	<string>Жабуу</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store'го туташуу…</string>
+	<key>Copy</key>
+	<string>Көчүрүү</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ката кетирет. Маалыматты кайра текшериңиз.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Жөнгө салуучу талаптарга байланыштуу DisinfaX сиздин аймакта азырынча жеткиликсиз.</string>
+	<key>Disinfact</key>
+	<string>Текшерүү</string>
+	<key>Edit</key>
+	<string>Түзөтүү</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari'де DisinfaX'ты Параметрлер → Кеңейтүүлөр бөлүмүндө күйгүзүңүз.</string>
+	<key>Enter a claim</key>
+	<string>Билдирүү киргизиңиз</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 менен 100 ортосунда бүтүн доллар суммасын киргизиңиз.</string>
+	<key>Equivocally</key>
+	<string>Эки учуу</string>
+	<key>Fact-Check</key>
+	<string>Фактыларды текшерүү</string>
+	<key>Fact-Check All</key>
+	<string>Баарын текшерүү</string>
+	<key>Fact-Checking</key>
+	<string>Текшерүү</string>
+	<key>False</key>
+	<string>Жалган</string>
+	<key>Likely</key>
+	<string>Ыктымал</string>
+	<key>Mostly</key>
+	<string>Көбүнчө</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari кеңейтүү параметрлерин ачуу…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari'ни ачып, x.com'го өтүңүз.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Жаңыртылган балансыңызды көрүү үчүн Safari'де копчо терезени ачыңыз</string>
+	<key>Partially</key>
+	<string>Жарым-жартылай</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Төлөм бүттү. Жаңыртылган балансыңызды көрүү үчүн Safari'ге кайтып, DisinfaX копчо терезесин ачыңыз.</string>
+	<key>Possibly</key>
+	<string>Мүмкүн</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect'те %@ өнүмү табылган жок.</string>
+	<key>Purchase cancelled.</key>
+	<string>Сатып алуу жокко чыгарылды.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Сатып алуу бекитилишин күтүп жатат.</string>
+	<key>Reasoning</key>
+	<string>Негиздеме</string>
+	<key>Return to Safari</key>
+	<string>Safari'ге кайтуу</string>
+	<key>Setup incomplete</key>
+	<string>Орнотуу бүтпөй калды</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Каражат кошуу үчүн Safari'деги DisinfaX копчо терезесинен кириңиз.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Бул суроонун бир бөлүгү таанылбады. Кошумчанын жаңыртылганына ынаныңыз.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Биздин тарапта ката кетти. Бир аздан кийин кайра аракет кылыңыз.</string>
+	<key>Sources</key>
+	<string>Булактар</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ТОЛТУРУУ СУММАСЫ</string>
+	<key>Tap the </key>
+	<string>Дареги тилкесиндеги </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Ошол эле сүрөтчөнү басып, копчо терезени ачуу үчүн DisinfaX'ты тандаңыз.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Бул табылбады. Кайра аракет кылыңыз.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Бул толуктоо суммасы жарамсыз. Башка сумма тандаңыз.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Бул курулуш өзүнүн бөлүшүлгөн контейнерине (App Group %@) жетпей жатат. App Groups мүмкүнчүлүгү колдонмого да, кеңейтүүгө да кошулмайынча толтуруулар жеткиликсиз болот.</string>
+	<key>Top Up</key>
+	<string>Толуктоо</string>
+	<key>Top Up Balance</key>
+	<string>Балансты толтуруу</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Толтуруулар үчүн iOS'тун жаңыраак версиясы керек. Жаңыртыңыз, андан кийин DisinfaX'ты кайра ачыңыз.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Толтуруулар үчүн macOS'тун жаңыраак версиясы керек. Жаңыртыңыз, андан кийин DisinfaX'ты кайра ачыңыз.</string>
+	<key>True</key>
+	<string>Чын</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI'ДЕ DISINFAX'ТЫ КОЛДОНУУ</string>
+	<key>Unknown</key>
+	<string>Белгисиз</string>
+	<key>Unknown purchase error.</key>
+	<string>Белгисиз сатып алуу катасы.</string>
+	<key>Very Likely</key>
+	<string>Абдан ыктымал</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Толук АКШ доллары, 1–100. App Store валютаңызда эсептелет.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Сизде колдонулушун күтүп жаткан US$%lld толтуруу бар — сизден кайра акча алынган эмес. Аны балансыңызга колдонуу үчүн Safari'ге кайтып, DisinfaX копчо терезесин ачыңыз.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Сиз кирбегенсиз. Кирип, кайра аракет кылыңыз.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Сиздин US$%lld толтуруңуз колдонулуп жатат.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Сиздин US$%lld толтуруңуздун көрүнүшү адаттагыдан көбүрөөк убакыт алып жатат.</string>
+	<key>Your account has been suspended.</key>
+	<string>Аккаунтуңузга тыюу салынды.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Балансыңыз өтө аз. Улантуу үчүн толуктаңыз.</string>
+</dict>
+</plist>

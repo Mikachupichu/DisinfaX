@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Yana ganowa da kuma haskaka bayanan karya a cikin tweets ta amfani da binciken AI.",
+    "message": "Yana ganowa da kuma haskaka bayanan karya a cikin posts ta amfani da binciken AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Sake bayyana dukkan da'awoni a cikin wannan tweet",
+    "message": "Sake bayyana dukkan da'awoni a cikin wannan post",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Fita"
   },
+  "deleteAccount": {
+    "message": "Share Asusu da Bayanan da ke da Alaƙa",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Ana ajiye ma'aunin kuɗinka, da kuma hash na sirri na adireshin imel ɗinka wanda aka kare da maɓallin sirri, don hana cin zarafin kuɗin kyauta da ake bayarwa lokacin rajista. Idan ka sake shiga da wannan asusun, za a maido da ma'aunin kuɗinka.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Danna %BTN% zai bayyana da'awoyi kuma zai cire kudi daga ma'aunin ku"
   },
@@ -287,7 +295,7 @@
     "message": "Wanda Aka Yi Amfani da Shi Ƙarshe"
   },
   "cleanupTagline": {
-    "message": "Tsaftace X Feed ɗinka."
+    "message": "Tsaftace Feed ɗinka."
   },
   "disclaimerJurisdiction": {
     "message": "A cikin United States, mazauna Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, da Wyoming kaɗai ne za su iya amfani da DisinfaX su kuma ƙara kuɗinsu; Washington, D.C., dukkan yankunan U.S., da kowace jiha da ba a lissafa ba an cire su. A wajen United States, yana samuwa a Canada, Australia, New Zealand, Singapore, Afirka ta Kudu, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, da Switzerland."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Ba a samu wannan ba. Sake gwadawa."
   },
+  "errNoClaims": {
+    "message": "Ba a sami wata da'awa da za a iya tantancewa ba a cikin wannan rubutun.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Saituna",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Kamanni",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Haske",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Atomatik",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Duhu",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Koyaushe nuna bincike idan:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Soke",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Goge",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Kunna DisinfaX akan $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX yana kunne akan $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Kashe",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Ci gaba da Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Ci gaba da LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Ci gaba da Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Ga makafin launi: alamomi na dindindin",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ajiye kowace alamar tabbatar da gaskiya a bayyane a kan rubuce-rubuce ba tare da shawagi a kai ba. Hukunci yana fitowa ta hanyar kalar haskakawa kamar yadda yake a kalmomi, don haka wannan yana taimaka wa duk wanda ba zai iya bambanta waɗannan launuka ba.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Girman rubutu mai girma",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Yana ƙara girman da'awar da aka sake rubutawa, dalilin, da shawarwarin farawa.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Rufe",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Danna don gyara da'awa",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Cikakkun bayanan tabbatar da gaskiya",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Wannan zaɓin ya yi tsayi da yawa don tantancewa. Mafi girman haruffa 1,000.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Sanar lokacin da ma'auni ya ragu",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Fiye da: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

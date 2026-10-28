@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string>圖示，接著點一下「管理延伸功能」並啟用 DisinfaX。</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@%2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ 可信度</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ 可信度，%2$@ 真實性</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@%1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@%1$@%2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@為%1$@%2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>加值後</string>
+	<key>Add funds to your balance</key>
+	<string>為餘額加值</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>先前有一筆 US$%lld 的購買仍在等待入帳，因此系統完成了那筆購買，而非再次向你收費。請返回 Safari 並開啟 DisinfaX 彈出視窗，查看更新後的餘額。</string>
+	<key>Annotate</key>
+	<string>註解</string>
+	<key>Annotating</key>
+	<string>正在加註</string>
+	<key>Arguably</key>
+	<string>有爭議</string>
+	<key>BALANCE</key>
+	<string>餘額</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>加值即表示你同意我們的[服務條款](https://disinfax.app/terms-of-use)與[隱私權政策](https://disinfax.app/privacy-policy)。若以非美元貨幣付款，可能會產生外幣兌換費用。</string>
+	<key>Clear</key>
+	<string>清除</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>點一下 Safari 工具列中的 DisinfaX 圖示以開啟彈出視窗。</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>點擊%@可顯示論述，並將從您的餘額中扣款</string>
+	<key>Close</key>
+	<string>關閉</string>
+	<key>Contacting the App Store…</key>
+	<string>正在連線至 App Store…</string>
+	<key>Copy</key>
+	<string>複製</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX 可能會出錯，請仔細核實相關資訊。</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>由於法規要求，DisinfaX 目前尚未在您所在地區提供服務。</string>
+	<key>Disinfact</key>
+	<string>事實查核</string>
+	<key>Edit</key>
+	<string>編輯</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>在 Safari 的「設定 → 延伸功能」中啟用 DisinfaX。</string>
+	<key>Enter a claim</key>
+	<string>輸入一則主張</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>請輸入 1 到 100 之間的整數美元金額。</string>
+	<key>Equivocally</key>
+	<string>模稜兩可</string>
+	<key>Fact-Check</key>
+	<string>事實查核</string>
+	<key>Fact-Check All</key>
+	<string>全部查核</string>
+	<key>Fact-Checking</key>
+	<string>事实核查</string>
+	<key>False</key>
+	<string>虛假</string>
+	<key>Likely</key>
+	<string>可能</string>
+	<key>Mostly</key>
+	<string>大致上</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>開啟 Safari 延伸功能設定…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>開啟 Safari 並前往 x.com。</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>在 Safari 中開啟彈出視窗以查看更新後的餘額</string>
+	<key>Partially</key>
+	<string>部分</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>付款已完成。請返回 Safari 並開啟 DisinfaX 彈出視窗，查看更新後的餘額。</string>
+	<key>Possibly</key>
+	<string>或許</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>在 App Store Connect 中找不到商品 %@。</string>
+	<key>Purchase cancelled.</key>
+	<string>購買已取消。</string>
+	<key>Purchase is pending approval.</key>
+	<string>購買正在等待核准。</string>
+	<key>Reasoning</key>
+	<string>推理</string>
+	<key>Return to Safari</key>
+	<string>返回 Safari</string>
+	<key>Setup incomplete</key>
+	<string>設定尚未完成</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>從 Safari 中的 DisinfaX 彈出視窗登入以加值。</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>此請求的部分內容無法辨識，請確認擴充功能為最新版本。</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>我們這邊發生了問題，請稍後再試一次。</string>
+	<key>Sources</key>
+	<string>來源</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>加值金額</string>
+	<key>Tap the </key>
+	<string>點一下網址列中的</string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>點一下相同的圖示並選擇 DisinfaX 以開啟彈出視窗。</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>找不到相關內容，請再試一次。</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>儲值金額無效，請選擇其他金額。</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>此版本無法存取其共用容器（App 群組 %@）。在應用程式與延伸功能都加入「App 群組」功能之前，無法進行加值。</string>
+	<key>Top Up</key>
+	<string>儲值</string>
+	<key>Top Up Balance</key>
+	<string>加值餘額</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>加值需要較新版本的 iOS。請先更新，再重新開啟 DisinfaX。</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>加值需要較新版本的 macOS。請先更新，再重新開啟 DisinfaX。</string>
+	<key>True</key>
+	<string>真實</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>在 SAFARI 中使用 DISINFAX</string>
+	<key>Unknown</key>
+	<string>未知</string>
+	<key>Unknown purchase error.</key>
+	<string>未知的購買錯誤。</string>
+	<key>Very Likely</key>
+	<string>非常可能</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>整數美元，1–100。以你 App Store 所在地區的貨幣扣款。</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>你已經有一筆 US$%lld 的加值正在等待入帳——尚未再次扣款。請返回 Safari 並開啟 DisinfaX 彈出視窗，將其計入你的餘額。</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>您尚未登入，請登入後再試一次。</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>你的 US$%lld 加值正在處理中。</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>你的 US$%lld 加值出現的時間比平常更久。</string>
+	<key>Your account has been suspended.</key>
+	<string>您的帳戶已被停用。</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>您的餘額不足，請儲值後再繼續。</string>
+</dict>
+</plist>

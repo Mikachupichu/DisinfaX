@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> di bilah alamat, lalu ketuk Kelola Ekstensi dan aktifkan DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>SETELAH ISI ULANG</string>
+	<key>Add funds to your balance</key>
+	<string>Tambahkan dana ke saldo Anda</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pembelian US$%lld sebelumnya masih menunggu untuk diterapkan, sehingga pembelian itulah yang diselesaikan, bukan mengenakan biaya lagi kepada Anda. Kembali ke Safari dan buka pop-up DisinfaX untuk melihat saldo Anda yang terbaru.</string>
+	<key>Annotate</key>
+	<string>Anotasi</string>
+	<key>Annotating</key>
+	<string>Menganotasi</string>
+	<key>Arguably</key>
+	<string>Bisa Diperdebatkan</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Dengan mengisi ulang, Anda menyetujui [Ketentuan Layanan](https://disinfax.app/terms-of-use) dan [Kebijakan Privasi](https://disinfax.app/privacy-policy) kami. Biaya konversi mata uang mungkin berlaku jika Anda membayar dalam mata uang selain USD.</string>
+	<key>Clear</key>
+	<string>Hapus</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Ketuk ikon DisinfaX di bilah alat Safari untuk membuka jendela pop-up.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Mengeklik %@ menampilkan klaim dan akan membebankan biaya ke saldo Anda</string>
+	<key>Contacting the App Store…</key>
+	<string>Menghubungkan ke App Store…</string>
+	<key>Copy</key>
+	<string>Salin</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX dapat membuat kesalahan. Selalu periksa kembali informasi penting.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX belum tersedia di wilayah Anda karena persyaratan regulasi.</string>
+	<key>Disinfact</key>
+	<string>Cek Fakta</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Aktifkan DisinfaX di Safari, di Pengaturan → Ekstensi.</string>
+	<key>Enter a claim</key>
+	<string>Masukkan klaim</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Masukkan jumlah dolar bulat antara 1 dan 100.</string>
+	<key>Equivocally</key>
+	<string>Samar</string>
+	<key>Fact-Check</key>
+	<string>Pemeriksaan fakta</string>
+	<key>Fact-Check All</key>
+	<string>Cek Semua Fakta</string>
+	<key>Fact-Checking</key>
+	<string>Pemeriksaan</string>
+	<key>False</key>
+	<string>Salah</string>
+	<key>Likely</key>
+	<string>Mungkin</string>
+	<key>Mostly</key>
+	<string>Sebagian Besar</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Buka pengaturan ekstensi Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Buka Safari dan kunjungi x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Buka pop-up di Safari untuk melihat saldo Anda yang terbaru</string>
+	<key>Partially</key>
+	<string>Sebagian</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pembayaran selesai. Kembali ke Safari dan buka pop-up DisinfaX untuk melihat saldo Anda yang terbaru.</string>
+	<key>Possibly</key>
+	<string>Barangkali</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produk %@ tidak ditemukan di App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Pembelian dibatalkan.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Pembelian menunggu persetujuan.</string>
+	<key>Reasoning</key>
+	<string>Penalaran</string>
+	<key>Return to Safari</key>
+	<string>Kembali ke Safari</string>
+	<key>Setup incomplete</key>
+	<string>Penyiapan belum selesai</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Masuk dari jendela pop-up DisinfaX di Safari untuk menambahkan saldo.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Ada bagian dari permintaan ini yang tidak dikenali. Pastikan ekstensi sudah versi terbaru.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Terjadi kesalahan di pihak kami. Silakan coba lagi sebentar lagi.</string>
+	<key>Sources</key>
+	<string>Sumber</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>JUMLAH ISI ULANG</string>
+	<key>Tap the </key>
+	<string>Ketuk ikon </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Ketuk ikon yang sama dan pilih DisinfaX untuk membuka jendela pop-up.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Hal tersebut tidak dapat ditemukan. Silakan coba lagi.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Jumlah isi ulang tersebut tidak valid. Silakan pilih jumlah lain.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Build ini tidak dapat menjangkau kontainer bersamanya (App Group %@). Isi ulang tidak akan tersedia hingga kemampuan App Groups ditambahkan ke aplikasi dan ekstensi.</string>
+	<key>Top Up</key>
+	<string>Isi Ulang</string>
+	<key>Top Up Balance</key>
+	<string>Isi ulang saldo</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Isi ulang memerlukan versi iOS yang lebih baru. Perbarui, lalu buka kembali DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Isi ulang memerlukan versi macOS yang lebih baru. Perbarui, lalu buka kembali DisinfaX.</string>
+	<key>True</key>
+	<string>Benar</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>MENGGUNAKAN DISINFAX DI SAFARI</string>
+	<key>Unknown</key>
+	<string>Tidak Diketahui</string>
+	<key>Unknown purchase error.</key>
+	<string>Kesalahan pembelian tidak dikenal.</string>
+	<key>Very Likely</key>
+	<string>Sangat Mungkin</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolar AS penuh, 1–100. Dikenakan biaya dalam mata uang App Store Anda.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Anda sudah memiliki isi ulang US$%lld yang menunggu untuk diterapkan — Anda tidak dikenakan biaya lagi. Kembali ke Safari dan buka pop-up DisinfaX untuk menerapkannya ke saldo Anda.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Anda belum masuk. Silakan masuk dan coba lagi.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Isi ulang US$%lld Anda sedang diterapkan.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Isi ulang US$%lld Anda membutuhkan waktu lebih lama dari biasanya untuk muncul.</string>
+	<key>Your account has been suspended.</key>
+	<string>Akun Anda telah ditangguhkan.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Saldo Anda terlalu rendah. Silakan isi ulang untuk melanjutkan.</string>
+</dict>
+</plist>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> adreso juostoje, tada palieskite „Tvarkyti plėtinius“ ir įjunkite DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ pasitikėjimas</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ pasitikėjimas, %2$@ tikrumas</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ būti %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PO PAPILDYMO</string>
+	<key>Add funds to your balance</key>
+	<string>Pridėkite lėšų prie savo balanso</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ankstesnis US$%lld pirkinys vis dar laukė pritaikymo, todėl būtent jis buvo užbaigtas, o ne nuskaičiuota pakartotinai. Grįžkite į „Safari“ ir atidarykite DisinfaX iškylantįjį langą, kad pamatytumėte atnaujintą balansą.</string>
+	<key>Annotate</key>
+	<string>Anotuoti</string>
+	<key>Annotating</key>
+	<string>Anotuojama</string>
+	<key>Arguably</key>
+	<string>Ginčytinai</string>
+	<key>BALANCE</key>
+	<string>BALANSAS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Papildydami sutinkate su mūsų [Paslaugų teikimo sąlygomis](https://disinfax.app/terms-of-use) ir [Privatumo politika](https://disinfax.app/privacy-policy). Jei mokate ne JAV doleriais, gali būti taikomi valiutos keitimo mokesčiai.</string>
+	<key>Clear</key>
+	<string>Išvalyti</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Palieskite DisinfaX piktogramą „Safari“ įrankių juostoje, kad atidarytumėte iškylantįjį langą.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Spustelėjus %@ atskleidžiami teiginiai ir bus nuskaičiuota nuo tavo balanso</string>
+	<key>Close</key>
+	<string>Uždaryti</string>
+	<key>Contacting the App Store…</key>
+	<string>Jungiamasi prie „App Store“…</string>
+	<key>Copy</key>
+	<string>Kopijuoti</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX gali suklysti. Dar kartą patikrinkite informaciją.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX dėl reguliavimo reikalavimų kol kas nepasiekiamas tavo regione.</string>
+	<key>Disinfact</key>
+	<string>Tikrinti</string>
+	<key>Edit</key>
+	<string>Redaguoti</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Įjunkite DisinfaX „Safari“ naršyklėje, skiltyje Nustatymai → Plėtiniai.</string>
+	<key>Enter a claim</key>
+	<string>Įveskite teiginį</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Įveskite sveiką dolerių sumą nuo 1 iki 100.</string>
+	<key>Equivocally</key>
+	<string>Dviprasmiškai</string>
+	<key>Fact-Check</key>
+	<string>Faktų tikrinimas</string>
+	<key>Fact-Check All</key>
+	<string>Patikrinti viską</string>
+	<key>Fact-Checking</key>
+	<string>Tikrinama</string>
+	<key>False</key>
+	<string>Netiesa</string>
+	<key>Likely</key>
+	<string>Tikėtina</string>
+	<key>Mostly</key>
+	<string>Dažniausiai</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Atidaryti „Safari“ plėtinių nustatymus…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Atidarykite „Safari“ ir eikite į x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Atidarykite iškylantįjį langą „Safari“ naršyklėje, kad pamatytumėte atnaujintą balansą</string>
+	<key>Partially</key>
+	<string>Iš dalies</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Mokėjimas užbaigtas. Grįžkite į „Safari“ ir atidarykite DisinfaX iškylantįjį langą, kad pamatytumėte atnaujintą balansą.</string>
+	<key>Possibly</key>
+	<string>Galbūt</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produktas %@ nerastas „App Store Connect“.</string>
+	<key>Purchase cancelled.</key>
+	<string>Pirkimas atšauktas.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Pirkimas laukia patvirtinimo.</string>
+	<key>Reasoning</key>
+	<string>Pagrindimas</string>
+	<key>Return to Safari</key>
+	<string>Grįžti į „Safari“</string>
+	<key>Setup incomplete</key>
+	<string>Sąranka nebaigta</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Prisijunkite iš DisinfaX iškylančiojo lango „Safari“ naršyklėje, kad pridėtumėte lėšų.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Dalis šio prašymo nebuvo atpažinta. Įsitikink, kad plėtinys yra atnaujintas.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Mūsų pusėje įvyko klaida. Bandyk dar kartą po kurio laiko.</string>
+	<key>Sources</key>
+	<string>Šaltiniai</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>PAPILDYMO SUMA</string>
+	<key>Tap the </key>
+	<string>Palieskite piktogramą </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Palieskite tą pačią piktogramą ir pasirinkite DisinfaX, kad atidarytumėte iškylantįjį langą.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>To nepavyko rasti. Bandyk dar kartą.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ši papildymo suma negalioja. Pasirink kitą sumą.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ši versija negali pasiekti savo bendrinamo konteinerio (programų grupė %@). Papildymai bus negalimi, kol funkcija „Programų grupės“ nebus pridėta ir prie programos, ir prie plėtinio.</string>
+	<key>Top Up</key>
+	<string>Papildyti</string>
+	<key>Top Up Balance</key>
+	<string>Papildyti balansą</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Papildymams reikia naujesnės iOS versijos. Atnaujinkite, tada iš naujo atidarykite DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Papildymams reikia naujesnės macOS versijos. Atnaujinkite, tada iš naujo atidarykite DisinfaX.</string>
+	<key>True</key>
+	<string>Tiesa</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>„DISINFAX“ NAUDOJIMAS „SAFARI“ NARŠYKLĖJE</string>
+	<key>Unknown</key>
+	<string>Nežinoma</string>
+	<key>Unknown purchase error.</key>
+	<string>Nežinoma pirkimo klaida.</string>
+	<key>Very Likely</key>
+	<string>Labai tikėtina</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Sveiki JAV doleriai, 1–100. Nuskaičiuojama jūsų „App Store“ valiuta.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Jau turite US$%lld papildymą, laukiantį pritaikymo — pakartotinai nuskaičiuota nebuvo. Grįžkite į „Safari“ ir atidarykite DisinfaX iškylantįjį langą, kad pritaikytumėte jį savo balansui.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Tu neprisijungęs. Prisijunk ir bandyk dar kartą.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Jūsų US$%lld papildymas šiuo metu pritaikomas.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Jūsų US$%lld papildymo atsiradimas užtrunka ilgiau nei įprastai.</string>
+	<key>Your account has been suspended.</key>
+	<string>Tavo paskyra buvo sustabdyta.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Tavo balansas yra pernelyg mažas. Papildyk balansą, kad galėtum tęsti.</string>
+</dict>
+</plist>

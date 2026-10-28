@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> дүрс тэмдгийг товшиж, дараа нь Өргөтгөл удирдах-ыг товшиж DisinfaX-ийг асаана уу.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ итгэлцэл</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ итгэлцэл, %2$@ үнэн бодит байдал</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ЦЭНЭГЛЭСНИЙ ДАРАА</string>
+	<key>Add funds to your balance</key>
+	<string>Үлдэгдэлдээ мөнгө нэмнэ үү</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Өмнөх US$%lld-ийн худалдан авалт хэрэгжихийг хараахан хүлээж байсан тул танаас дахин мөнгө авахын оронд тэрхүү худалдан авалтыг гүйцээгээгэрэв. Шинэчлэгдсэн үлдэгдлээ харахын тулд Safari руу буцан DisinfaX попап цонхыг нээнэ үү.</string>
+	<key>Annotate</key>
+	<string>Тайлбарлах</string>
+	<key>Annotating</key>
+	<string>Тайлбарлаж байна</string>
+	<key>Arguably</key>
+	<string>Маргаантай</string>
+	<key>BALANCE</key>
+	<string>ҮЛДЭГДЭЛ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Цэнэглэхдээ та бидний [Үйлчилгээний нөхцөл](https://disinfax.app/terms-of-use), [Нууцлалын бодлого](https://disinfax.app/privacy-policy)-той санал нэг байна. Хэрэв та USD-ээс өөр мөнгөн тэмдэгтээр төлбөр төлж байгаа бол валют хөрвүүлэлтийн хураамж авагдаж болзошгүй.</string>
+	<key>Clear</key>
+	<string>Цэвэрлэх</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Попап цонхыг нээхийн тулд Safari-н хэрэглүүрийн самбар дээрх DisinfaX дүрс тэмдгийг товшино уу.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ дээр дарахад мэдэгдлүүд харагдах бөгөөд таны балансаас мөнгө шимтгэгдэнэ</string>
+	<key>Close</key>
+	<string>Хаах</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store-той холбогдож байна…</string>
+	<key>Copy</key>
+	<string>Хуулах</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX алдаа гаргаж болно. Мэдээллийг дахин шалгаарай.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Зохицуулалтын шаардлагаас шалтгаалан DisinfaX танай бүс нутагт одоогоор боломжгүй байна.</string>
+	<key>Disinfact</key>
+	<string>Шалгалт</string>
+	<key>Edit</key>
+	<string>Засах</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari дээр Тохиргоо → Өргөтгөл хэсэгт DisinfaX-ийг асаана уу.</string>
+	<key>Enter a claim</key>
+	<string>Мэдэгдэл оруулна уу</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1-ээс 100 хүртэлх бүтэн доллар дүн оруулна уу.</string>
+	<key>Equivocally</key>
+	<string>Тодорхой бус</string>
+	<key>Fact-Check</key>
+	<string>Баримт шалгалт</string>
+	<key>Fact-Check All</key>
+	<string>Бүгдийг шалгах</string>
+	<key>Fact-Checking</key>
+	<string>Шалгалт</string>
+	<key>False</key>
+	<string>Худал</string>
+	<key>Likely</key>
+	<string>Магадлалтай</string>
+	<key>Mostly</key>
+	<string>Ихэнхдээ</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari өргөтгөлийн тохиргоог нээх…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari-г нээж x.com руу очно уу.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Шинэчлэгдсэн үлдэгдлээ харахын тулд Safari дээр попап цонхыг нээнэ үү</string>
+	<key>Partially</key>
+	<string>Хэсэгчлэн</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Төлбөр амжилттай хийгдлээ. Шинэчлэгдсэн үлдэгдлээ харахын тулд Safari руу буцан DisinfaX попап цонхыг нээнэ үү.</string>
+	<key>Possibly</key>
+	<string>Магадгүй</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect-д %@ бүтээгдэхүүн олдсонгүй.</string>
+	<key>Purchase cancelled.</key>
+	<string>Худалдан авалтыг цуцаллаа.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Худалдан авалт зөвшөөрөл хүлээж байна.</string>
+	<key>Reasoning</key>
+	<string>Үндэслэл</string>
+	<key>Return to Safari</key>
+	<string>Safari руу буцах</string>
+	<key>Setup incomplete</key>
+	<string>Тохиргоо дуусаагүй байна</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Мөнгө нэмэхийн тулд Safari дотор DisinfaX-ийн попап цонхноос нэвтэрнэ үү.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Энэ хүсэлтийн зарим хэсэг танигдсангүй. Өргөтгөл шинэчлэгдсэн эсэхийг шалгана уу.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Бидний талд алдаа гарлаа. Хэсэг хугацааны дараа дахин оролдоно уу.</string>
+	<key>Sources</key>
+	<string>Эх сурвалж</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ЦЭНЭГЛЭХ ДҲЖИЛТИЙН ДУНГ</string>
+	<key>Tap the </key>
+	<string>Хаягийн мөрөнд байгаа </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Мөн тэр дүрс тэмдгийг товшиж, попап цонхыг нээхийн тулд DisinfaX-ийг сонгоно уу.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Үүнийг олох боломжгүй байна. Дахин оролдоно уу.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Тухайн цэнэглэлтийн дүн хүчингүй байна. Өөр дүн сонгоно уу.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Энэ хувилбар өөрийн хуваалцсан сав (App Group %@) руу хандах боломжгүй байна. App Groups чадавхыг апп болон өргөтгөл хоёуланд нэмэх хүртэл цэнэглэлт хийх боломжгүй.</string>
+	<key>Top Up</key>
+	<string>Цэнэглэх</string>
+	<key>Top Up Balance</key>
+	<string>Үлдэгдэл цэнэглэх</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Цэнэглэлтэнд iOS-ийн шинэ хувилбар шаардлагатай. Шинэчилж, дараа нь DisinfaX-ийг дахин нээнэ үү.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Цэнэглэлтэнд macOS-ийн шинэ хувилбар шаардлагатай. Шинэчилж, дараа нь DisinfaX-ийг дахин нээнэ үү.</string>
+	<key>True</key>
+	<string>Үнэн</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI ДЭЭР DISINFAX АШИГЛАХ</string>
+	<key>Unknown</key>
+	<string>Тодорхойгүй</string>
+	<key>Unknown purchase error.</key>
+	<string>Тодорхойгүй худалдан авалтын алдаа.</string>
+	<key>Very Likely</key>
+	<string>Маш магадлалтай</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Бүтэн ам.доллар, 1–100. Таны App Store-ийн мөнгөн тэмдэгтээр төлбөр тооцоологдоно.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Танд хэрэгжихийг хүлээж буй US$%lld-ийн цэнэглэлт хэдийнэ бий — танаас дахин мөнгө хасаагаагүй. Үлдэгдэл дээрээ хэрэгжүүлэхийн тулд Safari руу буцан DisinfaX попап цонхыг нээнэ үү.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Та нэвтрээгүй байна. Нэвтэрч дахин оролдоно уу.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Таны US$%lld-ийн цэнэглэлт хэрэгжиж байна.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Таны US$%lld-ийн цэнэглэлт хэвийн үзагдэхээс илүү хугацаа авч байна.</string>
+	<key>Your account has been suspended.</key>
+	<string>Таны бүртгэл түр хаагдсан байна.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Таны үлдэгдэл хэтэрхий бага байна. Үргэлжлүүлэхийн тулд цэнэглэнэ үү.</string>
+</dict>
+</plist>

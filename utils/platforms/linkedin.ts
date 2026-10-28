@@ -16,7 +16,8 @@
  *    expanding took them 1171→1164, 859→853 and 167→161, each down by exactly that label — so
  *    `bodyText` drops the label and the full text is what remains. Nothing has to be
  *    reconstructed, and there is no reason to withhold buttons: on X a clipped post carries
- *    them too, and the injection leaves the reader the whole text (`unclip`).
+ *    them too. Nothing opens the body for us — see its `bodyClipped` — so a highlight past the
+ *    clamp is hidden until the reader expands the post themselves.
  *  - **A feed card is named by its own comments**, or failing that by its own words — see `Ids.`
  *    below. The comments are the exact name: every row rendered inside one card states the same
  *    parent URN, which is the id the post's own permalink yields. A card with no comment section
@@ -103,6 +104,7 @@ import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { PLATFORM_HOSTS } from './hosts';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter } from './types';
+import { isAgeLabel, isLabelledAgeLabel, isoDatetime, isoDatetimeFromAge } from '../datetime';
 
 const ID_PREFIX = 'linkedin:';
 
@@ -337,7 +339,13 @@ function hostText(el: Element | null | undefined): string {
     }
     for (const grandchild of Array.from(child.childNodes)) walk(grandchild);
   };
-  walk(el as Node);
+  // A root can outlive the body it was found with — a card the host re-rendered under the sweep
+  // leaves the element it handed us with nothing to walk. This used to throw, and it is reached
+  // from `postIdOf`: the exception took down the whole sweep, so every post after that root went
+  // unfiled with no log line anywhere (reported 2026-10-24, a card with no buttons and a console
+  // full of `Cannot read properties of null (reading 'nodeType')`).
+  if (!el) return '';
+  walk(el);
   return out.trim();
 }
 
@@ -387,6 +395,14 @@ const MIN_JOIN_KEY = 16;
  *  there is the control's own label, which is translated per reader. */
 const translationStates = new Map<string, 'Original' | 'Translated'>();
 
+/** When the host last restated each state key's value. A flip that lands on a side the host
+ *  rendered is answered by a response that states the state again; a flip the page serves from
+ *  its own cache makes no request at all, and the value standing there belongs to the side the
+ *  card was last rendered in. Reading that value as the side a flip landed on taught both control
+ *  labels the same side, and — worse — filed a translation as the post's own words. */
+const stateStamps = new Map<string, number>();
+let stateStamp = 0;
+
 /** The commentary wrapper inside a root, when the host wrapped this post's body in one. */
 function commentaryNode(root: Element): Element | null {
   return root.matches(COMMENTARY) ? root : root.querySelector(COMMENTARY);
@@ -401,29 +417,183 @@ function targetLocale(node: Element): string | null {
  *  A state key ENDS with the `componentkey` of the element rendering that translation — the one
  *  holding both the commentary and the control — and `componentkey` is hierarchical, so the join
  *  is a suffix test walking up from the commentary. Measured across six posts: every post the
- *  state covered matched at its own component, and the value agreed with the side on screen. */
-function translationState(node: Element): { state: 'Original' | 'Translated'; container: Element } | null {
+ *  state covered matched at its own component. */
+function translationState(node: Element): { state: 'Original' | 'Translated'; container: Element; stamp: number } | null {
   let el: Element | null = node;
   for (let i = 0; el && i < 10; i++, el = el.parentElement) {
     const key = el.getAttribute('componentkey');
     if (!key || key.length < MIN_JOIN_KEY) continue;
     for (const [stateKey, state] of translationStates) {
-      if (stateKey.endsWith(key)) return { state, container: el };
+      if (stateKey.endsWith(key)) return { state, container: el, stamp: stateStamps.get(stateKey) ?? 0 };
     }
   }
   return null;
 }
 
+/** Which side each of the host's two control labels reports, learned per reader.
+ *
+ *  The label is the only thing in the card that differs between the two sides — 1391 elements
+ *  compared attribute by attribute and nothing else moves — and it is translated per reader, so
+ *  its text can never be matched against. It can be LEARNED: the host's translation state names
+ *  the side a flip lands on, so the label standing on the control at that moment is that side's
+ *  label, and the label the flip left is the other one. One flip per page teaches both, and
+ *  every post after it answers with no flip of its own. */
+const labelSides = new Map<string, 'Original' | 'Translated'>();
+
+/** The side the host's own payload names for a root, or null when it names none.
+ *
+ *  The state is minted by a render, so a post the page translated from its own cache can stand
+ *  under the state of the side it was last rendered in. */
+function stateSide(root: Element): 'Original' | 'Translated' | null {
+  const node = commentaryNode(root);
+  return node ? translationState(node)?.state ?? null : null;
+}
+
+/** How recently the host restated this root's state, or 0 when it has stated none. */
+function stateStampOf(root: Element): number {
+  const node = commentaryNode(root);
+  return (node ? translationState(node)?.stamp : 0) ?? 0;
+}
+
+/** What the language detector read a root's body as, and the words it read.
+ *
+ *  The state and the label are both answers the host gives about a card, and a card can stand
+ *  with neither: a flip the page served from its own cache restates no state (measured 2026-10-24
+ *  — the card came back from the host with no request at all), and the label is only known after
+ *  a flip has landed under it. The words themselves are the remaining signal, and they are the
+ *  one the host's own wrapper names: the commentary id states the locale the translation is
+ *  INTO, so a body the detector reads in that language is showing the translation and one read
+ *  in any other language is the post's own. Keyed by root with the text it judged, so a flip or
+ *  a re-render (which changes the text) asks again rather than answering from the old side. */
+const detectedSides = new WeakMap<Element, { text: string; side: 'Original' | 'Translated' }>();
+
+/** Below this there are not enough words to call a language. Mirrors the floor the Facebook
+ *  adapter's own pre-pass uses. */
+const MIN_DETECT_CHARS = 24;
+/** What the top language has to score before a body is called. A mixed post — an Italian one
+ *  quoting an English paragraph — otherwise reads as translated on its quote alone. */
+const MIN_DETECT_CONFIDENCE = 90;
+
+/** Whether the detector is missing or refused on this browser. Once true nothing asks again;
+ *  no verdict means no change, and the flip remains the only road to the side. */
+let languageDetectionUnavailable = false;
+
+type LanguageDetection = {
+  isReliable: boolean;
+  languages: { language: string; percentage: number }[];
+};
+
+/** `browser.i18n.detectLanguage` as a promise, and null wherever it cannot answer. */
+function detectLanguageOf(text: string): Promise<LanguageDetection | null> {
+  return new Promise((resolve) => {
+    let settled = false;
+    const settle = (result: LanguageDetection | null | undefined) => {
+      if (settled) return;
+      settled = true;
+      resolve(result && typeof result === 'object' ? result : null);
+    };
+    try {
+      const detect = (browser.i18n as unknown as {
+        detectLanguage?: (t: string, cb: (r: LanguageDetection) => void) => void;
+      }).detectLanguage;
+      if (!detect) {
+        languageDetectionUnavailable = true;
+        settle(null);
+        return;
+      }
+      detect(text, (result) => settle(result));
+    } catch {
+      languageDetectionUnavailable = true;
+      settle(null);
+    }
+  });
+}
+
+function languageBase(tag: string | null | undefined): string {
+  return (tag ?? '').trim().toLowerCase().split('-')[0];
+}
+
+/** Which side a given body of a root is in, judged by its language against the locale the
+ *  wrapper states its translation is INTO. Null when the page states no locale, the text is too
+ *  short to call, or the detector is not confident.
+ *
+ *  This is the answer of last resort for a flip the host does not restate: the host's translation
+ *  state is only minted by a render, and a flip served from the page's own cache makes no request
+ *  and leaves the state standing from an earlier render (measured 2026-10-24), so the words are
+ *  the only thing that moved. */
+async function judgeText(root: Element, text: string): Promise<'Original' | 'Translated' | null> {
+  if (languageDetectionUnavailable) return null;
+  const node = commentaryNode(root);
+  if (!node) return null;
+  const target = languageBase(targetLocale(node));
+  if (!target || text.length < MIN_DETECT_CHARS) return null;
+  const result = await detectLanguageOf(text);
+  const top = result?.isReliable ? result.languages?.[0] : undefined;
+  if (!top || top.percentage < MIN_DETECT_CONFIDENCE) return null;
+  return languageBase(top.language) === target ? 'Translated' : 'Original';
+}
+
+/** The side a root's words report, or null when they cannot be judged. Cached per root against
+ *  the text it judged, so this costs one reading per side of a post rather than one per sweep. */
+async function detectSide(root: Element): Promise<'Original' | 'Translated' | null> {
+  if (languageDetectionUnavailable) return null;
+  const node = commentaryNode(root);
+  if (!node) return null;
+  const target = languageBase(targetLocale(node));
+  if (!target) return null;
+  // No control: the host offers no translation of this body, so there is no other side to be on.
+  if (!translationToggle(root)) return null;
+  const text = bodyText(bodyIn(root));
+  if (text.length < MIN_DETECT_CHARS) return null;
+  const cached = detectedSides.get(root);
+  if (cached && cached.text === text) return cached.side;
+  const side = await judgeText(root, text);
+  // The card may have flipped or been re-rendered while the detector was working; a verdict
+  // about words that are no longer there is no verdict about this side.
+  if (!side || !root.isConnected || bodyText(bodyIn(root)) !== text) return null;
+  detectedSides.set(root, { text, side });
+  return side;
+}
+
+/** Which side of its translation a root is showing, or null when the page does not say.
+ *
+ *  A label this page has already watched a flip land under is the answer — the body moved under
+ *  it, so it names its side — and it is asked FIRST, because the host's own state can be wrong
+ *  in the direction that matters. `"Translated"` is minted by a card the server rendered
+ *  translated; `"Original"` is also what a translated card keeps when the translation it shows
+ *  came from the page's own cache rather than a render (measured on the permalink view: with the
+ *  translation on screen the state read `Original`, and flipping back to the translation from
+ *  the source left it reading `Original` still, with no request made). So `Original` on its own
+ *  is no proof of the source: it is answered as unknown, and the post is revealed like any other
+ *  unknown one — which is also what teaches the labels. `Translated` is still trusted as it
+ *  stands: a post wrongly read as translated only costs the reveal that reads its source.
+ *
+ *  The state is never written into `labelSides`. It used to be, and a translated card standing
+ *  under a stale `Original` taught BOTH labels `Original`, after which no post on the page could
+ *  be read as translated again and the reader was offered Disinfact over the side they had just
+ *  switched to (reported 2026-10-24). */
+function sideOf(root: Element): 'Original' | 'Translated' | null {
+  const toggle = translationToggle(root);
+  const label = toggle ? textOf(toggle) : '';
+  const learned = label ? labelSides.get(label) : undefined;
+  if (learned) return learned;
+  // The words, when a detector has judged this exact body (`detectSide`). Ahead of the state
+  // because the state is stale in the direction that matters and the words are what is on
+  // screen; behind the labels because those were watched through a flip of this page.
+  const detected = detectedSides.get(root);
+  if (detected && detected.text === bodyText(bodyIn(root))) return detected.side;
+  return stateSide(root) === 'Translated' ? 'Translated' : null;
+}
+
 /** The language of the translation a root is showing, or null. Both halves are structural: the
- *  locale is a field in the commentary wrapper's own id, and the SIDE is the host's remembered
- *  translation state (see `translationStates`) — because nothing in the DOM differs between the
- *  two sides, and the one difference there is, the control's label, is translated per reader. */
+ *  locale is a field in the commentary wrapper's own id, and the SIDE is a label one flip taught,
+ *  or the host's own translation state (see `sideOf`). */
 function displayedLocale(root: Element): string | null {
   const node = commentaryNode(root);
   if (!node) return null;
   const locale = targetLocale(node);
   if (!locale) return null;
-  return translationState(node)?.state === 'Translated' ? locale : null;
+  return sideOf(root) === 'Translated' ? locale : null;
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -504,17 +674,99 @@ function rememberSource(id: string, text: string): void {
  *  its own source would have been a different identity, so it stays out of the batch instead. */
 const sourceFailed = new Set<string>();
 
+/** How many times a post's flip may fail before that stands.
+ *
+ *  The first sweep runs as soon as the page has a body, which on a server-rendered card is before
+ *  the host has hydrated it: the click then lands on a control whose handler does not exist yet,
+ *  and nothing moves. That failure costs nothing and next sweeps (the hydration's own mutations)
+ *  retry it successfully, so one bad flip must not retire a post for the page's life — which
+ *  would leave it with no buttons at all, the one thing this adapter cannot do. */
+const flipFailures = new Map<string, number>();
+const MAX_FLIP_FAILURES = 2;
+
+/** Say why a post was refused, once per post and reason.
+ *
+ *  A refused post is otherwise invisible: `capture` returns null, nothing is announced, and the
+ *  background never names it — so a buttonless post leaves no trace but its absence. Read off
+ *  the reader's console (reported 2026-10-24: a translated card with no buttons and no log line
+ *  anywhere to say why). */
+const notCapturedReasons = new Set<string>();
+function notCaptured(root: Element, id: string, reason: string): void {
+  const key = `${id}|${reason}`;
+  if (notCapturedReasons.has(key)) return;
+  notCapturedReasons.add(key);
+  const head = textOf(bodyIn(root)).slice(0, 40).replace(/\s+/g, ' ');
+  console.log(`[misinfo] linkedin: not capturing ${id || '(no id)'}: ${reason} [${head}]`);
+}
+
+function failFlip(id: string): void {
+  const failures = (flipFailures.get(id) ?? 0) + 1;
+  if (failures >= MAX_FLIP_FAILURES) sourceFailed.add(id);
+  else flipFailures.set(id, failures);
+}
+
+/** The same bound for a card that has no id yet, held per WORDS rather than per element.
+ *
+ *  A card the page shows translated and cannot name is one only a flip can name (see
+ *  `namedBySource`), so its attempts need the same ceiling — but an element-keyed one does not
+ *  hold: the flip itself re-renders the card, so every attempt handed the sweep a NEW element and
+ *  the count started over. A card the host never restates then flipped between its two sides
+ *  indefinitely, once per sweep, and was never named or captured (reported 2026-10-24). The
+ *  signature is the author and the side on screen, which the re-render does not move. */
+const MAX_NAMELESS_CARDS = 512;
+const namelessFailures = new Map<string, number>();
+function namelessSignature(root: Element): string | null {
+  const anchor = authorAnchor(root);
+  const author = anchor ? visibleName(anchor) : '';
+  // An authorless card is one no flip can ever name — `capture` refuses a post with no author —
+  // so its attempts are retired as a class rather than per card: there is nothing about it to
+  // tell from the next one. Leaving it uncounted is what let it flip forever: `failNameless`
+  // stored nothing, `namelessRetired` never answered, and `revealSource` therefore kept asking
+  // for the retry the budget exists to bound (reported 2026-10-24 — the quote card under a
+  // post, alternating sides indefinitely).
+  if (!author) return '-';
+  const body = bodyText(bodyIn(root));
+  // A body with no words is the same unbounded path as no author: `digestWords` refuses an empty
+  // one, and a card it cannot key is a card `namelessRetired` can never answer for.
+  return body ? digestWords(author, body) : digestWords(author, '\u0000');
+}
+function namelessRetired(root: Element): boolean {
+  const key = namelessSignature(root);
+  return key !== null && (namelessFailures.get(key) ?? 0) >= MAX_FLIP_FAILURES;
+}
+function failNameless(root: Element): void {
+  const key = namelessSignature(root);
+  // Nothing to key on: only reachable if the signature itself could not be built.
+  if (!key) return;
+  const failures = (namelessFailures.get(key) ?? 0) + 1;
+  namelessFailures.set(key, failures);
+  while (namelessFailures.size > MAX_NAMELESS_CARDS) {
+    const oldest = namelessFailures.keys().next().value;
+    if (oldest === undefined) break;
+    namelessFailures.delete(oldest);
+  }
+  if (failures >= MAX_FLIP_FAILURES) {
+    const head = textOf(bodyIn(root)).slice(0, 40).replace(/\s+/g, ' ');
+    console.log(
+      `[misinfo] linkedin: gave up reading the source of a card with no name [${head}]`,
+    );
+  }
+}
+
 /** The flips in flight, so two are never on the page at once: each one re-renders the component
  *  it is in, and a second flip starting mid-render would read the side the first one left. */
-let flipping: Promise<void> = Promise.resolve();
+let flipping: Promise<boolean> = Promise.resolve(false);
 
 const FLIP_TIMEOUT_MS = 4000;
+/** How long the body may lag the control's own label. The two come from one render on every
+ *  load measured, but a flip re-renders the component and the label has been seen to move a
+ *  commit before the body does — reading the body at that instant reads the side just left. */
+const BODY_TIMEOUT_MS = 1500;
 const FLIP_POLL_MS = 60;
 
 /** Poll `read` until it answers, or give up. Used to wait out a host re-render, which is what
  *  both halves of a flip are: nothing here knows how long React takes, only that it does not
- *  happen synchronously with the click. `timeoutMs` is that wait's budget, defaulted to the
- *  flip's; `revealClipped` is the other caller and asks for less, being only insurance. */
+ *  happen synchronously with the click. */
 async function settle<T>(read: () => T | null, timeoutMs: number = FLIP_TIMEOUT_MS): Promise<T | null> {
   const deadline = Date.now() + timeoutMs;
   for (;;) {
@@ -533,26 +785,81 @@ async function settle<T>(read: () => T | null, timeoutMs: number = FLIP_TIMEOUT_
  *  component, so the element clicked is usually gone by the time the new side is up, and one
  *  that was measured before the re-render would keep reporting its stale label forever.
  *
- *  The only signal that the flip happened is that the control's own label CHANGED — the two sides
- *  are otherwise byte-identical, measured element by element. Its text is never matched against,
- *  only compared with itself, so this reads the same in any reader's language. Returns null when
- *  the label never moved: a click that did nothing is not a source, and filing the side still on
- *  screen would give the post a different identity in each of its languages. */
-async function readOtherSide(root: Element, toggle: Element): Promise<string | null> {
+ *  The label changing is what says the click landed — the two sides are otherwise byte-identical,
+ *  measured element by element. Its text is never matched against, only compared with itself, so
+ *  this reads the same in any reader's language. The BODY changing is what says the control
+ *  governs this body: the label has been seen to move a commit before the body does, and a body
+ *  read at that instant is the side the flip is leaving, so the first body read is not trusted
+ *  until it differs from the one the flip started on (`bodyChanged`).
+ *
+ *  Returns null when the label never moved: a click that did nothing is not a source, and filing
+ *  the side still on screen would give the post a different identity in each of its languages.
+ *  That is also what a click sent before the host hydrated looks like, so callers retry it rather
+ *  than giving up on the post (see `flipFailures`).
+ *
+ *  `readLanded` is asked for while the other side is up, and only by a caller that did not know
+ *  the side it came from: the host's response to THIS flip names the side it landed on, and the
+ *  flip back overwrites it a moment later. */
+async function flipSides(
+  root: Element,
+  toggle: Element,
+  readLanded = false,
+): Promise<{
+  before: string;
+  after: string;
+  bodyChanged: boolean;
+  labelBefore: string;
+  labelAfter: string;
+  landed: 'Original' | 'Translated' | null;
+} | null> {
   const labelBefore = textOf(toggle);
+  // Read the way `capture` reads a body, so the source remembered here is the same string a
+  // post reached on its own side is filed under — the expander's "… more" is the page's, not
+  // the post's, and keeping it here gave one post two identities.
+  const bodyBefore = bodyText(bodyIn(root));
+  const stampBefore = stateStampOf(root);
   (toggle as HTMLElement).click();
-  const source = await settle(() => {
+  const moved = await settle(() => {
     const control = translationToggle(root);
-    const body = textOf(root.querySelector(BODY));
-    return control && body && textOf(control) !== labelBefore ? body : null;
+    const label = control ? textOf(control) : '';
+    // A control mid-re-render reads as no label at all; that is not the other side's label.
+    return label && label !== labelBefore ? label : null;
   });
-  const back = translationToggle(root);
-  if (back) (back as HTMLElement).click();
-  await settle(() => {
-    const control = translationToggle(root);
-    return control && textOf(control) === labelBefore ? true : null;
-  });
-  return source;
+  const other = moved
+    ? await settle(() => {
+        const body = bodyText(bodyIn(root));
+        return body && body !== bodyBefore ? body : null;
+      }, BODY_TIMEOUT_MS)
+    : null;
+  // The side this flip landed on is only readable when the host RESTATED its state while the
+  // flip was happening: then the card was rendered on the side it names. A flip the page served
+  // from its cache makes no request and leaves the value standing from an earlier render, so it
+  // names the side the card was last drawn in rather than the one now on screen — read as the
+  // landing, it taught both labels the same side and handed a translation to `capture` as the
+  // post's own words. No restatement, no answer: the caller retries the post later.
+  const landed = readLanded && other
+    ? await settle(() => (stateStampOf(root) !== stampBefore ? stateSide(root) : null))
+    : null;
+  // Only a flip this call actually made is undone. A click the host ignored leaves the page
+  // exactly as it was, and a second click sent later — once the page has hydrated — is a REAL
+  // flip: the reader would be left on a side they never chose.
+  if (moved) {
+    const back = await settle(() => translationToggle(root));
+    if (back) (back as HTMLElement).click();
+    await settle(() => {
+      const control = translationToggle(root);
+      return control && textOf(control) === labelBefore ? true : null;
+    });
+  }
+  if (!moved) return null;
+  return {
+    before: bodyBefore,
+    after: other ?? bodyBefore,
+    bodyChanged: other !== null,
+    labelBefore,
+    labelAfter: moved,
+    landed,
+  };
 }
 
 /** The post id a URL names, or null when the URL is not a post's own page. */
@@ -616,19 +923,37 @@ function cardPostId(root: Element): string | null {
  *  — so a remembered absence would be a name that never arrives. */
 const cardUrns = new WeakMap<Element, string>();
 
+/** A field as the row key reads it, copied byte-for-byte from `normalizeText`
+ *  (utils/intelligence.ts:493), which `canonicalContext` uses to compute the row key.
+ *
+ *  Copied rather than imported: the adapter ships in content bundles, and intelligence.ts
+ *  drags the Supabase client in with it (see that module's header). The two MUST stay
+ *  identical — a name built from the raw fields disagreed with the row it names whenever the
+ *  host rendered a no-break space where an earlier render had a plain one, and NFKC folds the
+ *  whole space family to a space at the same length, so the row key called them one post while
+ *  the card held two names for it (measured 2026-10-24: `677d4f7f54d98fcf` and
+ *  `4f6230a2dea360d0`, one text, one SHA, same length). */
+function identityText(text: string): string {
+  return text
+    .normalize('NFKC')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\uFEFF]/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .trim();
+}
+
 /** The digest that names a card stating no URN: the author and the body's text, the same two
  *  fields the classifier's context is built from (`canonicalContext`).
  *
  *  Two accumulators rather than one because this is an IDENTITY — two posts sharing a name is
  *  the collision `post-id-names-one-text` refuses, and 64 bits over a page's worth of cards is
  *  not a risk worth taking for four lines. */
-function wordsDigest(root: Element): string | null {
-  const body = root.querySelector(BODY);
-  const anchor = authorAnchor(root);
-  const text = bodyText(body);
-  const username = anchor ? visibleName(anchor) : '';
+function digestWords(username: string, text: string): string | null {
+  // The guard stays on the RAW fields: `'\u0000'` is the sentinel a card with no body keys on
+  // (`namelessSignature`), and normalisation strips it to nothing. Reaching the digest as an
+  // empty body still names that card, and the user half still keeps it from colliding with the
+  // words of a card that has some.
   if (!text || !username) return null;
-  const words = `${username}\u001f${text}`;
+  const words = `${identityText(username)}\u001f${identityText(text)}`;
   let a = 5381;
   let b = 2166136261;
   for (let i = 0; i < words.length; i++) {
@@ -637,6 +962,49 @@ function wordsDigest(root: Element): string | null {
     b = Math.imul(b ^ c, 16777619) >>> 0;
   }
   return a.toString(16).padStart(8, '0') + b.toString(16).padStart(8, '0');
+}
+
+function wordsDigest(root: Element): string | null {
+  const body = root.querySelector(BODY);
+  const anchor = authorAnchor(root);
+  return digestWords(anchor ? visibleName(anchor) : '', bodyText(body));
+}
+
+/** The name a translation was given by flipping it back: the digest of the translation the
+ *  reader is looking at, mapped to the digest of the source words read off the other side.
+ *
+ *  Without this a card first reached already translated can never be named. `cardKeys` refuses
+ *  to name a translated body — the words on screen are the translation's, and filing them would
+ *  give one post one identity per language — so the card has no id, and everything that recovers
+ *  a source is keyed by that id: `revealSource` returns early, and the card waits forever for a
+ *  name that only a flip could give it, while a flip is only attempted for a card that already
+ *  has one. The reader breaks the deadlock by hand (reported 2026-10-24: the buttons appeared the
+ *  moment they switched to the original side and stayed after switching back). A flip performed
+ *  for a card with no id names it from the source it read, which is what every later read of that
+ *  same translation resolves through — including a re-rendered element, which loses the
+ *  per-element memo. */
+const namedBySource = new Map<string, string>();
+
+/** Give a card the name a flip earned it: the source words are the card's key, and the
+ *  translation they replaced is the way back to that key for every later read of it. */
+function nameFromSource(root: Element, shown: string, source: string): string | null {
+  const anchor = authorAnchor(root);
+  const username = anchor ? visibleName(anchor) : '';
+  const key = digestWords(username, source);
+  if (!key) return null;
+  cardKeys.set(root, key);
+  rememberSource(namespaced(`text:${key}`), source);
+  const seen = digestWords(username, shown);
+  if (seen) {
+    namedBySource.delete(seen);
+    namedBySource.set(seen, key);
+    while (namedBySource.size > MAX_RESOLVED_CARDS) {
+      const oldest = namedBySource.keys().next().value;
+      if (oldest === undefined) break;
+      namedBySource.delete(oldest);
+    }
+  }
+  return key;
 }
 
 /** What each card's words were named, keyed by their digest and valued by the post URN its own
@@ -652,9 +1020,9 @@ const resolvedCards = new Map<string, string>();
 /** The digest each root's words were first read as. Held per ELEMENT, which is what makes a
  *  name survive the one thing that can change a card's body under it: the reader translating it
  *  (the body is swapped for the other side, and the source is nowhere on the page). A card first
- *  seen already translated is deliberately NOT remembered — the words on screen are not the
- *  post's, and the name is the source's — so it is named once the reader puts it back, or once
- *  its comments state its URN. */
+ *  seen already translated is not named by the words on screen — those are not the post's — but a
+ *  flip that reads its source back names it, and `namedBySource` carries that name to every later
+ *  rendering of the same translation. */
 const cardKeys = new WeakMap<Element, string>();
 
 /** The name of a card: its post's URN when its own comments state one, otherwise its own words.
@@ -674,7 +1042,17 @@ function cardId(root: Element): string | null {
 function cardKey(root: Element): string | null {
   const memo = cardKeys.get(root);
   if (memo) return memo;
-  if (displayedLocale(root)) return null;
+  if (displayedLocale(root)) {
+    // Translated: the words on screen are not the post's, so they name it only when a flip
+    // already said which source they stand for (`namedBySource`). Without that this answers
+    // null and the card waits for a flip that only a name could ask for.
+    const anchor = authorAnchor(root);
+    const seen = digestWords(anchor ? visibleName(anchor) : '', bodyText(root.querySelector(BODY)));
+    const named = seen ? namedBySource.get(seen) : undefined;
+    if (!named) return null;
+    cardKeys.set(root, named);
+    return named;
+  }
   const key = wordsDigest(root);
   if (!key) return null;
   cardKeys.set(root, key);
@@ -803,7 +1181,34 @@ function postIdOf(root: Element): string | null {
   // behind the focused post — is named the ordinary way, by its comments or its words.
   const id = pageId();
   if (id && root === pagePostRoot()) return namespaced(id);
+  // A permalink can name the post as a share (`/posts/<slug>-share-<n>/`), which
+  // `postIdFromUrl` does not read. The focused post is then named by its own words while the
+  // comments beside it parent to `activity:<n>` — the id this post has on every other surface —
+  // so its comments could not link to it and were hashed parentless, a second identity for the
+  // same comment under the same post. The comment list is asked only on the marker, and only
+  // for the focused post, so a feed card is never named from rows outside it.
+  if (!id && root.matches(DETAIL_POST)) {
+    const named = pageCommentPostId(root);
+    if (named) return namespaced(named);
+  }
   return cardId(root);
+}
+
+/** The post a detail page's own comment list names, or null.
+ *
+ *  Every row's element id is `urn:li:comment:(<its post>,<its id>)`; on a post's own page the
+ *  rows are siblings of the focused post rather than children of it, so `cardPostId` — which
+ *  reads only a card's own subtree — sees nothing. A row inside another post root belongs to
+ *  that post and is skipped. */
+function pageCommentPostId(root: Element): string | null {
+  for (const row of Array.from(document.querySelectorAll(COMMENT_EL))) {
+    const urn = commentUrn(row);
+    if (!urn) continue;
+    const card = row.closest('[role="listitem"]');
+    if (card && card !== root) continue;
+    return urn.parent.replace(URN_PREFIX, '');
+  }
+  return null;
 }
 
 /** The author's link inside a root: the LAST one that names someone before the root's own words.
@@ -1000,17 +1405,83 @@ function stampSiblingAfter(after: Element): Element | null {
   return null;
 }
 
+/**
+ *  When the row was written, when the host states a machine-readable instant for it at all.
+ *
+ *  Read from the one place each surface keeps its time — the same place the placement code reads
+ *  it from, so the two cannot disagree about which element is the row's own: a post holds it in
+ *  the author's block (`authorRowChild`), a comment lays it out as the block's next sibling
+ *  (`stampSiblingAfter`). Scoping to those is also what keeps a linked ARTICLE's own date, which
+ *  a card renders as a `<time>` inside its preview, from being read as the post's.
+ *
+ *  Measured live 2026-10-25: this host states no instant at all. There is no `<time>`, no
+ *  `datetime`, no `aria-label` — the row says `5d`, `1yr`, `5mo` and nothing more — so the time
+ *  that gets read here is the one that age implies (`isoDatetimeFromAge`), cut to the unit the
+ *  label states. That is the value the preclassify worker treats as the post's date; without it
+ *  the classifier was handed the reader's own day, and a post written on the 22nd was researched
+ *  as if it had been written on the 25th.
+ *
+ *  A COMMENT can lay the age out either way — as its own stamp beside the author's block, or
+ *  inside that block when the block is all the root has (measured 2026-10-26 on a search-result
+ *  comment: one top-level child holding both the byline and `2d`). A missing stamp therefore
+ *  only rules out the stamp reading; the block is still searched, and only the fallback that
+ *  reads the stamp's whole text needs one. */
+function postedAt(root: Element, anchor: Element | null, isComment: boolean): string | undefined {
+  if (!anchor) return undefined;
+  const block = authorRowChild(root, anchor) ?? anchor;
+  const holder = isComment ? stampSiblingAfter(block) : block;
+  const time = holder?.matches('time[datetime]') ? holder : holder?.querySelector('time[datetime]');
+  const stated = isoDatetime(time?.getAttribute('datetime'));
+  if (stated) return stated;
+  // The age sits in the author's row on both surfaces, last — after the name, the credential and
+  // any control — so the nearest element enclosing the anchor that holds one is the row, and a
+  // row that holds none leaves a comment's own stamp (`stampSiblingAfter`) to be read instead.
+  for (let el: Element | null = anchor; el; el = el.parentElement) {
+    const age = ageLabelIn(el, anchor);
+    if (age) return isoDatetimeFromAge(age);
+    if (el === block) break;
+  }
+  return isComment && holder
+    ? isoDatetimeFromAge(holder.getAttribute('aria-label') ?? holder.textContent)
+    : undefined;
+}
+
+/** The age a row states, taken from the LAST element inside `scope` whose whole text is one.
+ *
+ *  Last, because the time is the last thing the row says and a credential or a name can read as
+ *  an age to the reader that only knows durations (`3M` is a company before it is three
+ *  minutes) — the author's own name and credential are excluded outright, being inside `anchor`,
+ *  and so is everything inside the post's own words. A label the age reader does not know (a date
+ *  spelled out, another language) finds nothing here, which is a post with no datetime rather
+ *  than one reconstructed from a guess.
+ *
+ *  An edited post states its age with the host's own marker beside it — `5d • Edited`, one leaf
+ *  span with no attribute and no separate element to read — which the whole-string test refuses,
+ *  because that test cannot tell this from a body sentence that opens with a duration. So a
+ *  wrapped label is collected on a second pass and returned only where no element in the row
+ *  stated a bare age: the strict reading wins wherever it exists, and this only rescues a row it
+ *  would otherwise leave dateless (measured 2026-10-26 — every edited post shipped with no
+ *  datetime and was classified as of the reader's day). */
+function ageLabelIn(scope: Element, anchor: Element): string | undefined {
+  let found: string | undefined;
+  let wrapped: string | undefined;
+  for (const el of Array.from(scope.querySelectorAll('span, p, div'))) {
+    if (el.children.length > 0 || el.closest(BODY) || anchor.contains(el)) continue;
+    const labelled = el.getAttribute('aria-label')?.trim();
+    const face = el.textContent?.trim();
+    if (labelled && isAgeLabel(labelled)) found = labelled;
+    else if (face && isAgeLabel(face)) found = face;
+    else if (labelled && isLabelledAgeLabel(labelled)) wrapped = labelled;
+    else if (face && isLabelledAgeLabel(face)) wrapped = face;
+  }
+  return found ?? wrapped;
+}
+
 /** Whether a body is showing less than it holds. LinkedIn clamps a long body with CSS on the body
- *  itself, so the overflow is the whole test — read by `unclip` and `revealClipped` so the two
- *  agree on what "still closed" means. */
+ *  itself, so the overflow is the whole test. */
 function heldBack(body: Element): boolean {
   return body.scrollHeight > body.clientHeight + 1;
 }
-
-/** How long `revealClipped` waits for the host to finish withdrawing its own control. Bounded and
- *  short: the wait is insurance against painting into a subtree React is midway through, and a
- *  host that keeps its control has nothing for React to remove, so painting is safe either way. */
-const OPEN_TIMEOUT_MS = 1200;
 
 export const linkedinAdapter: PlatformAdapter = {
   id: 'linkedin',
@@ -1042,71 +1513,32 @@ export const linkedinAdapter: PlatformAdapter = {
     return bodyIn(root);
   },
 
-  /** Show the whole body once we have painted marks into it.
+  /** Whether the host is holding this body back behind its own "… more".
    *
    *  LinkedIn clamps a long body with CSS on the body element ITSELF — measured across a feed,
    *  `display: flow-root`, `-webkit-box-orient: vertical`, `-webkit-line-clamp: 2…5`,
-   *  `overflow: hidden`, `max-height: none`, so a 320px body is laid out 60px tall — and hides
-   *  the rest behind its own "… more" control, a child of that same body. Highlights are painted
-   *  into the body's own text nodes, so a reader who follows a claim into a clipped post would be
-   *  reading a hijacked view: three lines, an ellipsis, and marks on whichever of them happened
-   *  to be visible.
+   *  `overflow: hidden`, `max-height: none`, so a 320px body is laid out 60px tall — and keeps
+   *  its control as a DIRECT CHILD of that same body (measured; see the note at the top of this
+   *  file). Highlights are painted into the body's own text nodes, and the in-place painter moves
+   *  the body's children into a wrapper of ours, the control among them. The reader's own click
+   *  on that control then makes the host withdraw it from a body it no longer finds it in —
+   *  `removeChild` on a node our wrapper moved, which throws, and LinkedIn answers an uncaught
+   *  throw by replacing the reader's page with its error boundary.
    *
-   *  Two declarations are the whole of it, and they are enough: measured on a live card, clearing
-   *  `-webkit-line-clamp` and `overflow` alone takes it from 60px to its full 320px, and the host
-   *  then withdraws its own "… more" without being asked — the control is rendered on a
-   *  measurement of the body, so it goes as soon as the body stops overflowing. The clearing also
-   *  HOLDS: the same card measured for twelve seconds afterwards kept the full height, so the
-   *  host is not re-clamping behind us and this need not be re-applied.
-   *
-   *  The host's control is deliberately left in the DOM rather than removed. It is React's node,
-   *  and a node deleted from outside React is the classic way to break reconciliation on the
-   *  host's next render of that subtree — the very subtree our `<span class="mf-segment-wrap">`
-   *  lives in. Nothing here changes the text (the clamped body already holds all of it), so the
-   *  hash and the id are untouched either way.
-   *
-   *  The mobile app clamps by a different means and needs a third declaration. Measured on a live
-   *  card: a body holding 2289 characters computed `height: 63px; max-height: 63px` with
-   *  `-webkit-line-clamp: none` — a fixed height, not a line count — and the two declarations
-   *  above, applied for real, left it at exactly 63px, with the whole string still in the DOM and
-   *  none of it on screen. Clearing the height as well is what expands it (the same card then
-   *  measured 2289px). So the height is released too, and only when the element is actually
-   *  showing less than it holds, which is what the two measurements side by side say: the body
-   *  that is whole measures equal and is left alone, whichever surface it came from. */
-  unclip(textElement) {
-    const body = textElement as HTMLElement;
-    if (heldBack(body)) {
-      body.style.height = 'auto';
-      body.style.maxHeight = 'none';
-    }
-    body.style.webkitLineClamp = 'unset';
-    body.style.overflow = 'visible';
+   *  Measured with that one node left out of the wrap, the reader's own press expanded the body
+   *  with no throw, the wrapper intact and the whole text inside it — so a clamped body IS
+   *  painted, and LinkedIn's own clamp does the clipping. The mobile app clamps by a different
+   *  means — a fixed `height`/`max-height` of 63px with `-webkit-line-clamp: none` — but the
+   *  overflow test reads both the same way. */
+  bodyClipped(root) {
+    const body = bodyIn(root);
+    return !!body && heldBack(body);
   },
 
-  /** Let the host finish taking its own "… more" back out of the body, before we paint into it.
-   *
-   *  LinkedIn clamps with CSS on the body and keeps its control as a direct child of that body
-   *  (see `unclip`), so what the host is watching is the overflow: clearing it makes the host
-   *  re-render the post to withdraw the control, and it does that in its own time. The paint that
-   *  follows moves the body's children into `.mf-segment-wrap`, the control among them, and by
-   *  then React's removal of a node it owns finds that node gone from the body it recorded — which
-   *  throws, and LinkedIn answers an uncaught throw with its error boundary. The reader's page is
-   *  replaced. Waiting here is what keeps the two apart.
-   *
-   *  The click is conditional because `unclip` has usually done the expanding already: asking a
-   *  body that is already whole could be read as the opposite request. The wait is not
-   *  conditional — it covers the case where the clamp is cleared and the host's removal is still
-   *  in flight, which is the one that crashes.
-   *
-   *  Declares this WITHOUT `bodyClipped`, and that pairing is the point: the sweep expands only a
-   *  host that needs it, and a clipped LinkedIn body is complete in the DOM already (`bodyText`
-   *  reads all of it), so nothing is gained by clicking the page on every pass. Only the reader's
-   *  own click pays for this wait, which is also why there is no attempt bound here. */
-  async revealClipped(root) {
-    const body = bodyIn(root);
-    if (!body) return;
-    if (heldBack(body)) (body.querySelector(EXPANDER) as HTMLElement | null)?.click();
-    await settle(() => (root.isConnected && body.querySelector(EXPANDER) ? null : true), OPEN_TIMEOUT_MS);
+  /** LinkedIn's own "… more", which it keeps as a direct child of the body it clamps — see
+   *  `bodyClipped`. Named so the painter can wrap the body without swallowing the control. */
+  bodyControl(body) {
+    return body.querySelector(EXPANDER);
   },
 
   // LinkedIn bodies are markup: a post can carry mentions, hashtags and links, and the page
@@ -1241,6 +1673,20 @@ export const linkedinAdapter: PlatformAdapter = {
     if (comment && postIdOf(comment)) return comment;
     const detail = el.closest(DETAIL_POST);
     if (detail && pageId() && detail === pagePostRoot()) return detail;
+    // A card of the desktop feed or of a search result: `allRoots` already treats it as a post
+    // root — that is what gave it an id and its buttons — but nothing here answered for one, so
+    // a selection inside it fell through to the page's own prose walk and was fact-checked as
+    // the webpage it sat in (reported 2026-10-24). `pageId()` is null on a search page, so the
+    // detail branch above can never answer for these. Same predicate `allRoots` uses, nearest
+    // row outward; a row holding a comment is skipped for the same reason it is skipped there.
+    for (
+      let row = el.closest('[role="listitem"]');
+      row;
+      row = row.parentElement?.closest('[role="listitem"]') ?? null
+    ) {
+      if (enclosingComment(row)) return null;
+      if (row.querySelector(BODY) && postIdOf(row)) return row;
+    }
     return null;
   },
 
@@ -1248,21 +1694,59 @@ export const linkedinAdapter: PlatformAdapter = {
     return allRoots();
   },
 
-  /** The language of the translation this post is showing, or null.
+  /** The language of the translation this post is showing; null when it shows its own words;
+   *  `undefined` when this page will not say which side is on screen.
    *
    *  The two halves come from different places, and neither is a label. The locale is a field in
    *  the commentary wrapper's own id. The SIDE is the host's remembered translation state,
    *  which reaches us from the payload (`linkedin.capture.content.ts`) because nothing in the
-   *  DOM differs across a flip. A post the state does not cover reads as its own source — right
-   *  for every post the reader has never translated, and the behaviour this adapter had before
-   *  the state existed for the rest. */
-  displayedTranslationLocale(root) {
-    return displayedLocale(root);
+   *  DOM differs across a flip. A post the state does not cover, whose labels have not been
+   *  learned, and whose words are too short to judge has no side at all.
+   *
+   *  That third answer is NOT the source. Answered as one, a reader who flipped to the
+   *  translation had the flip reported as a return to the source: the body on screen was
+   *  recorded as the capture's, the next press preclassified the source, and the ranges filed
+   *  under it were then refused by the revision gate on the side actually being read (reported
+   *  2026-10-25 — a 34-character comment). `undefined` is what this page can honestly say, and
+   *  the side is then named by its BODY, the same path a host that states no language takes. */
+  displayedTranslationLocale(root): string | null | undefined {
+    return sideOf(root) === null ? undefined : displayedLocale(root);
   },
 
-  /** The body of the side on screen. Read only when the reader's own flip is being reported. */
+  /** Whether this post's side is unknowable as it stands, and it carries the host's translation
+   *  control at all. A post with no control is showing its own words — there is nothing on the
+   *  page to swap them for — so only the ones that have a control and no side need a flip. */
+  sideUnknown(root) {
+    // A post whose source could not be read back is answered here even though its side is still
+    // unknown: there is nothing left to ask it for, and saying so is what stops the sweep that
+    // waits on it (and `capture`'s hold) rather than letting both chase a source that is not
+    // coming. `capture` is what decides what such a post is filed as.
+    const id = postIdOf(root);
+    if (id && sourceFailed.has(id)) return false;
+    // A card with no id is only asked for while it may still be named: once its flips are spent
+    // there is nothing left to ask it for, and every sweep would ask again (see `namelessFailures`).
+    if (!id && namelessRetired(root)) return false;
+    const side = sideOf(root);
+    const control = translationToggle(root) !== null;
+    // Known translated: the source is behind the control and nothing else can supply it, whether
+    // or not the commentary wrapper states the locale it is translated into. A card with no id
+    // whose side is known is exactly the one that used to sit buttonless forever — it was not
+    // asked for a source (its side was not unknown), and with no source it can never be named.
+    if (side === 'Translated') return control;
+    if (side === 'Original') return false;
+    return commentaryNode(root) !== null && control;
+  },
+
+  /** The body of the side on screen. Read only when the reader's own flip is being reported.
+   *
+   *  The same extractor `capture` files — `bodyText`, which takes the host's "… more" label back
+   *  off and leaves our own paint out. Raw `textContent` gave the background a second body for
+   *  the same side: the label moved it on a clamped post, and each annotation's correction node
+   *  moved it again, so the body a click classified and the body a later annotate run hashed
+   *  were different strings and the stored "<locale>:<sha256>" key was never found (reported
+   *  2026-10-25). One post, one body: the capture's. */
   displayedText(root) {
-    return textOf(bodyIn(root)) || null;
+    return bodyText(bodyIn(root)) || null;
   },
 
   /** Read a translated post's own words back off the host's control.
@@ -1277,34 +1761,133 @@ export const linkedinAdapter: PlatformAdapter = {
    *
    *  The flip is visible, so it happens once per post, before the post is captured, and is undone
    *  before this returns — `native.content.ts` orders the batch so off-screen posts go first and
-   *  skips whatever is under the pointer. */
-  async revealSource(root) {
+   *  skips whatever is under the pointer.
+   *
+   *  Answers `true` when the attempt failed but the post is not yet retired: the first pass of a
+   *  page runs before the host has hydrated the control, so that press is expected to do nothing
+   *  and the post needs a second one (`native.content.ts` asks for it — nothing else would). */
+  async revealSource(root): Promise<boolean> {
+    // The words are asked before the markup: a card translated from the page's own cache stands
+    // under a stale `Original` state and a label no flip has taught yet, and the detector
+    // answers it outright — no flip, and nothing left for a failed flip to retire it over.
+    await detectSide(root);
+    // A card can have no id precisely BECAUSE it is translated: its name would be the hash of
+    // its own words, and there are none on the page (see `cardKey`). That deadlock — no id, so
+    // no reveal; no reveal, so no id — is what a card first reached on its translated side got
+    // stuck in, and the flip is what breaks it: the source it reads back names the card.
     const id = postIdOf(root);
-    if (!id || rememberedSources.has(id) || sourceFailed.has(id)) return;
+    const retired = (): boolean =>
+      id ? sourceFailed.has(id) : namelessRetired(root);
+    const fail = (): void => {
+      if (id) failFlip(id);
+      else failNameless(root);
+    };
+    if (id && (rememberedSources.has(id) || sourceFailed.has(id))) return false;
     // Nothing to recover: the post is showing its own words, which `capture` reads directly.
     // This is the ordinary case, and the one that costs nothing.
-    if (!displayedLocale(root)) return;
+    if (sideOf(root) === 'Original') return false;
+    // A nameless card with no control has no side to ask for and nothing to be named by.
+    if (!id && translationToggle(root) === null) return false;
 
     flipping = flipping
-      .then(async () => {
+      .then(async (): Promise<boolean> => {
         // Re-checked inside the queue: the post may have scrolled out and been re-rendered
-        // while an earlier flip was in flight.
-        if (!root.isConnected || rememberedSources.has(id) || sourceFailed.has(id)) return;
-        if (!displayedLocale(root)) return;
+        // while an earlier flip was in flight, and an earlier probe may have taught the labels
+        // in the meantime (see `labelSides`).
+        if (!root.isConnected || retired()) return false;
+        if (id && rememberedSources.has(id)) return false;
+        const side = sideOf(root);
+        if (side === 'Original') return false;
         const toggle = translationToggle(root);
+        // No control on the page: nothing here can swap this body for a translation of it, so
+        // the words on screen are its own. Unless the state already said otherwise — then the
+        // source is unreachable through this markup and the post must not wait for it forever
+        // (see the bound in `capture`).
         if (!toggle) {
-          sourceFailed.add(id);
-          return;
+          if (side === 'Translated') fail();
+          return !retired();
         }
-        const source = await readOtherSide(root, toggle);
-        if (source === null) {
-          sourceFailed.add(id);
-          return;
+        const flipped = await flipSides(root, toggle, side === null);
+        if (flipped === null) {
+          fail();
+          return !retired();
         }
-        rememberSource(id, source);
+        // The body did not move: the control governs something else on the card (a shared post
+        // renders its description with a control of its own), so this body has no second side
+        // and what is on screen is its own text.
+        if (!flipped.bodyChanged) {
+          // A root the flip's re-render took away cannot be read again from here, and what it
+          // read last is the side the flip left — retried on the fresh root instead.
+          if (!root.isConnected || !id) {
+            // A nameless card: the body never moved, so neither side was read and nothing can
+            // name it. Counted, or every sweep asks again — a flicker of its control the reader
+            // never asked for — and no number of asks would ever name it (reported 2026-10-24).
+            fail();
+            return !retired();
+          }
+          rememberSource(id, flipped.before);
+          return false;
+        }
+        if (side === 'Translated') {
+          labelSides.set(flipped.labelBefore, 'Translated');
+          labelSides.set(flipped.labelAfter, 'Original');
+          if (id) rememberSource(id, flipped.after);
+          else if (nameFromSource(root, flipped.before, flipped.after) === null) {
+            // The source was read but the card could not be named from it, which only happens
+            // when the author cannot be read — the one thing `capture` refuses a post over. Fail
+            // it rather than read the same source again on every sweep. No retry is owed: the
+            // host ANSWERED this click (the body moved), so the retry budget's one purpose — a
+            // click sent before the control hydrated — does not apply, and an answer that names
+            // nothing will name nothing next time either.
+            fail();
+            return false;
+          }
+          return false;
+        }
+        // The side was not on the page at all. A flip the host RESTATES names the side it landed
+        // on; one the page serves from its own cache restates nothing, and then the words are the
+        // answer — judged against the locale the wrapper states its translation is into. Without
+        // that second reading a card the host never restated was flipped again on every sweep,
+        // between its two sides, indefinitely (reported 2026-10-24).
+        let landed = flipped.landed;
+        if (!landed) {
+          const after = await judgeText(root, flipped.after);
+          const before = await judgeText(root, flipped.before);
+          if (after && before) {
+            // Two sides of one flip cannot be in the same language: a verdict that reads both
+            // that way is the detector failing on a mixed post, not an answer. No answer is
+            // better than filing a translation as the post's own words.
+            landed = after !== before ? after : null;
+          } else {
+            landed = after ?? (before === 'Translated' ? 'Original' : before ? 'Translated' : null);
+          }
+        }
+        if (!landed) {
+          // The body moved and neither the host nor the words name the side it moved to. The
+          // same click on the same words answers the same way, so nothing is retried (see the
+          // note in the `side === 'Translated'` branch above).
+          fail();
+          return false;
+        }
+        labelSides.set(flipped.labelAfter, landed);
+        labelSides.set(
+          flipped.labelBefore,
+          landed === 'Original' ? 'Translated' : 'Original',
+        );
+        const source = landed === 'Original' ? flipped.after : flipped.before;
+        if (id) rememberSource(id, source);
+        else if (
+          nameFromSource(root, landed === 'Original' ? flipped.before : flipped.after, source)
+          === null
+        ) {
+          fail();
+          return false;
+        }
+        return false;
       })
       .catch((e) => {
         console.error("[misinfo] linkedin: reading a post's source failed", e);
+        return false;
       });
     return flipping;
   },
@@ -1321,15 +1904,22 @@ export const linkedinAdapter: PlatformAdapter = {
       if (typeof key !== 'string' || key.length === 0) continue;
       if (state !== 'Original' && state !== 'Translated') continue;
       translationStates.set(key, state);
+      stateStamps.set(key, ++stateStamp);
     }
   },
 
   capture(root): CapturedPost | null {
     const id = postIdOf(root);
-    if (!id) return null;
+    if (!id) {
+      notCaptured(root, '', 'no post id');
+      return null;
+    }
 
     const body = bodyIn(root);
-    if (!body) return null;
+    if (!body) {
+      notCaptured(root, id, 'no body');
+      return null;
+    }
 
     // What is filed is the post's SOURCE, never the side on screen — the hash, and with it every
     // stored classification and highlight key, is computed from `fullText`. While the reader is
@@ -1340,9 +1930,31 @@ export const linkedinAdapter: PlatformAdapter = {
     // gets here (`revealSource`), so it is filed under the same identity as everyone else's copy
     // of it rather than under the translation, which would give one post a different hash in each
     // of its languages — classified, and billed, once per language as if each were a new post.
-    const locale = displayedLocale(root);
+    const side = sideOf(root);
+    const node = commentaryNode(root);
+    const locale = side === 'Translated' && node ? targetLocale(node) : null;
     const shown = bodyText(body);
     const remembered = rememberedSources.get(id);
+    // A translation is never an identity: filing it would give the post a second one, and the
+    // classification its source already carries would be looked up under a hash nothing wrote.
+    // When the page says a translation is up and the source was never read, there is nothing to
+    // file yet — `revealSource` reads it off the host's control first, and the next sweep
+    // captures the post. A card whose side the page does not name is held the same way when it
+    // carries a translation control at all, because the side it shows cannot then be told from
+    // its source.
+    // The hold is bounded by the reveal's own failure: a post whose source could not be read
+    // back after its attempts is still captured as it stands rather than left with no buttons
+    // at all, which is the one thing this adapter cannot do. That is the pre-reveal reading,
+    // and the only road left to it — the detector answers the side of every card it can read.
+    // It is why this must not stand on `side` alone: a card whose flip failed is exactly the
+    // one that would otherwise wait for a source that is never coming (reported 2026-10-24,
+    // second time — the post stayed buttonless until the reader flipped it by hand).
+    const mayBeTranslated = !sourceFailed.has(id)
+      && (side === 'Translated' || (side === null && node !== null && translationToggle(root) !== null));
+    if (remembered === undefined && mayBeTranslated) {
+      notCaptured(root, id, `held as translated (side=${side ?? 'unknown'}, control=${translationToggle(root) ? 'yes' : 'no'})`);
+      return null;
+    }
     // The remembered source wins whenever there is one: it is the identity, and reading the side
     // on screen in its place would undo the flip's work on the sweep where the host's translation
     // state happens to be mid-update.
@@ -1352,10 +1964,14 @@ export const linkedinAdapter: PlatformAdapter = {
     // A post with no words carries nothing to fact-check, and one with no name carries no
     // context to classify it with. Either way it stays out of the batch rather than spending a
     // classification on it.
-    if (!text || !username) return null;
-    if (!locale) rememberSource(id, text);
+    if (!text || !username) {
+      notCaptured(root, id, `no ${!text ? 'text' : 'author'}`);
+      return null;
+    }
+    if (remembered === undefined) rememberSource(id, text);
 
     const urn = commentUrn(root);
+    const datetime = postedAt(root, anchor, urn !== null);
     if (urn) {
       // A reply has two ancestors and the page states neither in an attribute: the comment its
       // thread starts from, and the row it answers; see `replyParentsOf`.
@@ -1389,6 +2005,7 @@ export const linkedinAdapter: PlatformAdapter = {
           conversationId: threadId ?? namespaced(post),
           quoting: null,
           replyingTo: null,
+          ...(datetime ? { datetime } : {}),
         } as MainTweet,
         replyParentId: parentId ?? namespaced(post),
       };
@@ -1406,6 +2023,7 @@ export const linkedinAdapter: PlatformAdapter = {
         conversationId: id,
         quoting: null,
         replyingTo: null,
+        ...(datetime ? { datetime } : {}),
       } as MainTweet,
       replyParentId: null,
     };

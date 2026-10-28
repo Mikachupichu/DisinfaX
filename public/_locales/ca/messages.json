@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Detecta i ressalta la desinformació als tuits mitjançant anàlisi d'IA."
+    "message": "Detecta i ressalta la desinformació a les publicacions mitjançant anàlisi d'IA."
   },
   "verdictTrue": {
     "message": "Cert",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Torna a revelar totes les afirmacions d'aquest tuit",
+    "message": "Torna a revelar totes les afirmacions d'aquesta publicació",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Tanca la sessió"
   },
+  "deleteAccount": {
+    "message": "Suprimeix el compte i les dades associades",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "El teu saldo, i un hash criptogràfic de la teva adreça de correu protegit per una clau secreta, es conserven per evitar l'abús dels fons gratuïts que es donen en registrar-se. Si et tornes a registrar amb el mateix compte, el teu saldo es restaura.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "En fer clic a %BTN% es revelen les afirmacions i es cobrarà del teu saldo"
   },
@@ -285,7 +293,7 @@
     "message": "Usat per última vegada"
   },
   "cleanupTagline": {
-    "message": "Neteja el teu feed d'X."
+    "message": "Neteja el teu feed."
   },
   "disclaimerJurisdiction": {
     "message": "Als Estats Units, només els residents d'Alabama, Arizona, Califòrnia, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississipí, Missouri, Montana, Nou Hampshire, Nou Mèxic, Nova York, Carolina del Nord, Dakota del Nord, Oklahoma, Oregon, Pennsilvània, Carolina del Sud, Dakota del Sud, Tennessee, Texas, Utah, Washington, Wisconsin i Wyoming poden utilitzar DisinfaX i recarregar el seu saldo; Washington, D.C., tots els territoris dels EUA i qualsevol estat no esmentat en queden exclosos. Fora dels Estats Units, està disponible al Canadà, Austràlia, Nova Zelanda, Singapur, Sud-àfrica, el Japó, Taiwan, Indonèsia, Tailàndia, les Filipines, Malàisia, el Vietnam i Suïssa."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "No s'ha pogut trobar. Torna-ho a provar."
   },
+  "errNoClaims": {
+    "message": "No s'ha trobat cap afirmació verificable en aquest text.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Configuració",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aparença",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Clar",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automàtic",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Fosc",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Mostra sempre les verificacions si:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Continua amb Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Per a daltonians: distintius persistents",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Mantingues visible cada insígnia de verificació a les publicacions sense passar-hi el cursor. El veredicte es transmet tant pel color de ressaltat com pel text, cosa que ajuda a qui no distingeix aquests colors.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Mida de lletra gran",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Per al text dins de les finestres (afirmacions, raonaments...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Tanca",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Fes clic per editar l'afirmació",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detalls de la verificació de fets",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Aquesta selecció és massa llarga per verificar-la. Màxim 1 000 caràcters.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Avisa quan el saldo disminueixi",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Per més de: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "COM VERIFICAR ELS FETS",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "A qualsevol pàgina web, selecciona el text que vulguis verificar.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Fes clic amb el botó dret sobre el text seleccionat i tria Verificar (també funciona amb text no seleccionat).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Fes clic amb el botó dret sobre el text seleccionat i tria {1} Verificar (també funciona amb text no seleccionat).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "La verificació comença de seguida i es cobra al teu saldo.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Amb el text encara seleccionat, toca la ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " icona de la barra d'adreces i tria {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

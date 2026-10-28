@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Aptinka ir paryškina dezinformaciją tweet'uose naudodamas DI analizę."
+    "message": "Aptinka ir paryškina dezinformaciją įrašuose naudodamas DI analizę."
   },
   "verdictTrue": {
     "message": "Tiesa",
@@ -113,7 +113,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Iš naujo atskleisti visus šio tweet'o teiginius",
+    "message": "Iš naujo atskleisti visus šio įrašo teiginius",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -232,6 +232,14 @@
   "signOut": {
     "message": "Atsijungti"
   },
+  "deleteAccount": {
+    "message": "Ištrinti paskyrą ir susijusius duomenis",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Jūsų likutis ir slaptuoju raktu apsaugotas jūsų el. pašto adreso kriptografinis maišos kodas yra saugomi, kad būtų išvengta piktnaudžiavimo nemokamomis lėšomis, suteikiamomis kuriant paskyrą. Prisijungus iš naujo su ta pačia paskyra, jūsų likutis atkuriamas.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Spustelėjus %BTN% atskleidžiami teiginiai ir bus nuskaičiuota nuo tavo balanso"
   },
@@ -284,7 +292,7 @@
     "message": "Paskutinį kartą naudota"
   },
   "cleanupTagline": {
-    "message": "Sutvarkyk savo X sklaidos kanalą."
+    "message": "Sutvarkyk savo sklaidos kanalą."
   },
   "disclaimerJurisdiction": {
     "message": "Jungtinėse Valstijose DisinfaX naudotis ir papildyti savo balansą gali tik šių valstijų gyventojai: Alabama, Arizona, Kalifornija, Koloradas, Konektikutas, Delaveras, Florida, Aidahas, Ilinojus, Indiana, Ajova, Kanzasas, Kentukis, Luiziana, Meinas, Masačusetsas, Misisipė, Misūris, Montana, Naujasis Hampšyras, Naujoji Meksika, Niujorkas, Šiaurės Karolina, Šiaurės Dakota, Oklahoma, Oregonas, Pensilvanija, Pietų Karolina, Pietų Dakota, Tenesis, Teksasas, Juta, Vašingtonas, Viskonsinas ir Vajomingas; Vašingtonas, D.C., visos JAV teritorijos ir bet kurios nenurodytos valstijos yra išbrauktos. Už Jungtinių Valstijų ribų jis prieinamas Kanadoje, Australijoje, Naujojoje Zelandijoje, Singapūre, Pietų Afrikoje, Japonijoje, Taivane, Indonezijoje, Tailande, Filipinuose, Malaizijoje, Vietname ir Šveicarijoje."
@@ -327,9 +335,29 @@
   "errNotFound": {
     "message": "To nepavyko rasti. Bandyk dar kartą."
   },
+  "errNoClaims": {
+    "message": "Šiame tekste nerasta patikrinamų teiginių.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Nustatymai",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Išvaizda",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Šviesi",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatinė",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tamsi",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Visada rodyti patikras, jei:",
@@ -379,5 +407,86 @@
   "selectionConfirmCancel": {
     "message": "Atšaukti",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Išvalyti",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Įjungti „DisinfaX“ svetainėje $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "„DisinfaX“ įjungta svetainėje $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Išjungti",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Tęsti su Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Tęsti su LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Tęsti su Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Daltonikams: nuolatiniai ženkliukai",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Rodyti visus faktų tikrinimo ženkliukus įrašuose neužvedus pelės. Sprendimą perteikia tiek paryškinimo spalva, tiek žodžiai, todėl tai padeda tiems, kurie šių spalvų neskiria.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Didelis šrifto dydis",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Padidina perrašytus teiginius, pagrindimą ir įžanginius patarimus.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Uždaryti",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Spustelėkite, norėdami redaguoti teiginį",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktų tikrinimo informacija",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Šis pasirinkimas per ilgas patikrinti. Daugiausia 1 000 simbolių.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Pranešti, kai balansas sumažėja",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Daugiau nei: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

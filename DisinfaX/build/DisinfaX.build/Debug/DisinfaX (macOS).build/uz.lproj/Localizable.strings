@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> belgisiga bosing, so'ng Kengaytmalarni boshqarish'ga bosing va DisinfaX'ni yoqing.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>TO'LDIRISHDAN KEYIN</string>
+	<key>Add funds to your balance</key>
+	<string>Balansingizga mablag' qo'shing</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Oldingi US$%lld xaridi hali ham qo'llanishni kutmoqda edi, shuning uchun sizdan qayta pul yechish o'rniga aynan shu xarid yakunlandi. Yangilangan balansingizni ko'rish uchun Safari'ga qaytib, DisinfaX pop-up oynasini oching.</string>
+	<key>Annotate</key>
+	<string>Annotatsiya</string>
+	<key>Annotating</key>
+	<string>Annotatsiya qilinmoqda</string>
+	<key>Arguably</key>
+	<string>Bahsli</string>
+	<key>BALANCE</key>
+	<string>BALANS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>To'ldirish orqali siz bizning [Xizmat ko'rsatish shartlari](https://disinfax.app/terms-of-use) va [Maxfiylik siyosati](https://disinfax.app/privacy-policy)ga rozilik bildirasiz. Agar USD dan boshqa valyutada to'lasangiz, valyuta ayirboshlash to'lovlari qo'llanilishi mumkin.</string>
+	<key>Clear</key>
+	<string>Tozalash</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Pop-up oynasini ochish uchun Safari asboblar panelidagi DisinfaX belgisiga bosing.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ tugmasini bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store'ga ulanmoqda…</string>
+	<key>Copy</key>
+	<string>Nusxa olish</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX xato qilishi mumkin. Ma'lumotni qayta tekshiring.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Tartibga solish talablari sababli DisinfaX hozircha mintaqangizda mavjud emas.</string>
+	<key>Disinfact</key>
+	<string>Tekshirish</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari'da DisinfaX'ni Sozlamalar → Kengaytmalar bo'limida yoqing.</string>
+	<key>Enter a claim</key>
+	<string>Da'voni kiriting</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 dan 100 gacha bo'lgan to'liq dollar miqdorini kiriting.</string>
+	<key>Equivocally</key>
+	<string>Noaniq</string>
+	<key>Fact-Check</key>
+	<string>Faktlarni tekshirish</string>
+	<key>Fact-Check All</key>
+	<string>Barchasini tekshirish</string>
+	<key>Fact-Checking</key>
+	<string>Tekshirilmoqda</string>
+	<key>False</key>
+	<string>Yolg'on</string>
+	<key>Likely</key>
+	<string>Ehtimoliy</string>
+	<key>Mostly</key>
+	<string>Ko'pincha</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari kengaytma sozlamalarini ochish…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari'ni oching va x.com'ga o'ting.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Yangilangan balansingizni ko'rish uchun Safari'da pop-up oynasini oching</string>
+	<key>Partially</key>
+	<string>Qisman</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>To'lov yakunlandi. Yangilangan balansingizni ko'rish uchun Safari'ga qaytib, DisinfaX pop-up oynasini oching.</string>
+	<key>Possibly</key>
+	<string>Mumkin</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect'da %@ mahsuloti topilmadi.</string>
+	<key>Purchase cancelled.</key>
+	<string>Xarid bekor qilindi.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Xarid tasdiqlanishini kutmoqda.</string>
+	<key>Reasoning</key>
+	<string>Asoslash</string>
+	<key>Return to Safari</key>
+	<string>Safari'ga qaytish</string>
+	<key>Setup incomplete</key>
+	<string>Sozlash tugallanmagan</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Mablag' qo'shish uchun Safari'dagi DisinfaX pop-up oynasidan tizimga kiring.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Ushbu so'rovning bir qismi aniqlanmadi. Kengaytmaning yangilanganligiga ishonch hosil qiling.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Bizning tomonimizda xatolik yuz berdi. Bir oz vaqtdan so'ng qayta urinib ko'ring.</string>
+	<key>Sources</key>
+	<string>Manbalar</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>TO'LDIRISH MIQDORI</string>
+	<key>Tap the </key>
+	<string>Manzil satridagi </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Xuddi shu belgiga bosing va pop-up oynasini ochish uchun DisinfaX'ni tanlang.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Bu topilmadi. Qayta urinib ko'ring.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ushbu to'ldirish summasi yaroqsiz. Boshqa summani tanlang.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Bu build o'zining umumiy konteyneriga (App Group %@) kira olmaydi. To'ldirishlar App Groups imkoniyati ilova va kengaytmaga qo'shilmaguncha mavjud bo'lmaydi.</string>
+	<key>Top Up</key>
+	<string>To'ldirish</string>
+	<key>Top Up Balance</key>
+	<string>Balansni to'ldirish</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>To'ldirishlar uchun iOS'ning yangiroq versiyasi kerak. Yangilang, so'ng DisinfaX'ni qayta oching.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>To'ldirishlar uchun macOS'ning yangiroq versiyasi kerak. Yangilang, so'ng DisinfaX'ni qayta oching.</string>
+	<key>True</key>
+	<string>Haqiqat</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI'DA DISINFAX'DAN FOYDALANISH</string>
+	<key>Unknown</key>
+	<string>Noma'lum</string>
+	<key>Unknown purchase error.</key>
+	<string>Noma'lum xarid xatosi.</string>
+	<key>Very Likely</key>
+	<string>Juda ehtimoliy</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>To'liq AQSh dollari, 1–100. App Store valyutangizda hisoblanadi.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Sizda qo'llanishni kutayotgan US$%lld to'ldirish allaqachon mavjud — sizdan qayta pul yechilmagan. Uni balansingizga qo'llash uchun Safari'ga qaytib, DisinfaX pop-up oynasini oching.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Siz tizimga kirmagansiz. Tizimga kiring va qayta urinib ko'ring.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>US$%lld to'ldirishingiz qo'llanilmoqda.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>US$%lld to'ldirishingizning paydo bo'lishi odatdagidan ko'proq vaqt olmoqda.</string>
+	<key>Your account has been suspended.</key>
+	<string>Hisobingiz to'xtatib qo'yilgan.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Balansingiz juda past. Davom etish uchun balansni to'ldiring.</string>
+</dict>
+</plist>

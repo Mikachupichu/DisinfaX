@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "E iloa ma faailoa faamatalaga sese i tweets e ala i le auiliiliga a le AI.",
+    "message": "E iloa ma faailoa faamatalaga sese i pou e ala i le auiliiliga a le AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Toe fa'aalia tautinoga uma i lenei tweet",
+    "message": "Toe fa'aalia tautinoga uma i lenei pou",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Saini ese"
   },
+  "deleteAccount": {
+    "message": "Tape le Tulaga ma Faʻamaumauga e Fesootaʻi",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "O lou paleni, ma se hash faalilolilo o lou tuatusi imeli e puipuia i se ki lilo, e teuina ina ia taofia ai le faaaogaina sese o tupe maua fua e tuuina atu pe a faia se tulaga. Afai e te toe saini i totonu i le tulaga lava lea, e toe faafoʻisia lou paleni.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "O le kiliki i le %BTN% e faʻaalia ai tautinoga ma o le a totogia ai lau paleni"
   },
@@ -287,7 +295,7 @@
     "message": "Faʻaaogaina mulimuli"
   },
   "cleanupTagline": {
-    "message": "Faʻamamā lau X Feed."
+    "message": "Faʻamamā lau Feed."
   },
   "disclaimerJurisdiction": {
     "message": "I totonu o le Iunaite Setete, naʻo tagata nofoia o Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ma Wyoming e mafai ona faʻaaogaina DisinfaX ma faatumu a latou paleni; o Washington, D.C., o teritori uma a le US, ma soo se setete e leʻi lisiina e le aofia ai. I fafo atu o le Iunaite Setete, e maua i Kanata, Ausetalia, Niu Sila, Singapore, Aferika i Saute, Iapani, Taiuana, Initonesia, Taielani, Filipaina, Meleisia, Vietename, ma Suiselani."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "E leʻi mafai ona maua lena. Faʻamolemole toe taumafai."
   },
+  "errNoClaims": {
+    "message": "E leai ni fa'amatalaga e mafai ona fa'amaonia i lenei tusitusiga.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Faatulagaga",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Foliga",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Malamalama",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otometi",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Pogisa",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Faaali pea siaki mea moni pe a:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Faaleaogaina",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Solo",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Fa'agaoioi le DisinfaX i luga o $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "O lo'o ola le DisinfaX mo $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Tape",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Faʻaauau ma Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Faʻaauau ma LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Faʻaauau ma Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Mo tagata tauaso i lanu: pine tumau",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ia fa'aalia pea pine siaki o mea moni ta'itasi i luga o fa'asalalauga e aunoa ma le fa'asino i ai. O le fa'ai'uga e fa'ailoa mai i le lanu o le fa'amamafa e pei lava o upu, o lea e fesoasoani ai i so'o se tasi e le mafai ona fa'avasegaina na lanu.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Tetele mataitusi",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Fa'atele manatu ua toe tusia, mafuaaga, ma fautuaga o le amataga.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Tapuni",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Kiliki e sui ai le fa'amatalaga",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Fa'amatalaga o le siakiina o mea moni",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "E umi tele lenei filifiliga e siaki ai. 1,000 mataitusi le maualuga.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Fa'ailoa pe a fa'aitiitia le paleni",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "E sili atu i: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

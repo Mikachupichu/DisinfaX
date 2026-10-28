@@ -1,0 +1,112 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckClient.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Your session needs refreshing — open the DisinfaX popup in Safari, then try again.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 1198
+        }
+      },
+      {
+        "comment": "",
+        "key": "Something went wrong on our end. Please try again in a moment.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 1202
+        }
+      },
+      {
+        "comment": "",
+        "key": "You're not signed in. Please sign in and try again.",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 1223
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your balance is too low. Please top up to continue.",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 1224
+        }
+      },
+      {
+        "comment": "",
+        "key": "Something went wrong on our end. Please try again in a moment.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 1226
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your balance is too low. Please top up to continue.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1267
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your account has been suspended.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1268
+        }
+      },
+      {
+        "comment": "",
+        "key": "You're not signed in. Please sign in and try again.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1269
+        }
+      },
+      {
+        "comment": "",
+        "key": "Something about this request wasn't recognized. Please make sure the extension is up to date.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1270
+        }
+      },
+      {
+        "comment": "",
+        "key": "Something went wrong on our end. Please try again in a moment.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1271
+        }
+      },
+      {
+        "comment": "",
+        "key": "DisinfaX is not yet available in your region due to regulatory requirements.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1272
+        }
+      },
+      {
+        "comment": "",
+        "key": "That top-up amount isn't valid. Please choose a different amount.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1273
+        }
+      },
+      {
+        "comment": "",
+        "key": "That couldn't be found. Please try again.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1274
+        }
+      }
+    ]
+  },
+  "version": 1
+}

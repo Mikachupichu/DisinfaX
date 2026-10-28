@@ -44,6 +44,14 @@
   "signOut": {
     "message": "Изход"
   },
+  "deleteAccount": {
+    "message": "Изтриване на акаунта и свързаните данни",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Балансът ви и криптографски хеш на имейл адреса ви, защитен със таен ключ, се запазват, за да се предотврати злоупотреба с безплатните средства, предоставяни при регистрация. При повторно влизане със същия акаунт балансът ви се възстановява.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Кликването върху %BTN% разкрива твърденията и ще начисли такса от баланса ви"
   },
@@ -72,7 +80,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Открива и подчертава дезинформация в туитове чрез ИИ анализ."
+    "message": "Открива и подчертава дезинформация в публикации чрез ИИ анализ."
   },
   "verdictTrue": {
     "message": "Вярно",
@@ -183,7 +191,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Разкрий отново всички твърдения в този туит",
+    "message": "Разкрий отново всички твърдения в тази публикация",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -288,7 +296,7 @@
     "message": "Последно използвано"
   },
   "cleanupTagline": {
-    "message": "Изчистете своя канал в X."
+    "message": "Изчистете своя канал."
   },
   "factCheckAllButton": {
     "message": "Провери всичко"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Не можа да бъде намерено. Опитайте отново."
   },
+  "errNoClaims": {
+    "message": "В този текст не бяха открити проверими твърдения.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Настройки",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Изглед",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Светла",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Автоматично",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Тъмна",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Винаги показвай проверки, ако:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "Отказ",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Изчисти",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Включване на DisinfaX за $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX е включен за $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Изключване",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Продължи с Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Продължи с LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Продължи с Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "За далтонисти: постоянни значки",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Всички значки за проверка на фактите да остават видими в публикациите без посочване. Присъдата се показва както с цвета на открояване, така и с думи, което помага на хората, които не различават тези цветове.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Голям размер на шрифта",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Увеличете размера на пренаписаните твърдения, обосновката и началните подсказки.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Затвори",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Щракнете за редактиране на твърдението",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Подробности за проверката на фактите",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Тази селекция е твърде дълга за проверка. Максимум 1 000 знака.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Известяване при намаляване на баланса",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "С повече от: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

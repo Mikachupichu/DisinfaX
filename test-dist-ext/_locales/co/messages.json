@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Rileva è mette in evidenza a disinformazione in i tweets cù l'analisi IA.",
+    "message": "Rileva è mette in evidenza a disinformazione in e publicazioni cù l'analisi IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Rivelà torna tutte l'affirmazioni di stu tweet",
+    "message": "Rivelà torna tutte l'affirmazioni di stu post",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Scunnettitevi"
   },
+  "deleteAccount": {
+    "message": "Cancellà u contu è i dati assuciati",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "U vostru saldu, è un hash criptograficu di a vostra indirizza e-mail prutettu da una chjave secreta, si cunservanu per impedisce l'abusu di i fondi gratuiti dati à l'iscrizzione. S'ellu vi scrivite torna cù u listessu contu, u vostru saldu hè ristabilitu.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Cliccà nant'à %BTN% mostra l'affirmazioni è caricherà u vostru saldu"
   },
@@ -287,7 +295,7 @@
     "message": "Ultimu adupratu"
   },
   "cleanupTagline": {
-    "message": "Puliscite u vostru feed X."
+    "message": "Puliscite u vostru feed."
   },
   "disclaimerJurisdiction": {
     "message": "Indò i Stati Uniti, solu i residenti di Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, Novu Messicu, New York, Carolina di u Nord, Dakota di u Nord, Oklahoma, Oregon, Pennsylvania, Carolina di u Sud, Dakota di u Sud, Tennessee, Texas, Utah, Washington, Wisconsin è Wyoming pòdenu adoprà DisinfaX è ricarghà u so saldu; Washington, D.C., tutti i territorii americani, è qualsiasi statu ch'un hè listatu sò esclusi. Fora di i Stati Uniti, hè dispunibule in Canada, Australia, Nova Zelanda, Singapore, Sudafrica, Giappone, Taiwan, Indonesia, Tailandia, Filippine, Malesia, Vietnam è Svizzera."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Ùn si pò micca truvà. Pruvate torna."
   },
+  "errNoClaims": {
+    "message": "Nisuna affirmazione verificabile hè stata trovata in questu testu.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Cunfigurazione",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aspettu",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Chjaru",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automaticu",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Scuru",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Mustrà sempre e verifiche se:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Cuntinueghja cù Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Per daltonichi: badge permanenti",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Tene visibile ogni badge di verificazione nant'à e publicazioni senza passà sopra. U veredettu hè datu da u culore quant'è da e parolle, aiutendu à quelli chì ùn distinguenu micca sti culori.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Dimensione di caratteru grande",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Per u testu indrentu à e finestre (affirmazioni, raghjunamenti...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Chjode",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Cliccate per mudificà l'affirmazione",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Dettagli di a verificazione",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Sta selezzione hè troppu longa da verificà. Massimu 1 000 caratteri.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Avvisà quandu u saldu cala",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Per più di: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "CUMU VERIFICÀ I FATTI",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Nantu à qualsiasi pagina web, selezziona u testu chì vòi verificà.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Fà un clic dirittu nantu à u testu selezziunatu è sceglie Verifica (funziona ancu nantu à u testu micca selezziunatu).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Fà un clic dirittu nantu à u testu selezziunatu è sceglie {1} Verifica (funziona ancu nantu à u testu micca selezziunatu).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "A verificazione principia subitu è hè addebitata à u to saldu.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Cù u testu sempre selezziunatu, tocca a ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " icona in a barra d'indirizzu, è dopu sceglie {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

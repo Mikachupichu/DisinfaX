@@ -37,6 +37,7 @@ import type { MainTweet, Usertype } from '../../data/Tweets';
 import { Usertype as UsertypeEnum } from '../../data/Tweets';
 import { PLATFORM_HOSTS } from './hosts';
 import { appLanguage } from './capture';
+import { isoDatetime } from '../datetime';
 import { LONG_FORM_CHARS } from './types';
 import type { CapturedPost, PlatformAdapter } from './types';
 
@@ -128,6 +129,86 @@ function noteBody(root: Element): Element | null {
   return root.querySelector(NOTE_BODY);
 }
 
+/** Whether the reader is being shown this card at all.
+ *
+ *  A note permalink keeps the HOME FEED mounted and hides it by clipping: the column is
+ *  `width: 0; overflow: hidden`, and the feed's cards keep their entity keys inside it.
+ *  Measured on `/@thisweekinaiclub/note/c-360009941` reached by tapping that note in the
+ *  feed: five keyed cards sat in a column measuring 0x17885 with `overflow: hidden`, the
+ *  focal note's own copy among them, while the page's real thread rendered at 390px beside
+ *  it.
+ *
+ *  Counting those cards does two visible kinds of harm. Their buttons are seated into a
+ *  header row that has no width, so the bar overflows a clipped box rather than sitting in
+ *  a header. And the focal note's own copy is a card pointing at itself — exactly the shape
+ *  `heroNote` reads as "the note is already rendered as an ordinary card" — so the real,
+ *  keyless hero is refused and the note the page is about gets no buttons at all: the
+ *  button that is gone when a note is opened from the feed, and back after a reload, which
+ *  is the render in which this column is not there.
+ *
+ *  The clipping is read from the ancestor that does it, not from the card's own box: the
+ *  card inside that column still measures 32px wide and `checkVisibility` answers true for
+ *  it. What the reader can see of it is nothing. */
+function clippedFromReader(el: Element): boolean {
+  for (let p = el.parentElement; p; p = p.parentElement) {
+    const cs = getComputedStyle(p);
+    // No box of its own to clip anything: Substack wraps whole columns in `display: contents`
+    // (measured: a 0x0 `variables-…` div on every card, visible feed included).
+    if (cs.display === 'contents') continue;
+    const clips = cs.overflowX !== 'visible' || cs.overflowY !== 'visible';
+    if (clips && (p.clientWidth === 0 || p.clientHeight === 0)) return true;
+  }
+  return false;
+}
+
+/* ── The feed's clamp ───────────────────────────────────────────────────────────────
+ *
+ *  A note the feed cannot show whole is CUT, not hidden: measured at 390px on the home feed,
+ *  a note running to 616 characters in its payload renders as its first 210 plus a `See more`
+ *  anchor, and the rest is in no text node — Substack re-renders the body from the payload
+ *  when the anchor is clicked.
+ *
+ *  A post is NAMED by its text (`canonicalContext`), and `capture` deliberately files the
+ *  payload's whole note rather than the page's cut render, so that one note does not become
+ *  two posts — one hashed whole, one hashed at its prefix — depending on which surface the
+ *  reader met it on.
+ *
+ *  So a cut note is filed whole and painted on the words the host IS showing, with the clamp
+ *  doing the clipping: a mark past the cut stays hidden until the reader opens the note, and a
+ *  mark the cut runs through is cut with it. That works only because the painter leaves this
+ *  anchor alone (`bodyControl`). It used to move it — the whole body's children went into our
+ *  wrapper, the anchor among them — and the reader's next click then re-rendered the body the
+ *  way a React tree does it, `removeChild` on the nodes it still believes it owns, and the page
+ *  died outright: measured twice, `NotFoundError: Failed to execute 'removeChild'`, every card
+ *  on the feed gone (5 → 0) in the two seconds that followed. With the anchor left where the
+ *  host wrote it there is nothing of ours to reconcile against, and the note keeps its own
+ *  clamp — unlike X, whose body is whole under a style the host lifts by itself. */
+
+/** Substack's own control for a note it has cut. Its class carries a hashed suffix
+ *  (`seeMore-D88zkH`), which is the same shape as `feedCommentBody` — the prefix is what is
+ *  matched, and it is what the host calls this thing. */
+const SEE_MORE = '[class*="seeMore-"]';
+
+/** The host's own clamp control for this root, or null when its body is whole.
+ *
+ *  Ownership is what the loop is for: a note that quotes another note carries the quoted
+ *  one's control too, and a thread carries every comment's — reading one of those as this
+ *  root's would name a different post's body as cut. A root's own control is the one whose
+ *  nearest card or comment is the root itself.
+ *
+ *  Asked by `capture` for every root it is handed and by the painter for every post it is
+ *  about to paint into, so the single query comes first and the ownership walk happens only
+ *  where a control was found at all: almost every note is not cut. */
+function expanderOf(root: Element): Element | null {
+  if (!root.querySelector(SEE_MORE)) return null;
+  for (const box of Array.from(root.querySelectorAll(SEE_MORE))) {
+    const owner = box.closest(`${NOTE_CARD}, ${COMMENT}`);
+    if (owner && owner !== root) continue;
+    return (box.querySelector('a, button, [role="button"]') ?? box) as Element;
+  }
+  return null;
+}
+
 /** The length at which a note stops being one the reader takes in at a glance.
  *
  *  Measured on the feed: a note whose payload runs to 616 characters is rendered as its
@@ -136,7 +217,11 @@ function noteBody(root: Element): Element | null {
  *  likes, and the markup is a prefix while the payload holds the whole — which is why this
  *  platform set its own number BELOW every clip measured rather than at one. There is no
  *  per-platform number any more: every platform reads the universal `LONG_FORM_CHARS`, and
- *  the error it leaves here is the safe one. */
+ *  the error it leaves here is the safe one.
+ *
+ *  The clip does reach this measure, and it is answered where the note is filed: `isLongForm`
+ *  reads the same two sources `capture` does, in the same order, so a cut note is measured on
+ *  its own words rather than on the prefix the feed happens to be showing. */
 
 /** A profile link in its `/@handle` form — what a note and a post byline use. */
 const HANDLE_URL = /^\/@([^/?#]+)/;
@@ -343,6 +428,9 @@ function heroNote(): Element | null {
   if (!/^c-\d+$/.test(bare)) return null;
   for (const card of Array.from(document.querySelectorAll(NOTE_CARD))) {
     if (card.getAttribute('data-entity-key') !== bare) continue;
+    // The feed's own copy of this note, left mounted and clipped behind the permalink, is
+    // not the page rendering it as a card — see `clippedFromReader`.
+    if (clippedFromReader(card)) continue;
     // Keyed with this note's id AND pointing at it: the note is already rendered as an
     // ordinary card below, so there is no hero and the card stays its single root. A row
     // keyed with this note's id but permalinking elsewhere is an ancestor of the note, not
@@ -350,11 +438,20 @@ function heroNote(): Element | null {
     // note (see `ownNoteId`) — and it must not stand in for it.
     if (ownNoteId(card) === bare) return null;
   }
-  const selfLink = document.querySelector(`a[href*="/note/${bare}"]`);
-  if (!selfLink) return null;
-  for (let el = selfLink.parentElement; el && el !== document.body; el = el.parentElement) {
-    if (el.querySelector('[data-entity-key]')) break;
-    if (el.querySelector(NOTE_BODY)) return el;
+  // Every link to this note, because a permalink carries more than one: the note's own
+  // permalink sits in its header, and the clipped copy of the feed the reader arrived from —
+  // still mounted — carries one too, appearing EARLIER in the document. Taking the first
+  // therefore starts the ascent inside that copy and returns a clipped box as the hero, which
+  // is a bar nobody can see. Each is tried in turn instead, and a clipped ascent is abandoned.
+  const selfLinks = Array.from(document.querySelectorAll(`a[href*="/note/${bare}"]`));
+  for (const selfLink of selfLinks) {
+    for (let el = selfLink.parentElement; el && el !== document.body; el = el.parentElement) {
+      if (el.querySelector('[data-entity-key]')) break;
+      if (el.querySelector(NOTE_BODY)) {
+        if (!clippedFromReader(el)) return el;
+        break;
+      }
+    }
   }
   return null;
 }
@@ -413,13 +510,17 @@ function postRoots(id: string): Element[] {
 
   const numeric = entity[0].slice(2);
   for (const comment of Array.from(document.querySelectorAll(COMMENT))) {
-    if (commentId(comment) === numeric) out.push(comment);
+    if (commentId(comment) === numeric && !clippedFromReader(comment)) out.push(comment);
   }
   for (const card of Array.from(document.querySelectorAll(NOTE_CARD))) {
     // The card's own permalink decides, not its key: on a note permalink every row of the
     // thread is keyed with the focal note's id, so the key alone would answer for one id
     // with the whole thread (see `ownNoteId`).
-    if ((ownNoteId(card) ?? card.getAttribute('data-entity-key')) === entity[0]) out.push(card);
+    if ((ownNoteId(card) ?? card.getAttribute('data-entity-key')) !== entity[0]) continue;
+    // The clipped copy a permalink keeps of the surface it was reached from is not a place
+    // the reader can be shown a post — see `clippedFromReader`.
+    if (clippedFromReader(card)) continue;
+    out.push(card);
   }
   // The focal note of a note permalink page is keyless, so it is only reachable
   // structurally — and only for the id the page is about.
@@ -508,6 +609,13 @@ interface NoteEntity {
   exact: boolean;
   /** The language the note is written in, or null when the payload names none. */
   language: string | null;
+  /** The note's text in the language the reader is reading it in, rebuilt from the payload's
+   *  own `translation` document, or null when the payload states none.
+   *
+   *  `source`'s counterpart on the other side, and preferred over the page in the same order
+   *  and for the same reason: the feed CLIPS a long card, and the clip plus Substack's own
+   *  `See more` label sit inside the element this adapter reads. */
+  translated: string | null;
   /** The language a displayed translation is in, or null when the payload names none. */
   target: string | null;
   /** The note this one directly answers, as a bare `c-` id, or null for a top-level note. */
@@ -516,6 +624,18 @@ interface NoteEntity {
    *  state it: a note the page renders takes its author from the markup, as every other
    *  post on this platform does. */
   name: string;
+  /** When the note was written, as an ISO 8601 instant in UTC, or null when the payload
+   *  stated nothing this could read. Reaches the preclassify prompt's "today is" note, which
+   *  resolves a relative reference ("this morning", "last week") against the moment a post was
+   *  written.
+   *
+   *  The payload's edit time wins over its authoring time, which is the reading the field is
+   *  for: `edited_at` is stated only once the author HAS edited the note, so when it is there
+   *  it is the later of the two and the only one the post's own words were written against.
+   *  The instant itself is read off the ONE field the payload states it in — a note permalink
+   *  renders no `<time>` element and ships no date, so this response is the only place it
+   *  exists — and dropped rather than guessed when unreadable (see `isoDatetime`). */
+  datetime: string | null;
 }
 
 const noteEntities = new Map<string, NoteEntity>();
@@ -565,13 +685,23 @@ function asNoteEntity(record: unknown): NoteEntity | null {
     return trimmed || null;
   };
   const parent = typeof value.parent === 'string' && /^\d+$/.test(value.parent) ? value.parent : null;
+  const written = isoDatetime(typeof value.date === 'string' ? value.date : null) ?? null;
+  const edited = isoDatetime(typeof value.editedAt === 'string' ? value.editedAt : null) ?? null;
   return {
     source,
     exact: rendered.length > 0,
+    // Trimmed like `rendered` above, and for the same reason: the page's reading of the same
+    // string is trimmed, so the two have to agree character for character where they are the
+    // same string.
+    translated: typeof value.translated === 'string' && value.translated.trim() ? value.translated.trim() : null,
     language: tag(value.language),
     target: tag(value.autotranslateTo),
     parent,
     name: typeof value.name === 'string' ? value.name.trim() : '',
+    // The later of the two when both are stated, which is what makes this "written, or last
+    // edited": an `edited_at` before the `date` is not a statement about this note's own words,
+    // so the authoring time stands.
+    datetime: edited && written && edited > written ? edited : written ?? edited,
   };
 }
 
@@ -591,13 +721,18 @@ export const substackAdapter: PlatformAdapter = {
    *
    *  Comments are never long-form: a publication's comments are the short social unit here,
    *  server-rendered and complete, and they keep their buttons whatever they say. A note is
-   *  measured on the markup it renders, which is what the reader has in front of them; a note
-   *  the feed cut is longer than the number by construction, and one the payload completes
-   *  (`own ?? shown` in `capture`) is longer still. */
+   *  measured on its own words — the payload's reading where the page's state states one, the
+   *  page's otherwise — in the same order `capture` files it under and for the same reason: a
+   *  note the feed cut renders as a prefix of itself, and the number is about the note, not
+   *  about how much of it this page happens to be showing. */
   isLongForm(root) {
     if (root.classList.contains('comment')) return false;
-    const body = noteBody(root);
-    return (body?.textContent?.trim().length ?? 0) >= LONG_FORM_CHARS;
+    const id = idOf(root);
+    const entity = id ? noteEntities.get(id) : null;
+    const text = (entity && entity.exact ? entity.source : null)
+      ?? noteBody(root)?.textContent?.trim()
+      ?? '';
+    return text.length >= LONG_FORM_CHARS;
   },
 
   textElement(root) {
@@ -677,10 +812,45 @@ export const substackAdapter: PlatformAdapter = {
     // the post the page is about, so it is the first one announced.
     const hero = heroNote();
     if (hero) roots.push(hero);
-    // Every comment, nested included: each is its own post with its own buttons.
-    for (const comment of Array.from(document.querySelectorAll(COMMENT))) roots.push(comment);
-    for (const card of Array.from(document.querySelectorAll(NOTE_CARD))) roots.push(card);
+    // Every comment, nested included: each is its own post with its own buttons. A post the
+    // reader is not being shown is not one of them — see `clippedFromReader`; on a permalink
+    // that is the whole home feed, left mounted and clipped behind the note.
+    for (const comment of Array.from(document.querySelectorAll(COMMENT))) {
+      if (!clippedFromReader(comment)) roots.push(comment);
+    }
+    for (const card of Array.from(document.querySelectorAll(NOTE_CARD))) {
+      if (!clippedFromReader(card)) roots.push(card);
+    }
     return roots;
+  },
+
+  /** Whether the host is holding this root's body back behind its own `See more`.
+   *
+   *  `capture` reads the payload rather than the prefix, and the painter wraps the body's own
+   *  words while leaving this anchor where the host put it — see the clamp block above for what
+   *  painting one without that costs. Nothing opens it: the reader's own click is what does. */
+  bodyClipped(root) {
+    return expanderOf(root) !== null;
+  },
+
+  /** This body's own `See more`, scoped the way `expanderOf` scopes it: a note that quotes
+   *  another carries the quoted one's anchor too, and only the anchor whose card is this body's
+   *  own is its control.
+   *
+   *  The BOX is what this returns, not the `<a>` inside it. The painter builds its wrap in
+   *  whatever HOLDS the control and moves only what comes before it (measured: the box is a
+   *  direct child of the body, the anchor sits two levels deeper), so handing it the anchor
+   *  gives it that anchor's own wrapper — a box holding nothing but the anchor, and so nothing
+   *  to wrap. The body then went unpainted with no diagnostic. */
+  bodyControl(body) {
+    if (!body.querySelector(SEE_MORE)) return null;
+    const owner = body.closest(`${NOTE_CARD}, ${COMMENT}`);
+    for (const box of Array.from(body.querySelectorAll(SEE_MORE))) {
+      const holder = box.closest(`${NOTE_CARD}, ${COMMENT}`);
+      if (holder && holder !== owner) continue;
+      return box as Element;
+    }
+    return null;
   },
 
   capture(root: Element): CapturedPost | null {
@@ -689,6 +859,23 @@ export const substackAdapter: PlatformAdapter = {
 
     const isComment = root.classList.contains('comment');
     const entity = noteEntities.get(id);
+    // The payload's reading of this note where the page's own state states one — the words the
+    // card was rendered from, and so the note's own. Read here rather than below because the
+    // cut guard underneath needs it.
+    const own = entity && entity.exact ? entity.source : null;
+
+    // Still cut, so the markup is a prefix of this note. The page is left as the reader has it,
+    // and the note is filed from the payload above: the same string its author wrote, the same
+    // hash its row is filed under, and a post the reader can still be shown marks in — the ones
+    // that fall below the cut are the page's own business, not a reason to open it (see the
+    // clamp block at the top of this file). What a cut costs is the part of the reading below
+    // it, never the post.
+    //
+    // Without a payload the prefix is all this page holds, and a prefix names no post — one id
+    // must not name two texts. Such a note waits for the response that describes it, which is
+    // also what sweeps again: a cut note is left uncaptured rather than filed under its own
+    // opening words.
+    if (expanderOf(root) && !own) return null;
 
     // A note reaches the page twice: CLIPPED into its markup, and whole in the payload the
     // reader rendered it from. The payload always exists — a card is drawn from one, and a
@@ -739,7 +926,6 @@ export const substackAdapter: PlatformAdapter = {
     //
     // `exact` and not merely `entity`: the same rule has to hold for the text below, and the
     // approximation is no more the note's own words than the translation is.
-    const own = entity && entity.exact ? entity.source : null;
     if (translated && !own) return null;
 
     // The payload's reading first, the page's as the fallback — the same order Threads uses
@@ -748,6 +934,10 @@ export const substackAdapter: PlatformAdapter = {
     // where the page CLIPS one, this is what keeps the post from being hashed on its own
     // first 250 characters.
     const text = own ?? shown;
+    // When the note was written, as the reader's own response stated it. Absent for a note no
+    // response has described — a publication's server-rendered comment, whose payload this
+    // adapter may never see — rather than guessed from the page, which states no instant at all.
+    const datetime = entity?.datetime ?? undefined;
     // A comment can be deleted with its shell left behind, and a note can be an image with
     // no words. Neither carries anything to fact-check, so they stay out of the batch
     // rather than spending a classification on an empty string.
@@ -767,6 +957,7 @@ export const substackAdapter: PlatformAdapter = {
       conversationId: isComment ? (pagePostId() ?? id) : id,
       quoting: null,
       replyingTo: null,
+      ...(datetime ? { datetime } : {}),
     } as MainTweet;
 
     if (translated && entity) {
@@ -780,7 +971,13 @@ export const substackAdapter: PlatformAdapter = {
       // is exactly what this platform did before any of this existed.
       const target = entity.target ?? (publicationPage() ? null : appLanguage());
       if (target) {
-        post.translatedText = shown;
+        // The payload's reading of the translation where it has one for this very language,
+        // the page's where it does not — the same order as the source above and for the same
+        // reason. The feed clips a long card behind a `See more` anchor that sits inside the
+        // element read above, so filing that would measure every range against a prefix of the
+        // translation with Substack's own link text on the end, and would hash one note two
+        // ways depending on whether the reader met it on the feed or on its own page.
+        post.translatedText = (entity.target === target ? entity.translated : null) ?? shown;
         post.destinationLanguage = target;
       }
       if (entity.language) post.sourceLanguage = entity.language;
@@ -836,9 +1033,14 @@ export const substackAdapter: PlatformAdapter = {
    *  Asked only when a flip is being reported, never on a sweep, so the read here is
    *  affordable — and it is the same string `capture` files as `translatedText`, so the ranges
    *  the background stores for the translated side are keyed by the text the painter will be
-   *  handed back. */
+   *  handed back. That is also why it resolves the side the same way `capture` does, payload
+   *  before page: a flip reported against the page's clipped reading while the post was filed
+   *  under the payload's whole one would store ranges no element holds. */
   displayedText(root) {
     if (!isShowingTranslation(root)) return null;
+    const id = idOf(root);
+    const fromPayload = id ? noteEntities.get(id)?.translated ?? null : null;
+    if (fromPayload) return fromPayload;
     const body = root.classList.contains('comment') ? ownCommentBody(root) : noteBody(root);
     return body?.textContent?.trim() || null;
   },
@@ -916,6 +1118,7 @@ export const substackAdapter: PlatformAdapter = {
           conversationId,
           quoting: null,
           replyingTo: null,
+          ...(entity.datetime ? { datetime: entity.datetime } : {}),
         } as MainTweet,
         replyParentId: payloadParentId(entity),
       });

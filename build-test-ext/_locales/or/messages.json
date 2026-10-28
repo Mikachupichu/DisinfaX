@@ -27,7 +27,7 @@
     "message": "ଶେଷ ଥର ବ୍ୟବହୃତ"
   },
   "cleanupTagline": {
-    "message": "ଆପଣଙ୍କ X ଫିଡ୍ ସଫା କରନ୍ତୁ।"
+    "message": "ଆପଣଙ୍କ ଫିଡ୍ ସଫା କରନ୍ତୁ।"
   },
   "disclaimerJurisdiction": {
     "message": "ଯୁକ୍ତରାଷ୍ଟ୍ର ଭିତରେ, କେବଳ ଆଲାବାମା, ଆରିଜୋନା, କାଲିଫର୍ନିଆ, କଲୋରାଡୋ, କନେକ୍ଟିକଟ୍, ଡେଲାୱେୟାର୍, ଫ୍ଲୋରିଡା, ଆଇଡାହୋ, ଇଲିନଏ, ଇଣ୍ଡିଆନା, ଆଇଓୱା, କାନ୍ସାସ୍, କେଣ୍ଟକି, ଲୁଇଜିଆନା, ମେନ୍, ମାସାଚୁସେଟ୍ସ, ମିସିସିପି, ମିସୌରି, ମଣ୍ଟାନା, ନ୍ୟୁ ହ୍ୟାମ୍ପସାୟାର୍, ନ୍ୟୁ ମେକ୍ସିକୋ, ନ୍ୟୁୟର୍କ, ଉତ୍ତର କାରୋଲିନା, ଉତ୍ତର ଡାକୋଟା, ଓକ୍ଲାହୋମା, ଓରେଗନ୍, ପେନସିଲଭାନିଆ, ଦକ୍ଷିଣ କାରୋଲିନା, ଦକ୍ଷିଣ ଡାକୋଟା, ଟେନେସି, ଟେକ୍ସାସ୍, ୟୁଟା, ୱାଶିଂଟନ୍, ୱିସ୍କନ୍ସିନ୍, ଏବଂ ୱାୟୋମିଂର ବାସିନ୍ଦାମାନେ DisinfaX ବ୍ୟବହାର କରିପାରିବେ ଏବଂ ସେମାନଙ୍କ ବାଲାନ୍ସ ଟପ୍ ଅପ୍ କରିପାରିବେ; ୱାଶିଂଟନ୍, D.C., ସମସ୍ତ ଯୁକ୍ତରାଷ୍ଟ୍ର ଅଞ୍ଚଳ, ଏବଂ ତାଲିକାଭୁକ୍ତ ନ ଥିବା କୌଣସି ରାଜ୍ୟ ବାଦ ପଡ଼ିଛି। ଯୁକ୍ତରାଷ୍ଟ୍ର ବାହାରେ, ଏହା କାନାଡା, ଅଷ୍ଟ୍ରେଲିଆ, ନ୍ୟୁଜିଲାଣ୍ଡ, ସିଙ୍ଗାପୁର, ଦକ୍ଷିଣ ଆଫ୍ରିକା, ଜାପାନ, ତାଇୱାନ, ଇଣ୍ଡୋନେସିଆ, ଥାଇଲାଣ୍ଡ, ଫିଲିପାଇନ୍ସ, ମାଲେସିଆ, ଭିଏତନାମ, ଏବଂ ସ୍ୱିଜରଲାଣ୍ଡରେ ଉପଲବ୍ଧ।"
@@ -37,7 +37,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI ବିଶ୍ଳେଷଣ ବ୍ୟବହାର କରି ଟ୍ୱିଟ୍‌ରେ ଭୁଲ ସୂଚନା ଚିହ୍ନଟ କରେ ଏବଂ ହାଇଲାଇଟ୍ କରେ।",
+    "message": "AI ବିଶ୍ଳେଷଣ ବ୍ୟବହାର କରି ପୋଷ୍ଟରେ ଭୁଲ ସୂଚନା ଚିହ୍ନଟ କରେ ଏବଂ ହାଇଲାଇଟ୍ କରେ।",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -149,7 +149,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "ଏହି ଟ୍ୱିଟ୍‌ର ସମସ୍ତ ଦାବିକୁ ପୁଣି ପ୍ରକାଶ କରନ୍ତୁ",
+    "message": "ଏହି ପୋଷ୍ଟର ସମସ୍ତ ଦାବିକୁ ପୁଣି ପ୍ରକାଶ କରନ୍ତୁ",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -268,6 +268,14 @@
   "signOut": {
     "message": "ସାଇନ୍ ଆଉଟ୍"
   },
+  "deleteAccount": {
+    "message": "ଖାତା ଏବଂ ସମ୍ପୃକ୍ତ ତଥ୍ୟ ବିଲୋପ କରନ୍ତୁ",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "ଆପଣଙ୍କ ବାଲାନ୍ସ, ଏବଂ ଏକ ଗୁପ୍ତ କି ଦ୍ୱାରା ସୁରକ୍ଷିତ ଆପଣଙ୍କ ଇମେଲ୍ ଠିକଣାର ଏକ କ୍ରିପ୍ଟୋଗ୍ରାଫିକ୍ ହ୍ୟାସ୍, ଖାତା ଖୋଲିବା ସମୟରେ ଦିଆଯାଉଥିବା ମାଗଣା ଅର୍ଥର ଅପବ୍ୟବହାର ରୋକିବା ପାଇଁ ରଖାଯାଏ। ସେହି ଖାତାରେ ପୁଣି ସାଇନ୍ ଇନ୍ କଲେ ଆପଣଙ୍କ ବାଲାନ୍ସ ଫେରିଆସେ।",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% କ୍ଲିକ୍ କରିବା ଦାବିଗୁଡ଼ିକୁ ପ୍ରକାଶ କରିବ ଏବଂ ଆପଣଙ୍କ ବାଲାନ୍ସରୁ ଚାର୍ଜ କରାଯିବ"
   },
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "ତାହା ମିଳିଲା ନାହିଁ। ପୁନଃ ଚେଷ୍ଟା କରନ୍ତୁ।"
   },
+  "errNoClaims": {
+    "message": "ଏହି ପାଠ୍ୟରେ କୌଣସି ଯାଞ୍ଚଯୋଗ୍ୟ ଦାବି ମିଳିଲା ନାହିଁ।",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ସେଟିଂସ",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "ରୂପ",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ଉଜ୍ଜ୍ୱଳ",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "ସ୍ୱଚାଳିତ",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "ଅନ୍ଧାର",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ସର୍ବଦା ଫ୍ୟାକ୍ଟ-ଚେକ ଦେଖାନ୍ତୁ ଯଦି:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "ବାତିଲ୍ କରନ୍ତୁ",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "ସଫା କରନ୍ତୁ",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ ରେ DisinfaX ସକ୍ଷମ କରନ୍ତୁ",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$ ପାଇଁ DisinfaX ଚାଲୁ ଅଛି",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "ବନ୍ଦ କରନ୍ତୁ",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook ସହିତ ଜାରି ରଖନ୍ତୁ"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn ସହିତ ଜାରି ରଖନ୍ତୁ"
+  },
+  "continueWithReddit": {
+    "message": "Reddit ସହିତ ଜାରି ରଖନ୍ତୁ"
+  },
+  "persistentBadgesLabel": {
+    "message": "ବର୍ଣ୍ଣାନ୍ଧ-ଅନୁକୂଳ: ସ୍ଥାୟୀ ବ୍ୟାଜ୍",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "ପୋଷ୍ଟଗୁଡ଼ିକ ଉପରେ କର୍ସର ନ ରଖି ମଧ୍ୟ ପ୍ରତ୍ୟେକ ସତ୍ୟ ଯାଞ୍ଚ ବ୍ୟାଜ୍ ଦୃଶ୍ୟମାନ ରଖନ୍ତୁ। ଏକ ନିଷ୍ପତ୍ତି ଶବ୍ଦ ସହିତ ହାଇଲାଇଟ୍ ରଙ୍ଗ ଦ୍ୱାରା ମଧ୍ୟ ପ୍ରକାଶ ପାଇଥାଏ, ତେଣୁ ଏହା ସେହି ରଙ୍ଗଗୁଡ଼ିକୁ ଚିହ୍ନି ନ ପାରୁଥିବା ଲୋକଙ୍କୁ ସାହାଯ୍ୟ କରେ।",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "ବଡ଼ ଫଣ୍ଟ ଆକାର",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ପୁନଃଲିଖିତ ଦାବି, ଯୁକ୍ତି ଏବଂ ପ୍ରାରମ୍ଭିକ ସୂଚନାର ଆକାର ବଡ଼ କରନ୍ତୁ।",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "ବନ୍ଦ କରନ୍ତୁ",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "ଦାବି ସମ୍ପାଦନ କରିବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "ସତ୍ୟ ଯାଞ୍ଚ ବିବରଣୀ",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ଏହି ଚୟନ ଯାଞ୍ଚ କରିବାକୁ ଅତି ଲମ୍ବା। ସର୍ବାଧିକ 1,000 ଅକ୍ଷର।",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ବାଲାନ୍ସ କମିଲେ ସୂଚିତ କରନ୍ତୁ",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "ଏହାଠାରୁ ଅଧିକ: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

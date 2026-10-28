@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> nan bat adrès la, apre sa tap sou Jere Ekstansyon epi aktive DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>APRE RECHAJ</string>
+	<key>Add funds to your balance</key>
+	<string>Ajoute lajan nan balans ou</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Yon acha US$%lld pi bonè te toujou ap tann pou aplike, se pou sa se sa a ki te konplete olye pou yo chaje w ankò. Retounen nan Safari epi louvri popòp DisinfaX pou wè balans ou mete ajou.</string>
+	<key>Annotate</key>
+	<string>Anote</string>
+	<key>Annotating</key>
+	<string>Ap anote</string>
+	<key>Arguably</key>
+	<string>Diskitab</string>
+	<key>BALANCE</key>
+	<string>BALANS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Lè w rechaje, ou aksepte [Kondisyon Sèvis](https://disinfax.app/terms-of-use) ak [Politik Konfidansyalite](https://disinfax.app/privacy-policy) nou. Frè chanj lajan ka aplike si ou peye nan yon lòt lajan ki pa USD.</string>
+	<key>Clear</key>
+	<string>Efase</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tap sou ikòn DisinfaX nan bat zouti Safari pou louvri popòp la.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Klike sou %@ ap devwale reklamasyon yo epi l ap chaje balans ou</string>
+	<key>Contacting the App Store…</key>
+	<string>K ap konekte ak App Store…</string>
+	<key>Copy</key>
+	<string>Kopye</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ka fè erè. Tcheke enfòmasyon an de fwa.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX poko disponib nan zòn ou akoz egzijans regilasyon.</string>
+	<key>Disinfact</key>
+	<string>Verifye</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Aktive DisinfaX nan Safari, nan Paramèt → Ekstansyon.</string>
+	<key>Enter a claim</key>
+	<string>Antre yon reklamasyon</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Antre yon montan dola antye ant 1 ak 100.</string>
+	<key>Equivocally</key>
+	<string>Ekwivòk</string>
+	<key>Fact-Check</key>
+	<string>Verifikasyon enfòmasyon</string>
+	<key>Fact-Check All</key>
+	<string>Verifye tout</string>
+	<key>Fact-Checking</key>
+	<string>Verifikasyon</string>
+	<key>False</key>
+	<string>Fo</string>
+	<key>Likely</key>
+	<string>Posib</string>
+	<key>Mostly</key>
+	<string>Pifò</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Louvri paramèt ekstansyon Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Louvri Safari epi ale nan x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Louvri popòp la nan Safari pou wè balans ou mete ajou</string>
+	<key>Partially</key>
+	<string>Pasyèlman</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Peman konplete. Retounen nan Safari epi louvri popòp DisinfaX pou wè balans ou mete ajou.</string>
+	<key>Possibly</key>
+	<string>Petèt</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Pwodwi %@ pa jwenn nan App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Acha anile.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Acha ap tann apwobasyon.</string>
+	<key>Reasoning</key>
+	<string>Rezonman</string>
+	<key>Return to Safari</key>
+	<string>Retounen nan Safari</string>
+	<key>Setup incomplete</key>
+	<string>Konfigirasyon pa konplè</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Konekte soti nan fenèt popòp DisinfaX nan Safari pou ajoute lajan.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Yon pati nan demand sa a pa t rekonèt. Tanpri asire w ekstansyon an ajou.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Gen yon erè ki fèt bò kote nou. Tanpri eseye ankò nan yon ti moman.</string>
+	<key>Sources</key>
+	<string>Sous</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>MONTAN RECHAJ</string>
+	<key>Tap the </key>
+	<string>Tap sou ikòn </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tap sou menm ikòn lan epi chwazi DisinfaX pou louvri popòp la.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Nou pa jwenn sa a. Eseye ankò.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Kantite rechaj sa a pa valab. Tanpri chwazi yon lòt kantite.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Bild sa a pa ka rive nan kontenè pataje li (App Group %@). Rechaj p ap disponib jiskaske kapasite App Groups ajoute nan app ak ekstansyon an ansanm.</string>
+	<key>Top Up</key>
+	<string>Mete lajan</string>
+	<key>Top Up Balance</key>
+	<string>Rechaje balans</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Rechaj mande yon vèsyon iOS ki pi resan. Mete ajou, epi louvri DisinfaX ankò.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Rechaj mande yon vèsyon macOS ki pi resan. Mete ajou, epi louvri DisinfaX ankò.</string>
+	<key>True</key>
+	<string>Vre</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ITILIZASYON DISINFAX NAN SAFARI</string>
+	<key>Unknown</key>
+	<string>Enkoni</string>
+	<key>Unknown purchase error.</key>
+	<string>Erè acha enkoni.</string>
+	<key>Very Likely</key>
+	<string>Trè posib</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dola ameriken antye, 1–100. Y ap chaje ou nan lajan App Store ou.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ou gen tan gen yon rechaj US$%lld k ap tann pou aplike — yo pa chaje w ankò. Retounen nan Safari epi louvri popòp DisinfaX pou aplike l sou balans ou.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ou pa konekte. Tanpri konekte epi eseye ankò.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Rechaj ou US$%lld ap aplike kounye a.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Rechaj ou US$%lld ap pran plis tan pase nòmal pou parèt.</string>
+	<key>Your account has been suspended.</key>
+	<string>Kont ou sispann.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Balans ou tou ba. Tanpri rechaje pou kontinye.</string>
+</dict>
+</plist>

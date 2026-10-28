@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> in ordine inscriptionis, deinde tange Administra Additamenta et DisinfaX actives.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ esse %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>POST AUCTIONEM</string>
+	<key>Add funds to your balance</key>
+	<string>Adde pecuniam ad rationem tuam</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Emptio prior US$%lld adhuc applicandam exspectabat, ergo illa completa est pro te iterum computando. Redi ad Safari et aperi fenestellam emergentem DisinfaX ut rationem tuam renovatam videas.</string>
+	<key>Annotate</key>
+	<string>Adnota</string>
+	<key>Annotating</key>
+	<string>Adnotatur</string>
+	<key>Arguably</key>
+	<string>Disputabile</string>
+	<key>BALANCE</key>
+	<string>RATIO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Augendo, consentis nostris [Condicionibus Servitii](https://disinfax.app/terms-of-use) et [Consilio Secreti](https://disinfax.app/privacy-policy). Pretia mutationis monetae applicari possunt si alia moneta quam USD solvis.</string>
+	<key>Clear</key>
+	<string>Purga</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tange iconam DisinfaX in instrumentorum ordine Safari ut fenestellam emergentem aperias.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ premendo assertiones revelabuntur et saldum tuum onerabitur</string>
+	<key>Contacting the App Store…</key>
+	<string>Ad App Store connectitur…</string>
+	<key>Copy</key>
+	<string>Exscribe</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX errare potest. Informationem iterum verifica.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX nondum in regione tua propter necessitates ordinationis praesto est.</string>
+	<key>Disinfact</key>
+	<string>Recognosce</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Actives DisinfaX in Safari, sub Configurationibus → Additamentis.</string>
+	<key>Enter a claim</key>
+	<string>Affirmationem insere</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Insere summam dollariorum integram inter 1 et 100.</string>
+	<key>Equivocally</key>
+	<string>Aequivocum</string>
+	<key>Fact-Check</key>
+	<string>Exploratio factorum</string>
+	<key>Fact-Check All</key>
+	<string>Omnia Recognosce</string>
+	<key>Fact-Checking</key>
+	<string>Recognitio</string>
+	<key>False</key>
+	<string>Falsum</string>
+	<key>Likely</key>
+	<string>Probabile</string>
+	<key>Mostly</key>
+	<string>Maxime</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Aperi configurationes additamentorum Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Aperi Safari et vade ad x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Aperi fenestellam emergentem in Safari ut rationem tuam renovatam videas</string>
+	<key>Partially</key>
+	<string>Partim</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Solutio completa est. Redi ad Safari et aperi fenestellam emergentem DisinfaX ut rationem tuam renovatam videas.</string>
+	<key>Possibly</key>
+	<string>Fortasse</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Productum %@ in App Store Connect non inventum est.</string>
+	<key>Purchase cancelled.</key>
+	<string>Emptio cancellata est.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Emptio approbationem exspectat.</string>
+	<key>Reasoning</key>
+	<string>Ratio</string>
+	<key>Return to Safari</key>
+	<string>Redi ad Safari</string>
+	<key>Setup incomplete</key>
+	<string>Configuratio incompleta</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Ingredere e fenestella emergente DisinfaX in Safari ut pecuniam addas.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Pars huius postulationis non cognita est. Quaeso confirma additamentum recens esse.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Error apud nos accidit. Quaeso itera post breve tempus.</string>
+	<key>Sources</key>
+	<string>Fontes</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SUMMA AUCTIONIS</string>
+	<key>Tap the </key>
+	<string>Tange iconam </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tange eandem iconam et elige DisinfaX ut fenestellam emergentem aperias.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Id inveniri non potuit. Quaeso itera.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Summa illa additionis non valida est. Quaeso aliam summam selige.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Haec aedificatio ad commune receptaculum suum (App Group %@) pervenire non potest. Auctiones non aderunt donec facultas App Groups et applicationi et additamento addita erit.</string>
+	<key>Top Up</key>
+	<string>Reple</string>
+	<key>Top Up Balance</key>
+	<string>Rationem auge</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Auctiones novam versionem iOS requirunt. Renova, deinde DisinfaX iterum aperi.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Auctiones novam versionem macOS requirunt. Renova, deinde DisinfaX iterum aperi.</string>
+	<key>True</key>
+	<string>Verum</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>USUS DISINFAX IN SAFARI</string>
+	<key>Unknown</key>
+	<string>Ignotum</string>
+	<key>Unknown purchase error.</key>
+	<string>Ignotus emptionis error.</string>
+	<key>Very Likely</key>
+	<string>Valde probabile</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollaria Americana integra, 1–100. In moneta App Store tuae computabitur.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Iam habes auctionem US$%lld applicandam exspectantem — non es iterum computatus. Redi ad Safari et aperi fenestellam emergentem DisinfaX ut eam rationi tuae applices.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Non inscriptus es. Quaeso inscribe et itera.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Auctio tua US$%lld nunc applicatur.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Apparitio auctionis tuae US$%lld diutius solito tempus sumit.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ratio tua suspensa est.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ratio tua nimis parva est. Quaeso adde pecuniam ut pergas.</string>
+</dict>
+</plist>

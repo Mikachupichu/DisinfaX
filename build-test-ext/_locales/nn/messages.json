@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Oppdagar og framhevar feilinformasjon i tweets med AI-analyse.",
+    "message": "Oppdagar og framhevar feilinformasjon i innlegg med AI-analyse.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Avslør igjen alle påstandane i denne tweeten",
+    "message": "Avslør igjen alle påstandane i dette innlegget",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Logg ut"
   },
+  "deleteAccount": {
+    "message": "Slett konto og tilknytta data",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Saldoen din, og ein kryptografisk hash av e-postadressa di som er verna med ein hemmeleg nykkel, vert lagra for å hindre misbruk av dei gratis midla som vert gjevne ved kontooppretting. Loggar du inn att med same konto, vert saldoen din gjenoppretta.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Å klikke på %BTN% viser påstandar og trekk frå saldoen din"
   },
@@ -287,7 +295,7 @@
     "message": "Sist brukt"
   },
   "cleanupTagline": {
-    "message": "Rydd opp i X-straumen din."
+    "message": "Rydd opp i straumen din."
   },
   "disclaimerJurisdiction": {
     "message": "Innanfor USA kan berre innbyggjarar i Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Nord-Carolina, Nord-Dakota, Oklahoma, Oregon, Pennsylvania, Sør-Carolina, Sør-Dakota, Tennessee, Texas, Utah, Washington, Wisconsin og Wyoming bruke DisinfaX og fylle på saldoen sin; Washington, D.C., alle amerikanske territorium og alle statar som ikkje er nemnde, er utelatne. Utanfor USA er tenesta tilgjengeleg i Canada, Australia, New Zealand, Singapore, Sør-Afrika, Japan, Taiwan, Indonesia, Thailand, Filippinane, Malaysia, Vietnam og Sveits."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Det blei ikkje funne. Prøv igjen."
   },
+  "errNoClaims": {
+    "message": "Fann ingen stadfestelege påstandar i denne teksten.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Innstillinger",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Utsjånad",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ljos",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatisk",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Mørk",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Vis alltid faktasjekker hvis:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Avbryt",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Tøm",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Aktiver DisinfaX på $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX er på for $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Slå av",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Hald fram med Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Hald fram med LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Hald fram med Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Fargeblindvenleg: faste merke",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Hald alle faktasjekk-merke synlege på innlegg utan å peike på dei. Ein dom blir formidla like mykje med uthevingsfargen som med ord, så dette hjelper alle som ikkje kan skilje desse fargane.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Stor skriftstorleik",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Auk storleiken på dei omskrivne påstandane, grunngjevinga og introduksjonstipsa.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Lukk",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klikk for å redigere påstanden",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktasjekkdetaljar",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Dette utvalet er for langt til å faktasjekke. Maksimum 1 000 teikn.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Varsle når saldoen søkk",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Med meir enn: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

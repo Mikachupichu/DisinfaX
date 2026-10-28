@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> kwenye upau wa anwani, kisha gonga Dhibiti Viendelezi na uwezeshe DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ uhakika</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ uhakika, %2$@ ukweli</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ kuwa %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>BAADA YA KUONGEZA</string>
+	<key>Add funds to your balance</key>
+	<string>Ongeza fedha kwenye salio lako</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ununuzi wa awali wa US$%lld ulikuwa bado unasubiri kutumika, kwa hivyo huo ndio uliokamilishwa badala ya kukutoza tena. Rudi kwa Safari na ufungue dirisha ibukizi la DisinfaX ili kuona salio lako lililosasishwa.</string>
+	<key>Annotate</key>
+	<string>Fafanua</string>
+	<key>Annotating</key>
+	<string>Inafafanua</string>
+	<key>Arguably</key>
+	<string>Kwa Hoja</string>
+	<key>BALANCE</key>
+	<string>SALIO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Kwa kuongeza fedha, unakubali [Masharti ya Huduma](https://disinfax.app/terms-of-use) na [Sera ya Faragha](https://disinfax.app/privacy-policy) yetu. Ada za kubadilisha sarafu zinaweza kutumika ikiwa unalipa kwa sarafu nyingine isipokuwa USD.</string>
+	<key>Clear</key>
+	<string>Futa</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Gonga aikoni ya DisinfaX kwenye upau wa vidhibiti wa Safari ili kufungua dirisha ibukizi.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Kubofya %@ kunaonyesha madai na kutatoza salio lako</string>
+	<key>Close</key>
+	<string>Funga</string>
+	<key>Contacting the App Store…</key>
+	<string>Inaunganisha na App Store…</string>
+	<key>Copy</key>
+	<string>Nakili</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX inaweza kufanya makosa. Hakiki taarifa kwa uangalifu.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX haijapatikana bado katika eneo lako kutokana na mahitaji ya udhibiti.</string>
+	<key>Disinfact</key>
+	<string>Disinfact</string>
+	<key>Edit</key>
+	<string>Hariri</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Wezesha DisinfaX katika Safari, chini ya Mipangilio → Viendelezi.</string>
+	<key>Enter a claim</key>
+	<string>Weka madai</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Weka kiasi kamili cha dola kati ya 1 na 100.</string>
+	<key>Equivocally</key>
+	<string>Kwa Utata</string>
+	<key>Fact-Check</key>
+	<string>Ukaguzi wa ukweli</string>
+	<key>Fact-Check All</key>
+	<string>Hakiki Madai Yote</string>
+	<key>Fact-Checking</key>
+	<string>Uhakiki</string>
+	<key>False</key>
+	<string>Si Kweli</string>
+	<key>Likely</key>
+	<string>Inawezekana</string>
+	<key>Mostly</key>
+	<string>Kwa Kiasi Kikubwa</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Fungua mipangilio ya viendelezi vya Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Fungua Safari na uende x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Fungua dirisha ibukizi katika Safari ili kuona salio lako lililosasishwa</string>
+	<key>Partially</key>
+	<string>Kwa Sehemu</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Malipo yamekamilika. Rudi kwa Safari na ufungue dirisha ibukizi la DisinfaX ili kuona salio lako lililosasishwa.</string>
+	<key>Possibly</key>
+	<string>Labda</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Bidhaa %@ haikupatikana katika App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ununuzi umeghairiwa.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Ununuzi unasubiri idhini.</string>
+	<key>Reasoning</key>
+	<string>Sababu</string>
+	<key>Return to Safari</key>
+	<string>Rudi kwa Safari</string>
+	<key>Setup incomplete</key>
+	<string>Usanidi haujakamilika</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Ingia kutoka kwenye dirisha ibukizi la DisinfaX ndani ya Safari ili kuongeza fedha.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Sehemu ya ombi hili haikutambulika. Tafadhali hakikisha kiendelezi kimesasishwa.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Hitilafu ilitokea kwa upande wetu. Tafadhali jaribu tena baada ya muda mfupi.</string>
+	<key>Sources</key>
+	<string>Vyanzo</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>KIASI CHA KUONGEZA</string>
+	<key>Tap the </key>
+	<string>Gonga aikoni </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Gonga aikoni hiyo hiyo na uchague DisinfaX ili kufungua dirisha ibukizi.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Hilo halikupatikana. Tafadhali jaribu tena.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Kiwango hicho cha kuongeza salio si sahihi. Tafadhali chagua kiwango kingine.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Jengo hili haliwezi kufikia kihifadhi kilichoshirikiwa (App Group %@). Kuongeza fedha hakutakuwa tayari mpaka uwezo wa App Groups uongezwe kwenye programu na kiendelezi vyote viwili.</string>
+	<key>Top Up</key>
+	<string>Ongeza salio</string>
+	<key>Top Up Balance</key>
+	<string>Ongeza salio</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Kuongeza fedha kunahitaji toleo jipya zaidi la iOS. Sasisha, kisha ufungue DisinfaX tena.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Kuongeza fedha kunahitaji toleo jipya zaidi la macOS. Sasisha, kisha ufungue DisinfaX tena.</string>
+	<key>True</key>
+	<string>Kweli</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>KUTUMIA DISINFAX KATIKA SAFARI</string>
+	<key>Unknown</key>
+	<string>Haijulikani</string>
+	<key>Unknown purchase error.</key>
+	<string>Hitilafu isiyojulikana ya ununuzi.</string>
+	<key>Very Likely</key>
+	<string>Inawezekana Sana</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dola kamili za Marekani, 1–100. Utatozwa kwa sarafu ya App Store yako.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Una tayari kuongeza fedha kwa US$%lld kinachosubiri kutumika — hukutozwa tena. Rudi kwa Safari na ufungue dirisha ibukizi la DisinfaX ili ukitumie kwenye salio lako.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Hujaingia. Tafadhali ingia na ujaribu tena.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Kuongeza fedha kwako kwa US$%lld kunatumika sasa.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Kuongeza fedha kwako kwa US$%lld kunachukua muda mrefu kuliko kawaida kuonekana.</string>
+	<key>Your account has been suspended.</key>
+	<string>Akaunti yako imesimamishwa.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Salio lako halitoshi. Tafadhali ongeza salio ili kuendelea.</string>
+</dict>
+</plist>

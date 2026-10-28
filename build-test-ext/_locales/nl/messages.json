@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Detecteert en markeert desinformatie in tweets met behulp van AI-analyse."
+    "message": "Detecteert en markeert desinformatie in berichten met behulp van AI-analyse."
   },
   "verdictTrue": {
     "message": "Waar",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Alle beweringen in deze tweet opnieuw onthullen",
+    "message": "Alle beweringen in dit bericht opnieuw onthullen",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Afmelden"
   },
+  "deleteAccount": {
+    "message": "Account en bijbehorende gegevens verwijderen",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Je saldo en een cryptografische hash van je e-mailadres die wordt beschermd door een geheime sleutel, worden bewaard om misbruik van de gratis tegoeden bij het registreren te voorkomen. Meld je opnieuw aan met hetzelfde account, dan wordt je saldo hersteld.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Klikken op %BTN% toont beweringen en brengt kosten in rekening op je saldo"
   },
@@ -285,7 +293,7 @@
     "message": "Laatst gebruikt"
   },
   "cleanupTagline": {
-    "message": "Ruim je X-feed op."
+    "message": "Ruim je feed op."
   },
   "disclaimerJurisdiction": {
     "message": "Binnen de Verenigde Staten kunnen alleen inwoners van Alabama, Arizona, Californië, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Noord-Carolina, Noord-Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin en Wyoming DisinfaX gebruiken en hun saldo opwaarderen; Washington, D.C., alle Amerikaanse territoria en alle niet-vermelde staten zijn uitgesloten. Buiten de Verenigde Staten is het beschikbaar in Canada, Australië, Nieuw-Zeeland, Singapore, Zuid-Afrika, Japan, Taiwan, Indonesië, Thailand, de Filipijnen, Maleisië, Vietnam en Zwitserland."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Dat kon niet worden gevonden. Probeer het opnieuw."
   },
+  "errNoClaims": {
+    "message": "Er zijn geen verifieerbare beweringen in deze tekst gevonden.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Instellingen",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Weergave",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Licht",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatisch",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Donker",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Altijd factchecks tonen als:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "Annuleren",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Wissen",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "DisinfaX inschakelen op $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX is ingeschakeld voor $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Uitschakelen",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Doorgaan met Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Doorgaan met LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Doorgaan met Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Voor kleurenblinden: permanente badges",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Houd elke factcheck-badge zichtbaar op berichten zonder eroverheen te bewegen. Een oordeel blijkt net zozeer uit de markeringskleur als uit de woorden, dus dit helpt iedereen die deze kleuren niet uit elkaar kan houden.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grote lettergrootte",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Vergroot de herschreven claims, de redenering en de introductietips.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Sluiten",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klik om bewering te bewerken",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Factcheck-details",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Deze selectie is te lang om te factchecken. Maximaal 1 000 tekens.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Melden wanneer saldo daalt",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Met meer dan: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

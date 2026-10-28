@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> သင်္ကေတကို တို့ပြီး၊ ထို့နောက် တိုးချဲ့စနစ်များကို စီမံရန် ကို တို့ကာ DisinfaX ကိုဖွင့်ပါ။</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ယုံကြည်မှု</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ယုံကြည်မှု၊ %2$@ မှန်ကန်မှု</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ငွေဖြည့်ပြီးနောက်</string>
+	<key>Add funds to your balance</key>
+	<string>သင့်လက်ကျန်ငွေထဲသို့ ငွေထည့်ပါ</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ယခင် US$%lld ဝယ်ယူမှုတစ်ခုသည် အသုံးချရန် စောင့်ဆိုင်းနေဆဲဖြစ်သဖြင့် သင့်ကို ထပ်မံငွေကောက်ခံမည့်အစား ထိုဝယ်ယူမှုကို ပြီးမြောက်စေခဲ့သည်။ သင့်ရဲ့ အပ်ဒိတ်လုပ်ထားသော လက်ကျန်ငွေကို ကြည့်ရန် Safari သို့ ပြန်သွားပြီး DisinfaX ပေါ့်အပ်ကို ဖွင့်ပါ။</string>
+	<key>Annotate</key>
+	<string>မှတ်ချက်ထည့်ပါ</string>
+	<key>Annotating</key>
+	<string>မှတ်ချက်ထည့်နေသည်</string>
+	<key>Arguably</key>
+	<string>ငြင်းခုံနိုင်သည်</string>
+	<key>BALANCE</key>
+	<string>လက်ကျန်ငွေ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>ငွေဖြည့်ခြင်းဖြင့် သင်သည် ကျွန်ုပ်တို့၏ [ဝန်ဆောင်မှုစည်းမျဉ်းများ](https://disinfax.app/terms-of-use) နှင့် [ကိုယ်ရေးလုံခြုံမှုမူဝါဒ](https://disinfax.app/privacy-policy) ကို သဘောတူသည်။ USD မှလွဲ၍ အခြားငွေကြေးဖြင့် ပေးချေပါက ငွေကြေးလဲလှယ်ခ ကျသင့်နိုင်သည်။</string>
+	<key>Clear</key>
+	<string>ရှင်းလင်းရန်</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>ပေါ့်အပ်ဖွင့်ရန် Safari ကိရိယာဘားရှိ DisinfaX သင်္ကေတကို တို့ပါ။</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ ကို နှိပ်လိုက်ပါက ပြောဆိုချက်များကို ပြသပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်</string>
+	<key>Close</key>
+	<string>ပိတ်ရန်</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store သို့ ချိတ်ဆက်နေသည်…</string>
+	<key>Copy</key>
+	<string>ကူးယူ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX သည် အမှားများ ပြုလုပ်နိုင်သည်။ အချက်အလက်ကို ထပ်မံစစ်ဆေးပါ။</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>စည်းမျဉ်းဆိုင်ရာ လိုအပ်ချက်များကြောင့် DisinfaX ကို သင့်ဒေသတွင် မရရှိသေးပါ။</string>
+	<key>Disinfact</key>
+	<string>စစ်ဆေးခြင်း</string>
+	<key>Edit</key>
+	<string>ပြင်ဆင်ရန်</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari ရှိ ဆက်တင်များ → တိုးချဲ့စနစ်များတွင် DisinfaX ကိုဖွင့်ပါ။</string>
+	<key>Enter a claim</key>
+	<string>အဆိုတစ်ခု ထည့်ပါ</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>၁ နှင့် ၁၀၀ ကြားရှိ ဒေါ်လာပမာဏတစ်ခုလုံးကို ထည့်သွင်းပါ။</string>
+	<key>Equivocally</key>
+	<string>မရှင်းလင်း</string>
+	<key>Fact-Check</key>
+	<string>အချက်အလက် စစ်ဆေးခြင်း</string>
+	<key>Fact-Check All</key>
+	<string>အားလုံးကို စစ်ဆေးပါ</string>
+	<key>Fact-Checking</key>
+	<string>စစ်ဆေးခြင်း</string>
+	<key>False</key>
+	<string>မှားသည်</string>
+	<key>Likely</key>
+	<string>ဖြစ်နိုင်သည်</string>
+	<key>Mostly</key>
+	<string>အများအားဖြင့်</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari တိုးချဲ့စနစ်ဆက်တင်များ ဖွင့်ပါ…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari ကိုဖွင့်ပြီး x.com သို့သွားပါ။</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>သင့်ရဲ့ အပ်ဒိတ်လုပ်ထားသော လက်ကျန်ငွေကို ကြည့်ရန် Safari တွင် ပေါ့်အပ်ကို ဖွင့်ပါ</string>
+	<key>Partially</key>
+	<string>တစ်စိတ်တစ်ပိုင်း</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ငွေပေးချေမှု ပြီးမြောက်ပါပြီ။ သင့်ရဲ့ အပ်ဒိတ်လုပ်ထားသော လက်ကျန်ငွေကို ကြည့်ရန် Safari သို့ ပြန်သွားပြီး DisinfaX ပေါ့်အပ်ကို ဖွင့်ပါ။</string>
+	<key>Possibly</key>
+	<string>ဖြစ်နိုင်သည်</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect တွင် ပစ္စည်း %@ ကို ရှာမတွေ့ပါ။</string>
+	<key>Purchase cancelled.</key>
+	<string>ဝယ်ယူမှု ပယ်ဖျက်လိုက်ပါပြီ။</string>
+	<key>Purchase is pending approval.</key>
+	<string>ဝယ်ယူမှုသည် အတည်ပြုချက် စောင့်ဆိုင်းနေပါသည်။</string>
+	<key>Reasoning</key>
+	<string>အကြောင်းပြချက်</string>
+	<key>Return to Safari</key>
+	<string>Safari သို့ ပြန်သွားပါ</string>
+	<key>Setup incomplete</key>
+	<string>စနစ်ထည့်သွင်းမှု မပြီးမြောက်သေးပါ</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>ငွေထည့်ရန် Safari ရှိ DisinfaX ပေါ့်အပ်မှ ဝင်ရောက်ပါ။</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ဤတောင်းဆိုမှုမှ အချို့အပိုင်းများကို မသိရှိနိုင်ပါ။ Extension အသစ်ဖြစ်ကြောင်း သေချာပါစေ။</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>ကျွန်ုပ်တို့ဘက်တွင် အမှားတစ်ခု ဖြစ်ခဲ့ပါသည်။ ခဏစောင့်ပြီး ထပ်စမ်းကြည့်ပါ။</string>
+	<key>Sources</key>
+	<string>ရင်းမြစ်များ</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ငွေဖြည့်ပမာဏ</string>
+	<key>Tap the </key>
+	<string>လိပ်စာဘားရှိ </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>တူညီသောသင်္ကေတကို တို့ပြီး ပေါ့်အပ်ဖွင့်ရန် DisinfaX ကိုရွေးပါ။</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>ရှာမတွေ့ပါ။ ထပ်စမ်းကြည့်ပါ။</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ထိုငွေဖြည့်ပမာဏ မှားနေပါသည်။ အခြားပမာဏတစ်ခု ရွေးပါ။</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>ဤဗားရှင်းသည် ၎င်း၏ မျှဝေထားသော ကွန်တိန်နာ (App Group %@) ကို ဆိုက်ရောက်၍မရနိုင်ပါ။ App Groups စွမ်းရည်ကို အက်ပ်နှင့် တိုးချဲ့စနစ် နှစ်ခုစလုံးတွင် ထည့်သွင်းမှသာ ငွေဖြည့်ခြင်းများကို အသုံးပြုနိုင်ပါမည်။</string>
+	<key>Top Up</key>
+	<string>ငွေဖြည့်ရန်</string>
+	<key>Top Up Balance</key>
+	<string>လက်ကျန်ငွေ ဖြည့်ပါ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>ငွေဖြည့်ခြင်းအတွက် iOS ဗားရှင်းအသစ်လိုအပ်သည်။ အပ်ဒိတ်လုပ်ပြီး DisinfaX ကို ပြန်ဖွင့်ပါ။</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>ငွေဖြည့်ခြင်းအတွက် macOS ဗားရှင်းအသစ်လိုအပ်သည်။ အပ်ဒိတ်လုပ်ပြီး DisinfaX ကို ပြန်ဖွင့်ပါ။</string>
+	<key>True</key>
+	<string>မှန်သည်</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI တွင် DISINFAX ကိုအသုံးပြုခြင်း</string>
+	<key>Unknown</key>
+	<string>မသိရ</string>
+	<key>Unknown purchase error.</key>
+	<string>အမည်မသိ ဝယ်ယူမှု အမှား။</string>
+	<key>Very Likely</key>
+	<string>အလွန်ဖြစ်နိုင်သည်</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>အမေရိကန်ဒေါ်လာ အပြည့်၊ ၁–၁၀၀။ သင့် App Store ငွေကြေးဖြင့် ကျသင့်ပါမည်။</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>သင့်တွင် အသုံးချရန် စောင့်ဆိုင်းနေသော US$%lld ငွေဖြည့်မှုတစ်ခု ရှိပြီးဖြစ်သည် — သင့်ကို ထပ်မံ၍ ငွေကောက်ခံခြင်း မဖြစ်ပါ။ ၎င်းကို သင့်လက်ကျန်ငွေတွင် အသုံးချရန် Safari သို့ ပြန်သွားပြီး DisinfaX ပေါ့်အပ်ကို ဖွင့်ပါ။</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>သင် ဝင်ထားခြင်း မရှိပါ။ ကျေးဇူးပြု၍ ဝင်ပြီး ထပ်စမ်းကြည့်ပါ။</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>သင့် US$%lld ငွေဖြည့်မှုကို အသုံးချနေပါသည်။</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>သင့် US$%lld ငွေဖြည့်မှု ပေါ်လာရန် ပုံမှန်ထက် အချိန်ပိုကြာနေပါသည်။</string>
+	<key>Your account has been suspended.</key>
+	<string>သင့်အကောင့်ကို ယာယီရပ်ဆိုင်းထားပါသည်။</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>သင့်ငွေလက်ကျန် နည်းလွန်းနေပါသည်။ ဆက်လက်ရန် ငွေဖြည့်ပါ။</string>
+</dict>
+</plist>

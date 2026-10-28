@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> в адресному рядку, потім торкніться «Керувати розширеннями» та увімкніть DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ПІСЛЯ ПОПОВНЕННЯ</string>
+	<key>Add funds to your balance</key>
+	<string>Поповніть свій баланс</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Попередня покупка на US$%lld ще очікувала застосування, тому саме вона була завершена замість повторного списання. Поверніться до Safari та відкрийте спливне вікно DisinfaX, щоб побачити оновлений баланс.</string>
+	<key>Annotate</key>
+	<string>Анотувати</string>
+	<key>Annotating</key>
+	<string>Анотування</string>
+	<key>Arguably</key>
+	<string>Спірно</string>
+	<key>BALANCE</key>
+	<string>БАЛАНС</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Поповнюючи рахунок, ви погоджуєтеся з нашими [Умовами обслуговування](https://disinfax.app/terms-of-use) та [Політикою конфіденційності](https://disinfax.app/privacy-policy). Якщо ви платите не в USD, може стягуватися комісія за конвертацію валюти.</string>
+	<key>Clear</key>
+	<string>Очистити</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Торкніться значка DisinfaX на панелі інструментів Safari, щоб відкрити спливне вікно.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Натискання на %@ показує твердження і спише кошти з вашого балансу</string>
+	<key>Contacting the App Store…</key>
+	<string>З'єднання з App Store…</string>
+	<key>Copy</key>
+	<string>Копіювати</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX може помилятися. Завжди перевіряйте інформацію.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ще не доступний у вашому регіоні через нормативні вимоги.</string>
+	<key>Disinfact</key>
+	<string>Перевірити</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Увімкніть DisinfaX у Safari, у розділі Налаштування → Розширення.</string>
+	<key>Enter a claim</key>
+	<string>Введіть твердження</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Введіть цілу суму в доларах від 1 до 100.</string>
+	<key>Equivocally</key>
+	<string>Неоднозначно</string>
+	<key>Fact-Check</key>
+	<string>Перевірка фактів</string>
+	<key>Fact-Check All</key>
+	<string>Перевірити все</string>
+	<key>Fact-Checking</key>
+	<string>Перевірка</string>
+	<key>False</key>
+	<string>Неправда</string>
+	<key>Likely</key>
+	<string>Ймовірно</string>
+	<key>Mostly</key>
+	<string>Здебільшого</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Відкрити налаштування розширень Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Відкрийте Safari та перейдіть на x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Відкрийте спливне вікно в Safari, щоб побачити оновлений баланс</string>
+	<key>Partially</key>
+	<string>Частково</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Оплату завершено. Поверніться до Safari та відкрийте спливне вікно DisinfaX, щоб побачити оновлений баланс.</string>
+	<key>Possibly</key>
+	<string>Можливо</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Товар %@ не знайдено в App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Покупку скасовано.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Покупка очікує на підтвердження.</string>
+	<key>Reasoning</key>
+	<string>Обґрунтування</string>
+	<key>Return to Safari</key>
+	<string>Повернутися до Safari</string>
+	<key>Setup incomplete</key>
+	<string>Налаштування не завершено</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Увійдіть у спливному вікні DisinfaX в Safari, щоб поповнити рахунок.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Частину цього запиту не розпізнано. Переконайтеся, що розширення оновлено.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>На нашому боці сталася помилка. Спробуйте ще раз трохи згодом.</string>
+	<key>Sources</key>
+	<string>Джерела</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>СУМА ПОПОВНЕННЯ</string>
+	<key>Tap the </key>
+	<string>Торкніться значка </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Торкніться того самого значка й виберіть DisinfaX, щоб відкрити спливне вікно.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Не вдалося це знайти. Спробуйте ще раз.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ця сума поповнення недійсна. Виберіть іншу суму.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ця збірка не може отримати доступ до спільного контейнера (група застосунків %@). Поповнення будуть недоступні, доки функцію «Групи застосунків» не додадуть і до застосунку, і до розширення.</string>
+	<key>Top Up</key>
+	<string>Поповнити</string>
+	<key>Top Up Balance</key>
+	<string>Поповнити баланс</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Для поповнень потрібна новіша версія iOS. Оновіть систему, а потім знову відкрийте DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Для поповнень потрібна новіша версія macOS. Оновіть систему, а потім знову відкрийте DisinfaX.</string>
+	<key>True</key>
+	<string>Правда</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ВИКОРИСТАННЯ DISINFAX У SAFARI</string>
+	<key>Unknown</key>
+	<string>Невідомо</string>
+	<key>Unknown purchase error.</key>
+	<string>Невідома помилка покупки.</string>
+	<key>Very Likely</key>
+	<string>Дуже ймовірно</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Цілі долари США, від 1 до 100. Списується у валюті вашого App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>У вас уже є поповнення на US$%lld, що очікує застосування — повторного списання не було. Поверніться до Safari та відкрийте спливне вікно DisinfaX, щоб застосувати його до балансу.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ви не увійшли в систему. Увійдіть і спробуйте ще раз.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ваше поповнення на US$%lld зараз застосовується.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Відображення вашого поповнення на US$%lld триває довше, ніж зазвичай.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ваш обліковий запис призупинено.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ваш баланс занадто низький. Поповніть баланс, щоб продовжити.</string>
+</dict>
+</plist>

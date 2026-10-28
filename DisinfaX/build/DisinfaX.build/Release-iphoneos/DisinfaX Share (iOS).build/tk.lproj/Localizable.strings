@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> nyşanyna basyň, soňra Giňeltmeleri Dolandyr-a basyp DisinfaX-y işjeňleşdiriň.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ynam</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ynam, %2$@ dogrulyk</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ bolup %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>DOLDURANDAN SOŇ</string>
+	<key>Add funds to your balance</key>
+	<string>Balansyňyza pul goşuň</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Öňki US$%lld satyn alma entek ulanylmagyna garaşýardy, şonuň üçin sizden ýene tölemegiň deregine ol tamamlandy. Täzelenen balansyňyzy görmek üçin Safari-a gaýdyň we DisinfaX açylýan penjiresini açyň.</string>
+	<key>Annotate</key>
+	<string>Bellik et</string>
+	<key>Annotating</key>
+	<string>Bellik edilýär</string>
+	<key>Arguably</key>
+	<string>Jedelli</string>
+	<key>BALANCE</key>
+	<string>BALANS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Doldurmak bilen, siz biziň [Hyzmat Şertlerimize](https://disinfax.app/terms-of-use) we [Gizlinlik Syýasatymyza](https://disinfax.app/privacy-policy) razylaşýarsyňyz. USD-den başga pulda töleseňiz, walýuta öwrüm tölegleri ulanylyp bilner.</string>
+	<key>Clear</key>
+	<string>Arassala</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Açylýan penjiräni açmak üçin Safari gurallar zolagyndaky DisinfaX nyşanyna basyň.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ üstüne basmak beýanlary ýüze çykarar we balansyňyzdan pul tutar</string>
+	<key>Close</key>
+	<string>Ýap</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store bilen birikdirilýär…</string>
+	<key>Copy</key>
+	<string>Göçür</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ýalňyşyp biler. Maglumaty gaýtadan barlaň.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Kadalaşdyryş talaplary sebäpli DisinfaX heniz sebitiňizde elýeterli däl.</string>
+	<key>Disinfact</key>
+	<string>Barla</string>
+	<key>Edit</key>
+	<string>Düzet</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari-da DisinfaX-y Sazlamalar → Giňeltmeler bölüminde işjeňleşdiriň.</string>
+	<key>Enter a claim</key>
+	<string>Beýany giriziň</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 bilen 100 aralygynda bütin dollar mukdaryny giriziň.</string>
+	<key>Equivocally</key>
+	<string>Ikuçly</string>
+	<key>Fact-Check</key>
+	<string>Fakt barlagy</string>
+	<key>Fact-Check All</key>
+	<string>Ählisini barla</string>
+	<key>Fact-Checking</key>
+	<string>Barlanýar</string>
+	<key>False</key>
+	<string>Ýalan</string>
+	<key>Likely</key>
+	<string>Ähtimal</string>
+	<key>Mostly</key>
+	<string>Köplenç</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari giňeltme sazlamalaryny açyň…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari-ny açyň we x.com-a giriň.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Täzelenen balansyňyzy görmek üçin Safari-da açylýan penjiräni açyň</string>
+	<key>Partially</key>
+	<string>Bölekleýin</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Töleg tamamlandy. Täzelenen balansyňyzy görmek üçin Safari-a gaýdyň we DisinfaX açylýan penjiresini açyň.</string>
+	<key>Possibly</key>
+	<string>Belki</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Önüm %@ App Store Connect-de tapylmady.</string>
+	<key>Purchase cancelled.</key>
+	<string>Satyn alma ýatyryldy.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Satyn alma tassyklamagyna garaşýar.</string>
+	<key>Reasoning</key>
+	<string>Delillendirme</string>
+	<key>Return to Safari</key>
+	<string>Safari-a gaýt</string>
+	<key>Setup incomplete</key>
+	<string>Sazlama doly däl</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Pul goşmak üçin Safari-däki DisinfaX açylýan penjiresinden gir.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Bu soragyň bir bölegi tanalmady. Giňeltmäniň iň soňky wersiýadygyna göz ýetiriň.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Biziň tarapymyzdan ýalňyşlyk ýüze çykdy. Az wagtdan soň gaýtadan synanyşyň.</string>
+	<key>Sources</key>
+	<string>Çeşmeler</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>DOLDURMA MUKDARY</string>
+	<key>Tap the </key>
+	<string>Salgy zolagyndaky </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Şol bir nyşana basyň we açylýan penjiräni açmak üçin DisinfaX-y saýlaň.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Bu tapylmady. Gaýtadan synanyşyň.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Bu doldurma mukdary nädogry. Başga bir mukdar saýlaň.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Bu gurluş öz umumy gaby (App Group %@) bilen habarlaşyp bilmeýär. App Groups mümkinçiligi programma we giňeltme goşulýança doldurmalar elýeterli bolmaz.</string>
+	<key>Top Up</key>
+	<string>Dolduryň</string>
+	<key>Top Up Balance</key>
+	<string>Balansy dolduryň</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Doldurmalar iOS-yň has täze wersiýasyny talap edýär. Täzeläň, soňra DisinfaX-y ýene açyň.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Doldurmalar macOS-yň has täze wersiýasyny talap edýär. Täzeläň, soňra DisinfaX-y ýene açyň.</string>
+	<key>True</key>
+	<string>Dogry</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI-DA DISINFAX ULANMAK</string>
+	<key>Unknown</key>
+	<string>Näbelli</string>
+	<key>Unknown purchase error.</key>
+	<string>Näbelli satyn alma ýalňyşlygy.</string>
+	<key>Very Likely</key>
+	<string>Gaty ähtimal</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Bütin ABŞ dollary, 1–100. App Store walýutaňyzda hasaplanar.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Siziň eýýäm ulanylmagyna garaşýan US$%lld doldurmaňyz bar — sizden ýene tölenmedi. Balansyňyza ulanmak üçin Safari-a gaýdyň we DisinfaX açylýan penjiresini açyň.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Siz ulgama girmediňiz. Ulgama giriň we gaýtadan synanyşyň.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>US$%lld doldurmaňyz häzir ulanylýar.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>US$%lld doldurmaňyzyň görünmegi adatdakysyndan köp wagt alýar.</string>
+	<key>Your account has been suspended.</key>
+	<string>Hasabyňyz togtadyldy.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Balansyňyz gaty pes. Dowam etmek üçin dolduryň.</string>
+</dict>
+</plist>

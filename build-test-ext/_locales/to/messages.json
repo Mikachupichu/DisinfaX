@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "ʻOku ʻiloʻi mo fakahaaʻi ʻa e ngaahi fakamatala hala ʻi he ngaahi tweet ʻaki ʻa e sivi AI.",
+    "message": "ʻOku ʻiloʻi mo fakahaaʻi ʻa e ngaahi fakamatala hala ʻi he ngaahi pou ʻaki ʻa e sivi AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Toe fakahā ʻa e ngaahi fakamatala kotoa pē ʻi he tuita ko ʻeni",
+    "message": "Toe fakahā ʻa e ngaahi fakamatala kotoa pē ʻi he pou ko ʻeni",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Hū kituʻa"
   },
+  "deleteAccount": {
+    "message": "Tamateʻi ʻa e ʻAkauni mo e Fakaʻilonga Fekauʻaki",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "ʻOku tauhi hoʻo toenga paʻanga, mo ha hash fakapulipuli ʻo hoʻo tuʻasila ʻīmeili ʻoku maluʻi ʻaki ha kī fakapulipuli, ke taʻofi ʻa e ngaue fakaʻatuʻi ʻo e paʻanga ʻatā ʻoku ʻoatu ʻi he taimi ʻoku fokotuʻu ai ha ʻakauni. Kapau te ke toe hū ki loto ʻaki ia ʻakauni tatau, ʻe toe fakafoki hoʻo toenga paʻanga.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Ko hono lomi ʻo e %BTN% ʻe fakahā ai ʻa e ngaahi fakamatala pea ʻe utu ai hoʻo toenga paʻanga"
   },
@@ -287,7 +295,7 @@
     "message": "Ngāueʻaki Fakaʻosi"
   },
   "cleanupTagline": {
-    "message": "Fakamaʻa hoʻo X Feed."
+    "message": "Fakamaʻa hoʻo Feed."
   },
   "disclaimerJurisdiction": {
     "message": "ʻI loto ʻi he Puleʻanga Fakatahataha ʻAmelika, ko e kau nofoʻanga pē ʻo Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, mo Wyoming ʻe lava ke ngāueʻaki ʻa DisinfaX pea fakakakato ʻenau toenga paʻanga; ʻoku ʻikai kau ai ʻa Washington, D.C., mo e ngaahi feituʻu kotoa ʻo ʻAmelika, mo ha ngaahi siteiti ʻoku ʻikai lisi. ʻI tuʻa mei he Puleʻanga Fakatahataha ʻAmelika, ʻoku maʻu ia ʻi Kānata, ʻAositelēlia, Nuʻusila, Singapoa, ʻAfilika Tonga, Siapani, Taiuani, ʻInitonēsia, Tailani, Filipaine, Malēsia, Vietinami, mo Suisilani."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Naʻe ʻikai lava ʻo ʻilo ia. Kātaki ke toe feinga."
   },
+  "errNoClaims": {
+    "message": "Naʻe ʻikai maʻu ha ngaahi fakamatala lava ke fakamoʻoniʻi ʻi he tohi ni.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Ngaahi Fokotuʻutuʻu",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Fōtunga",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Maama",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otometi",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Po'uli",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Fakaʻaliʻali maʻu pē ʻa e siví kapau:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Fakafoki",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Tafi",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Fakamalohi'i 'a DisinfaX 'i $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "'Oku 'i ai 'a DisinfaX ki $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Tāmate'i",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Hoko atu ʻaki ʻa Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Hoko atu ʻaki ʻa LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Hoko atu ʻaki ʻa Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Faingofua ki he kui-lanu: faka'ilonga ma'u pe",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Tauhi 'a e faka'ilonga sivi mo'oni kotoa ke ha 'i he ngaahi tohi ta'e lomi'i. 'Oku fakaha 'a e aofangatuku 'e he lanu 'o hange pe ko e ngaahi lea, ko ia 'oku tokoni 'eni kiate kinautolu 'oku 'ikai lava ke faikehekehe'i 'a e ngaahi lanu ko ia.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Lahi ʻo e fōtunga lahi",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Fakauaʻi ʻa e ngaahi fakamatala toe liliu, ʻa e ʻuhinga, mo e ngaahi faleʻi ʻo e kamataʻanga.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Tapuni",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Lomi'i ke fakatonutonu 'a e fakamatala",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Ngaahi fakaikiiki 'o e sivi mo'oni",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ʻOku fuʻu lōloa ʻa e fili ko ʻení ke siviʻi. 1,000 mataʻitohi pē.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Fakahā ʻi he taimi ʻoku holo ai ʻa e toenga paʻanga",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Lahi ange ʻi: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

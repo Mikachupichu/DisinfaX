@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> adiris qhawachiypi, chaymantataq Yapaykunata Kamachiyta tuqyay hinaspa DisinfaX-ta kallpachay.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ kananpaq %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>HUNT'ASQA QHIPATA</string>
+	<key>Add funds to your balance</key>
+	<string>Qullqita yapay saldoykiman</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ñawpaq US$%lld rantiy aplicasqa kananta suyachkarqa, chayrayku chayta tukusqa karqa mana kutin kargasqaykirayku. Safari-man kutiy hinaspa DisinfaX pop-up wentanata kichay musuq saldoykita qhawanaykipaq.</string>
+	<key>Annotate</key>
+	<string>Anotay</string>
+	<key>Annotating</key>
+	<string>Anotachkan</string>
+	<key>Arguably</key>
+	<string>Atipanakuy</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Hunt'aspa, [Servicio Kunanmanta](https://disinfax.app/terms-of-use) hinaspa [Privacidad Kamachiyninmanta](https://disinfax.app/privacy-policy) yupaychankichis. Qullqi tikrakuy chaninkuna aplicasqa kanman sichus USD mana kaq qullqiwan pagankichis.</string>
+	<key>Clear</key>
+	<string>Ch'usay</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>DisinfaX unanchata Safari yanapa qhawachiypi tuqyay pop-up wentanata kichanaykipaq.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ nisqapi ñitʼiy nisqasta rikuchin, qullqiykimantapas hurquy kanqa</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store nisqawan tinkuchkan…</string>
+	<key>Copy</key>
+	<string>Qillqay</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX pantasqata ruwayta atin. Willakuykunata iskay kutita qhaway.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX manaraqmi kanchu qamkunaq suyunkichikpi kamachiykuna wakichisqa kaqtin.</string>
+	<key>Disinfact</key>
+	<string>Chaninchay</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX-ta Safari-pi kallpachay, Kamachiykuna → Yapaykuna nisqapi.</string>
+	<key>Enter a claim</key>
+	<string>Huk rimayta yaykuchiy</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 hinaspa 100 chaninwan hunt'asqa dólar qullqita churay.</string>
+	<key>Equivocally</key>
+	<string>Mana sut'i</string>
+	<key>Fact-Check</key>
+	<string>Chiqap qhaway</string>
+	<key>Fact-Check All</key>
+	<string>Llapanta chaninchay</string>
+	<key>Fact-Checking</key>
+	<string>Chaninchay</string>
+	<key>False</key>
+	<string>Llulla</string>
+	<key>Likely</key>
+	<string>Atinqa</string>
+	<key>Mostly</key>
+	<string>Aswan</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari yapaykunapaq kamachiykunata kichay…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari-ta kichay hinaspa x.com-man riy.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Safari-pi pop-up wentanata kichay musuq saldoykita qhawanaykipaq</string>
+	<key>Partially</key>
+	<string>Huknintin</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pago tukusqa. Safari-man kutiy hinaspa DisinfaX pop-up wentanata kichay musuq saldoykita qhawanaykipaq.</string>
+	<key>Possibly</key>
+	<string>Ichapas</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>%@ ranticha mana tarikunchu App Store Connect-pi.</string>
+	<key>Purchase cancelled.</key>
+	<string>Rantiy chinkachisqa.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Rantiy allinchasqa kananta suyachkan.</string>
+	<key>Reasoning</key>
+	<string>Yuyaychay</string>
+	<key>Return to Safari</key>
+	<string>Safari-man kutiy</string>
+	<key>Setup incomplete</key>
+	<string>Kamachiy mana tukusqachu</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>DisinfaX pop-up wentanamanta Safari nisqapi yaykuy qullqita yapanaykipaq.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Kay mañakuyman huk t'inkin manam riqsisqachu. Ama hina kaspa, extension musuqchasqa kasqanta qhaway.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Ñuqaykuq ladunchikpi pantay karqan. Ama hina kaspa, hukmanta ruway huk chika tiempo qhipaman.</string>
+	<key>Sources</key>
+	<string>Pukyukuna</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>HUNT'ANA QULLQI</string>
+	<key>Tap the </key>
+	<string>Unanchata tuqyay </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Kikin unanchatataq tuqyay hinaspa DisinfaX-ta akllay pop-up wentanata kichanaykipaq.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Chayta manam tarikunchu. Hukmanta ruway.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Chay hunt'achiy qullqi manam allinchu. Ama hina kaspa, huk qullqita akllay.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Kay ruwasqa mana chayanmanchu rakisqa waqaychanaman (App Group %@). Hunt'ana mana kanqachu App Groups atiy app-manpas yapaykunamanpas churasqa kanankama.</string>
+	<key>Top Up</key>
+	<string>Qullqi Yapay</string>
+	<key>Top Up Balance</key>
+	<string>Saldota hunt'ay</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Hunt'ana mask'an musuq iOS versionta. Musuqchay, chaymantataq DisinfaX-ta kutin kichay.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Hunt'ana mask'an musuq macOS versionta. Musuqchay, chaymantataq DisinfaX-ta kutin kichay.</string>
+	<key>True</key>
+	<string>Cheqaq</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX SAFARI-PI USAY</string>
+	<key>Unknown</key>
+	<string>Mana riqsisqa</string>
+	<key>Unknown purchase error.</key>
+	<string>Mana riqsisqa rantiy pantay.</string>
+	<key>Very Likely</key>
+	<string>Ancha atinqa</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Estados Unidos dólar hunt'asqa, 1–100. App Store qullqiykipi kargasqa kanqa.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ñam kanki US$%lld hunt'anawan aplicasqa kananta suyachkaq — mana kutin kargasqachu kanki. Safari-man kutiy hinaspa DisinfaX pop-up wentanata kichay saldoykipi aplicanaykipaq.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Manam yaykunkichu. Ama hina kaspa, yaykuy hinaspa hukmanta ruway.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>US$%lld hunt'anayki kunanqa aplicasqa kachkan.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>US$%lld hunt'anayki rikurinanpaq aswan unay pacha tukuchkan.</string>
+	<key>Your account has been suspended.</key>
+	<string>Cuentayki hark'ana kachkan.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Qullqiyki pisi kashan. Ama hina kaspa, hunt'achiy sigiyta.</string>
+</dict>
+</plist>

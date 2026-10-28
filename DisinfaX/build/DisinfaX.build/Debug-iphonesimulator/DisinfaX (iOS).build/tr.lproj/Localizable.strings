@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> simgesine dokunun, ardından Uzantıları Yönet'e dokunun ve DisinfaX'i etkinleştirin.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ki %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>YÜKLEMEDEN SONRA</string>
+	<key>Add funds to your balance</key>
+	<string>Bakiyene bakiye ekle</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Daha önceki US$%lld değerindeki satın alma hâlâ uygulanmayı bekliyordu, bu nedenle sizden tekrar ücret alınmak yerine o satın alma tamamlandı. Güncellenmiş bakiyenizi görmek için Safari'ye dönün ve DisinfaX açılır penceresini açın.</string>
+	<key>Annotate</key>
+	<string>Açıklama Ekle</string>
+	<key>Annotating</key>
+	<string>Açıklama ekleniyor</string>
+	<key>Arguably</key>
+	<string>Tartışmalı</string>
+	<key>BALANCE</key>
+	<string>BAKİYE</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Yükleme yaparak [Hizmet Şartlarımızı](https://disinfax.app/terms-of-use) ve [Gizlilik Politikamızı](https://disinfax.app/privacy-policy) kabul edersiniz. USD dışında bir para biriminde ödeme yaparsanız döviz çevrim ücretleri uygulanabilir.</string>
+	<key>Clear</key>
+	<string>Temizle</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Açılır pencereyi açmak için Safari araç çubuğundaki DisinfaX simgesine dokunun.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ simgesine tıklamak iddiaları gösterir ve bakiyenizden ücret düşer</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store'a bağlanılıyor…</string>
+	<key>Copy</key>
+	<string>Kopyala</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX hata yapabilir. Bilgileri tekrar kontrol edin.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX, düzenleyici gereklilikler nedeniyle bölgenizde henüz kullanılamıyor.</string>
+	<key>Disinfact</key>
+	<string>Doğrula</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Safari'de DisinfaX'i Ayarlar → Uzantılar altında etkinleştirin.</string>
+	<key>Enter a claim</key>
+	<string>Bir iddia girin</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 ile 100 arasında tam bir dolar tutarı girin.</string>
+	<key>Equivocally</key>
+	<string>Belirsiz</string>
+	<key>Fact-Check</key>
+	<string>Gerçeklik kontrolü</string>
+	<key>Fact-Check All</key>
+	<string>Tümünü Doğrula</string>
+	<key>Fact-Checking</key>
+	<string>Doğrulanıyor</string>
+	<key>False</key>
+	<string>Yanlış</string>
+	<key>Likely</key>
+	<string>Muhtemel</string>
+	<key>Mostly</key>
+	<string>Çoğunlukla</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari uzantı ayarlarını aç…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari'yi açın ve x.com'a gidin.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Güncellenmiş bakiyenizi görmek için Safari'de açılır pencereyi açın</string>
+	<key>Partially</key>
+	<string>Kısmen</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ödeme tamamlandı. Güncellenmiş bakiyenizi görmek için Safari'ye dönün ve DisinfaX açılır penceresini açın.</string>
+	<key>Possibly</key>
+	<string>Olası</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>%@ ürünü App Store Connect'te bulunamadı.</string>
+	<key>Purchase cancelled.</key>
+	<string>Satın alma iptal edildi.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Satın alma onay bekliyor.</string>
+	<key>Reasoning</key>
+	<string>Gerekçe</string>
+	<key>Return to Safari</key>
+	<string>Safari'ye dön</string>
+	<key>Setup incomplete</key>
+	<string>Kurulum tamamlanmadı</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Bakiye eklemek için Safari'deki DisinfaX açılır penceresinden oturum açın.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Bu isteğin bir kısmı tanınamadı. Lütfen uzantının güncel olduğundan emin olun.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Bizim tarafımızda bir hata oluştu. Lütfen bir süre sonra tekrar deneyin.</string>
+	<key>Sources</key>
+	<string>Kaynaklar</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>YÜKLEME TUTARI</string>
+	<key>Tap the </key>
+	<string>Adres çubuğundaki </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Açılır pencereyi açmak için aynı simgeye dokunun ve DisinfaX'i seçin.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Bu bulunamadı. Lütfen tekrar deneyin.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Bu bakiye yükleme tutarı geçerli değil. Lütfen farklı bir tutar seçin.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Bu derleme, paylaşılan kapsayıcısına (App Group %@) erişemiyor. Uygulama ve uzantıya App Groups özelliği eklenene kadar yüklemeler kullanılamayacak.</string>
+	<key>Top Up</key>
+	<string>Yükle</string>
+	<key>Top Up Balance</key>
+	<string>Bakiye yükle</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Yüklemeler daha yeni bir iOS sürümü gerektirir. Güncelleyin, ardından DisinfaX'i yeniden açın.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Yüklemeler daha yeni bir macOS sürümü gerektirir. Güncelleyin, ardından DisinfaX'i yeniden açın.</string>
+	<key>True</key>
+	<string>Doğru</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI'DE DISINFAX KULLANIMI</string>
+	<key>Unknown</key>
+	<string>Bilinmiyor</string>
+	<key>Unknown purchase error.</key>
+	<string>Bilinmeyen satın alma hatası.</string>
+	<key>Very Likely</key>
+	<string>Çok Muhtemel</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Tam ABD doları, 1–100. App Store para biriminizde tahsil edilir.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Zaten uygulanmayı bekleyen US$%lld değerinde bir yüklemeniz var — sizden tekrar ücret alınmadı. Bunu bakiyenize uygulamak için Safari'ye dönün ve DisinfaX açılır penceresini açın.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Oturum açmadınız. Lütfen oturum açıp tekrar deneyin.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>US$%lld değerindeki yüklemeniz uygulanıyor.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>US$%lld değerindeki yüklemenizin görünmesi normalden daha uzun sürüyor.</string>
+	<key>Your account has been suspended.</key>
+	<string>Hesabınız askıya alındı.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Bakiyeniz çok düşük. Devam etmek için lütfen bakiye yükleyin.</string>
+</dict>
+</plist>

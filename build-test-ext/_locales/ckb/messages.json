@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "بە بەکارهێنانی شیکاریکردنی AI، زانیاری هەڵە لە تویتەکاندا دەدۆزێتەوە و ڕووناکیدەکاتەوە.",
+    "message": "بە بەکارهێنانی شیکاریکردنی AI، زانیاری هەڵە لە پۆستەکاندا دەدۆزێتەوە و ڕووناکیدەکاتەوە.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "هەموو بانگەشەکانی ئەم تویتە دووبارە ئاشکرا بکە",
+    "message": "هەموو بانگەشەکانی ئەم پۆستە دووبارە ئاشکرا بکە",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "چوونەدەرەوە"
   },
+  "deleteAccount": {
+    "message": "سڕینەوەی هەژمار و داتای پەیوەندیدار",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "باڵانسەکەت، و هاشێکی کرێپتۆگرافیی ناونیشانی ئیمەیڵەکەت کە بە کلیلێکی نهێنی پارێزراوە، هەڵدەگیرێن بۆ ڕێگریکردن لە خراپ بەکارهێنانی ئەو پارە بێبەرامبەرەی لە کاتی دروستکردنی هەژماردا دەدرێت. چوونەژوورەوەی دووبارە بە هەمان هەژمار باڵانسەکەت دەگەڕێنێتەوە.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "کرتەکردن لەسەر %BTN% بانگەشەکان دەردەخات و لە باڵانسەکەت کەم دەکاتەوە"
   },
@@ -287,7 +295,7 @@
     "message": "دواجار بەکارهاتوو"
   },
   "cleanupTagline": {
-    "message": "فیدی X خۆت پاک بکەرەوە."
+    "message": "فیدی خۆت پاک بکەرەوە."
   },
   "disclaimerJurisdiction": {
     "message": "لە ناو ویلایەتە یەکگرتووەکاندا، تەنها دانیشتووانی ئالاباما، ئەریزۆنا، کالیفۆرنیا، کۆلۆرادۆ، کۆنێکتیکەت، دێلاوێر، فلۆریدا، ئایداهۆ، ئیلینۆی، ئیندیانا، ئایۆوا، کانزاس، کێنتەکی، لویزیانا، مەین، ماساچوسێتس، میسیسیپی، میسووری، مۆنتانا، نیو هامپشایەر، نیو مێکسیکۆ، نیویۆرک، کارۆلینای باکوور، داکۆتای باکوور، ئۆکلاهۆما، ئۆریگۆن، پێنسیلڤانیا، کارۆلینای باشوور، داکۆتای باشوور، تێنێسی، تێکساس، یوتا، واشنتۆن، ویسکۆنسن، و وایۆمینگ دەتوانن DisinfaX بەکاربهێنن و باڵانسەکەیان پڕ بکەنەوە؛ واشنتۆن، D.C.، هەموو ناوچەکانی ئەمریکا، و هەر ویلایەتێک کە لە لیستەکەدا نەبێت، دەرخراون. لە دەرەوەی ویلایەتە یەکگرتووەکان، لە کەنەدا، ئوستڕالیا، نیوزیلاند، سینگاپور، ئەفریقای باشوور، ژاپۆن، تایوان، ئەندۆنیزیا، تایلاند، فیلیپین، مالیزیا، ڤیەتنام، و سویسرا بەردەستە."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "ئەوە نەدۆزرایەوە. تکایە دووبارە هەوڵبدەرەوە."
   },
+  "errNoClaims": {
+    "message": "هیچ بانگەشەیەکی شایستەی پشکنین لەم دەقەدا نەدۆزرایەوە.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "ڕێکخستنەکان",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "ڕوخسار",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ڕووناک",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "خۆکار",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "تاریک",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ھەمیشە پشکنینەکان پیشان بدە ئەگەر:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "هەڵوەشاندنەوە",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "پاککردنەوە",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "چالاککردنی DisinfaX لەسەر $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX لەسەر $HOST$ چالاکە",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "ناچالاککردن",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "بەردەوامبە بە Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "بەردەوامبە بە LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "بەردەوامبە بە Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "گونجاو بۆ ڕەنگکوێری: نیشانەی هەمیشەیی",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "هەموو نیشانەیەکی پشکنینی ڕاستی لەسەر پۆستەکان بە دیاری بهێڵەرەوە بێ بردنە سەر. بڕیار وەک چۆن بە وشە دەردەکەوێت، بە ڕەنگی دیاریکراویش دەردەکەوێت، بۆیە ئەمە یارمەتی ئەوانە دەدات کە ناتوانن ئەو ڕەنگانە لێک جیابکەنەوە.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "قەبارەی فۆنتی گەورە",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "قەبارەی بانگەشە نووسراوەکان، هۆکارەکان و ئاماژەکانی دەستپێک گەورە بکە.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "داخستن",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "کرتە بکە بۆ دەستکاریکردنی دەقەکە",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "وردەکارییەکانی پشکنینی ڕاستی",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ئەم هەڵبژاردنە زۆر درێژە بۆ پشکنین. زۆرترین 1,000 پیت.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ئاگادارم بکەوە کاتێک باڵانس کەم دەبێتەوە",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "بە زیاتر لە: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

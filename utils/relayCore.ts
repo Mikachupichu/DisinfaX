@@ -80,7 +80,10 @@ export function createRelayCore(hooks: RelayCoreHooks): RelayCore {
   type RuntimePort = ReturnType<typeof browser.runtime.connect>;
   let currentPort: RuntimePort | null = null;
   let currentBatchId: string | null = null;
-  let pendingBatchRefresh: { batchId: string; postId?: string } | null = null;
+  let pendingBatchRefresh: {
+    batchId: string; postId?: string;
+    side?: 'alt' | 'translation'; sideText?: string; sideLocale?: string;
+  } | null = null;
   /** True while the user is signed out: injections are torn down and nothing is
    *  re-injected until the background reports a sign-in. */
   let frozen = false;
@@ -250,16 +253,22 @@ export function createRelayCore(hooks: RelayCoreHooks): RelayCore {
     const port = ensurePort();
 
     if (pendingBatchRefresh) {
-      const { batchId: refreshBatchId, postId: refreshPostId } = pendingBatchRefresh;
+      const {
+        batchId: refreshBatchId, postId: refreshPostId,
+        side: refreshSide, sideText: refreshSideText, sideLocale: refreshSideLocale,
+      } = pendingBatchRefresh;
       pendingBatchRefresh = null;
       currentBatchId = `batch_${Date.now()}`;
       const toSend = refreshPostId
         ? hooks.currentPosts().filter((t) => t.id === refreshPostId)
         : hooks.currentPosts();
-      log(`sending BATCH_REFRESH_FORCE for batchId=${refreshBatchId} postId=${refreshPostId ?? 'all'}, ${toSend.length} post(s)`);
+      log(`sending BATCH_REFRESH_FORCE for batchId=${refreshBatchId} postId=${refreshPostId ?? 'all'} side=${refreshSide ?? 'unknown'}, ${toSend.length} post(s)`);
       port.postMessage({
         type: 'BATCH_REFRESH_FORCE',
-        data: { batchId: refreshBatchId, tweetId: refreshPostId, tweets: toSend, newBatchId: currentBatchId, locale: localeOverride },
+        data: {
+          batchId: refreshBatchId, tweetId: refreshPostId, tweets: toSend, newBatchId: currentBatchId, locale: localeOverride,
+          side: refreshSide ?? null, sideText: refreshSideText ?? null, sideLocale: refreshSideLocale ?? null,
+        },
       });
     } else {
       currentBatchId = `batch_${Date.now()}`;
@@ -316,26 +325,26 @@ export function createRelayCore(hooks: RelayCoreHooks): RelayCore {
 
   function wireIntents() {
     mfBus.addEventListener('mf-refresh-claim', ((e: CustomEvent) => {
-      const { classificationId, claimText, dbClaimText } = e.detail;
-      log(`refresh-claim for ${classificationId}`);
-      send({ type: 'REFRESH_CLAIM', data: { classificationId, claimText, dbClaimText, locale: localeOverride } });
+      const { classificationId, claimText, dbClaimText, side, sideText, sideLocale } = e.detail;
+      log(`refresh-claim for ${classificationId}${side ? ` (${side})` : ''}`);
+      send({ type: 'REFRESH_CLAIM', data: { classificationId, claimText, dbClaimText, locale: localeOverride, side, sideText, sideLocale } });
     }) as EventListener);
 
     mfBus.addEventListener('mf-set-displayed-locale', ((e: CustomEvent) => {
-      const { tweetId, textLocale, displayedText } = e.detail;
+      const { tweetId, textLocale, displayedText, bodyOnly } = e.detail;
       log(`set-displayed-locale for ${tweetId} -> ${textLocale}`);
-      send({ type: 'SET_DISPLAYED_LOCALE', data: { tweetId, textLocale, displayedText } });
+      send({ type: 'SET_DISPLAYED_LOCALE', data: { tweetId, textLocale, displayedText, bodyOnly } });
     }) as EventListener);
 
     mfBus.addEventListener('mf-refresh-batch', ((e: CustomEvent) => {
-      const { batchId, tweetId } = e.detail;
-      log(`refresh-batch for ${batchId} (postId=${tweetId ?? 'unknown'}), forcing reconnection`);
-      pendingBatchRefresh = { batchId, postId: tweetId };
+      const { batchId, tweetId, side, sideText, sideLocale } = e.detail;
+      log(`refresh-batch for ${batchId} (postId=${tweetId ?? 'unknown'}, side=${side ?? 'unknown'}), forcing reconnection`);
+      pendingBatchRefresh = { batchId, postId: tweetId, side, sideText, sideLocale };
       classify();
     }) as EventListener);
 
     mfBus.addEventListener('mf-process-on-hold', ((e: CustomEvent) => {
-      const { tweetId } = e.detail;
+      const { tweetId, side, sideText, sideLocale, fromSelection } = e.detail;
       let displayedSide: string | null = null;
       let displayedText: string | null = null;
       let displayedLocale: string | null = null;
@@ -347,22 +356,42 @@ export function createRelayCore(hooks: RelayCoreHooks): RelayCore {
       } catch (err) {
         console.error(`[misinfo] ${hooks.logTag}: displayedSideFor THREW for ${tweetId}`, err);
       }
+      // A group that names a side classifies THAT side (see `buildDisinfactButton`). The
+      // host only knows which side is DISPLAYED, and on a post showing both it always says
+      // the translation — so the group over the post's own words used to classify the
+      // translation beside it, leaving its own side with no ranges and painting none.
+      if (side === 'alt') {
+        displayedSide = 'ORIGINAL';
+        displayedText = null;
+        displayedLocale = null;
+      } else if (side === 'translation') {
+        // The group seated in the translation's own row names its side, so neither the
+        // host's by-id read nor the captured payload gets to decide it. The words and
+        // language the group handed over are the copy it is painted in; without them the
+        // background would localize against whatever body it already held — the source —
+        // while filing the ranges under the translation's language.
+        displayedSide = 'TRANSLATED';
+        if (sideText) displayedText = sideText;
+        if (sideLocale) displayedLocale = sideLocale;
+      }
       log(`process-on-hold for ${tweetId} (displayedSide=${displayedSide ?? 'unknown'}, displayedText=${displayedText ? `${displayedText.length} chars` : 'none'}, displayedLocale=${displayedLocale ?? 'unknown'})`);
       // Sent even when the reads above failed: they are refinements, and losing the
       // intent costs the user a click that appears to do nothing.
-      send({ type: 'PROCESS_ON_HOLD', data: { tweetId, locale: localeOverride, displayedSide, displayedText, displayedLocale } });
+      send({ type: 'PROCESS_ON_HOLD', data: { tweetId, locale: localeOverride, displayedSide, displayedText, displayedLocale, side: side ?? null, fromSelection: fromSelection === true } });
     }) as EventListener);
 
     mfBus.addEventListener('mf-fact-check-all', ((e: CustomEvent) => {
-      const { tweetId } = e.detail;
-      log(`fact-check-all for ${tweetId}`);
-      send({ type: 'FACT_CHECK_ALL', data: { tweetId, locale: localeOverride } });
+      const { tweetId, claimTexts } = e.detail;
+      log(`fact-check-all for ${tweetId}${Array.isArray(claimTexts) ? ` (${claimTexts.length} claim(s) under a revealed area)` : ''}`);
+      // `claimTexts` narrows the hand-off to the claims a revealed area covers; absent, the
+      // background takes every claim still on hold on the post, which is the button's job.
+      send({ type: 'FACT_CHECK_ALL', data: { tweetId, locale: localeOverride, claimTexts: Array.isArray(claimTexts) ? claimTexts : undefined } });
     }) as EventListener);
 
     mfBus.addEventListener('mf-annotate-claim', ((e: CustomEvent) => {
-      const { classificationId, claimText } = e.detail;
-      log(`annotate-claim for ${classificationId}`);
-      send({ type: 'ANNOTATE_CLAIM', data: { classificationId, claimText, locale: localeOverride } });
+      const { classificationId, claimText, side, sideText, sideLocale } = e.detail;
+      log(`annotate-claim for ${classificationId}${side ? ` (side=${side})` : ''}`);
+      send({ type: 'ANNOTATE_CLAIM', data: { classificationId, claimText, locale: localeOverride, side: side ?? null, sideText: sideText ?? null, sideLocale: sideLocale ?? null } });
     }) as EventListener);
 
     mfBus.addEventListener('mf-reclassify-on-hold-click', ((e: CustomEvent) => {
@@ -372,9 +401,9 @@ export function createRelayCore(hooks: RelayCoreHooks): RelayCore {
     }) as EventListener);
 
     mfBus.addEventListener('mf-translate-fact-checks', ((e: CustomEvent) => {
-      const { tweetId } = e.detail;
-      log(`translate-fact-checks for ${tweetId}`);
-      send({ type: 'TRANSLATE_FACT_CHECKS', data: { tweetId, locale: localeOverride } });
+      const { tweetId, side, sideText, sideLocale } = e.detail;
+      log(`translate-fact-checks for ${tweetId}${side ? ` (side=${side})` : ''}`);
+      send({ type: 'TRANSLATE_FACT_CHECKS', data: { tweetId, locale: localeOverride, side, sideText, sideLocale } });
     }) as EventListener);
 
     mfBus.addEventListener('mf-translate-claim', ((e: CustomEvent) => {

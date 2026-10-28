@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ao amin'ny tsipika adiresy, avy eo kitiho ny Fitantanana Fanitarana ary alefaso ny DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ fatokisana</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ fatokisana, %2$@ fahamarinana</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ho %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>AORIAN'NY FAMENOANA</string>
+	<key>Add funds to your balance</key>
+	<string>Ampio vola ny balansanao</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Nisy fividianana teo aloha US$%lld izay mbola miandry fampiharana, ka izany no vita fa tsy nangalana indray. Miverimberena any amin'ny Safari ary sokafy ny fikaonandoha mipoitra DisinfaX mba hijerena ny balansanao vaovao.</string>
+	<key>Annotate</key>
+	<string>Fanamario</string>
+	<key>Annotating</key>
+	<string>Manao fanamarihana</string>
+	<key>Arguably</key>
+	<string>Azo iadian-kevitra</string>
+	<key>BALANCE</key>
+	<string>BALANSA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Amin'ny famenoana, dia manaiky ianao amin'ny [Fepetra momba ny Serivisy](https://disinfax.app/terms-of-use) sy ny [Politika momba ny Fiainana Manokana](https://disinfax.app/privacy-policy) anay. Mety hisy saran'ny fanovana vola raha mandoa amin'ny vola hafa tsy USD ianao.</string>
+	<key>Clear</key>
+	<string>Fafao</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Kitiho ny kisarisary DisinfaX ao amin'ny tsipiky ny fitaovana Safari mba hanokafana ny fikaonandoha mipoitra.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Ny fanindriana ny %@ dia hampiseho ny filazana ary hisy sarany hesorina amin'ny volanao</string>
+	<key>Close</key>
+	<string>Hidio</string>
+	<key>Contacting the App Store…</key>
+	<string>Mifandray amin'ny App Store…</string>
+	<key>Copy</key>
+	<string>Kopia</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Mety manao fahadisoana ny DisinfaX. Jereo indray ny fampahalalana.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Mbola tsy misy amin'ny faritaninao ny DisinfaX noho ny fepetra ara-lalàna.</string>
+	<key>Disinfact</key>
+	<string>Manamarina</string>
+	<key>Edit</key>
+	<string>Ahitsio</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Alefaso ny DisinfaX ao amin'ny Safari, ao amin'ny Fandrindrana → Fanitarana.</string>
+	<key>Enter a claim</key>
+	<string>Ampidiro ny filazana</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Ampidiro vola dolara feno eo anelanelan'ny 1 sy 100.</string>
+	<key>Equivocally</key>
+	<string>Tsy mazava</string>
+	<key>Fact-Check</key>
+	<string>Fandinihana ny zava-misy</string>
+	<key>Fact-Check All</key>
+	<string>Manamarina daholo</string>
+	<key>Fact-Checking</key>
+	<string>Fanamarinana</string>
+	<key>False</key>
+	<string>Diso</string>
+	<key>Likely</key>
+	<string>Mety</string>
+	<key>Mostly</key>
+	<string>Ny ankamaroany</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Sokafy ny fandrindrana fanitarana Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Sokafy ny Safari ary mankanesa any amin'ny x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Sokafy ny fikaonandoha mipoitra ao amin'ny Safari mba hijerena ny balansanao vaovao</string>
+	<key>Partially</key>
+	<string>Ampahany</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Vita ny fandoavana. Miverimberena any amin'ny Safari ary sokafy ny fikaonandoha mipoitra DisinfaX mba hijerena ny balansanao vaovao.</string>
+	<key>Possibly</key>
+	<string>Angamba</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Tsy hita ao amin'ny App Store Connect ny vokatra %@.</string>
+	<key>Purchase cancelled.</key>
+	<string>Nofoanana ny fividianana.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Miandry fankatoavana ny fividianana.</string>
+	<key>Reasoning</key>
+	<string>Fanamarinana</string>
+	<key>Return to Safari</key>
+	<string>Miverina any amin'ny Safari</string>
+	<key>Setup incomplete</key>
+	<string>Tsy vita ny fandrindrana</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Midira avy amin'ny fikaonandoha DisinfaX mipoitra ao amin'ny Safari mba hampidirana vola.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Tsy fantatra ny ampahany amin'ity fangatahana ity. Azafady amarino fa efa nohavaozina ny fanitarana.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Nisy hadisoana teo amin'ny lafinay. Azafady andramo indray afaka kelikely.</string>
+	<key>Sources</key>
+	<string>Loharano</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>VOLA AMPIDIRINA</string>
+	<key>Tap the </key>
+	<string>Kitiho ny kisarisary </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Kitiho ilay kisarisary ihany ary safidio ny DisinfaX mba hanokafana ny fikaonandoha mipoitra.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Tsy hita izany. Andramo indray.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Tsy manan-kery io vola nampiana io. Azafady safidio vola hafa.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Tsy mahatratra ny fitoerana iombonana (App Group %@) ity fanorenana ity. Tsy ho azo atao ny famenoana raha tsy efa nampiana ny fahaiza-manao App Groups ny rindrankajy sy ny fanitarana.</string>
+	<key>Top Up</key>
+	<string>Fenoy</string>
+	<key>Top Up Balance</key>
+	<string>Fenoy ny balansa</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Mila kinova iOS vaovao kokoa ny famenoana. Avereno ho vaovao, avy eo sokafy indray ny DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Mila kinova macOS vaovao kokoa ny famenoana. Avereno ho vaovao, avy eo sokafy indray ny DisinfaX.</string>
+	<key>True</key>
+	<string>Marina</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>FAMPIASANA NY DISINFAX AO AMIN'NY SAFARI</string>
+	<key>Unknown</key>
+	<string>Tsy fantatra</string>
+	<key>Unknown purchase error.</key>
+	<string>Hadisoana tsy fantatra momba ny fividianana.</string>
+	<key>Very Likely</key>
+	<string>Tena mety</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dolara amerikana feno, 1–100. Hangalana amin'ny volan'ny App Store-nao.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Efa manana famenoana US$%lld ianao izay miandry ny fampiharana — tsy nangalana indray. Miverimberena any amin'ny Safari ary sokafy ny fikaonandoha mipoitra DisinfaX mba hampiharana izany amin'ny balansanao.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Tsy tafiditra ianao. Azafady midira ary andramo indray.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ampiharina izao ny famenoanao US$%lld.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Ela kokoa noho ny mahazatra ny fisehoan'ny famenoanao US$%lld.</string>
+	<key>Your account has been suspended.</key>
+	<string>Voahantona ny kaontinao.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Latsaka loatra ny volanao. Azafady ampio ny volanao mba hanohizana.</string>
+</dict>
+</plist>

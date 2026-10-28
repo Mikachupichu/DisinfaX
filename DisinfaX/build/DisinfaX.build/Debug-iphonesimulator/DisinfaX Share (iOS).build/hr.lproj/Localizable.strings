@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> u adresnoj traci, zatim dodirnite Upravljanje proširenjima i omogućite DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>NAKON NADOPUNE</string>
+	<key>Add funds to your balance</key>
+	<string>Dodajte sredstva na svoje stanje</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ranija kupnja od US$%lld još je čekala primjenu, pa je ona dovršena umjesto ponovne naplate. Vratite se na Safari i otvorite DisinfaX skočni prozor kako biste vidjeli ažurirano stanje.</string>
+	<key>Annotate</key>
+	<string>Anotiraj</string>
+	<key>Annotating</key>
+	<string>Anotiranje</string>
+	<key>Arguably</key>
+	<string>Diskutabilno</string>
+	<key>BALANCE</key>
+	<string>STANJE</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Nadopunom prihvaćate naše [Uvjete korištenja](https://disinfax.app/terms-of-use) i našu [Politiku privatnosti](https://disinfax.app/privacy-policy). Mogu se naplatiti naknade za konverziju valute ako plaćate u valuti različitoj od USD.</string>
+	<key>Clear</key>
+	<string>Očisti</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Dodirnite ikonu DisinfaX-a na alatnoj traci Safarija kako biste otvorili skočni prozor.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Klikom na %@ prikazuju se tvrdnje i naplaćuje se s vašeg salda</string>
+	<key>Contacting the App Store…</key>
+	<string>Povezivanje s App Storeom…</string>
+	<key>Copy</key>
+	<string>Kopiraj</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX može pogriješiti. Dvaput provjerite informacije.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX još nije dostupan u vašoj regiji zbog regulatornih zahtjeva.</string>
+	<key>Disinfact</key>
+	<string>Provjeri</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Omogućite DisinfaX u Safariju, u Postavke → Proširenja.</string>
+	<key>Enter a claim</key>
+	<string>Unesite tvrdnju</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Unesite cijeli iznos u dolarima između 1 i 100.</string>
+	<key>Equivocally</key>
+	<string>Dvosmisleno</string>
+	<key>Fact-Check</key>
+	<string>Provjera činjenica</string>
+	<key>Fact-Check All</key>
+	<string>Provjeri sve</string>
+	<key>Fact-Checking</key>
+	<string>Provjera</string>
+	<key>False</key>
+	<string>Neistinito</string>
+	<key>Likely</key>
+	<string>Vjerojatno</string>
+	<key>Mostly</key>
+	<string>Uglavnom</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Otvori postavke proširenja za Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Otvorite Safari i idite na x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Otvorite skočni prozor u Safariju kako biste vidjeli ažurirano stanje</string>
+	<key>Partially</key>
+	<string>Djelomično</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Plaćanje dovršeno. Vratite se na Safari i otvorite DisinfaX skočni prozor kako biste vidjeli ažurirano stanje.</string>
+	<key>Possibly</key>
+	<string>Moguće</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Proizvod %@ nije pronađen u App Store Connectu.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kupnja otkazana.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kupnja čeka odobrenje.</string>
+	<key>Reasoning</key>
+	<string>Obrazloženje</string>
+	<key>Return to Safari</key>
+	<string>Natrag na Safari</string>
+	<key>Setup incomplete</key>
+	<string>Postavljanje nije dovršeno</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Prijavite se putem DisinfaX skočnog prozora u Safariju kako biste dodali sredstva.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Dio ovog zahtjeva nije prepoznat. Provjerite je li ekstenzija ažurirana.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Došlo je do pogreške s naše strane. Pokušajte ponovno za trenutak.</string>
+	<key>Sources</key>
+	<string>Izvori</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>IZNOS NADOPUNE</string>
+	<key>Tap the </key>
+	<string>Dodirnite ikonu </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Dodirnite istu ikonu i odaberite DisinfaX kako biste otvorili skočni prozor.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>To se nije moglo pronaći. Pokušajte ponovno.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Taj iznos nadoplate nije valjan. Odaberite drugi iznos.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ova verzija ne može pristupiti svom dijeljenom spremniku (App Group %@). Nadopune neće biti dostupne dok se mogućnost App Groups ne doda i aplikaciji i proširenju.</string>
+	<key>Top Up</key>
+	<string>Nadoplati</string>
+	<key>Top Up Balance</key>
+	<string>Nadopuni stanje</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Nadopune zahtijevaju noviju verziju iOS-a. Ažurirajte, a zatim ponovno otvorite DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Nadopune zahtijevaju noviju verziju macOS-a. Ažurirajte, a zatim ponovno otvorite DisinfaX.</string>
+	<key>True</key>
+	<string>Istinito</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>KORIŠTENJE DISINFAX-A U SAFARIJU</string>
+	<key>Unknown</key>
+	<string>Nepoznato</string>
+	<key>Unknown purchase error.</key>
+	<string>Nepoznata pogreška kupnje.</string>
+	<key>Very Likely</key>
+	<string>Vrlo vjerojatno</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Cijeli američki dolari, 1–100. Naplaćuje se u valuti vašeg App Storea.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Već imate nadopunu od US$%lld koja čeka primjenu — niste ponovno naplaćeni. Vratite se na Safari i otvorite DisinfaX skočni prozor kako biste je primijenili na svoje stanje.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Nisi prijavljen. Prijavite se i pokušajte ponovno.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Vaša nadopuna od US$%lld upravo se primjenjuje.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Prikazivanje vaše nadopune od US$%lld traje dulje nego inače.</string>
+	<key>Your account has been suspended.</key>
+	<string>Vaš račun je suspendiran.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Vaše stanje je preniska. Nadoplatite kako biste nastavili.</string>
+</dict>
+</plist>

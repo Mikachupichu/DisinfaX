@@ -50,6 +50,11 @@ export type Claim = {
     /** This claim is flagged for reclassification-on-hold (reclassify trigger).
      *  Highlight should be neutral grey and badge always visible with "Disinfact". */
     reclassifyOnHold?: boolean;
+    /** The DB link (tweet_claims.is_hidden) judged this post claim one the strict
+     *  filtering categories would have dropped. Normally not painted at all — no
+     *  highlight, no badge — unless a selection area on the page covers it, which
+     *  reveals it like any other claim. Absent = no opinion. */
+    isHidden?: boolean;
     /** When true, the claim is being re-researched in the background. The UI shows
      *  a spinner next to the existing badge label and reasoning until new values stream in. */
     refreshing?: boolean;
@@ -116,6 +121,12 @@ export type Classification = {
      *  running. Shows a spinner in the Disinfact button's slot at the top of the tweet,
      *  since that flow has no on-hold button of its own to spin. */
     preclassifying?: boolean;
+    /** When true, preclassification yielded no claims because every attempt FAILED, not
+     *  because the text has none. The stream always ends with a classification either way
+     *  (see preClassify), so this is the only thing that tells the two empty results apart
+     *  — a failed run has already reported the worker's own error, and telling the user
+     *  "no claims" over it would name the wrong cause. */
+    preclassifyFailed?: boolean;
     /** When set, the tweet text should be replaced with Grok's auto-translated
      *  text in this locale. Highlights on claims use this locale key. */
     translatedLocale?: string;
@@ -126,6 +137,23 @@ export type Classification = {
      *  original text or destinationLanguage for Grok translation). Used to pick
      *  the correct highlight locale from claim.highlight. */
     textLocale?: string;
+    /** The post's OTHER side, broken up for a platform showing both sides of one post at
+     *  once. Built exactly as `segments` is — same claims, so the two sides highlight and
+     *  hide in step — and painted into the element the adapter pairs with the side above
+     *  (see `dualTextElements`). Unset for a post with one side, which is every post on
+     *  every platform whose translation replaces the words rather than joining them. */
+    altSegments?: TextSegment[] | null;
+    /** The locale key `altSegments`' claim ranges are filed under, stamped on the spans
+     *  the other side paints so a claim's popover and its annotations know which key's
+     *  offsets index their words. */
+    altTextLocale?: string;
+    /** Locale prefixes whose surviving highlight range addresses the DISPLAYED body
+     *  (see `selectHighlightRevision`'s tier 2). A key here may not be used to break up
+     *  the other side: the range indexes the words already on screen, not the side the
+     *  other group sits over. A host that states no language (Facebook) files both
+     *  sides under one placeholder key (`und`), so without this the source group offered
+     *  Reveal over the translation's ranges and painted those onto the source. */
+    altBlockedKeys?: string[];
 };
 
 /**

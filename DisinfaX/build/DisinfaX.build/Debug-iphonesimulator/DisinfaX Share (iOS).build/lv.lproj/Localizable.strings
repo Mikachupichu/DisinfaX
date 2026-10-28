@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> adreses joslā, pēc tam pieskarieties Pārvaldīt paplašinājumus un iespējojiet DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ būt %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PĒC PAPILDINĀŠANAS</string>
+	<key>Add funds to your balance</key>
+	<string>Pievieno līdzekļus savam atlikumam</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Agrāks US$%lld pirkums joprojām gaidīja piemērošanu, tāpēc tas tika pabeigts, nevis jums atkārtoti iekasēta maksa. Atgriezieties pārlūkā Safari un atveriet DisinfaX uznirstošo logu, lai redzētu atjaunināto atlikumu.</string>
+	<key>Annotate</key>
+	<string>Anotēt</string>
+	<key>Annotating</key>
+	<string>Anotēšana</string>
+	<key>Arguably</key>
+	<string>Apstrīdami</string>
+	<key>BALANCE</key>
+	<string>ATLIKUMS</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Veicot papildinājumu, jūs piekrītat mūsu [Pakalpojumu sniegšanas noteikumiem](https://disinfax.app/terms-of-use) un [Konfidencialitātes politikai](https://disinfax.app/privacy-policy). Ja maksājat citā valūtā, nevis USD, var tikt piemērota valūtas maiņas maksa.</string>
+	<key>Clear</key>
+	<string>Notīrīt</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Pieskarieties DisinfaX ikonai Safari rīkjoslā, lai atvērtu uznirstošo logu.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Noklikšķinot uz %@ tiks atklāti apgalvojumi un no tava atlikuma tiks noņemta maksa</string>
+	<key>Contacting the App Store…</key>
+	<string>Savienojas ar App Store…</string>
+	<key>Copy</key>
+	<string>Kopēt</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX var kļūdīties. Vēlreiz pārbaudiet informāciju.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX pagaidām nav pieejams tavā reģionā normatīvo prasību dēļ.</string>
+	<key>Disinfact</key>
+	<string>Pārbaudīt</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Iespējojiet DisinfaX pārlūkā Safari sadaļā Iestatījumi → Paplašinājumi.</string>
+	<key>Enter a claim</key>
+	<string>Ievadiet apgalvojumu</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Ievadiet veselu dolāru summu no 1 līdz 100.</string>
+	<key>Equivocally</key>
+	<string>Neviennozīmīgi</string>
+	<key>Fact-Check</key>
+	<string>Faktu pārbaude</string>
+	<key>Fact-Check All</key>
+	<string>Pārbaudīt visu</string>
+	<key>Fact-Checking</key>
+	<string>Pārbaude</string>
+	<key>False</key>
+	<string>Nepatiess</string>
+	<key>Likely</key>
+	<string>Ticams</string>
+	<key>Mostly</key>
+	<string>Pārsvarā</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Atvērt Safari paplašinājumu iestatījumus…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Atveriet Safari un dodieties uz x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Atveriet uznirstošo logu pārlūkā Safari, lai redzētu atjaunināto atlikumu</string>
+	<key>Partially</key>
+	<string>Daļēji</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Maksājums pabeigts. Atgriezieties pārlūkā Safari un atveriet DisinfaX uznirstošo logu, lai redzētu atjaunināto atlikumu.</string>
+	<key>Possibly</key>
+	<string>Iespējams</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Produkts %@ netika atrasts App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Pirkums atcelts.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Pirkums gaida apstiprinājumu.</string>
+	<key>Reasoning</key>
+	<string>Pamatojums</string>
+	<key>Return to Safari</key>
+	<string>Atpakaļ uz Safari</string>
+	<key>Setup incomplete</key>
+	<string>Iestatīšana nav pabeigta</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Piesakies DisinfaX uznirstošajā logā pārlūkā Safari, lai pievienotu līdzekļus.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Daļa no šī pieprasījuma netika atpazīta. Pārbaudi, vai pievienojumprogramma ir atjaunināta.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>No mūsu puses radās kļūda. Mēģini vēlreiz pēc brīža.</string>
+	<key>Sources</key>
+	<string>Avoti</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>PAPILDINĀJUMA SUMMA</string>
+	<key>Tap the </key>
+	<string>Pieskarieties ikonai </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Pieskarieties tai pašai ikonai un izvēlieties DisinfaX, lai atvērtu uznirstošo logu.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>To neizdevās atrast. Mēģini vēlreiz.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Šī papildinājuma summa nav derīga. Izvēlies citu summu.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Šī versija nevar piekļūt savam koplietotajam konteinerim (lietotņu grupa %@). Papildinājumi nebūs pieejami, kamēr lietotņu grupu iespēja netiks pievienota gan lietotnei, gan paplašinājumam.</string>
+	<key>Top Up</key>
+	<string>Papildināt</string>
+	<key>Top Up Balance</key>
+	<string>Papildināt atlikumu</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Papildinājumiem nepieciešama jaunāka iOS versija. Atjauniniet un pēc tam atkārtoti atveriet DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Papildinājumiem nepieciešama jaunāka macOS versija. Atjauniniet un pēc tam atkārtoti atveriet DisinfaX.</string>
+	<key>True</key>
+	<string>Patiess</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX IZMANTOŠANA PĀRLŪKĀ SAFARI</string>
+	<key>Unknown</key>
+	<string>Nezināms</string>
+	<key>Unknown purchase error.</key>
+	<string>Nezināma pirkuma kļūda.</string>
+	<key>Very Likely</key>
+	<string>Ļoti ticams</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Veseli ASV dolāri, 1–100. Tiek iekasēti jūsu App Store valūtā.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Jums jau ir US$%lld papildinājums, kas gaida piemērošanu — jums netika atkārtoti iekasēta maksa. Atgriezieties pārlūkā Safari un atveriet DisinfaX uznirstošo logu, lai to piemērotu savam atlikumam.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Tu neesi pieteicies. Pieteicies un mēģini vēlreiz.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Jūsu US$%lld papildinājums pašlaik tiek piemērots.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Jūsu US$%lld papildinājuma parādīšanās aizņem ilgāku laiku nekā parasti.</string>
+	<key>Your account has been suspended.</key>
+	<string>Tavs konts ir apturēts.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Tava atlikuma summa ir pārāk maza. Papildini atlikumu, lai turpinātu.</string>
+</dict>
+</plist>

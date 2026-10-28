@@ -174,25 +174,6 @@ export interface PlatformAdapter {
    *  fact-checks it as a web selection. */
   placeButtons(container: HTMLElement, root: Element, ref: PostRef): void;
 
-  /** Give the reader the whole of a body the extension has painted highlights into, or is
-   *  about to, when the host clamps it with CSS and keeps the rest behind its own control.
-   *
-   *  Called at both ends of the same promise. Before a paint, because a host that clamps
-   *  with CSS keeps the whole string in the DOM, so the marks land inside text the reader
-   *  cannot reach and the claim they were shown is somewhere behind an ellipsis. And on
-   *  the reader's own click on any of our buttons on the post, because the answer to that
-   *  click is not always a painted claim — a classification can come back with none, and a
-   *  highlight localization repaints a post through its own path — and the post the reader
-   *  asked about is owed to them whole from the click on, whatever the answer turns out to
-   *  be. In both cases ONLY the host's own presentation changes: the clamped body already
-   *  holds all of its text, so the hash and the id are untouched, and the host's own
-   *  control is left in the DOM rather than removed.
-   *
-   *  X implements this too, and not through this hook: it clamps `[data-testid="tweetText"]`
-   *  itself, and consulting the X adapter from the file that does its injecting would
-   *  recurse, so X's clamp is cleared by the same caller through X's own copy of it. */
-  unclip?(textElement: Element): void;
-
   /** Horizontal center of the platform's feed column, or null to fall back to the
    *  viewport center. Keeps the floating buttons over the feed rather than the page. */
   feedCenter(): number | null;
@@ -279,56 +260,99 @@ export interface PlatformAdapter {
    *  classifiable post (a deleted stub, a "load more" shell, an ad). */
   capture?(root: Element): CapturedPost | null;
 
-  /* ── A clipped body, read back whole before capture ─────────────────────────────
+  /* ── A body the host is holding back ────────────────────────────────────────────
    *
-   *  A post is identified by the hash of its text, so a host that renders only part of
-   *  a post and holds the rest behind its own control ("(more)", "See more") cannot be
-   *  filed from what is on screen: the same post hashes differently before and after the
-   *  reader expands it, and a hash over a clipped prefix names no post at all.
+   *  A post is identified by the hash of its text, so a host that renders only part of a
+   *  post and holds the rest behind its own control ("(more)", "See more") cannot be filed
+   *  from what is on screen: a hash over a clipped prefix names no post at all. So a post
+   *  the host has withheld is filed from its PAYLOAD where the platform carries one, and
+   *  otherwise waits for the reader.
    *
-   *  `unclip` above is NOT this. That one is called after highlights are painted, to
-   *  reveal text the host is merely clamping with CSS — the whole string is already in
-   *  the DOM, so it changes nothing about what was hashed. The hooks below are called
-   *  BEFORE the text is read, for hosts where the clamped render really is the whole of
-   *  what is in the DOM and the rest is somewhere the adapter cannot reach without
-   *  asking the host for it. On such a host the read is a different string afterwards,
-   *  and that is the point.
+   *  A clamp is painted, and the host's own control is what makes that safe. Our painter
+   *  moves a body's own children into a wrapper of ours (`renderSegmentsInPlace`); the
+   *  host's expander re-renders the body it belongs to, and when that control is one of the
+   *  children we moved, the host's `removeChild` lands on a node whose parent is now our
+   *  wrapper and throws — measured on Substack (every card on the feed gone in two seconds)
+   *  and again on LinkedIn (`NotFoundError: Failed to execute 'removeChild'`, the post torn
+   *  out of the DOM). So the painter never moves it: `bodyControl` names the host's own
+   *  control for the body about to be wrapped, and everything up to that control is wrapped
+   *  while the control is left exactly where the host put it. Measured on LinkedIn with that
+   *  one change, the reader's own press expanded the body with no throw, the wrapper intact,
+   *  and the whole text inside it.
    *
-   *  Present only where a clipped post is still integrated. A platform that refuses to
-   *  integrate clipped posts has no business here — the standing rule is that a clipped
-   *  post the reader can see is integrated with its entire unclipped text, never left
-   *  out. */
+   *  So a clipped body IS painted, and the clamp does the clipping for us: a highlight past
+   *  the cut is hidden by the host's own box until the reader expands the post, and a
+   *  highlight the cut runs through is simply cut with it. Nothing is ever keyed on a prefix,
+   *  because a prefix names no post. A body the host is holding back is instead filed from its
+   *  payload where the platform carries one, read back off the page where the host's own
+   *  affordance can be pressed (`revealClipped`), and left for the reader where neither is
+   *  available.
+   *
+   *  Present wherever `capture` or the painter has a clipped post to think about. A platform
+   *  that can neither file nor paint a clipped post leaves this off and lets `capture` refuse
+   *  it on its own reading. */
 
-  /** Whether this root's body is currently showing a clipped render of itself. Asked on
-   *  every sweep for every root in reach, so it has to be cheap — a query for the host's
-   *  own affordance and nothing else. */
+  /** Whether the host is currently showing less of this root's body than it holds — a CSS
+   *  clamp whose words are all in the DOM, or a cut whose words are not there at all. Read
+   *  by the painter for every post it is about to paint into, and by `capture` on the
+   *  platforms where a cut prefix names no post. Cheap: a measurement of the box, or a
+   *  query for the host's own affordance, and nothing else. */
   bodyClipped?(root: Element): boolean;
 
   /** Give a clipped body its whole text back, by driving the host's own affordance.
    *
-   *  Called, and awaited, immediately before `capture` reads a clipped post, and only
-   *  for posts the reader has reached. It is a real interaction with the host, so it is
-   *  expected to be serialized by the adapter and to leave the page more readable than it
-   *  found it — unlike `revealSource`, there is nothing to put back: the reader is owed
-   *  the text the host was holding.
+   *  Called, and awaited, immediately before `capture` reads a clipped post, and only for
+   *  posts the reader has reached. It is a real interaction with the host, so it is expected
+   *  to be serialized by the adapter and to leave the page more readable than it found it —
+   *  unlike `revealSource`, there is nothing to put back: the reader is owed the text the host
+   *  was holding. What the host offers instead of a way back is its own business, and measured
+   *  on the two hosts that cut a string out of the page rather than hiding a box, there is none
+   *  to take: Quora's "(more)" is gone once the answer opens, and the m-site's expander is gone
+   *  once the story opens, with no "less" control behind either. A gated body on Mastodon is
+   *  the one toggle, and it still stays open: everything downstream reads the body back out of
+   *  the page — the hash, the highlight ranges, the anchor our buttons are placed against — so
+   *  a body shut again after the read is a classified post with no buttons on it at all.
+   *
+   *  Only for a host where the text is reachable no other way. A CSS clamp needs none of this
+   *  (every word is already in the DOM), and neither does a host that states the whole text in
+   *  a payload, so an implementation must return early for any root whose text it can already
+   *  read, and press only for the ones it cannot.
    *
    *  `capture` is not required to file the post if this fails. A post whose text is still
-   *  clipped is one nothing can hash, so it is skipped for this pass and tried again on a
-   *  later one; the adapter must bound its own retries rather than click forever.
+   *  clipped is one nothing can hash, so it is skipped for this pass and tried again on a later
+   *  one; the adapter must bound its own retries rather than click forever.
    *
-   *  `onDemand` names a second reason for the call: the reader clicked one of our buttons
-   *  on this post and the body they were owed did not open. The bounds above are sized for
-   *  a sweep — they exist so a host refusing to open cannot be clicked at on every pass —
-   *  and a reader asking is not a sweep, so an exhausted budget must not answer their click
-   *  with nothing. Same hook, same page state, one unrefusable try.
-   *
-   *  A host whose clamp is CSS-only has no text to unlock and still has a use for this hook:
-   *  clearing the clamp from outside makes the host re-render the very body we are about to paint
-   *  into, and it withdraws its own control from that body on its own schedule. Declaring this
-   *  WITHOUT `bodyClipped` is how such a host is asked to let that re-render land first — the
-   *  sweep wants both hooks and so stays out of it, and only the reader's own click pays for the
-   *  wait. LinkedIn is that host. */
+   *  `onDemand` names a second reason for the call: the reader clicked one of our buttons on
+   *  this post and the body they were owed did not open. The bounds above are sized for a sweep
+   *  — they exist so a host refusing to open cannot be clicked at on every pass — and a reader
+   *  asking is not a sweep, so an exhausted budget must not answer their click with nothing.
+   *  Same hook, same page state, one unrefusable try. */
   revealClipped?(root: Element, opts?: { onDemand?: boolean }): Promise<void>;
+
+  /** Note which of `roots` are showing a translation rather than the post's own words, on a
+   *  platform whose markup cannot say so.
+   *
+   *  Called, and awaited, at the top of the clipped pass — before `bodyClipped` is asked about
+   *  any of these roots — because an adapter that can only tell a translated body apart by its
+   *  WORDS (a language detector, for a host that swaps the text in place without updating what
+   *  its markup states) has to answer before the pass decides what is held back. Implementations
+   *  must cache their verdict per element: the pass runs again on every mutation. Nothing may
+   *  change for a root the adapter cannot judge; a root left without a verdict is read exactly
+   *  as it is today. */
+  detectTranslatedSides?(roots: Element[]): Promise<void>;
+
+  /** The host's own control for the body `body` is, or null when this body holds none.
+   *
+   *  Named so the painter can leave it alone: `renderSegmentsInPlace` wraps everything in
+   *  the body UP TO whatever this returns and never moves the control itself, which is what
+   *  lets the host re-render from its own control without the `removeChild` that a moved
+   *  control causes. See the block above for the measurement.
+   *
+   *  Implementing this is what says the platform's clipped bodies may be painted at all —
+   *  the painter asks for it before it paints one. A platform whose clamp it cannot name the
+   *  control of leaves this off: its clipped bodies stay unpainted until the reader opens
+   *  them, which is where the whole text is painted for the first time. */
+  bodyControl?(body: Element): Element | null;
 
   /* ── The host's own translation ─────────────────────────────────────────────────
    *
@@ -352,8 +376,15 @@ export interface PlatformAdapter {
    *  It is called once per post, before the post is captured, and — because it is
    *  visible to the reader when it happens at all — only for posts the reader has
    *  reached. A post whose source cannot be recovered is read as its own source, which
-   *  is what happens today; nothing downstream has to handle a half-read post. */
-  revealSource?(root: Element): Promise<void>;
+   *  is what happens today; nothing downstream has to handle a half-read post.
+   *
+   *  `true` asks for another pass soon: the attempt did not land and the post may still be
+   *  recovered — the usual case is a first pass that ran before the host had hydrated the
+   *  control the flip presses. Sweeps otherwise follow the page's own mutations, and a feed
+   *  the reader only looks at makes none, so without this the second attempt never happens
+   *  and the post never gets its buttons. Answer `false` (or nothing) once nothing more can
+   *  be done, including after the adapter's own attempts are spent. */
+  revealSource?(root: Element): Promise<void | boolean>;
 
   /** The language of the translation this post is showing, or null when it is showing
    *  its own text — which is also the answer for a platform with no translation at all.
@@ -365,14 +396,51 @@ export interface PlatformAdapter {
    *  which language its highlights have to address.
    *
    *  The locale is part of the answer rather than a separate question because it is what
-   *  a flip is reported AS: the background files highlights under it, and a platform that
-   *  can say a translation is on screen but not what language it is in has nothing to
-   *  report and should return null.
+   *  a flip is reported AS: the background files highlights under it. A platform that can
+   *  say a translation is on screen but not what language it is in returns `und` — never a
+   *  guess — and sets `translationLocaleIsGuessed` so the side is reported by its body.
    *
    *  Returns null for a post whose source is on screen even when the source's own
    *  language is known — this hook is about the DISPLAYED side, and the source's language
-   *  is the capture's business, not this one's. */
-  displayedTranslationLocale?(root: Element): string | null;
+   *  is the capture's business, not this one's.
+   *
+   *  Returns `undefined` for a post whose side the platform cannot name AT ALL — not the
+   *  source, not a translation it can name. A page whose side must be learned by flipping
+   *  answers this until it has learned one, and null there is a lie with a cost: the flip
+   *  to the translation is reported as a return to the source, the body on screen is
+   *  recorded as the capture's, and the next press classifies the side nobody is reading.
+   *  Such a side is reported by its BODY (`bodyOnly`, the same path as
+   *  `translationLocaleIsGuessed`), and `sideUnknown` is what says it may need a flip
+   *  first. */
+  displayedTranslationLocale?(root: Element): string | null | undefined;
+
+  /** Whether the platform cannot say which side a post is showing, and the post carries the
+   *  host's translation control, so `revealSource` has to flip it to learn which side is up.
+   *
+   *  Asked on every sweep for every post in reach. It exists because a platform can hide its
+   *  translation state across page loads: the side is then in the DOM only as the control's own
+   *  label, which is translated per reader, so it has to be learned by flipping once — and until
+   *  it is learned, `capture` must not file a body that may be the translation. A platform that
+   *  can always answer `displayedTranslationLocale` needs neither this nor the deferral. */
+  sideUnknown?(root: Element): boolean;
+
+  /** Whether `displayedTranslationLocale` names a side only by DEFAULT: the host translates
+   *  into a target chosen in its own UI and states nothing, so the honest answer is `und`
+   *  (an unknown language) and the side is identified by the BODY instead.
+   *
+   *  A platform that sets this reports every translated side by body alone
+   *  (`bodyOnly` in `maybeSyncDisplayedLocaleFromDom`). Ranges are filed `<locale>:<hash>`, so
+   *  `und` still tells the source, the translation and every other rendering apart by hash —
+   *  while naming a guess hands another language's offsets to the painter. Measured on
+   *  Telegram, switching the target from English to French painted the English ranges over the
+   *  French words instead of offering that side a Localize. `und` is also the key a paid
+   *  localization of such a side files its own ranges under.
+   *
+   *  Only where `displayedText` is the whole body. A platform whose rendered translation is a
+   *  clamp of, or a re-fetch of, a stored string keeps its named locale: those are renderings
+   *  of the same side, and a body-first report would drop this side's ranges on the wrong
+   *  hash. */
+  translationLocaleIsGuessed?: boolean;
 
   /** The body of the side a post is showing, for the one path that has to hand the
    *  background a text along with a locale.
@@ -387,6 +455,31 @@ export interface PlatformAdapter {
    *  locale the reader is looking at. Those ranges are measured against words the claims
    *  never named. Passing the displayed text is what makes the two agree. */
   displayedText?(root: Element): string | null;
+
+  /** The two sides of ONE post the platform is showing at the same time, or null when it
+   *  is showing one.
+   *
+   *  A platform that REPLACES a post's words with a translation has one side on screen and
+   *  needs neither hook here. A platform that ADDS the translation beside them has both, and
+   *  then `textElement` names only one of them: the side the reader is reading. This is how
+   *  the other side is named, so its highlights can be painted under it as well — one post,
+   *  two bodies, both sourced from the same claims and both following the same Hide/Reveal.
+   *
+   *  Returns the pair NAMED rather than merely listed, because the painter needs to know
+   *  which is which: the one `textElement` does not return is the one still to be painted.
+   *  Null when either side is absent — a post with one side has nothing to pair — and null
+   *  when the two are the same element or one contains the other. */
+  dualTextElements?(root: Element, ref: PostRef): { source: Element; translation: Element } | null;
+
+  /** Seat a post's SECOND button group at the platform's own translation-side row, the row
+   *  the reader turns the translation off in.
+   *
+   *  The counterpart of `placeButtons` for the side `textElement` does not name: the first
+   *  group stays where it has always been, and this one is what makes the pair read as two
+   *  sides of one post rather than one post with a stray pill. Implemented only where that
+   *  row has been measured to have room — an adapter that cannot say where it goes leaves
+   *  this off, and its second side carries highlights and no buttons. */
+  placeTranslationButtons?(container: HTMLElement, root: Element, ref: PostRef): void;
 
   /* ── Network capture ────────────────────────────────────────────────────────────
    *

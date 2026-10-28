@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ikonoa, ondoren sakatu Kudeatu Hedapenak eta gaitu DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ izatea %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>KARGATU ONDOREN</string>
+	<key>Add funds to your balance</key>
+	<string>Gehitu fondoak zure saldoan</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Aurreko US$%lld-ko erosketa bat oraindik aplikatzeko zain zegoen, hori burutu da beste kobrantza bat egin beharrean. Itzuli Safari-ra eta ireki DisinfaX leiho gainerakorra zure saldo eguneratua ikusteko.</string>
+	<key>Annotate</key>
+	<string>Anotatu</string>
+	<key>Annotating</key>
+	<string>Anotatzen</string>
+	<key>Arguably</key>
+	<string>Eztabaidagarriki</string>
+	<key>BALANCE</key>
+	<string>SALDOA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Kargatzean, gure [Zerbitzu Baldintzak](https://disinfax.app/terms-of-use) eta [Pribatutasun Politika](https://disinfax.app/privacy-policy) onartzen dituzu. Kanbio-komisioak aplika litezke USD ez den dibisa batean ordaintzen baduzu.</string>
+	<key>Clear</key>
+	<string>Garbitu</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Sakatu DisinfaX ikonoa Safari-ren tresna-barran leiho gainerakorra irekitzeko.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ klikatzeak baieztapenak agerian utziko ditu eta zure saldua kobratuko du</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store-rekin konektatzen…</string>
+	<key>Copy</key>
+	<string>Kopiatu</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX-ek akatsak egin ditzake. Egiaztatu informazioa berriro.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX oraindik ez dago erregio honetan erabilgarri, araudi eskakizunak direla eta.</string>
+	<key>Disinfact</key>
+	<string>Desinfaktatu</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Gaitu DisinfaX Safari-n, Ezarpenak → Hedapenak atalean.</string>
+	<key>Enter a claim</key>
+	<string>Idatzi baieztapen bat</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Sartu 1 eta 100 arteko dolar zenbateko osoa.</string>
+	<key>Equivocally</key>
+	<string>Anbiguoki</string>
+	<key>Fact-Check</key>
+	<string>Egiaztapena</string>
+	<key>Fact-Check All</key>
+	<string>Egiaztatu guztia</string>
+	<key>Fact-Checking</key>
+	<string>Egiaztatzen</string>
+	<key>False</key>
+	<string>Faltsua</string>
+	<key>Likely</key>
+	<string>Litekeena</string>
+	<key>Mostly</key>
+	<string>Gehienbat</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Ireki Safari-ren hedapen-ezarpenak…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Ireki Safari eta joan x.com-era.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Ireki leiho gainerakorra Safari-n zure saldo eguneratua ikusteko</string>
+	<key>Partially</key>
+	<string>Partzialki</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ordainketa burutu da. Itzuli Safari-ra eta ireki DisinfaX leiho gainerakorra zure saldo eguneratua ikusteko.</string>
+	<key>Possibly</key>
+	<string>Agian</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>%@ produktua ez da aurkitu App Store Connect-en.</string>
+	<key>Purchase cancelled.</key>
+	<string>Erosketa bertan behera utzi da.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Erosketa onarpen zain dago.</string>
+	<key>Reasoning</key>
+	<string>Arrazoibidea</string>
+	<key>Return to Safari</key>
+	<string>Itzuli Safari-ra</string>
+	<key>Setup incomplete</key>
+	<string>Konfigurazioa osatu gabe</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Fondoak gehitzeko, saioa hasi Safari-ko DisinfaX leiho gainerakorretik.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Eskaera honen zati bat ez da ezagutu. Ziurtatu hedapena eguneratuta dagoela.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Errore bat gertatu da gure aldetik. Saiatu berriro pixka bat geroago.</string>
+	<key>Sources</key>
+	<string>Iturriak</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>KARGATZE-ZENBATEKOA</string>
+	<key>Tap the </key>
+	<string>Sakatu helbide-barrako </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Sakatu ikono bera eta hautatu DisinfaX leiho gainerakorra irekitzeko.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Hori ezin izan da aurkitu. Saiatu berriro.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Kargatze-zenbateko hori ez da baliozkoa. Aukeratu beste zenbateko bat.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Bertsio honek ezin du bere edukiontzi partekatura (App Group %@) iritsi. Kargatzeak ez daude erabilgarri App Groups gaitasuna aplikazioari eta hedapenari gehitu arte.</string>
+	<key>Top Up</key>
+	<string>Saldoa kargatu</string>
+	<key>Top Up Balance</key>
+	<string>Kargatu saldoa</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Kargatzeek iOS bertsio berriago bat behar dute. Eguneratu, eta ondoren ireki berriro DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Kargatzeek macOS bertsio berriago bat behar dute. Eguneratu, eta ondoren ireki berriro DisinfaX.</string>
+	<key>True</key>
+	<string>Egiazkoa</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX SAFARI-N ERABILTZEA</string>
+	<key>Unknown</key>
+	<string>Ezezaguna</string>
+	<key>Unknown purchase error.</key>
+	<string>Erosketa-errore ezezaguna.</string>
+	<key>Very Likely</key>
+	<string>Oso litekeena</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>AEBko dolar osoak, 1–100. Zure App Store-ren dibisan kobratuko da.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Dagoeneko US$%lld-ko karga bat duzu aplikatzeko zain — ez zaizu berriz kobratu. Itzuli Safari-ra eta ireki DisinfaX leiho gainerakorra zure saldoan aplikatzeko.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ez zaude saioa hasita. Hasi saioa eta saiatu berriro.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Zure US$%lld-ko karga aplikatzen ari da.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Zure US$%lld-ko kargak ohi baino gehiago hartzen du agertzeko.</string>
+	<key>Your account has been suspended.</key>
+	<string>Zure kontua etenda dago.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Zure saldoa ez da nahikoa. Kargatu saldoa jarraitzeko.</string>
+</dict>
+</plist>

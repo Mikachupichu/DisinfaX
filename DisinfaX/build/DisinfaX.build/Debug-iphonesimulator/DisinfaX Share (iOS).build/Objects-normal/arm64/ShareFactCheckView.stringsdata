@@ -1,0 +1,16 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (Share)/ShareFactCheckView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Close",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 62
+        }
+      }
+    ]
+  },
+  "version": 1
+}

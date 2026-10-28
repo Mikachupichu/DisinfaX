@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string>-ikooni aadressiribal, seejärel puuduta „Halda laiendusi“ ja luba DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ kindlus</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ kindlus, %2$@ tõesus</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>PÄRAST TÄIENDAMIST</string>
+	<key>Add funds to your balance</key>
+	<string>Lisa oma saldole raha</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Varasem US$%lld ost ootas endiselt rakendamist, seega lõpetati see, selle asemel et sinult uuesti raha maha võtta. Mine tagasi Safarisse ja ava DisinfaXi hüpikaken, et näha oma värskendatud saldot.</string>
+	<key>Annotate</key>
+	<string>Annoteeri</string>
+	<key>Annotating</key>
+	<string>Annoteerimine</string>
+	<key>Arguably</key>
+	<string>Vaieldavalt</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Täiendades nõustud meie [Kasutustingimustega](https://disinfax.app/terms-of-use) ja [Privaatsuspoliitikaga](https://disinfax.app/privacy-policy). Kui maksad muus vääringus kui USD, võidakse rakendada valuutavahetustasusid.</string>
+	<key>Clear</key>
+	<string>Tühjenda</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Puuduta DisinfaX ikooni Safari tööriistaribal, et avada hüpikaken.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ klõpsamine kuvab väited ja arvab tasu maha sinu saldost</string>
+	<key>Close</key>
+	<string>Sule</string>
+	<key>Contacting the App Store…</key>
+	<string>Ühendumine App Store'iga…</string>
+	<key>Copy</key>
+	<string>Kopeeri</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX võib teha vigu. Kontrolli teavet üle.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ei ole regulatiivsete nõuete tõttu veel sinu piirkonnas saadaval.</string>
+	<key>Disinfact</key>
+	<string>Faktikontroll</string>
+	<key>Edit</key>
+	<string>Muuda</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Luba DisinfaX Safaris, jaotises Seaded → Laiendused.</string>
+	<key>Enter a claim</key>
+	<string>Sisesta väide</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Sisesta täisarvuline dollarisumma vahemikus 1–100.</string>
+	<key>Equivocally</key>
+	<string>Mitmeti mõistetavalt</string>
+	<key>Fact-Check</key>
+	<string>Faktikontroll</string>
+	<key>Fact-Check All</key>
+	<string>Kontrolli kõike</string>
+	<key>Fact-Checking</key>
+	<string>Kontrollimine</string>
+	<key>False</key>
+	<string>Väär</string>
+	<key>Likely</key>
+	<string>Tõenäoline</string>
+	<key>Mostly</key>
+	<string>Enamjaolt</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Ava Safari laienduste seaded…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Ava Safari ja mine aadressile x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Ava hüpikaken Safaris, et näha oma värskendatud saldot</string>
+	<key>Partially</key>
+	<string>Osaliselt</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Makse tehtud. Mine tagasi Safarisse ja ava DisinfaXi hüpikaken, et näha oma värskendatud saldot.</string>
+	<key>Possibly</key>
+	<string>Võimalik</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Toodet %@ ei leitud App Store Connectist.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ost tühistati.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Ost ootab kinnitamist.</string>
+	<key>Reasoning</key>
+	<string>Põhjendus</string>
+	<key>Return to Safari</key>
+	<string>Tagasi Safarisse</string>
+	<key>Setup incomplete</key>
+	<string>Seadistus on lõpetamata</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Logi sisse DisinfaX hüpikaknast Safaris, et lisada raha.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Osa sellest päringust ei tuvastatud. Veendu, et laiendus on ajakohane.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Meie poolel tekkis viga. Proovi hetke pärast uuesti.</string>
+	<key>Sources</key>
+	<string>Allikad</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>TÄIENDUSSUMMA</string>
+	<key>Tap the </key>
+	<string>Puuduta </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Puuduta sama ikooni ja vali DisinfaX, et avada hüpikaken.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Seda ei leitud. Proovi uuesti.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>See laadimissumma ei ole kehtiv. Vali muu summa.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>See versioon ei pääse ligi oma jagatud konteinerile (rakenduserühm %@). Täiendused ei ole võimalikud enne, kui rakenduserühmade funktsioon on lisatud nii rakendusele kui ka laiendusele.</string>
+	<key>Top Up</key>
+	<string>Lae kontot</string>
+	<key>Top Up Balance</key>
+	<string>Täienda saldot</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Täienduste jaoks on vaja uuemat iOS-i versiooni. Uuenda ja ava seejärel DisinfaX uuesti.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Täienduste jaoks on vaja uuemat macOS-i versiooni. Uuenda ja ava seejärel DisinfaX uuesti.</string>
+	<key>True</key>
+	<string>Tõene</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAXI KASUTAMINE SAFARIS</string>
+	<key>Unknown</key>
+	<string>Teadmata</string>
+	<key>Unknown purchase error.</key>
+	<string>Tundmatu ostuviga.</string>
+	<key>Very Likely</key>
+	<string>Väga tõenäoline</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Terved USA dollarid, 1–100. Arveldatakse sinu App Store'i vääringus.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Sul on juba US$%lld täiendus, mis ootab rakendamist — sinult ei ole uuesti raha maha võetud. Mine tagasi Safarisse ja ava DisinfaXi hüpikaken, et rakendada see oma saldole.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Sa ei ole sisse logitud. Logi sisse ja proovi uuesti.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Sinu US$%lld täiendust rakendatakse praegu.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Sinu US$%lld täienduse kuvamine võtab tavapärasest kauem aega.</string>
+	<key>Your account has been suspended.</key>
+	<string>Sinu konto on peatatud.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Sinu saldo on liiga madal. Lae kontot jätkamiseks.</string>
+</dict>
+</plist>

@@ -1,0 +1,49 @@
+{
+  "" : {
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary.dia",
+    "emit-module-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary-emit-module.dia",
+    "pch" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/DisinfaX Extension (iOS)-primary.swiftdeps"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/SharedTopUpStore.swift" : {
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.dia",
+    "index-unit-output-path" : "/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.o",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore.swiftdeps",
+    "swiftmodule" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SharedTopUpStore~partial.swiftmodule"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/StoreKitManager.swift" : {
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.dia",
+    "index-unit-output-path" : "/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.o",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager.swiftdeps",
+    "swiftmodule" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/StoreKitManager~partial.swiftmodule"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (Extension)/AuthManager.swift" : {
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.dia",
+    "index-unit-output-path" : "/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.o",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager.swiftdeps",
+    "swiftmodule" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/AuthManager~partial.swiftmodule"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (Extension)/SafariWebExtensionHandler.swift" : {
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.dia",
+    "index-unit-output-path" : "/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.o",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler.swiftdeps",
+    "swiftmodule" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Debug-iphonesimulator/DisinfaX Extension (iOS).build/Objects-normal/arm64/SafariWebExtensionHandler~partial.swiftmodule"
+  }
+}

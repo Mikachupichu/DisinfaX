@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> trên thanh địa chỉ, sau đó chạm vào Quản lý tiện ích mở rộng và bật DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>SAU KHI NẠP</string>
+	<key>Add funds to your balance</key>
+	<string>Nạp tiền vào số dư của bạn</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Một giao dịch mua US$%lld trước đó vẫn đang chờ được áp dụng, vì vậy giao dịch đó đã được hoàn tất thay vì tính phí bạn lần nữa. Hãy quay lại Safari và mở cửa sổ bật lên DisinfaX để xem số dư đã cập nhật.</string>
+	<key>Annotate</key>
+	<string>Chú thích</string>
+	<key>Annotating</key>
+	<string>Đang chú thích</string>
+	<key>Arguably</key>
+	<string>Đáng bàn</string>
+	<key>BALANCE</key>
+	<string>SỐ DƯ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Bằng cách nạp tiền, bạn đồng ý với [Điều khoản dịch vụ](https://disinfax.app/terms-of-use) và [Chính sách quyền riêng tư](https://disinfax.app/privacy-policy) của chúng tôi. Có thể áp dụng phí quy đổi ngoại tệ nếu bạn thanh toán bằng đơn vị tiền tệ khác USD.</string>
+	<key>Clear</key>
+	<string>Xóa</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Chạm vào biểu tượng DisinfaX trên thanh công cụ Safari để mở cửa sổ bật lên.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Nhấp vào %@ sẽ hiển thị các tuyên bố và trừ tiền vào số dư của bạn</string>
+	<key>Contacting the App Store…</key>
+	<string>Đang kết nối với App Store…</string>
+	<key>Copy</key>
+	<string>Sao chép</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX có thể mắc lỗi. Hãy luôn kiểm tra lại thông tin quan trọng.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX chưa khả dụng tại khu vực của bạn do yêu cầu quy định.</string>
+	<key>Disinfact</key>
+	<string>Kiểm Chứng</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Bật DisinfaX trong Safari, tại Cài đặt → Tiện ích mở rộng.</string>
+	<key>Enter a claim</key>
+	<string>Nhập một tuyên bố</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Nhập số tiền đô la nguyên từ 1 đến 100.</string>
+	<key>Equivocally</key>
+	<string>Mơ hồ</string>
+	<key>Fact-Check</key>
+	<string>Kiểm chứng thông tin</string>
+	<key>Fact-Check All</key>
+	<string>Kiểm Chứng Tất Cả</string>
+	<key>Fact-Checking</key>
+	<string>Đang kiểm tra</string>
+	<key>False</key>
+	<string>Sai</string>
+	<key>Likely</key>
+	<string>Có khả năng</string>
+	<key>Mostly</key>
+	<string>Phần lớn</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Mở cài đặt tiện ích mở rộng Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Mở Safari và truy cập x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Mở cửa sổ bật lên trong Safari để xem số dư đã cập nhật</string>
+	<key>Partially</key>
+	<string>Một phần</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Thanh toán hoàn tất. Hãy quay lại Safari và mở cửa sổ bật lên DisinfaX để xem số dư đã cập nhật.</string>
+	<key>Possibly</key>
+	<string>Có thể</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Không tìm thấy sản phẩm %@ trong App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Đã hủy giao dịch mua.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Giao dịch mua đang chờ phê duyệt.</string>
+	<key>Reasoning</key>
+	<string>Lập luận</string>
+	<key>Return to Safari</key>
+	<string>Quay lại Safari</string>
+	<key>Setup incomplete</key>
+	<string>Thiết lập chưa hoàn tất</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Đăng nhập từ cửa sổ bật lên DisinfaX trong Safari để nạp tiền.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Có phần nào đó trong yêu cầu này không được nhận dạng. Vui lòng đảm bảo tiện ích mở rộng đã được cập nhật.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Đã xảy ra lỗi ở phía chúng tôi. Vui lòng thử lại sau một chút.</string>
+	<key>Sources</key>
+	<string>Nguồn</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SỐ TIỀN NẠP</string>
+	<key>Tap the </key>
+	<string>Chạm vào biểu tượng </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Chạm vào cùng biểu tượng đó và chọn DisinfaX để mở cửa sổ bật lên.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Không tìm thấy nội dung đó. Vui lòng thử lại.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Số tiền nạp đó không hợp lệ. Vui lòng chọn số tiền khác.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Bản dựng này không thể truy cập vùng chứa dùng chung của nó (Nhóm ứng dụng %@). Tính năng nạp tiền sẽ không khả dụng cho đến khi khả năng Nhóm ứng dụng được thêm vào cả ứng dụng và tiện ích mở rộng.</string>
+	<key>Top Up</key>
+	<string>Nạp tiền</string>
+	<key>Top Up Balance</key>
+	<string>Nạp số dư</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Tính năng nạp tiền cần phiên bản iOS mới hơn. Hãy cập nhật, sau đó mở lại DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Tính năng nạp tiền cần phiên bản macOS mới hơn. Hãy cập nhật, sau đó mở lại DisinfaX.</string>
+	<key>True</key>
+	<string>Đúng</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SỬ DỤNG DISINFAX TRONG SAFARI</string>
+	<key>Unknown</key>
+	<string>Không rõ</string>
+	<key>Unknown purchase error.</key>
+	<string>Lỗi giao dịch mua không xác định.</string>
+	<key>Very Likely</key>
+	<string>Rất có khả năng</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Đô la Mỹ nguyên, từ 1–100. Bị tính phí theo đơn vị tiền tệ của App Store của bạn.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Bạn đã có một khoản nạp US$%lld đang chờ được áp dụng — bạn không bị tính phí lại. Hãy quay lại Safari và mở cửa sổ bật lên DisinfaX để áp dụng vào số dư của bạn.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Bạn chưa đăng nhập. Vui lòng đăng nhập và thử lại.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Khoản nạp US$%lld của bạn đang được áp dụng.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Khoản nạp US$%lld của bạn đang mất nhiều thời gian hơn bình thường để xuất hiện.</string>
+	<key>Your account has been suspended.</key>
+	<string>Tài khoản của bạn đã bị đình chỉ.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Số dư của bạn quá thấp. Vui lòng nạp tiền để tiếp tục.</string>
+</dict>
+</plist>

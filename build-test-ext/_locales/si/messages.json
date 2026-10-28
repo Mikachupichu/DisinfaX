@@ -27,7 +27,7 @@
     "message": "අවසන් වරට භාවිත කළේ"
   },
   "cleanupTagline": {
-    "message": "ඔබගේ X සංග්‍රහය පිරිසිදු කරන්න."
+    "message": "ඔබගේ සංග්‍රහය පිරිසිදු කරන්න."
   },
   "disclaimerJurisdiction": {
     "message": "එක්සත් ජනපදය තුළ, ඇලබාමා, ඇරිසෝනා, කැලිෆෝනියා, කොලරාඩෝ, කනෙක්ටිකට්, ඩෙලවෙයාර්, ෆ්ලොරිඩා, අයිඩහෝ, ඉලිනොයිස්, ඉන්ඩියානා, අයෝවා, කැන්සාස්, කෙන්ටකි, ලුයිසියානා, මේන්, මැසචුසෙට්ස්, මිසිසිපි, මිසූරි, මොන්ටානා, නිව් හැම්ප්ෂයර්, නිව් මෙක්සිකෝ, නිව් යෝර්ක්, උතුරු කැරොලිනා, උතුරු ඩැකෝටා, ඔක්ලහෝමා, ඔරිගන්, පෙන්සිල්වේනියා, දකුණු කැරොලිනා, දකුණු ඩැකෝටා, ටෙනසි, ටෙක්සාස්, යූටා, වොෂිංටන්, විස්කොන්සින්, සහ වයෝමිං හි පදිංචිකරුවන්ට පමණක් DisinfaX භාවිත කර ඔවුන්ගේ ශේෂය පිරවිය හැකිය; වොෂිංටන්, D.C., සියලුම එක්සත් ජනපද භූමි ප්‍රදේශ, සහ ලැයිස්තුගත නොකළ ඕනෑම ප්‍රාන්තයක් බැහැර කර ඇත. එක්සත් ජනපදයෙන් පිටත, එය කැනඩාව, ඕස්ට්‍රේලියාව, නවසීලන්තය, සිංගප්පූරුව, දකුණු අප්‍රිකාව, ජපානය, තායිවානය, ඉන්දුනීසියාව, තායිලන්තය, පිලිපීනය, මැලේසියාව, වියට්නාමය, සහ ස්විට්සර්ලන්තයේ ලබා ගත හැකිය."
@@ -37,7 +37,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI විශ්ලේෂණය භාවිතා කරමින් ට්වීට්වල වැරදි තොරතුරු හඳුනාගෙන ඉස්මතු කරයි.",
+    "message": "AI විශ්ලේෂණය භාවිතා කරමින් සටහන්වල වැරදි තොරතුරු හඳුනාගෙන ඉස්මතු කරයි.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -149,7 +149,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "මෙම ට්වීට් හි සියලුම ප්‍රකාශ නැවත හෙළි කරන්න",
+    "message": "මෙම සටහනේ සියලුම ප්‍රකාශ නැවත හෙළි කරන්න",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -268,6 +268,14 @@
   "signOut": {
     "message": "ඉවත් වන්න"
   },
+  "deleteAccount": {
+    "message": "ගිණුම සහ අදාළ දත්ත මකන්න",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "ලියාපදිංචි වීමේදී ලබා දෙන නොමිලේ අරමුදල් අනිසි ලෙස භාවිත කිරීම වැළැක්වීම සඳහා ඔබගේ ශේෂය සහ රහස්‍ය යතුරකින් ආරක්‍ෂිත ඔබගේ විද්‍යුත් තැපැල් ලිපිනයේ ගුප්තකේතන hash එකක් තබා ගනී. එම ගිණුමෙන්ම නැවත පිවිසීමෙන් ඔබගේ ශේෂය නැවත ලැබේ.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% ක්ලික් කිරීමෙන් ප්‍රකාශයන් හෙළි වන අතර ඔබේ ශේෂයෙන් අය කරගනු ලැබේ"
   },
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "එය සොයාගත නොහැකි විය. නැවත උත්සාහ කරන්න."
   },
+  "errNoClaims": {
+    "message": "මෙම පෙළෙහි සත්යාපනය කළ හැකි ප්රකාශ කිසිවක් හමු නොවීය.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "සැකසුම්",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "පෙනුම",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "දීප්ත",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "ස්වයංක්‍රීය",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "අඳුරු",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "කරුණු පරීක්ෂා සෑම විටම පෙන්වන්න:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "අවලංගු කරන්න",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "හිස් කරන්න",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ හි DisinfaX සක්‍රීය කරන්න",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$ සඳහා DisinfaX ක්‍රියාත්මකයි",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "ක්‍රියාවිරහිත කරන්න",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook සමඟ ඉදිරියට යන්න"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn සමඟ ඉදිරියට යන්න"
+  },
+  "continueWithReddit": {
+    "message": "Reddit සමඟ ඉදිරියට යන්න"
+  },
+  "persistentBadgesLabel": {
+    "message": "වර්ණ අන්ධතාවයට හිතකර: ස්ථිර ලාංඡන",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "හොවර් නොකර පළකිරීම් මත සෑම සත්‍ය පරීක්ෂා ලාංඡනයක්ම දෘශ්‍යමානව තබා ගන්න. තීන්දුවක් වචන මෙන්ම උද්දීපන වර්ණයෙන්ද ප්‍රකාශ වන බැවින්, මෙම වර්ණ වෙන්කර හඳුනාගත නොහැකි අයට මෙය උපකාරී වේ.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "විශාල අකුරු ප්‍රමාණය",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "නැවත ලියන ලද ප්‍රකාශ, තර්කය සහ ආරම්භක ඉඟිවල ප්‍රමාණය විශාල කරන්න.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "වසන්න",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "ප්‍රකාශය සංස්කරණය කිරීමට ක්ලික් කරන්න",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "සත්‍ය පරීක්ෂාවේ විස්තර",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "මෙම තේරීම පරීක්ෂා කිරීමට ඉතා දිගුය. උපරිම අක්ෂර 1,000.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "ශේෂය අඩු වූ විට දන්වන්න",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "මෙයට වඩා වැඩි නම්: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> kuatiahai rembe'y-pe, upéi eikutu Extensión-kuéra Myandu ha emboheko DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>OJEMYENYHẼ RIRE</string>
+	<key>Add funds to your balance</key>
+	<string>Embojoapy viru ne saldo-pe</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Peteĩ jeguata yma US$%lld oha'arõva gueteri ojejapo hag̃ua, upévare upéva ojejapopáma, ndoje'ẽi jey ndehegui. Ejevy Safari-pe ha eipe'a DisinfaX pop-up ehecha hag̃ua ne saldo pyahu.</string>
+	<key>Annotate</key>
+	<string>Mbojehecha</string>
+	<key>Annotating</key>
+	<string>Oñembojehecha</string>
+	<key>Arguably</key>
+	<string>Oñembohováiva</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Emyenyhẽvo, ere'akuã ore [Servicio Rekopy](https://disinfax.app/terms-of-use) ha ore [Privacidad Rekopy](https://disinfax.app/privacy-policy)-re. Ikatu oiko viru mbojoja repy hepyme'ẽ eiko haguéicha viru ambue USD-gui.</string>
+	<key>Clear</key>
+	<string>Ñemopotĩ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Eikutu DisinfaX ta'ãnga Safari herramienta rembe'y-pe pop-up ojepe'a hag̃ua.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Eikutu ramo %@, ojehechauka umi mba'ekuaa ha ojejapata ne saldo</string>
+	<key>Contacting the App Store…</key>
+	<string>Ojejuhu App Store ndive…</string>
+	<key>Copy</key>
+	<string>Monde</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ikatu ojapo javy. Ehecha porã umi marandu.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ndaipóri gueteri nde rregión-pe umi léi rembiechauka rupive.</string>
+	<key>Disinfact</key>
+	<string>Jehechakuaa</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Emboheko DisinfaX Safari-pe, Ñemboheko → Extensión-pe.</string>
+	<key>Enter a claim</key>
+	<string>Emoinge peteĩ ñe'ẽ</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Emoinge peteĩ viru dólar oĩmbáva 1 ha 100 pa'ũme.</string>
+	<key>Equivocally</key>
+	<string>Ndatuicháiva</string>
+	<key>Fact-Check</key>
+	<string>Marandu jejapo</string>
+	<key>Fact-Check All</key>
+	<string>Ejehechakuaa opavavéva</string>
+	<key>Fact-Checking</key>
+	<string>Jehechakuaa</string>
+	<key>False</key>
+	<string>Japu</string>
+	<key>Likely</key>
+	<string>Ikatúva</string>
+	<key>Mostly</key>
+	<string>Hetakue</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Eipe'a Safari extensión ñemboheko…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Eipe'a Safari ha eho x.com-pe.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Eipe'a DisinfaX pop-up Safari-pe ehecha hag̃ua ne saldo pyahu</string>
+	<key>Partially</key>
+	<string>Peteĩchante</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ohepyme'ẽ opáma. Ejevy Safari-pe ha eipe'a DisinfaX pop-up ehecha hag̃ua ne saldo pyahu.</string>
+	<key>Possibly</key>
+	<string>Ikatu</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Ndojejuhúi mba'e %@ App Store Connect-pe.</string>
+	<key>Purchase cancelled.</key>
+	<string>Jeguata ojeheja reíma.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Jeguata oha'arõ oñemoneĩ hag̃ua.</string>
+	<key>Reasoning</key>
+	<string>Ñeimo'ã</string>
+	<key>Return to Safari</key>
+	<string>Ejevy Safari-pe</string>
+	<key>Setup incomplete</key>
+	<string>Ñemboheko ndopáiri</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Eñemoĩ DisinfaX pop-up ovetãgui Safari-pe pe viru embojoapy hag̃ua.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Peteĩ hendáicha ko jerure ndojekuaái porãi. Ikatu ehecha kuaa upe extensión oĩ pyahu.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Oiko peteĩ jejavy ore rembiapópe. Ikatu ejapyhy jey mbovymi aja.</string>
+	<key>Sources</key>
+	<string>Ypykue</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>MBOMYENYHẼ RÃ'Ỹ</string>
+	<key>Tap the </key>
+	<string>Eikutu ta'ãnga </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Eikutu upe ta'ãnga guive ha eiporavo DisinfaX pop-up ojepe'a hag̃ua.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ndojejuhúi upéva. Ejapyhy jey.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Upe víra jehepyme'ẽ ndoikói porã. Ikatu eiporavo ambue viru.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ko build ndaikatúi ojuhu contenedor ombojoajúva (App Group %@). Mbomyenyhẽ ndojehecháiva App Groups ñemomarãnduve oñemboja peve app ha extensión-pe.</string>
+	<key>Top Up</key>
+	<string>Myanyhẽ</string>
+	<key>Top Up Balance</key>
+	<string>Emyenyhẽ saldo</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Mbomyenyhẽ oikotevẽ peteĩ iOS pyahuve. Embopyahu, upéi eipe'a jey DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Mbomyenyhẽ oikotevẽ peteĩ macOS pyahuve. Embopyahu, upéi eipe'a jey DisinfaX.</string>
+	<key>True</key>
+	<string>Añete</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX PORU SAFARI-PE</string>
+	<key>Unknown</key>
+	<string>Ndojeikuaái</string>
+	<key>Unknown purchase error.</key>
+	<string>Jeguata jejavy ojekuaa'ỹva.</string>
+	<key>Very Likely</key>
+	<string>Ikatúva asy</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dólar Estados Unidos-gua oĩmbáva, 1–100. Ojehepyme'ẽta ne App Store viru-pe.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Rereko ma US$%lld mbomyenyhẽ oha'arõva ojejapo hag̃ua — nde'i mba'evéi ojehepyme'ẽ jey. Ejevy Safari-pe ha eipe'a DisinfaX pop-up embohapy hag̃ua ne saldo-pe.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ndeike'ỹi. Ikatu eike ha ejapyhy jey.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ne mbomyenyhẽ US$%lld oñembohapyma.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Ne mbomyenyhẽ US$%lld ombyaje hetave ára oje'e haguéicha ohechauka hag̃ua.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ne kuenta ojejoko.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Ne saldo ipyahu'i eterei. Ikatu emyenyhẽ jey ojoko hag̃ua.</string>
+</dict>
+</plist>

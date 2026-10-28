@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> i te paewhāititanga, ka pāwhiri i te Whakahaere Toronga ā ka whakahohe i a DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ māia</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ māia, %2$@ pono</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>I MURI I TE WHAKAKI</string>
+	<key>Add funds to your balance</key>
+	<string>Tāpiri pūtea ki tō toenga</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>I tatari tonu tētahi hokonga o mua US$%lld kia whakamahia, nā reira i whakaotihia tērā i te utu anō i a koe. Hoki ki Safari ka whakatuwhera i te matapihi pakū DisinfaX ki te tirotiro i tō toenga hou.</string>
+	<key>Annotate</key>
+	<string>Tāpiri</string>
+	<key>Annotating</key>
+	<string>E tāpiri ana</string>
+	<key>Arguably</key>
+	<string>Ka taea te tautohe</string>
+	<key>BALANCE</key>
+	<string>TOENGA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Mā te whakaki, ka whakaae koe ki ā mātou [Tikanga Ratonga](https://disinfax.app/terms-of-use) me te [Kaupapa Here Tūmataiti](https://disinfax.app/privacy-policy). Ka pā mai pea nga utu whakawhitiwhiti moni tapa mēnā ka utu koe i tētahi moni tapa kē atu i te USD.</string>
+	<key>Clear</key>
+	<string>Mukua</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Pāwhiritia te ata DisinfaX i te paeutauta a Safari ki te whakatuwhera i te matapihi pakū.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Ko te pāwhiri i te %@ ka whakaatu i ngā kerēme, ā, ka utua tō toenga</string>
+	<key>Close</key>
+	<string>Katia</string>
+	<key>Contacting the App Store…</key>
+	<string>E hono ana ki te App Store…</string>
+	<key>Copy</key>
+	<string>Tārua</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Ka taea e DisinfaX te hapa. Tirohia anō te mōhiohio.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Kāore anō a DisinfaX kia wātea i tō rohe nā te mea he whakaritenga ture.</string>
+	<key>Disinfact</key>
+	<string>Arotake</string>
+	<key>Edit</key>
+	<string>Whakatika</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Whakahohea a DisinfaX i roto i a Safari, i raro i nga Tautuhinga → Toronga.</string>
+	<key>Enter a claim</key>
+	<string>Whakauruhia he kerēme</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Whakauruhia tētahi moni tāra katoa i waenganui i te 1 me te 100.</string>
+	<key>Equivocally</key>
+	<string>Mārangaranga</string>
+	<key>Fact-Check</key>
+	<string>Arotake meka</string>
+	<key>Fact-Check All</key>
+	<string>Tirohia katoatia</string>
+	<key>Fact-Checking</key>
+	<string>Arotake</string>
+	<key>False</key>
+	<string>Tepe</string>
+	<key>Likely</key>
+	<string>Tūpono</string>
+	<key>Mostly</key>
+	<string>Te nuinga</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Whakatuwheratia nga tautuhinga toronga a Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Whakatuwheratia a Safari ka haere ki x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Whakatuwheratia te matapihi pakū i roto i a Safari ki te tirotiro i tō toenga hou</string>
+	<key>Partially</key>
+	<string>Wāhanga</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kua oti te utu. Hoki ki Safari ka whakatuwhera i te matapihi pakū DisinfaX ki te tirotiro i tō toenga hou.</string>
+	<key>Possibly</key>
+	<string>Tērā pea</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Kāore te hua %@ i kitea i roto i te App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kua whakakorehia te hokonga.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kei te tatari te hokonga ki te whakaaetanga.</string>
+	<key>Reasoning</key>
+	<string>Whakaaroaro</string>
+	<key>Return to Safari</key>
+	<string>Hoki ki Safari</string>
+	<key>Setup incomplete</key>
+	<string>Kāore te whakaritenga i oti</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Takiuru mai i te matapihi pakū DisinfaX i roto i a Safari ki te tāpiri pūtea.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Kāore i mōhiotia tētahi wāhanga o tēnei tono. Whakaūhia kua whakahoutia te extension.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>I puta he hapa i tā mātou taha. Whakamātau anō i muri iho i tētahi wā poto.</string>
+	<key>Sources</key>
+	<string>Puna</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>TE MONI WHAKAKI</string>
+	<key>Tap the </key>
+	<string>Pāwhiritia te ata </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Pāwhiritia te ata ōrite ka kōwhiri i a DisinfaX ki te whakatuwhera i te matapihi pakū.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Kāore i kitea tēnā. Whakamātau anō.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ehara i te mea whaimana taua moni tāuru. Kōwhiria tētahi atu moni.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Kāore tēnei hanganga e taea te whakatutuki i tana ipu tiritahi (Rōpū Taupānga %@). Kāore e taea nga whakaki mēnā kāore anō te āheinga Rōpū Taupānga i tāpiritia ki te taupānga me te toronga.</string>
+	<key>Top Up</key>
+	<string>Whakakī</string>
+	<key>Top Up Balance</key>
+	<string>Whakakiia te toenga</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Me whai putanga iOS hōu ake nga whakaki. Whakahōutia, ka whakatuwhera anō i a DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Me whai putanga macOS hōu ake nga whakaki. Whakahōutia, ka whakatuwhera anō i a DisinfaX.</string>
+	<key>True</key>
+	<string>Pono</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>TE WHAKAMAHI I A DISINFAX I ROTO I A SAFARI</string>
+	<key>Unknown</key>
+	<string>Kāore i te mōhiotia</string>
+	<key>Unknown purchase error.</key>
+	<string>He hapa hokonga kāore i mōhiotia.</string>
+	<key>Very Likely</key>
+	<string>Tino tūpono</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Nga tāra Amerika katoa, 1–100. Ka utua i te moni tapa o tō App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Kua whai kē koe i tētahi whakaki US$%lld e tatari ana kia whakamahia — kāore koe i utua anō. Hoki ki Safari ka whakatuwhera i te matapihi pakū DisinfaX ki te whakamahi i tēnei ki tō toenga.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Kāore koe i te takiuru. Takiuru mai ka whakamātau anō.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Kei te whakamahia tō whakaki US$%lld.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>He roa ake i te wā nōmata te wā mō tō whakaki US$%lld ki te puta.</string>
+	<key>Your account has been suspended.</key>
+	<string>Kua aukatia tō pūkete.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>He iti rawa tō nama toenga. Tāuru mai kia taea ai te haere tonu.</string>
+</dict>
+</plist>

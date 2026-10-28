@@ -44,6 +44,14 @@
   "signOut": {
     "message": "Zarrar sesión"
   },
+  "deleteAccount": {
+    "message": "Borrar a cuenta y os datos asociaus",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "O tuyo saldo, y un hash criptografico d'a tuya adreza de correu que ye protechito por una clau secreta, se conservan ta privar l'abuso d'os fundos gratuits que se dan en creyar a cuenta. Si tornas a iniciar sesión con a mesma cuenta, o tuyo saldo se restaura.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Fer clic en %BTN% revela as afirmacions y cargará o tuyo saldo"
   },
@@ -73,7 +81,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detecta y resalta a desinformación en os tweets con analisi d'IA.",
+    "message": "Detecta y resalta a desinformación en os posts con analisi d'IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -185,7 +193,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Tornar a revelar todas as afirmacions d'este tweet",
+    "message": "Tornar a revelar todas as afirmacions d'este post",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -290,7 +298,7 @@
     "message": "Usau por zaguera vez"
   },
   "cleanupTagline": {
-    "message": "Limpia o tuyo feed d'X."
+    "message": "Limpia o tuyo feed."
   },
   "factCheckAllButton": {
     "message": "Verificar tot"
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "No s'ha puesto trobar ixo. Intenta-lo de nuebo."
   },
+  "errNoClaims": {
+    "message": "No s'han trobau afirmacions verificables en iste texto.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Achustes",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aspecto",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Claro",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatico",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Fosco",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Amostrar siempre as verificacions si:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Cancelar",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Borrar",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Activa DisinfaX en $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX ye activo en $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Desactivar",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Continar con Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Continar con LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Continar con Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Pa daltonicos: insignias permanents",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Mantién visibles as insignias de comprobación en as publicacions sin pasar o puntero. O veredicto se transmite tanto por a color de resaltau como por o texto, aduyando a qui no puet distinguir ixas colors.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grandaria de fuent gran",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Aumenta la grandaria d'as afirmacions reescritas, d'o razonamiento y d'as pistas d'inicio.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Zarrar",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Fes clic pa editar l'afirmación",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detalles d'a comprobación",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Esta selección ye masiau larga ta verificar. Maximo 1 000 caracters.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Avisa quan o saldo baixa",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Por más de: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

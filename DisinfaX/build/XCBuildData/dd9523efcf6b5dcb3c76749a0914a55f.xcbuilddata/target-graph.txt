@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'DisinfaX (iOS)' in project 'DisinfaX'
+➜ Explicit dependency on target 'DisinfaX Extension (iOS)' in project 'DisinfaX'
+➜ Explicit dependency on target 'DisinfaX Share (iOS)' in project 'DisinfaX'
+Target 'DisinfaX Share (iOS)' in project 'DisinfaX' (no dependencies)
+Target 'DisinfaX Extension (iOS)' in project 'DisinfaX' (no dependencies)

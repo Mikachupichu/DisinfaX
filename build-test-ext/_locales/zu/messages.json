@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Ithola futhi igqamise ulwazi olungamanga kuma-tweets isebenzisa ukuhlaziywa kwe-AI.",
+    "message": "Ithola futhi igqamise ulwazi olungamanga kumaposi isebenzisa ukuhlaziywa kwe-AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Veza kabusha zonke izimangalo kule tweet",
+    "message": "Veza kabusha zonke izimangalo kule posi",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Phuma"
   },
+  "deleteAccount": {
+    "message": "Susa i-Akhawunti Nedatha Ehlobene",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Ibhalansi yakho, kanye ne-hash ye-cryptographic yekheli lakho le-imeyili evikelwe ngokhiye oyimfihlo, kuyagcinwa ukuze kuvinjelwe ukusetshenziswa kabi kwezimali zamahhala ezinikezwa lapho ubhalisa. Uma ungena futhi nge-akhawunti efanayo, ibhalansi yakho izobuyiselwa.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Ukuchofoza u-%BTN% kubonisa izimangalo futhi kuzokhipha imali kwibhalansi yakho"
   },
@@ -287,7 +295,7 @@
     "message": "Okokugcina Ukusetshenziswa"
   },
   "cleanupTagline": {
-    "message": "Hlanza i-X Feed yakho."
+    "message": "Hlanza i-Feed yakho."
   },
   "disclaimerJurisdiction": {
     "message": "Ngaphakathi e-United States, izakhamuzi zase-Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ne-Wyoming kuphela ezingasebenzisa i-DisinfaX futhi zifake imali yazo; i-Washington, D.C., zonke izindawo zase-U.S., nanoma yiziphi izifundazwe ezingabhaliwe azifakiwe. Ngaphandle kwe-United States, iyatholakala e-Canada, Australia, New Zealand, Singapore, eNingizimu Afrika, Japan, Taiwan, Indonesia, Thailand, Philippines, Malaysia, Vietnam, ne-Switzerland."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Lokho akutholakele. Zama futhi."
   },
+  "errNoClaims": {
+    "message": "Akukho zitatimende ezingaqinisekiswa ezitholakele kulo mbhalo.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Izlilungiselelo",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Ukubukeka",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ukukhanya",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Okuzenzakalelayo",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Mnyama",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Bonisa amacheke njalo uma:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Khansela",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Cisha",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Nika amandla i-DisinfaX ku-$HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "I-DisinfaX ivuliwe ku-$HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Vala",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Qhubeka nge-Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Qhubeka nge-LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Qhubeka nge-Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Abangaboni imibala: amabheji ahlala ekhona",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Gcina wonke amabheji okuhlola iqiniso ebonakala kokuthunyelwe ngaphandle kokuhambisa phezu kwakho. Isinqumo sithwalwa umbala ogqanyisiwe kanye namagama, ngakho lokhu kusiza noma ubani ongakwazi ukuhlukanisa leyo mibala.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Usayizi wefonti omkhulu",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Khulisa izitatimende ezibhaliwe kabusha, izizathu nezinkomba zokuqala.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Vala",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Chofoza ukuze uhlele isimangalo",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Imininingwane yokuhlola iqiniso",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Lokhu okukhethiwe kukude kakhulu ukuthi kungaqinisekiswa. Okukhulu ngonobumba abangu-1,000.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Azisa lapho ibhalansi yehla",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Ngaphezu kwe: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

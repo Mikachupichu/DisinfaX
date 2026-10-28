@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> მისამართების ველში, შემდეგ შეეხეთ „გაფართოებების მართვას“ და ჩართეთ DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ იყოს %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>შევსების შემდეგ</string>
+	<key>Add funds to your balance</key>
+	<string>დაამატეთ თანხა თქვენს ბალანსზე</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ადრინდელი US$%lld ღირებულების შენაძენი კვლავ გამოყენებას ელოდა, ამიტომ ის დამთავრდა, თქვენგან ხელახლა ჩამოჭრის ნაცვლად. თქვენი განახლებული ბალანსის სანახავად დაბრუნდით Safari-ში და გახსენით DisinfaX-ის ამომხტარი ფანჯარა.</string>
+	<key>Annotate</key>
+	<string>ანოტაცია</string>
+	<key>Annotating</key>
+	<string>ანოტირება</string>
+	<key>Arguably</key>
+	<string>სადავოდ</string>
+	<key>BALANCE</key>
+	<string>ბალანსი</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>შევსებით თქვენ ეთანხმებით ჩვენს [მომსახურების პირობებს](https://disinfax.app/terms-of-use) და [კონფიდენციალურობის პოლიტიკას](https://disinfax.app/privacy-policy). თუ USD-ის გარდა სხვა ვალუტით იხდით, შესაძლოა ვალუტის გადაცვლის საკომისიო დაერიცხოთ.</string>
+	<key>Clear</key>
+	<string>გასუფთავება</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>ამომხტარი ფანჯრის გასახსნელად შეეხეთ DisinfaX-ის ხატულას Safari-ის ხელსაწყოთა ზოლში.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@-ზე დაწკაპუნება გამოავლენს მტკიცებებს და დაგერიცხებათ საფასური ბალანსიდან</string>
+	<key>Contacting the App Store…</key>
+	<string>მიმდინარეობს დაკავშირება App Store-თან…</string>
+	<key>Copy</key>
+	<string>კოპირება</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX-ს შეცდომების დაშვება შეუძლია. გადაამოწმეთ ინფორმაცია.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>რეგულატორული მოთხოვნების გამო DisinfaX ჯერ არ არის ხელმისაწვდომი თქვენს რეგიონში.</string>
+	<key>Disinfact</key>
+	<string>გამოვლენა</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>ჩართეთ DisinfaX Safari-ში, პარამეტრები → გაფართოებები.</string>
+	<key>Enter a claim</key>
+	<string>შეიყვანეთ მტკიცება</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>შეიყვანეთ მთელი დოლარის თანხა 1-დან 100-მდე.</string>
+	<key>Equivocally</key>
+	<string>ორაზროვნად</string>
+	<key>Fact-Check</key>
+	<string>ფაქტების შემოწმება</string>
+	<key>Fact-Check All</key>
+	<string>ყველას შემოწმება</string>
+	<key>Fact-Checking</key>
+	<string>შემოწმება</string>
+	<key>False</key>
+	<string>მცდარი</string>
+	<key>Likely</key>
+	<string>სავარაუდო</string>
+	<key>Mostly</key>
+	<string>ძირითადად</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari-ის გაფართოებების პარამეტრების გახსნა…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>გახსენით Safari და გადადით x.com-ზე.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>გახსენით ამომხტარი ფანჯარა Safari-ში თქვენი განახლებული ბალანსის სანახავად</string>
+	<key>Partially</key>
+	<string>ნაწილობრივ</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>გადახდა დასრულდა. თქვენი განახლებული ბალანსის სანახავად დაბრუნდით Safari-ში და გახსენით DisinfaX-ის ამომხტარი ფანჯარა.</string>
+	<key>Possibly</key>
+	<string>შესაძლოა</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>პროდუქტი %@ App Store Connect-ში ვერ მოიძებნა.</string>
+	<key>Purchase cancelled.</key>
+	<string>შენაძენი გაუქმდა.</string>
+	<key>Purchase is pending approval.</key>
+	<string>შენაძენი დადასტურებას ელოდება.</string>
+	<key>Reasoning</key>
+	<string>დასაბუთება</string>
+	<key>Return to Safari</key>
+	<string>დაბრუნება Safari-ში</string>
+	<key>Setup incomplete</key>
+	<string>დაყენება არასრულია</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>თანხის დასამატებლად შედით Safari-ში DisinfaX-ის ამომხტარი ფანჯრიდან.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ამ მოთხოვნის ნაწილი არ იქნა ამოცნობილი. გთხოვთ, დარწმუნდეთ, რომ გაფართოება განახლებულია.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>ჩვენს მხრიდან მოხდა შეცდომა. გთხოვთ, მოგვიანებით ისევ სცადოთ.</string>
+	<key>Sources</key>
+	<string>წყაროები</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>შევსების თანხა</string>
+	<key>Tap the </key>
+	<string>შეეხეთ ხატულას </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>შეეხეთ იმავე ხატულას და აირჩიეთ DisinfaX ამომხტარი ფანჯრის გასახსნელად.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>ეს ვერ მოიძებნა. გთხოვთ, სცადოთ ხელახლა.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ეს შევსების თანხა არასწორია. გთხოვთ, აირჩიოთ სხვა თანხა.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>ამ ვერსიას არ შეუძლია მისწვდომოდეს თავის გაზიარებულ კონტეინერს (App Group %@). შევსებები მიუწვდომელი იქნება, სანამ App Groups-ის ფუნქცია დაემატება როგორც აპლიკაციას, ისე გაფართოებას.</string>
+	<key>Top Up</key>
+	<string>შევსება</string>
+	<key>Top Up Balance</key>
+	<string>ბალანსის შევსება</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>შევსებისთვის საჭიროა iOS-ის უფრო ახალი ვერსია. განაახლეთ, შემდეგ ხელახლა გახსენით DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>შევსებისთვის საჭიროა macOS-ის უფრო ახალი ვერსია. განაახლეთ, შემდეგ ხელახლა გახსენით DisinfaX.</string>
+	<key>True</key>
+	<string>მართალი</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX-ის გამოყენება SAFARI-ში</string>
+	<key>Unknown</key>
+	<string>უცნობი</string>
+	<key>Unknown purchase error.</key>
+	<string>შენაძენის უცნობი შეცდომა.</string>
+	<key>Very Likely</key>
+	<string>ძალიან სავარაუდო</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>მთელი აშშ დოლარი, 1–100. დაგერიცხებათ თქვენი App Store-ის ვალუტაში.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>თქვენ უკვე გაქვთ US$%lld შევსება, რომელიც გამოყენებას ელოდება — თქვენგან ხელახლა არ არის ჩამოჭრილი. თქვენს ბალანსზე მის გამოსაყენებლად დაბრუნდით Safari-ში და გახსენით DisinfaX-ის ამომხტარი ფანჯარა.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>თქვენ არ ხართ შესული. გთხოვთ, შეხვიდეთ და ხელახლა სცადოთ.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>თქვენი US$%lld შევსება ახლა გამოიყენება.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>თქვენი US$%lld შევსების გამოჩენას ჩვეულებრივზე მეტი დრო სჩირდება.</string>
+	<key>Your account has been suspended.</key>
+	<string>თქვენი ანგარიში შეჩერებულია.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>თქვენი ბალანსი ძალიან დაბალია. გთხოვთ, შეავსოთ ბალანსი გასაგრძელებლად.</string>
+</dict>
+</plist>

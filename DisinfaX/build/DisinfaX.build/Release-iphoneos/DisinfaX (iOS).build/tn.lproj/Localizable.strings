@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> mo bareng ya atirese, go tswa foo o tobetse Laola Ditlatsetso mme o nolofatse DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ tshepo</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ tshepo, %2$@ boammaaruri</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ go nna %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>MORAGO GA GO TLATSA</string>
+	<key>Add funds to your balance</key>
+	<string>Oketsa madi mo palanseng ya gago</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Theko e e fetileng ya US$%lld e ne e sale e emetse go dirisiwa, jalo ke yona e e fedisitsweng go na le go lefisiwa gape. Boela kwa Safari mme o bule window e tswang ya DisinfaX go bona palanse ya gago e e ntlafadilweng.</string>
+	<key>Annotate</key>
+	<string>Tshwaela</string>
+	<key>Annotating</key>
+	<string>Go tshwaelwa</string>
+	<key>Arguably</key>
+	<string>E ka ganediwa</string>
+	<key>BALANCE</key>
+	<string>PALANSE</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Ka go tlatsa, o dumela mo [Melawana ya Tirelo](https://disinfax.app/terms-of-use) le [Pholisi ya Sephiri](https://disinfax.app/privacy-policy) ya rona. Ditshenyegelo tsa phetogo ya madi di ka dirisiwa fa o duela ka madi a e seng USD.</string>
+	<key>Clear</key>
+	<string>Phimola</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tobetsa letshwao la DisinfaX mo bareng ya didirisiwa tsa Safari go bula window e tswang.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Go tobetsa %@ go bontsha dikgato mme go tla lefisa madi mo tekanyetsong ya gago</string>
+	<key>Close</key>
+	<string>Tswala</string>
+	<key>Contacting the App Store…</key>
+	<string>E kopanya le App Store…</string>
+	<key>Copy</key>
+	<string>Kopitsa</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX e ka dira diphoso. Sekaseka tshedimosetso gape.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ga e sa fitlhelelesega mo kgaolong ya gago ka ntlha ya ditlhokego tsa molao.</string>
+	<key>Disinfact</key>
+	<string>Tlhatlhoba</string>
+	<key>Edit</key>
+	<string>Fetola</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Nolofatsa DisinfaX mo Safari, ka fa Dipeelo → Ditlatsetso.</string>
+	<key>Enter a claim</key>
+	<string>Tsenya maipolelo</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Tsenya tlhwatlhwa ya dolara e feletseng gareng ga 1 le 100.</string>
+	<key>Equivocally</key>
+	<string>Ga e tlhaloganyege</string>
+	<key>Fact-Check</key>
+	<string>Tlholo ya boammaaruri</string>
+	<key>Fact-Check All</key>
+	<string>Tlhatlhoba tsotlhe</string>
+	<key>Fact-Checking</key>
+	<string>Go tlhatlhoba</string>
+	<key>False</key>
+	<string>Maaka</string>
+	<key>Likely</key>
+	<string>E kgonagala</string>
+	<key>Mostly</key>
+	<string>Gantsi</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Bula dipeelo tsa ditlatsetso tsa Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Bula Safari mme o ye kwa x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Bula window e tswang mo Safari go bona palanse ya gago e e ntlafadilweng</string>
+	<key>Partially</key>
+	<string>Ka karolo</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Tuelo e fedile. Boela kwa Safari mme o bule window e tswang ya DisinfaX go bona palanse ya gago e e ntlafadilweng.</string>
+	<key>Possibly</key>
+	<string>Gongwe</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Sedirwa %@ ga se a fitlhelwa mo App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Theko e kgansolotswe.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Theko e emetse tetla.</string>
+	<key>Reasoning</key>
+	<string>Mabaka</string>
+	<key>Return to Safari</key>
+	<string>Boela kwa Safari</string>
+	<key>Setup incomplete</key>
+	<string>Thulaganyo ga e a wela</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Kena ka window e tswang ya DisinfaX mo Safari go oketsa madi.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Karolo ya kopo eno ga e itsiwe. Tsweetswee netefatsa gore katlaletso e ntjhafaditswe.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Phoso e diragetse mo lotlheng lwa rona. Tsweetswee leka gape mo lobakanyaneng.</string>
+	<key>Sources</key>
+	<string>Metswedi</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>TLHWATLHWA YA GO TLATSA</string>
+	<key>Tap the </key>
+	<string>Tobetsa letshwao </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tobetsa letshwao le le tshwanang mme o tlhophe DisinfaX go bula window e tswang.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Seo ga se bonwa. Leka gape.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Madi ao a tlatsa ga a a siamo. Tsweetswee tlhopha madi a sele.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Kago e ga e ka fitlhelela sekgobane sa yona se se abelanwang (App Group %@). Go tlatsa ga go kitla go nna teng go fitlhelela bokgoni jwa App Groups bo tsentswe mo app le tlatsetso.</string>
+	<key>Top Up</key>
+	<string>Oketsa Madi</string>
+	<key>Top Up Balance</key>
+	<string>Tlatsa palanse</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Go tlatsa go tlhoka tokololo e ntšha ya iOS. Ntlafatsa, mme o bule DisinfaX gape.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Go tlatsa go tlhoka tokololo e ntšha ya macOS. Ntlafatsa, mme o bule DisinfaX gape.</string>
+	<key>True</key>
+	<string>Boammaaruri</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>TIRISO YA DISINFAX MO SAFARI</string>
+	<key>Unknown</key>
+	<string>Ga se itsege</string>
+	<key>Unknown purchase error.</key>
+	<string>Phoso ya theko e e sa itseweng.</string>
+	<key>Very Likely</key>
+	<string>E kgonagala thata</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Madolara a Amerika a feletseng, 1–100. O tla lefisiwa mo madi a App Store ya gago.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>O na le go tlatsa ga US$%lld go setse go emetse go dirisiwa — ga o a lefisiwa gape. Boela kwa Safari mme o bule window e tswang ya DisinfaX go go dirisa mo palanseng ya gago.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ga o tsene. Tsweetswee tsena mme o leke gape.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Go tlatsa ga gago ga US$%lld go dirisiwa jaanong.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Go bonala ga go tlatsa ga gago ga US$%lld go tsaya nako e telele go feta gale.</string>
+	<key>Your account has been suspended.</key>
+	<string>Akhaonto ya gago e emisitswe.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Madi a a setseng a gago a kwa tlase thata. Tsweetswee tlatsa go tswelela pele.</string>
+</dict>
+</plist>

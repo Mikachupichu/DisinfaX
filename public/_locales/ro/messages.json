@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Detectează și evidențiază dezinformarea în tweet-uri folosind analiza AI."
+    "message": "Detectează și evidențiază dezinformarea în postări folosind analiza AI."
   },
   "verdictTrue": {
     "message": "Adevărat",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Dezvăluie din nou toate afirmațiile din acest tweet",
+    "message": "Dezvăluie din nou toate afirmațiile din această postare",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Deconectare"
   },
+  "deleteAccount": {
+    "message": "Șterge contul și datele asociate",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Soldul tău și un hash criptografic al adresei tale de e-mail care este protejat de o cheie secretă sunt păstrate pentru a preveni abuzul fondurilor gratuite acordate la crearea contului. Dacă te înregistrezi din nou cu același cont, soldul tău este restabilit.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Apăsarea pe %BTN% dezvăluie afirmațiile și va debita soldul tău"
   },
@@ -285,7 +293,7 @@
     "message": "Ultima utilizare"
   },
   "cleanupTagline": {
-    "message": "Curăță-ți fluxul X."
+    "message": "Curăță-ți fluxul."
   },
   "disclaimerJurisdiction": {
     "message": "În Statele Unite, doar rezidenții din Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina de Nord, Dakota de Nord, Oklahoma, Oregon, Pennsylvania, Carolina de Sud, Dakota de Sud, Tennessee, Texas, Utah, Washington, Wisconsin și Wyoming pot folosi DisinfaX și își pot alimenta soldul; Washington, D.C., toate teritoriile SUA și orice state care nu sunt enumerate sunt excluse. În afara Statelor Unite, este disponibil în Canada, Australia, Noua Zeelandă, Singapore, Africa de Sud, Japonia, Taiwan, Indonezia, Thailanda, Filipine, Malaezia, Vietnam și Elveția."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Nu s-a putut găsi. Încearcă din nou."
   },
+  "errNoClaims": {
+    "message": "În acest text nu au fost găsite afirmații verificabile.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Setări",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aspect",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Luminos",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automat",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Întunecat",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Afișează întotdeauna verificările dacă:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Continuă cu Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Pentru daltoniști: insigne permanente",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Păstrează vizibilă fiecare insignă de verificare a faptelor pe postări fără a trece cursorul peste ele. Verdictul este transmis atât prin culoarea de evidențiere, cât și prin cuvinte, ajutând persoanele care nu pot distinge aceste culori.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Dimensiune mare a fontului",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Pentru textul din ferestre (afirmații, raționamente...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Închide",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Fă clic pentru a edita afirmația",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detalii despre verificarea faptelor",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Această selecție este prea lungă pentru verificare. Maxim 1 000 de caractere.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Notifică atunci când soldul scade",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Cu mai mult de: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "CUM VERIFICI FAPTELE",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Pe orice pagină web, selectează textul pe care vrei să îl verifici.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Fă clic dreapta pe textul selectat și alege Verifică (funcționează și pe text neselectat).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Fă clic dreapta pe textul selectat și alege {1} Verifică (funcționează și pe text neselectat).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Verificarea începe imediat și este percepută din soldul tău.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Cu textul încă selectat, atinge ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " pictograma din bara de adrese, apoi alege {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

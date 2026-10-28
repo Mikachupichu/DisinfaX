@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ໃນແຖບທີ່ຢູ່, ຈາກນັ້ນແຕະ ຈັດການສ່ວນຂະຫຍາຍ ແລະເປີດໃຊ້ DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ຄວາມໝັ້ນໃຈ</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ຄວາມໝັ້ນໃຈ, %2$@ ຄວາມຈິງ</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ຄື %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ຫຼັງຈາກເຕີມເງິນ</string>
+	<key>Add funds to your balance</key>
+	<string>ເພີ່ມທຶນເຂົ້າໃນຍອດເງິນຂອງທ່ານ</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ການຊື້ US$%lld ກ່ອນໜ້ານີ້ຍັງລໍຖ້າການນຳໃຊ້ຢູ່, ດັ່ງນັ້ນການຊື້ນັ້ນຈຶ່ງຖືກເຮັດໃຫ້ສຳເລັດແທນທີ່ຈະຄິດຄ່າບໍລິການທ່ານອີກຄັ້ງ. ກັບໄປ Safari ແລະເປີດປັອບອັບ DisinfaX ເພື່ອເບິ່ງຍອດເງິນທີ່ອັບເດດ.</string>
+	<key>Annotate</key>
+	<string>ໝາຍເຫດ</string>
+	<key>Annotating</key>
+	<string>ກຳລັງໝາຍເຫດ</string>
+	<key>Arguably</key>
+	<string>ສາມາດໂຕ້ແຍ້ງໄດ້</string>
+	<key>BALANCE</key>
+	<string>ຍອດເງິນ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>ໂດຍການເຕີມເງິນ, ທ່ານຍອມຮັບ [ຂໍ້ກຳນົດການໃຫ້ບໍລິການ](https://disinfax.app/terms-of-use) ແລະ [ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ](https://disinfax.app/privacy-policy) ຂອງພວກເຮົາ. ຄ່າທຳນຽມການແລກປ່ຽນເງິນຕາອາດຖືກນຳໃຊ້ຫາກທ່ານຈ່າຍເປັນສະກຸນເງິນອື່ນນອກເໜືອຈາກ USD.</string>
+	<key>Clear</key>
+	<string>ລຶບລ້າງ</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>ແຕະໄອຄອນ DisinfaX ໃນແຖບເຄື່ອງມື Safari ເພື່ອເປີດປັອບອັບ.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>ການຄລິກ %@ ຈະເປີດເຜີຍຄໍາກ່າວອ້າງ ແລະ ຈະຄິດຄ່າໃຊ້ຈ່າຍຈາກຍອດເງິນຂອງທ່ານ</string>
+	<key>Close</key>
+	<string>ປິດ</string>
+	<key>Contacting the App Store…</key>
+	<string>ກຳລັງເຊື່ອມຕໍ່ກັບ App Store…</string>
+	<key>Copy</key>
+	<string>ສຳເນົາ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ອາດເຮັດຜິດພາດໄດ້. ກະລຸນາກວດສອບຂໍ້ມູນຄືນໃໝ່.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ຍັງບໍ່ພ້ອມໃຫ້ບໍລິການໃນເຂດຂອງທ່ານເນື່ອງຈາກຂໍ້ກຳນົດດ້ານກົດລະບຽບ.</string>
+	<key>Disinfact</key>
+	<string>ກວດສອບ</string>
+	<key>Edit</key>
+	<string>ແກ້ໄຂ</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>ເປີດໃຊ້ DisinfaX ໃນ Safari, ໃນ ການຕັ້ງຄ່າ → ສ່ວນຂະຫຍາຍ.</string>
+	<key>Enter a claim</key>
+	<string>ໃສ່ຄຳກ່າວອ້າງ</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>ປ້ອນຈຳນວນເງິນໂດລາເຕັມຈຳນວນລະຫວ່າງ 1 ຫາ 100.</string>
+	<key>Equivocally</key>
+	<string>ບໍ່ຈະແຈ້ງ</string>
+	<key>Fact-Check</key>
+	<string>ກວດສອບຂໍ້ເທັດຈິງ</string>
+	<key>Fact-Check All</key>
+	<string>ກວດສອບທັງໝົດ</string>
+	<key>Fact-Checking</key>
+	<string>ການກວດສອບ</string>
+	<key>False</key>
+	<string>ປອມ</string>
+	<key>Likely</key>
+	<string>ມີໂອກາດ</string>
+	<key>Mostly</key>
+	<string>ສ່ວນຫຼາຍ</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>ເປີດການຕັ້ງຄ່າສ່ວນຂະຫຍາຍ Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>ເປີດ Safari ແລະໄປທີ່ x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>ເປີດປັອບອັບໃນ Safari ເພື່ອເບິ່ງຍອດເງິນທີ່ອັບເດດ</string>
+	<key>Partially</key>
+	<string>ບາງສ່ວນ</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>ການຊຳລະເງິນສຳເລັດແລ້ວ. ກັບໄປ Safari ແລະເປີດປັອບອັບ DisinfaX ເພື່ອເບິ່ງຍອດເງິນທີ່ອັບເດດ.</string>
+	<key>Possibly</key>
+	<string>ອາດຈະເປັນໄປໄດ້</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>ບໍ່ພົບຜະລິດຕະພັນ %@ ໃນ App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>ການຊື້ຖືກຍົກເລີກ.</string>
+	<key>Purchase is pending approval.</key>
+	<string>ການຊື້ກຳລັງລໍຖ້າການອະນຸມັດ.</string>
+	<key>Reasoning</key>
+	<string>ເຫດຜົນ</string>
+	<key>Return to Safari</key>
+	<string>ກັບໄປ Safari</string>
+	<key>Setup incomplete</key>
+	<string>ການຕັ້ງຄ່າຍັງບໍ່ສົມບູນ</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>ເຂົ້າສູ່ລະບົບຈາກປັອບອັບ DisinfaX ໃນ Safari ເພື່ອເພີ່ມທຶນ.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ບາງສ່ວນຂອງຄຳຮ້ອງຂໍນີ້ບໍ່ໄດ້ຖືກຮັບຮູ້. ກະລຸນາກວດສອບວ່າສ່ວນຂະຫຍາຍທັນສະໄໝ.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>ມີຄວາມຜິດພາດເກີດຂຶ້ນຢູ່ຝ່າຍພວກເຮົາ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງໃນອີກບໍ່ຊ້າ.</string>
+	<key>Sources</key>
+	<string>ແຫຼ່ງຂໍ້ມູນ</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ຈຳນວນເງິນທີ່ເຕີມ</string>
+	<key>Tap the </key>
+	<string>ແຕະໄອຄອນ </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>ແຕະໄອຄອນດຽວກັນ ແລະເລືອກ DisinfaX ເພື່ອເປີດປັອບອັບ.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>ບໍ່ພົບສິ່ງນັ້ນ. ກະລຸນາລອງໃໝ່.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ຈຳນວນເງິນເຕີມນັ້ນບໍ່ຖືກຕ້ອງ. ກະລຸນາເລືອກຈຳນວນອື່ນ.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>ບິວນີ້ບໍ່ສາມາດເຂົ້າເຖິງບ່ອນເກັບຂໍ້ມູນທີ່ໃຊ້ຮ່ວມກັນ (App Group %@) ໄດ້. ການເຕີມເງິນຈະບໍ່ສາມາດໃຊ້ໄດ້ຈົນກວ່າຄວາມສາມາດ App Groups ຈະຖືກເພີ່ມເຂົ້າໃນທັງແອັບ ແລະສ່ວນຂະຫຍາຍ.</string>
+	<key>Top Up</key>
+	<string>ຕື່ມເງິນ</string>
+	<key>Top Up Balance</key>
+	<string>ເຕີມເງິນຍອດເງິນ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>ການເຕີມເງິນຕ້ອງການ iOS ເວີຊັນໃໝ່ກວ່າ. ອັບເດດ, ຈາກນັ້ນເປີດ DisinfaX ອີກຄັ້ງ.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>ການເຕີມເງິນຕ້ອງການ macOS ເວີຊັນໃໝ່ກວ່າ. ອັບເດດ, ຈາກນັ້ນເປີດ DisinfaX ອີກຄັ້ງ.</string>
+	<key>True</key>
+	<string>ຈິງ</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ການໃຊ້ DISINFAX ໃນ SAFARI</string>
+	<key>Unknown</key>
+	<string>ບໍ່ຮູ້</string>
+	<key>Unknown purchase error.</key>
+	<string>ຂໍ້ຜິດພາດການຊື້ທີ່ບໍ່ຮູ້ຈັກ.</string>
+	<key>Very Likely</key>
+	<string>ມີໂອກາດສູງຫຼາຍ</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>ໂດລາສະຫະລັດເຕັມຈຳນວນ, 1–100. ຈະຖືກຄິດຄ່າບໍລິການເປັນສະກຸນເງິນ App Store ຂອງທ່ານ.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>ທ່ານມີການເຕີມເງິນ US$%lld ທີ່ລໍຖ້າການນຳໃຊ້ຢູ່ແລ້ວ — ທ່ານບໍ່ໄດ້ຖືກຄິດຄ່າບໍລິການອີກຄັ້ງ. ກັບໄປ Safari ແລະເປີດປັອບອັບ DisinfaX ເພື່ອນຳໃຊ້ມັນກັບຍອດເງິນຂອງທ່ານ.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>ທ່ານຍັງບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ. ກະລຸນາເຂົ້າສູ່ລະບົບ ແລະ ລອງໃໝ່.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>ການເຕີມເງິນ US$%lld ຂອງທ່ານກຳລັງຖືກນຳໃຊ້.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>ການເຕີມເງິນ US$%lld ຂອງທ່ານໃຊ້ເວລາດົນກວ່າປົກກະຕິເພື່ອປາກົດ.</string>
+	<key>Your account has been suspended.</key>
+	<string>ບັນຊີຂອງທ່ານຖືກໂຈະໄວ້.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>ຍອດເງິນຂອງທ່ານຕໍ່າເກີນໄປ. ກະລຸນາເຕີມເງິນເພື່ອດຳເນີນການຕໍ່.</string>
+</dict>
+</plist>

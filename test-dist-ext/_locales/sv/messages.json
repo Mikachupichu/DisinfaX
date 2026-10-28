@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "Upptäcker och markerar desinformation i tweets med hjälp av AI-analys."
+    "message": "Upptäcker och markerar desinformation i inlägg med hjälp av AI-analys."
   },
   "verdictTrue": {
     "message": "Sant",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Avslöja alla påståenden i den här tweeten igen",
+    "message": "Avslöja alla påståenden i det här inlägget igen",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "Logga ut"
   },
+  "deleteAccount": {
+    "message": "Radera konto och tillhörande data",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Ditt saldo och en kryptografisk hash av din e-postadress som skyddas av en hemlig nyckel sparas, för att förhindra missbruk av de gratismedel som ges vid registreringen. Registrerar du dig igen med samma konto återställs ditt saldo.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Genom att klicka på %BTN% visas påståenden och ditt saldo debiteras"
   },
@@ -285,7 +293,7 @@
     "message": "Senast använd"
   },
   "cleanupTagline": {
-    "message": "Städa upp ditt X-flöde."
+    "message": "Städa upp ditt flöde."
   },
   "disclaimerJurisdiction": {
     "message": "Inom USA kan endast invånare i Alabama, Arizona, Kalifornien, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin och Wyoming använda DisinfaX och fylla på sitt saldo; Washington, D.C., alla amerikanska territorier och alla delstater som inte anges är undantagna. Utanför USA är tjänsten tillgänglig i Kanada, Australien, Nya Zeeland, Singapore, Sydafrika, Japan, Taiwan, Indonesien, Thailand, Filippinerna, Malaysia, Vietnam och Schweiz."
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "Det kunde inte hittas. Försök igen."
   },
+  "errNoClaims": {
+    "message": "Inga verifierbara påståenden hittades i den här texten.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Inställningar",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Utseende",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ljus",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatisk",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Mörk",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Visa alltid faktakoller om:",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "Fortsätt med Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Färgblindanpassat: permanenta märken",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Håll alla faktakontrollmärken synliga på inlägg utan att föra muspekaren över. Ett utlåtande förmedlas lika mycket av markeringsfärgen som av orden, så detta hjälper personer som inte kan skilja färgerna åt.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Stor teckenstorlek",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "För text i fönster (påståenden, resonemang...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Stäng",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klicka för att redigera påstående",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktakontrolldetaljer",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Det här urvalet är för långt för att faktagranska. Maximalt 1 000 tecken.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Meddela när saldot minskar",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Med mer än: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "SÅ FAKTAGRANSKAR DU",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "På valfri webbsida markerar du texten du vill faktagranska.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Högerklicka på den markerade texten och välj Disinfact (fungerar även på text som inte är markerad).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Högerklicka på den markerade texten och välj {1} Disinfact (fungerar även på text som inte är markerad).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Faktagranskningen startar direkt och debiteras ditt saldo.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Med texten fortfarande markerad trycker du på ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikonen i adressfältet och väljer sedan {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

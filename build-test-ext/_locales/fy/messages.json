@@ -44,6 +44,14 @@
   "signOut": {
     "message": "Ôfmelde"
   },
+  "deleteAccount": {
+    "message": "Akkoart en byhearrende gegevens wiskje",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Dyn saldo, en in troch in geheime kaai beskerme kryptografyske hash fan dyn e-mailadres, wurde bewarre om misbrûk fan 'e fergees jilden by it oanmeitsjen fan in akkoart foar te kommen. Meldst do wer oan mei itselde akkoart, dan wurdt dyn saldo werombrocht.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Klikke op %BTN% lit bewearingen sjen en sil jo saldo ôfskriuwe"
   },
@@ -73,7 +81,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Detektearret en markearret misynformaasje yn tweets mei AI-analyze.",
+    "message": "Detektearret en markearret misynformaasje yn berjochten mei AI-analyze.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -185,7 +193,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Op 'e nij ûntdekke alle bewearingen yn dizze tweet",
+    "message": "Op 'e nij ûntdekke alle bewearingen yn dit berjocht",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -290,7 +298,7 @@
     "message": "Lêst brûkt"
   },
   "cleanupTagline": {
-    "message": "Romje jo X-feed op."
+    "message": "Romje jo feed op."
   },
   "factCheckAllButton": {
     "message": "Alles kontrolearje"
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Dat koe net fûn wurde. Besykje it nochris."
   },
+  "errNoClaims": {
+    "message": "Der binne gjin ferifiearbere bewearings fûn yn dizze tekst.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Ynstellingen",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Foarkommen",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Ljocht",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatysk",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Tsjuster",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Toan altyd feitkontrôles as:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Annulearje",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Wiskje",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "DisinfaX ynskeakelje op $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX is ynskeakele foar $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Utskeakelje",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Trochgean mei Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Trochgean mei LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Trochgean mei Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Kleurblynfreonlik: bliuwende badges",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Hâld elke feitekontrôlebadge sichtber op berjochten sûnder derop te wizen. In oardiel wurdt likefolle troch de markearkleur as troch de wurden oerbrocht, dat dit helpt elkenien dy't dy kleuren net útinoar hâlde kin.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grutte lettergrutte",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Fergruttet de werskreaune bewearings, de redenearring en de begjinoanwizings.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Slute",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Klik om bewearing te bewurkjen",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Details fan feitekontrôle",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Dizze seleksje is te lang om te kontrolearjen. Maksimaal 1 000 tekens.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Melde wann it saldo sakket",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Mei mear as: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> дар сатри нишонӣ зарба занед, сонӣ ба «Идоракунии пасвандҳо» зарба занед ва DisinfaX-ро фаъол кунед.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ки %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>БАЪДИ ПУРКУНӢ</string>
+	<key>Add funds to your balance</key>
+	<string>Ба балансатон маblag' илова кунед</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Харидории пештараи US$%lld ҳанӯз интизори татбиқ буд, бинобар ин он ба ҷои дубора аз шумо пул гирифтан анҷом дода шуд. Барои дидани балансатони навшуда ба Safari баргардед ва равзанаи DisinfaX-ро кушоед.</string>
+	<key>Annotate</key>
+	<string>Шарҳ додан</string>
+	<key>Annotating</key>
+	<string>Шарҳ дода истодааст</string>
+	<key>Arguably</key>
+	<string>Баҳсталаб</string>
+	<key>BALANCE</key>
+	<string>БАЛАНС</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Бо пуркунӣ, шумо бо [Шартҳои хидматрасонӣ](https://disinfax.app/terms-of-use) ва [Сиёсати махфият](https://disinfax.app/privacy-policy)-и мо розӣ мешавед. Агар шумо бо асъори ғайр аз USD пул диҳед, мумкин аст маблағи мубодилаи асъор гирифта шавад.</string>
+	<key>Clear</key>
+	<string>Тоза кардан</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Барои кушодани равзанаи пайдошаванда ба нишонаи DisinfaX дар панели абзорҳои Safari зарба занед.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Клик кардан ба %@ даъвоҳоро ошкор мекунад ва аз бақияи шумо маблағ гирифта мешавад</string>
+	<key>Contacting the App Store…</key>
+	<string>Пайваст шудан ба App Store…</string>
+	<key>Copy</key>
+	<string>Нусхабардорӣ</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX метавонад хато кунад. Маълумотро дубора санҷед.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ҳоло дар минтақаи шумо аз сабаби талаботи қонунгузорӣ дастрас нест.</string>
+	<key>Disinfact</key>
+	<string>Ошкор кардан</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX-ро дар Safari, дар Танзимот → Пасвандҳо фаъол кунед.</string>
+	<key>Enter a claim</key>
+	<string>Даъворо ворид кунед</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Миқдори пурраи долларро дар байни 1 ва 100 ворид кунед.</string>
+	<key>Equivocally</key>
+	<string>Номуайян</string>
+	<key>Fact-Check</key>
+	<string>Тафтиши далелҳо</string>
+	<key>Fact-Check All</key>
+	<string>Ҳамаро тафтиш кардан</string>
+	<key>Fact-Checking</key>
+	<string>Тафтиш</string>
+	<key>False</key>
+	<string>Нодуруст</string>
+	<key>Likely</key>
+	<string>Эҳтимол</string>
+	<key>Mostly</key>
+	<string>Аксаран</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Танзимоти пасвандҳои Safari-ро кушоед…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari-ро кушоед ва ба x.com гузаред.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Барои дидани балансатони навшуда дар Safari равзанаро кушоед</string>
+	<key>Partially</key>
+	<string>Қисман</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Пардохт анҷом ёфт. Барои дидани балансатони навшуда ба Safari баргардед ва равзанаи DisinfaX-ро кушоед.</string>
+	<key>Possibly</key>
+	<string>Эҳтимолан</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Маҳсули %@ дар App Store Connect ёфт нашуд.</string>
+	<key>Purchase cancelled.</key>
+	<string>Харидорӣ бекор карда шуд.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Харидорӣ интизори тасдиқ аст.</string>
+	<key>Reasoning</key>
+	<string>Асоснокӣ</string>
+	<key>Return to Safari</key>
+	<string>Бозгашт ба Safari</string>
+	<key>Setup incomplete</key>
+	<string>Насб мукаммал нест</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Барои илова кардани мablag' аз равзанаи пайдошавандаи DisinfaX дар Safari ворид шавед.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Қисме аз ин дархост шинохта нашуд. Лутфан мутмаин шавед, ки барнома навсозӣ шудааст.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Дар тарафи мо хатогӣ рух дод. Лутфан пас аз лаҳзае боз кӯшиш кунед.</string>
+	<key>Sources</key>
+	<string>Сарчашмаҳо</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>МИҚДОРИ ПУРКУНӢ</string>
+	<key>Tap the </key>
+	<string>Ба нишонаи </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Ба ҳамон нишона зарба занед ва барои кушодани равзана DisinfaX-ро интихоб кунед.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Он ёфт нашуд. Лутфан боз кӯшиш кунед.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ин маблағи пуркунӣ дуруст нест. Лутфан маблағи дигар интихоб кунед.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ин сохтмон ба зарфи муштараки худ (App Group %@) дастрасӣ надорад. Пуркуниҳо то он даме, ки хусусияти App Groups ба ҳам барнома ва ҳам пасванд илова шавад, дастрас нахоҳанд буд.</string>
+	<key>Top Up</key>
+	<string>Пур кардан</string>
+	<key>Top Up Balance</key>
+	<string>Балансро пур кунед</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Пуркуниҳо версияи навтари iOS-ро талаб мекунанд. Навсозӣ кунед, сонӣ DisinfaX-ро дубора кушоед.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Пуркуниҳо версияи навтари macOS-ро талаб мекунанд. Навсозӣ кунед, сонӣ DisinfaX-ро дубора кушоед.</string>
+	<key>True</key>
+	<string>Дуруст</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ИСТИФОДАИ DISINFAX ДАР SAFARI</string>
+	<key>Unknown</key>
+	<string>Номаълум</string>
+	<key>Unknown purchase error.</key>
+	<string>Хатои номаълуми харидорӣ.</string>
+	<key>Very Likely</key>
+	<string>Хеле эҳтимол</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Долларҳои пурраи ИМА, 1–100. Дар асъори App Store-и шумо ситонида мешавад.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Шумо аллакай пуркунии US$%lld доред, ки интизори татбиқ шудан аст — аз шумо дубора пул гирифта нашуд. Барои татбиқ кардани он ба балансатон ба Safari баргардед ва равзанаи DisinfaX-ро кушоед.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Шумо ворид нашудаед. Лутфан ворид шавед ва боз кӯшиш кунед.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Пуркунии US$%lld-и шумо ҳоло татбиқ мешавад.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Намоиши пуркунии US$%lld-и шумо аз муқаррарӣ бештар вақт мегирад.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ҳисоби шумо боздошта шудааст.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Бақияи шумо хеле кам аст. Барои идома додан, лутфан онро пур кунед.</string>
+</dict>
+</plist>

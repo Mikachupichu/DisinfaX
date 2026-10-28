@@ -1,0 +1,80 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/ViewController.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Fact-Check",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Top Up",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "USING DISINFAX IN SAFARI",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 243
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Safari and go to x.com.",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 247
+        }
+      },
+      {
+        "comment": "",
+        "key": "Enable DisinfaX in Safari Settings → Extensions.",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 249
+        }
+      },
+      {
+        "comment": "",
+        "key": "Click the DisinfaX icon in the Safari toolbar to open the popup.",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 250
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Safari Extension Settings…",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 251
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 274
+        }
+      },
+      {
+        "comment": "",
+        "key": "Top-ups need a newer version of macOS. Update, then reopen DisinfaX.",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 328
+        }
+      }
+    ]
+  },
+  "version": 1
+}

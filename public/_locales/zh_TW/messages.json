@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "透過AI分析偵測並突顯推文中的虛假資訊。"
+    "message": "透過AI分析偵測並突顯貼文中的虛假資訊。"
   },
   "verdictTrue": {
     "message": "真實",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "重新顯示此推文中的所有論斷",
+    "message": "重新顯示此貼文中的所有論斷",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "登出"
   },
+  "deleteAccount": {
+    "message": "刪除帳戶及相關資料",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "系統會保留你的餘額，以及受秘密金鑰保護的電子郵件地址加密雜湊值，以防止濫用註冊時贈送的免費資金。再次使用同一帳號註冊即可恢復餘額。",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "點擊%BTN%可顯示論述，並將從您的餘額中扣款"
   },
@@ -285,7 +293,7 @@
     "message": "上次使用"
   },
   "cleanupTagline": {
-    "message": "清理你的 X 動態消息。"
+    "message": "清理你的動態消息。"
   },
   "disclaimerJurisdiction": {
     "message": "在美國境內，僅阿拉巴馬州、亞利桑那州、加利福尼亞州、科羅拉多州、康乃狄克州、德拉瓦州、佛羅里達州、愛達荷州、伊利諾州、印第安納州、愛荷華州、堪薩斯州、肯塔基州、路易斯安那州、緬因州、麻薩諸塞州、密西西比州、密蘇里州、蒙大拿州、新罕布夏州、新墨西哥州、紐約州、北卡羅來納州、北達科他州、奧克拉荷馬州、奧勒岡州、賓夕法尼亞州、南卡羅來納州、南達科他州、田納西州、德克薩斯州、猶他州、華盛頓州、威斯康辛州和懷俄明州的居民可以使用 DisinfaX 並儲值餘額；華盛頓 D.C.、所有美國領地以及未列出的任何州均被排除在外。在美國境外，可在加拿大、澳洲、紐西蘭、新加坡、南非、日本、台灣、印尼、泰國、菲律賓、馬來西亞、越南和瑞士使用。"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "找不到相關內容，請再試一次。"
   },
+  "errNoClaims": {
+    "message": "在這段文字中找不到可查證的說法。",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "設定",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "外觀",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "淺色",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "自動",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "深色",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "符合條件時一律顯示事實查核：",
@@ -415,5 +443,79 @@
   },
   "continueWithReddit": {
     "message": "使用 Reddit 繼續"
+  },
+  "persistentBadgesLabel": {
+    "message": "色盲友善：常駐徽章",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "無需將滑鼠懸停即可在貼文上保持顯示所有事實查核徽章。判定結果既透過醒目提示色彩傳達，也透過文字表達，這有助於無法分辨這些顏色的人。",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "大字體",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "適用於視窗內的文字（主張、理由...）",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "關閉",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "點擊以編輯主張",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "事實查核詳細資訊",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "所選內容過長，無法進行事實查核。最多 1,000 個字元。",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "餘額減少時通知",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "超過以下金額時：$1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "如何進行事實查核",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "在任何網頁上，選取您想查核的文字。",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "右鍵點一下所選文字並選擇 事實查核（對未選取的文字同樣有效）。",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "右鍵點一下所選文字並選擇 {1} 事實查核（對未選取的文字同樣有效）。",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "查核會立即開始，費用將從您的餘額中扣除。",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "在仍選取文字的情況下，點一下 ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " 網址列中的圖示，然後選擇 {1} DisinfaX。",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

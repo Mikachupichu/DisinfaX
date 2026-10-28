@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ikonra a címsorban, majd koppints a Kiegészítők kezelésére, és engedélyezd a DisinfaX-et.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ bizonyosság</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ bizonyosság, %2$@ hitelesség</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>FELTÖLTÉS UTÁN</string>
+	<key>Add funds to your balance</key>
+	<string>Adj pénzt az egyenlegedhez</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Egy korábbi, US$%lld összegű vásárlás még alkalmazásra várt, ezért az lett feldolgozva ahelyett, hogy újra megterheltünk volna. Térj vissza a Safarihoz, és nyisd meg a DisinfaX előugró ablakot a frissített egyenleged megtekintéséhez.</string>
+	<key>Annotate</key>
+	<string>Jegyzetel</string>
+	<key>Annotating</key>
+	<string>Jegyzetelés</string>
+	<key>Arguably</key>
+	<string>Vitatottan</string>
+	<key>BALANCE</key>
+	<string>EGYENLEG</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>A feltöltéssel elfogadod [Szolgáltatási feltételeinket](https://disinfax.app/terms-of-use) és [Adatvédelmi szabályzatunkat](https://disinfax.app/privacy-policy). Ha nem USD pénznemben fizetsz, devizaváltási díj merülhet fel.</string>
+	<key>Clear</key>
+	<string>Törlés</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Koppints a DisinfaX ikonra a Safari eszköztárán az előugró ablak megnyitásához.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>A(z) %@ gombra kattintva megjelennek az állítások, és ez terheli az egyenlegedet</string>
+	<key>Close</key>
+	<string>Bezárás</string>
+	<key>Contacting the App Store…</key>
+	<string>Kapcsolódás az App Store-hoz…</string>
+	<key>Copy</key>
+	<string>Másolás</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>A DisinfaX hibázhat. Ellenőrizd az információt.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>A DisinfaX szabályozási okokból még nem elérhető a régiódban.</string>
+	<key>Disinfact</key>
+	<string>Ellenőrzés</string>
+	<key>Edit</key>
+	<string>Szerkesztés</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Engedélyezd a DisinfaX-et a Safariban, a Beállítások → Kiegészítők alatt.</string>
+	<key>Enter a claim</key>
+	<string>Adjon meg egy állítást</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Adj meg egy 1 és 100 közötti egész dollárösszeget.</string>
+	<key>Equivocally</key>
+	<string>Kétértelműen</string>
+	<key>Fact-Check</key>
+	<string>Tényellenőrzés</string>
+	<key>Fact-Check All</key>
+	<string>Mindet ellenőrizd</string>
+	<key>Fact-Checking</key>
+	<string>Ellenőrzés</string>
+	<key>False</key>
+	<string>Hamis</string>
+	<key>Likely</key>
+	<string>Valószínű</string>
+	<key>Mostly</key>
+	<string>Többnyire</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari-kiegészítő beállítások megnyitása…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Nyisd meg a Safarit, és lépj a x.com oldalra.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Nyisd meg az előugró ablakot a Safariban a frissített egyenleged megtekintéséhez</string>
+	<key>Partially</key>
+	<string>Részben</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>A fizetés befejeződött. Térj vissza a Safarihoz, és nyisd meg a DisinfaX előugró ablakot a frissített egyenleged megtekintéséhez.</string>
+	<key>Possibly</key>
+	<string>Lehetséges</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>A(z) %@ termék nem található az App Store Connectben.</string>
+	<key>Purchase cancelled.</key>
+	<string>A vásárlás megszakítva.</string>
+	<key>Purchase is pending approval.</key>
+	<string>A vásárlás jóváhagyásra vár.</string>
+	<key>Reasoning</key>
+	<string>Indoklás</string>
+	<key>Return to Safari</key>
+	<string>Vissza a Safarihoz</string>
+	<key>Setup incomplete</key>
+	<string>A beállítás nincs befejezve</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Jelentkezz be a Safari DisinfaX előugró ablakában, hogy pénzt adj hozzá.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>A kérés egy része nem volt felismerhető. Ellenőrizd, hogy a bővítmény naprakész.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Hiba történt a mi oldalunkon. Próbáld újra egy kis idő múlva.</string>
+	<key>Sources</key>
+	<string>Források</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>FELTÖLTÉS ÖSSZEGE</string>
+	<key>Tap the </key>
+	<string>Koppints a </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Koppints ugyanarra az ikonra, és válaszd a DisinfaX-et az előugró ablak megnyitásához.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ez nem található. Próbáld újra.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Az a feltöltési összeg nem érvényes. Válassz másik összeget.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ez a build nem éri el a megosztott tárolóját (Alkalmazáscsoport: %@). A feltöltések addig nem lesznek elérhetők, amíg az Alkalmazáscsoportok funkciót hozzá nem adják mind az alkalmazáshoz, mind a kiegészítőhöz.</string>
+	<key>Top Up</key>
+	<string>Feltöltés</string>
+	<key>Top Up Balance</key>
+	<string>Egyenleg feltöltése</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>A feltöltésekhez újabb iOS-verzió szükséges. Frissíts, majd nyisd meg újra a DisinfaX-et.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>A feltöltésekhez újabb macOS-verzió szükséges. Frissíts, majd nyisd meg újra a DisinfaX-et.</string>
+	<key>True</key>
+	<string>Igaz</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>A DISINFAX HASZNÁLATA A SAFARIBAN</string>
+	<key>Unknown</key>
+	<string>Ismeretlen</string>
+	<key>Unknown purchase error.</key>
+	<string>Ismeretlen vásárlási hiba.</string>
+	<key>Very Likely</key>
+	<string>Nagyon valószínű</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Teljes amerikai dollár, 1–100. Az App Store-od pénznemében kerül terhelésre.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Már van egy US$%lld összegű feltöltésed, amely alkalmazásra vár — nem terheltünk rád újra. Térj vissza a Safarihoz, és nyisd meg a DisinfaX előugró ablakot, hogy jóváírd az egyenlegeden.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Nincs bejelentkezve. Jelentkezz be, és próbáld újra.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>A US$%lld összegű feltöltésed alkalmazás alatt áll.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>A US$%lld összegű feltöltésed a szokásosnál tovább tart, amíg megjelenik.</string>
+	<key>Your account has been suspended.</key>
+	<string>A fiókodat felfüggesztették.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Az egyenleged túl alacsony. Töltsd fel a folytatáshoz.</string>
+</dict>
+</plist>

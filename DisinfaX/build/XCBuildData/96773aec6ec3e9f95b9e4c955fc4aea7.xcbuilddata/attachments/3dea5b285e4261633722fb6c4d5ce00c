@@ -1,0 +1,76 @@
+{
+  "" : {
+    "const-values" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary.swiftconstvalues",
+    "dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary.d",
+    "diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary.dia",
+    "emit-module-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary-emit-module.dia",
+    "pch" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/DisinfaX (macOS)-primary.swiftdeps"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckClient.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckClient.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckClient.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckClient.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckNotifications.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckNotifications.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckNotifications.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckNotifications.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckView.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckView.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckView.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/FactCheckView.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/Realtime.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/Realtime.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/Realtime.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/Realtime.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/SafariSettingsOpener.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/SafariSettingsOpener.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/SafariSettingsOpener.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/SafariSettingsOpener.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/SharedTopUpStore.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/SharedTopUpStore.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/SharedTopUpStore.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/SharedTopUpStore.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/StoreKitManager.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/StoreKitManager.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/StoreKitManager.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/StoreKitManager.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/TopUpHandoff.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/TopUpHandoff.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/TopUpHandoff.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/TopUpHandoff.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/TopUpView.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/TopUpView.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/TopUpView.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/TopUpView.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/UsdFormat.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/UsdFormat.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/UsdFormat.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/UsdFormat.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/ViewController.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/ViewController.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/ViewController.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/ViewController.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  },
+  "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/macOS (App)/AppDelegate.swift" : {
+    "index-unit-output-path" : "/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/AppDelegate.o",
+    "llvm-bc" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/AppDelegate.bc",
+    "object" : "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/build/DisinfaX.build/Release/DisinfaX (macOS).build/Objects-normal/arm64/AppDelegate.o"
+  }
+}

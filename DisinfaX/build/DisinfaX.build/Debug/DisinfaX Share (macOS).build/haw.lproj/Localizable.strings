@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ma ka pahu helu wahi, a laila kaomi i ka Hoʻoponopono Hoʻonui a hoʻohana iā DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>MA HOPE O KA HOʻOPIHA</string>
+	<key>Add funds to your balance</key>
+	<string>Hoʻohui kālā i kou koena</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ua kali nō kekahi kūʻai mua US$%lld e hoʻohana ʻia, no laila ua hoʻopau ʻia kēlā ma kahi o ka uku hou ʻana iā ʻoe. E hoʻi i Safari a wehe i ka pukaaniani puka o DisinfaX e ʻike ai i kou koena hou.</string>
+	<key>Annotate</key>
+	<string>Kākau</string>
+	<key>Annotating</key>
+	<string>E kākau ana</string>
+	<key>Arguably</key>
+	<string>Hiki ke hoʻopaʻapaʻa ʻia</string>
+	<key>BALANCE</key>
+	<string>KOENA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Ma ka hoʻopiha, ke ʻae nei ʻoe i kā mākou [Kumu Loulou Lawelawe](https://disinfax.app/terms-of-use) a me kā mākou [Kulekele Pilikino](https://disinfax.app/privacy-policy). Hiki ke pili nā uku hoʻololi kālā ke uku ʻoe ma kekahi kālā ʻokoʻa mai ka USD.</string>
+	<key>Clear</key>
+	<string>Holoi</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Kaomi i ke kiʻi DisinfaX ma ka pahu mea hana o Safari e wehe i ka pukaaniani puka.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Ke kaomi ʻia ʻo %@, e ʻike ʻia nā koi a e uku ʻia kāu kālā</string>
+	<key>Contacting the App Store…</key>
+	<string>Ke pili nei i ka App Store…</string>
+	<key>Copy</key>
+	<string>Kope</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Hiki iā DisinfaX ke hana hewa. E nānā hou i ka ʻike.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>ʻAʻole i loaʻa ʻo DisinfaX ma kou wahi ma muli o nā koina hoʻoponopono.</string>
+	<key>Disinfact</key>
+	<string>Hōʻoia</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Hoʻohana iā DisinfaX ma Safari, ma ka Hoʻonohonoho → Hoʻonui.</string>
+	<key>Enter a claim</key>
+	<string>Hoʻokomo i kahi ʻōlelo</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>E hoʻokomo i kahi kumukūʻai kālā piha ma waena o 1 a me 100.</string>
+	<key>Equivocally</key>
+	<string>Kānalua</string>
+	<key>Fact-Check</key>
+	<string>Hōʻoia ʻike</string>
+	<key>Fact-Check All</key>
+	<string>Hōʻoia i nā mea āpau</string>
+	<key>Fact-Checking</key>
+	<string>Hōʻoia</string>
+	<key>False</key>
+	<string>Wahaheʻe</string>
+	<key>Likely</key>
+	<string>Hiki paha</string>
+	<key>Mostly</key>
+	<string>Ka hapa nui</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Wehe i nā hoʻonohonoho hoʻonui o Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Wehe iā Safari a hele i x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>E wehe i ka pukaaniani puka ma Safari e ʻike ai i kou koena hou</string>
+	<key>Partially</key>
+	<string>Ma kahi hapa</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ua pau ka uku. E hoʻi i Safari a wehe i ka pukaaniani puka o DisinfaX e ʻike ai i kou koena hou.</string>
+	<key>Possibly</key>
+	<string>Malia</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>ʻAʻole i loaʻa ka huahana %@ ma App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ua hoʻopau ʻia ke kūʻai.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Ke kali nei ke kūʻai i ka ʻae.</string>
+	<key>Reasoning</key>
+	<string>Noʻonoʻo</string>
+	<key>Return to Safari</key>
+	<string>Hoʻi i Safari</string>
+	<key>Setup incomplete</key>
+	<string>ʻAʻole i pau ke hoʻonohonoho</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>E kau inoa mai ka pukaaniani puka DisinfaX ma Safari e hoʻohui i kālā.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>ʻAʻole i ʻike ʻia kekahi ʻāpana o kēia noi. E ʻoluʻolu e hōʻoia ua hōʻano hou ʻia ka extension.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Ua loaʻa kekahi hewa ma kā mākou ʻaoʻao. E ʻoluʻolu e hoʻāʻo hou i kekahi manawa.</string>
+	<key>Sources</key>
+	<string>Nā kumu</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>KUMUKŪʻAI HOʻOPIHA</string>
+	<key>Tap the </key>
+	<string>Kaomi i ke kiʻi </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Kaomi i ke kiʻi like a koho iā DisinfaX e wehe i ka pukaaniani puka.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>ʻAʻole i loaʻa kēlā. E hoʻāʻo hou.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>ʻAʻole kūpono kēlā kālā hoʻopiha. E ʻoluʻolu e koho i kālā ʻē aʻe.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>ʻAʻole hiki i kēia kūkulu ke hōʻea i kāna waʻa kaʻana like (App Group %@). ʻAʻole loaʻa nā hoʻopiha a hiki i ka hoʻohui ʻia ʻana o ka hiki App Groups i ka polokalamu a me ka hoʻonui.</string>
+	<key>Top Up</key>
+	<string>Hoʻopiha</string>
+	<key>Top Up Balance</key>
+	<string>Hoʻopiha i ke koena</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Pono nā hoʻopiha i kahi mana iOS hou aku. E hoʻohou, a laila wehe hou iā DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Pono nā hoʻopiha i kahi mana macOS hou aku. E hoʻohou, a laila wehe hou iā DisinfaX.</string>
+	<key>True</key>
+	<string>ʻOiaʻiʻo</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>KA HOʻOHANA ʻANA I KA DISINFAX MA SAFARI</string>
+	<key>Unknown</key>
+	<string>ʻIke ʻole</string>
+	<key>Unknown purchase error.</key>
+	<string>Hewa kūʻai ʻike ʻole ʻia.</string>
+	<key>Very Likely</key>
+	<string>Hiki loa</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Kālā ʻAmelika piha, 1–100. E uku ʻia ma ke kālā o kāu App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Loaʻa iā ʻoe kekahi hoʻopiha US$%lld e kali nei e hoʻohana ʻia — ʻaʻole ʻoe i uku hou ʻia. E hoʻi i Safari a wehe i ka pukaaniani puka o DisinfaX e hoʻohana ai ma kou koena.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>ʻAʻole ʻoe i kau inoa i ka pūnaewele. E ʻoluʻolu e kau inoa a hoʻāʻo hou.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Ke hoʻohana ʻia nei kou hoʻopiha US$%lld.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Lōʻihi aku ka manawa i ke kau maʻamau no ka ʻike ʻana o kou hoʻopiha US$%lld.</string>
+	<key>Your account has been suspended.</key>
+	<string>Ua hoʻōki ʻia kou moʻokāki.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Haʻahaʻa loa kou koena. E ʻoluʻolu e hoʻopiha e hoʻomau.</string>
+</dict>
+</plist>

@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Nakit-an ug gipasiugda ang mali nga impormasyon sa mga tweet pinaagi sa pag-analisar sa AI.",
+    "message": "Nakit-an ug gipasiugda ang mali nga impormasyon sa mga post pinaagi sa pag-analisar sa AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ipakita pag-usab ang mga pag-angkon niini nga tweet",
+    "message": "Ipakita pag-usab ang mga pag-angkon niini nga post",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Mag-sign Out"
   },
+  "deleteAccount": {
+    "message": "Tangtanga ang Account ug Kaubang Data",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Ang imong balanse, ug ang usa ka cryptographic hash sa imong email address nga gipanalipdan sa usa ka sekretong yawe, gitipigan aron malikayan ang pag-abuso sa libreng pondo nga gihatag inighimo sa account. Kung mosulod ka pag-usab sa samang account, mapabalik ang imong balanse.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Ang pag-klik sa %BTN% magpakita sa mga pag-angkon ug mokutlo sa imong balanse"
   },
@@ -287,7 +295,7 @@
     "message": "Kataposang Gigamit"
   },
   "cleanupTagline": {
-    "message": "Limpyohi ang imong X Feed."
+    "message": "Limpyohi ang imong Feed."
   },
   "disclaimerJurisdiction": {
     "message": "Sulod sa Estados Unidos, ang mga residente lamang sa Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Amihanang Carolina, Amihanang Dakota, Oklahoma, Oregon, Pennsylvania, Habagatang Carolina, Habagatang Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, ug Wyoming ang mahimong mogamit sa DisinfaX ug mag-top up sa ilang balanse; ang Washington, D.C., tanang mga teritoryo sa U.S., ug bisan unsang estado nga wala malista dili apil. Sa gawas sa Estados Unidos, magamit kini sa Canada, Australia, New Zealand, Singapore, Habagatang Aprika, Hapon, Taiwan, Indonesia, Thailand, Pilipinas, Malaysia, Vietnam, ug Switzerland."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Wala nakit-an kana. Sulayi pag-usab."
   },
+  "errNoClaims": {
+    "message": "Walay nakit-an nga mapamatud-ang pahayag niini nga teksto.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Mga Setting",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Hitsura",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Hayag",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Awtomatiko",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Ngitngit",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Kanunay ipakita ang pagpamatud kon:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Kansel",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Papasa",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "I-enable ang DisinfaX sa $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "Naka-enable ang DisinfaX sa $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Pawnga",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Padayon gamit ang Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Padayon gamit ang LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Padayon gamit ang Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Alang sa buta sa kolor: permang mga badge",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ipadayon nga makita ang matag badge sa pagsusi sa kamatuoran sa mga post nga dili kinahanglan itudlo ang cursor. Ang hukom gipahayag sa kolor sa highlight sama sa mga pulong niini, busa makatabang kini sa bisan kinsa nga dili makaila sa maong mga kolor.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Dako nga gidak-on sa font",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Pakadakoa ang gisulat pag-usab nga mga pag-angkon, ang pangatarongan, ug ang mga pasiunang timailhan.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Sirad-i",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "I-klik aron usbon ang pag-angkon",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Mga detalye sa pagsusi sa kamatuoran",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Kini nga pinili masyadong taas aron susihon. 1,000 ka karakter ang kinatas-an.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Pahibaloa kung moubos ang balanse",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Kung labaw pa sa: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

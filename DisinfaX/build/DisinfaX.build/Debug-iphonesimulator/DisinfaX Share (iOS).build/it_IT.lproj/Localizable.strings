@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> nella barra degli indirizzi, poi tocca Gestisci estensioni e attiva DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>DOPO LA RICARICA</string>
+	<key>Add funds to your balance</key>
+	<string>Aggiungi fondi al tuo saldo</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Un acquisto precedente da US$%lld era ancora in attesa di essere applicato, quindi è stato completato quello invece di addebitarti di nuovo. Torna a Safari e apri il popup di DisinfaX per vedere il saldo aggiornato.</string>
+	<key>Annotate</key>
+	<string>Annota</string>
+	<key>Annotating</key>
+	<string>Annotazione</string>
+	<key>Arguably</key>
+	<string>Discutibilmente</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Effettuando una ricarica accetti i nostri [Termini di servizio](https://disinfax.app/terms-of-use) e la nostra [Informativa sulla privacy](https://disinfax.app/privacy-policy). Potrebbero applicarsi commissioni di cambio valuta se paghi in una valuta diversa da USD.</string>
+	<key>Clear</key>
+	<string>Cancella</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tocca l'icona di DisinfaX nella barra degli strumenti di Safari per aprire il popup.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Cliccando su %@ si rivelano le affermazioni e verrà addebitato il tuo saldo</string>
+	<key>Contacting the App Store…</key>
+	<string>Connessione all'App Store…</string>
+	<key>Copy</key>
+	<string>Copia</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX può commettere errori. Verifica sempre le informazioni importanti.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX non è ancora disponibile nella tua regione a causa di requisiti normativi.</string>
+	<key>Disinfact</key>
+	<string>Verifica</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Attiva DisinfaX in Safari, in Impostazioni → Estensioni.</string>
+	<key>Enter a claim</key>
+	<string>Inserisci un'affermazione</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Inserisci un importo intero in dollari compreso tra 1 e 100.</string>
+	<key>Equivocally</key>
+	<string>Equivocamente</string>
+	<key>Fact-Check</key>
+	<string>Verifica dei fatti</string>
+	<key>Fact-Check All</key>
+	<string>Verifica tutto</string>
+	<key>Fact-Checking</key>
+	<string>Verifica</string>
+	<key>False</key>
+	<string>Falso</string>
+	<key>Likely</key>
+	<string>Probabilmente</string>
+	<key>Mostly</key>
+	<string>Per lo più</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Apri le impostazioni delle estensioni di Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Apri Safari e vai su x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Apri il popup in Safari per vedere il saldo aggiornato</string>
+	<key>Partially</key>
+	<string>Parzialmente</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pagamento completato. Torna a Safari e apri il popup di DisinfaX per vedere il saldo aggiornato.</string>
+	<key>Possibly</key>
+	<string>Possibilmente</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Prodotto %@ non trovato in App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Acquisto annullato.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Acquisto in attesa di approvazione.</string>
+	<key>Reasoning</key>
+	<string>Ragionamento</string>
+	<key>Return to Safari</key>
+	<string>Torna a Safari</string>
+	<key>Setup incomplete</key>
+	<string>Configurazione incompleta</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Accedi dal popup di DisinfaX in Safari per aggiungere fondi.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Alcuni dettagli di questa richiesta non sono stati riconosciuti. Assicurati che l'estensione sia aggiornata.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Si è verificato un errore da parte nostra. Riprova a breve.</string>
+	<key>Sources</key>
+	<string>Fonti</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>IMPORTO DELLA RICARICA</string>
+	<key>Tap the </key>
+	<string>Tocca l'icona </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tocca la stessa icona e scegli DisinfaX per aprire il popup.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Impossibile trovarlo. Riprova.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>L'importo di ricarica non è valido. Scegli un importo diverso.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Questa build non riesce a raggiungere il proprio contenitore condiviso (App Group %@). Le ricariche non saranno disponibili finché la funzionalità App Groups non verrà aggiunta sia all'app sia all'estensione.</string>
+	<key>Top Up</key>
+	<string>Ricarica</string>
+	<key>Top Up Balance</key>
+	<string>Ricarica saldo</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Le ricariche richiedono una versione più recente di iOS. Aggiorna, poi riapri DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Le ricariche richiedono una versione più recente di macOS. Aggiorna, poi riapri DisinfaX.</string>
+	<key>True</key>
+	<string>Vero</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>USARE DISINFAX IN SAFARI</string>
+	<key>Unknown</key>
+	<string>Sconosciuto</string>
+	<key>Unknown purchase error.</key>
+	<string>Errore di acquisto sconosciuto.</string>
+	<key>Very Likely</key>
+	<string>Molto probabilmente</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollari statunitensi interi, da 1 a 100. Addebitato nella valuta del tuo App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Hai già una ricarica da US$%lld in attesa di essere applicata — non ti è stato addebitato di nuovo. Torna a Safari e apri il popup di DisinfaX per applicarla al tuo saldo.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Non hai effettuato l'accesso. Accedi e riprova.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>La tua ricarica da US$%lld è in fase di applicazione.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>La tua ricarica da US$%lld sta impiegando più tempo del solito per comparire.</string>
+	<key>Your account has been suspended.</key>
+	<string>Il tuo account è stato sospeso.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Il tuo saldo è troppo basso. Ricarica per continuare.</string>
+</dict>
+</plist>

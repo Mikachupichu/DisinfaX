@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> fil-bar tal-indirizz, imbagħad mess Ġestjoni tal-Estensjonijiet u attiva DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>WARA T-TOP-UP</string>
+	<key>Add funds to your balance</key>
+	<string>Żid il-fondi mal-bilanċ tiegħek</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Xerja preċedenti ta' US$%lld kienet għadha tistenna li tiġi applikata, għalhekk dik tlestiet minflok ma ġejt iċċarġjat mill-ġdid. Erġa' lura għal Safari u iftaħ it-tieqa li tinbeżaq ta' DisinfaX biex tara l-bilanċ aġġornat tiegħek.</string>
+	<key>Annotate</key>
+	<string>Annotta</string>
+	<key>Annotating</key>
+	<string>Annotazzjoni</string>
+	<key>Arguably</key>
+	<string>Diskutibbli</string>
+	<key>BALANCE</key>
+	<string>BILANĊ</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Meta tagħmel top-up, taqbel mat-[Termini tas-Servizz](https://disinfax.app/terms-of-use) u l-[Politika tal-Privatezza](https://disinfax.app/privacy-policy) tagħna. Tariffi tal-kambju tal-munita jistgħu japplikaw jekk tħallas b'munita differenti mid-dollaru Amerikan.</string>
+	<key>Clear</key>
+	<string>Ħassar</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Mess l-ikona ta' DisinfaX fil-toolbar ta' Safari biex tiftaħ it-tieqa li tinbeżaq.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Tikklikkja %@ turi l-allegazzjonijiet u titnaqqas somma mill-bilanċ tiegħek</string>
+	<key>Contacting the App Store…</key>
+	<string>Qed jikkonnettja mal-App Store…</string>
+	<key>Copy</key>
+	<string>Ikkopja</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX jista' jagħmel żbalji. Iċċekkja l-informazzjoni darbtejn.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX għadu mhux disponibbli fir-reġjun tiegħek minħabba rekwiżiti regolatorji.</string>
+	<key>Disinfact</key>
+	<string>Verifika</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Attiva DisinfaX f'Safari, fl-Issettjar → Estensjonijiet.</string>
+	<key>Enter a claim</key>
+	<string>Daħħal talba</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Daħħal ammont sħiħ f'dollari bejn 1 u 100.</string>
+	<key>Equivocally</key>
+	<string>Ekwivoku</string>
+	<key>Fact-Check</key>
+	<string>Verifika tal-fatti</string>
+	<key>Fact-Check All</key>
+	<string>Ivverifika kollox</string>
+	<key>Fact-Checking</key>
+	<string>Verifika</string>
+	<key>False</key>
+	<string>Falz</string>
+	<key>Likely</key>
+	<string>Probabbli</string>
+	<key>Mostly</key>
+	<string>Fil-biċċa l-kbira</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Iftaħ l-issettjar tal-estensjonijiet ta' Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Iftaħ Safari u mur fuq x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Iftaħ it-tieqa li tinbeżaq f'Safari biex tara l-bilanċ aġġornat tiegħek</string>
+	<key>Partially</key>
+	<string>Parzjalment</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Il-ħlas tlesta. Erġa' lura għal Safari u iftaħ it-tieqa li tinbeżaq ta' DisinfaX biex tara l-bilanċ aġġornat tiegħek.</string>
+	<key>Possibly</key>
+	<string>Possibilment</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Il-prodott %@ ma nstabx f'App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ix-xerja ġiet ikkanċellata.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Ix-xerja qed tistenna l-approvazzjoni.</string>
+	<key>Reasoning</key>
+	<string>Raġunament</string>
+	<key>Return to Safari</key>
+	<string>Erġa' lura għal Safari</string>
+	<key>Setup incomplete</key>
+	<string>L-issettjar mhux komplut</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Idħol mit-tieqa li tinbeżaq ta' DisinfaX f'Safari biex iżżid il-fondi.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Parti minn din it-talba ma ġietx rikonoxxuta. Iċċekkja li l-estensjoni hija aġġornata.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Seħħ żball min-naħa tagħna. Jekk jogħġbok erġa' pprova wara ftit.</string>
+	<key>Sources</key>
+	<string>Sorsi</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>AMMONT TAT-TOP-UP</string>
+	<key>Tap the </key>
+	<string>Mess l-ikona </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Mess l-istess ikona u agħżel DisinfaX biex tiftaħ it-tieqa li tinbeżaq.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Dan ma setax jinstab. Jekk jogħġbok erġa' pprova.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Dak l-ammont ta' rikarga mhux validu. Jekk jogħġbok agħżel ammont ieħor.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Din il-verżjoni ma tistax tilħaq il-kontenitur maqsum tagħha (Grupp tal-App %@). It-top-ups ma jkunux disponibbli sakemm il-kapaċità tal-App Groups tiġi miżjuda ma' l-app u ma' l-estensjoni.</string>
+	<key>Top Up</key>
+	<string>Irrikarga</string>
+	<key>Top Up Balance</key>
+	<string>Agħmel top-up tal-bilanċ</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>It-top-ups jeħtieġu verżjoni aktar ġdida ta' iOS. Aġġorna, imbagħad erġa' iftaħ DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>It-top-ups jeħtieġu verżjoni aktar ġdida ta' macOS. Aġġorna, imbagħad erġa' iftaħ DisinfaX.</string>
+	<key>True</key>
+	<string>Veru</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>L-UŻU TA' DISINFAX F'SAFARI</string>
+	<key>Unknown</key>
+	<string>Mhux magħruf</string>
+	<key>Unknown purchase error.</key>
+	<string>Żball ta' xerja mhux magħruf.</string>
+	<key>Very Likely</key>
+	<string>Probabbli ħafna</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollari Amerikani sħaħ, 1–100. Jiġi ċċarġjat fil-munita tal-App Store tiegħek.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Diġà għandek top-up ta' US$%lld li qed jistenna li jiġi applikat — ma ġietx iċċarġjata mill-ġdid. Erġa' lura għal Safari u iftaħ it-tieqa li tinbeżaq ta' DisinfaX biex tapplikaha mal-bilanċ tiegħek.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ma intix illoggjat. Jekk jogħġbok idħol u erġa' pprova.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>It-top-up tiegħek ta' US$%lld qed jiġi applikat.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>It-top-up tiegħek ta' US$%lld qed jieħu iktar żmien mis-soltu biex jidher.</string>
+	<key>Your account has been suspended.</key>
+	<string>Il-kont tiegħek ġie sospiż.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Il-bilanċ tiegħek huwa baxx wisq. Jekk jogħġbok irrikarga biex tkompli.</string>
+</dict>
+</plist>

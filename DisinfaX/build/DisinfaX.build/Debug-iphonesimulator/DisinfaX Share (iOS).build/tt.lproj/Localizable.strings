@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> символга басыгыз, аннары Киңәйтүләрне Идарә Итү-гә басып DisinfaX-ны кабызыгыз.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ булырга %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>ТУЛЫЛАНДЫРУДАН СОҠ</string>
+	<key>Add funds to your balance</key>
+	<string>Балансыгызга акча кушыгыз</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Алдагы US$%lld сатып алу әле дә кулланылырга көтеп тора иде, шуңа күрә сездән яңадан акча алу урынына ул тәмамланды. Яңартылган балансыгызны күрү өчен Safari-га кайтыгыз һәм DisinfaX кузгалма тәрәзәсен ачыгыз.</string>
+	<key>Annotate</key>
+	<string>Аннотацияләү</string>
+	<key>Annotating</key>
+	<string>Аннотацияләнә</string>
+	<key>Arguably</key>
+	<string>Бәхәсле</string>
+	<key>BALANCE</key>
+	<string>БАЛАНС</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Тулыландыру белән сез безнең [Хезмәт күрсәтү шартларыбызга](https://disinfax.app/terms-of-use) һәм [Конфиденциальлек политикабызга](https://disinfax.app/privacy-policy) ризалык бирәсез. USD түгел валютада түлисез икән, валюта алмашу өчен түләү алынырга мөмкин.</string>
+	<key>Clear</key>
+	<string>Чистарту</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Кузгалма тәрәзәне ачу өчен Safari кораллар тактасындагы DisinfaX символына басыгыз.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>%@ төймәсенә басу дәгъвәләрне күрсәтә һәм балансыгыздан акча алыначак</string>
+	<key>Contacting the App Store…</key>
+	<string>App Store белән тоташтырыла…</string>
+	<key>Copy</key>
+	<string>Күчерү</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX хата җибәрергә мөмкин. Мәгълүматны кабат тикшерегез.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Җайга салу таләпләре аркасында DisinfaX сезнең төбәктә әле дә юк.</string>
+	<key>Disinfact</key>
+	<string>Ачыклау</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>DisinfaX-ны Safari-да, Көйләүләр → Киңәйтүләр бүлегендә кабызыгыз.</string>
+	<key>Enter a claim</key>
+	<string>Расламаны кертегез</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>1 һәм 100 арасында тулы доллар суммасы кертегез.</string>
+	<key>Equivocally</key>
+	<string>Икеле</string>
+	<key>Fact-Check</key>
+	<string>Фактларны тикшерү</string>
+	<key>Fact-Check All</key>
+	<string>Барысын тикшерү</string>
+	<key>Fact-Checking</key>
+	<string>Тикшерелә</string>
+	<key>False</key>
+	<string>Ялган</string>
+	<key>Likely</key>
+	<string>Ихтимал</string>
+	<key>Mostly</key>
+	<string>Күбесенчә</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari киңәйтүләр көйләүләрен ачу…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Safari-ны ачыгыз һәм x.com-га керегез.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Яңартылган балансыгызны күрү өчен Safari-да кузгалма тәрәзәне ачыгыз</string>
+	<key>Partially</key>
+	<string>Өлешчә</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Түләү тәмамланды. Яңартылган балансыгызны күрү өчен Safari-га кайтыгыз һәм DisinfaX кузгалма тәрәзәсен ачыгыз.</string>
+	<key>Possibly</key>
+	<string>Мөмкин</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>App Store Connect-та %@ продукты табылмады.</string>
+	<key>Purchase cancelled.</key>
+	<string>Сатып алу баш тартылды.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Сатып алу расланганны көтә.</string>
+	<key>Reasoning</key>
+	<string>Нигезләмә</string>
+	<key>Return to Safari</key>
+	<string>Safari-га кайту</string>
+	<key>Setup incomplete</key>
+	<string>Көйләү тәмамланмаган</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Акча кушу өчен Safari эчендәге DisinfaX кузгалма тәрәзәсеннән керегез.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Бу сорауның бер өлеше танылмады. Кушымтаның яңартылганлыгын тикшерегез.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Безнең тарафта хата килеп чыкты. Бераздан тагын бер тапкыр сынап карагыз.</string>
+	<key>Sources</key>
+	<string>Чыганаклар</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>ТУЛЫЛАНДЫРУ СУММАСЫ</string>
+	<key>Tap the </key>
+	<string>Адрес тактасындагы </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Шул ук символга басыгыз һәм кузгалма тәрәзәне ачу өчен DisinfaX-ны сайлагыз.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ул табылмады. Тагын бер тапкыр сынап карагыз.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Ул тулыландыру суммасы дөрес түгел. Башка сумма сайлагыз.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Бу төзелеш үзенең уртак саклагычына (App Group %@) керә алмый. App Groups мөмкинлеге кушымтага да, киңәйтүгә дә кушылганчы, тулыландыру мөмкин булмаячак.</string>
+	<key>Top Up</key>
+	<string>Тулыландыру</string>
+	<key>Top Up Balance</key>
+	<string>Балансны тулыландыру</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Тулыландыру өчен iOS-ның яңарак версиясе кирәк. Яңартыгыз, аннары DisinfaX-ны яңадан ачыгыз.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Тулыландыру өчен macOS-ның яңарак версиясе кирәк. Яңартыгыз, аннары DisinfaX-ны яңадан ачыгыз.</string>
+	<key>True</key>
+	<string>Дөрес</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>SAFARI-ДА DISINFAX КУЛЛАНУ</string>
+	<key>Unknown</key>
+	<string>Билгесез</string>
+	<key>Unknown purchase error.</key>
+	<string>Билгесез сатып алу хатасы.</string>
+	<key>Very Likely</key>
+	<string>Бик ихтимал</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Тулы АКШ доллары, 1–100. App Store валютагызда алыныр.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Сездә инде кулланылырга көтеп торган US$%lld тулыландыруы бар — сездән яңадан акча алынмады. Аны балансыгызга кулланыр өчен Safari-га кайтыгыз һәм DisinfaX кузгалма тәрәзәсен ачыгыз.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Сез хисапка кермәгәнсез. Зинһар, керегез һәм тагын бер тапкыр сынап карагыз.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Сезнең US$%lld тулыландыруыгыз хәзер кулланыла.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Сезнең US$%lld тулыландыруыгызның күренүе гадәттәгедән күбрәк вакыт ала.</string>
+	<key>Your account has been suspended.</key>
+	<string>Хисабыгыз туктатылды.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Балансыгыз бик түбән. Дәвам итү өчен тулыландырыгыз.</string>
+</dict>
+</plist>

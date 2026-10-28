@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "ตรวจจับและเน้นข้อมูลบิดเบือนในทวีตโดยใช้การวิเคราะห์ด้วย AI"
+    "message": "ตรวจจับและเน้นข้อมูลบิดเบือนในโพสต์โดยใช้การวิเคราะห์ด้วย AI"
   },
   "verdictTrue": {
     "message": "จริง",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "เปิดเผยข้อกล่าวหาทั้งหมดในทวีตนี้อีกครั้ง",
+    "message": "เปิดเผยข้อกล่าวหาทั้งหมดในโพสต์นี้อีกครั้ง",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "ออกจากระบบ"
   },
+  "deleteAccount": {
+    "message": "ลบบัญชีและข้อมูลที่เกี่ยวข้อง",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "ยอดคงเหลือของคุณ และแฮชแบบเข้ารหัสของที่อยู่อีเมลของคุณซึ่งได้รับการปกป้องด้วยคีย์ลับ จะถูกเก็บไว้เพื่อป้องกันการใช้งานในทางที่ผิดของเงินทุนฟรีที่ให้เมื่อสร้างบัญชี หากคุณลงชื่อเข้าใช้อีกครั้งด้วยบัญชีเดิม ยอดคงเหลือของคุณจะถูกคืนกลับ",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "การคลิก %BTN% จะเปิดเผยข้อกล่าวอ้างและจะหักเงินจากยอดคงเหลือของคุณ"
   },
@@ -285,7 +293,7 @@
     "message": "ใช้ล่าสุด"
   },
   "cleanupTagline": {
-    "message": "จัดระเบียบฟีด X ของคุณ"
+    "message": "จัดระเบียบฟีดของคุณ"
   },
   "disclaimerJurisdiction": {
     "message": "ภายในสหรัฐอเมริกา เฉพาะผู้ที่อาศัยอยู่ในรัฐแอละแบมา แอริโซนา แคลิฟอร์เนีย โคโลราโด คอนเนตทิคัต เดลาแวร์ ฟลอริดา ไอดาโฮ อิลลินอยส์ อินดีแอนา ไอโอวา แคนซัส เคนทักกี ลุยเซียนา เมน แมสซาชูเซตส์ มิสซิสซิปปี มิสซูรี มอนแทนา นิวแฮมป์เชียร์ นิวเม็กซิโก นิวยอร์ก นอร์ทแคโรไลนา นอร์ทดาโคตา โอคลาโฮมา ออริกอน เพนซิลเวเนีย เซาท์แคโรไลนา เซาท์ดาโคตา เทนเนสซี เท็กซัส ยูทาห์ วอชิงตัน วิสคอนซิน และไวโอมิง เท่านั้นที่สามารถใช้ DisinfaX และเติมเงินในยอดคงเหลือได้ วอชิงตัน ดี.ซี. ดินแดนของสหรัฐฯ ทั้งหมด และรัฐใด ๆ ที่ไม่ได้ระบุไว้จะไม่รวมอยู่ด้วย ภายนอกสหรัฐอเมริกา สามารถใช้งานได้ในแคนาดา ออสเตรเลีย นิวซีแลนด์ สิงคโปร์ แอฟริกาใต้ ญี่ปุ่น ไต้หวัน อินโดนีเซีย ไทย ฟิลิปปินส์ มาเลเซีย เวียดนาม และสวิตเซอร์แลนด์"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "ไม่พบสิ่งนั้น กรุณาลองใหม่อีกครั้ง"
   },
+  "errNoClaims": {
+    "message": "ไม่พบข้อกล่าวอ้างที่ตรวจสอบได้ในข้อความนี้",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "การตั้งค่า",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "รูปลักษณ์",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "สว่าง",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "อัตโนมัติ",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "มืด",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "แสดงการตรวจสอบข้อเท็จจริงเสมอหาก:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "ยกเลิก",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "ล้าง",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "เปิดใช้ DisinfaX บน $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX เปิดอยู่สำหรับ $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "ปิด",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "ดำเนินการต่อด้วย Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "ดำเนินการต่อด้วย LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "ดำเนินการต่อด้วย Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "เหมาะสำหรับคนตาบอดสี: ป้ายแบบถาวร",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "แสดงป้ายตรวจสอบข้อเท็จจริงทุกอันบนโพสต์โดยไม่ต้องวางเมาส์เหนือข้อความ คำตัดสินจะสื่อผ่านทั้งสีไฮไลท์และข้อความ ตัวเลือกนี้จึงช่วยผู้ที่ไม่สามารถแยกแยะสีเหล่านั้นได้",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "ขนาดตัวอักษรใหญ่",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "ขยายข้อกล่าวอ้างที่เขียนใหม่ เหตุผล และคำแนะนำเริ่มต้นให้ใหญ่ขึ้น",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "ปิด",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "คลิกเพื่อแก้ไขคำกล่าวอ้าง",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "รายละเอียดการตรวจสอบ",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "ข้อความที่เลือกยาวเกินไปที่จะตรวจสอบได้ สูงสุด 1,000 ตัวอักษร",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "แจ้งเตือนเมื่อยอดคงเหลือลดลง",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "มากกว่า: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

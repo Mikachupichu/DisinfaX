@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> אין דעם אַדרעס באר, דערנאָך טאַפּט פאַרוואַלטן אויסברייטערונגען און שטעלט אָן DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ צוטרוי</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ צוטרוי, %2$@ אמתדיקייט</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ צו זײַן %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>נאָך אויפלאָדן</string>
+	<key>Add funds to your balance</key>
+	<string>לייגט צו געלט צו אייער וואָג</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>אַ פֿריערדיקע קויפֿונג פֿון US$%lld האָט נאָך געוואַרט צו ווערן אויפגעלייגט, אַזוי איז יענע פֿאַרענדיקט געוואָרן אַנשטאָט אייך ווידער אָפּצונעמען. קערט זיך אום צו Safari און עפֿנט דעם DisinfaX פּאָפּ-אַפּ כּדי צו זען אייער אויפגעפרישטע וואָג.</string>
+	<key>Annotate</key>
+	<string>לייג צו הערה</string>
+	<key>Annotating</key>
+	<string>לייגט צו הערה</string>
+	<key>Arguably</key>
+	<string>טענהדיק</string>
+	<key>BALANCE</key>
+	<string>וואָג</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>דורך אויפלאָדן, שטימט איר צו אונדזערע [באדינגונגען פֿון סערוויס](https://disinfax.app/terms-of-use) און אונדזער [פּריוואטקייט פּאָליטיק](https://disinfax.app/privacy-policy). וואַלוטע-בייטן טאַקסן קענען ווערן אויפגעלייגט אויב איר צאָלט אין אַ אַנדער וואַלוטע ווי USD.</string>
+	<key>Clear</key>
+	<string>אויסרייניקן</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>טאַפּט דעם DisinfaX סימבאָל אין דעם Safari ווערקצייג-באר כּדי צו עפֿענען דעם פּאָפּ-אַפּ.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>אַ קליק אויף %@ אַנטפּלעקט טענות און וועט אָפּרעכענען פֿון אײַער באַלאַנס</string>
+	<key>Close</key>
+	<string>שליסן</string>
+	<key>Contacting the App Store…</key>
+	<string>פֿאַרבינדט זיך מיט App Store…</string>
+	<key>Copy</key>
+	<string>קאָפּירן</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX קען מאַכן גרייזן. קאָנטראָלירט די אינפֿאָרמאַציע נאָך אַ מאָל.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX איז נאָך נישט צוגענגלעך אין אײַער געגנט צוליב רעגולאַטאָרישע פֿאָדערונגען.</string>
+	<key>Disinfact</key>
+	<string>Disinfact</string>
+	<key>Edit</key>
+	<string>רעדאַגירן</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>שטעלט אָן DisinfaX אין Safari, אין פאָרשטעלונגען → אויסברייטערונגען.</string>
+	<key>Enter a claim</key>
+	<string>אַרייַן אַ טענה</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>גיט אַריין אַ גאַנצע דאָלער סומע צווישן 1 און 100.</string>
+	<key>Equivocally</key>
+	<string>צווייפֿלהאַפֿט</string>
+	<key>Fact-Check</key>
+	<string>פאקטן־טשעק</string>
+	<key>Fact-Check All</key>
+	<string>פֿאַקט־קאָנטראָלירן אַלע טענות</string>
+	<key>Fact-Checking</key>
+	<string>פֿאַקט־קאָנטראָל</string>
+	<key>False</key>
+	<string>פֿאַלש</string>
+	<key>Likely</key>
+	<string>וואַרשיינלעך</string>
+	<key>Mostly</key>
+	<string>מערסטנס</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>עפֿנט Safari אויסברייטערונג פאָרשטעלונגען…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>עפֿנט Safari און גייט צו x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>עפֿנט דעם פּאָפּ-אַפּ אין Safari כּדי צו זען אייער אויפגעפרישטע וואָג</string>
+	<key>Partially</key>
+	<string>טיילווײַז</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>באַצאָלונג פֿאַרענדיקט. קערט זיך אום צו Safari און עפֿנט דעם DisinfaX פּאָפּ-אַפּ כּדי צו זען אייער אויפגעפרישטע וואָג.</string>
+	<key>Possibly</key>
+	<string>מעגלעך</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>דער פּראָדוקט %@ איז נישט געפֿונען געוואָרן אין App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>קויפֿונג איז אַנולירט געוואָרן.</string>
+	<key>Purchase is pending approval.</key>
+	<string>קויפֿונג וואַרט אויף גוטהייסן.</string>
+	<key>Reasoning</key>
+	<string>סברה</string>
+	<key>Return to Safari</key>
+	<string>קער זיך אום צו Safari</string>
+	<key>Setup incomplete</key>
+	<string>אָנשטעלונג איז נישט פֿאַרענדיקט</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>שרייבט זיך אריין פֿון די DisinfaX פּאָפּ-אַפּ אין Safari כּדי צוצוגעבן געלט.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>עפּעס אין דער בקשה איז נישט דערקענט געוואָרן. ביטע זיכערט זיך אַז די עקסטענזיע איז אַקטועל.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>אַ טעות איז געשען אויף אונדזער זײַט. ביטע פּרוּווט נאָך אַ מאָל אין אַ מינוט.</string>
+	<key>Sources</key>
+	<string>מקורות</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>סומע פֿון אויפלאָדן</string>
+	<key>Tap the </key>
+	<string>טאַפּט דעם סימבאָל </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>טאַפּט דעם זעלביקן סימבאָל און קלייבט DisinfaX כּדי צו עפֿענען דעם פּאָפּ-אַפּ.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>דאָס האָט מען נישט געפֿונען. ביטע פּרוּווט נאָך אַ מאָל.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>די סומע פֿאַר אָנפֿילן איז נישט גילטיק. ביטע קלײַבט אַן אַנדער סומע.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>דער בנין קען נישט דערגרייכן זיין געטיילטן קאָנטיינער (App Group %@). אויפלאָדן וועלן נישט זיין צוטריטלעך ביז דער App Groups פֿעיִקייט ווערט צוגעלייגט צו ביידע דער אַפּ און דער אויסברייטערונג.</string>
+	<key>Top Up</key>
+	<string>אָנפֿילן</string>
+	<key>Top Up Balance</key>
+	<string>לאָדט אויף וואָג</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>אויפלאָדן דאַרפֿן אַ נייערע ווערסיע פֿון iOS. פֿרישט אויף, און דערנאָך עפֿנט DisinfaX נאָך אַ מאָל.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>אויפלאָדן דאַרפֿן אַ נייערע ווערסיע פֿון macOS. פֿרישט אויף, און דערנאָך עפֿנט DisinfaX נאָך אַ מאָל.</string>
+	<key>True</key>
+	<string>אמת</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>באַניצן DISINFAX אין SAFARI</string>
+	<key>Unknown</key>
+	<string>אומבאַקאַנט</string>
+	<key>Unknown purchase error.</key>
+	<string>אומבאַקאַנטע קויפֿונג טעות.</string>
+	<key>Very Likely</key>
+	<string>זייער וואַרשיינלעך</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>גאַנצע אמעריקאנער דאָלערס, 1–100. וועט אַרונטערגענומען ווערן אין דער וואַלוטע פֿון אייער App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>איר האָט שוין אַ אויפלאָדן פֿון US$%lld וואָס וואַרט צו ווערן אויפגעלייגט — איר זענט נישט ווידער אָפּגענומען געוואָרן. קערט זיך אום צו Safari און עפֿנט דעם DisinfaX פּאָפּ-אַפּ כּדי עס אויפצולייגן אויף אייער וואָג.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>איר זענט נישט אַרײַנגעלאָגירט. ביטע לאָגירט זיך אַרײַן און פּרוּווט נאָך אַ מאָל.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>אייער אויפלאָדן פֿון US$%lld ווערט איצט אויפגעלייגט.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>עס נעמט לענגער ווי געוויינטלעך פֿאַר אייער אויפלאָדן פֿון US$%lld צו דערשיינען.</string>
+	<key>Your account has been suspended.</key>
+	<string>אײַער חשבון איז סוספּענדירט געוואָרן.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>אײַער באַלאַנס איז צו נידעריק. ביטע פֿילט אים אָן כּדי פֿאָרצוזעצן.</string>
+</dict>
+</plist>

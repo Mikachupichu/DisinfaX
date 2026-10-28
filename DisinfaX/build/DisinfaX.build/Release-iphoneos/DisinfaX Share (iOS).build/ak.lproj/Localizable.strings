@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> a ɛwɔ address dua no so, ɛno akyi ka Nkekaho Hwɛ so na ma DisinfaX yɛ adwuma.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ ahoto</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ ahoto, %2$@ nokware</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ ayɛ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>SIKA TƆƆ AKYIRI</string>
+	<key>Add funds to your balance</key>
+	<string>Fa sika ka wo kontuo ho</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kan a wode US$%lld tɔɔ ade dedaw no da so ara retwɛn sɛ wɔde bɛyɛ adwuma, ɛno nti na wowiei koraa sen sɛ wɔbɛtwe sika bio. San kɔ Safari na bue DisinfaX pop-up na hwɛ wo kontuo foforo no.</string>
+	<key>Annotate</key>
+	<string>Nkyerɛmu</string>
+	<key>Annotating</key>
+	<string>Reyɛ nkyerɛmu</string>
+	<key>Arguably</key>
+	<string>Akyinnyeɛ Mu</string>
+	<key>BALANCE</key>
+	<string>KONTUO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Sɛ wode sika tɔ mu a, wopene [Adwuma ho Mmara](https://disinfax.app/terms-of-use) ne [Kokoamsɛm ho Nhyehyɛe](https://disinfax.app/privacy-policy) a yɛwɔ so. Sɛ wode sika a ɛnyɛ USD tua ka a, wɔbɛtumi de sika sesa ka aka ho.</string>
+	<key>Clear</key>
+	<string>Popa</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Ka DisinfaX sɛnkyerɛnne no wɔ Safari nnwinnade dua no so na bue pop-up no.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Sɛ wode wo nsa ka %@ a, ɛbɛda nsɛm a wɔaka no adi na wɔbɛtwe sika afi wo akontaa mu</string>
+	<key>Close</key>
+	<string>To mu</string>
+	<key>Contacting the App Store…</key>
+	<string>Reyɛ nkitahodi ne App Store…</string>
+	<key>Copy</key>
+	<string>Kopi</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX bɛtumi ayɛ mfomsoɔ. Hwɛ nsɛm mu bio.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX nnya nkɔ w'mantam mu esiane mmara ho ahyɛdeɛ.</string>
+	<key>Disinfact</key>
+	<string>Da Adi</string>
+	<key>Edit</key>
+	<string>Sesa</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Ma DisinfaX yɛ adwuma wɔ Safari mu, wɔ Nhyehyɛe → Nkekaho.</string>
+	<key>Enter a claim</key>
+	<string>Kyerɛw asɛm bi</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Fa dɔla dodow a edi mu a ɛda 1 ne 100 ntam hyɛ mu.</string>
+	<key>Equivocally</key>
+	<string>Abɔhyɛn Mu</string>
+	<key>Fact-Check</key>
+	<string>Nhwehwɛmu</string>
+	<key>Fact-Check All</key>
+	<string>Hwehwɛ Nyinaa</string>
+	<key>Fact-Checking</key>
+	<string>Nhwehwɛmu</string>
+	<key>False</key>
+	<string>Nkontompo</string>
+	<key>Likely</key>
+	<string>Ɛbɛtumi Ayɛ</string>
+	<key>Mostly</key>
+	<string>Ne Fa Kɛse</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Bue Safari nkekaho nhyehyɛe…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Bue Safari na kɔ x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Bue pop-up no wɔ Safari mu na hwɛ wo kontuo foforo no</string>
+	<key>Partially</key>
+	<string>Fa bi</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Sika a wotua no awie. San kɔ Safari na bue DisinfaX pop-up na hwɛ wo kontuo foforo no.</string>
+	<key>Possibly</key>
+	<string>Ebia</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Wɔanhu adeɛ %@ wɔ App Store Connect mu.</string>
+	<key>Purchase cancelled.</key>
+	<string>Wɔatwa adetɔ no.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Adetɔ no retwɛn sɛ wɔbɛpene so.</string>
+	<key>Reasoning</key>
+	<string>Adwene</string>
+	<key>Return to Safari</key>
+	<string>San kɔ Safari</string>
+	<key>Setup incomplete</key>
+	<string>Nhyehyɛe no nwiei</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Fa DisinfaX pop-up a ɛwɔ Safari mu no kɔ mu na fa sika ka ho.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Yɛnhu saa abisadeɛ yi fa bi. Yɛsrɛ wo, hwɛ sɛ extension no yɛ foforɔ.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Mfomsoɔ bi asi wɔ yɛn afa. Yɛsrɛ wo, sɔ hwɛ bio wɔ bere tiaa bi mu.</string>
+	<key>Sources</key>
+	<string>Beae a efi</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>SIKA A WƆDE TƆ</string>
+	<key>Tap the </key>
+	<string>Ka sɛnkyerɛnne </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Ka saa sɛnkyerɛnne no ara na paw DisinfaX na bue pop-up no.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Wɔanhu no. Yɛsrɛ wo, sɔ hwɛ bio.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Saa sika dodoɔ a wopɛ sɛ wode gu mu no nyɛ deɛ ɛfata. Yɛsrɛ wo, paw sika foforɔ.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Saa mfiri yi ntumi nnu ne mmoaso adaka (App Group %@) no ho. Sika a wɔde bɛtɔ mu no remma kosi sɛ wɔde App Groups ho ahoɔden bɛka app ne nkekaho no nyinaa ho.</string>
+	<key>Top Up</key>
+	<string>Fa Sika Gu</string>
+	<key>Top Up Balance</key>
+	<string>Tɔ kontuo mu sika</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Sika a wɔde bɛtɔ mu no hia iOS foforo. Yɛ update, ɛno akyi bue DisinfaX bio.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Sika a wɔde bɛtɔ mu no hia macOS foforo. Yɛ update, ɛno akyi bue DisinfaX bio.</string>
+	<key>True</key>
+	<string>Nokware</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX A WƆDE DI DWUMA WƆ SAFARI MU</string>
+	<key>Unknown</key>
+	<string>Wɔnnim</string>
+	<key>Unknown purchase error.</key>
+	<string>Adetɔ mfomso a wonhu.</string>
+	<key>Very Likely</key>
+	<string>Ɛbɛtumi Ayɛ Ampa</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>US dɔla a edi mu, 1–100. Wɔbɛtwe sika wɔ wo App Store sika mu.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Wowɔ US$%lld a wɔde tɔɔ mu dedaw a ɛretwɛn sɛ wɔde bɛyɛ adwuma — wontwee sika bio. San kɔ Safari na bue DisinfaX pop-up na fa yɛ wo kontuo mu adwuma.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Wonkɔɔ akontaa mu. Yɛsrɛ wo, kɔ akontaa mu na sɔ hwɛ bio.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Wo sika a wode tɔɔ US$%lld mu no reyɛ adwuma.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Wo sika a wode tɔɔ US$%lld mu no gye bere pii sen sɛnea ɛtaa gye ansa na epue.</string>
+	<key>Your account has been suspended.</key>
+	<string>Wɔabra w'akontaa so.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>W'akontaa mu sika sua dodo. Yɛsrɛ wo, fa sika gu mu na woatoa so.</string>
+</dict>
+</plist>

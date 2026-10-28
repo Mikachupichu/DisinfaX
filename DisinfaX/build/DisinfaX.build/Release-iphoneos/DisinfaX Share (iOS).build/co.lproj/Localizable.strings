@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> in a barra d'indirizzu, dopu toccà Gestisce e Estensioni è attivà DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ cunfidenza</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ cunfidenza, %2$@ veracità</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ d'esse %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>DOPU À A RICARICA</string>
+	<key>Add funds to your balance</key>
+	<string>Aghjunghje fondi à u vostru saldu</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Un acquistu precedente di US$%lld aspettava sempre d'esse applicatu, dunque hè quessu chì hè statu compiu invece di fatturavvi torna. Vultate à Safari è apre a finestra chì spunta di DisinfaX per vede u vostru saldu attualizatu.</string>
+	<key>Annotate</key>
+	<string>Annota</string>
+	<key>Annotating</key>
+	<string>Annotazione</string>
+	<key>Arguably</key>
+	<string>Discutibilmente</string>
+	<key>BALANCE</key>
+	<string>SALDU</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Ricaricanu, site d'accunsentu incù i nostri [Cundizioni di Serviziu](https://disinfax.app/terms-of-use) è a nostra [Pulitica di Privacy](https://disinfax.app/privacy-policy). Speze di cambiu di divisa pò esse applicate s'è pagate in una divisa altra da l'USD.</string>
+	<key>Clear</key>
+	<string>Sguassà</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Toccà l'icona di DisinfaX in a barra d'attrazzi di Safari per apre a finestra chì spunta.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Cliccà nant'à %@ mostra l'affirmazioni è caricherà u vostru saldu</string>
+	<key>Close</key>
+	<string>Chjode</string>
+	<key>Contacting the App Store…</key>
+	<string>Cunnessione à l'App Store…</string>
+	<key>Copy</key>
+	<string>Cupià</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX pò fà erruri. Verificate l'infurmazione duie volte.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ùn hè ancu dispunibule in a vostra regione per motivi regulatori.</string>
+	<key>Disinfact</key>
+	<string>Verifica</string>
+	<key>Edit</key>
+	<string>Mudificà</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Attivà DisinfaX in Safari, in Regulazioni → Estensioni.</string>
+	<key>Enter a claim</key>
+	<string>Scrivite una affirmatione</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Entre un importu sanu in dollari trà 1 è 100.</string>
+	<key>Equivocally</key>
+	<string>Equivucamente</string>
+	<key>Fact-Check</key>
+	<string>Verificazione di i fatti</string>
+	<key>Fact-Check All</key>
+	<string>Verifica tuttu</string>
+	<key>Fact-Checking</key>
+	<string>Verifica</string>
+	<key>False</key>
+	<string>Falsu</string>
+	<key>Likely</key>
+	<string>Prubabile</string>
+	<key>Mostly</key>
+	<string>Per u più</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Apre e regulazioni di l'estensioni di Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Apre Safari è vai à x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Apre a finestra chì spunta in Safari per vede u vostru saldu attualizatu</string>
+	<key>Partially</key>
+	<string>Parzialmente</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Pagamentu compiu. Vultate à Safari è apre a finestra chì spunta di DisinfaX per vede u vostru saldu attualizatu.</string>
+	<key>Possibly</key>
+	<string>Pussibilmente</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>U produttu %@ ùn hè micca statu trovu in App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Acquistu annullatu.</string>
+	<key>Purchase is pending approval.</key>
+	<string>L'acquistu aspetta l'appruvazione.</string>
+	<key>Reasoning</key>
+	<string>Ragionamentu</string>
+	<key>Return to Safari</key>
+	<string>Vultà à Safari</string>
+	<key>Setup incomplete</key>
+	<string>Cunfigurazione micca compia</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Cunnittitivi da a finestra chì spunta di DisinfaX in Safari per aghjunghje fondi.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Una parte di sta dumanda ùn hè stata ricunnisciuta. Assicuratevi chì l'estensione hè aghjurnata.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Qualcosa hè andatu male da a nostra parte. Pruvate torna in un mumentu, per piacè.</string>
+	<key>Sources</key>
+	<string>Fonti</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>IMPORTU DI A RICARICA</string>
+	<key>Tap the </key>
+	<string>Toccà l'icona </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Toccà a listessa icona è sceglie DisinfaX per apre a finestra chì spunta.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ùn si pò micca truvà. Pruvate torna.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Quellu importu di ricarica ùn hè micca valabile. Sceglite un altru importu, per piacè.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Sta versione ùn pò micca ghjunghje à u so cuntenitore spartutu (App Group %@). E ricariche ùn saranu micca dispunibule finu à chì a funzione App Groups sia aghjunta à l'appiecazione è à l'estensione.</string>
+	<key>Top Up</key>
+	<string>Ricarica</string>
+	<key>Top Up Balance</key>
+	<string>Ricaricà u saldu</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>E ricariche necessitanu una versione più nova d'iOS. Attualizate, dopu apre torna DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>E ricariche necessitanu una versione più nova di macOS. Attualizate, dopu apre torna DisinfaX.</string>
+	<key>True</key>
+	<string>Veru</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>USU DI DISINFAX IN SAFARI</string>
+	<key>Unknown</key>
+	<string>Scunnisciutu</string>
+	<key>Unknown purchase error.</key>
+	<string>Sbagliu d'acquistu scunnisciutu.</string>
+	<key>Very Likely</key>
+	<string>Assai prubabile</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollari americani sani, 1–100. Sarà fatturatu in a divisa di u vostru App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Avete dighjà una ricarica di US$%lld chì aspetta d'esse applicata — ùn site micca statu fatturatu torna. Vultate à Safari è apre a finestra chì spunta di DisinfaX per applicalla à u vostru saldu.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ùn site micca cunnessu. Cunnittitevi è pruvate torna, per piacè.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>A vostra ricarica di US$%lld hè in cursu d'esse applicata.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>A vostra ricarica di US$%lld piglia più tempu chè d'usu per apparisce.</string>
+	<key>Your account has been suspended.</key>
+	<string>U vostru contu hè statu suspesu.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>U vostru saldu hè troppu bassu. Ricaricate per continuà, per piacè.</string>
+</dict>
+</plist>

@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Waxay ogaataa oo iftiimisaa wararka beenta ah ee tweets-ka iyadoo la adeegsanayo falanqaynta AI.",
+    "message": "Waxay ogaataa oo iftiimisaa wararka beenta ah ee postada iyadoo la adeegsanayo falanqaynta AI.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Dib u muuji dhammaan sheegashooyinka tweet-kan",
+    "message": "Dib u muuji dhammaan sheegashooyinka postadan",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Ka bax"
   },
+  "deleteAccount": {
+    "message": "Tirtir Koontada iyo Xogta La Xiriirta",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Hadhaagaaga, iyo hash cryptographic ah oo cinwaanka iimaylkaaga ah oo lagu ilaaliyo fure sir ah, ayaa la kaydiyaa si looga hortago ku xadgudubka lacagta bilaashka ah ee la bixiyo marka akoon la abuuro. Haddii aad mar kale ku soo gasho isla akoonkaas, hadhaagaagii waa lagu soo celinayaa.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Gujinta %BTN% waxay muujinaysaa sheegashooyinka waxayna ka jareysaa hadhaagaaga"
   },
@@ -287,7 +295,7 @@
     "message": "Isticmaalkii ugu dambeeyay"
   },
   "cleanupTagline": {
-    "message": "Nadiifi Feedkaaga X."
+    "message": "Nadiifi Feedkaaga."
   },
   "disclaimerJurisdiction": {
     "message": "Gudaha Maraykanka, kaliya deganeyaasha Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, iyo Wyoming ayaa isticmaali kara DisinfaX oo buuxin kara haraagooda; Washington, D.C., dhammaan dhulalka Maraykanka, iyo gobol kasta oo aan la taxin waa laga reebay. Dibadda Maraykanka, waxaa lagu heli karaa Kanada, Australia, New Zealand, Singapore, Koonfur Afrika, Jabaan, Taywaan, Indoneesiya, Taylaand, Filibiin, Maleeshiya, Fiyetnaam, iyo Iswiiserlaand."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Taas lama helin. Mar kale isku day."
   },
+  "errNoClaims": {
+    "message": "Sheegashooyin la xaqiijin karo lama helin qoraalkan.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Dejinta",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Muuqaal",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Iftiin",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Otomaatig",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Mugdi",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Mar walba muuji fact-check haddii:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "Jooji",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "Nadiifi",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "Ka shid DisinfaX $HOST$",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX wuu ku shidan yahay $HOST$",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "Dam",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Ku sii wad Facebook"
+  },
+  "continueWithLinkedIn": {
+    "message": "Ku sii wad LinkedIn"
+  },
+  "continueWithReddit": {
+    "message": "Ku sii wad Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Midab-la'aanta: calaamado joogto ah",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Ku hay calaamad kasta oo xaqiijinta xaqiiqda ah mid ka muuqata qoraallada iyadoon la dul marinayn. Go'aanka waxaa lagu muujiyaa midabka iftiiminta iyo erayada labadaba, marka tani waxay caawisaa qof kasta oo aan kala saari karin midabbadaas.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Cabbirka farta weyn",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Balaari sheegashooyinka dib loo qoray, sababaynta, iyo tilmaamaha bilowga.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Xidh",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Guji si aad wax uga beddesho sheegashada",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faahfaahinta xaqiijinta xaqiiqda",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Xulashadan aad bay u dheer tahay in la xaqiijiyo. Ugu badnaan 1,000 xaraf.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Ogeysii marka hadhaaggu yaraado",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "In ka badan: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

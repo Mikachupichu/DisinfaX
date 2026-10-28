@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI ئانالىزى ئارقىلىق تۋىتلاردىكى يالغان ئۇچۇرلارنى بايقاپ، ئالاھىدە بەلگە قىلىپ كۆرسىتىدۇ.",
+    "message": "AI ئانالىزى ئارقىلىق يازمىلاردىكى يالغان ئۇچۇرلارنى بايقاپ، ئالاھىدە بەلگە قىلىپ كۆرسىتىدۇ.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "بۇ تۋىتتىكى بارلىق دەۋالارنى قايتا ئاشكارىلاش",
+    "message": "بۇ يازمىدىكى بارلىق دەۋالارنى قايتا ئاشكارىلاش",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "ھېساباتتىن چىقىش"
   },
+  "deleteAccount": {
+    "message": "ھېسابات ۋە مۇناسىۋەتلىك سانلىق مەلۇماتلارنى ئۆچۈرۈش",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "قالدۇق پۇلىڭىز، ھەمدە مەخپىي ئاچقۇچ بىلەن قوغدالغان ئېلخەت ئادرېسىڭىزنىڭ كرىپتوگرافىك خېشى تىزىملاتقاندا بېرىلگەن ھەقسىز پۇلنى سۇيىئىستېمال قىلىشنىڭ ئالدىنى ئېلىش ئۈچۈن ساقلىنىدۇ. ئوخشاش ھېسابات بىلەن قايتا كىرسىڭىز، قالدۇق پۇلىڭىز ئەسلىگە كېلىدۇ.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% نى چېكىش دەۋالارنى ئاشكارىلايدۇ ھەمدە قالدۇقىڭىزدىن پۇل تۇتۇپ قالىدۇ"
   },
@@ -287,7 +295,7 @@
     "message": "ئەڭ ئاخىرقى ئىشلىتىلگەن"
   },
   "cleanupTagline": {
-    "message": "X ئۇچۇر ئېقىمىڭىزنى تازىلاڭ."
+    "message": "ئۇچۇر ئېقىمىڭىزنى تازىلاڭ."
   },
   "disclaimerJurisdiction": {
     "message": "ئامېرىكا قوشما شتاتلىرى ئىچىدە، پەقەت ئالاباما، ئارىزونا، كالىفورنىيە، كولورادو، كوننېكتىكۇت، دېلاۋېر، فلورىدا، ئايداھو، ئىللىنويس، ئىندىيانا، ئايوۋا، كانزاس، كېنتۇككى، لۇئىزىيانا، مېين، ماسساچۇسېتس، مىسسىسسىپپى، مىسسۇرى، مونتانا، نيۇ-گەمپشىر، نيۇ-مېكسىكو، نيۇ-يورك، شىمالىي كارولىنا، شىمالىي داكوتا، ئوكلاخوما، ئورېگون، پېنسىلۋانىيە، جەنۇبىي كارولىنا، جەنۇبىي داكوتا، تېننېسسى، تېكساس، يۇتا، ۋاشىنگتون، ۋىسكونسىن ۋە ۋايومىڭ ئاھالىلىرىلا DisinfaX نى ئىشلىتىپ، قالدۇقىنى تولۇقلىيالايدۇ؛ ۋاشىنگتون، D.C.، بارلىق ئامېرىكا زېمىنلىرى ۋە تىزىملىكتە كۆرسىتىلمىگەن ھەرقانداق شتاتلار بۇنىڭدىن مۇستەسنا. ئامېرىكا قوشما شتاتلىرىنىڭ سىرتىدا، ئۇ كانادا، ئاۋسترالىيە، يېڭى زېلاندىيە، سىنگاپور، جەنۇبىي ئافرىقا، ياپونىيە، تەيۋەن، ھىندونېزىيە، تايلاند، فىلىپپىن، مالايسىيا، ۋىيېتنام ۋە شۋېتسارىيەدە ئىشلەتكىلى بولىدۇ."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "بۇ تېپىلمىدى. قايتا سىناڭ."
   },
+  "errNoClaims": {
+    "message": "بۇ تېكىستتە دەلىللىگىلى بولىدىغان دەۋالار تېپىلمىدى.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "تەڭشەكلەر",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "كۆرۈنۈش",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "يورۇق",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "ئاپتوماتىك",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "قاراڭغۇ",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ھەمىشە پاكىت تەكشۈرۈشنى كۆرسەت ئەگەر:",
@@ -382,5 +410,86 @@
   "selectionConfirmCancel": {
     "message": "بىكار قىلىش",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "تازىلاش",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ دا DisinfaX نى قوزغىتىش",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "DisinfaX $HOST$ دا ئوچۇق",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "ئۆچۈرۈش",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook بىلەن داۋاملاشتۇرۇش"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn بىلەن داۋاملاشتۇرۇش"
+  },
+  "continueWithReddit": {
+    "message": "Reddit بىلەن داۋاملاشتۇرۇش"
+  },
+  "persistentBadgesLabel": {
+    "message": "رەڭ قارىغۇسىغا ماس: دائىملىق بەلگىلەر",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "مائۇسنى ئۈستىگە ئەكەلمەيلا يازمىلاردىكى ھەر بىر پاكىت تەكشۈرۈش بەلگىسىنى كۆرۈنۈپ تۇرىدىغان قىلىڭ. ھۆكۈم سۆزلەر ئارقىلىقلا ئەمەس، يارقىن رەڭ ئارقىلىقمۇ ئىپادىلىنىدۇ، شۇڭا بۇ شۇ رەڭلەرنى ئايرىيالمايدىغان كىشىلەرگە ياردەم بېرىدۇ.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "چوڭ خەت چوڭلۇقى",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "قايتا يېزىلغان ئىددىئالارنىڭ، ئاساسلارنىڭ ۋە تونۇشتۇرۇش كۆرسەتمىلىرىنىڭ چوڭلۇقىنى چوڭايتىدۇ.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "تاقاش",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "دەۋانى تەھرىرلەش ئۈچۈن چېكىڭ",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "پاكىت تەكشۈرۈش تەپسىلاتى",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "بۇ تاللانما تەكشۈرۈش ئۈچۈن بەك ئۇزۇن. ئەڭ كۆپ 1,000 ھەرپ.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "قالدۇق ئازايغاندا ئۇقتۇرۇش",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "بۇنىڭدىن كۆپرەك: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

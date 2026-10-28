@@ -1,0 +1,56 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/FactCheckNotifications.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Disinfact",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Check",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annotate",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fact-Check",
+        "location": {
+          "startingColumn": 74,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your balance is empty",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 448
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add funds on the Balance tab to keep fact-checking.",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 449
+        }
+      }
+    ]
+  },
+  "version": 1
+}

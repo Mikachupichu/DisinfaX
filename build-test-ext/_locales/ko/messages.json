@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "AI 분석을 사용하여 트윗의 허위 정보를 감지하고 강조 표시합니다."
+    "message": "AI 분석을 사용하여 게시물의 허위 정보를 감지하고 강조 표시합니다."
   },
   "verdictTrue": {
     "message": "사실",
@@ -110,7 +110,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "이 트윗의 주장을 다시 표시",
+    "message": "이 게시물의 주장을 다시 표시",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -229,6 +229,14 @@
   "signOut": {
     "message": "로그아웃"
   },
+  "deleteAccount": {
+    "message": "계정 및 관련 데이터 삭제",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "회원님의 잔액, 그리고 비밀 키로 보호되는 이메일 주소의 암호화 해시는 계정을 만들 때 지급되는 무료 자금의 악용을 방지하기 위해 보관됩니다. 같은 계정으로 다시 로그인하면 잔액이 복원됩니다.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN%을(를) 클릭하면 주장이 표시되고 잔액에서 요금이 부과됩니다"
   },
@@ -281,7 +289,7 @@
     "message": "최근 사용"
   },
   "cleanupTagline": {
-    "message": "당신의 X 피드를 정리하세요."
+    "message": "당신의 피드를 정리하세요."
   },
   "disclaimerJurisdiction": {
     "message": "미국 내에서는 앨라배마주, 애리조나주, 캘리포니아주, 콜로라도주, 코네티컷주, 델라웨어주, 플로리다주, 아이다호주, 일리노이주, 인디애나주, 아이오와주, 캔자스주, 켄터키주, 루이지애나주, 메인주, 매사추세츠주, 미시시피주, 미주리주, 몬태나주, 뉴햄프셔주, 뉴멕시코주, 뉴욕주, 노스캐롤라이나주, 노스다코타주, 오클라호마주, 오리건주, 펜실베이니아주, 사우스캐롤라이나주, 사우스다코타주, 테네시주, 텍사스주, 유타주, 워싱턴주, 위스콘신주, 와이오밍주의 거주자만 DisinfaX를 사용하고 잔액을 충전할 수 있습니다. 워싱턴 D.C., 모든 미국 영토 및 위에 나열되지 않은 주는 제외됩니다. 미국 외에서는 캐나다, 오스트레일리아, 뉴질랜드, 싱가포르, 남아프리카 공화국, 일본, 대만, 인도네시아, 태국, 필리핀, 말레이시아, 베트남, 스위스에서 이용할 수 있습니다."
@@ -324,9 +332,29 @@
   "errNotFound": {
     "message": "해당 항목을 찾을 수 없습니다. 다시 시도해 주세요."
   },
+  "errNoClaims": {
+    "message": "이 텍스트에서 검증 가능한 주장을 찾지 못했습니다.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "설정",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "모양",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "밝게",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "자동",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "어둡게",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "다음 조건에서 팩트체크 항상 표시:",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "취소",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "지우기",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$에서 DisinfaX 사용 설정",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$에서 DisinfaX가 켜져 있습니다",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "끄기",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook로 계속하기"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn로 계속하기"
+  },
+  "continueWithReddit": {
+    "message": "Reddit로 계속하기"
+  },
+  "persistentBadgesLabel": {
+    "message": "색약 친화적: 배지 상시 표시",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "마우스를 올리지 않아도 게시물의 모든 팩트체크 배지를 항상 표시합니다. 판정 결과는 단어뿐만 아니라 강조 색상으로도 전달되므로, 이러한 색상을 구별하기 어려운 사용자에게 도움이 됩니다.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "큰 글꼴 크기",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "다시 작성된 클레임, 근거, 온보딩 힌트를 확대합니다.",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "닫기",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "클릭하여 주장 수정",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "팩트체크 세부정보",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "이 선택 항목은 너무 길어서 팩트체크할 수 없습니다. 최대 1,000자입니다.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "잔액이 줄면 알림",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "감소액이 다음을 초과할 때: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

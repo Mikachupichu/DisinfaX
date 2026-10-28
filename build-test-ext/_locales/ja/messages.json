@@ -3,7 +3,7 @@
     "message": "DisinfaX"
   },
   "appDescription": {
-    "message": "AI分析を使用してツイート内の誤情報を検出し強調表示します。"
+    "message": "AI分析を使用して投稿内の誤情報を検出し強調表示します。"
   },
   "verdictTrue": {
     "message": "真実",
@@ -114,7 +114,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "このツイートの主張をすべて再表示",
+    "message": "この投稿の主張をすべて再表示",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -233,6 +233,14 @@
   "signOut": {
     "message": "ログアウト"
   },
+  "deleteAccount": {
+    "message": "アカウントと関連データを削除",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "残高、および秘密鍵によって保護されたメールアドレスの暗号学的ハッシュを保持します。これは、アカウント作成時に付与される無料資金の不正利用を防ぐためです。同じアカウントで再度サインインすると、残高は復元されます。",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN%をクリックすると主張が表示され、残高が課金されます"
   },
@@ -285,7 +293,7 @@
     "message": "前回使用"
   },
   "cleanupTagline": {
-    "message": "あなたの X フィードをすっきりと。"
+    "message": "あなたのフィードをすっきりと。"
   },
   "disclaimerJurisdiction": {
     "message": "アメリカ合衆国内では、アラバマ州、アリゾナ州、カリフォルニア州、コロラド州、コネチカット州、デラウェア州、フロリダ州、アイダホ州、イリノイ州、インディアナ州、アイオワ州、カンザス州、ケンタッキー州、ルイジアナ州、メイン州、マサチューセッツ州、ミシシッピ州、ミズーリ州、モンタナ州、ニューハンプシャー州、ニューメキシコ州、ニューヨーク州、ノースカロライナ州、ノースダコタ州、オクラホマ州、オレゴン州、ペンシルベニア州、サウスカロライナ州、サウスダコタ州、テネシー州、テキサス州、ユタ州、ワシントン州、ウィスコンシン州、ワイオミング州の住民のみが DisinfaX を利用し、残高をチャージできます。ワシントン D.C.、すべての米国領土、および記載されていない州は除外されます。アメリカ合衆国外では、カナダ、オーストラリア、ニュージーランド、シンガポール、南アフリカ、日本、台湾、インドネシア、タイ、フィリピン、マレーシア、ベトナム、スイスで利用できます。"
@@ -328,9 +336,29 @@
   "errNotFound": {
     "message": "見つかりませんでした。もう一度お試しください。"
   },
+  "errNoClaims": {
+    "message": "このテキストには検証可能な主張が見つかりませんでした。",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "設定",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "外観",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "ライト",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "自動",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "ダーク",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "ファクトチェックを常に表示：",
@@ -380,5 +408,86 @@
   "selectionConfirmCancel": {
     "message": "キャンセル",
     "description": "Declines the selection fact-check in the first-open confirmation."
+  },
+  "clearButton": {
+    "message": "クリア",
+    "description": "Accessible name and tooltip of the button beside the Fact-Check text field that empties the tab."
+  },
+  "enableOnInstance": {
+    "message": "$HOST$ で DisinfaX を有効にする",
+    "description": "Offer, in the popup, to turn DisinfaX on for the Mastodon instance in the active tab. $HOST$ is the instance domain, e.g. mastodon.social.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "instanceEnabled": {
+    "message": "$HOST$ で DisinfaX が有効です",
+    "description": "Shown in the popup once the Mastodon instance in the active tab has been enabled. $HOST$ is the instance domain.",
+    "placeholders": {
+      "host": {
+        "content": "$1"
+      }
+    }
+  },
+  "turnOff": {
+    "message": "オフにする",
+    "description": "Button in the popup that turns DisinfaX off for the Mastodon instance it is currently enabled on."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook で続行"
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn で続行"
+  },
+  "continueWithReddit": {
+    "message": "Reddit で続行"
+  },
+  "persistentBadgesLabel": {
+    "message": "色覚サポート：バッジを常時表示",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "カーソルを合わせなくても、投稿上のすべてのファクトチェックバッジを表示したままにします。判定結果は言葉だけでなくハイライト色でも示されるため、色の判別が難しい方に役立ちます。",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "文字サイズを大きく",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "書き直されたクレーム、根拠、オンボーディングのヒントを大きくします。",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "閉じる",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "クリックして主張を編集",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "ファクトチェックの詳細",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "この選択範囲は長すぎてファクトチェックできません。最大1,000文字です。",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "残高が減ったときに通知",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "減額がこれを超える場合：$1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
   }
 }

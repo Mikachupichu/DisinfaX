@@ -1,0 +1,40 @@
+{
+  "source": "/Users/michaelpouget/DisinfaX/disinfax/DisinfaX/Shared (App)/StoreKitManager.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Purchase cancelled.",
+        "location": {
+          "startingColumn": 119,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Purchase is pending approval.",
+        "location": {
+          "startingColumn": 119,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unknown purchase error.",
+        "location": {
+          "startingColumn": 120,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Product %@ not found in App Store Connect.",
+        "location": {
+          "startingColumn": 62,
+          "startingLine": 42
+        }
+      }
+    ]
+  },
+  "version": 1
+}

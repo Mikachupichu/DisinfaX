@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string>-symbool in de adresbalk, tik dan op Extensies beheren en schakel DisinfaX in.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ betrouwbaarheid</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ betrouwbaarheid, %2$@ waarheidsgehalte</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>NA HET OPWAARDEREN</string>
+	<key>Add funds to your balance</key>
+	<string>Tegoed toevoegen aan je saldo</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Een eerdere aankoop van US$%lld stond nog te wachten om te worden toegepast, dus die is voltooid in plaats van je opnieuw in rekening te brengen. Ga terug naar Safari en open de DisinfaX-popup om je bijgewerkte saldo te zien.</string>
+	<key>Annotate</key>
+	<string>Annoteer</string>
+	<key>Annotating</key>
+	<string>Annoteren</string>
+	<key>Arguably</key>
+	<string>Betwistbaar</string>
+	<key>BALANCE</key>
+	<string>SALDO</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Door op te waarderen ga je akkoord met onze [Gebruiksvoorwaarden](https://disinfax.app/terms-of-use) en ons [Privacybeleid](https://disinfax.app/privacy-policy). Er kunnen wisselkoerskosten in rekening worden gebracht als je in een andere valuta dan USD betaalt.</string>
+	<key>Clear</key>
+	<string>Wissen</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tik op het DisinfaX-symbool in de Safari-werkbalk om de popup te openen.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Klikken op %@ toont beweringen en brengt kosten in rekening op je saldo</string>
+	<key>Close</key>
+	<string>Sluit</string>
+	<key>Contacting the App Store…</key>
+	<string>Verbinden met de App Store…</string>
+	<key>Copy</key>
+	<string>Kopiëren</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX kan fouten maken. Controleer de informatie extra goed.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX is nog niet beschikbaar in jouw regio vanwege wettelijke vereisten.</string>
+	<key>Disinfact</key>
+	<string>Controleren</string>
+	<key>Edit</key>
+	<string>Wijzig</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Schakel DisinfaX in Safari in via Instellingen → Extensies.</string>
+	<key>Enter a claim</key>
+	<string>Voer een bewering in</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Voer een heel dollarbedrag tussen 1 en 100 in.</string>
+	<key>Equivocally</key>
+	<string>Dubbelzinnig</string>
+	<key>Fact-Check</key>
+	<string>Factcheck</string>
+	<key>Fact-Check All</key>
+	<string>Alles controleren</string>
+	<key>Fact-Checking</key>
+	<string>Controleren</string>
+	<key>False</key>
+	<string>Onwaar</string>
+	<key>Likely</key>
+	<string>Waarschijnlijk</string>
+	<key>Mostly</key>
+	<string>Grotendeels</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Safari-extensie-instellingen openen…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Open Safari en ga naar x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Open de popup in Safari om je bijgewerkte saldo te zien</string>
+	<key>Partially</key>
+	<string>Gedeeltelijk</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Betaling voltooid. Ga terug naar Safari en open de DisinfaX-popup om je bijgewerkte saldo te zien.</string>
+	<key>Possibly</key>
+	<string>Mogelijk</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Product %@ niet gevonden in App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Aankoop geannuleerd.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Aankoop wacht op goedkeuring.</string>
+	<key>Reasoning</key>
+	<string>Redenering</string>
+	<key>Return to Safari</key>
+	<string>Terug naar Safari</string>
+	<key>Setup incomplete</key>
+	<string>Instellen niet voltooid</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Log in via de DisinfaX-popup in Safari om tegoed toe te voegen.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Een deel van dit verzoek werd niet herkend. Zorg dat de extensie up-to-date is.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Er is iets misgegaan aan onze kant. Probeer het over een moment opnieuw.</string>
+	<key>Sources</key>
+	<string>Bronnen</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>OPWAARDEERBEDRAG</string>
+	<key>Tap the </key>
+	<string>Tik op het </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tik op hetzelfde symbool en kies DisinfaX om de popup te openen.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Dat kon niet worden gevonden. Probeer het opnieuw.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Dat oplaadbedrag is niet geldig. Kies een ander bedrag.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Deze build heeft geen toegang tot de gedeelde container (App-groep %@). Opwaarderen is pas mogelijk zodra de functie App-groepen aan zowel de app als de extensie is toegevoegd.</string>
+	<key>Top Up</key>
+	<string>Opwaarderen</string>
+	<key>Top Up Balance</key>
+	<string>Saldo opwaarderen</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Opwaarderen vereist een nieuwere versie van iOS. Werk bij en open DisinfaX daarna opnieuw.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Opwaarderen vereist een nieuwere versie van macOS. Werk bij en open DisinfaX daarna opnieuw.</string>
+	<key>True</key>
+	<string>Waar</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>DISINFAX GEBRUIKEN IN SAFARI</string>
+	<key>Unknown</key>
+	<string>Onbekend</string>
+	<key>Unknown purchase error.</key>
+	<string>Onbekende aankoopfout.</string>
+	<key>Very Likely</key>
+	<string>Zeer waarschijnlijk</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Hele Amerikaanse dollars, 1–100. In rekening gebracht in de valuta van je App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Je hebt al een opwaardering van US$%lld die nog moet worden toegepast — er is niet opnieuw bij je in rekening gebracht. Ga terug naar Safari en open de DisinfaX-popup om deze op je saldo toe te passen.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Je bent niet aangemeld. Meld je aan en probeer het opnieuw.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Je opwaardering van US$%lld wordt toegepast.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Je opwaardering van US$%lld verschijnt langzamer dan gebruikelijk.</string>
+	<key>Your account has been suspended.</key>
+	<string>Je account is opgeschort.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Je saldo is te laag. Voeg tegoed toe om door te gaan.</string>
+</dict>
+</plist>

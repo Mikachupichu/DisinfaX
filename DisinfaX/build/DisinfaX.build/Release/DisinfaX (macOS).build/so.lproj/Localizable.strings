@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ee usha ciwaanka, ka dib taabo Maamul Kordhinta oo shid DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ kalsooni</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ kalsooni, %2$@ run ahaansho</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ oo ah %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>KA DIB BUUXINTA</string>
+	<key>Add funds to your balance</key>
+	<string>Lacag ku dar hadhaagaaga</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Iibsigii hore ee US$%lld wali wuu sugayay in la codsado, sidaa darteed kaas ayaa la dhammaystiray halkii lagu dalici lahaa mar labaad. Ku noqo Safari oo fur daaqadda kor u soo boodda ee DisinfaX si aad u aragto hadhaagaaga la cusboonaysiiyay.</string>
+	<key>Annotate</key>
+	<string>Faalleey</string>
+	<key>Annotating</key>
+	<string>Faalleynaya</string>
+	<key>Arguably</key>
+	<string>La doodi karo</string>
+	<key>BALANCE</key>
+	<string>HADHAAGA</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Marka aad buuxinayso, waxaad ogolaanaysaa [Shuruudaha Adeegga](https://disinfax.app/terms-of-use) iyo [Siyaasadda Sirta](https://disinfax.app/privacy-policy) annaga. Khidmadaha beddelka lacagta dibedda waa laga yaabaa in la codsado haddii aad ku bixiso lacag aan ahayn USD.</string>
+	<key>Clear</key>
+	<string>Nadiifi</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Taabo sumadda DisinfaX ee usha qalabka Safari si aad u furto daaqadda kor u soo boodda.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Gujinta %@ waxay muujinaysaa sheegashooyinka waxayna ka jareysaa hadhaagaaga</string>
+	<key>Close</key>
+	<string>Xidh</string>
+	<key>Contacting the App Store…</key>
+	<string>Ku xidhmaya App Store…</string>
+	<key>Copy</key>
+	<string>Nuqul</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX wuxuu samayn karaa khaladaad. Xaqiiji macluumaadka mar labaad.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX weli looma heli karo gobolkaaga, sababtoo ah shuruumaha sharciga.</string>
+	<key>Disinfact</key>
+	<string>Xaqiiji</string>
+	<key>Edit</key>
+	<string>Wax ka beddel</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Shid DisinfaX gudaha Safari, hoosta Dejinta → Kordhinta.</string>
+	<key>Enter a claim</key>
+	<string>Geli sheegasho</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Geli qadar doollar oo dhammaystiran oo u dhexeeya 1 iyo 100.</string>
+	<key>Equivocally</key>
+	<string>Madmadow</string>
+	<key>Fact-Check</key>
+	<string>Xaqiijinta xaqiiqda</string>
+	<key>Fact-Check All</key>
+	<string>Xaqiiji dhammaan</string>
+	<key>Fact-Checking</key>
+	<string>Xaqiijin</string>
+	<key>False</key>
+	<string>Been</string>
+	<key>Likely</key>
+	<string>Suurtagal</string>
+	<key>Mostly</key>
+	<string>Inta badan</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Fur dejinta kordhinta Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Fur Safari oo tag x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Fur daaqadda kor u soo boodda ee Safari si aad u aragto hadhaagaaga la cusboonaysiiyay</string>
+	<key>Partially</key>
+	<string>Qayb ahaan</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Bixinta way dhammaatay. Ku noqo Safari oo fur daaqadda kor u soo boodda ee DisinfaX si aad u aragto hadhaagaaga la cusboonaysiiyay.</string>
+	<key>Possibly</key>
+	<string>Malaha</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Alaabta %@ lagama helin App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Iibsigii waa la joojiyay.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Iibsigii wuxuu sugayaa ansixinta.</string>
+	<key>Reasoning</key>
+	<string>Sabab</string>
+	<key>Return to Safari</key>
+	<string>Ku noqo Safari</string>
+	<key>Setup incomplete</key>
+	<string>Dejinta lama dhammaystirin</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Ka gal daaqadda kor u soo booda ee DisinfaX ee Safari si aad lacag ugu dartid.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Qayb ka mid ah codsigan lama aqoonsan. Fadlan hubi in extension-ku yahay nooca ugu dambeeya.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Khalad ayaa ka dhacay dhinaceenna. Fadlan wax yar ka dib mar kale isku day.</string>
+	<key>Sources</key>
+	<string>Ilaha</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>QADARKA BUUXINTA</string>
+	<key>Tap the </key>
+	<string>Taabo sumadda </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Taabo isla sumadda oo dooro DisinfaX si aad u furto daaqadda kor u soo boodda.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Taas lama helin. Mar kale isku day.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Qadarkaas buuxinta ma sax ah. Fadlan dooro qadar kale.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Dhismahan ma awoodo inuu gaaro sanduuqiisa la wadaago (App Group %@). Buuxinta ma heli doonto ilaa awoodda App Groups lagu daro labada app iyo kordhinta.</string>
+	<key>Top Up</key>
+	<string>Buuxi</string>
+	<key>Top Up Balance</key>
+	<string>Buuxi hadhaagaaga</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Buuxinta waxay u baahan tahay nooc cusub oo iOS ah. Cusboonaysii, ka dib mar kale fur DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Buuxinta waxay u baahan tahay nooc cusub oo macOS ah. Cusboonaysii, ka dib mar kale fur DisinfaX.</string>
+	<key>True</key>
+	<string>Run</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>ISTICMAALKA DISINFAX EE SAFARI</string>
+	<key>Unknown</key>
+	<string>Lama Yaqaan</string>
+	<key>Unknown purchase error.</key>
+	<string>Khalad iibsi oo aan la aqoon.</string>
+	<key>Very Likely</key>
+	<string>Aad u suurtagal</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Doollarka Maraykanka oo dhammaystiran, 1–100. Waxaa lagu qaadi doonaa lacagta App Store-kaaga.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Waxaad hore u haysataa buuxinta US$%lld oo sugaya in la codsado — lagumaba dalicin lacag mar labaad. Ku noqo Safari oo fur daaqadda kor u soo boodda ee DisinfaX si aad ugu dalicdo hadhaagaaga.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ma soo gelin. Fadlan soo gal oo mar kale isku day.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Buuxintaada US$%lld waa la dalicayaa.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Muuqashada buuxintaada US$%lld waxay qaadanaysaa waqti ka badan sida caadiga ah.</string>
+	<key>Your account has been suspended.</key>
+	<string>Akoonkaaga waa la joojiyay.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Hadhaaga aad buu u yaryahay. Fadlan buuxi si aad u sii wadato.</string>
+</dict>
+</plist>

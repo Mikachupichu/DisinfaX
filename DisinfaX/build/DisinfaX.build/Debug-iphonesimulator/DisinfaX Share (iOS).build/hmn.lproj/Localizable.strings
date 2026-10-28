@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> hauv kab chaw nyob, tom qab ntawd kov Tswj Cov Ntxiv thiab qhib DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>TOM QAB NTXIV NYIAJ</string>
+	<key>Add funds to your balance</key>
+	<string>Ntxiv nyiaj rau koj tus nyiaj seem</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Ib qho kev yuav khoom yav dhau US$%lld tseem tos siv, yog li ntawd yog qhov ntawd raug ua tiav es tsis txhob them koj rov qab. Rov qab mus rau Safari thiab qhib DisinfaX qhov rai pop-up kom pom koj tus nyiaj seem tshiab.</string>
+	<key>Annotate</key>
+	<string>Tawm tswv yim</string>
+	<key>Annotating</key>
+	<string>Tab tom tawm tswv yim</string>
+	<key>Arguably</key>
+	<string>Muaj kev sib cav</string>
+	<key>BALANCE</key>
+	<string>NYIAJ SEEM</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Los ntawm kev ntxiv nyiaj, koj pom zoo rau peb [Cov Kev Cai Kev Pab Cuam](https://disinfax.app/terms-of-use) thiab peb [Txoj Cai Ceev Ntiag Tug](https://disinfax.app/privacy-policy). Cov nqi txhais nyiaj yuav raug siv yog tias koj them nyiaj ntawm lwm hom nyiaj tsis yog USD.</string>
+	<key>Clear</key>
+	<string>Ntxuav</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Kov lub DisinfaX cim hauv Safari cov cuab yeej kab kom qhib qhov rai pop-up.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Nyem %@ yuav qhia cov lus thov thiab yuav them nyiaj ntawm koj tus account</string>
+	<key>Contacting the App Store…</key>
+	<string>Tab tom txuas rau App Store…</string>
+	<key>Copy</key>
+	<string>Luam Theej</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX muaj peev xwm ua yuam kev. Kuaj xyuas cov ntaub ntawv dua.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX tseem tsis tau muaj nyob rau hauv koj thaj chaw vim yog cov cai kev tswj hwm.</string>
+	<key>Disinfact</key>
+	<string>Tshawb Xyuas</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Qhib DisinfaX hauv Safari, hauv Cov Kev Teeb Tsa → Cov Ntxiv.</string>
+	<key>Enter a claim</key>
+	<string>Sau ib qho lus thov</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Sau cov nyiaj dollar ua tag nrho nyob nruab nrab ntawm 1 thiab 100.</string>
+	<key>Equivocally</key>
+	<string>Tsis meej pem</string>
+	<key>Fact-Check</key>
+	<string>Tshawb xyuas qhov tseeb</string>
+	<key>Fact-Check All</key>
+	<string>Tshawb Xyuas Tag Nrho</string>
+	<key>Fact-Checking</key>
+	<string>Kev Tshawb Nrhiav</string>
+	<key>False</key>
+	<string>Dag Ntxhiab</string>
+	<key>Likely</key>
+	<string>Tej zaum yuav tshwm sim</string>
+	<key>Mostly</key>
+	<string>Feem ntau</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Qhib cov kev teeb tsa ntxiv rau Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Qhib Safari thiab mus rau x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Qhib qhov rai pop-up hauv Safari kom pom koj tus nyiaj seem tshiab</string>
+	<key>Partially</key>
+	<string>Ib feem</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kev them nyiaj tiav lawm. Rov qab mus rau Safari thiab qhib DisinfaX qhov rai pop-up kom pom koj tus nyiaj seem tshiab.</string>
+	<key>Possibly</key>
+	<string>Tej zaum</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Tsis pom khoom %@ hauv App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Kev yuav khoom raug tshem tawm.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Kev yuav khoom tab tom tos kev pom zoo.</string>
+	<key>Reasoning</key>
+	<string>Kev xav</string>
+	<key>Return to Safari</key>
+	<string>Rov qab mus rau Safari</string>
+	<key>Setup incomplete</key>
+	<string>Kev teeb tsa tsis tau tiav</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Kos npe los ntawm DisinfaX lub qhov rai pop-up hauv Safari kom ntxiv nyiaj.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Ib feem ntawm qhov kev thov no tsis paub. Thov xyuas kom pom tias qhov txuas ntxiv tau hloov tshiab.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Muaj kev qaug zog sab peb. Thov sim dua tom qab me ntsis.</string>
+	<key>Sources</key>
+	<string>Cov chaw</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>COV NYIAJ NTXIV</string>
+	<key>Tap the </key>
+	<string>Kov lub cim </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Kov tib lub cim thiab xaiv DisinfaX kom qhib qhov rai pop-up.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Tsis pom qhov ntawd. Sim dua.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Cov nyiaj ntxiv ntawd tsis raug cai. Thov xaiv lwm cov nyiaj.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Qhov kev tsim khoom no tsis muaj peev xwm mus cuag nws lub thawv sib koom (App Group %@). Kev ntxiv nyiaj yuav tsis muaj kom txog thaum lub App Groups peev xwm raug ntxiv rau ob qho tib si lub app thiab qhov ntxiv.</string>
+	<key>Top Up</key>
+	<string>Ntxiv Nyiaj</string>
+	<key>Top Up Balance</key>
+	<string>Ntxiv nyiaj seem</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Kev ntxiv nyiaj xav tau ib version tshiab dua ntawm iOS. Hloov kho, tom qab ntawd qhib DisinfaX dua.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Kev ntxiv nyiaj xav tau ib version tshiab dua ntawm macOS. Hloov kho, tom qab ntawd qhib DisinfaX dua.</string>
+	<key>True</key>
+	<string>Muaj Tseeb</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>KEV SIV DISINFAX HAUV SAFARI</string>
+	<key>Unknown</key>
+	<string>Tsis Paub</string>
+	<key>Unknown purchase error.</key>
+	<string>Kev yuav khoom yuam kev tsis paub.</string>
+	<key>Very Likely</key>
+	<string>Yeej yuav tshwm sim</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Cov nyiaj US ua tag nrho, 1–100. Yuav raug them nyiaj hauv koj lub App Store txhais nyiaj.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Koj twb muaj ib qho ntxiv nyiaj US$%lld tos siv — koj tsis raug them nyiaj rov qab. Rov qab mus rau Safari thiab qhib DisinfaX qhov rai pop-up kom siv rau koj tus nyiaj seem.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Koj tsis tau nkag mus. Thov nkag mus thiab sim dua.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Koj qhov ntxiv nyiaj US$%lld tab tom raug siv.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Koj qhov ntxiv nyiaj US$%lld siv sij hawm ntev dua li ib txwm los tshwm sim.</string>
+	<key>Your account has been suspended.</key>
+	<string>Koj tus account raug muab txwv lawm.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Koj cov nyiaj tshuav tsawg heev. Thov ntxiv nyiaj mus ntxiv.</string>
+</dict>
+</plist>

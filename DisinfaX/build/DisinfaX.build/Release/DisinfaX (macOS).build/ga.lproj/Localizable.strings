@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> sa bharra seoltaí, ansin tapáil ar Bainistigh Eisínteachtaí agus cuir DisinfaX ar siúl.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ muinín</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ muinín, %2$@ fírinne</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ a bheith %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>TAR ÉIS ATHLÍONTA</string>
+	<key>Add funds to your balance</key>
+	<string>Cuir cistí le d'iarmhéid</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Bhí ceannach US$%lld níos luaithe fós ag fanacht le cur i bhfeidhm, mar sin cuireadh an ceann sin i gcrích in ionad muirear a ghearradh ort arís. Fill ar Safari agus oscail preabfhuinneog DisinfaX chun d'iarmhéid nuashonraithe a fheiceáil.</string>
+	<key>Annotate</key>
+	<string>Anótáil</string>
+	<key>Annotating</key>
+	<string>Ag anótáil</string>
+	<key>Arguably</key>
+	<string>Inphlé</string>
+	<key>BALANCE</key>
+	<string>IARMHÉID</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Trí athlíonadh, aontaíonn tú lenár [dTéarmaí Seirbhíse](https://disinfax.app/terms-of-use) agus lenár [bPolasaí Príobháideachais](https://disinfax.app/privacy-policy). D'fhéadfadh táillí malairte airgeadra a bheith i gceist má íocann tú in airgeadra seachas USD.</string>
+	<key>Clear</key>
+	<string>Glan</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Tapáil ar dheilbhín DisinfaX i mbarra uirlisí Safari chun an preabfhuinneog a oscailt.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Nuair a chliceálann tú %@, nochtar éilimh agus gearrfar ar d'iarmhéid</string>
+	<key>Close</key>
+	<string>Dún</string>
+	<key>Contacting the App Store…</key>
+	<string>Ag dul i dteagmháil leis an App Store…</string>
+	<key>Copy</key>
+	<string>Cóipeáil</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>Is féidir le DisinfaX botúin a dhéanamh. Seiceáil an fhaisnéis go cúramach.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>Níl DisinfaX ar fáil i do réigiún fós mar gheall ar riachtanais rialála.</string>
+	<key>Disinfact</key>
+	<string>Seiceáil</string>
+	<key>Edit</key>
+	<string>Cuir in eagar</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Cuir DisinfaX ar siúl i Safari, faoi Socruithe → Eisínteachtaí.</string>
+	<key>Enter a claim</key>
+	<string>Iontráil éileamh</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Cuir isteach méid iomlán i ndollair idir 1 agus 100.</string>
+	<key>Equivocally</key>
+	<string>Débhríoch</string>
+	<key>Fact-Check</key>
+	<string>Fíorú fíricí</string>
+	<key>Fact-Check All</key>
+	<string>Seiceáil Uile</string>
+	<key>Fact-Checking</key>
+	<string>Seiceáil</string>
+	<key>False</key>
+	<string>Bréagach</string>
+	<key>Likely</key>
+	<string>Dócha</string>
+	<key>Mostly</key>
+	<string>Den chuid is mó</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Oscail socruithe eisínteachtaí Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Oscail Safari agus téigh go x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Oscail an preabfhuinneog i Safari chun d'iarmhéid nuashonraithe a fheiceáil</string>
+	<key>Partially</key>
+	<string>Go páirteach</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Íocaíocht curtha i gcrích. Fill ar Safari agus oscail preabfhuinneog DisinfaX chun d'iarmhéid nuashonraithe a fheiceáil.</string>
+	<key>Possibly</key>
+	<string>B'fhéidir</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Níor aimsíodh táirge %@ in App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Ceannach curtha ar ceal.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Ceannach ag fanacht le formheas.</string>
+	<key>Reasoning</key>
+	<string>Réasúnaíocht</string>
+	<key>Return to Safari</key>
+	<string>Fill ar Safari</string>
+	<key>Setup incomplete</key>
+	<string>Socrú neamhiomlán</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Sínigh isteach ón bpreabfhuinneog DisinfaX i Safari chun cistí a chur leis.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Níor aithníodh cuid den iarratas seo. Deimhnigh go bhfuil an eisínteacht cothrom le dáta.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Tharla earráid ar ár dtaobh. Bain triail eile as i gceann tamaillín.</string>
+	<key>Sources</key>
+	<string>Foinsí</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>MÉID AN ATHLÍONTA</string>
+	<key>Tap the </key>
+	<string>Tapáil ar an deilbhín </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Tapáil ar an deilbhín céanna agus roghnaigh DisinfaX chun an preabfhuinneog a oscailt.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Níorbh fhéidir é sin a aimsiú. Bain triail eile as.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Níl an méid athlíonta sin bailí. Roghnaigh méid difriúil.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Ní féidir leis an leagan seo teacht ar a choimeádán roinnte (Grúpa Aip %@). Ní bheidh athlíonta ar fáil go dtí go gcuirfear an cumas Grúpaí Aipeanna leis an aip agus leis an eisínteacht araon.</string>
+	<key>Top Up</key>
+	<string>Athlíon</string>
+	<key>Top Up Balance</key>
+	<string>Athlíon iarmhéid</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Teastaíonn leagan níos nuaí de iOS le haghaidh athlíonta. Nuashonraigh, agus oscail DisinfaX arís ansin.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Teastaíonn leagan níos nuaí de macOS le haghaidh athlíonta. Nuashonraigh, agus oscail DisinfaX arís ansin.</string>
+	<key>True</key>
+	<string>Fíor</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>AG ÚSÁID DISINFAX I SAFARI</string>
+	<key>Unknown</key>
+	<string>Anaithnid</string>
+	<key>Unknown purchase error.</key>
+	<string>Earráid cheannaigh anaithnid.</string>
+	<key>Very Likely</key>
+	<string>An-dócha</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Dollair Mheiriceánacha iomlána, 1–100. Muirearaithe in airgeadra do App Store.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Tá athlíonadh US$%lld agat cheana atá ag fanacht le cur i bhfeidhm — níor gearradh muirear ort arís. Fill ar Safari agus oscail preabfhuinneog DisinfaX chun é a chur i bhfeidhm ar d'iarmhéid.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Níl tú logáilte isteach. Logáil isteach agus bain triail eile as.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Tá d'athlíonadh US$%lld á chur i bhfeidhm.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Tá d'athlíonadh US$%lld ag tógáil níos faide ná mar is gnách le teacht i láthair.</string>
+	<key>Your account has been suspended.</key>
+	<string>Cuireadh do chuntas ar fionraí.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Tá d'iarmhéid ró-íseal. Athlíon é chun leanúint ar aghaidh.</string>
+</dict>
+</plist>

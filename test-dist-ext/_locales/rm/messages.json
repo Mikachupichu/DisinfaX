@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "Identifitgescha e metta en evidienza la disinformaziun en tweets cun agid d'analisa IA.",
+    "message": "Identifitgescha e metta en evidienza la disinformaziun en posts cun agid d'analisa IA.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Revelar danovamain tuttas las affermaziuns da quest tweet",
+    "message": "Revelar danovamain tuttas las affermaziuns da quest post",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Sortir"
   },
+  "deleteAccount": {
+    "message": "Stizzar il conto e las datas associadas",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Tes saldo ed in hash criptografic da tes adressa d'e-mail ch'è protegì d'ina clav secreta vegnan conservads, per evitar l'abus dals meds gratuits che vegnan dads cun crear il conto. Sche ti t'annunzias puspè cun il medem conto, tes saldo vegn restituì.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "Cliccar sin %BTN% mussa las affirmaziuns e chargia il conto"
   },
@@ -287,7 +295,7 @@
     "message": "Ultima utilisaziun"
   },
   "cleanupTagline": {
-    "message": "Nettegiai Voss feed da X."
+    "message": "Nettegiai Voss feed."
   },
   "disclaimerJurisdiction": {
     "message": "Entaifer ils Stadis Unids pon mo abitants da Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, Carolina dal Nord, Dakota dal Nord, Oklahoma, Oregon, Pennsylvania, Carolina dal Sid, Dakota dal Sid, Tennessee, Texas, Utah, Washington, Wisconsin e Wyoming utilisar DisinfaX ed augmentar lur bilantscha; Washington, D.C., tut ils territoris dals Stadis Unids e mintga stadi betg numnà èn exclus. Ordaifer ils Stadis Unids è el disponibel en Canada, Australia, Nova Zelanda, Singapur, Africa dal Sid, Giapun, Taiwan, Indonesia, Tailanda, ils Filippins, Malaisia, Vietnam e Svizra."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Quai n'ha betg pudì vegnir chattà. Emprova anc ina giada."
   },
+  "errNoClaims": {
+    "message": "En quest text n'èn vegnidas chattadas naginas afirmaziuns verifitgablas.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Configuraziun",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Aspect",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Cler",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Automatic",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Stgir",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Mussa adina las verificaziuns sche:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Cuntinuar cun Reddit"
+  },
+  "persistentBadgesLabel": {
+    "message": "Per daltonists: distintivs permanents",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Mussar mintga distintiv da controlla sin ils posts senza stuair passar suror. Il verdict vegn communitgà tant tras la colur sco tras ils pleds; quai gida mintgin che na po betg distinguer questas colurs.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Grondezza da scrittira gronda",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Per il text entaifer las fanestras (asserziuns, argumentaziuns...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Serrar",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Cliccar per modifitgar la pretensiun",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Detagls da la controlla da fatgs",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Questa selecziun è memia lunga per verifitgar. Maximum 1 000 caracters.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Infurmar sche la bilantscha va giu",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Dapli che: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "CO VERIFITGAR FATGS",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Sin irgent ina website, selecziunescha il text che ti vuls verifitgar.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Fa in clic cun il buttun dretg sin il text selecziunà e tscherna Verificaziun (funcziunescha er sin text betg selecziunà).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Fa in clic cun il buttun dretg sin il text selecziunà e tscherna {1} Verificaziun (funcziunescha er sin text betg selecziunà).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "La verificaziun cumenza subit ed è debità sin tia bilantscha.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Cun il text anc selecziunà, tutga ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " l'icona en la trav d'adressa e tscherna lura {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

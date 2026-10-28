@@ -4,7 +4,7 @@
     "description": "The extension name."
   },
   "appDescription": {
-    "message": "AI tahlilidan foydalanib, tvitlardagi noto'g'ri ma'lumotni aniqlaydi va ajratib ko'rsatadi.",
+    "message": "AI tahlilidan foydalanib, postlardagi noto'g'ri ma'lumotni aniqlaydi va ajratib ko'rsatadi.",
     "description": "The extension description."
   },
   "verdictTrue": {
@@ -116,7 +116,7 @@
     "description": "Tooltip for the copy-to-clipboard button."
   },
   "refreshBatchTooltip": {
-    "message": "Ushbu tvitdagi barcha da'volarni qayta ochish",
+    "message": "Ushbu postdagi barcha da'volarni qayta ochish",
     "description": "Tooltip for the button that re-runs preclassification (finds and highlights this tweet's claims) without researching them."
   },
   "refreshClaimTooltip": {
@@ -235,6 +235,14 @@
   "signOut": {
     "message": "Chiqish"
   },
+  "deleteAccount": {
+    "message": "Hisob va tegishli ma'lumotlarni o'chirish",
+    "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
+  },
+  "deleteAccountNote": {
+    "message": "Balansingiz hamda maxfiy kalit bilan himoyalangan elektron pochta manzilingizning kriptografik xeshi saqlanadi — bu ro'yxatdan o'tishda beriladigan bepul mablag'lardan suiiste'mol qilishning oldini olish uchun. Xuddi shu hisob bilan qaytadan roʻyxatdan oʻtsangiz, balansingiz tiklanadi.",
+    "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
+  },
   "onboardDisinfactClick": {
     "message": "%BTN% tugmasini bosish da'volarni ko'rsatadi va balansingizdan pul yechiladi"
   },
@@ -287,7 +295,7 @@
     "message": "Oxirgi ishlatilgan"
   },
   "cleanupTagline": {
-    "message": "X tasmangizni tozalang."
+    "message": "Tasmangizni tozalang."
   },
   "disclaimerJurisdiction": {
     "message": "Amerika Qo'shma Shtatlari ichida DisinfaX'dan foydalanish va balansni to'ldirish faqat Alabama, Arizona, Kaliforniya, Kolorado, Konnektikut, Delaver, Florida, Aydaxo, Illinoys, Indiana, Ayova, Kanzas, Kentukki, Luiziana, Meyn, Massachusets, Missisipi, Missuri, Montana, Nyu-Gempshir, Nyu-Meksiko, Nyu-York, Shimoliy Karolina, Shimoliy Dakota, Oklaxoma, Oregon, Pensilvaniya, Janubiy Karolina, Janubiy Dakota, Tennessi, Texas, Yuta, Vashington, Viskonsin va Vayoming aholisi uchun mumkin; Vashington, D.C., barcha AQSh hududlari va ro'yxatda ko'rsatilmagan har qanday shtatlar bundan mustasno. Amerika Qo'shma Shtatlaridan tashqarida u Kanada, Avstraliya, Yangi Zelandiya, Singapur, Janubiy Afrika, Yaponiya, Tayvan, Indoneziya, Tailand, Filippin, Malayziya, Vyetnam va Shveytsariyada mavjud."
@@ -330,9 +338,29 @@
   "errNotFound": {
     "message": "Bu topilmadi. Qayta urinib ko'ring."
   },
+  "errNoClaims": {
+    "message": "Bu matnda tekshirib boʻladigan daʼvolar topilmadi.",
+    "description": "Red in-page notification shown after a fact-check run found no claims at all in the text, so there was nothing to research."
+  },
   "settings": {
     "message": "Sozlamalar",
     "description": "Header of the collapsible settings section at the bottom of the popup."
+  },
+  "appearanceLabel": {
+    "message": "Koʻrinish",
+    "description": "Label of the popup's appearance setting, which switches the popup and the on-page fact-check windows between a light and a dark palette."
+  },
+  "themeLight": {
+    "message": "Yorqin",
+    "description": "Appearance choice that always uses the light palette."
+  },
+  "themeAuto": {
+    "message": "Avtomatik",
+    "description": "Appearance choice that follows the browser's or device's own light/dark setting."
+  },
+  "themeDark": {
+    "message": "Qorongʻi",
+    "description": "Appearance choice that always uses the dark palette."
   },
   "bypassToggleLabel": {
     "message": "Har doim faktchekingni ko'rsat, agar:",
@@ -417,5 +445,79 @@
   },
   "continueWithReddit": {
     "message": "Reddit bilan davom etish"
+  },
+  "persistentBadgesLabel": {
+    "message": "Rang ko'rligi uchun: doimiy nishonlar",
+    "description": "Label of the Colourblind-friendly setting in the extension's settings, which keeps fact-check badges on posts instead of showing them only under the pointer."
+  },
+  "persistentBadgesTooltip": {
+    "message": "Postlardagi har bir faktlarni tekshirish nishonini kursor bilan ustiga bormasdan ko'rinadigan qilib saqlang. Xulosa ajratib ko'rsatish rangi va so'zlar bilan bir xil darajada ifodalanadi, shuning uchun bu ranglarni ajrata olmaydiganlarga yordam beradi.",
+    "description": "Description under the Colourblind-friendly setting, and its tooltip, explaining why a reader might want badges always visible."
+  },
+  "largeFontLabel": {
+    "message": "Katta shrift o'lchami",
+    "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
+  },
+  "largeFontTooltip": {
+    "message": "Oynalar ichidagi matn uchun (daʼvolar, asoslar...)",
+    "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
+  },
+  "closeTooltip": {
+    "message": "Yopish",
+    "description": "Tooltip and screen-reader name of the X control that closes a fact-check popover."
+  },
+  "editClaimTooltip": {
+    "message": "Da'voni tahrirlash uchun bosing",
+    "description": "Tooltip and screen-reader name of the fact-check text field when it is not being edited; clicking it starts editing."
+  },
+  "claimPopoverLabel": {
+    "message": "Faktlarni tekshirish tafsilotlari",
+    "description": "Screen-reader name of the fact-check detail popover that opens over a claim."
+  },
+  "errSelectionTooLong": {
+    "message": "Bu tanlov tekshirish uchun juda uzun. Maksimal 1 000 ta belgi.",
+    "description": "Red in-page notification shown when the user starts a fact-check on a selection longer than 1,000 characters. The run is refused before it starts, so nothing is charged."
+  },
+  "notifySpendLabel": {
+    "message": "Balans kamayganda xabar berish",
+    "description": "Label of the toggle that turns on notifications for when the balance decreases."
+  },
+  "notifySpendThresholdLabel": {
+    "message": "Bundan ko'proq: $1",
+    "description": "Label of the slider that sets the smallest balance decrease that still notifies. $1 is the formatted US dollar amount (e.g. US$0.001 or 0,001 US$); the slider sits beside this label.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "US$0.001"
+      }
+    }
+  },
+  "guideHowToFactCheck": {
+    "message": "FAKTNI QANDAY TEKSHIRISH MUMKIN",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Istalgan veb-sahifada tekshirmoqchi bo'lgan matnni tanlang.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Tanlangan matnni sichqonchaning o'ng tugmasi bilan bosing va Tekshirishni tanlang (tanlanmagan matnda ham ishlaydi).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Tanlangan matnni sichqonchaning o'ng tugmasi bilan bosing va {1} Tekshirishni tanlang (tanlanmagan matnda ham ishlaydi).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Tekshirish darhol boshlanadi va balansingizdan yechiladi.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Matn tanlangan holda, ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " belgisini manzil satrida bosing, so'ngra {1} DisinfaX'ni tanlang.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
   }
 }

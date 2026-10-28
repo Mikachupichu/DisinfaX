@@ -24,6 +24,17 @@ const NETWORK_MESSAGE = 'MF_NETWORK_POSTS';
  *  isolated script runs (both are document_start, and the order between them is not
  *  guaranteed), so everything harvested so far is buffered and replayed on this. */
 const HELLO_MESSAGE = 'MF_NETWORK_HELLO';
+/** Says a response whose posts have not been forwarded yet is in flight (`open: true`) or
+ *  has settled (`open: false`).
+ *
+ *  The isolated half holds its announcements while one is open, because the markup and
+ *  the response describing it race and the markup can win: measured on a thread
+ *  (2026-10-26), the sweep announced the eight items on screen 58 ms before the
+ *  `getPostThreadV2` response carrying all 174 of their parents was filed — and an
+ *  announced post is never amended, since its row is billed on the chain it went out
+ *  with. The settle is posted AFTER the harvest, in the same task, so the receiver sees
+ *  the payload's posts before it is told to announce. */
+const PENDING_MESSAGE = 'MF_NETWORK_PENDING';
 
 /** Every post-bearing response is an XRPC call, whatever host serves it — the PDS
  *  (`<user>.host.bsky.network`), the entryway (`bsky.social`) and the public AppView
@@ -61,7 +72,11 @@ interface NetPost {
   langs: string[] | null;
   parentUri: string | null;
   author: NetAuthor;
-  quote: { uri: string; text: string; author: NetAuthor } | null;
+  /** When the author wrote the post, as AT Protocol states it on the record. The creation
+   *  time and not `indexedAt`, which is when this server happened to see the post: a reply
+   *  can be indexed long after it was written, and it is the writing that dates the words. */
+  createdAt: string | null;
+  quote: { uri: string; text: string; author: NetAuthor; createdAt: string | null } | null;
 }
 
 interface NetAuthor {
@@ -142,12 +157,18 @@ function compactPost(view: any): NetPost | null {
       ? view.record.langs.filter((l: unknown) => typeof l === 'string').slice(0, 3)
       : null,
     parentUri: typeof reply?.parent?.uri === 'string' ? reply.parent.uri : null,
+    createdAt: typeof view.record.createdAt === 'string' ? view.record.createdAt : null,
     author,
     // A quoted card whose author cannot be named is dropped rather than attached with a
     // guessed handle: the quote is context, and context that names the wrong account is
     // worse than none.
     quote: card && quoteAuthor && typeof card.value?.text === 'string'
-      ? { uri: String(card.uri ?? ''), text: card.value.text, author: quoteAuthor }
+      ? {
+          uri: String(card.uri ?? ''),
+          text: card.value.text,
+          author: quoteAuthor,
+          createdAt: typeof card.value.createdAt === 'string' ? card.value.createdAt : null,
+        }
       : null,
   };
 }
@@ -234,32 +255,88 @@ export default defineContentScript({
       return '';
     }
 
+    function postPending(open: boolean): void {
+      window.postMessage({ type: PENDING_MESSAGE, open }, '*');
+    }
+
     const originalFetch = window.fetch;
     window.fetch = function (input: any, init?: any) {
       const promise = originalFetch.call(this, input, init);
       const url = requestUrl(input);
       if (!url.includes(XRPC_MARKER)) return promise;
+      postPending(true);
+      let settled = false;
+      const settle = () => {
+        if (settled) return;
+        settled = true;
+        postPending(false);
+      };
       // Read a clone: the response body is a stream, and consuming the original would
       // leave the page's own code with an empty one.
       return promise.then((response: Response) => {
         try {
-          response.clone().text().then((text) => harvest(text, labelOf(url))).catch(() => {});
-        } catch {}
+          // Harvested, then settled, in that order and in one task: the receiver files
+          // these posts before it is told the hold is over.
+          response.clone().text().then(
+            (text) => {
+              try { harvest(text, labelOf(url)); } finally { settle(); }
+            },
+            settle,
+          );
+        } catch { settle(); }
         return response;
+      }, (error: unknown) => {
+        // A failed request has no posts to wait for; the page's rejection is passed on.
+        settle();
+        throw error;
       });
     };
+
+    /** The XRPC URL an XHR object was opened on, if it was one. `open` only records it;
+     *  the hold starts at `send`, because an object opened and never sent would otherwise
+     *  hold announcements for a request that does not exist. */
+    const xrpcHref = new WeakMap<XMLHttpRequest, string>();
 
     const originalOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (_method: string, url: string | URL) {
       const href = String(url);
-      if (href.includes(XRPC_MARKER)) {
-        this.addEventListener('load', () => {
-          try {
-            if (typeof this.responseText === 'string') harvest(this.responseText, labelOf(href));
-          } catch {}
-        });
-      }
+      if (href.includes(XRPC_MARKER)) xrpcHref.set(this, href);
+      else xrpcHref.delete(this);
       return originalOpen.apply(this, arguments as any);
+    };
+
+    const originalSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function () {
+      const href = xrpcHref.get(this);
+      xrpcHref.delete(this);
+      if (!href) return originalSend.apply(this, arguments as any);
+      postPending(true);
+      let settled = false;
+      const settle = () => {
+        if (settled) return;
+        settled = true;
+        postPending(false);
+      };
+      this.addEventListener('load', () => {
+        try {
+          if (typeof this.responseText === 'string') harvest(this.responseText, labelOf(href));
+        } catch {
+          /* Unreadable body: nothing to harvest, but the hold still has to end. */
+        } finally {
+          settle();
+        }
+      });
+      // Every way a sent request can end without a `load`: a send that never reaches the
+      // network, a cancel, a timeout. Each one ends the hold too.
+      this.addEventListener('error', settle);
+      this.addEventListener('abort', settle);
+      this.addEventListener('timeout', settle);
+      try {
+        return originalSend.apply(this, arguments as any);
+      } catch (error) {
+        settle();
+        throw error;
+      }
     };
 
     // The isolated half may not have been listening when the first responses landed.

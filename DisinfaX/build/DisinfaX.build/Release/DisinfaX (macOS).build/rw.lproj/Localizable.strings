@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key> icon in the address bar, then Manage Extensions, and turn on DisinfaX.</key>
+	<string> ku murongo w'aderesi, hanyuma ukande Gucunga Ibyongerwaho hanyuma wemerere DisinfaX.</string>
+	<key>%1$@ %2$@</key>
+	<string>%1$@ %2$@</string>
+	<key>%1$@ confidence</key>
+	<string>%1$@ icyizere</string>
+	<key>%1$@ confidence, %2$@ veracity</key>
+	<string>%1$@ icyizere, %2$@ ukuri</string>
+	<key>%2$@ %1$@</key>
+	<string>%2$@ %1$@</string>
+	<key>%3$@ %1$@ %2$@</key>
+	<string>%3$@ %1$@ %2$@</string>
+	<key>%3$@ to be %1$@ %2$@</key>
+	<string>%3$@ kuba %1$@ %2$@</string>
+	<key>AFTER TOP-UP</key>
+	<string>NYUMA YO KWONGERAMO</string>
+	<key>Add funds to your balance</key>
+	<string>Ongeraho amafaranga kuri konti yawe</string>
+	<key>An earlier US$%lld purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Igura ryabanje rya US$%lld ryari ritegereje gukoreshwa, bityo iryo ni ryo ryarangijwe aho kongera kukwishyuza. Garuka kuri Safari ufungure idirishya rirambuka rya DisinfaX kugira ngo urebe konti yawe yavuguruwe.</string>
+	<key>Annotate</key>
+	<string>Sobanura</string>
+	<key>Annotating</key>
+	<string>Irasobanura</string>
+	<key>Arguably</key>
+	<string>Kugishwa impaka</string>
+	<key>BALANCE</key>
+	<string>AMAFARANGA ASIGAYE</string>
+	<key>By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.</key>
+	<string>Wongereramo, uremeza [Amabwiriza y'Serivisi](https://disinfax.app/terms-of-use) n'[Politiki y'Ibanga](https://disinfax.app/privacy-policy) byacu. Amafaranga y'ihindurwa ry'ifaranga ashobora gukoreshwa niba wishyura mu ifaranga ritari USD.</string>
+	<key>Clear</key>
+	<string>Siba</string>
+	<key>Click the DisinfaX icon in the Safari toolbar to open the popup.</key>
+	<string>Kanda ikimenyetso cya DisinfaX ku murongo w'ibikoresho bya Safari kugira ngo ufungure idirishya rirambuka.</string>
+	<key>Clicking %@ reveals claims and will charge your balance</key>
+	<string>Gukanda kuri %@ bigaragaza ibivugwa kandi bizakuramo amafaranga kuri konti yawe</string>
+	<key>Close</key>
+	<string>Funga</string>
+	<key>Contacting the App Store…</key>
+	<string>Kwihuza na App Store…</string>
+	<key>Copy</key>
+	<string>Gukoporora</string>
+	<key>DisinfaX can make mistakes. Double-check information.</key>
+	<string>DisinfaX ishobora gukora amakosa. Ongera urebe amakuru.</string>
+	<key>DisinfaX is not yet available in your region due to regulatory requirements.</key>
+	<string>DisinfaX ntiraboneka mu karere kawe kubera ibisabwa n'amategeko.</string>
+	<key>Disinfact</key>
+	<string>Genzura</string>
+	<key>Edit</key>
+	<string>Hindura</string>
+	<key>Enable DisinfaX in Safari Settings → Extensions.</key>
+	<string>Emerera DisinfaX muri Safari, mu Igenamiterere → Ibyongerwaho.</string>
+	<key>Enter a claim</key>
+	<string>Andika ikirego</string>
+	<key>Enter a whole dollar amount between 1 and 100.</key>
+	<string>Injiza umubare wuzuye w'amadolari uri hagati ya 1 na 100.</string>
+	<key>Equivocally</key>
+	<string>Idasobanutse</string>
+	<key>Fact-Check</key>
+	<string>Kugenzura ukuri</string>
+	<key>Fact-Check All</key>
+	<string>Genzura byose</string>
+	<key>Fact-Checking</key>
+	<string>Kugenzura</string>
+	<key>False</key>
+	<string>Ibinyoma</string>
+	<key>Likely</key>
+	<string>Birashoboka</string>
+	<key>Mostly</key>
+	<string>Ahanini</string>
+	<key>Open Safari Extension Settings…</key>
+	<string>Fungura igenamiterere ry'ibyongerwaho bya Safari…</string>
+	<key>Open Safari and go to x.com.</key>
+	<string>Fungura Safari ujye kuri x.com.</string>
+	<key>Open the popup in Safari to view your updated balance</key>
+	<string>Fungura idirishya rirambuka muri Safari kugira ngo urebe konti yawe yavuguruwe</string>
+	<key>Partially</key>
+	<string>Igice</string>
+	<key>Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.</key>
+	<string>Kwishyura byarangiye. Garuka kuri Safari ufungure idirishya rirambuka rya DisinfaX kugira ngo urebe konti yawe yavuguruwe.</string>
+	<key>Possibly</key>
+	<string>Wenda</string>
+	<key>Product %@ not found in App Store Connect.</key>
+	<string>Igicuruzwa %@ ntacyabonetse muri App Store Connect.</string>
+	<key>Purchase cancelled.</key>
+	<string>Igura ryahagaritswe.</string>
+	<key>Purchase is pending approval.</key>
+	<string>Igura ritegereje kwemezwa.</string>
+	<key>Reasoning</key>
+	<string>Impamvu</string>
+	<key>Return to Safari</key>
+	<string>Garuka kuri Safari</string>
+	<key>Setup incomplete</key>
+	<string>Igenamiterere ntirirangira</string>
+	<key>Sign in from the DisinfaX popup in Safari to add funds.</key>
+	<string>Injira uhereye ku idirishya rya DisinfaX rirambuka muri Safari kugira ngo wongere amafaranga.</string>
+	<key>Something about this request wasn't recognized. Please make sure the extension is up to date.</key>
+	<string>Igice cy'iki gusaba ntikizwi. Nyamuneka wemeze ko porogaramu yavuguruwe.</string>
+	<key>Something went wrong on our end. Please try again in a moment.</key>
+	<string>Habaye ikibazo ku ruhande rwacu. Nyamuneka ongera ugerageze mu kanya gato.</string>
+	<key>Sources</key>
+	<string>Inkomoko</string>
+	<key>TOP-UP AMOUNT</key>
+	<string>AMAFARANGA YO KWONGERAMO</string>
+	<key>Tap the </key>
+	<string>Kanda ikimenyetso </string>
+	<key>Tap the same icon and choose DisinfaX to open the popup.</key>
+	<string>Kanda ikimenyetso kimwe hanyuma uhitemo DisinfaX kugira ngo ufungure idirishya rirambuka.</string>
+	<key>That couldn't be found. Please try again.</key>
+	<string>Ibyo ntibyabonetse. Ongera ugerageze.</string>
+	<key>That top-up amount isn't valid. Please choose a different amount.</key>
+	<string>Iyo amafaranga wongeyeho ntabwo yemewe. Nyamuneka hitamo andi mafaranga.</string>
+	<key>This build cannot reach its shared container (App Group %@). Top-ups are unavailable until the App Groups capability is added to both the app and the extension.</key>
+	<string>Iyi verisiyo ntishobora kugera ku gasanduku gasangiwe (App Group %@). Kwongeramo ntibizashoboka kugeza ubushobozi bwa App Groups bwongewe ku porogaramu no ku cyongerwaho byombi.</string>
+	<key>Top Up</key>
+	<string>Ongeramo amafaranga</string>
+	<key>Top Up Balance</key>
+	<string>Ongeramo amafaranga</string>
+	<key>Top-ups need a newer version of iOS. Update, then reopen DisinfaX.</key>
+	<string>Kwongeramo bisaba verisiyo nshya ya iOS. Vugurura, hanyuma ongera ufungure DisinfaX.</string>
+	<key>Top-ups need a newer version of macOS. Update, then reopen DisinfaX.</key>
+	<string>Kwongeramo bisaba verisiyo nshya ya macOS. Vugurura, hanyuma ongera ufungure DisinfaX.</string>
+	<key>True</key>
+	<string>Ukuri</string>
+	<key>USING DISINFAX IN SAFARI</key>
+	<string>GUKORESHA DISINFAX MURI SAFARI</string>
+	<key>Unknown</key>
+	<string>Kitazwi</string>
+	<key>Unknown purchase error.</key>
+	<string>Ikosa ry'igura ritazwi.</string>
+	<key>Very Likely</key>
+	<string>Bishoboka cyane</string>
+	<key>Whole US dollars, 1–100. Charged in your App Store currency.</key>
+	<string>Amadolari y'Amerika yuzuye, 1–100. Uzabishyura mu ifaranga rya App Store yawe.</string>
+	<key>You already have a US$%lld top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.</key>
+	<string>Ufite kwongeramo kwa US$%lld gutegereje gukoreshwa — ntiwongeye kwishyuza. Garuka kuri Safari ufungure idirishya rirambuka rya DisinfaX kugira ngo urikoreshe kuri konti yawe.</string>
+	<key>You're not signed in. Please sign in and try again.</key>
+	<string>Ntabwo winjiye. Nyamuneka injira ugerageze nanone.</string>
+	<key>Your US$%lld top-up is being applied.</key>
+	<string>Kwongeramo kwawe kwa US$%lld birimo gukoreshwa.</string>
+	<key>Your US$%lld top-up is taking longer than usual to appear.</key>
+	<string>Kugaragara kw'ikongeramo ryawe rya US$%lld birimo gufata igihe kirenze ibisanzwe.</string>
+	<key>Your account has been suspended.</key>
+	<string>Konti yawe yahagaritswe.</string>
+	<key>Your balance is too low. Please top up to continue.</key>
+	<string>Amafaranga usigaranye ni make cyane. Nyamuneka wuzuze kugira ngo ukomeze.</string>
+</dict>
+</plist>
