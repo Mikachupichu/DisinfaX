@@ -228,6 +228,36 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
                     let opened = await AppLauncher.openSignIn(provider: provider, context: context)
                     self.respond(with: ["opened": opened], context: context)
 
+                // The popup has just signed someone in, and the badge it draws beside that provider
+                // is the same one this app draws on its own landing page. The app performs its own
+                // sign-ins and records them there; this is the other half, for a flow only the
+                // extension could complete (macOS, where the popup finishes the exchange itself).
+                case "LAST_PROVIDER":
+                    guard let provider = message["provider"] as? String, !provider.isEmpty,
+                          let at = (message["at"] as? NSNumber)?.doubleValue else {
+                        self.respond(with: ["error": "Invalid provider record"], context: context)
+                        return
+                    }
+                    SharedTopUpStore.recordOAuthProvider(provider, at: at)
+                    self.respond(with: ["ok": true], context: context)
+
+                // The same fact, asked for by the extension: the app may have signed in while no
+                // popup was open, and app → extension can only travel by being requested.
+                case "GET_LAST_PROVIDER":
+                    if let record = SharedTopUpStore.lastOAuthProvider {
+                        self.respond(with: ["provider": record.provider, "at": record.at], context: context)
+                    } else {
+                        self.respond(with: ["none": true], context: context)
+                    }
+
+                // The system version the guide draws Safari's extensions button for. It comes
+                // from here rather than the user agent because Safari froze that string: a
+                // phone reports the version it shipped with however many updates it has had,
+                // so the page cannot tell 27 from 26 — and the guide's mark, which changes
+                // between the two, must match the app's own instructions exactly.
+                case "OS_VERSION":
+                    self.respond(with: ["major": ProcessInfo.processInfo.operatingSystemVersion.majorVersion], context: context)
+
                 // Sent when the extension knows nobody is signed in. Without it the app kept the
                 // last identity it was given and went on selling to a signed-out account — the app
                 // has no session of its own, so this message is the only way it can find out.

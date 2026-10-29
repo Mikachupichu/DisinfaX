@@ -56,8 +56,11 @@ export default defineConfig({
   },
   manifest: (env) => ({
     name: 'DisinfaX',
-    description: "Identifies and highlights disinformation in posts on social media and across the web using fast and intelligent research.",
-    version: '1.1.0',
+    // 112 characters is Apple's ceiling for a Safari web extension's manifest description;
+    // validation fails the bundle above it, so the one sentence is kept under that rather
+    // than allowed to grow.
+    description: "Highlights disinformation on social media and across the web using fast and intelligent research.",
+    version: '1.1.1',
     default_locale: 'en',
     // Static icons (chrome://extensions, the extensions menu, the Web Store
     // listing) cannot be themed at runtime, so they use the neutral gray logo

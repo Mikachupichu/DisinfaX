@@ -517,5 +517,13 @@
   "guideTapSelectedSuffix": {
     "message": " చిరునామా బార్‌లోని చిహ్నాన్ని నొక్కి, ఆపై {1} DisinfaXను ఎంచుకోండి.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "కాపీ చేయబడింది",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ఇంకా అందుబాటులో లేదు",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

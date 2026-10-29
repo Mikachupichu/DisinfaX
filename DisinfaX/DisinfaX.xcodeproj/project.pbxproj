@@ -25,6 +25,8 @@
 		9394CED73026AEDA00AE138E /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 9394CE993026AED900AE138E /* Script.js */; };
 		9394CED83026AEDA00AE138E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9394CE9A3026AED900AE138E /* ViewController.swift */; };
 		9394CED93026AEDA00AE138E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9394CE9A3026AED900AE138E /* ViewController.swift */; };
+		DA7A5E6A17E0000000000001 /* ServiceMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7A5E6A17E0000000000003 /* ServiceMessages.swift */; };
+		DA7A5E6A17E0000000000002 /* ServiceMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7A5E6A17E0000000000003 /* ServiceMessages.swift */; };
 		9394CEDA3026AEDA00AE138E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9394CE9B3026AEDA00AE138E /* Assets.xcassets */; };
 		9394CEDB3026AEDA00AE138E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9394CE9B3026AEDA00AE138E /* Assets.xcassets */; };
 		9394CEDC3026AEDA00AE138E /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9394CE9D3026AEDA00AE138E /* SafariWebExtensionHandler.swift */; };
@@ -177,6 +179,7 @@
 		9394CE983026AED900AE138E /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
 		9394CE993026AED900AE138E /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
 		9394CE9A3026AED900AE138E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DA7A5E6A17E0000000000003 /* ServiceMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceMessages.swift; sourceTree = "<group>"; };
 		9394CE9B3026AEDA00AE138E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9394CE9D3026AEDA00AE138E /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
 		9394CEA23026AEDA00AE138E /* DisinfaX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DisinfaX.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -317,6 +320,7 @@
 				93D69094302A7811009E7A19 /* TopUpView.swift */,
 				93D690B1302A8A01009E7A19 /* UsdFormat.swift */,
 				9394CE9A3026AED900AE138E /* ViewController.swift */,
+				DA7A5E6A17E0000000000003 /* ServiceMessages.swift */,
 				B5ACB9C6B3DC2BCC90B3E75A /* Localizable.xcstrings */,
 				9394CE9B3026AEDA00AE138E /* Assets.xcassets */,
 				9394CE943026AED900AE138E /* Resources */,
@@ -719,6 +723,7 @@
 			files = (
 				93D6909C302A7CB1009E7A19 /* StoreKitManager.swift in Sources */,
 				9394CED83026AEDA00AE138E /* ViewController.swift in Sources */,
+				DA7A5E6A17E0000000000001 /* ServiceMessages.swift in Sources */,
 				9394CEA63026AEDA00AE138E /* AppDelegate.swift in Sources */,
 				93D6909F302A7EA7009E7A19 /* TopUpHandoff.swift in Sources */,
 				DA7A5E4B17E0000000000001 /* AuthManager.swift in Sources */,
@@ -749,6 +754,7 @@
 				93D690D2302A9001009E7A19 /* FactCheckNotifications.swift in Sources */,
 				93D690B2302A8A01009E7A19 /* UsdFormat.swift in Sources */,
 				9394CED93026AEDA00AE138E /* ViewController.swift in Sources */,
+				DA7A5E6A17E0000000000002 /* ServiceMessages.swift in Sources */,
 				9394CEB73026AEDA00AE138E /* AppDelegate.swift in Sources */,
 				93D6909E302A7EA7009E7A19 /* TopUpHandoff.swift in Sources */,
 				DA7A5E4B17E0000000000002 /* AuthManager.swift in Sources */,
@@ -988,7 +994,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
@@ -1000,7 +1006,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1023,7 +1029,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
@@ -1035,7 +1041,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1062,7 +1068,7 @@
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX (iOS).entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
@@ -1077,7 +1083,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1106,7 +1112,7 @@
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX (iOS).entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
@@ -1121,7 +1127,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1148,7 +1154,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1173,7 +1179,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1196,7 +1202,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Extension (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1221,7 +1227,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1246,7 +1252,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1272,7 +1278,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1299,7 +1305,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1325,7 +1331,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -1350,7 +1356,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Share)/Info.plist";
@@ -1362,7 +1368,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
 				PRODUCT_NAME = "DisinfaX Share";
 				SDKROOT = iphoneos;
@@ -1382,7 +1388,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Share)/Info.plist";
@@ -1394,7 +1400,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
 				PRODUCT_NAME = "DisinfaX Share";
 				SDKROOT = iphoneos;
@@ -1415,7 +1421,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1430,7 +1436,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
 				PRODUCT_NAME = "DisinfaX Share";
 				REGISTER_APP_GROUPS = YES;
@@ -1450,7 +1456,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "DisinfaX Share (macOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = WJFG5784YR;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1465,7 +1471,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.disinfax.Share;
 				PRODUCT_NAME = "DisinfaX Share";
 				REGISTER_APP_GROUPS = YES;

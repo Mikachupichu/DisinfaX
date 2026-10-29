@@ -22,6 +22,7 @@ import Darwin
 ///   app → extension   pendingTransaction            (written the moment StoreKit returns)
 ///   app → extension   pendingAuthCallback           (written when an OAuth redirect lands here)
 ///   both ways         the session record            (see `AppSession` — one copy, either side refreshes)
+///   both ways         the provider signed in with   (see `lastOAuthProvider` — either side may sign in)
 enum SharedTopUpStore {
 
     /// The group identifier differs by platform, which is not a style choice: on macOS the
@@ -126,6 +127,8 @@ enum SharedTopUpStore {
         static let sessionGeneration = "auth.generation"
         static let signedOutAt = "auth.signedOutAt"
         static let popupOpened = "auth.popupOpened"
+        static let lastOAuthProvider = "auth.lastOAuthProvider"
+        static let lastOAuthProviderAt = "auth.lastOAuthProviderAt"
         static let selectionFactCheck = "auth.selectionFactCheck"
         static let safariGuideDismissed = "guide.safariOverlayDismissed"
         static let factCheckGuideDismissed = "guide.factCheckOverlayDismissed"
@@ -364,6 +367,32 @@ enum SharedTopUpStore {
 
     static var popupOpenedEver: Bool {
         defaults?.bool(forKey: Key.popupOpened) ?? false
+    }
+
+    /// The provider the last successful sign-in used, and when it was recorded — epoch
+    /// milliseconds, because the extension stamps its own copy the same way and the popup asks
+    /// which of the two is newer before it badges one.
+    ///
+    /// Signed in from either side: this app owns the provider's sheet when it signs in itself, and
+    /// the popup reports its own success over native messaging. Neither can see the other's
+    /// storage, and the badge is the same fact on both surfaces, so it lives here.
+    ///
+    /// Deliberately not cleared by `clearAccount`: "last used" is what the next sign-in offers, and
+    /// a sign-out followed by a sign-in is exactly when it is wanted.
+    static var lastOAuthProvider: (provider: String, at: Double)? {
+        guard let d = defaults, let provider = d.string(forKey: Key.lastOAuthProvider), !provider.isEmpty else {
+            return nil
+        }
+        return (provider, d.double(forKey: Key.lastOAuthProviderAt))
+    }
+
+    /// Records a sign-in. Last write wins on the stamp, not on who wrote it: both processes write
+    /// this, and an older attempt can land after a newer one when a native call is relayed.
+    static func recordOAuthProvider(_ provider: String, at stamp: Double) {
+        guard let d = defaults, !provider.isEmpty else { return }
+        if let existing = lastOAuthProvider, existing.at > stamp { return }
+        d.set(provider, forKey: Key.lastOAuthProvider)
+        d.set(stamp, forKey: Key.lastOAuthProviderAt)
     }
 
     /// Records that a fact-check was started on a page selection — through the popup over a

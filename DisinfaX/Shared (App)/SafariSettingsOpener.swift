@@ -17,6 +17,13 @@ enum SafariSettingsOpener {
 
     private static let safariBundleIdentifier = "com.apple.Safari"
 
+    /// The reader's own language, so the lander serves the page this app is already showing rather
+    /// than the one their address implies. Anything the lander does not translate falls through to
+    /// its own location logic there, so the whole tag is safe to pass.
+    private static var localeFamily: String {
+        FactCheckClient.uiLocale.split(separator: "-").first.map(String.init) ?? "en"
+    }
+
     /// Where "Return to Safari" lands the user after a purchase: the checkout's own success page,
     /// the same one a Stripe checkout redirects to (see create-checkout-session).
     ///
@@ -29,7 +36,7 @@ enum SafariSettingsOpener {
     /// which is the reported symptom, and why it only appeared to work when Safari happened to be
     /// the previous app. Opening a URL always surfaces a window, in an existing one as a tab if
     /// there is one.
-    private static let purchaseDestination = URL(string: "https://disinfax.app/success")!
+    private static let purchaseDestination = URL(string: "https://disinfax.app/success?lang=\(localeFamily)")!
 
     /// Where "Open Safari Extension Settings…" lands first. Only the window-surfacing behaviour
     /// above matters here — the settings pane opens over whatever this loads — so it is the

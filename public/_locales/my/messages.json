@@ -519,5 +519,13 @@
   "guideTapSelectedSuffix": {
     "message": " လိပ်စာဘားရှိ သင်္ကေတကို တို့ပြီး ထို့နောက် {1} DisinfaX ကို ရွေးပါ။",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "ကူးယူပြီးပါပြီ",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "မရရှိသေးပါ",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

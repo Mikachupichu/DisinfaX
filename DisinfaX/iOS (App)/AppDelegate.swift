@@ -31,4 +31,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
+    /// Portrait on every iPhone but the Duo. The single column every other phone draws gains
+    /// nothing from turning — it is the same column, twice as wide — while the Duo's unfolded
+    /// screen has the width for both panes whichever way up it is held, so it keeps its landscape.
+    /// iPad is untouched: its split view and the width classes it reports depend on turning.
+    ///
+    /// Declared here rather than by narrowing the Info.plist, which is one list for every iPhone:
+    /// the plist has to keep landscape for the Duo, and this is the only place that can narrow it
+    /// back per device.
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
+        // `RootView`, and with it the Duo check, is iOS 16; a phone that old is no Duo.
+        guard #available(iOS 16.0, *) else { return .allButUpsideDown }
+        return RootView.isIPhoneDuo ? .allButUpsideDown : .portrait
+    }
+
 }

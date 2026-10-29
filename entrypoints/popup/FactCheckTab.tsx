@@ -141,7 +141,7 @@ async function copyText(text: string): Promise<boolean> {
 /** Copy-to-clipboard button, beside the text it copies. The icon becomes a check for a
  *  moment on success — the feedback the on-page copy button gives, so a click that changed
  *  nothing on screen still says it worked. */
-const CopyButton: React.FC<{ text: string; label: string }> = ({ text, label }) => {
+const CopyButton: React.FC<{ text: string; label: string; copiedLabel: string }> = ({ text, label, copiedLabel }) => {
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<number | null>(null);
   useEffect(
@@ -159,10 +159,14 @@ const CopyButton: React.FC<{ text: string; label: string }> = ({ text, label }) 
         if (timerRef.current !== null) window.clearTimeout(timerRef.current);
         timerRef.current = window.setTimeout(() => setCopied(false), 1500);
       }}
-      title={label}
+      title={copied ? copiedLabel : label}
+      aria-label={copied ? copiedLabel : label}
       className="flex items-center gap-1 flex-shrink-0 px-1.5 py-0.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors text-[11px] font-medium whitespace-nowrap cursor-pointer"
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
+      {/* The glyph becoming a check says nothing to a screen reader, and the label above is
+          where the cursor already is, so the confirmation needs somewhere to land. */}
+      <span role="status" className="sr-only">{copied ? copiedLabel : ''}</span>
     </button>
   );
 };
@@ -1998,6 +2002,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                       <CopyButton
                         text={claim.rewritten}
                         label={t('copyTooltip') || 'Copy'}
+                        copiedLabel={t('copiedLabel') || 'Copied'}
                       />
                       {canTranslateClaim && (
                         <button
@@ -2115,6 +2120,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
                             <CopyButton
                               text={claim.reasoning}
                               label={t('copyTooltip') || 'Copy'}
+                              copiedLabel={t('copiedLabel') || 'Copied'}
                             />
                             {canTranslateReasoning && (
                               <button

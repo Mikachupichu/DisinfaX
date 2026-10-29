@@ -517,5 +517,13 @@
   "guideTapSelectedSuffix": {
     "message": " முகவரிப் பட்டியில் உள்ள ஐகானைத் தட்டி, பிறகு {1} DisinfaXஐத் தேர்ந்தெடுக்கவும்.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "நகலெடுக்கப்பட்டது",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "இன்னும் கிடைக்கவில்லை",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

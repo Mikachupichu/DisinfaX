@@ -516,5 +516,13 @@
   "guideTapSelectedSuffix": {
     "message": " ವಿಳಾಸ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಐಕಾನ್ ಟ್ಯಾಪ್ ಮಾಡಿ, ನಂತರ {1} DisinfaX ಆಯ್ಕೆಮಾಡಿ.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "ನಕಲಿಸಲಾಗಿದೆ",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

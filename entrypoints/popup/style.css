@@ -253,6 +253,27 @@ body {
   color: #ffffff !important;
 }
 
+/* ── The accent ─────────────────────────────────────────────────────────────────
+   One green, the same `emerald-700` (#047857) the app wrapper paints its own controls in.
+
+   The emitted `emerald-600` (#059669) is what this popup was written against — every primary
+   button, every switch's on track, the selected plan's edge, the bonus badges all name it — and
+   it reads at 3.8:1 white-on-green and green-on-white alike, under the 4.5:1 small text needs.
+   Re-pointing the two ROLES here rather than renaming the utilities at every call site moves
+   all of them one shade down together: `emerald-600` becomes the accent and `emerald-500` its
+   hover step, so the existing pairing (base darker, hover lighter) still holds. Nothing that
+   names `emerald-700` itself is affected — that is already this value, and files touching it
+   keep their own meaning.
+
+   Unlayered and at the root for the same reason as the light block below: it has to outrank
+   `@layer theme`, and light inherits it — the primary buttons are one deep green in both
+   appearances, which is why the forced-white ink rule further down still names
+   `.bg-emerald-600`. */
+:root {
+  --color-emerald-600: #047857;
+  --color-emerald-500: #059669;
+}
+
 /* ── Light appearance ───────────────────────────────────────────────────────────
    The popup is written dark-first: every colour it paints comes from a Tailwind theme
    variable, and the utilities resolve through those variables rather than baking the

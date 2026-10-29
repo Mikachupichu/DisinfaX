@@ -519,5 +519,13 @@
   "guideTapSelectedSuffix": {
     "message": " ঠিকনা বাৰৰ চিহ্নটোত টিপক, তাৰ পিছত {1} DisinfaX বাছক।",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "কপি কৰা হ'ল",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "এতিয়াও উপলব্ধ নহয়",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

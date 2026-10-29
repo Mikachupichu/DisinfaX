@@ -1183,6 +1183,36 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
     wrap.replaceWith(...Array.from(wrap.childNodes));
   }
 
+  /** A range's own four endpoints, so it can be rebuilt after a DOM mutation has collapsed it.
+   *
+   *  Unwrapping a previous wrap and dropping a paint both move text nodes rather than replace
+   *  them, so the nodes the boundaries name survive — but every live range pointing inside the
+   *  removed element collapses to the removal point, and a container that is still connected
+   *  says nothing about it. Read before the mutation, restored after it. */
+  function rangeEndpoints(range: Range) {
+    return {
+      start: range.startContainer,
+      startOffset: range.startOffset,
+      end: range.endContainer,
+      endOffset: range.endOffset,
+    };
+  }
+
+  /** The range as it was, rebuilt from endpoints read before the DOM moved under it. The
+   *  fallback stands when a mutation really did replace those nodes (an element-bounded read
+   *  can survive one fold but not the block being rebuilt). */
+  function restoreRange(saved: ReturnType<typeof rangeEndpoints>, fallback: Range): Range {
+    if (!saved.start?.isConnected || !saved.end?.isConnected) return fallback;
+    const out = document.createRange();
+    try {
+      out.setStart(saved.start, saved.startOffset);
+      out.setEnd(saved.end, saved.endOffset);
+    } catch {
+      return fallback;
+    }
+    return out.toString().trim() ? out : fallback;
+  }
+
   function unwrapOverlappingSelectionWraps(range: Range): boolean {
     const wraps = Array.from(document.querySelectorAll<HTMLElement>('.mf-segment-wrap[data-mf-sel-wrap="true"]'))
       .filter((w) => w.isConnected && rangeIntersectsElement(range, w))
@@ -1274,7 +1304,13 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
     if (isInEditable(range)) return null;
     if (!range.toString().trim()) return null;
 
+    const saved = extract ? rangeEndpoints(range) : null;
     const overlapping = extract && unwrapOverlappingSelectionWraps(range);
+    // The fold removes the span the boundaries point into, and every live range inside a
+    // removed node collapses to the removal point while its containers stay connected — so
+    // without this a second click on a passage that is already wrapped reads the first few
+    // characters of the block. See `rangeEndpoints`.
+    if (overlapping && saved) range = restoreRange(saved, range);
     if (overlapping && (!range.startContainer?.isConnected || !range.endContainer?.isConnected)) {
       const live = sel && sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
       if (live && rangeIsReadable(live) && live.startContainer.isConnected && live.endContainer.isConnected) {
@@ -1352,11 +1388,19 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
       // These words are about to leave the post's own nodes. A paint standing on them has to
       // hand its text back first, or its record describes a passage the extraction has taken
       // apart (see `dropPaintsInRange`). The range's boundaries can sit in nodes that paint
-      // removes, so it is re-read from the live selection before the words are moved.
+      // removes, so it is re-read from the live selection before the words are moved — but
+      // only once it has actually lost them. A thin read (a word right-clicked, or the bare
+      // click Firefox gives) has already been widened to its neighbourhood, while the live
+      // selection still holds that word alone; adopting it back would throw the window away
+      // and wrap a single word.
+      const saved = rangeEndpoints(range);
       dropPaintsInRange(range);
+      range = restoreRange(saved, range);
       const live = window.getSelection();
-      if (live && !live.isCollapsed && live.rangeCount > 0 && live.getRangeAt(0).toString().trim()) {
-        range = live.getRangeAt(0);
+      const liveRange = live && !live.isCollapsed && live.rangeCount > 0 ? live.getRangeAt(0) : null;
+      if (liveRange && liveRange.toString().trim()
+        && (!range.startContainer.isConnected || !range.endContainer.isConnected)) {
+        range = liveRange;
       }
       wrap.appendChild(range.extractContents());
       range.insertNode(wrap);

@@ -211,6 +211,13 @@ final class SignInCoordinator: ObservableObject {
         inFlight = provider
         defer { inFlight = nil }
 
+        // A hand-off opens this app, and the URL arrives before the scene has finished
+        // activating. The sheet cannot be presented from a scene that is not yet active —
+        // `start()` fails with "The UIWindowScene for the returned window was not in the
+        // foreground active state" and the whole sign-in is lost — so the request waits for the
+        // activation the hand-off is itself causing, then starts.
+        await Self.waitForActiveScene()
+
         let verifier = Self.codeVerifier()
         guard let url = Self.authorizeURL(provider: provider.rawValue, challenge: Self.challenge(for: verifier)) else {
             failure = Self.failureMessage
@@ -230,6 +237,9 @@ final class SignInCoordinator: ObservableObject {
                 expiresAt: session.expiresAt,
                 userId: session.userId
             )
+            // The popup badges the provider its last sign-in used; recording the same fact here is
+            // what lets the two surfaces agree about it.
+            SharedTopUpStore.recordOAuthProvider(provider.rawValue, at: Date().timeIntervalSince1970 * 1000)
             NotificationCenter.default.post(name: .disinfaxSessionChanged, object: nil)
         } catch {
             // Closing the sheet is the user's own decision, and reporting it would be the app
@@ -241,6 +251,43 @@ final class SignInCoordinator: ObservableObject {
     }
 
     private static let failureMessage = String(localized: "Sign-in didn't complete. Please try again.")
+
+    #if os(iOS)
+    /// The scene the sheet can be presented from, or nil while the app is still coming forward.
+    private static func activeScene() -> UIWindowScene? {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+    }
+
+    /// Returns at once when the app is already in the foreground, and otherwise on the
+    /// activation that is already under way. Nothing times out: the hand-off that started this
+    /// has brought the app forward, so that activation is the event being waited for.
+    private static func waitForActiveScene() async {
+        guard activeScene() == nil else { return }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            var finished = false
+            var observer: NSObjectProtocol?
+            let finish = {
+                guard !finished else { return }
+                finished = true
+                if let observer { NotificationCenter.default.removeObserver(observer) }
+                continuation.resume()
+            }
+            observer = NotificationCenter.default.addObserver(
+                forName: UIScene.didActivateNotification, object: nil, queue: .main
+            ) { _ in
+                guard activeScene() != nil else { return }
+                finish()
+            }
+            // Activation can land while the observer is being installed; the check above is
+            // what the observer would have run.
+            if activeScene() != nil { finish() }
+        }
+    }
+    #else
+    private static func waitForActiveScene() async {}
+    #endif
 
     private struct Exchanged {
         let accessToken: String

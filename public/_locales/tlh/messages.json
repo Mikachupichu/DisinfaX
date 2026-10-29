@@ -369,5 +369,9 @@
   "guideTapSelectedSuffix": {
     "message": " icon in the address bar, then choose {1} DisinfaX.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "rapmoHlu'pu'",
+    "description": "Spoken by a copy button once the text is on the clipboard."
   }
 }
