@@ -38,24 +38,48 @@ struct TopUpView: View {
     private static let minAmount = 1
     private static let maxAmount = 100
 
-    /// Tailwind `emerald-600` (#059669), the exact colour of the popup's Top Up button. Hard-coded
-    /// rather than an asset-catalogue colour so the two surfaces cannot drift apart silently, and
-    /// applied as a `.tint` so the button, the stepper and the Markdown links all follow it
-    /// instead of the system blue.
-    private static let accent = Color(red: 5 / 255, green: 150 / 255, blue: 105 / 255)
+    /// Tailwind `emerald-700` (#047857): the same green the popup's own Top Up button is painted
+    /// in, and its primary buttons with it — the popup re-points `emerald-600` to this value for
+    /// exactly the reason below.
+    ///
+    /// `emerald-600` (#059669), Tailwind's own shade, reads at 3.8:1 both ways round — white ink
+    /// on it, and it as the type on white — under the 4.5:1 small text needs. One step down takes
+    /// the "after top-up" figure and the button's label past 5.5:1 without leaving the family, so
+    /// the two surfaces still read as the same product. Hard-coded rather than an asset-catalogue
+    /// colour, and applied as a `.tint` so the button, the stepper and the Markdown links all
+    /// follow it instead of the system blue.
+    private static let accent = Color(red: 4 / 255, green: 120 / 255, blue: 87 / 255)
 
     @State private var amount: Int = SharedTopUpStore.initialAmount()
     @State private var amountText: String = ""
+    /// The field is exactly wide enough for three digits at the size it is drawn. Measured
+    /// rather than left to the digits themselves, so the stepper beside it does not step aside
+    /// as the number is typed — and scaled with the text, so the digits are not the part that
+    /// gets clipped when the reader asks for larger text.
+    @ScaledMetric(relativeTo: .body) private var amountFieldWidth: CGFloat = 78
     @State private var isPurchasing = false
     /// Amount bought but not yet visible in the balance.
     ///
-    /// The balance is credited server-side within seconds, but this app cannot see that: it has no
-    /// session of its own and reads the figure the Safari extension mirrors into the shared
-    /// container. On iOS that mirror is frozen while the app is in the foreground, because iOS
-    /// suspends Safari — and with it the extension — the moment it is backgrounded. So rather than
-    /// display a number that is knowably out of date with no explanation, the purchase is named as
-    /// in flight until the real figure moves.
+    /// The credit is posted from here, but the figure itself arrives over the funds channel (see
+    /// `SupabaseRealtime`), which writes what the server sends into the shared container. Until
+    /// that figure moves the balance is knowably out of date, so rather than display it with no
+    /// explanation the purchase is named as in flight.
     @State private var pendingCredit: Int?
+
+    /// The balance the shared container held when this purchase was posted, so "has it landed?" is
+    /// answered against that figure rather than against whatever the last tick happened to read.
+    ///
+    /// The two differ because the funds push can arrive while the credit request is still in
+    /// flight: the tick then records the new balance before `pendingCredit` is set, and a comparison
+    /// against it never moves again — the notice stuck forever and the popup the only way out.
+    @State private var creditBaseline: Double?
+
+    /// Whether the app itself confirmed the credit for the purchase in flight.
+    ///
+    /// The awaiting notice's only line that names Safari is the one telling the reader the popup
+    /// is where the balance appears. When the app has already credited the purchase that is not
+    /// just redundant, it is wrong — so it is shown only on the path that actually needs it.
+    @State private var creditConfirmed = false
 
     /// Ticks elapsed since the purchase, counted by the same poll that watches for the new balance.
     @State private var pendingTicks = 0
@@ -103,7 +127,6 @@ struct TopUpView: View {
     /// The work per tick is a UserDefaults read, so the cost is negligible; SwiftUI only delivers
     /// it while the view is in the hierarchy.
     private static let pollInterval: TimeInterval = 2
-    private let ticker = Timer.publish(every: pollInterval, on: .main, in: .common).autoconnect()
 
     /// Whether the shared container holds a session this app may sell against.
     ///
@@ -193,8 +216,28 @@ struct TopUpView: View {
             didReadFunds = false
             refreshFromStore()
         }
-        .onReceive(ticker) { _ in
-            refreshFromStore()
+        // A `.task` rather than `Timer.publish` held as a `let` on the view: that publisher is
+        // rebuilt with every new copy of this struct, and each rebuild restarts its countdown — so
+        // a re-rendering parent could keep the poll from ever firing, leaving a landed credit
+        // behind a notice that only a return from the popup cleared.
+        .task {
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: UInt64(Self.pollInterval * 1_000_000_000))
+                refreshFromStore()
+            }
+        }
+        // What a purchase came to — a credit, or the App Store's refusal — is written into
+        // `message` beneath the button that was pressed, and nothing moves the cursor to it. The
+        // balance blocks above change at the same moment and are replaced outright once a credit
+        // is in flight, so that one is said too. See `announce`.
+        .onChange(of: message) { message in
+            if let message { announce(message) }
+        }
+        .onChange(of: pendingCredit) { credit in
+            guard let credit else { return }
+            announce(creditConfirmed
+                     ? String(localized: "Your US$\(credit) top-up is being applied.")
+                     : String(localized: "Open the popup in Safari to view your updated balance"))
         }
     }
 
@@ -202,7 +245,10 @@ struct TopUpView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(headerTitle).font(.system(size: 26, weight: .bold))
+            Text(headerTitle).scaledFont(26, weight: .bold, relativeTo: .largeTitle)
+                // What the pane is, for the heading rotor. The sentence under it describes the
+                // pane and stays an ordinary element.
+                .accessibilityAddTraits(.isHeader)
             Text("Add funds to your balance")
                 .font(.subheadline).foregroundStyle(.secondary)
         }
@@ -224,8 +270,12 @@ struct TopUpView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("TOP-UP AMOUNT")
-                    .font(.system(size: 10, weight: .semibold)).tracking(0.6)
+                    .scaledFont(10, weight: .semibold).tracking(0.6)
                     .foregroundStyle(.secondary)
+                    // A caption for the eye. The field under it is labelled with these same
+                    // words, and the stepper beside it too — read as well, it is the third time
+                    // in three swipes.
+                    .accessibilityHidden(true)
                 HStack(spacing: 6) {
                     // "US$", never "$". Every amount here is a USD tier, but Apple charges in the
                     // buyer's own storefront currency — the $3 tier bills CAD 4.00 in Canada. A bare
@@ -237,9 +287,9 @@ struct TopUpView: View {
                     }
                     TextField("", text: $amountText)
                         .textFieldStyle(.roundedBorder)
-                        .font(.system(size: 17, weight: .medium)).monospacedDigit()
+                        .scaledFont(17, weight: .medium).monospacedDigit()
                         .accessibilityLabel(Text("TOP-UP AMOUNT"))
-                        .frame(width: 78)
+                        .frame(width: amountFieldWidth)
                         .multilineTextAlignment(.trailing)
 #if os(iOS)
                         .keyboardType(.numberPad)
@@ -364,7 +414,7 @@ struct TopUpView: View {
 
     private func arrow(_ name: String) -> some View {
         Image(systemName: name)
-            .font(.system(size: 13, weight: .semibold))
+            .scaledFont(13, weight: .semibold)
             .foregroundStyle(.tertiary)
             .accessibilityHidden(true)
     }
@@ -378,7 +428,7 @@ struct TopUpView: View {
     /// an AttributedString by hand; they open in the default browser.
     private var disclaimer: some View {
         Text("By topping up, you agree to our [Terms of Service](https://disinfax.app/terms-of-use) and [Privacy Policy](https://disinfax.app/privacy-policy). Foreign exchange fees may apply if you pay in a currency other than USD.")
-            .font(.system(size: 10))
+            .scaledFont(10)
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
@@ -388,7 +438,7 @@ struct TopUpView: View {
     private func balanceBlock(label: LocalizedStringKey, value: Double?, accented: Bool) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(label)
-                .font(.system(size: 10, weight: .semibold)).tracking(0.6)
+                .scaledFont(10, weight: .semibold).tracking(0.6)
                 .foregroundStyle(.secondary)
             // "—" when the popup has never reported a balance. Showing 0 would read as a real
             // balance of zero, which is a different and alarming thing. Position follows the
@@ -398,10 +448,17 @@ struct TopUpView: View {
                     .foregroundStyle(accented ? Self.accent : Color.primary)
             } else {
                 Text("—")
-                    .font(.system(size: 22, weight: .semibold)).monospacedDigit()
+                    .scaledFont(22, weight: .semibold).monospacedDigit()
                     .foregroundStyle(accented ? Self.accent : Color.primary)
+                    // A dash is punctuation; the reader needs what it stands for. Read inside the
+                    // combined block, this says "BALANCE, Not available yet".
+                    .accessibilityLabel(Text("Not available yet"))
             }
         }
+        // The label and its figure are one reading — "BALANCE, US$84.9954" — and the dash that
+        // stands in for an unreported balance is only understandable beside the label it sits
+        // under, where a cursor arriving at it otherwise just hears "dash".
+        .accessibilityElement(children: .combine)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -416,7 +473,7 @@ struct TopUpView: View {
     ///
     /// The treatment and the 60% are the popup's own (`Dashboard.tsx`, `Usd`).
     private func usdQualifier(size: CGFloat) -> some View {
-        Text("US").font(.system(size: size * 0.6, weight: .semibold))
+        Text("US").scaledFont(size * 0.6, weight: .semibold)
     }
 
     /// A USD amount as the popup states one: "US" small, "$" at full size, and the mark on the
@@ -427,16 +484,19 @@ struct TopUpView: View {
         let number = UsdFormat.number(from: value)
         return HStack(alignment: .center, spacing: 0) {
             if UsdFormat.symbolAfterAmount {
-                Text(number).font(.system(size: size, weight: weight)).monospacedDigit()
+                Text(number).scaledFont(size, weight: weight).monospacedDigit()
                 // The space is inside the run, so the "$" cannot be wrapped away from the number
                 // it belongs to.
-                Text("\u{00A0}$").font(.system(size: size, weight: weight))
+                Text("\u{00A0}$").scaledFont(size, weight: weight)
                 usdQualifier(size: size)
             } else {
                 usdQualifier(size: size)
-                Text("$" + number).font(.system(size: size, weight: weight)).monospacedDigit()
+                Text("$" + number).scaledFont(size, weight: weight).monospacedDigit()
             }
         }
+        // Three runs, one figure. Read separately they are "US", "$84.9954" and — in a suffix
+        // locale — a currency word after the number: a sum taken apart at its own currency mark.
+        .accessibilityElement(children: .combine)
         // Pinned rather than flexible, and only this side of the pair: this is the width
         // `balanceComparison` measures to decide whether a row can hold both amounts. A flexible
         // one reports whatever it is offered, so the row would claim to fit at any width and the
@@ -449,29 +509,31 @@ struct TopUpView: View {
     private func usdSymbol(size: CGFloat, weight: Font.Weight) -> some View {
         HStack(alignment: .center, spacing: 0) {
             if UsdFormat.symbolAfterAmount {
-                Text("$").font(.system(size: size, weight: weight))
+                Text("$").scaledFont(size, weight: weight)
                 usdQualifier(size: size)
             } else {
                 usdQualifier(size: size)
-                Text("$").font(.system(size: size, weight: weight))
+                Text("$").scaledFont(size, weight: weight)
             }
         }
     }
 
     /// Shown in place of the balance while a purchase is being applied.
     ///
-    /// The app cannot see the credit itself: it has no session, and reads the figure the Safari
-    /// extension mirrors into the shared container. On iOS that mirror is frozen while this app is
-    /// in the foreground, because iOS suspends Safari and its extension the moment they are
-    /// backgrounded — so on iOS this really does wait for the user to go back.
+    /// The figure cannot be read back locally: it arrives on the funds channel, so this stands in
+    /// until a delivery lands and moves the balance.
     private func awaitingBalanceNotice(amount: Int) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("BALANCE")
-                .font(.system(size: 10, weight: .semibold)).tracking(0.6)
+                .scaledFont(10, weight: .semibold).tracking(0.6)
                 .foregroundStyle(.secondary)
-            Text("Open the popup in Safari to view your updated balance")
-                .font(.system(size: 15, weight: .semibold))
-                .fixedSize(horizontal: false, vertical: true)
+            // Only when the popup is genuinely how this purchase gets applied — i.e. the app's own
+            // attempt did not confirm the credit.
+            if !creditConfirmed {
+                Text("Open the popup in Safari to view your updated balance")
+                    .scaledFont(15, weight: .semibold)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Text(purchaseBlocked
                  ? "Your US$\(amount) top-up is being applied."
                  : "Your US$\(amount) top-up is taking longer than usual to appear.")
@@ -512,13 +574,18 @@ struct TopUpView: View {
             readBalanceIfMissing()
         }
 
-        if latestBalance != balance {
+        // The balance as it stands before this credit is posted. A move away from it — whether the
+        // tick saw it or the store already held it when the purchase returned — is the landing.
+        let landed = pendingCredit != nil && creditBaseline.map { $0 != latestBalance } == true
+        if latestBalance != balance || landed {
             // The balance moved, so the purchase has landed: drop the notice, unblock the button and
             // clear the success message rather than leaving any of them over a figure that is now
             // correct. Keyed on the balance changing at all, not on it matching the expected total,
             // because a concurrent spend would make an exact comparison never come true.
             pendingCredit = nil
+            creditBaseline = nil
             pendingTicks = 0
+            creditConfirmed = false
             if !messageIsError, message != nil { message = nil }
         } else if pendingCredit != nil {
             pendingTicks += 1
@@ -609,20 +676,34 @@ struct TopUpView: View {
             // transaction look already-known.
             let wasAlreadyRecorded = SharedTopUpStore.isPending(transactionId: outcome.transactionId)
 
-            // Recorded before anything else can fail. The extension credits the balance and only
-            // then finishes the transaction, so an interruption here leaves a recoverable record
-            // rather than a charge with nothing to show for it.
+            // Recorded before anything else can fail. A crash or a force-quit between here and
+            // the credit leaves a recoverable record rather than a charge with nothing to show.
             SharedTopUpStore.appendPendingTransaction(jws: outcome.jws,
                                                       transactionId: outcome.transactionId,
                                                       amount: outcome.amount)
 
+            // Credited here rather than left for the popup: the app holds its own session, so it
+            // can post the same receipt the popup would — and the funds row that changes is what
+            // its realtime channel delivers back to the balance below. The popup's settlement
+            // pass remains the recovery route for anything that fails here.
+            //
+            // Read before the post, because the new figure can arrive over the channel while the
+            // request is still in flight; a baseline taken afterwards would already contain it.
+            let baseline = SharedTopUpStore.balance
+            let credited = await StoreKitManager.shared.creditPendingTransaction(
+                jws: outcome.jws,
+                transactionId: outcome.transactionId)
+
             // Every branch names the amount Apple actually returned, never the one in the field.
             // StoreKit hands back an existing UNFINISHED transaction rather than charging again for
-            // the same product, and a transaction stays unfinished until the popup applies it — so
-            // pressing Top Up twice for the same amount before opening the popup returns the first
+            // the same product, and a transaction stays unfinished until it is credited — so
+            // pressing Top Up twice for the same amount before the first is settled returns that
             // purchase in about 30ms with no payment sheet. Nothing was bought the second time, and
             // reporting "Payment complete" there reads as a second charge that never happened.
-            if wasAlreadyRecorded {
+            if credited {
+                // Nothing to add: the balance below is about to move, and that is the receipt.
+                message = nil
+            } else if wasAlreadyRecorded {
                 message = String(localized: "You already have a US$\(outcome.amount) top-up waiting to be applied — you have not been charged again. Return to Safari and open the DisinfaX popup to apply it to your balance.")
             } else if outcome.amount > 0 && outcome.amount != value {
                 message = String(localized: "An earlier US$\(outcome.amount) purchase was still waiting to be applied, so that one was completed instead of charging you again. Return to Safari and open the DisinfaX popup to see your updated balance.")
@@ -630,8 +711,31 @@ struct TopUpView: View {
                 message = String(localized: "Payment complete. Return to Safari and open the DisinfaX popup to see your updated balance.")
             }
             messageIsError = false
-            pendingCredit = outcome.amount
+            creditConfirmed = credited
             pendingTicks = 0
+
+            // A confirmed credit ends the in-flight state: the money is in, so there is nothing
+            // left to wait for and nothing to tell the reader about. The figure is read once here
+            // rather than waited for over the funds channel — waiting on that push is what left
+            // the notice standing over a balance that had already been credited.
+            if credited {
+                pendingCredit = nil
+                creditBaseline = nil
+                Task { @MainActor in
+                    if let total = await FactCheckNotifier.fetchTotal() {
+                        SharedTopUpStore.balance = total
+                        SharedTopUpStore.reloadFromDisk()
+                        if let stored = SharedTopUpStore.balance { balance = stored }
+                    } else {
+                        // The read failed, so the figure on screen is knowably old after all.
+                        pendingCredit = outcome.amount
+                        creditBaseline = baseline
+                    }
+                }
+            } else {
+                pendingCredit = outcome.amount
+                creditBaseline = baseline
+            }
         } catch {
             message = error.localizedDescription
             messageIsError = true

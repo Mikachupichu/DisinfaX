@@ -17,6 +17,15 @@ final class AuthManager: NSObject, ASWebAuthenticationPresentationContextProvidi
         if let appClass = NSClassFromString("UIApplication") as? NSObject.Type,
            let app = appClass.value(forKeyPath: "sharedApplication") as? NSObject,
            let scenes = app.value(forKey: "connectedScenes") as? Set<NSObject> {
+            // An active scene first: the sheet can only be presented from one, and with several
+            // scenes the first key window found may be a background one.
+            for scene in scenes {
+                if let windowScene = scene as? UIWindowScene,
+                   windowScene.activationState == .foregroundActive,
+                   let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                    return keyWindow
+                }
+            }
             for scene in scenes {
                 if let windowScene = scene as? UIWindowScene,
                    let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
@@ -32,10 +41,22 @@ final class AuthManager: NSObject, ASWebAuthenticationPresentationContextProvidi
 
     func startOAuthFlow(url: URL, callbackScheme: String) async throws -> String {
         return try await withCheckedThrowingContinuation { continuation in
+            // Exactly one of the two paths below may resume — a second resume is
+            // SWIFT TASK CONTINUATION MISUSE and traps the process. Both are live in the failure
+            // case: a failed `start()` does NOT cancel the session's completion handler, it fires
+            // anyway a moment later reporting `canceledLogin` (measured on macOS 27, signing in
+            // from the popup), so the flag is read in both.
+            var finished = false
+            var startFailed = false
+
             let session = ASWebAuthenticationSession(
                 url: url,
                 callbackURLScheme: callbackScheme
             ) { callbackURL, error in
+                // A failed `start()` has already answered this flow, and its own error is the
+                // truthful one: no sheet was ever presented, whatever this handler now reports.
+                guard !startFailed, !finished else { return }
+                finished = true
                 if let error = error {
                     continuation.resume(throwing: error)
                     return
@@ -46,17 +67,18 @@ final class AuthManager: NSObject, ASWebAuthenticationPresentationContextProvidi
                 }
                 continuation.resume(returning: callbackURL.absoluteString)
             }
-            
+
             session.presentationContextProvider = self
             session.prefersEphemeralWebBrowserSession = false
-            // start() returns false when the session cannot be presented, and in that case the
-            // completion handler above is NEVER invoked — so without this the continuation is
-            // never resumed, beginRequest never calls completeRequest, and the extension's
-            // sendNativeMessage promise hangs forever (an endless spinner rather than an error).
-            // That is the iOS failure mode: an app extension has no UIApplication.shared and no
-            // UIScene, so presentationAnchor falls through to a detached UIWindow() that nothing
-            // can be presented from.
+            // start() returns false when the session cannot be presented — an app extension has
+            // no window on iOS or macOS, so presentationAnchor below falls through to a detached
+            // window nothing can be presented from. Answering here is what keeps the extension's
+            // sendNativeMessage promise from hanging forever (an endless spinner rather than an
+            // error).
             if !session.start() {
+                startFailed = true
+                guard !finished else { return }
+                finished = true
                 continuation.resume(throwing: NSError(
                     domain: "AuthManager",
                     code: -2,

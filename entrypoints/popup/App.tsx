@@ -9,7 +9,14 @@ import { useT, getUiLocale, isRtl } from './i18n';
 import { useResolvedScheme } from './theme';
 import { browser } from 'wxt/browser';
 import { callNativeHost, NATIVE_CALLBACK_SCHEME } from '../../utils/nativeHost';
-import { adoptNativeSession, markPopupOpened, NATIVE_SIGNOUT_KEY, requestNativeSignIn } from '../../utils/nativeSession';
+import {
+  adoptNativeSession,
+  markPopupOpened,
+  NATIVE_SIGNOUT_KEY,
+  publishLastProvider,
+  readLastProvider,
+  requestNativeSignIn,
+} from '../../utils/nativeSession';
 import { SUPABASE_AUTH_STORAGE_KEY } from '../../utils/supabase';
 
 /** Where the provider sends the user back on Safari, on BOTH platforms — and the same value
@@ -43,6 +50,11 @@ function isIosOrIpadOs(): boolean {
  *  return visits. Popup-local (extension origin), and only written after a session is
  *  actually established. */
 const LAST_PROVIDER_STORAGE_KEY = 'disinfax_last_oauth_provider';
+
+/** When that provider was recorded, in epoch milliseconds. The app keeps the same fact for its
+ *  own sign-in buttons in the shared container, and neither side can read the other's storage —
+ *  so both stamp it, and whichever is newer is the one both surfaces badge. */
+const LAST_PROVIDER_AT_KEY = 'disinfax_last_oauth_provider_at';
 
 /** Written just before a user-chosen sign-out so the background can tell it apart from a
  *  session the SERVER killed. Both look identical from the auth slot alone, and the
@@ -176,6 +188,24 @@ export default function App() {
     }).catch(() => { /* badge is best-effort */ });
   }, []);
 
+  // Safari: the app runs its own sign-in as well — its landing page, and the popup's iOS hand-off —
+  // and records the provider where this profile cannot see it. The two stamps decide, so a sign-in
+  // here is not overwritten by an older one there.
+  useEffect(() => {
+    if (!import.meta.env.SAFARI) return;
+    readLastProvider().then(record => {
+      if (!record || !OAUTH_PROVIDERS.includes(record.provider as OAuthProvider)) return;
+      let here = 0;
+      try { here = Number(localStorage.getItem(LAST_PROVIDER_AT_KEY)) || 0; } catch { /* badge is best-effort */ }
+      if (record.at <= here) return;
+      try {
+        localStorage.setItem(LAST_PROVIDER_STORAGE_KEY, record.provider);
+        localStorage.setItem(LAST_PROVIDER_AT_KEY, String(record.at));
+      } catch { /* badge is best-effort */ }
+      setLastUsedProvider(record.provider);
+    }).catch(() => { /* badge is best-effort */ });
+  }, []);
+
   useEffect(() => {
     const checkSession = async () => {
       // Safari: a sign-in this profile never saw — the app's own landing page, or a session
@@ -222,16 +252,64 @@ export default function App() {
     return () => { cancelled = true; };
   }, [signedIn]);
 
+  // Safari only: a sign-in done in the containing app — which is where the provider's sheet
+  // lives — writes nothing this profile can hear about. There is no push from app to extension
+  // (see `readNativeSignedOutAt`), so while the popup is open and signed out it asks for the
+  // shared record itself. Without this the only thing that ever asks is the background's
+  // adoption, which runs on events and on a one-minute alarm — so a popup left open behind the
+  // app's sheet kept drawing the signed-out screen long after the sign-in had finished.
+  //
+  // A local message rather than a network call, so a second is cheap, and it stops the moment
+  // there is a user. A record that does not complete is not asked for twice.
+  useEffect(() => {
+    if (!import.meta.env.SAFARI || signedIn) return;
+    let cancelled = false;
+    let busy = false;
+    let tried: string | null = null;
+    const timer = setInterval(async () => {
+      // One ask at a time: a tick that is waiting on an app which is not answering would
+      // otherwise be joined by the next one every second.
+      if (busy) return;
+      busy = true;
+      try {
+        await adoptNativeSession(SUPABASE_AUTH_STORAGE_KEY);
+        const raw = await browser.storage.local.get(SUPABASE_AUTH_STORAGE_KEY);
+        const stored = raw?.[SUPABASE_AUTH_STORAGE_KEY];
+        const record = typeof stored === 'string' ? JSON.parse(stored) : null;
+        if (cancelled || !record?.access_token || !record?.refresh_token) return;
+        if (record.access_token === tried) return;
+        // Adoption writes the slot, but this client read its session once at startup and would
+        // go on believing there is none. Handing it the record is what makes it the session the
+        // popup is now using — and setSession fires SIGNED_IN, which draws the signed-in screen.
+        await supabase.auth.setSession({
+          access_token: record.access_token,
+          refresh_token: record.refresh_token,
+        });
+        // Only once it has been accepted: marking the token before the call would stop the
+        // retry for the one token this popup has to adopt, over a single throw.
+        tried = record.access_token;
+      } catch { /* the next tick asks again */ }
+      finally { busy = false; }
+    }, 1000);
+    return () => { cancelled = true; clearInterval(timer); };
+  }, [signedIn]);
+
   /** Record the provider that just worked, so it can be badged next time. */
   const rememberProvider = (provider: OAuthProvider) => {
     // Swallowed deliberately: this runs AFTER the session is established, inside the
     // sign-in try block. An unguarded throw here would surface as an auth error to a
     // user who is, in fact, now signed in — over a badge that failed to persist.
     try { localStorage.setItem(LAST_PROVIDER_STORAGE_KEY, provider); } catch { /* badge is best-effort */ }
+    try { localStorage.setItem(LAST_PROVIDER_AT_KEY, String(Date.now())); } catch { /* badge is best-effort */ }
     // Mirrored to browser.storage.local so every flow reads the same value: the
     // Firefox background flow (MF_WEB_AUTH) completes while this popup is dead and
     // writes there directly — see the mount effect above.
     try { void browser.storage.local.set({ [LAST_PROVIDER_STORAGE_KEY]: provider }); } catch { /* badge is best-effort */ }
+    // Safari: the app draws the same badge on its own sign-in buttons, and this is the only way
+    // it hears about a sign-in the popup completed.
+    if (import.meta.env.SAFARI) {
+      void publishLastProvider(provider).catch(() => { /* badge is best-effort */ });
+    }
     setLastUsedProvider(provider);
   };
 
@@ -357,13 +435,7 @@ export default function App() {
           return;
         }
 
-        // TEMP DIAGNOSTIC: parameter NAMES only, never values — a token must not be
-        // rendered on screen. Remove once the native contract is confirmed.
-        const seen = [
-          ...Array.from(parsedCallback?.searchParams.keys() ?? []).map(k => `?${k}`),
-          ...Array.from(hashParams?.keys() ?? []).map(k => `#${k}`),
-        ].join(', ') || '(no query or fragment parameters)';
-        throw new Error(`Authentication succeeded, but no usable tokens or codes were returned. Callback carried: ${seen}`);
+        throw new Error('Authentication succeeded, but no usable tokens or codes were returned.');
       } else {
         const extensionRedirectUrl = browser.identity.getRedirectURL();
         const { data, error } = await supabase.auth.signInWithOAuth({

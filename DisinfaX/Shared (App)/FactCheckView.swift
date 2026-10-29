@@ -17,6 +17,78 @@ typealias PlatformFont = NSFont
 typealias PlatformFont = UIFont
 #endif
 
+/// Says something that has just appeared, rather than leaving the reader to go looking for it.
+///
+/// The app's outcomes are written into text that sits where the control that caused them sits: a
+/// sign-in that did not complete, a purchase the App Store refused, a run the server turned down.
+/// Nothing moves the VoiceOver cursor there, and a cursor does not re-read a page that changed
+/// under it — so the page looks unchanged and the one control on it invites a second try that
+/// will fail the same way.
+///
+/// Here rather than beside the app's own views because this file is compiled into the share
+/// extension too, which shows the same surface and has the same messages to say.
+func announce(_ message: String) {
+#if os(macOS)
+    NSAccessibility.post(
+        element: NSApp as Any,
+        notification: .announcementRequested,
+        userInfo: [
+            .announcement: message,
+            .priority: NSAccessibilityPriorityLevel.high.rawValue,
+        ]
+    )
+#else
+    UIAccessibility.post(notification: .announcement, argument: message)
+#endif
+}
+
+extension View {
+    /// Hide from assistive technology only when there is something to hide.
+    ///
+    /// `accessibilityHidden` is not scoped to the value it is handed: handed `false` it marks the
+    /// whole subtree visible again, including whatever a child hid for itself. The panes are
+    /// hidden that way — the one behind the picker hides itself — so a plain
+    /// `accessibilityHidden(condition)` on a block above them would put both in front of the
+    /// cursor at once. Applying the modifier only on the true branch leaves the tree arranged
+    /// exactly as its children arranged it the rest of the time.
+    @ViewBuilder
+    func accessibilityHidden(if condition: Bool) -> some View {
+        if condition {
+            accessibilityHidden(true)
+        } else {
+            self
+        }
+    }
+}
+
+/// A literal point size that still answers to the reader's text size setting.
+private struct ScaledFont: ViewModifier {
+    @ScaledMetric private var size: CGFloat
+    private let weight: Font.Weight
+
+    init(size: CGFloat, weight: Font.Weight, relativeTo style: Font.TextStyle) {
+        _size = ScaledMetric(wrappedValue: size, relativeTo: style)
+        self.weight = weight
+    }
+
+    func body(content: Content) -> some View {
+        content.font(.system(size: size, weight: weight))
+    }
+}
+
+extension View {
+    /// The font these surfaces are drawn in, at the size they name.
+    ///
+    /// They are laid out at numbered sizes rather than at text styles, so that the two panes and
+    /// the popup's own dashboard agree on one set of proportions; a literal size does not move
+    /// when the reader asks for larger text, and did not. `ScaledMetric` applies the same curve
+    /// the system applies to the style it is handed, and at the default setting hands back the
+    /// number it was given — so the drawing is untouched for anyone who has asked for nothing.
+    func scaledFont(_ size: CGFloat, weight: Font.Weight = .regular, relativeTo style: Font.TextStyle = .body) -> some View {
+        modifier(ScaledFont(size: size, weight: weight, relativeTo: style))
+    }
+}
+
 /// The app's fact-checking surface: the popup's Fact-Check tab, natively.
 ///
 /// Same protocol, same workers, same hashes as the extension — see `FactCheckClient` for why the
@@ -35,10 +107,15 @@ typealias PlatformFont = UIFont
 @available(macOS 13.0, iOS 16.0, *)
 struct FactCheckView: View {
 
-    /// Tailwind `emerald-600`, the popup's Top Up colour — the same one `TopUpView` uses. Kept as
-    /// its own literal rather than shared, because sharing one colour would mean one of the two
-    /// surfaces owning a constant the other depends on.
-    private static let accent = Color(red: 5 / 255, green: 150 / 255, blue: 105 / 255)
+    /// Tailwind `emerald-700`, the green the popup paints its own primary controls in — the same
+    /// one `TopUpView` uses, and darkened there for contrast. Kept as its own literal rather than
+    /// shared, because sharing one colour would mean one of the two surfaces owning a constant
+    /// the other depends on.
+    private static let accent = Color(red: 4 / 255, green: 120 / 255, blue: 87 / 255)
+
+    /// The one animation on this surface, and the setting it has to obey: a reader who has asked
+    /// for less movement gets the hidden claims listed without the slide into place.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Observed, not owned. `ViewController` holds it, because the top-up hand-off re-hosts this
     /// whole hierarchy and a `@StateObject` would go down with it — taking a fact-check that has
@@ -120,6 +197,11 @@ struct FactCheckView: View {
         .onAppear { refreshSession() }
         .onReceive(NotificationCenter.default.publisher(for: Self.didBecomeActive)) { _ in refreshSession() }
         .onReceive(ticker) { _ in refreshSession() }
+        // A run that ends in a refusal says so in `message`, below the controls the cursor is
+        // sitting on: nothing moves it there — see `announce`.
+        .onChange(of: model.message) { message in
+            if let message { announce(message) }
+        }
     }
 
     // MARK: - Header
@@ -127,7 +209,10 @@ struct FactCheckView: View {
     /// Drawn everywhere except the share sheet. See `showsHeader`.
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(headerTitle).font(.system(size: 26, weight: .bold))
+            Text(headerTitle).scaledFont(26, weight: .bold, relativeTo: .largeTitle)
+                // What the whole pane is, so the heading rotor can land on it without counting
+                // swipes. The word under it is a subtitle and stays an ordinary element.
+                .accessibilityAddTraits(.isHeader)
             if showsHeaderSubtitle {
                 Text("Fact-Check").font(.subheadline).foregroundStyle(.secondary)
             }
@@ -205,7 +290,10 @@ struct FactCheckView: View {
                         HStack(spacing: 8) {
                             ProgressView().controlSize(.small)
                                 .accessibilityLabel(Text("Fact-Checking"))
+                            // The spinner beside it carries those words as its own label; said
+                            // twice, the second one is the same state with nothing added.
                             Text("Fact-Checking").foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
                         }
                     } else if model.claims.filter({ !$0.isHidden }).count > 1, model.hasUnrunClaims {
                         Button {
@@ -230,6 +318,10 @@ struct FactCheckView: View {
                         model.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                             || !model.canSpend
                     )
+                    // The sentence below is drawn after the button, so swiped through in that
+                    // order it arrives after the tap it is warning about. Carried as the button's
+                    // hint as well, where it is heard while the button still has the cursor.
+                    .accessibilityHint(Text(FactCheckModel.clickWarning(button: String(localized: "Disinfact"))))
 
                     // The charge is disclosed before it happens, not after: this button spends the
                     // user's balance, and the popup says so too.
@@ -264,7 +356,7 @@ struct FactCheckView: View {
             }
 
             Text("DisinfaX can make mistakes. Double-check information.")
-                .font(.system(size: 10))
+                .scaledFont(10)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -383,6 +475,9 @@ struct FactCheckView: View {
             .padding(.leading, Self.editorTextInset)
             .allowsHitTesting(false)
             .opacity(model.inputText.isEmpty ? 1 : 0)
+            // Faded rather than removed, so it is still an element over a field that has text in
+            // it — and the field is already labelled with these same words, both times.
+            .accessibilityHidden(true)
     }
 
     /// Leading inset of the first glyph inside a `TextEditor`: the text system's own line fragment
@@ -453,6 +548,9 @@ struct FactCheckView: View {
             model.clearAll()
         } label: {
             Image(systemName: "xmark")
+                // Not `scaledFont`: the field reserves exactly this glyph's box, and a larger
+                // cross would spill over the words it is there to clear. The control is named
+                // "Clear" for a cursor, which is the part that has to grow.
                 .font(.system(size: 11, weight: .semibold))
                 .frame(width: 14, height: 14)
         }
@@ -464,6 +562,9 @@ struct FactCheckView: View {
         .accessibilityLabel(Text("Clear"))
         .disabled(model.inputText.isEmpty)
         .opacity(model.inputText.isEmpty ? 0 : 1)
+        // Dimmed is not gone to a cursor that does not see dimming: an empty field offers a
+        // "Clear" that is not drawn, and there is nothing for it to clear.
+        .accessibilityHidden(if: model.inputText.isEmpty)
         .offset(y: -Self.clearControlLift)
     }
 
@@ -505,16 +606,20 @@ struct FactCheckView: View {
 #else
         let correctionSize: CGFloat = 17 * 1.08
 #endif
-        return Text(AnnotatedClaimText.painted(
+        let painted = AnnotatedClaimText.painted(
             text,
             ranges: ranges,
             shading: (intervals: shading, color: Self.accent.opacity(0.22)),
             correctionSize: correctionSize
-        ))
-        .font(.body)
-        .textSelection(.enabled)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .fixedSize(horizontal: false, vertical: true)
+        )
+        return Text(painted.drawn)
+            .font(.body)
+            // The strike and the handwriting are for the eye; the cursor reads the sentence the
+            // corrections make — see `painted`.
+            .accessibilityLabel(Text(painted.spoken))
+            .textSelection(.enabled)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Claims
@@ -528,7 +633,7 @@ struct FactCheckView: View {
                 // Flagged claims (tweet_claims.is_hidden) live behind this: the page shows them
                 // only where a selection uncovers them, so they are listed on request here.
                 Button {
-                    withAnimation(.easeInOut(duration: 0.15)) { showHiddenClaims.toggle() }
+                    withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { showHiddenClaims.toggle() }
                 } label: {
                     HStack(spacing: 4) {
                         Text(showHiddenClaims
@@ -536,6 +641,7 @@ struct FactCheckView: View {
                              : "\(String(localized: "Show more")) (\(hiddenClaims.count))")
                         Image(systemName: "chevron.down")
                             .rotationEffect(.degrees(showHiddenClaims ? 180 : 0))
+                            .accessibilityHidden(true)
                     }
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
@@ -619,6 +725,9 @@ private struct FactCheckClaimCard: View {
                 Text(claim.rewritten)
                     .font(.callout).fontWeight(.medium)
                     .fixedSize(horizontal: false, vertical: true)
+                    // The name of this card, and what the verdict below is about: a rotor jump
+                    // between claims is a jump between these lines.
+                    .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 0)
                 CopyButton(text: claim.rewritten)
             }
@@ -631,7 +740,7 @@ private struct FactCheckClaimCard: View {
                     segStart: claim.range?.start ?? 0
                 )
                 if claim.awaitingAnnotations, claim.isClassified {
-                    Text("Annotating").font(.system(size: 10)).foregroundStyle(.secondary)
+                    Text("Annotating").scaledFont(10).foregroundStyle(.secondary)
                 }
             }
             .padding(8)
@@ -657,6 +766,10 @@ private struct FactCheckClaimCard: View {
         .padding(14)
         .background(.quaternary.opacity(0.28), in: RoundedRectangle(cornerRadius: 12))
         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.quaternary, lineWidth: 1))
+        // A card is one claim and everything said about it. Without the boundary, the words of
+        // one claim run straight into the words of the next, and nothing says which verdict a
+        // reasoning belongs to.
+        .accessibilityElement(children: .contain)
     }
 
     /// Annotate is for a claim that has been researched and has no annotations yet — the same gate
@@ -676,7 +789,7 @@ private struct FactCheckClaimCard: View {
             if claim.missingAnnotations, claim.isClassified, !claim.awaitingAnnotations {
                 Button(action: onAnnotate) {
                     Text(claim.isAnnotating ? String(localized: "Annotating") : String(localized: "Annotate"))
-                        .font(.system(size: 12, weight: .medium))
+                        .scaledFont(12, weight: .medium)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 2)
                 }
@@ -693,13 +806,13 @@ private struct FactCheckClaimCard: View {
                         Text("Fact-Checking")
                     } else {
                         if isReclassification {
-                            Image(systemName: "arrow.clockwise").font(.system(size: 11))
+                            Image(systemName: "arrow.clockwise").scaledFont(11)
                                 .accessibilityHidden(true)
                         }
                         Text("Fact-Check")
                     }
                 }
-                .font(.system(size: 12, weight: .medium))
+                .scaledFont(12, weight: .medium)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 2)
             }
@@ -738,8 +851,11 @@ private struct FactCheckClaimCard: View {
     private func labelled<Content: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .font(.system(size: 10, weight: .semibold)).tracking(0.6)
+                .scaledFont(10, weight: .semibold).tracking(0.6)
                 .foregroundStyle(.secondary)
+                // "Reasoning" and "Sources" are how a card is taken apart to be re-read, and
+                // the rotor is how a cursor does that without swiping through every word.
+                .accessibilityAddTraits(.isHeader)
             content()
         }
     }
@@ -820,6 +936,8 @@ private struct SourceFavicon: View {
         ZStack {
             RoundedRectangle(cornerRadius: 3).fill(.quaternary)
             Text(String((domain.first ?? "?").uppercased()))
+                // Not `scaledFont`: this is the letter a favicon is 16 points square, and the
+                // square cannot grow with it.
                 .font(.system(size: 9, weight: .semibold))
                 .foregroundStyle(.secondary)
             // Whichever of the three is current. `dropFirst` rather than an index check, so that
@@ -876,11 +994,13 @@ private struct AnnotatedClaimText: View {
             textLength: text.utf16.count,
             segStart: segStart
         )
-        Text(Self.painted(text, ranges: ranges))
-            .font(.system(size: 12))
+        let painted = Self.painted(text, ranges: ranges)
+        Text(painted.drawn)
+            .scaledFont(12)
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
             .textSelection(.enabled)
+            .accessibilityLabel(Text(painted.spoken))
     }
 
     /// The text with `ranges` painted on it, and `shading` — a claim's own span in the whole input
@@ -890,13 +1010,21 @@ private struct AnnotatedClaimText: View {
     /// they pass and whether anything is shaded, and keeping that in the arguments is what stops
     /// the copies drifting apart. (The popup reads the same way: one `AnnotatedText`, told which
     /// offsets its text starts at.)
+    ///
+    /// Two outputs from the one walk, because what is struck is only known inside it. The drawn
+    /// one carries a strike and a red handwriting face; a cursor sees neither, and read as it is
+    /// painted a corrected word arrives immediately beside the word it replaced — "China India
+    /// has become…" — with nothing to say which of the two the sentence is about. The `spoken`
+    /// figure leaves out what is struck and keeps what replaces it: the sentence as it should
+    /// read, which is the sentence the card's own heading states.
     static func painted(
         _ text: String,
         ranges: [(start: Int, end: Int, correction: String)],
         shading: (intervals: [(start: Int, end: Int)], color: Color)? = nil,
         correctionSize: CGFloat = 13
-    ) -> AttributedString {
+    ) -> (drawn: AttributedString, spoken: String) {
         var output = AttributedString()
+        var spoken = ""
         let units = Array(text.utf16)
         var cursor = 0
 
@@ -927,6 +1055,7 @@ private struct AnnotatedClaimText: View {
             for (start, end) in zip(ordered, ordered.dropFirst()) where end > start {
                 let slice = String(decoding: units[start..<end], as: UTF16.self)
                 guard !slice.isEmpty else { continue }
+                if !struck { spoken.append(slice) }
                 var piece = AttributedString(slice)
                 if struck {
                     piece.strikethroughStyle = Text.LineStyle(pattern: .solid, color: Self.strikeRed)
@@ -962,15 +1091,17 @@ private struct AnnotatedClaimText: View {
                 // write the same pair; the guard belongs in all three.)
                 let before = Self.isWordCharacter(units, at: end - 1)
                 let after = Self.isWordCharacter(units, at: end)
-                var piece = AttributedString((before ? " " : "") + shown + (after ? " " : ""))
+                let words = (before ? " " : "") + shown + (after ? " " : "")
+                var piece = AttributedString(words)
                 piece.foregroundColor = Self.correctionRed
                 piece.font = Self.handwriting(size: correctionSize)
                 output.append(piece)
+                spoken.append(words)
             }
             cursor = end
         }
         emit(cursor, units.count, struck: false)
-        return output
+        return (output, spoken.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 
     /// Whether this UTF-16 unit is something a correction has to be kept apart from. Past the end
@@ -1036,6 +1167,9 @@ private struct CopyButton: View {
         Button {
             if copy() {
                 copied = true
+                // The glyph becomes a check, which says nothing at all to a cursor, and the
+                // label stays "Copy" — pressing again copies again. So the outcome is spoken.
+                announce(String(localized: "Copied"))
                 resetTimer?.cancel()
                 resetTimer = Task {
                     try? await Task.sleep(nanoseconds: 1_500_000_000)
@@ -1045,7 +1179,7 @@ private struct CopyButton: View {
             }
         } label: {
             Image(systemName: copied ? "checkmark" : "doc.on.doc")
-                .font(.system(size: 10))
+                .scaledFont(10)
                 .foregroundStyle(.secondary)
         }
         .buttonStyle(.plain)
@@ -1137,7 +1271,7 @@ private struct VerdictBadgeView: View {
                     pieceView(piece, canWiden: canWiden)
                 }
             }
-            .font(.system(size: 11, weight: .semibold))
+            .scaledFont(11, weight: .semibold)
             .foregroundStyle(colour)
             .padding(.horizontal, 8)
             .padding(.vertical, 2)
@@ -1162,7 +1296,7 @@ private struct VerdictBadgeView: View {
         } else {
             // Nothing to be confident about yet, which is its own answer rather than a blank.
             Text("Unknown")
-                .font(.system(size: 11, weight: .semibold))
+                .scaledFont(11, weight: .semibold)
                 .foregroundStyle(Self.neutral)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 2)

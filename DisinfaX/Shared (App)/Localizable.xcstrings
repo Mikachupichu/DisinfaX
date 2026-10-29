@@ -1,6 +1,953 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Last Used" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laas gebruik"
+          }
+        },
+        "ak" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deɛ Wode Dii Dwuma Akyire"
+          }
+        },
+        "am" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "መጨረሻ የተጠቀሙበት"
+          }
+        },
+        "an" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usau por zaguera vez"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر استخدام"
+          }
+        },
+        "as" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "শেষবাৰ ব্যৱহৃত"
+          }
+        },
+        "ast" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usáu la última vez"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son İstifadə"
+          }
+        },
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Апошняе выкарыстанне"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последно използвано"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "সর্বশেষ ব্যবহৃত"
+          }
+        },
+        "br" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Implijet da ziwezhañ"
+          }
+        },
+        "bs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadnji put korišteno"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usat per última vegada"
+          }
+        },
+        "ceb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kataposang Gigamit"
+          }
+        },
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دواجار بەکارهاتوو"
+          }
+        },
+        "co" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimu adupratu"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naposledy použito"
+          }
+        },
+        "cy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defnyddiwyd ddiwethaf"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sidst brugt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "de_AT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "de_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "de_DE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "de_LI" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "de_LU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Τελευταία χρήση"
+          }
+        },
+        "eo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laste uzita"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_AR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_BO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_CL" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_CO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_CR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_EC" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_ES" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_HN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_PE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_UY" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "es_VE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viimati kasutatud"
+          }
+        },
+        "eu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azken erabilera"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخرین استفاده"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viimeksi käytetty"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huling Ginamit"
+          }
+        },
+        "fo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seinast brúkt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière utilisation"
+          }
+        },
+        "fr_CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière utilisation"
+          }
+        },
+        "fr_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière utilisation"
+          }
+        },
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière utilisation"
+          }
+        },
+        "fy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lêst brûkt"
+          }
+        },
+        "ga" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Úsáidte go Deireanach"
+          }
+        },
+        "gd" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air a chleachdadh mu dheireadh"
+          }
+        },
+        "gl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por última vez"
+          }
+        },
+        "gn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ojeporu paha"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "છેલ્લે વપરાયેલ"
+          }
+        },
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wanda Aka Yi Amfani da Shi Ƙarshe"
+          }
+        },
+        "haw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoʻohana hope loa"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "בשימוש אחרון"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अंतिम बार उपयोग किया गया"
+          }
+        },
+        "hmn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siv Zaum Kawg"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadnji put korišteno"
+          }
+        },
+        "hsb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poslednje wužite"
+          }
+        },
+        "ht" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dènye itilize"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utoljára használva"
+          }
+        },
+        "hy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Վերջին անգամ օգտագործված"
+          }
+        },
+        "ia" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultime usate"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terakhir Digunakan"
+          }
+        },
+        "ig" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nke Ejiri Ikpeazụ"
+          }
+        },
+        "is" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Síðast notað"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo utilizzato"
+          }
+        },
+        "it_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo utilizzato"
+          }
+        },
+        "it_IT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo utilizzato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前回使用"
+          }
+        },
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pungkasan Digunakake"
+          }
+        },
+        "ka" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ბოლოს გამოყენებული"
+          }
+        },
+        "kab" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aseqdec aneggaru"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соңғы қолданылған"
+          }
+        },
+        "km" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ប្រើចុងក្រោយ"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಕೊನೆಯ ಬಾರಿ ಬಳಸಲಾಗಿದೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 사용"
+          }
+        },
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cara dawî hat bikaranîn"
+          }
+        },
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Акыркы колдонулган"
+          }
+        },
+        "la" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo adhibitum"
+          }
+        },
+        "lb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fir d'lescht benotzt"
+          }
+        },
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ໃຊ້ຫຼ້າສຸດ"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paskutinį kartą naudota"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pēdējoreiz izmantots"
+          }
+        },
+        "mg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nampiasaina farany"
+          }
+        },
+        "mi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Whakamahia whakamutunga"
+          }
+        },
+        "mk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последно користено"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "അവസാനം ഉപയോഗിച്ചത്"
+          }
+        },
+        "mn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сүүлд ашигласан"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शेवटचे वापरलेले"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terakhir Digunakan"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L-aħħar użat"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "နောက်ဆုံးအသုံးပြုမှု"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sist brukt"
+          }
+        },
+        "ne" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पछिल्लो पटक प्रयोग गरिएको"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laatst gebruikt"
+          }
+        },
+        "nn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sist brukt"
+          }
+        },
+        "ny" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zinagwiritsidwa ntchito posachedwa"
+          }
+        },
+        "om" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dhumarratti fayyadame"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଶେଷ ଥର ବ୍ୟବହୃତ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਆਖਰੀ ਵਾਰ ਵਰਤਿਆ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostatnio użyte"
+          }
+        },
+        "ps" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وروستی کارول شوی"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por último"
+          }
+        },
+        "pt_BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por último"
+          }
+        },
+        "pt_PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado por último"
+          }
+        },
+        "qu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qhipa Kaq Servisqa"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima utilisaziun"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima utilizare"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последнее использование"
+          }
+        },
+        "rw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byakoreshejwe vuba"
+          }
+        },
+        "sd" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخري استعمال ٿيل"
+          }
+        },
+        "sh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poslednje korišćeno"
+          }
+        },
+        "si" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "අවසන් වරට භාවිත කළේ"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naposledy použité"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazadnje uporabljeno"
+          }
+        },
+        "sm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faʻaaogaina mulimuli"
+          }
+        },
+        "sn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakashandiswa Kekupedzisira"
+          }
+        },
+        "so" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isticmaalkii ugu dambeeyay"
+          }
+        },
+        "sq" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Përdorur së fundmi"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последње коришћено"
+          }
+        },
+        "st" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E Sebedisitsoe ho Qetela"
+          }
+        },
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panungtung Dipaké"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senast använd"
+          }
+        },
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilitumika mwisho"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "கடைசியாகப் பயன்படுத்தியது"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "చివరిగా ఉపయోగించినది"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Охирин истифодашуда"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้ล่าสุด"
+          }
+        },
+        "ti" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ናይ መወዳእታ እተጠቐምካሉ"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iň soňky ulanylan"
+          }
+        },
+        "tn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E Dirisitswe la Bofelo"
+          }
+        },
+        "to" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngāueʻaki Fakaʻosi"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son Kullanılan"
+          }
+        },
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соңгы кулланылган"
+          }
+        },
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ئەڭ ئاخىرقى ئىشلىتىلگەن"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Востаннє використано"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخری بار استعمال شدہ"
+          }
+        },
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oxirgi ishlatilgan"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng gần nhất"
+          }
+        },
+        "wa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dièrin eployî"
+          }
+        },
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egqibela Ukusetyenziswa"
+          }
+        },
+        "yi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "צולעצט גענוצט"
+          }
+        },
+        "yo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Èyí tí a Lò Kẹ́yìn"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用"
+          }
+        },
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用"
+          }
+        },
+        "zh_HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用"
+          }
+        },
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Okokugcina Ukusetshenziswa"
+          }
+        }
+      }
+    },
     "Sign out" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -26556,6 +27503,954 @@
     "Continue with Google" : {
       "comment" : "The Google button on the app's sign-in page."
     },
+    "Copied" : {
+      "comment" : "Spoken by a copy button once the text is on the clipboard.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekopieer"
+          }
+        },
+        "ak" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wɔakɔpi"
+          }
+        },
+        "am" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ተቀድቷል"
+          }
+        },
+        "an" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiato"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم النسخ"
+          }
+        },
+        "as" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "কপি কৰা হ'ল"
+          }
+        },
+        "ast" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiáu"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyalandı"
+          }
+        },
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скапіявана"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копирано"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "কপি করা হয়েছে"
+          }
+        },
+        "br" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eilet"
+          }
+        },
+        "bs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopirano"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiat"
+          }
+        },
+        "ceb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakopya"
+          }
+        },
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کۆپی کرا"
+          }
+        },
+        "co" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cupiatu"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zkopírováno"
+          }
+        },
+        "cy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wedi'i gopïo"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopieret"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "de_AT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "de_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "de_DE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "de_LI" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "de_LU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αντιγράφηκε"
+          }
+        },
+        "eo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiita"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_AR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_BO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_CL" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_CO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_CR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_EC" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_ES" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_HN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_PE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_UY" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "es_VE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopeeritud"
+          }
+        },
+        "eu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiatuta"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کپی شد"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopioitu"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakopya"
+          }
+        },
+        "fo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avritað"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        },
+        "fr_CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        },
+        "fr_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        },
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        },
+        "fy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiearre"
+          }
+        },
+        "ga" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cóipeáilte"
+          }
+        },
+        "gd" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Air a lethbhreacadh"
+          }
+        },
+        "gl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "gn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oñemokopia"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "કૉપિ થયું"
+          }
+        },
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An kwafa"
+          }
+        },
+        "haw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ua kope ʻia"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "הועתק"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉपी किया गया"
+          }
+        },
+        "hmn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luam theej lawm"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopirano"
+          }
+        },
+        "hsb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopěrowane"
+          }
+        },
+        "ht" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopye"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Másolva"
+          }
+        },
+        "hy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Պատճենվեց"
+          }
+        },
+        "ia" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiate"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disalin"
+          }
+        },
+        "ig" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detuola"
+          }
+        },
+        "is" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afritað"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiato"
+          }
+        },
+        "it_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiato"
+          }
+        },
+        "it_IT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピーしました"
+          }
+        },
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikopi"
+          }
+        },
+        "ka" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "დაკოპირდა"
+          }
+        },
+        "kab" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yettwanɣel"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Көшірілді"
+          }
+        },
+        "km" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "បានចម្លង"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ನಕಲಿಸಲಾಗಿದೆ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사됨"
+          }
+        },
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopî bû"
+          }
+        },
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Көчүрүлдү"
+          }
+        },
+        "la" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exscriptum"
+          }
+        },
+        "lb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopéiert"
+          }
+        },
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ສຳເນົາແລ້ວ"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nukopijuota"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopēts"
+          }
+        },
+        "mg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voakopia"
+          }
+        },
+        "mi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kua tāruatia"
+          }
+        },
+        "mk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копирано"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "പകർത്തി"
+          }
+        },
+        "mn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хуулагдсан"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉपी केले"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disalin"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikkupjat"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ကူးယူပြီးပါပြီ"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "ne" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रतिलिपि गरियो"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekopieerd"
+          }
+        },
+        "nn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiert"
+          }
+        },
+        "ny" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakopedwa"
+          }
+        },
+        "om" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaappii ta'e"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "କପି ହେଲା"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਕਾਪੀ ਕੀਤਾ ਗਿਆ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skopiowano"
+          }
+        },
+        "ps" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کاپي شو"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "pt_BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "pt_PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        },
+        "qu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qillqasqa"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copià"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировано"
+          }
+        },
+        "rw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byakoporowe"
+          }
+        },
+        "sd" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ڪاپي ٿيو"
+          }
+        },
+        "sh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopirano"
+          }
+        },
+        "si" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "පිටපත් කරන ලදි"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skopírované"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopirano"
+          }
+        },
+        "sm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ua kopiina"
+          }
+        },
+        "sn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakopwa"
+          }
+        },
+        "so" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La koobiyeeyay"
+          }
+        },
+        "sq" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "U kopjua"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копирано"
+          }
+        },
+        "st" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E kopisitsoe"
+          }
+        },
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disalin"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopierat"
+          }
+        },
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imenakiliwa"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "நகலெடுக்கப்பட்டது"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "కాపీ చేయబడింది"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нусхабардорӣ шуд"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คัดลอกแล้ว"
+          }
+        },
+        "ti" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ተቐዲሑ"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göçürildi"
+          }
+        },
+        "tn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E kopilwe"
+          }
+        },
+        "to" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuo kopi"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyalandı"
+          }
+        },
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Күчерелде"
+          }
+        },
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كۆچۈرۈلدى"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопійовано"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کاپی ہو گیا"
+          }
+        },
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nusxalandi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã sao chép"
+          }
+        },
+        "wa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyî"
+          }
+        },
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikopishiwe"
+          }
+        },
+        "yi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "קאפירט"
+          }
+        },
+        "yo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ti daakọ"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制"
+          }
+        },
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制"
+          }
+        },
+        "zh_HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已複製"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已複製"
+          }
+        },
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kukopishiwe"
+          }
+        }
+      }
+    },
     "Copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41735,6 +43630,954 @@
     "No verifiable claims were found in this text." : {
       "comment" : "Text displayed when no verifiable claims are found in the input text.",
       "isCommentAutoGenerated" : true
+    },
+    "Not available yet" : {
+      "comment" : "Stands in for a balance that has not been reported yet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nog nie beskikbaar nie"
+          }
+        },
+        "ak" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ɛnnyaee"
+          }
+        },
+        "am" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "እስካሁን አይገኝም"
+          }
+        },
+        "an" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encara no disponible"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير متاح بعد"
+          }
+        },
+        "as" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এতিয়াও উপলব্ধ নহয়"
+          }
+        },
+        "ast" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entá nun ta disponible"
+          }
+        },
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hələ mövcud deyil"
+          }
+        },
+        "be" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пакуль недаступная"
+          }
+        },
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все още не е налично"
+          }
+        },
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "এখনও পাওয়া যায়নি"
+          }
+        },
+        "br" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N'eo ket hegerz c'hoazh"
+          }
+        },
+        "bs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Još nije dostupno"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encara no disponible"
+          }
+        },
+        "ceb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wala pa magamit"
+          }
+        },
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هێشتا بەردەست نییە"
+          }
+        },
+        "co" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sempre micca dispunibile"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zatím není k dispozici"
+          }
+        },
+        "cy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ddim ar gael eto"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke tilgængelig endnu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht verfügbar"
+          }
+        },
+        "de_AT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht verfügbar"
+          }
+        },
+        "de_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht verfügbar"
+          }
+        },
+        "de_DE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht verfügbar"
+          }
+        },
+        "de_LI" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht verfügbar"
+          }
+        },
+        "de_LU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht verfügbar"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δεν είναι ακόμη διαθέσιμο"
+          }
+        },
+        "eo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ankoraŭ ne disponebla"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_AR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_BO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_CL" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_CO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_CR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_EC" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_ES" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_HN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_PE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_UY" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "es_VE" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no disponible"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veel pole saadaval"
+          }
+        },
+        "eu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oraindik ez dago erabilgarri"
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هنوز در دسترس نیست"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ei vielä saatavilla"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi pa magagamit"
+          }
+        },
+        "fo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikki tøkt enn"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore disponible"
+          }
+        },
+        "fr_CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore disponible"
+          }
+        },
+        "fr_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore disponible"
+          }
+        },
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore disponible"
+          }
+        },
+        "fy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch net beskikber"
+          }
+        },
+        "ga" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Níl sé ar fáil fós"
+          }
+        },
+        "gd" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chan eil e ri fhaighinn fhathast"
+          }
+        },
+        "gl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aínda non dispoñible"
+          }
+        },
+        "gn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ndaipóri gueteri"
+          }
+        },
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "હજી ઉપલબ્ધ નથી"
+          }
+        },
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ba a samu ba tukuna"
+          }
+        },
+        "haw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ʻAʻole i loaʻa"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "עדיין לא זמין"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अभी उपलब्ध नहीं"
+          }
+        },
+        "hmn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tseem tsis muaj"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Još nije dostupno"
+          }
+        },
+        "hsb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hišće nic k dispoziciji"
+          }
+        },
+        "ht" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poko disponib"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Még nem érhető el"
+          }
+        },
+        "hy" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Դեռ հասանելի չէ"
+          }
+        },
+        "ia" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ancora disponibile"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum tersedia"
+          }
+        },
+        "ig" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ọ dịbeghị"
+          }
+        },
+        "is" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekki tiltækt ennþá"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ancora disponibile"
+          }
+        },
+        "it_CH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ancora disponibile"
+          }
+        },
+        "it_IT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ancora disponibile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだ利用できません"
+          }
+        },
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durung kasedhiya"
+          }
+        },
+        "ka" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ჯერ მიუწვდომელია"
+          }
+        },
+        "kab" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ulac-itt tura"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Әзірге қолжетімді емес"
+          }
+        },
+        "km" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "មិនទាន់មាន"
+          }
+        },
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 사용할 수 없음"
+          }
+        },
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hîn ne berdest e"
+          }
+        },
+        "ky" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Азырынча жеткиликсиз"
+          }
+        },
+        "la" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nondum praesto"
+          }
+        },
+        "lb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach net verfügbar"
+          }
+        },
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຍັງບໍ່ມີ"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dar nepasiekiama"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vēl nav pieejams"
+          }
+        },
+        "mg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tsy misy amin'izao"
+          }
+        },
+        "mi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kāore anō kia wātea"
+          }
+        },
+        "mk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сè уште не е достапно"
+          }
+        },
+        "ml" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ഇതുവരെ ലഭ്യമല്ല"
+          }
+        },
+        "mn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одоогоор боломжгүй"
+          }
+        },
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अद्याप उपलब्ध नाही"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum tersedia"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Għadu mhux disponibbli"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "မရရှိသေးပါ"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke tilgjengelig ennå"
+          }
+        },
+        "ne" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अझै उपलब्ध छैन"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nog niet beschikbaar"
+          }
+        },
+        "nn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikkje tilgjengeleg enno"
+          }
+        },
+        "ny" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sizikupezeka"
+          }
+        },
+        "om" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amma amma hin argamu"
+          }
+        },
+        "or" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ଏପର୍ଯ୍ୟନ୍ତ ଉପଲବ୍ଧ ନାହିଁ"
+          }
+        },
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਹਾਲੇ ਉਪਲਬਧ ਨਹੀਂ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeszcze niedostępne"
+          }
+        },
+        "ps" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا اوس مهيا نه دی"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não disponível"
+          }
+        },
+        "pt_BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não disponível"
+          }
+        },
+        "pt_PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não disponível"
+          }
+        },
+        "qu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manaraq kachkanchu"
+          }
+        },
+        "rm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anc betg disponibel"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Încă nu este disponibil"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока недоступно"
+          }
+        },
+        "rw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ntibiraboneka"
+          }
+        },
+        "sd" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اڃا دستياب ناهي"
+          }
+        },
+        "sh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Još nije dostupno"
+          }
+        },
+        "si" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "තවම නොමැත"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zatiaľ nie je k dispozícii"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Še ni na voljo"
+          }
+        },
+        "sm" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E leʻi maua"
+          }
+        },
+        "sn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haisati iwanikwa"
+          }
+        },
+        "so" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wali lama heli karo"
+          }
+        },
+        "sq" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuk është i disponueshëm ende"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Још није доступно"
+          }
+        },
+        "st" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ha e so fumanehe"
+          }
+        },
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teu acan sayagi"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inte tillgängligt än"
+          }
+        },
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haipatikani bado"
+          }
+        },
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "இன்னும் கிடைக்கவில்லை"
+          }
+        },
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ఇంకా అందుబాటులో లేదు"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҳанӯз дастрас нест"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ยังไม่พร้อมใช้งาน"
+          }
+        },
+        "ti" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ክሳብ ሕጂ ኣይርከብን"
+          }
+        },
+        "tk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Häzir elýeterli däl"
+          }
+        },
+        "tn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ga e ise e bonale"
+          }
+        },
+        "to" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ʻOku ʻikai ke maʻu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz kullanılamıyor"
+          }
+        },
+        "tt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Әлегә юк"
+          }
+        },
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تېخى ئىشلەتكىلى بولمايدۇ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ще недоступно"
+          }
+        },
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابھی دستیاب نہیں"
+          }
+        },
+        "uz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hozircha mavjud emas"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chưa có sẵn"
+          }
+        },
+        "wa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nén co disponeuve"
+          }
+        },
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayikafumaneki"
+          }
+        },
+        "yi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "נאך נישט פאראן"
+          }
+        },
+        "yo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ko si sibẹsibẹ"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚不可用"
+          }
+        },
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚不可用"
+          }
+        },
+        "zh_HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未提供"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚無法取得"
+          }
+        },
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayikatholakali"
+          }
+        }
+      }
     },
     "On any webpage, select the text you want to fact-check." : {
       "extractionState" : "manual",
@@ -62582,949 +65425,949 @@
         }
       }
     },
-    "Tap {1} again and choose {2} DisinfaX to open the popup." : {
+    "Tap {1} DisinfaX to open the popup." : {
       "extractionState" : "manual",
       "localizations" : {
         "af" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tik weer op {1} en kies {2} DisinfaX om die opspringvenster te open."
+            "value" : "Tik op {1} DisinfaX om die opspringvenster te open."
           }
         },
         "ak" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ka saa {1} bio na paw {2} DisinfaX na bue pop-up no."
+            "value" : "Ka saa {1} DisinfaX na bue pop-up no."
           }
         },
         "am" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "እንደገና {1} ን ይንኩ እና ብቅ ባይ መስኮቱን ለመክፈት {2} DisinfaX ን ይምረጡ።"
+            "value" : "ብቅ ባይ መስኮቱን ለመክፈት {1} DisinfaX ን ይንኩ።"
           }
         },
         "an" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Torna a tocar {1} y escull {2} DisinfaX pa ubrir a finestra emerchent."
+            "value" : "Toca {1} DisinfaX pa ubrir a finestra emerchent."
           }
         },
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اضغط على {1} مرة أخرى واختر {2} DisinfaX لفتح النافذة المنبثقة."
+            "value" : "اضغط على {1} DisinfaX لفتح النافذة المنبثقة."
           }
         },
         "as" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "পুনৰ {1} ত টিপক আৰু পপআপ খুলিবলৈ {2} DisinfaX বাছক।"
+            "value" : "পপআপ খুলিবলৈ {1} DisinfaX ত টিপক।"
           }
         },
         "ast" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Torna a tocar {1} y escueye {2} DisinfaX p'abrir la ventana emerxente."
+            "value" : "Toca {1} DisinfaX p'abrir la ventana emerxente."
           }
         },
         "az" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yenidən {1} ikonuna toxunun və pop-up pəncərəsini açmaq üçün {2} DisinfaX-i seçin."
+            "value" : "Pop-up pəncərəsini açmaq üçün {1} DisinfaX-ə toxunun."
           }
         },
         "be" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Яшчэ раз дакраніцеся да {1} і выберыце {2} DisinfaX, каб адкрыць усплывальнае акно."
+            "value" : "Каб адкрыць усплывальнае акно, дакраніцеся да {1} DisinfaX."
           }
         },
         "bg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Докоснете {1} отново и изберете {2} DisinfaX, за да отворите изскачащия прозорец."
+            "value" : "Докоснете {1} DisinfaX, за да отворите изскачащия прозорец."
           }
         },
         "bn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "আবার {1} ট্যাপ করুন এবং পপআপ খুলতে {2} DisinfaX বেছে নিন।"
+            "value" : "পপআপ খুলতে {1} DisinfaX ট্যাপ করুন।"
           }
         },
         "br" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stokit en-dro war {1} ha dibabit {2} DisinfaX evit digeriñ ar prenestr diflugellañ."
+            "value" : "Stokit war {1} DisinfaX evit digeriñ ar prenestr diflugellañ."
           }
         },
         "bs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dodirnite {1} ponovo i odaberite {2} DisinfaX kako biste otvorili skočni prozor."
+            "value" : "Dodirnite {1} DisinfaX da biste otvorili skočni prozor."
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nou i tria {2} DisinfaX per obrir la finestra emergent."
+            "value" : "Toca {1} DisinfaX per obrir la finestra emergent."
           }
         },
         "ceb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I-tap pag-usab ang {1} ug pilia ang {2} DisinfaX aron ablihan ang popup."
+            "value" : "I-tap ang {1} DisinfaX aron ablihan ang popup."
           }
         },
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دیسان لەسەر {1} دەست بنێ و {2} DisinfaX هەڵبژێرە بۆ کردنەوەی پەنجەرەی داتکاو."
+            "value" : "لەسەر {1} DisinfaX دەست بنێ بۆ کردنەوەی پەنجەرەی داتکاو."
           }
         },
         "co" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toccà torna {1} è sceglie {2} DisinfaX per apre a finestra chì spunta."
+            "value" : "Toccà {1} DisinfaX per apre a finestra chì spunta."
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klepněte znovu na {1} a vyberte {2} DisinfaX pro otevření vyskakovacího okna."
+            "value" : "Klepněte na {1} DisinfaX pro otevření vyskakovacího okna."
           }
         },
         "cy" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tapiwch {1} eto a dewis {2} DisinfaX i agor y naidlen."
+            "value" : "Tapiwch {1} DisinfaX i agor y naidlen."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryk på {1} igen, og vælg {2} DisinfaX for at åbne pop op-vinduet."
+            "value" : "Tryk på {1} DisinfaX for at åbne pop op-vinduet."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe erneut auf {1} und wähle {2} DisinfaX, um das Popup zu öffnen."
+            "value" : "Tippe auf {1} DisinfaX, um das Popup zu öffnen."
           }
         },
         "de_AT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe erneut auf {1} und wähle {2} DisinfaX, um das Popup zu öffnen."
+            "value" : "Tippe auf {1} DisinfaX, um das Popup zu öffnen."
           }
         },
         "de_CH" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe erneut auf {1} und wähle {2} DisinfaX, um das Popup zu öffnen."
+            "value" : "Tippe auf {1} DisinfaX, um das Popup zu öffnen."
           }
         },
         "de_DE" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe erneut auf {1} und wähle {2} DisinfaX, um das Popup zu öffnen."
+            "value" : "Tippe auf {1} DisinfaX, um das Popup zu öffnen."
           }
         },
         "de_LI" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe erneut auf {1} und wähle {2} DisinfaX, um das Popup zu öffnen."
+            "value" : "Tippe auf {1} DisinfaX, um das Popup zu öffnen."
           }
         },
         "de_LU" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe erneut auf {1} und wähle {2} DisinfaX, um das Popup zu öffnen."
+            "value" : "Tippe auf {1} DisinfaX, um das Popup zu öffnen."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Πάτησε ξανά το {1} και επίλεξε {2} DisinfaX για να ανοίξεις το αναδυόμενο παράθυρο."
+            "value" : "Πάτησε το {1} DisinfaX για να ανοίξεις το αναδυόμενο παράθυρο."
           }
         },
         "eo" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tuŝu {1} denove kaj elektu {2} DisinfaX por malfermi la ŝprucfenestron."
+            "value" : "Tuŝu {1} DisinfaX por malfermi la ŝprucfenestron."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_AR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_BO" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_CL" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_CO" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_CR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_DO" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_EC" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_ES" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_HN" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_MX" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_PE" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_US" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_UY" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "es_VE" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de nuevo y elige {2} DisinfaX para abrir la ventana emergente."
+            "value" : "Toca {1} DisinfaX para abrir la ventana emergente."
           }
         },
         "et" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Puuduta uuesti {1} ja vali {2} DisinfaX, et avada hüpikaken."
+            "value" : "Puuduta {1} DisinfaX, et avada hüpikaken."
           }
         },
         "eu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sakatu berriro {1} eta hautatu {2} DisinfaX leiho gainerakorra irekitzeko."
+            "value" : "Sakatu {1} DisinfaX leiho gainerakorra irekitzeko."
           }
         },
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دوباره روی {1} ضربه بزنید و {2} DisinfaX را برای باز کردن پنجرهٔ بازشو انتخاب کنید."
+            "value" : "برای باز کردن پنجرهٔ بازشو روی {1} DisinfaX ضربه بزنید."
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Napauta {1} uudelleen ja valitse {2} DisinfaX avataksesi ponnahdusikkunan."
+            "value" : "Napauta {1} DisinfaX avataksesi ponnahdusikkunan."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I-tap muli ang {1} at piliin ang {2} DisinfaX para buksan ang popup."
+            "value" : "I-tap ang {1} DisinfaX para buksan ang popup."
           }
         },
         "fo" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trýst aftur á {1} og vel {2} DisinfaX fyri at opna sprettigluggan."
+            "value" : "Trýst á {1} DisinfaX fyri at opna sprettigluggan."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuyez à nouveau sur {1} et choisissez {2} DisinfaX pour ouvrir la fenêtre."
+            "value" : "Appuyez sur {1} DisinfaX pour ouvrir la fenêtre."
           }
         },
         "fr_CA" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuyez à nouveau sur {1} et choisissez {2} DisinfaX pour ouvrir la fenêtre."
+            "value" : "Appuyez sur {1} DisinfaX pour ouvrir la fenêtre."
           }
         },
         "fr_CH" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuyez à nouveau sur {1} et choisissez {2} DisinfaX pour ouvrir la fenêtre."
+            "value" : "Appuyez sur {1} DisinfaX pour ouvrir la fenêtre."
           }
         },
         "fr_FR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuyez à nouveau sur {1} et choisissez {2} DisinfaX pour ouvrir la fenêtre."
+            "value" : "Appuyez sur {1} DisinfaX pour ouvrir la fenêtre."
           }
         },
         "fy" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tik nochris op {1} en kies {2} DisinfaX om it popupfinster te iepenjen."
+            "value" : "Tik op {1} DisinfaX om it popupfinster te iepenjen."
           }
         },
         "ga" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tapáil {1} arís agus roghnaigh {2} DisinfaX chun an preabfhuinneog a oscailt."
+            "value" : "Tapáil {1} DisinfaX chun an preabfhuinneog a oscailt."
           }
         },
         "gd" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thoir gnogag air {1} a-rithist agus tagh {2} DisinfaX gus a' phriob-uinneag fhosgladh."
+            "value" : "Thoir gnogag air {1} DisinfaX gus a' phriob-uinneag fhosgladh."
           }
         },
         "gl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca {1} de novo e escolle {2} DisinfaX para abrir a xanela emerxente."
+            "value" : "Toca {1} DisinfaX para abrir a xanela emerxente."
           }
         },
         "gn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eikutu jey {1} ha eiporavo {2} DisinfaX pop-up ojepe'a hag̃ua."
+            "value" : "Eikutu {1} DisinfaX pop-up ojepe'a hag̃ua."
           }
         },
         "gu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ફરીથી {1} પર ટૅપ કરો અને પોપઅપ ખોલવા માટે {2} DisinfaX પસંદ કરો."
+            "value" : "પોપઅપ ખોલવા માટે {1} DisinfaX પર ટૅપ કરો."
           }
         },
         "ha" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Danna {1} kuma zaɓi {2} DisinfaX don buɗe tagar tsallakewa."
+            "value" : "Danna {1} DisinfaX don buɗe tagar tsallakewa."
           }
         },
         "haw" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaomi hou iā {1} a koho iā {2} DisinfaX e wehe i ka pukaaniani puka."
+            "value" : "E kaomi iā {1} DisinfaX e wehe i ka pukaaniani puka."
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "הקש שוב על {1} ובחר ב-{2} DisinfaX כדי לפתוח את החלון הקופץ."
+            "value" : "הקש על {1} DisinfaX כדי לפתוח את החלון הקופץ."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "{1} को फिर से टैप करें और पॉपअप खोलने के लिए {2} DisinfaX चुनें।"
+            "value" : "पॉपअप खोलने के लिए {1} DisinfaX टैप करें।"
           }
         },
         "hmn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kov dua {1} thiab xaiv {2} DisinfaX kom qhib qhov rai pop-up."
+            "value" : "Kov {1} DisinfaX kom qhib qhov rai pop-up."
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ponovno dodirnite {1} i odaberite {2} DisinfaX kako biste otvorili skočni prozor."
+            "value" : "Dodirnite {1} DisinfaX da biste otvorili skočni prozor."
           }
         },
         "hsb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podótkń {1} hišće raz a wubjer {2} DisinfaX, zo by wuskakowace wokno wočinił."
+            "value" : "Podótkń {1} DisinfaX, zo by wuskakowace wokno wočinił."
           }
         },
         "ht" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tap ankò sou {1} epi chwazi {2} DisinfaX pou louvri popòp la."
+            "value" : "Tap sou {1} DisinfaX pou louvri popòp la."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Koppints ismét a {1} ikonra, és válaszd a {2} DisinfaX-et az előugró ablak megnyitásához."
+            "value" : "Koppints a {1} DisinfaX-re az előugró ablak megnyitásához."
           }
         },
         "hy" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Կրկին հպեք {1}-ին և ընտրեք {2} DisinfaX-ը՝ ելնող պատուհանը բացելու համար։"
+            "value" : "Ելնող պատուհանը բացելու համար հպեք {1} DisinfaX-ին։"
           }
         },
         "ia" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tocca {1} de novo e selige {2} DisinfaX pro aperir le fenestra pop-up."
+            "value" : "Tocca {1} DisinfaX pro aperir le fenestra pop-up."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketuk {1} lagi dan pilih {2} DisinfaX untuk membuka jendela pop-up."
+            "value" : "Ketuk {1} DisinfaX untuk membuka jendela pop-up."
           }
         },
         "ig" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pị {1} ọzọ wee họrọ {2} DisinfaX iji meghee windo mwaghachi."
+            "value" : "Pị {1} DisinfaX iji meghee windo mwaghachi."
           }
         },
         "is" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ýttu aftur á {1} og veldu {2} DisinfaX til að opna sprettgluggann."
+            "value" : "Ýttu á {1} DisinfaX til að opna sprettgluggann."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tocca di nuovo {1} e scegli {2} DisinfaX per aprire il popup."
+            "value" : "Tocca {1} DisinfaX per aprire il popup."
           }
         },
         "it_CH" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tocca di nuovo {1} e scegli {2} DisinfaX per aprire il popup."
+            "value" : "Tocca {1} DisinfaX per aprire il popup."
           }
         },
         "it_IT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tocca di nuovo {1} e scegli {2} DisinfaX per aprire il popup."
+            "value" : "Tocca {1} DisinfaX per aprire il popup."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "もう一度 {1} をタップして {2} DisinfaX を選び、ポップアップを開きます。"
+            "value" : "{1} DisinfaX をタップしてポップアップを開きます。"
           }
         },
         "jv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tutul manèh {1} banjur pilih {2} DisinfaX kanggo mbukak jendhela pop-up."
+            "value" : "Tutul {1} DisinfaX kanggo mbukak jendhela pop-up."
           }
         },
         "ka" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "კვლავ შეეხეთ {1}-ს და აირჩიეთ {2} DisinfaX ამომხტარი ფანჯრის გასახსნელად."
+            "value" : "ამომხტარი ფანჯრის გასახსნელად შეეხეთ {1} DisinfaX-ს."
           }
         },
         "kab" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sit ɣef {1} tikkelt-nniḍen tferneḍ {2} DisinfaX akken ad teldiḍ asfaylu ur-d-ffɣen."
+            "value" : "Sit ɣef {1} DisinfaX akken ad teldiḍ asfaylu ur-d-ffɣen."
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тағы да {1} түртіп, қалқыма терезені ашу үшін {2} DisinfaX-ты таңдаңыз."
+            "value" : "Қалқыма терезені ашу үшін {1} DisinfaX-ты түртіңіз."
           }
         },
         "km" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ចុច {1} ម្តងទៀត ហើយជ្រើសរើស {2} DisinfaX ដើម្បីបើកផ្ទាំងលេចឡើង។"
+            "value" : "ចុច {1} DisinfaX ដើម្បីបើកផ្ទាំងលេចឡើង។"
           }
         },
         "kn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ಮತ್ತೆ {1} ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಪಾಪ್‌ಅಪ್ ತೆರೆಯಲು {2} DisinfaX ಆಯ್ಕೆಮಾಡಿ."
+            "value" : "ಪಾಪ್‌ಅಪ್ ತೆರೆಯಲು {1} DisinfaX ಟ್ಯಾಪ್ ಮಾಡಿ."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다시 {1}을 탭하고 {2} DisinfaX를 선택하여 팝업을 여세요."
+            "value" : "{1} DisinfaX를 탭하여 팝업을 여세요."
           }
         },
         "ku" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dîsa li ser {1} bitikîne û ji bo vekirina pop-up-ê {2} DisinfaX hilbijêre."
+            "value" : "Ji bo vekirina pop-up-ê li ser {1} DisinfaX bitikîne."
           }
         },
         "ky" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кайра {1} басып, копчо терезени ачуу үчүн {2} DisinfaX'ты тандаңыз."
+            "value" : "Копчо терезени ачуу үчүн {1} DisinfaX'ты басыңыз."
           }
         },
         "la" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Iterum tange {1} et elige {2} DisinfaX ut fenestellam emergentem aperias."
+            "value" : "Tange {1} DisinfaX ut fenestellam emergentem aperias."
           }
         },
         "lb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tipp nach emol op {1} a wielt {2} DisinfaX fir d'Popup-Fënster opzemaachen."
+            "value" : "Tipp op {1} DisinfaX fir d'Popup-Fënster opzemaachen."
           }
         },
         "lo" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ແຕະ {1} ອີກຄັ້ງ ແລະເລືອກ {2} DisinfaX ເພື່ອເປີດປັອບອັບ."
+            "value" : "ແຕະ {1} DisinfaX ເພື່ອເປີດປັອບອັບ."
           }
         },
         "lt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dar kartą palieskite {1} ir pasirinkite {2} DisinfaX, kad atidarytumėte iškylantįjį langą."
+            "value" : "Palieskite {1} DisinfaX, kad atidarytumėte iškylantįjį langą."
           }
         },
         "lv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vēlreiz pieskarieties {1} un izvēlieties {2} DisinfaX, lai atvērtu uznirstošo logu."
+            "value" : "Pieskarieties {1} DisinfaX, lai atvērtu uznirstošo logu."
           }
         },
         "mg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kitiho indray ny {1} ary safidio ny {2} DisinfaX mba hanokafana ny fikaonandoha mipoitra."
+            "value" : "Kitiho ny {1} DisinfaX mba hanokafana ny fikaonandoha mipoitra."
           }
         },
         "mi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pāwhiritia anō te {1} ka kōwhiri i a {2} DisinfaX ki te whakatuwhera i te matapihi pakū."
+            "value" : "Pāwhiritia te {1} DisinfaX ki te whakatuwhera i te matapihi pakū."
           }
         },
         "mk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Допрете повторно {1} и изберете {2} DisinfaX за да го отворите скокачкиот прозорец."
+            "value" : "Допрете {1} DisinfaX за да го отворите скокачкиот прозорец."
           }
         },
         "ml" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "വീണ്ടും {1} ടാപ്പ് ചെയ്ത് പോപ്പപ്പ് തുറക്കാൻ {2} DisinfaX തിരഞ്ഞെടുക്കുക."
+            "value" : "പോപ്പപ്പ് തുറക്കാൻ {1} DisinfaX ടാപ്പ് ചെയ്യുക."
           }
         },
         "mn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дахин {1} товшиж, попап цонхыг нээхийн тулд {2} DisinfaX-ийг сонгоно уу."
+            "value" : "Попап цонхыг нээхийн тулд {1} DisinfaX-ийг товшино уу."
           }
         },
         "mr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "पुन्हा {1} टॅप करा आणि पॉपअप उघडण्यासाठी {2} DisinfaX निवडा."
+            "value" : "पॉपअप उघडण्यासाठी {1} DisinfaX टॅप करा."
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketik {1} sekali lagi dan pilih {2} DisinfaX untuk membuka tetingkap pop timbul."
+            "value" : "Ketik {1} DisinfaX untuk membuka tetingkap pop timbul."
           }
         },
         "mt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mess {1} mill-ġdid u agħżel {2} DisinfaX biex tiftaħ it-tieqa li tinbeżaq."
+            "value" : "Mess {1} DisinfaX biex tiftaħ it-tieqa li tinbeżaq."
           }
         },
         "my" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ထပ်မံ၍ {1} ကို တို့ပြီး ပေါ့်အပ်ဖွင့်ရန် {2} DisinfaX ကိုရွေးပါ။"
+            "value" : "ပေါ့်အပ်ဖွင့်ရန် {1} DisinfaX ကို တို့ပါ။"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk på {1} igjen, og velg {2} DisinfaX for å åpne forgrunnsvinduet."
+            "value" : "Trykk på {1} DisinfaX for å åpne forgrunnsvinduet."
           }
         },
         "ne" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "फेरि {1} मा ट्याप गर्नुहोस् र पपअप खोल्न {2} DisinfaX छनौट गर्नुहोस्।"
+            "value" : "पपअप खोल्न {1} DisinfaX मा ट्याप गर्नुहोस्।"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tik nogmaals op {1} en kies {2} DisinfaX om de popup te openen."
+            "value" : "Tik op {1} DisinfaX om de popup te openen."
           }
         },
         "nn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trykk på {1} igjen, og vel {2} DisinfaX for å opne forgrunnsvindauget."
+            "value" : "Trykk på {1} DisinfaX for å opne forgrunnsvindauget."
           }
         },
         "ny" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khudzani {1} kachiwiri ndikusankha {2} DisinfaX kuti mutsegule windo lodumphuka."
+            "value" : "Khudzani {1} DisinfaX kuti mutsegule windo lodumphuka."
           }
         },
         "om" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Amma {1} tuqiitii foddaa ol-baʼu banuuf {2} DisinfaX filadhu."
+            "value" : "Foddaa ol-baʼu banuuf {1} DisinfaX tuqi."
           }
         },
         "or" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ପୁଣି {1} କୁ ଟାପ୍ କରି ପପଅପ୍ ଖୋଲିବାକୁ {2} DisinfaX ବାଛନ୍ତୁ।"
+            "value" : "ପପଅପ୍ ଖୋଲିବାକୁ {1} DisinfaX ଟାପ୍ କରନ୍ତୁ।"
           }
         },
         "pa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ਦੁਬਾਰਾ {1} ਟੈਪ ਕਰੋ ਅਤੇ ਪੌਪਅੱਪ ਖੋਲ੍ਹਣ ਲਈ {2} DisinfaX ਚੁਣੋ।"
+            "value" : "ਪੌਪਅੱਪ ਖੋਲ੍ਹਣ ਲਈ {1} DisinfaX ਟੈਪ ਕਰੋ।"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stuknij ponownie {1} i wybierz {2} DisinfaX, aby otworzyć wyskakujące okno."
+            "value" : "Stuknij {1} DisinfaX, aby otworzyć wyskakujące okno."
           }
         },
         "ps" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بیا هم {1} کېکاږئ او د پاپ اپ خلاصولو لپاره {2} DisinfaX وټاکئ."
+            "value" : "د پاپ اپ خلاصولو لپاره {1} DisinfaX کېکاږئ."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca novamente em {1} e escolhe {2} DisinfaX para abrir o popup."
+            "value" : "Toca em {1} DisinfaX para abrir o popup."
           }
         },
         "pt_BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toque novamente em {1} e escolha {2} DisinfaX para abrir o pop-up."
+            "value" : "Toque em {1} DisinfaX para abrir o pop-up."
           }
         },
         "pt_PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca novamente em {1} e escolhe {2} DisinfaX para abrir o popup."
+            "value" : "Toca em {1} DisinfaX para abrir o popup."
           }
         },
         "qu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yapamanta {1}-ta tuqyay hinaspa {2} DisinfaX-ta akllay pop-up wentanata kichanaykipaq."
+            "value" : "Pop-up wentanata kichanaykipaq {1} DisinfaX-ta tuqyay."
           }
         },
         "rm" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tutga puspè {1} e tscherna {2} DisinfaX per avrir il pop-up."
+            "value" : "Tutga {1} DisinfaX per avrir il pop-up."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atinge din nou {1} și alege {2} DisinfaX pentru a deschide fereastra pop-up."
+            "value" : "Atinge {1} DisinfaX pentru a deschide fereastra pop-up."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Коснитесь {1} ещё раз и выберите {2} DisinfaX, чтобы открыть всплывающее окно."
+            "value" : "Коснитесь {1} DisinfaX, чтобы открыть всплывающее окно."
           }
         },
         "rw" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kanda {1} ukundi hanyuma uhitemo {2} DisinfaX kugira ngo ufungure idirishya rirambuka."
+            "value" : "Kanda {1} DisinfaX kugira ngo ufungure idirishya rirambuka."
           }
         },
         "sd" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ٻيهر {1} ٽيپ ڪريو ۽ پاپ اپ کولڻ لاءِ {2} DisinfaX چڍيو."
+            "value" : "پاپ اپ کولڻ لاءِ {1} DisinfaX تي ٽيپ ڪريو."
           }
         },
         "sh" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ponovo dodirnite {1} i odaberite {2} DisinfaX kako biste otvorili skočni prozor."
+            "value" : "Dodirnite {1} DisinfaX da biste otvorili skočni prozor."
           }
         },
         "si" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "නැවත {1} තට්ටු කර උත්පතන කවුළුව විවෘත කිරීමට {2} DisinfaX තෝරන්න."
+            "value" : "උත්පතන කවුළුව විවෘත කිරීමට {1} DisinfaX තට්ටු කරන්න."
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klepnite znova na {1} a vyberte {2} DisinfaX na otvorenie vyskakovacieho okna."
+            "value" : "Klepnite na {1} DisinfaX na otvorenie vyskakovacieho okna."
           }
         },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Znova se dotaknite {1} in izberite {2} DisinfaX, da odprete pojavno okno."
+            "value" : "Dotaknite se {1} DisinfaX, da odprete pojavno okno."
           }
         },
         "sm" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toe tapi le {1} ma filifili {2} DisinfaX e tatala ai le faamalama fa'aoso."
+            "value" : "Tapi le {1} DisinfaX e tatala ai le faamalama fa'aoso."
           }
         },
         "sn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baya {1} zvakare wosarudza {2} DisinfaX kuti uvhure popup."
+            "value" : "Baya {1} DisinfaX kuti uvhure popup."
           }
         },
         "so" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mar kale taabo {1} oo dooro {2} DisinfaX si aad u furto daaqadda kor u soo boodda."
+            "value" : "Taabo {1} DisinfaX si aad u furto daaqadda kor u soo boodda."
           }
         },
         "sq" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trokit përsëri në {1} dhe zgjidh {2} DisinfaX për të hapur dritaren kërcyese."
+            "value" : "Trokit në {1} DisinfaX për të hapur dritaren kërcyese."
           }
         },
         "sr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Поново додирните {1} и изаберите {2} DisinfaX да бисте отворили искачући прозор."
+            "value" : "Додирните {1} DisinfaX да бисте отворили искачући прозор."
           }
         },
         "st" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tobetsa {1} hape ebe u khetha {2} DisinfaX ho bula fensetere e hlahang."
+            "value" : "Tobetsa {1} DisinfaX ho bula fensetere e hlahang."
           }
         },
         "su" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toél deui {1} sareng pilih {2} DisinfaX pikeun muka jandela pop-up."
+            "value" : "Toél {1} DisinfaX pikeun muka jandela pop-up."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryck på {1} igen och välj {2} DisinfaX för att öppna popupen."
+            "value" : "Tryck på {1} DisinfaX för att öppna popupen."
           }
         },
         "sw" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gonga {1} tena na uchague {2} DisinfaX ili kufungua dirisha ibukizi."
+            "value" : "Gonga {1} DisinfaX ili kufungua dirisha ibukizi."
           }
         },
         "ta" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "மீண்டும் {1} ஐத் தட்டி, பாப்அப்பைத் திறக்க {2} DisinfaXஐத் தேர்ந்தெடுக்கவும்."
+            "value" : "பாப்அப்பைத் திறக்க {1} DisinfaXஐத் தட்டவும்."
           }
         },
         "te" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "మళ్లీ {1}ను నొక్కి, పాప్అప్‌ను తెరవడానికి {2} DisinfaXను ఎంచుకోండి."
+            "value" : "పాప్అప్‌ను తెరవడానికి {1} DisinfaXను నొక్కండి."
           }
         },
         "tg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Боз {1}-ро зарба занед ва барои кушодани равзана {2} DisinfaX-ро интихоб кунед."
+            "value" : "Барои кушодани равзана {1} DisinfaX-ро зарба занед."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "แตะ {1} อีกครั้งแล้วเลือก {2} DisinfaX เพื่อเปิดป๊อปอัป"
+            "value" : "แตะ {1} DisinfaX เพื่อเปิดป๊อปอัป"
           }
         },
         "ti" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ደጊምካ {1} ጠውቕ ከምኡ {2} DisinfaX ምረጽ ብቅ ባይ መስኮት ንምኽፋት።"
+            "value" : "ብቅ ባይ መስኮት ንምኽፋት {1} DisinfaX ጠውቕ።"
           }
         },
         "tk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ýene {1}-a basyň we açylýan penjiräni açmak üçin {2} DisinfaX-y saýlaň."
+            "value" : "Açylýan penjiräni açmak üçin {1} DisinfaX-a basyň."
           }
         },
         "tn" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tobetsa {1} gape mme o tlhophe {2} DisinfaX go bula window e tswang."
+            "value" : "Tobetsa {1} DisinfaX go bula window e tswang."
           }
         },
         "to" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tuki ʻa {1} ʻi he taimi ʻe toe pea fili ʻa {2} DisinfaX ke fakaava e matapā puna."
+            "value" : "Tuki ʻa {1} DisinfaX ke fakaava e matapā puna."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tekrar {1} öğesine dokunun ve açılır pencereyi açmak için {2} DisinfaX'i seçin."
+            "value" : "Açılır pencereyi açmak için {1} DisinfaX'e dokunun."
           }
         },
         "tt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Тагын {1} басыгыз һәм кузгалма тәрәзәне ачу өчен {2} DisinfaX-ны сайлагыз."
+            "value" : "Кузгалма тәрәзәне ачу өчен {1} DisinfaX-ны басыгыз."
           }
         },
         "ug" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "قايتا {1} نى چېكىپ قاڭقىش كۆزنىكىنى ئېچىش ئۈچۈن {2} DisinfaX نى تاللاڭ."
+            "value" : "قاڭقىش كۆزنىكىنى ئېچىش ئۈچۈن {1} DisinfaX نى چېكىڭ."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Торкніться {1} ще раз і виберіть {2} DisinfaX, щоб відкрити спливне вікно."
+            "value" : "Торкніться {1} DisinfaX, щоб відкрити спливне вікно."
           }
         },
         "ur" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دوبارہ {1} پر تھپتھپائیں اور پاپ اپ کھولنے کے لیے {2} DisinfaX منتخب کریں۔"
+            "value" : "پاپ اپ کھولنے کے لیے {1} DisinfaX پر تھپتھپائیں۔"
           }
         },
         "uz" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yana {1} ga bosing va pop-up oynasini ochish uchun {2} DisinfaX'ni tanlang."
+            "value" : "Pop-up oynasini ochish uchun {1} DisinfaX'ga bosing."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chạm lại vào {1} và chọn {2} DisinfaX để mở cửa sổ bật lên."
+            "value" : "Chạm vào {1} DisinfaX để mở cửa sổ bật lên."
           }
         },
         "wa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tchôkîz co {1} eco eyet tchoezixhoz {2} DisinfaX po drovi l' purnea ki sôte foû."
+            "value" : "Tchôkîz so {1} DisinfaX po drovi l' purnea ki sôte foû."
           }
         },
         "xh" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cofa {1} kwakhona uze ukhethe {2} DisinfaX ukuvula ifestile ephuma."
+            "value" : "Cofa {1} DisinfaX ukuvula ifestile ephuma."
           }
         },
         "yi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "טאַפּט נאָך אַ מאָל אויף {1} און קלייבט {2} DisinfaX כּדי צו עפֿענען דעם פּאָפּ-אַפּ."
+            "value" : "טאַפּט אויף {1} DisinfaX כּדי צו עפֿענען דעם פּאָפּ-אַפּ."
           }
         },
         "yo" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tẹ {1} lẹ́ẹ̀kan sí i kí o sì yan {2} DisinfaX láti ṣí fèrèsé tí ń ṣẹ́ jáde."
+            "value" : "Tẹ {1} DisinfaX láti ṣí fèrèsé tí ń ṣẹ́ jáde."
           }
         },
         "zh" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再次点按 {1}，然后选择 {2} DisinfaX 以打开弹出窗口。"
+            "value" : "点按 {1} DisinfaX 以打开弹出窗口。"
           }
         },
         "zh_CN" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再次点按 {1}，然后选择 {2} DisinfaX 以打开弹出窗口。"
+            "value" : "点按 {1} DisinfaX 以打开弹出窗口。"
           }
         },
         "zh_HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再次點一下 {1}，接著選擇 {2} DisinfaX 以開啟彈出視窗。"
+            "value" : "點一下 {1} DisinfaX 以開啟彈出視窗。"
           }
         },
         "zh_TW" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再次點一下 {1}，接著選擇 {2} DisinfaX 以開啟彈出視窗。"
+            "value" : "點一下 {1} DisinfaX 以開啟彈出視窗。"
           }
         },
         "zu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thepha {1} futhi, bese ukhetha i-{2} DisinfaX ukuvula i-window elivelayo."
+            "value" : "Thepha {1} DisinfaX ukuvula i-window elivelayo."
           }
         }
       }

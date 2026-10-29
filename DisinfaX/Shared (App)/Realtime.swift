@@ -303,9 +303,14 @@ final class SupabaseRealtime {
     /// The funds row carries the user filter the popup uses, and is omitted entirely when no
     /// account is known: an unfiltered subscription to that table would ask the server for a
     /// broadcast it will only ever refuse.
+    ///
+    /// The identity is the session's own user, because that is the identity the channel joins
+    /// with — a filter naming anyone else is filtered out by row-level security and fails by
+    /// silence. `signedInUserId` falls back to the extension's stamp, so a device that has only
+    /// ever been told who is signed in still subscribes.
     private static func changesConfig() -> [[String: Any]] {
         var config: [[String: Any]] = [["event": "*", "schema": "public", "table": "subscriptions"]]
-        if let uid = SharedTopUpStore.userId, !uid.isEmpty {
+        if let uid = SharedTopUpStore.signedInUserId, !uid.isEmpty {
             config.append([
                 "event": "*",
                 "schema": "public",

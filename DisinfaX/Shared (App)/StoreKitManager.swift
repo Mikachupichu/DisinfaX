@@ -118,6 +118,7 @@ final class StoreKitManager {
             // owed, so a transaction that was finished a moment ago is not re-recorded as pending.
             await finishCreditedTransactions()
             await recordUnfinishedTransactions()
+            await settlePendingTopUps()
         }
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
@@ -201,5 +202,71 @@ final class StoreKitManager {
             ])
         }
         return pending
+    }
+
+    // MARK: - Crediting
+
+    /// The worker the Safari popup already posts purchases to.
+    private static let verifyEndpoint = URL(string: "https://verify-apple-topup.michael-pouget01.workers.dev/")!
+
+    /// Credits one recorded purchase, then finishes it — in that order, exactly as the popup's
+    /// `verifyAndFinishTopUp` does. A finished transaction is never redelivered, so it is only
+    /// closed once the worker has returned 200; a failure leaves the record in the shared
+    /// container for the popup's own settlement pass to recover.
+    ///
+    /// Both sides may settle the same transaction and that is harmless: the worker is idempotent
+    /// on Apple's transaction id, which it takes from Apple's record rather than from the client.
+    ///
+    /// Returns whether the credit was confirmed.
+    @discardableResult
+    func creditPendingTransaction(jws: String, transactionId: String) async -> Bool {
+        guard let session = await AppSession.current() else {
+            print("[topup] credit \(transactionId): no session to authenticate with")
+            return false
+        }
+        var request = URLRequest(url: Self.verifyEndpoint)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["signedTransaction": jws])
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            print("[topup] credit \(transactionId): transport failed — \(error.localizedDescription)")
+            return false
+        }
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+            let body = String(data: data, encoding: .utf8) ?? ""
+            print("[topup] credit \(transactionId): refused HTTP \((response as? HTTPURLResponse)?.statusCode ?? -1) \(body.prefix(300))")
+            return false
+        }
+
+        // The id the worker echoes comes from Apple's own record, so it is the one StoreKit will
+        // match; the id we sent is only the client's reading of the same transaction.
+        let settled = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+        let idToFinish = (settled?["transactionId"] as? String) ?? transactionId
+        SharedTopUpStore.clearPendingTransaction(transactionId: transactionId)
+        // Recorded with the clear, for the same reason the native handler's
+        // CLEAR_HANDOFF_TRANSACTION does it: an id here means the money is in the balance, so
+        // closing the transaction is safe — and a finish that fails silently is retried by
+        // `finishCreditedTransactions` on the next launch.
+        SharedTopUpStore.markFinishable(transactionId: idToFinish)
+        await finishTransaction(id: idToFinish)
+        return true
+    }
+
+    /// Settles every purchase this device recorded but has not seen credited.
+    ///
+    /// Run at launch, so a top-up completes without the user opening the popup at all, and again
+    /// straight after a purchase. Failures are left in place rather than dropped: the popup's
+    /// settlement pass picks them up on its next open. With no session every attempt answers nil
+    /// before it reaches the network.
+    func settlePendingTopUps() async {
+        for record in SharedTopUpStore.pendingTransactions() {
+            await creditPendingTransaction(jws: record.jws, transactionId: record.transactionId)
+        }
     }
 }

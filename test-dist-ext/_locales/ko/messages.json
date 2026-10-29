@@ -517,5 +517,13 @@
   "guideTapSelectedSuffix": {
     "message": " 주소 표시줄의 아이콘을 탭한 다음 {1} DisinfaX를 선택하세요.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "복사됨",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "아직 사용할 수 없음",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

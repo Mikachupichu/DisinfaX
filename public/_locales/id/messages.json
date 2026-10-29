@@ -517,5 +517,13 @@
   "guideTapSelectedSuffix": {
     "message": " ikon di bilah alamat, lalu pilih {1} DisinfaX.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Disalin",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Belum tersedia",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -799,7 +799,9 @@ export default function Dashboard({ user, onSignOut, onDeleteAccount, onSelectio
         const response = await fetch(CHECKOUT_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-          body: JSON.stringify({ amount: selectedAmount }),
+          // The bare family ("en-CA" -> "en"): the success page's own check is an exact match on
+          // en/fr, and anything else there falls back to the reader's location instead.
+          body: JSON.stringify({ amount: selectedAmount, lang: locale.split(/[-_]/)[0] }),
         });
         if (!response.ok) {
           // The worker reports failures as {"error": "..."} but may also return plain
@@ -936,7 +938,14 @@ export default function Dashboard({ user, onSignOut, onDeleteAccount, onSelectio
           {/* ── Balance ── */}
           <div className="text-center pt-1">
             <div className="text-4xl font-black tracking-tight text-white tabular-nums break-all">
-              {total === null ? '—' : <Usd value={total} locale={locale} />}
+              {total === null ? (
+                <>
+                  <span aria-hidden="true">—</span>
+                  <span className="sr-only">{t('balanceNotAvailable')}</span>
+                </>
+              ) : (
+                <Usd value={total} locale={locale} />
+              )}
             </div>
           </div>
 

@@ -21,7 +21,7 @@
 import { preClassify, refreshClaim, computeTweetHash, backgroundTranslate, backgroundTranslateClaim, backgroundHighlightRange, backgroundAnnotate, extractTweetUrls, TEST_LOCALE, normalizeSources, setWorkerErrorHandler, normalizeText, type AnnotLocators, type HighlightAnnotContext } from "../utils/intelligence";
 import { subscribeRow, fetchTweetAndTouchNetwork, getFullClaim, hashToBytea, subscribeFunds, getFunds, visibleTotal, type ClaimPayload, type SubscriptionHandle, type Funds, type FundsSubscription } from "../utils/realtime";
 import { supabase, ensureFreshSession, asOAuthProvider, SUPABASE_AUTH_STORAGE_KEY } from "../utils/supabase";
-import { adoptNativeSession, markSelectionFactCheck, NATIVE_SIGNOUT_KEY, signedOutInApp } from "../utils/nativeSession";
+import { adoptNativeSession, appEndedSessionAt, markSelectionFactCheck, NATIVE_SIGNOUT_KEY } from "../utils/nativeSession";
 import { SELECTION_FACT_CHECK_KEY } from "../utils/guideOverlay";
 import { findExactMatch, resolveHighlightRange, sha256HexSync, selectHighlightRevision, selectAnnotationRevision, splitHighlightKey, isLocatedRange, sameLocatedRange } from "../utils/textBreakup";
 import { Classification, Claim, Source, sameLanguage } from "../data/Classification";
@@ -4344,7 +4344,7 @@ export default defineBackground({
    * and keeps working on a still-valid access token until its refresh fails — up to an hour
    * later, during which the buttons stay injected and every run is charged to an account the
    * user has left. Nothing native runs app → extension, so the app stamps the shared container
-   * instead and this asks for the stamp (see `signedOutInApp`).
+   * instead and this asks for the stamp (see `appEndedSessionAt`).
    *
    * The two markers before the slot empties are the same pair the popup writes on a sign-out it
    * performs itself, and for the same two reasons: the first stops `refreshActiveState` from
@@ -4360,12 +4360,17 @@ export default defineBackground({
     if (!import.meta.env.SAFARI || appSignOutChecking) return false;
     appSignOutChecking = true;
     try {
-      if (!(await signedOutInApp(SUPABASE_AUTH_STORAGE_KEY))) return false;
-      const now = Date.now();
+      const endedAt = await appEndedSessionAt(SUPABASE_AUTH_STORAGE_KEY);
+      if (endedAt === null) return false;
       try {
         await browser.storage.local.set({
-          [INTENTIONAL_SIGNOUT_KEY]: now,
-          [NATIVE_SIGNOUT_KEY]: now,
+          [INTENTIONAL_SIGNOUT_KEY]: Date.now(),
+          // The app's own sign-out instant, not this one. The stamp means "sessions minted at
+          // or before this are dead", and `adoptNativeSession` runs immediately after this on
+          // the same evaluation: stamped with the moment we noticed, it would refuse the
+          // session the app minted a minute earlier signing back in, and the popup would keep
+          // drawing its signed-out screen for a signed-in device until the next rotation.
+          [NATIVE_SIGNOUT_KEY]: endedAt,
         });
       } catch { /* best-effort: the marker only suppresses a notice */ }
       // Local scope only, like the popup's own sign-out: the global default would revoke the
@@ -5805,8 +5810,26 @@ export default defineBackground({
         };
         const overlappingWraps = Array.from(document.querySelectorAll('.mf-segment-wrap[data-mf-sel-wrap="true"]'))
           .filter((w) => (w as HTMLElement).isConnected && intersects(w as Element));
+        // Folding a wrap removes the span the boundaries point into, and every live range
+        // inside a removed node collapses to the removal point while its containers stay
+        // connected — so a second click on a passage that is already wrapped would read the
+        // first few characters of the block. The nodes the boundaries name survive the fold,
+        // so the range is rebuilt from endpoints read before it. Mirrors `rangeEndpoints` and
+        // `restoreRange` in entrypoints/selection.ts, which this function cannot call.
+        const savedStart = range.startContainer;
+        const savedStartOffset = range.startOffset;
+        const savedEnd = range.endContainer;
+        const savedEndOffset = range.endOffset;
         const overlapping = overlappingWraps.length > 0;
         for (const w of overlappingWraps) foldWrap(w as HTMLElement);
+        if (overlapping && savedStart.isConnected && savedEnd.isConnected) {
+          try {
+            const rebuilt = document.createRange();
+            rebuilt.setStart(savedStart, savedStartOffset);
+            rebuilt.setEnd(savedEnd, savedEndOffset);
+            if (rebuilt.toString().trim()) range = rebuilt;
+          } catch { /* the collapsed range below is still the fallback */ }
+        }
         if (overlapping && (!range.startContainer?.isConnected || !range.endContainer?.isConnected)) {
           const live = sel && sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
           if (live && live.startContainer && live.endContainer && live.startContainer.isConnected && live.endContainer.isConnected) {
@@ -6954,6 +6977,9 @@ export default defineBackground({
       message?.type === 'MF_NATIVE_PUBLISH_SESSION' ||
       message?.type === 'MF_NATIVE_POPUP_OPENED' ||
       message?.type === 'MF_NATIVE_MARK_SELECTION_FACTCHECK' ||
+      message?.type === 'MF_NATIVE_LAST_PROVIDER' ||
+      message?.type === 'MF_NATIVE_GET_LAST_PROVIDER' ||
+      message?.type === 'MF_NATIVE_OS_VERSION' ||
       message?.type === 'MF_NATIVE_OPEN_SIGN_IN'
     )) {
       (async () => {
@@ -7000,6 +7026,14 @@ export default defineBackground({
               ? { action: 'POPUP_OPENED' }
             : message.type === 'MF_NATIVE_MARK_SELECTION_FACTCHECK'
               ? { action: 'MARK_SELECTION_FACTCHECK' }
+            // The badge both surfaces draw for the provider a sign-in last used.
+            : message.type === 'MF_NATIVE_LAST_PROVIDER'
+              ? { action: 'LAST_PROVIDER', provider: message.provider, at: message.at }
+            : message.type === 'MF_NATIVE_GET_LAST_PROVIDER'
+              ? { action: 'GET_LAST_PROVIDER' }
+            // Which drawing of Safari's extensions button the guide shows: see `readNativeOsMajor`.
+            : message.type === 'MF_NATIVE_OS_VERSION'
+              ? { action: 'OS_VERSION' }
             : message.type === 'MF_NATIVE_OPEN_SIGN_IN'
               ? { action: 'OPEN_SIGN_IN', provider: message.provider }
             : { action: 'PREPARE_TOPUP', amount: message.amount, userId: message.userId, balance: message.balance };

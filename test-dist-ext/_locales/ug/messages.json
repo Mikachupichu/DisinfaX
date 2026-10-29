@@ -519,5 +519,13 @@
   "guideTapSelectedSuffix": {
     "message": " ئادرېس بالدىقىدىكى سىنبەلگىنى چېكىپ، ئاندىن {1} DisinfaX نى تاللاڭ.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "كۆچۈرۈلدى",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "تېخى ئىشلەتكىلى بولمايدۇ",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

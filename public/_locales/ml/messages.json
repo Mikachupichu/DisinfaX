@@ -517,5 +517,13 @@
   "guideTapSelectedSuffix": {
     "message": " വിലാസ ബാറിലെ ഐക്കണിൽ ടാപ്പ് ചെയ്ത്, തുടർന്ന് {1} DisinfaX തിരഞ്ഞെടുക്കുക.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "പകർത്തി",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ഇതുവരെ ലഭ്യമല്ല",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

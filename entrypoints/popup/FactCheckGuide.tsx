@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useT } from './i18n';
 import { useResolvedScheme } from './theme';
 
@@ -13,31 +13,136 @@ const BrandMark = ({ inverted }: { inverted: boolean }) => (
     src="/icon/96-white.png"
     alt=""
     aria-hidden="true"
-    className={`inline-block h-[1.15em] w-[1.15em] align-[-0.17em]${inverted ? ' invert' : ''}`}
+    className={'inline-block h-[1.15em] w-[1.15em] align-[-0.09em]' + (inverted ? ' invert' : '')}
   />
 );
 
-/** Safari's extensions button as its own drawing, transcribed from the app's guide: a rounded
- *  card with a puzzle tab on one edge and the menu lines beneath it. Drawn rather than named
- *  because there is no character for it, and tinted with `currentColor` so it takes the
- *  surrounding sentence's colour exactly as a glyph would. */
-const ExtensionsGlyph = () => (
-  <svg
-    aria-hidden="true"
-    viewBox="0 0 12 12"
-    className="inline-block h-[1em] w-[1em] align-[-0.12em]"
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path
-      strokeWidth="1.15"
-      d="M3.35 1.1H8.65A1.3 1.3 0 0 1 9.95 2.4V2.525A1.2 1.2 0 0 1 9.95 4.925V5.05A1.3 1.3 0 0 1 8.65 6.35H3.35A1.3 1.3 0 0 1 2.05 5.05V4.925A1.2 1.2 0 0 0 2.05 2.525V2.4A1.3 1.3 0 0 1 3.35 1.1Z"
-    />
-    <path strokeWidth="1.15" d="M2.05 9h7.9M2.05 11.25h4.7" />
-  </svg>
-);
+/** The iOS version Safari reports, or 0 where the agent names none.
+ *
+ *  Only ever a fallback: Safari froze this string, so a phone keeps reporting the version it
+ *  shipped with and two systems that draw the extensions button differently read alike here.
+ *  `useIosMajor` asks the app instead. */
+function iosMajorVersion(): number {
+  const match = /OS (\d+)_/.exec(navigator.userAgent);
+  return match ? Number(match[1]) : 0;
+}
+
+/** True on iPad, iPadOS included — it names itself "MacIntel" like a Mac. */
+function isIPad(): boolean {
+  try {
+    return /iPad/.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  } catch {
+    return false;
+  }
+}
+
+/** Safari's extensions button, drawn on the app's own twelve-point canvas so both surfaces name
+ *  the control with the same drawing rather than each transcribing it.
+ *
+ *  A narrow bar — every phone — draws the button itself: a filled puzzle piece over the menu's two
+ *  lines. The piece is the one that system draws, so it is smaller from iOS 27 on and larger
+ *  before it, exactly as the app picks between the two.
+ *
+ *  A wide bar — an iPad — shows the puzzle piece alone, outline only and with no lines beneath it,
+ *  which is the glyph the button becomes once it has the room. */
+const PIECE_IOS_27 =
+  'M2.95 1.5H6.09A.9.9 0 0 1 6.99 2.4V2.85A.75.75 0 0 1 6.99 4.35V4.8A.9.9 0 0 1 6.09 5.7H2.95A.9.9 0 0 1 2.05 4.8V4.35A.75.75 0 0 0 2.05 2.85V2.4A.9.9 0 0 1 2.95 1.5Z';
+const PIECE_EARLIER =
+  'M3.32 0.5H8.48A1.42 1.42 0 0 1 9.9 1.92V2.8A1.2 1.2 0 0 1 9.9 5.2V6.08A1.42 1.42 0 0 1 8.48 7.5H3.32A1.42 1.42 0 0 1 1.9 6.08V5.2A1.2 1.2 0 0 0 1.9 2.8V1.92A1.42 1.42 0 0 1 3.32 0.5Z';
+/** A knob on each side, a notch cut into the top and the bottom — SF Symbols' `puzzlepiece`. */
+const PIECE_WIDE_BAR =
+  'M3.5 1.7H4.95A1.05 1.05 0 0 0 7.05 1.7H8.5A.6.6 0 0 1 9.1 2.3V4.95A1.05 1.05 0 0 1 9.1 7.05V9.7A.6.6 0 0 1 8.5 10.3H7.05A1.05 1.05 0 0 0 4.95 10.3H3.5A.6.6 0 0 1 2.9 9.7V7.05A1.05 1.05 0 0 1 2.9 4.95V2.3A.6.6 0 0 1 3.5 1.7Z';
+const MENU_LINES = 'M2.05 9h7.9M2.05 11.25h4.7';
+
+/** Where the answer is kept, so the mark is right from the first frame on every opening after
+ *  the first. Same storage the popup already keeps under `App.tsx`'s keys. */
+const OS_MAJOR_STORAGE_KEY = 'disinfax_ios_major';
+
+/** How long the mark waits for the app's answer before falling back to the user agent.
+ *  A message inside the extension, so this is not a latency budget: it is the point past which
+ *  a handler that has not answered is treated as absent rather than left to arrive late and
+ *  swap the drawing under the reader. Generous because the direct transport is tried first and
+ *  on iOS it is accepted without ever calling back — the reply comes from the relay behind it. */
+const OS_MAJOR_WAIT_MS = 3000;
+
+function cachedIosMajor(): number | null {
+  try {
+    const stored = Number(localStorage.getItem(OS_MAJOR_STORAGE_KEY));
+    return Number.isInteger(stored) && stored > 0 ? stored : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The iOS major version to draw for — the same one the app's own instructions draw for.
+ *
+ *  Null until it is known. The app is asked rather than the browser because Safari froze the
+ *  user agent: the string reports the version the phone shipped with, so an iPhone running 27
+ *  is indistinguishable there from one running 26, and the two draw Safari's extensions button
+ *  differently. The user agent is still the answer when no handler replies. */
+function useIosMajor(ios: boolean): number | null {
+  const [major, setMajor] = useState<number | null>(() => (ios ? cachedIosMajor() : null));
+  useEffect(() => {
+    if (!ios) return;
+    let live = true;
+    const fallback = iosMajorVersion();
+    (async () => {
+      let answer: number | null = null;
+      try {
+        const { readNativeOsMajor } = await import('../../utils/nativeSession');
+        answer = await Promise.race([
+          readNativeOsMajor(),
+          new Promise<null>(resolve => setTimeout(() => resolve(null), OS_MAJOR_WAIT_MS)),
+        ]);
+      } catch { /* the fallback is the answer */ }
+      if (!live) return;
+      if (answer !== null) {
+        try { localStorage.setItem(OS_MAJOR_STORAGE_KEY, String(answer)); } catch { /* best-effort */ }
+        setMajor(answer);
+        return;
+      }
+      // Not cached: a guess from a frozen string would outlive the update that changed it.
+      setMajor(current => current ?? fallback);
+    })();
+    return () => { live = false; };
+  }, [ios]);
+  return major;
+}
+
+const ExtensionsGlyph = ({ major }: { major: number | null }) => {
+  const wideBar = isIPad();
+  // Not known yet: draw the mark's space and nothing in it, so the sentence does not reflow
+  // when the answer lands — and so the wrong drawing is never shown, however briefly.
+  if (!wideBar && major === null) {
+    return <span aria-hidden="true" className="inline-block h-[1em] w-[1em] align-[-0.12em]" />;
+  }
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 12 12"
+      className="inline-block h-[1em] w-[1em] align-[-0.12em]"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {wideBar ? (
+        <path strokeWidth="1.15" d={PIECE_WIDE_BAR} />
+      ) : (
+        <>
+          <path
+            d={major !== null && major > 0 && major < 27 ? PIECE_EARLIER : PIECE_IOS_27}
+            fill="currentColor"
+            fillOpacity="0.667"
+            stroke="none"
+          />
+          <path strokeWidth="1.15" d={MENU_LINES} />
+        </>
+      )}
+    </svg>
+  );
+};
 
 /** A space that is not a line break. It is what binds a mark to the word it names, in either
  *  direction — a logo left at the end of a line says nothing about the word on the next one. */
@@ -228,6 +333,7 @@ export default function FactCheckGuide({ ios, onDismiss }: { ios: boolean; onDis
   const dark = useResolvedScheme() === 'dark';
   const colors = palette(dark);
   const brand = <BrandMark key="brand" inverted={dark} />;
+  const iosMajor = useIosMajor(ios);
 
   // The steps are the app guide's own, for this platform's way of starting a fact-check: on a
   // phone there is no right-click, so the second step names the extensions button the app's
@@ -237,7 +343,7 @@ export default function FactCheckGuide({ ios, onDismiss }: { ios: boolean; onDis
     ? (
       <>
         {t('guideTapSelectedPrefix').replace(/ $/, NBSP)}
-        <MarkLeading mark={<ExtensionsGlyph />} text={t('guideTapSelectedSuffix')} marks={[brand]} spaced />
+        <MarkLeading mark={<ExtensionsGlyph major={iosMajor} />} text={t('guideTapSelectedSuffix')} marks={[brand]} spaced />
       </>
     )
     : !import.meta.env.SAFARI

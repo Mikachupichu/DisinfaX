@@ -246,26 +246,33 @@ export async function publishNativeSession(authStorageKey: string): Promise<void
   await native({ action: 'PUBLISH_SESSION', ...payload }, { type: 'MF_NATIVE_PUBLISH_SESSION', ...payload });
 }
 
-/** Whether the app has ended the session this profile is holding.
+/** When the app ended the session this profile is holding, in epoch milliseconds — or null if
+ *  it has not.
  *
  *  The mirror image of the sign-out guard in `adoptNativeSession` and `publishNativeSession`:
  *  there this profile refuses a record older than its own sign-out, here it ends a session older
- *  than the app's. A session started since then — the user signing back in — expires an hour
- *  after it was minted, which is what tells the two apart.
+ *  than the app's. A session started since then — the user signing back in — is minted later
+ *  than the sign-out, which is what tells the two apart.
  *
- *  False on anything it cannot establish: no session here, no stamp from the app, a record with
+ *  The answer is the app's own sign-out instant rather than the moment this noticed it, because
+ *  it is also the stamp the caller leaves for `adoptNativeSession`: that one refuses a record
+ *  minted at or before it, so stamping "now" would refuse the session the app minted a minute
+ *  before — the popup would draw its signed-out screen for a user who is signed in, until the
+ *  next rotation an hour away.
+ *
+ *  Null on anything it cannot establish: no session here, no stamp from the app, a record with
  *  no expiry, or an app that did not answer. Signing someone out on a guess is the failure this
  *  whole shared session exists to prevent, and the caller asks again a few seconds later. */
-export async function signedOutInApp(authStorageKey: string): Promise<boolean> {
+export async function appEndedSessionAt(authStorageKey: string): Promise<number | null> {
   // Read locally first, so a signed-out profile never wakes the app to ask.
   const stored = await storedSession(authStorageKey);
-  if (typeof stored?.access_token !== 'string' || !stored.access_token) return false;
-  if (typeof stored.expires_at !== 'number' || !Number.isFinite(stored.expires_at)) return false;
+  if (typeof stored?.access_token !== 'string' || !stored.access_token) return null;
+  if (typeof stored.expires_at !== 'number' || !Number.isFinite(stored.expires_at)) return null;
 
   const savedAt = await readNativeSignedOutAt();
-  if (savedAt === null) return false;
+  if (savedAt === null) return null;
 
-  return stored.expires_at - ACCESS_TOKEN_LIFETIME_S <= savedAt;
+  return stored.expires_at - ACCESS_TOKEN_LIFETIME_S <= savedAt ? savedAt : null;
 }
 
 /** Records that the popup has been opened at least once. The app uses it to decide whether
@@ -278,6 +285,46 @@ export async function markPopupOpened(): Promise<void> {
  *  whether the second guide overlay is still owed, so it is never cleared. */
 export async function markSelectionFactCheck(): Promise<void> {
   await native({ action: 'MARK_SELECTION_FACTCHECK' }, { type: 'MF_NATIVE_MARK_SELECTION_FACTCHECK' });
+}
+
+/** The provider the device's last successful sign-in used, stamped in epoch milliseconds.
+ *
+ *  The app keeps its own copy and the popup keeps one in extension storage, and neither can read
+ *  the other's; the stamp is what lets them agree, so whichever signed in last is the one both
+ *  badge. */
+export async function readLastProvider(): Promise<{ provider: string; at: number } | null> {
+  const reply = await native({ action: 'GET_LAST_PROVIDER' }, { type: 'MF_NATIVE_GET_LAST_PROVIDER' });
+  if (typeof reply?.provider !== 'string' || !reply.provider) return null;
+  if (typeof reply?.at !== 'number' || !Number.isFinite(reply.at)) return null;
+  return { provider: reply.provider, at: reply.at };
+}
+
+/** Reports a sign-in the extension completed, so the app badges the same provider. Best-effort,
+ *  like everything else about the badge: an unreachable app costs the badge, never the session. */
+export async function publishLastProvider(provider: string): Promise<void> {
+  const at = Date.now();
+  await native({ action: 'LAST_PROVIDER', provider, at }, { type: 'MF_NATIVE_LAST_PROVIDER', provider, at });
+}
+
+/** The iOS major version this extension is running on, asked of its own native handler, or
+ *  null where none answers.
+ *
+ *  The browser cannot be asked: Safari froze its user agent, so the string still reports the
+ *  version a phone shipped with and an iPhone on 27 reads exactly as one on 26 does. The
+ *  guide's extensions mark is drawn one way from 27 on and another before it, and it has to be
+ *  the same drawing the app's own instructions use — so the version comes from the same
+ *  process the app asks, not from the page. */
+export async function readNativeOsMajor(): Promise<number | null> {
+  // The relay alone rather than `native()`'s direct-then-relay: this is asked only on iOS,
+  // where the direct transport is accepted and never calls back, so the direct attempt would
+  // be a second and a half of the guide drawing no mark at all before the same reply arrived.
+  try {
+    const reply: any = await browser.runtime.sendMessage({ type: 'MF_NATIVE_OS_VERSION' });
+    const major = reply?.major;
+    return typeof major === 'number' && Number.isInteger(major) && major > 0 ? major : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Asks the app to run a sign-in. The popup cannot: it has no window for the provider's

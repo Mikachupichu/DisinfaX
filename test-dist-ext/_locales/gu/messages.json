@@ -517,5 +517,13 @@
   "guideTapSelectedSuffix": {
     "message": " ઍડ્રેસ બારમાંના આઇકન પર ટૅપ કરો, પછી {1} DisinfaX પસંદ કરો.",
     "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "કૉપિ થયું",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "હજી ઉપલબ્ધ નથી",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

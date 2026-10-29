@@ -65,6 +65,60 @@ struct PaneHeightsKey: PreferenceKey {
     }
 }
 
+/// The guide's own height, measured from a copy of it drawn unclipped. See `fittedInstructions`.
+private struct GuideNaturalKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+/// The height the guide's panel takes when it is drawing itself rather than being pulled. See
+/// `guideOpenHeight`.
+private struct GuideOpenKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+#if os(iOS)
+/// Whether the phone is standing part-folded, from the hinge itself.
+///
+/// UIKit publishes a hinge only through an interaction — there is no property to read — so a view
+/// in the hierarchy carries one and reports what it hears. The report is a phone lying flat for a
+/// hierarchy that has no hinge, which is every device but the foldable, and for a system older
+/// than the one that introduced the interaction.
+private struct HingeReport: UIViewRepresentable {
+    let onChange: (Bool) -> Void
+
+    func makeUIView(context: Context) -> HingeReportingView {
+        let view = HingeReportingView()
+        view.isUserInteractionEnabled = false
+        view.onChange = onChange
+        return view
+    }
+
+    func updateUIView(_ view: HingeReportingView, context: Context) {
+        view.onChange = onChange
+    }
+
+    final class HingeReportingView: UIView {
+        var onChange: ((Bool) -> Void)?
+
+        /// Kept so the interaction outlives this call. The view retains it as well, but only from
+        /// inside the system's own bookkeeping.
+        private var interaction: AnyObject?
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            guard window != nil, interaction == nil, #available(iOS 27.1, *) else { return }
+            let interaction = UIHingeInteraction(updateHandler: { [weak self] _, update in
+                self?.onChange?(update.hinge?.status == .partiallyOpen)
+            })
+            addInteraction(interaction)
+            self.interaction = interaction
+        }
+    }
+}
+#endif
+
 /// The app's two surfaces, one window.
 ///
 /// Both are kept mounted and merely hidden, rather than swapped in and out of the hierarchy. Two
@@ -108,6 +162,15 @@ struct RootView: View {
 
     @State private var tab: Tab
 
+    /// The service messages the popup draws above its tabs, drawn here above the picker — and
+    /// above both panes when they are side by side — for the same reason the instructions below
+    /// them are: they are about DisinfaX as a whole rather than about either tab, and a reader
+    /// who never opens the popup has no other surface that would tell them.
+    ///
+    /// Seeded from the last answer received, so a launch draws the block it drew last time and
+    /// the network only ever corrects it. See `ServiceMessages`.
+    @State private var messages: [String] = ServiceMessages.cached()
+
     /// Whether to show the acknowledgement of a sign-in that happened in Safari. Set by the two
     /// paths that can deliver one — see `disinfaxSignedIn` and `AuthCallbackNotice` for why there
     /// are two — and cleared when the user leaves for Safari, which is the only thing it asks of
@@ -147,15 +210,67 @@ struct RootView: View {
     @State private var safariOverlayDismissed = SharedTopUpStore.guideOverlayDismissed(.safari)
     @State private var factCheckOverlayDismissed = SharedTopUpStore.guideOverlayDismissed(.factCheck)
 
+    /// Whether the user has folded the instructions away to their grabber. Opens unfolded, and
+    /// stays wherever the user last put it — across launches too, which is why this is a
+    /// default rather than `@State`: the fold is a preference of theirs about a block that never
+    /// changes, not something the app has an opinion about. The one exception is a panel drawn
+    /// over the panes, which points at the instructions — see `dueOverlay`. That one is written
+    /// through to the default as well, so the unfold outlives the panel rather than the launch.
+    @AppStorage("mfGuideCollapsed") private var guideCollapsed = false
+
+    /// How far the grabber has been pulled, in points: the guide's panel is drawn that much taller
+    /// or shorter than it rests, so its top edge sits under the finger for the whole drag. Zero
+    /// whenever nothing is being dragged — the fold itself is what holds the panel at rest. See
+    /// `guideSheetHeight`.
+    @State private var guideDrag: CGFloat = 0
+
+    /// Whether a pull has been let go of and the panel is still travelling to where it will rest.
+    /// The height stays the pull's until it lands, so the frame is not dropped mid-animation.
+    @State private var guideSettling = false
+
+    /// The guide's own height, measured from a copy of the panel drawn only to be measured: what a
+    /// pull opens onto, and where it stops.
+    @State private var guideNatural: CGFloat = 0
+
+    /// The height the guide was last laid out at while it was open and nothing was pulling it —
+    /// its own height where that fits under the window, less than that where the guide is taller
+    /// than the room it has and scrolls instead. A pull is capped by this, so pulling the guide
+    /// open can never take more room than it takes when it is simply open.
+    @State private var guideOpenHeight: CGFloat = 0
+
 #if os(iOS)
     /// Read only on iOS, and only to decide whether there is room for both surfaces at once. See
     /// `splitsPanes`.
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// The shorter of the window's sides, read from its scene's bounds because SwiftUI does not
+    /// publish them — refreshed where the rotation is heard, and with the poll. It is what tells
+    /// the Duo's folded screen from its unfolded one, which neither size class does. See
+    /// `duoExpanded`.
+    @State private var windowShortSide: CGFloat = 0
+
+    /// Whether the window is wider than it is tall, read from the same bounds as the short side
+    /// and for the same reason. It is what tells the unfolded Duo's landscape from its portrait,
+    /// which the short side alone cannot: both screens are the same height either way up. See
+    /// `guideTwoColumns`.
+    @State private var windowIsLandscape = false
+
+    /// Whether the phone is standing part-folded — the laptop shape, where the two halves are at
+    /// an angle to each other rather than lying flat. The crease separates them on its own, so the
+    /// two panes do not also need a rule drawn down the middle of the window.
+    ///
+    /// False wherever there is no hinge, and until the interaction has reported one.
+    @State private var hingePartiallyOpen = false
 #endif
 
     /// Watched only to clear the acknowledgement above, and only on the way out: the notice is
     /// about a return to Safari, so Safari taking the screen back is when it has been read.
     @Environment(\.scenePhase) private var scenePhase
+
+    /// The grabber's fold is the one animation in this file, and the setting it has to obey is
+    /// the system's rather than the view's own: a reader who has asked for less movement gets the
+    /// guide in its new arrangement without the slide between the two.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// The panes' own cadence, run here too, because the guide is drawn from the store they read:
     /// the stamp ages out on its own sixty seconds after the extension last reported in, and the
@@ -175,21 +290,139 @@ struct RootView: View {
     /// An iPad with the width for it gets the two halves: the balance on the leading side and the
     /// fact-check on the trailing one — which for Hebrew or Arabic the framework mirrors for us,
     /// exactly as it mirrors the picker, so the balance lands on the right. Narrower than that
-    /// falls back to the picker: an iPad in Split View, and every phone, where half a screen is
-    /// less than the 392pt both surfaces are drawn at and the fact-check pane would be squeezed
-    /// rather than shared. macOS is always the picker — its window is one pane wide by design.
+    /// falls back to the picker: an iPad in Split View, and every phone but the Duo — whose
+    /// unfolded screen is the one phone screen wide enough for two columns, and whose folded one
+    /// is not. Half a narrower screen is less than the 392pt both surfaces are drawn at, and the
+    /// fact-check pane would be squeezed rather than shared. macOS is always the picker — its
+    /// window is one pane wide by design.
     private var splitsPanes: Bool {
 #if os(iOS)
-        UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
+        if Self.isIPhoneDuo { return duoExpanded }
+        return UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
 #else
         false
 #endif
     }
 
+    /// Whether the two halves are already separated by the phone itself, standing part-folded: the
+    /// crease is the division, so the panes take the whole window with no rule drawn down the
+    /// middle of it.
+    ///
+    /// Only ever true on the one phone that has a hinge, and only while it is being held at an
+    /// angle — laid flat, or closed, the panes are the only thing dividing the window.
+    private var hingeSeparatesPanes: Bool {
+#if os(iOS)
+        hingePartiallyOpen
+#else
+        false
+#endif
+    }
+
+    /// The one phone that splits at all, and the reason `splitsPanes` takes the device into
+    /// account: every other iPhone keeps the single column it has always had, however wide its
+    /// landscape is.
+    ///
+    /// Whether the Duo splits is a question about the screen it is drawn on, not about the
+    /// orientation. Unfolded it has the width for two half-columns whichever way up it is held;
+    /// folded it has an ordinary phone's width whichever way up it is held, and splits in neither.
+    /// The short side is what tells the two screens apart — 466pt folded against 669pt unfolded —
+    /// and it is read from the window because neither the idiom nor either size class changes
+    /// between them.
+    private var duoExpanded: Bool {
+#if os(iOS)
+        Self.isIPhoneDuo && windowShortSide >= Self.duoExpandedShortSide
+#else
+        false
+#endif
+    }
+
+#if os(iOS)
+    /// Where the folded Duo's short side ends and the unfolded one's begins: 466pt against 669pt,
+    /// so any figure between them answers the same question. Midway rather than against either
+    /// edge, so that a screen on either side of the pair still lands on the right answer.
+    private static let duoExpandedShortSide: CGFloat = 560
+
+    /// The window's bounds, read from its scene — kept in state because the bounds are not a
+    /// thing SwiftUI publishes; see where it is refreshed.
+    private static var currentWindowBounds: CGRect {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?.coordinateSpace.bounds ?? .zero
+    }
+
+    /// Written only when it differs, the same way `refreshGuide` is: an unchanged shape must not
+    /// invalidate a body that has nothing new to draw. Called on the way up, when a rotation is
+    /// heard, and with the poll — a fold or unfold that reports no rotation is still a shape.
+    private func refreshWindowShape() {
+        let bounds = Self.currentWindowBounds
+        let shortSide = min(bounds.width, bounds.height)
+        if shortSide != windowShortSide { windowShortSide = shortSide }
+        let landscape = bounds.width > bounds.height
+        if landscape != windowIsLandscape { windowIsLandscape = landscape }
+    }
+#endif
+
+    /// Signed out on the unfolded Duo, where the two halves hold the landing page and the
+    /// instructions rather than two panes — there is nothing to pick between yet.
+    private var landingSplits: Bool { duoExpanded && !isSignedIn }
+
+    /// Whether the instructions below the panes are drawn in two columns.
+    ///
+    /// One arrangement only: the Duo unfolded, held in landscape, with the screen part-folded —
+    /// the window is at its widest, the crease already divides it, and the panes above are two
+    /// columns, so the steps below are drawn as two as well rather than as three long lines
+    /// stacked in the top half of the width. Every other shape keeps the one column it has always
+    /// had. A signed-out window is not this one: the guide is already the landing page's second
+    /// column there, and splitting that in two would leave quarter-width columns.
+    private var guideTwoColumns: Bool {
+#if os(iOS)
+        duoExpanded && hingePartiallyOpen && windowIsLandscape && !landingSplits
+#else
+        false
+#endif
+    }
+
+    /// Whether this device is an iPhone Duo, read from its model identifier — the idiom cannot
+    /// say, because the Duo reports `.phone` like every other iPhone and what it has extra is
+    /// width once it is unfolded, not a different family.
+    ///
+    /// A simulated app runs on the host's own machine name, so the device it is imitating comes
+    /// from the environment instead; a real one answers through `uname`. Read by the app delegate
+    /// too, which keeps every other iPhone in portrait.
+    static let isIPhoneDuo: Bool = {
+        if let simulated = ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] {
+            return simulated == "iPhone19,4"
+        }
+        var info = utsname()
+        guard uname(&info) == 0 else { return false }
+        // Read before the field is borrowed as a pointer: the capacity cannot be measured through
+        // the same inout access.
+        let capacity = MemoryLayout.size(ofValue: info.machine)
+        let machine = withUnsafePointer(to: &info.machine) { pointer in
+            pointer.withMemoryRebound(to: CChar.self, capacity: capacity) {
+                String(cString: $0)
+            }
+        }
+        return machine == "iPhone19,4"
+    }()
+
     /// The width one pane's content is drawn at — 392pt of it, plus the 24pt of padding either
     /// side that lines it up with the window's edge. `nil` when the two panes share the screen.
     private var columnWidth: CGFloat? {
         splitsPanes ? nil : 392 + 48
+    }
+
+    /// The width the instructions below the panes are drawn at, and the divider above them.
+    ///
+    /// The column wherever the window is no wider than it — a phone held upright, and the
+    /// macOS window, which is one pane wide by design. Everywhere there is width to take it is
+    /// taken: a phone in landscape is wider than the column and the steps are drawn across the
+    /// whole of it, which puts a long instruction on one line instead of two.
+    private var guideWidth: CGFloat? {
+#if os(iOS)
+        if windowIsLandscape { return nil }
+#endif
+        return columnWidth
     }
 
     /// The two surfaces side by side, or one over the other behind the picker.
@@ -211,7 +444,9 @@ struct RootView: View {
                 // Named after itself, not after the app: side by side both panes would otherwise
                 // carry the same "DisinfaX" heading with nothing saying which is which.
                 TopUpView(headerTitle: "Balance", footer: account).frame(maxWidth: .infinity)
-                Divider()
+                // Part-folded, the crease is already the division: a rule beside it draws a second
+                // one down the middle of a window that has its own.
+                if !hingeSeparatesPanes { Divider() }
                 FactCheckView(model: factCheckModel, headerTitle: "Fact-Check", showsHeaderSubtitle: false)
                     .frame(maxWidth: .infinity)
             }
@@ -226,15 +461,278 @@ struct RootView: View {
         }
     }
 
+    /// How tall the grabber is drawn. The fold's resting height, and the least the panel can be.
+    private static let grabberHeight: CGFloat = 30
+
+    /// How far a pull has to travel before it is a pull rather than a press. Below this the
+    /// grabber is being tapped, which is the fold it has always answered with.
+    private static let guideDragThreshold: CGFloat = 6
+
+    /// How long a let-go pull takes to land. Measured against the spring below rather than
+    /// guessed at: the frame that follows the finger has to outlive the whole of the settle.
+    private static let guideSettleDuration: Double = 0.55
+
+    /// The fold's own cadence, and the pull's: a sheet is letting go of something heavy, so it
+    /// lands with a little weight on it rather than snapping. A reader who has asked for less
+    /// movement gets the new arrangement with no travel at all.
+    private static func guideAnimation(reduceMotion: Bool) -> Animation? {
+        reduceMotion ? nil : .spring(response: 0.34, dampingFraction: 0.86)
+    }
+
+    /// Puts the guide in the given fold, and only if it is in the other one — a pull names the
+    /// state it is asking for, and pulling down at a guide already folded asks for nothing.
+    private func fold(_ collapsed: Bool) {
+        guard collapsed != guideCollapsed else { return }
+        withAnimation(Self.guideAnimation(reduceMotion: reduceMotion)) { guideCollapsed = collapsed }
+    }
+
+    /// The grabber's pull: from the first point of travel the panel's top edge follows the
+    /// finger, and on the way up it lands in whichever fold the finger was heading for. A press
+    /// that never moves is the tap this has always answered, so one recogniser covers both.
+    ///
+    /// Measured against the window rather than against the grabber. The edge the grabber sits on
+    /// is the one the pull moves, so a measurement taken in its own space would be reading the
+    /// finger from an edge that is travelling with it — each frame would report less travel than
+    /// the last, and the panel would stall and stutter instead of following. The window does not
+    /// move, so what it reports is the finger's own travel.
+    private var guideDragGesture: some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .global)
+            .onChanged { value in guideDrag = value.translation.height }
+            .onEnded { value in endGuideDrag(value) }
+    }
+
+    /// Answers a pull that has just been let go of.
+    ///
+    /// The fold is chosen by where the finger was *going* rather than where it stopped — the
+    /// predicted end, so that a short flick carries as far as it was thrown, the way it does on
+    /// a sheet. A press that never moved asks for the other fold, which is the tap.
+    ///
+    /// The panel keeps the pull's height until the settle has landed, and is only then handed
+    /// back to its own content: releasing that frame at the moment of the let-go would drop the
+    /// animation's last frames on the floor and snap the panel the rest of the way.
+    private func endGuideDrag(_ value: DragGesture.Value) {
+        let ceiling = guideCeiling
+        let resting = guideCollapsed ? Self.grabberHeight : ceiling
+        let travelled = value.translation.height
+        let wantsOpen = abs(travelled) < Self.guideDragThreshold
+            ? guideCollapsed
+            : resting - value.predictedEndTranslation.height > (Self.grabberHeight + ceiling) / 2
+
+        let settles = !reduceMotion
+        withAnimation(Self.guideAnimation(reduceMotion: reduceMotion)) {
+            guideCollapsed = !wantsOpen
+            guideDrag = 0
+            guideSettling = settles
+        }
+        guard settles else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.guideSettleDuration) {
+            guideSettling = false
+        }
+    }
+
+    /// The height the guide's panel is held at while it is folded, being pulled, or settling into
+    /// one of the two — and `nil` the rest of the time, when the panel draws itself exactly as it
+    /// always did: at its own height where that fits, scrolling where it does not.
+    ///
+    /// A pull names a height rather than a state: what the finger has travelled is taken off the
+    /// height the panel is coming from — down is shorter, up is taller, as it is for anything
+    /// whose top edge is being held — and the result is clamped to the guide's own height, so the
+    /// edge stays under the finger for the whole drag and cannot be pulled past the last line of
+    /// the steps. See `fittedInstructions` for where it is applied.
+    ///
+    /// A guide with no grabber has no pull and no fold: it draws itself whatever the remembered
+    /// fold says, which is what keeps a sign-out from taking a clipped panel with it — one with
+    /// no control left to open it again, and with the instructions' own measurement squeezed to
+    /// nothing inside the clip.
+    private func guideSheetHeight(showsGrabber: Bool) -> CGFloat? {
+        guard showsGrabber, guideCollapsed || guideDrag != 0 || guideSettling else { return nil }
+        let resting = guideCollapsed ? Self.grabberHeight : guideCeiling
+        return min(max(resting - guideDrag, Self.grabberHeight), guideCeiling)
+    }
+
+    /// What a pull opens onto and stops at: the guide's own height, or the height it is laid out
+    /// at when that is less than its own — the scrolling arrangement, which is as open as the
+    /// window allows it to be.
+    private var guideCeiling: CGFloat {
+        let natural = max(guideNatural, Self.grabberHeight)
+        return guideOpenHeight > 0 ? min(natural, max(guideOpenHeight, Self.grabberHeight)) : natural
+    }
+
+    /// The grabber that folds the instructions away to itself, and the whole of what is left when
+    /// they are folded.
+    ///
+    /// Five points thick and hit at thirty: it has to be findable as the only thing on the panel,
+    /// without being noticeable while it is not.
+    ///
+    /// Drawn above the panel's content rather than inside it, so a pull holds one view for the
+    /// whole of the gesture. What sits under the grabber changes shape the moment a pull starts —
+    /// the panel stops drawing itself and is held at the pull's height instead — and a grabber
+    /// that changed with it would take the going gesture with it: pulling up would still work,
+    /// because that is the shape it starts from, and pulling down would not.
+    private func guideGrabber(foldedAway: Bool) -> some View {
+        Capsule()
+            .fill(.quaternary)
+            .frame(width: 36, height: 5)
+            .frame(width: 88, height: Self.grabberHeight)
+            .contentShape(Rectangle())
+            // Ahead of the scroll: the steps scroll whenever they are taller than the window, and
+            // a vertical pull that starts here is the grabber's.
+            .highPriorityGesture(guideDragGesture)
+            // The grabber draws no word, so this is the whole of what VoiceOver has to say — and,
+            // with no button around it any more, what announces it as one.
+            .accessibilityElement()
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(Text(foldedAway ? "Show more" : "Show less"))
+            .accessibilityAction { fold(!foldedAway) }
+    }
+
+    /// The steps themselves, in the one arrangement every surface draws them in.
+    ///
+    /// `measuring` draws them as a copy that exists only to be measured, which reports none of
+    /// the measurements the real one does.
+    private func guideSteps(measuring: Bool) -> some View {
+        // The puzzle piece is Safari's own address-bar button, which a phone never draws however
+        // wide its screen: the Duo splits its window but keeps an iPhone's Safari, so it is told
+        // about an iPhone's control even while both panes are up.
+        SafariGuide(
+            isSignedIn: isSignedIn && popupOpened,
+            showsAddressBarPuzzlePiece: splitsPanes && !Self.isIPhoneDuo,
+            twoColumns: guideTwoColumns
+        )
+            // No width of its own: the sentence takes every point the row can give it, which is
+            // what keeps a long step on one line and the guide short. The column is the frame's
+            // job below — 392pt of content inside the 24pt padding that lines it up with the
+            // window's edge, and the whole window where the two panes share it.
+            .padding(.horizontal, 24)
+            .padding(.top, 14)
+            .padding(.bottom, 18)
+            .background {
+                if !measuring {
+                    GeometryReader { proxy in
+                        Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(guide: proxy.size.height))
+                    }
+                }
+            }
+            .frame(maxWidth: guideWidth)
+    }
+
+    /// The instructions in the room there is for them.
+    ///
+    /// They are text, and text grows: at a reader's larger sizes the steps are taller than the
+    /// window they sit under, and as they are drawn on their own they take the page above them
+    /// with them — the pane, or the landing page, is squeezed to nothing and the steps are cut
+    /// off at both ends. Where they fit they are drawn exactly as before; where they do not, they
+    /// are given what height is left and scroll in it, which is what the split landing page
+    /// already does with them.
+    ///
+    /// The panel is also the sheet the grabber pulls. While it is folded, being pulled, or
+    /// settling, its height is the pull's rather than its content's, and the block is drawn from
+    /// its top edge down and clipped below — so pulling up uncovers the steps a line at a time
+    /// and stops at the last one. At rest the height is `nil`, the frame has nothing to say, and
+    /// the block draws exactly as it did before any of this existed.
+    private func fittedInstructions(showsGrabber: Bool) -> some View {
+        // Only a guide that has a grabber can be folded: without one there is nothing to bring it
+        // back with, and a sign-out while folded would otherwise take the instructions with it.
+        let foldedAway = showsGrabber && guideCollapsed
+        // A collapsed guide being pulled open is not folded away: the panel's own frame is what
+        // hides the steps it has not uncovered yet. Leaving them unbuilt as well is what made the
+        // sheet read blank the whole way up and fill in all at once on the let-go — the frame was
+        // growing over nothing.
+        let folded = foldedAway && !(guideDrag < 0 || guideSettling)
+
+        return VStack(spacing: 0) {
+            // Outside the arrangements below rather than inside them, so the pull keeps the view
+            // it started on. See `guideGrabber`.
+            if showsGrabber {
+                guideGrabber(foldedAway: foldedAway)
+            }
+
+            if !folded {
+                if let sheetHeight = guideSheetHeight(showsGrabber: showsGrabber) {
+                    // Folded, being pulled, or settling: the guide is drawn whole at its own height
+                    // and the frame's clip uncovers it a line at a time. Drawn directly rather than
+                    // through `ViewThatFits`, which answers by what fits: at a height nothing fits it
+                    // hands out the panel's own squeezed layout instead, and the steps it squeezes
+                    // away are not drawn until the pull ends — the panel reads blank on the way up
+                    // and fills in all at once. `fixedSize` is what keeps the guide at its own height
+                    // here rather than letting the short frame compress the text out of it.
+                    //
+                    // The grabber is drawn above this and is the panel's own first row, so what the
+                    // frame holds is the rest of it: the whole panel at the fold's resting height,
+                    // and the steps alone once a pull has made room for them.
+                    guideSteps(measuring: false)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(height: max(sheetHeight - Self.grabberHeight, 0), alignment: .top)
+                        .clipped()
+                } else {
+                    ViewThatFits(in: .vertical) {
+                        guideSteps(measuring: false)
+                        ScrollView {
+                            guideSteps(measuring: false)
+                        }
+                        .scrollIndicators(.never)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: guideWidth)
+        // A copy of the guide drawn where nothing clips it, and only for its height: the panel
+        // above cannot answer how tall it would be at a height it is being held at. Hidden rather
+        // than absent, because a view that is not laid out has no height to give. It is the whole
+        // block, grabber included, because that is what a pull opens onto.
+        .background {
+            if showsGrabber {
+                VStack(spacing: 0) {
+                    guideGrabber(foldedAway: false)
+                    guideSteps(measuring: true)
+                }
+                .frame(maxWidth: guideWidth)
+                .fixedSize(horizontal: false, vertical: true)
+                .hidden()
+                .background(GeometryReader { proxy in
+                    Color.clear.preference(key: GuideNaturalKey.self, value: proxy.size.height)
+                })
+            }
+        }
+        .background(GeometryReader { proxy in
+            Color.clear.preference(key: GuideOpenKey.self, value: proxy.size.height)
+        })
+        .onPreferenceChange(GuideNaturalKey.self) { height in
+            // Only when it has actually changed: a preference report arrives with every layout,
+            // and writing state from one that repeats itself would ask for another layout for
+            // ever.
+            guard height > 0, abs(height - guideNatural) > 0.5 else { return }
+            guideNatural = height
+        }
+        .onPreferenceChange(GuideOpenKey.self) { height in
+            // Only at rest: a height taken while the panel is clipped is the pull's height, and
+            // capping the next pull at that would walk the guide shut a little at a time.
+            guard guideSheetHeight(showsGrabber: showsGrabber) == nil, height > 0, abs(height - guideOpenHeight) > 0.5 else { return }
+            guideOpenHeight = height
+        }
+    }
+
     /// Its own literal, like the three others — `TopUpView`, `FactCheckView` and `SafariGuide` each
     /// carry one rather than sharing a constant, and a shared one here would be the only colour in
     /// this file that the others do not also define for themselves.
-    private static let accent = Color(red: 5 / 255, green: 150 / 255, blue: 105 / 255)
+    private static let accent = Color(red: 4 / 255, green: 120 / 255, blue: 87 / 255)
 
     var body: some View {
         VStack(spacing: 0) {
             if showSignedIn {
                 signedInNotice
+                    .padding(.horizontal, 24)
+                    .padding(.top, 18)
+                    .frame(maxWidth: columnWidth)
+            }
+
+            if isSignedIn, !messages.isEmpty {
+                // Above the tabs rather than inside one, and outside the block the guide's
+                // overlay darkens for the same reason the notice above is: the overlay is about
+                // the panes, and an advisory it covered would be one the reader is asked not to
+                // read. Side by side that puts it over both halves at once, which is where a
+                // message about the service belongs.
+                messagesNotice
                     .padding(.horizontal, 24)
                     .padding(.top, 18)
                     .frame(maxWidth: columnWidth)
@@ -273,6 +771,11 @@ struct RootView: View {
                     // The column the panes and the picker are drawn in, which is narrower than a
                     // wide window. The block around it is not: see below.
                     .frame(maxWidth: columnWidth ?? .infinity)
+                    // VoiceOver does not follow z-order the way a finger does, so the panes are
+                    // still swiped through while the panel covers them — and the panel is what
+                    // says why they cannot be used yet. Hidden for as long as it is due, so the
+                    // one thing to reach is the one thing to read.
+                    .accessibilityHidden(if: dueOverlay != nil)
                 }
                 // The overlay is sized to this block, so the block has to be the whole width it
                 // covers: left to its own contents it stops at the panes, and in a window wider
@@ -286,6 +789,25 @@ struct RootView: View {
                         }
                     }
                 }
+            } else if landingSplits {
+                // Signed out on the Duo in landscape: the window is two halves and only one of
+                // them has a surface, so the instructions take the other. The landing page keeps
+                // the guide's own arrangement beside it rather than below it, which is the same
+                // page the iPad's width would give if it had nothing to pick between either.
+                HStack(spacing: 0) {
+                    SignInView()
+                        .frame(maxWidth: .infinity)
+                    // The crease divides the two halves on its own when the phone is part-folded;
+                    // see `hingeSeparatesPanes`.
+                    if !hingeSeparatesPanes { Divider() }
+                    // A column of its own scrolls, as each pane does: half a phone's landscape is
+                    // shorter than the guide in some translations.
+                    ScrollView {
+                        guideSteps(measuring: false)
+                    }
+                    .scrollIndicators(.never)
+                    .frame(maxWidth: .infinity)
+                }
             } else {
                 // Signed out, the landing page takes the panes' place and the picker with it:
                 // there is nothing to pick between until there is a session. The guide below
@@ -295,30 +817,27 @@ struct RootView: View {
                     .frame(maxWidth: columnWidth)
             }
 
-            // Below the panes rather than inside one of them, because the tab this belongs on is
-            // both of them: it is about getting the extension running at all, and a user who
-            // cannot get DisinfaX to appear in Safari may well be sitting on the fact-check tab
-            // while they work out why. Outside their ScrollViews as well, so it stays put instead
-            // of scrolling away with whichever pane is up — neither pane is guaranteed to reach
-            // the bottom of the window.
-            Divider()
-                .padding(.horizontal, 24)
-                .frame(maxWidth: columnWidth)
+            // Beside the landing page above, in that one arrangement, rather than under it.
+            if !landingSplits {
+                // Below the panes rather than inside one of them, because the tab this belongs on
+                // is both of them: it is about getting the extension running at all, and a user
+                // who cannot get DisinfaX to appear in Safari may well be sitting on the
+                // fact-check tab while they work out why. Outside their ScrollViews as well, so it
+                // stays put instead of scrolling away with whichever pane is up — neither pane is
+                // guaranteed to reach the bottom of the window.
+                Divider()
+                    .padding(.horizontal, 24)
+                    .frame(maxWidth: guideWidth)
 
-            // Signed in is not enough to make the setup steps redundant: a user who signed in
-            // here and never opened the popup may not have enabled the extension at all, and
-            // the how-to-fact-check steps name a control they cannot reach yet.
-            SafariGuide(isSignedIn: isSignedIn && popupOpened, showsAddressBarPuzzlePiece: splitsPanes)
-                // A ceiling rather than a width, because on a phone there is no room for 392pt
-                // plus this padding, and a frame that is fixed anyway is not clamped to the
-                // screen — it hangs over the edge and takes the guide's own left margin with it.
-                .frame(maxWidth: 392, alignment: .leading)
-                .padding(.horizontal, 24)
-                .padding(.top, 14)
-                .padding(.bottom, 18)
-                .background(GeometryReader { proxy in
-                    Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(guide: proxy.size.height))
-                })
+                // Signed in is not enough to make the setup steps redundant: a user who signed in
+                // here and never opened the popup may not have enabled the extension at all, and
+                // the how-to-fact-check steps name a control they cannot reach yet.
+                //
+                // The grabber is the signed-in guide's alone: the landing page's instructions are
+                // the only content besides it, and folding them away there would leave a blank
+                // window.
+                fittedInstructions(showsGrabber: isSignedIn)
+            }
         }
         // Each row is held to the column it belongs in rather than the whole stack being held
         // there: the block above carries the guide's darkening, and a stack capped at the column
@@ -329,6 +848,20 @@ struct RootView: View {
         .background(GeometryReader { proxy in
             Color.clear.preference(key: PaneHeightsKey.self, value: PaneHeights(root: proxy.size.height))
         })
+#if os(iOS)
+        // The hinge is heard rather than read: see `HingeReport`. Zero-sized, so it draws nothing;
+        // written after the update that carried the report so a state change never lands in the
+        // middle of one.
+        .background {
+            if Self.isIPhoneDuo {
+                HingeReport { partiallyOpen in
+                    DispatchQueue.main.async {
+                        if hingePartiallyOpen != partiallyOpen { hingePartiallyOpen = partiallyOpen }
+                    }
+                }
+            }
+        }
+#endif
         .onPreferenceChange(PaneHeightsKey.self) { heights in
             // Signed out, there is no pane to take the leftover and no ceiling to stop at: the
             // landing page is the whole content, and a window shorter than it cuts the sign-in
@@ -357,7 +890,22 @@ struct RootView: View {
             if FactCheckNotifier.shared.consumeBalanceRequest() { tab = .topUp }
             if AuthCallbackNotice.take() { showSignedIn = true }
             refreshGuide()
+            // The same rule the overlay's `onChange` applies, for a launch: that one only hears
+            // an overlay arriving while this view is up, and a device signed in before the app
+            // was opened has one due from the first frame — the fold remembered from last time
+            // would otherwise be painted under it.
+            if dueOverlay != nil, guideCollapsed { guideCollapsed = false }
+#if os(iOS)
+            refreshWindowShape()
+#endif
         }
+#if os(iOS)
+        // Turning the phone, or unfolding it, is heard rather than measured: the window's shorter
+        // side decides whether the Duo splits, and this is when it changes. See `duoExpanded`.
+        .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+            refreshWindowShape()
+        }
+#endif
         // An app that was already running when the sign-in landed: it hears about the hand-off as
         // it happens, rather than through the flag, which the cold path above has already read.
         // The flag is cleared here too, so that a rebuild of this view cannot bring the notice
@@ -372,6 +920,13 @@ struct RootView: View {
         .onReceive(NotificationCenter.default.publisher(for: .disinfaxSessionChanged)) { _ in
             refreshGuide()
         }
+        // A panel drawn over the panes points down at the instructions, so it cannot be pointing
+        // at something folded away: the guide unfolds as soon as one is due. It stays unfolded
+        // once the panel is gone — a fold after that is the user's own, and reversing it would be
+        // the app arguing with them about a panel that is no longer there.
+        .onChange(of: dueOverlay != nil) { due in
+            if due, guideCollapsed { guideCollapsed = false }
+        }
         .onChange(of: scenePhase) { phase in
             // Cleared on the way out rather than after a while, so the notice describes the
             // hand-off that just happened for exactly as long as the user is looking at it. Left
@@ -385,7 +940,27 @@ struct RootView: View {
         }
         // And while the app just sits there: the stamp expires by itself, the same way the
         // balances tab's does.
-        .onReceive(ticker) { _ in refreshGuide() }
+        .onReceive(ticker) { _ in
+            refreshGuide()
+#if os(iOS)
+            // A fold or an unfold that reports no rotation is still a shape, and this is the
+            // only thing that would hear it.
+            refreshWindowShape()
+#endif
+        }
+        // The advisories above the tabs come from the extension's endpoint rather than from the
+        // extension, whose cache lives in its own storage: so the app asks for them itself, on the
+        // same daily cadence the extension's alarm keeps. Checked hourly rather than drawn by the
+        // ticker above, because the whole point of the stamp is not to ask until it has aged out —
+        // and a macOS window left open for days is the case that would otherwise never ask again.
+        .task {
+            while !Task.isCancelled {
+                if let fresh = await ServiceMessages.refreshIfStale(), fresh != messages {
+                    messages = fresh
+                }
+                try? await Task.sleep(nanoseconds: 60 * 60 * 1_000_000_000)
+            }
+        }
     }
 
     /// Re-reads what decides the guide, from disk, for the reason the panes do: the extension
@@ -452,6 +1027,28 @@ struct RootView: View {
         // the only thing it carries.
         .accessibilityElement(children: .combine)
     }
+
+    /// The advisories the popup shows, one card each. Read-only: they are notices, not controls,
+    /// and the only thing a reader can do with one is follow a link the message itself carries.
+    private var messagesNotice: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(Array(messages.enumerated()), id: \.offset) { _, message in
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "info.circle")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
+                    Text(ServiceMessages.attributed(message))
+                        .font(.callout)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(.quaternary.opacity(0.28), in: RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.quaternary, lineWidth: 1))
+            }
+        }
+    }
 }
 
 /// Sign out, and the account deletion behind a disclosure — the popup's settings, under the tab
@@ -470,7 +1067,9 @@ private struct AccountActions: View {
     private enum Action { case signOut, delete }
 
     @State private var busy: Action?
-    @State private var error: LocalizedStringKey?
+    /// Localized where it is set, rather than carried as a key: the failure is also announced,
+    /// and an announcement takes the words, not the key. See `announce`.
+    @State private var error: String?
     @State private var showsDelete = false
 
     var body: some View {
@@ -491,6 +1090,9 @@ private struct AccountActions: View {
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
                         .rotationEffect(.degrees(showsDelete ? 90 : 0))
+                        // The words beside it say what it says, and say it better: the label is
+                        // the state ("Show less" once open), the rotation is only for the eye.
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(.plain)
@@ -526,6 +1128,11 @@ private struct AccountActions: View {
         // As wide as the block is given, which the caller caps: the note has to be readable, and
         // hugging the buttons' width would leave it a column of three or four words.
         .frame(maxWidth: .infinity, alignment: .leading)
+        // A refusal appears under the button that was pressed, and the button goes back to
+        // saying what it said before — nothing moves the cursor to the words. See `announce`.
+        .onChange(of: error) { error in
+            if let error { announce(error) }
+        }
     }
 
     /// Filling the column the block is given. The padding is inside the frame so a stretched
@@ -555,7 +1162,7 @@ private struct AccountActions: View {
 
         guard let session = await AppSession.current(),
               let url = URL(string: SharedTopUpStore.supabaseBase + "/rest/v1/rpc/delete_my_account") else {
-            error = "Something went wrong on our end. Please try again in a moment."
+            error = String(localized: "Something went wrong on our end. Please try again in a moment.")
             return
         }
 
@@ -572,7 +1179,7 @@ private struct AccountActions: View {
         guard let (_, response) = try? await URLSession.shared.data(for: request),
               let http = response as? HTTPURLResponse,
               (200..<300).contains(http.statusCode) else {
-            error = "Something went wrong on our end. Please try again in a moment."
+            error = String(localized: "Something went wrong on our end. Please try again in a moment.")
             return
         }
 
@@ -598,6 +1205,11 @@ private struct GuideOverlay: View {
     /// panel would darken nothing, and white words on it would be the only legible thing — which
     /// is what this looked like before it asked.
     @Environment(\.colorScheme) private var colorScheme
+
+    /// Whether the panel holds the VoiceOver cursor. It is drawn over the panes and hides them
+    /// from the cursor while it is due, so without being taken the cursor would simply have
+    /// nowhere to be: it lands here as the panel arrives, and the panel is the one thing to read.
+    @AccessibilityFocusState private var focused: Bool
 
     private var scrim: Color {
         colorScheme == .dark ? Color.white.opacity(0.8) : Color.black.opacity(0.8)
@@ -719,6 +1331,13 @@ private struct GuideOverlay: View {
         // the button trait is what says the panel can be tapped away.
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
+        // Named rather than left to the gesture. A tap is the gesture a finger makes; an
+        // assistive technology asks the view to act, and this is the act it asks for.
+        .accessibilityAction { onDismiss() }
+        .accessibilityFocused($focused)
+        // After the cursor has somewhere to land rather than while the tree is still being
+        // built: the panel is created and taken in the same pass that hides the panes under it.
+        .onAppear { focused = true }
     }
 
     /// The size that makes the heading as wide as the panel allows. A fraction of a percent short
@@ -793,7 +1412,12 @@ private struct SignInView: View {
 
     @ObservedObject private var coordinator = SignInCoordinator.shared
 
-    private static let accent = Color(red: 5 / 255, green: 150 / 255, blue: 105 / 255)
+    /// The provider the last sign-in used, read from the record both this app and the popup write.
+    /// Taken when the page appears: a successful sign-in replaces this page, and the next one is
+    /// built from whatever the store says then.
+    @State private var lastOAuthProvider: String?
+
+    private static let accent = Color(red: 4 / 255, green: 120 / 255, blue: 87 / 255)
 
     /// Whether a sheet is up, which is when the buttons stop accepting taps. Not a spinner in
     /// place of the page: the system sheet covers the window on its own, and this only has to
@@ -813,8 +1437,10 @@ private struct SignInView: View {
                             // little low against the word beside it, so it is lifted the couple
                             // of points its artwork has below the cap line.
                             .padding(.bottom, 3)
+                            // The name is written beside it, so the mark has nothing to add.
+                            .accessibilityHidden(true)
                         Text("DisinfaX")
-                            .font(.system(size: 30, weight: .black))
+                            .scaledFont(30, weight: .black, relativeTo: .largeTitle)
                             .tracking(-0.5)
                     }
                     VStack(spacing: 1) {
@@ -831,7 +1457,8 @@ private struct SignInView: View {
                     // buttons. Drawn instead — which is what stood here — it is a copy of the
                     // mark, and a copy gets the sweep's seam wrong: red where the crossbar's
                     // end should be blue, on the one element a reader looks at first.
-                    providerButton(.google, label: "Continue with Google") {
+                    providerButton(.google, label: "Continue with Google",
+                                   isLastUsed: lastOAuthProvider == SignInCoordinator.Provider.google.rawValue) {
                         Image("GoogleLogo")
                             .resizable()
                             .interpolation(.high)
@@ -840,8 +1467,13 @@ private struct SignInView: View {
                             // artwork's asset name is not something to read out.
                             .accessibilityHidden(true)
                     }
-                    providerButton(.apple, label: "Continue with Apple") {
-                        Image(systemName: "apple.logo").font(.system(size: 17, weight: .medium))
+                    providerButton(.apple, label: "Continue with Apple",
+                                   isLastUsed: lastOAuthProvider == SignInCoordinator.Provider.apple.rawValue) {
+                        Image(systemName: "apple.logo")
+                            .scaledFont(17, weight: .medium)
+                            // Named by the label beside it, and a symbol would otherwise be read
+                            // out as a second, worse name for the same button.
+                            .accessibilityHidden(true)
                     }
                 }
                 .frame(maxWidth: 320)
@@ -867,11 +1499,19 @@ private struct SignInView: View {
         }
         .scrollIndicators(.never)
         .tint(Self.accent)
-        .onAppear { coordinator.startPendingIfNeeded() }
+        .onAppear {
+            lastOAuthProvider = SharedTopUpStore.lastOAuthProvider?.provider
+            coordinator.startPendingIfNeeded()
+        }
         // A window that was already up when the URL arrived has no `onAppear` to catch: the
         // signal is the only way it hears about an entry point that does not come through a tap.
         .onReceive(NotificationCenter.default.publisher(for: .disinfaxSignInRequested)) { _ in
             coordinator.startPendingIfNeeded()
+        }
+        // The sheet has just closed on a failure, and the words for it have appeared below the
+        // button that started it. Nothing moves the cursor there — see `announce`.
+        .onChange(of: coordinator.failure) { message in
+            if let message { announce(message) }
         }
     }
 
@@ -880,6 +1520,7 @@ private struct SignInView: View {
     private func providerButton(
         _ provider: SignInCoordinator.Provider,
         label: LocalizedStringKey,
+        isLastUsed: Bool = false,
         @ViewBuilder icon: () -> some View
     ) -> some View {
         Button {
@@ -890,10 +1531,36 @@ private struct SignInView: View {
                     .fill(.quaternary.opacity(0.5))
                 HStack(spacing: 10) {
                     icon().frame(width: 18, height: 18)
-                    Text(label).font(.system(size: 15, weight: .medium))
+                    Text(label).scaledFont(15, weight: .medium)
                 }
             }
-            .frame(height: 46)
+            // A floor rather than a height: the row is drawn at 46, and a name set larger than
+            // the plate was cut for grows it instead of being clipped by it.
+            .frame(minHeight: 46)
+            // The popup's own badge, in the same corner and the same words: a return visit offers
+            // the provider that worked last, and both surfaces say so the same way.
+            .overlay(alignment: .topTrailing) {
+                if isLastUsed {
+                    Text("Last Used")
+                        .scaledFont(8, weight: .black, relativeTo: .caption2)
+                        // Set in capitals as the popup sets it, so a translated badge is cased the
+                        // same way on both surfaces rather than one of them title-casing English.
+                        .textCase(.uppercase)
+                        .tracking(0.4)
+                        .foregroundStyle(Self.accent)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Self.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                .stroke(Self.accent.opacity(0.35), lineWidth: 1)
+                        }
+                        .padding(5)
+                        // The button already names its provider; the badge is a hint about which
+                        // one, not a second name to read out ahead of it.
+                        .accessibilityHidden(true)
+                }
+            }
         }
         .buttonStyle(.plain)
         .disabled(isBusy)
@@ -939,6 +1606,10 @@ private struct SafariGuide: View {
     /// rather than being tied to the device they were first written for.
     let showsAddressBarPuzzlePiece: Bool
 
+    /// Whether the steps read across two columns rather than down one. Decided by the window, not
+    /// by this view: see `guideTwoColumns` on the controller.
+    let twoColumns: Bool
+
     /// The app's own appearance — the system's, since this surface has no appearance setting of
     /// its own. Only the brand mark asks: it is the one drawing that ships in both inks.
     @Environment(\.colorScheme) private var colorScheme
@@ -946,7 +1617,12 @@ private struct SafariGuide: View {
     /// Carried over from `TopUpView`'s own tint, which no longer reaches here — the guide sits
     /// under both tabs now, and a `.tint` on the root would recolour the tab picker with it. Its
     /// own literal, like the other two, rather than a shared constant.
-    private static let accent = Color(red: 5 / 255, green: 150 / 255, blue: 105 / 255)
+    private static let accent = Color(red: 4 / 255, green: 120 / 255, blue: 87 / 255)
+
+    /// Wide enough for "1." at the size the steps are set in, and scaled with them: the number and
+    /// its sentence share a first baseline, and a number clipped by its own column would take the
+    /// indent with it.
+    @ScaledMetric(relativeTo: .callout) private var stepNumberWidth: CGFloat = 18
 
 #if os(iOS)
     /// Safari's extensions button in the address bar, drawn rather than named: no SF Symbol is
@@ -958,7 +1634,28 @@ private struct SafariGuide: View {
     /// baseline at its own natural size, so artwork filling a 16-point canvas rises past the
     /// ascenders and reads as oversized next to the words. The drawing keeps its proportions;
     /// only the canvas shrank.
+    ///
+    /// iOS 27 draws the button as three lines before any extension has run, with no card behind
+    /// them — so the setup steps, which are read before the extension is enabled, show that.
+    /// Earlier systems keep the card-and-two-lines drawing below.
     private static let extensionsIcon: Image = {
+        if #available(iOS 27.0, *) {
+            let drawn = UIGraphicsImageRenderer(size: CGSize(width: 12, height: 12)).image { _ in
+                UIColor.black.setStroke()
+                // The top two lines are the same length and the third is the short one — three
+                // equal lines would be a generic hamburger, and the short tail is what makes this
+                // Safari's own menu.
+                for (y, end) in [(3.9, 9.95), (6.0, 9.95), (8.1, 7.45)] {
+                    let line = UIBezierPath()
+                    line.move(to: CGPoint(x: 2.05, y: y))
+                    line.addLine(to: CGPoint(x: end, y: y))
+                    line.lineWidth = 1.15
+                    line.lineCapStyle = .round
+                    line.stroke()
+                }
+            }
+            return Image(uiImage: drawn.withRenderingMode(.alwaysTemplate))
+        }
         let drawn = UIGraphicsImageRenderer(size: CGSize(width: 12, height: 12)).image { _ in
             UIColor.black.setStroke()
             let card = UIBezierPath(roundedRect: CGRect(x: 2.05, y: 1.1, width: 7.9, height: 5.25), cornerRadius: 1.3)
@@ -977,44 +1674,69 @@ private struct SafariGuide: View {
     }()
 
     /// The same button once the extension is on: Safari swaps the glyph for a puzzle piece, which
-    /// is the one the how-to-fact-check steps name — and the one a signed-out user will be looking
-    /// at by the time they reach the step that reopens the menu. Stroked like its disabled twin
-    /// above rather than filled: at twelve points a solid silhouette reads as a blob, and the
-    /// notch and the tab that make it a puzzle piece disappear into it.
+    /// is the one the how-to-fact-check steps name — by the time the reader gets there the popup
+    /// has been opened, so the menu is showing it.
+    ///
+    /// Filled rather than stroked, with the two lines below it, on every system: the notch is a
+    /// bite out of an edge rather than a line drawn inside the shape, so the silhouette carries the
+    /// tab and the notch at twelve points where an outline lost them in the box around them.
+    ///
+    /// The piece is bigger before iOS 27 than on it. That is the control those systems draw — a
+    /// piece that fills the space above the lines rather than sitting in a corner of it — and the
+    /// two are only similar, not the same drawing. Everything else is shared.
+    private static func puzzlePiece(x0: CGFloat, x1: CGFloat, y0: CGFloat, y1: CGFloat,
+                                    corner: CGFloat, knob: CGFloat) -> UIBezierPath {
+        let mid = (y0 + y1) / 2
+        let card = UIBezierPath()
+        card.move(to: CGPoint(x: x0 + corner, y: y0))
+        card.addLine(to: CGPoint(x: x1 - corner, y: y0))
+        card.addArc(withCenter: CGPoint(x: x1 - corner, y: y0 + corner), radius: corner,
+                    startAngle: -.pi / 2, endAngle: 0, clockwise: true)
+        card.addLine(to: CGPoint(x: x1, y: mid - knob))
+        // The tab bulges out of the right edge; the notch is the same arc mirrored into the
+        // left one. Both sweep through the angle that points away from the card.
+        card.addArc(withCenter: CGPoint(x: x1, y: mid), radius: knob,
+                    startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
+        card.addLine(to: CGPoint(x: x1, y: y1 - corner))
+        card.addArc(withCenter: CGPoint(x: x1 - corner, y: y1 - corner), radius: corner,
+                    startAngle: 0, endAngle: .pi / 2, clockwise: true)
+        card.addLine(to: CGPoint(x: x0 + corner, y: y1))
+        card.addArc(withCenter: CGPoint(x: x0 + corner, y: y1 - corner), radius: corner,
+                    startAngle: .pi / 2, endAngle: .pi, clockwise: true)
+        card.addLine(to: CGPoint(x: x0, y: mid + knob))
+        card.addArc(withCenter: CGPoint(x: x0, y: mid), radius: knob,
+                    startAngle: .pi / 2, endAngle: -.pi / 2, clockwise: false)
+        card.addLine(to: CGPoint(x: x0, y: y0 + corner))
+        card.addArc(withCenter: CGPoint(x: x0 + corner, y: y0 + corner), radius: corner,
+                    startAngle: .pi, endAngle: 3 * .pi / 2, clockwise: true)
+        card.close()
+        return card
+    }
+
     private static let extensionsEnabledIcon: Image = {
+        // The piece is about three fifths the width of the lines below it and sits at their left
+        // edge, as Safari draws it: at the card's old full width the silhouette had no room left
+        // for a notch and read as a bar.
+        let card = puzzlePiece(x0: 2.05, x1: 6.99, y0: 1.5, y1: 5.7, corner: 0.9, knob: 0.75)
+        // The earlier systems' larger piece, over the same two lines: as wide as they are, filling
+        // the space above them rather than sitting in a corner of it, with the notch and the tab
+        // scaled with the shape rather than left at a smaller piece's size.
+        let earlier = puzzlePiece(x0: 1.9, x1: 9.9, y0: 0.5, y1: 7.5, corner: 1.42, knob: 1.2)
+
         let drawn = UIGraphicsImageRenderer(size: CGSize(width: 12, height: 12)).image { _ in
-            let x0: CGFloat = 2.05, x1: CGFloat = 9.95, y0: CGFloat = 1.1, y1: CGFloat = 6.35
-            let corner: CGFloat = 1.3, knob: CGFloat = 1.2, mid: CGFloat = (y0 + y1) / 2
-            let card = UIBezierPath()
-            card.move(to: CGPoint(x: x0 + corner, y: y0))
-            card.addLine(to: CGPoint(x: x1 - corner, y: y0))
-            card.addArc(withCenter: CGPoint(x: x1 - corner, y: y0 + corner), radius: corner,
-                        startAngle: -.pi / 2, endAngle: 0, clockwise: true)
-            card.addLine(to: CGPoint(x: x1, y: mid - knob))
-            // The tab bulges out of the right edge; the notch is the same arc mirrored into the
-            // left one. Both sweep through the angle that points away from the card.
-            card.addArc(withCenter: CGPoint(x: x1, y: mid), radius: knob,
-                        startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
-            card.addLine(to: CGPoint(x: x1, y: y1 - corner))
-            card.addArc(withCenter: CGPoint(x: x1 - corner, y: y1 - corner), radius: corner,
-                        startAngle: 0, endAngle: .pi / 2, clockwise: true)
-            card.addLine(to: CGPoint(x: x0 + corner, y: y1))
-            card.addArc(withCenter: CGPoint(x: x0 + corner, y: y1 - corner), radius: corner,
-                        startAngle: .pi / 2, endAngle: .pi, clockwise: true)
-            card.addLine(to: CGPoint(x: x0, y: mid + knob))
-            card.addArc(withCenter: CGPoint(x: x0, y: mid), radius: knob,
-                        startAngle: .pi / 2, endAngle: -.pi / 2, clockwise: false)
-            card.addLine(to: CGPoint(x: x0, y: y0 + corner))
-            card.addArc(withCenter: CGPoint(x: x0 + corner, y: y0 + corner), radius: corner,
-                        startAngle: .pi, endAngle: 3 * .pi / 2, clockwise: true)
-            card.close()
-            card.lineWidth = 1.15
-            card.lineJoinStyle = .round
+            // Two thirds opaque, which is how the button reads beside the lines rather than over
+            // them: the piece is the control's reminder, not its subject. Template rendering keeps
+            // the alpha channel, so this is the drawing's own weight and not a tint.
+            UIColor.black.withAlphaComponent(2.0 / 3.0).setFill()
+            if #available(iOS 27.0, *) {
+                card.fill()
+            } else {
+                earlier.fill()
+            }
             UIColor.black.setStroke()
-            card.stroke()
             for (y, end) in [(9.0, 9.95), (11.25, 6.75)] {
                 let line = UIBezierPath()
-                line.move(to: CGPoint(x: x0, y: y))
+                line.move(to: CGPoint(x: 2.05, y: y))
                 line.addLine(to: CGPoint(x: end, y: y))
                 line.lineWidth = 1.15
                 line.lineCapStyle = .round
@@ -1068,6 +1790,7 @@ private struct SafariGuide: View {
     /// home screen — a monochrome disc at twelve points is just a dot — and because the macOS
     /// guide shows the real icon taken from Safari itself, so the two platforms should agree.
     private static var safariIcon: Image {
+        if #available(iOS 27.0, *) { return safariIcon27 }
         let side: CGFloat = 12
         let drawn = UIGraphicsImageRenderer(size: CGSize(width: side, height: side)).image { ctx in
             let middle = CGPoint(x: side / 2, y: side / 2)
@@ -1101,6 +1824,72 @@ private struct SafariGuide: View {
         }
         return Image(uiImage: drawn.withRenderingMode(.alwaysOriginal))
     }
+
+    /// The same mark as iOS 27 draws it: the dial sits in a pale rounded square, carries tick
+    /// marks around its rim, and the needle turns on a pink hub. Three details that are all but
+    /// invisible at twelve points on their own — the rim is what the squircle adds, and the ticks
+    /// are what stop the dial reading as a plain blue disc, which is why the old drawing could
+    /// leave them out.
+    private static let safariIcon27: Image = {
+        let side: CGFloat = 12
+        let drawn = UIGraphicsImageRenderer(size: CGSize(width: side, height: side)).image { ctx in
+            let face = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: side, height: side),
+                                    cornerRadius: side * 0.24)
+            UIColor(red: 0.93, green: 0.96, blue: 1, alpha: 1).setFill()
+            face.fill()
+
+            let middle = CGPoint(x: side / 2, y: side / 2)
+            let radius = side * 0.39
+            let dial = UIBezierPath(ovalIn: CGRect(x: middle.x - radius, y: middle.y - radius,
+                                                   width: radius * 2, height: radius * 2))
+            dial.addClip()
+            let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: [UIColor(red: 0.24, green: 0.68, blue: 0.98, alpha: 1).cgColor,
+                         UIColor(red: 0.02, green: 0.42, blue: 0.88, alpha: 1).cgColor] as CFArray,
+                locations: [0, 1])
+            if let gradient {
+                ctx.cgContext.drawLinearGradient(gradient,
+                                                 start: CGPoint(x: 0, y: middle.y - radius),
+                                                 end: CGPoint(x: 0, y: middle.y + radius),
+                                                 options: [])
+            }
+
+            UIColor(white: 1, alpha: 0.55).setStroke()
+            for step in 0..<12 {
+                let angle = CGFloat(step) * .pi / 6
+                let tick = UIBezierPath()
+                tick.move(to: CGPoint(x: middle.x + cos(angle) * radius * 0.90,
+                                      y: middle.y + sin(angle) * radius * 0.90))
+                tick.addLine(to: CGPoint(x: middle.x + cos(angle) * radius * 0.72,
+                                         y: middle.y + sin(angle) * radius * 0.72))
+                tick.lineWidth = 0.3
+                tick.lineCapStyle = .round
+                tick.stroke()
+            }
+
+            let reach = side * 0.26, breadth = side * 0.065
+            let north = CGPoint(x: middle.x + reach, y: middle.y - reach)
+            let south = CGPoint(x: middle.x - reach, y: middle.y + reach)
+            let east = CGPoint(x: middle.x + breadth, y: middle.y + breadth)
+            let west = CGPoint(x: middle.x - breadth, y: middle.y - breadth)
+            let red = UIBezierPath()
+            red.move(to: north); red.addLine(to: east); red.addLine(to: south); red.close()
+            UIColor(red: 0.95, green: 0.16, blue: 0.14, alpha: 1).setFill()
+            red.fill()
+            let white = UIBezierPath()
+            white.move(to: north); white.addLine(to: south); white.addLine(to: west); white.close()
+            UIColor.white.setFill()
+            white.fill()
+
+            let hub = UIBezierPath(ovalIn: CGRect(x: middle.x - side * 0.055,
+                                                  y: middle.y - side * 0.055,
+                                                  width: side * 0.11, height: side * 0.11))
+            UIColor(red: 0.97, green: 0.45, blue: 0.52, alpha: 1).setFill()
+            hub.fill()
+        }
+        return Image(uiImage: drawn.withRenderingMode(.alwaysOriginal))
+    }()
 #else
     /// Safari's icon as the Finder draws it, for the platform whose Safari has one to read. Taken
     /// from Safari itself rather than drawn, so it is the mark the user is about to look for in
@@ -1151,13 +1940,44 @@ private struct SafariGuide: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             heading(Self.headingTitle(factCheck: isSignedIn))
-            if isSignedIn {
-                selectionSteps
-            } else {
-                setupSteps
-            }
+            stepRows
         }
         .tint(Self.accent)
+    }
+
+    /// The steps in the arrangement the window has room for: one column of three, or two columns
+    /// that read down the first and continue at the top of the second. The heading stays whole
+    /// above both, since it names the section rather than any one step.
+    @ViewBuilder
+    private var stepRows: some View {
+        if twoColumns {
+            HStack(alignment: .top, spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    stepRow(1)
+                    stepRow(2)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: 8) {
+                    stepRow(3)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 8) {
+                stepRow(1)
+                stepRow(2)
+                stepRow(3)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func stepRow(_ n: Int) -> some View {
+        if isSignedIn {
+            selectionStep(n)
+        } else {
+            setupStep(n)
+        }
     }
 
     /// The guide's subject, from one place. The dark overlay above the panes shows the same
@@ -1171,80 +1991,103 @@ private struct SafariGuide: View {
 
     private func heading(_ title: LocalizedStringKey) -> some View {
         Text(title)
-            .font(.system(size: 10, weight: .semibold)).tracking(0.6)
+            .scaledFont(10, weight: .semibold).tracking(0.6)
             .foregroundStyle(.secondary)
             .padding(.bottom, 2)
+            // Drawn at ten points, this is the smallest words on the screen and the name of the
+            // section under it — which is exactly what the rotor's Headings entry is for.
+            .accessibilityAddTraits(.isHeader)
     }
 
-    /// How to get DisinfaX into Safari at all.
+    /// How to get DisinfaX into Safari at all, by number: `stepRows` is what arranges them.
     @ViewBuilder
-    private var setupSteps: some View {
-        // Where Safari is named its own mark goes beside it: the steps are read by someone with a
-        // browser open, and the name alone is the one word they are expected to find in a menu.
-        step(1, Self.sentence("Open {1} Safari and go to any website.", [.artwork(Self.safariIcon)]))
-            .accessibilityLabel(Text(Self.spoken("Open {1} Safari and go to any website.")))
+    private func setupStep(_ n: Int) -> some View {
+        switch n {
+        case 1:
+            // Where Safari is named its own mark goes beside it: the steps are read by someone
+            // with a browser open, and the name alone is the one word they are expected to find
+            // in a menu.
+            step(1, Self.sentence("Open {1} Safari and go to any website.", [.artwork(Self.safariIcon)]))
+                .accessibilityLabel(Text(Self.spoken("Open {1} Safari and go to any website.")))
 #if os(macOS)
-        // The pane to turn it on in is named twice over, because "Extensions" on its own is
-        // ambiguous with the rows inside it. The arrow is Safari's own path; the puzzle piece is
-        // the mark Safari uses for the same pane once the extension is running.
-        step(2, Self.sentence("Enable {1} DisinfaX in Safari → {2} Safari Extensions.",
-                              [.artwork(brandIcon(colorScheme)), .symbol(Image(systemName: "puzzlepiece"))]))
-            .accessibilityLabel(Text(Self.spoken("Enable {1} DisinfaX in Safari → {2} Safari Extensions.")))
-        // The mark stands where "the DisinfaX icon" stood, so it is spaced like any other word
-        // rather than drawn tight against a noun it names. Safari's compass is not repeated in
-        // the bar's name either: the word "Safari" is already the one the reader is looking for.
-        step(3, Self.sentence("Click {1} in the Safari toolbar to open the popup.",
-                              [.artwork(brandIcon(colorScheme), spaced: true)]))
-            // Spoken, the mark has no name of its own, so this sentence keeps the words the
-            // visible one drops — and that is the key the previous wording left in every
-            // language, which is why the label reads it rather than the string above.
-            .accessibilityLabel(Text(Self.spoken("Click the {1} DisinfaX icon in the {2} Safari toolbar to open the popup.")))
+        case 2:
+            // The pane to turn it on in is named twice over, because "Extensions" on its own is
+            // ambiguous with the rows inside it. The arrow is Safari's own path; the puzzle piece
+            // is the mark Safari uses for the same pane once the extension is running.
+            step(2, Self.sentence("Enable {1} DisinfaX in Safari → {2} Safari Extensions.",
+                                  [.artwork(brandIcon(colorScheme)), .symbol(Image(systemName: "puzzlepiece"))]))
+                .accessibilityLabel(Text(Self.spoken("Enable {1} DisinfaX in Safari → {2} Safari Extensions.")))
+        default:
+            // The mark stands where "the DisinfaX icon" stood, so it is spaced like any other
+            // word rather than drawn tight against a noun it names. Safari's compass is not
+            // repeated in the bar's name either: the word "Safari" is already the one the reader
+            // is looking for.
+            step(3, Self.sentence("Click {1} in the Safari toolbar to open the popup.",
+                                  [.artwork(brandIcon(colorScheme), spaced: true)]))
+                // Spoken, the mark has no name of its own, so this sentence keeps the words the
+                // visible one drops — and that is the key the previous wording left in every
+                // language, which is why the label reads it rather than the string above.
+                .accessibilityLabel(Text(Self.spoken("Click the {1} DisinfaX icon in the {2} Safari toolbar to open the popup.")))
 #else
-        // The extensions button, NOT the Aa page-settings menu this used to name — they are
-        // different controls in the address bar and only one of them lists extensions. The
-        // sentence is one localization key with its inline images at `{1}`–`{3}`, so each
-        // translation decides where the puzzle piece, the name and the checkmark fall instead of
-        // inheriting English word order from a fixed split.
-        step(2, Text("Tap the ") + Self.iconLeading(extensionsButtonMark,
-            " icon in the address bar, then {1} Manage Extensions, and turn on {2} DisinfaX, and validate {3}.",
-            [.symbol(Image(systemName: "puzzlepiece")), .artwork(brandIcon(colorScheme)), .symbol(Image(systemName: "checkmark.circle"), spaced: true)]))
-            // An inline image carries no translation — spoken, it is only the symbol's own name.
-            // The sentence without its markers is the localized thing, so read that.
-            .accessibilityLabel(Text(
-                String(localized: "Tap the ")
-                + Self.spoken(" icon in the address bar, then {1} Manage Extensions, and turn on {2} DisinfaX, and validate {3}.")
-            ))
-        step(3, Self.sentence("Tap {1} again and choose {2} DisinfaX to open the popup.",
-                              [extensionsButtonOnMark, .artwork(brandIcon(colorScheme))]))
-            .accessibilityLabel(Text(Self.spoken("Tap {1} again and choose {2} DisinfaX to open the popup.")))
+        case 2:
+            // The extensions button, NOT the Aa page-settings menu this used to name — they are
+            // different controls in the address bar and only one of them lists extensions. The
+            // sentence is one localization key with its inline images at `{1}`–`{3}`, so each
+            // translation decides where the puzzle piece, the name and the checkmark fall
+            // instead of inheriting English word order from a fixed split.
+            step(2, Text("Tap the ") + Self.iconLeading(extensionsButtonMark,
+                " icon in the address bar, then {1} Manage Extensions, and turn on {2} DisinfaX, and validate {3}.",
+                [.symbol(Image(systemName: "puzzlepiece")), .artwork(brandIcon(colorScheme)), .symbol(Image(systemName: "checkmark.circle"))]))
+                // An inline image carries no translation — spoken, it is only the symbol's own
+                // name. The sentence without its markers is the localized thing, so read that.
+                .accessibilityLabel(Text(
+                    String(localized: "Tap the ")
+                    + Self.spoken(" icon in the address bar, then {1} Manage Extensions, and turn on {2} DisinfaX, and validate {3}.")
+                ))
+        default:
+            // The menu stays open once the extension is validated — it does not close itself —
+            // so DisinfaX is listed where the reader already is. Naming the menu again would
+            // send them to reopen one that never shut.
+            step(3, Self.sentence("Tap {1} DisinfaX to open the popup.",
+                                  [.artwork(brandIcon(colorScheme))]))
+                .accessibilityLabel(Text(Self.spoken("Tap {1} DisinfaX to open the popup.")))
 #endif
+        }
     }
 
-    /// The web selection: what the extension does once it is running.
+    /// The web selection: what the extension does once it is running, by number.
     @ViewBuilder
-    private var selectionSteps: some View {
-        step(1, "On any webpage, select the text you want to fact-check.")
+    private func selectionStep(_ n: Int) -> some View {
+        switch n {
+        case 1:
+            step(1, "On any webpage, select the text you want to fact-check.")
 #if os(macOS)
-        step(2, "Right-click the selected text and choose Disinfact (also works on unselected text).")
-        step(3, "The fact-check starts right away and is charged to your balance.")
+        case 2:
+            step(2, "Right-click the selected text and choose Disinfact (also works on unselected text).")
+        default:
+            step(3, "The fact-check starts right away and is charged to your balance.")
 #else
-        // One sentence for both tablets: the extensions button sits in the address bar on the
-        // iPhone and — once the extension is enabled, which is the only state this guide is shown
-        // in — on the iPad too. The name inside the sentence is the one image the translation has
-        // to place, so it is a marker in a single key rather than a split at a fixed word.
-        step(2, Text("With the text still selected, tap the ") + Self.iconLeading(extensionsButtonOnMark,
-            " icon in the address bar, then choose {1} DisinfaX.", [.artwork(brandIcon(colorScheme))]))
-            .accessibilityLabel(Text(
-                String(localized: "With the text still selected, tap the ")
-                + Self.spoken(" icon in the address bar, then choose {1} DisinfaX.")
-            ))
-        step(3, "The fact-check starts right away and is charged to your balance.")
+        case 2:
+            // One sentence for both tablets: the extensions button sits in the address bar on the
+            // iPhone and — once the extension is enabled, which is the only state this guide is
+            // shown in — on the iPad too. The name inside the sentence is the one image the
+            // translation has to place, so it is a marker in a single key rather than a split at
+            // a fixed word.
+            step(2, Text("With the text still selected, tap the ") + Self.iconLeading(extensionsButtonOnMark,
+                " icon in the address bar, then choose {1} DisinfaX.", [.artwork(brandIcon(colorScheme))]))
+                .accessibilityLabel(Text(
+                    String(localized: "With the text still selected, tap the ")
+                    + Self.spoken(" icon in the address bar, then choose {1} DisinfaX.")
+                ))
+        default:
+            step(3, "The fact-check starts right away and is charged to your balance.")
 #endif
+        }
     }
 
     private func step(_ n: Int, _ text: Text) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text("\(n).").font(.callout).bold().foregroundStyle(.secondary).frame(width: 18, alignment: .trailing)
+            Text("\(n).").font(.callout).bold().foregroundStyle(.secondary).frame(width: stepNumberWidth, alignment: .trailing)
             text.font(.callout).fixedSize(horizontal: false, vertical: true)
         }
         // The number and its sentence are one instruction, not two things to swipe between.
@@ -1263,18 +2106,36 @@ private struct SafariGuide: View {
     /// brand mark before "DisinfaX", the compass before "Safari", the puzzle piece before "Safari
     /// Extensions" — is drawn tight against them, whether those words are one noun or a phrase. A
     /// control that names nothing takes an ordinary space on each side instead and reads as a word
-    /// of its own: the checkmark at the end of a step, and the extensions button in the address
-    /// bar, which points at itself rather than at the sentence it sits in.
+    /// of its own: the extensions button in the address bar, which points at itself rather than at
+    /// the sentence it sits in.
+    ///
+    /// A mark written against the last word of its sentence is that word's own suffix, naming
+    /// nothing — the checkmark closing "and validate" — and takes no such space: the pair is one
+    /// word, and a break between them leaves the checkmark on a line it does not belong to.
     private struct GuideMark {
         let text: Text
         let spaced: Bool
 
         static func artwork(_ image: Image, spaced: Bool = false) -> GuideMark {
-            GuideMark(text: Text(image).baselineOffset(-1.5), spaced: spaced)
+            GuideMark(text: Text(image).baselineOffset(-1.5) + Self.join(spaced: spaced), spaced: spaced)
         }
 
         static func symbol(_ image: Image, spaced: Bool = false) -> GuideMark {
-            GuideMark(text: Text(image), spaced: spaced)
+            GuideMark(text: Text(image) + Self.join(spaced: spaced), spaced: spaced)
+        }
+
+        /// U+2060 WORD JOINER, carried in the mark's own text.
+        ///
+        /// An inline image is an object replacement character (U+FFFC), which Unicode gives the
+        /// line-break class CB — a break is allowed on either side of it, whatever the text
+        /// around it says. So "choose ⚙DisinFAX" broke after the mark however tightly the words
+        /// were set: "then choose ⚙" / "DisinFAX." A word joiner forbids a break on either side
+        /// of itself, which is what glues the mark to the word it names.
+        ///
+        /// A `spaced` mark is not glued to anything — it stands where a word would — so it gets
+        /// nothing, and its own ordinary spaces keep providing the breaks around it.
+        private static func join(spaced: Bool) -> Text {
+            spaced ? Text(verbatim: "") : Text(verbatim: "\u{2060}")
         }
     }
 
@@ -1300,22 +2161,27 @@ private struct SafariGuide: View {
                 // gap is a break opportunity, and a mark is a mark because it sits beside its
                 // word, not near it. The space it was written with is dropped rather than carried.
                 //
-                // The space BEFORE a mark stays, and is a no-break one: a language may place the
-                // mark before the word it names or after it — "validate ✓" as much as "✓ DisinfaX"
-                // — and a mark carried away from its word by a line break names nothing on either
-                // line.
-                //
-                // A `spaced` mark names no word at all — the checkmark, the extensions button: it
-                // stands where a word would, so it keeps both spaces as they are written, and a
-                // line may fall on either side of it. Anything that DOES name words is tight
+                // A `spaced` mark names no word at all — the extensions button: it stands where a
+                // word would, so it keeps both spaces as they are written, and a line may fall on
+                // either side of it. Anything that DOES name words is tight
                 // against them even when those words are a phrase rather than one noun: the
                 // puzzle piece is "🧩 Safari Extensions", one name, not a button beside two words.
+                //
+                // Which word a mark is tight against depends on which side it was written
+                // without a space, and the space on the other side is the one that may break. A
+                // mark the sentence follows with a space opens the phrase it belongs to — "…choose
+                // ⚙ DisinFAX" — so the space before it is left ordinary; one written against the
+                // end of the phrase — "DisinFAX ⚙" — is that phrase's own suffix, and the space
+                // before it becomes a no-break one. Either way the mark cannot be carried onto a
+                // line of its own: the word joiner inside the mark forbids that side too — see
+                // `GuideMark.join`.
                 let spaced = images[n - 1].spaced
-                if !spaced, run.hasSuffix(" ") { run.removeLast(); run.append("\u{00A0}") }
+                let opensPhrase = i + 3 < characters.count && characters[i + 3] == " "
+                if !spaced, !opensPhrase, run.hasSuffix(" ") { run.removeLast(); run.append("\u{00A0}") }
                 text = text + Text(verbatim: run) + images[n - 1].text
                 run = ""
                 i += 3
-                if !spaced, i < characters.count, characters[i] == " " { i += 1 }
+                if !spaced, opensPhrase { i += 1 }
             } else {
                 run.append(characters[i])
                 i += 1
