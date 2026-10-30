@@ -218,6 +218,15 @@ final class SignInCoordinator: ObservableObject {
         // activation the hand-off is itself causing, then starts.
         await Self.waitForActiveScene()
 
+        // Sign in with Apple is the system's own sheet, never a web page: an app may not ask for
+        // an Apple ID through the browser (App Review, Guideline 4). So this provider is the one
+        // that does not use the PKCE flow below at all — the identity token Supabase verifies is
+        // the credential instead of an authorization code.
+        if provider == .apple {
+            await completeApple(await AppleSignIn.shared.perform())
+            return
+        }
+
         let verifier = Self.codeVerifier()
         guard let url = Self.authorizeURL(provider: provider.rawValue, challenge: Self.challenge(for: verifier)) else {
             failure = Self.failureMessage
@@ -248,6 +257,52 @@ final class SignInCoordinator: ObservableObject {
                 failure = Self.failureMessage
             }
         }
+    }
+
+    /// Marks the Apple sheet as up before `SignInWithAppleButton` presents it — that button runs
+    /// its own presentation, so `signIn` above never sees the tap. Everything after the sheet is
+    /// the same `completeApple` call both entry points make.
+    func beginApple() {
+        guard inFlight == nil else { return }
+        failure = nil
+        inFlight = .apple
+    }
+
+    /// Finishes a native Apple sign-in. The identity token takes the place of the authorization
+    /// code, and the raw nonce is what binds it to this attempt — Apple signed its SHA-256 and
+    /// Supabase hashes what is sent here to compare, so a token captured elsewhere is useless.
+    func completeApple(_ result: Result<ASAuthorization, Error>) async {
+        defer { inFlight = nil }
+
+        guard case .success(let authorization) = result else {
+            // Closing the sheet is the user's own decision, and reporting it would be the app
+            // arguing with them. Everything else is a failure worth a sentence.
+            if case .failure(let error) = result,
+               (error as NSError).code != ASAuthorizationError.canceled.rawValue {
+                failure = Self.failureMessage
+            }
+            return
+        }
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let tokenData = credential.identityToken,
+              let identityToken = String(data: tokenData, encoding: .utf8),
+              let nonce = AppleSignIn.shared.takeNonce() else {
+            failure = Self.failureMessage
+            return
+        }
+
+        guard let session = await Self.exchangeApple(identityToken: identityToken, nonce: nonce) else {
+            failure = Self.failureMessage
+            return
+        }
+        await AppSession.publish(
+            accessToken: session.accessToken,
+            refreshToken: session.refreshToken,
+            expiresAt: session.expiresAt,
+            userId: session.userId
+        )
+        SharedTopUpStore.recordOAuthProvider(Provider.apple.rawValue, at: Date().timeIntervalSince1970 * 1000)
+        NotificationCenter.default.post(name: .disinfaxSessionChanged, object: nil)
     }
 
     private static let failureMessage = String(localized: "Sign-in didn't complete. Please try again.")
@@ -343,8 +398,33 @@ final class SignInCoordinator: ObservableObject {
 
         guard let (data, response) = try? await URLSession.shared.data(for: request),
               let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode),
-              let body = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let accessToken = body["access_token"] as? String, !accessToken.isEmpty,
+              let body = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        return session(from: body)
+    }
+
+    /// The native Apple flow's other half: a verified identity token, not a code. Same response
+    /// shape, so the two flows converge on `session(from:)` and everything downstream is shared.
+    private static func exchangeApple(identityToken: String, nonce: String) async -> Exchanged? {
+        guard let url = URL(string: SharedTopUpStore.supabaseBase + "/auth/v1/token?grant_type=id_token") else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.timeoutInterval = 20
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(SharedTopUpStore.supabaseAnonKey, forHTTPHeaderField: "apikey")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: [
+            "provider": "apple",
+            "id_token": identityToken,
+            "nonce": nonce
+        ])
+
+        guard let (data, response) = try? await URLSession.shared.data(for: request),
+              let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode),
+              let body = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        return session(from: body)
+    }
+
+    private static func session(from body: [String: Any]) -> Exchanged? {
+        guard let accessToken = body["access_token"] as? String, !accessToken.isEmpty,
               let refreshToken = body["refresh_token"] as? String, !refreshToken.isEmpty,
               let expiresIn = (body["expires_in"] as? NSNumber)?.doubleValue, expiresIn > 0 else { return nil }
 
@@ -366,5 +446,93 @@ private extension Data {
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
+    }
+}
+
+/// The system's Sign in with Apple sheet.
+///
+/// The request is built here rather than only inside `SignInWithAppleButton` so the landing
+/// page's button and a `disinfax://signin?provider=apple` hand-off from the popup run the same
+/// code: the hand-off has no button to press, and starting from this helper is what makes the
+/// two entry points indistinguishable after the tap in the popup.
+///
+/// The raw nonce survives until the completion — Apple signs a SHA-256 of it, and Supabase is
+/// sent the raw value and hashes it itself to compare. It is one-shot (`takeNonce` clears it),
+/// so a second completion cannot reuse an earlier attempt's nonce.
+@MainActor
+final class AppleSignIn: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    static let shared = AppleSignIn()
+
+    private var nonce: String?
+    /// Kept alive while the sheet is up: a released controller never calls its delegate back.
+    private var controller: ASAuthorizationController?
+    private var continuation: CheckedContinuation<Result<ASAuthorization, Error>, Never>?
+
+    /// Fills a `SignInWithAppleButton`'s request and remembers this attempt's nonce.
+    func prepare(_ request: ASAuthorizationAppleIDRequest) {
+        let raw = Self.randomNonce()
+        nonce = raw
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = Self.sha256Hex(raw)
+    }
+
+    /// The hand-off path: presents the same sheet with no button to press.
+    func perform() async -> Result<ASAuthorization, Error> {
+        await withCheckedContinuation { continuation in
+            self.continuation = continuation
+            let request = ASAuthorizationAppleIDProvider().createRequest()
+            prepare(request)
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self
+            controller.presentationContextProvider = self
+            self.controller = controller
+            controller.performRequests()
+        }
+    }
+
+    /// The raw nonce of the attempt that just completed, consumed once.
+    func takeNonce() -> String? {
+        defer { nonce = nil }
+        return nonce
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        finish(.success(authorization))
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        finish(.failure(error))
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        #if os(iOS)
+        // The sheet can only be presented from an active scene, and with several scenes the
+        // first key window found may be a background one.
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        if let window = scenes.first(where: { $0.activationState == .foregroundActive })?
+            .windows.first(where: { $0.isKeyWindow }) {
+            return window
+        }
+        return scenes.first?.windows.first(where: { $0.isKeyWindow }) ?? UIWindow()
+        #else
+        return NSApplication.shared.windows.first { $0.isKeyWindow } ?? NSWindow()
+        #endif
+    }
+
+    private func finish(_ result: Result<ASAuthorization, Error>) {
+        continuation?.resume(returning: result)
+        continuation = nil
+        controller = nil
+    }
+
+    /// 32 random bytes, base64url-encoded: unguessable, and free of the characters Apple's nonce
+    /// rules would reject.
+    private static func randomNonce() -> String {
+        var rng = SystemRandomNumberGenerator()
+        return Data((0..<32).map { _ in UInt8.random(in: 0...255, using: &rng) }).base64URLEncodedString()
+    }
+
+    private static func sha256Hex(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 }

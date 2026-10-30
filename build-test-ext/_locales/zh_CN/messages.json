@@ -238,7 +238,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "系统会保留您的余额，以及由密钥保护的电子邮箱地址加密哈希值，以防止滥用创建账号时赠送的免费资金。若您使用同一账号重新登录，余额将被恢复。",
+    "message": "系统会保留您的余额，以及由密钥保护的电子邮箱地址加密哈希值，以防止滥用创建账号时赠送的免费资金。再次使用同一账号注册即可恢复余额。",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "放大改写后的声明、理由和引导提示的字号。",
+    "message": "适用于窗口内的文字（主张、理由...）",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "如何进行事实核查",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "在任意网页上，选择您想要核查的文本。",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "右键点按所选文本并选择 事实核查（对未选中的文本同样有效）。",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "右键点按所选文本并选择 {1} 事实核查（对未选中的文本同样有效）。",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "核查会立即开始，费用将从您的余额中扣除。",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "在仍选中文本的情况下，点按 ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " 地址栏中的图标，然后选择 {1} DisinfaX。",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "已复制",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "尚不可用",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

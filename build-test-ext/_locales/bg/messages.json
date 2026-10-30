@@ -49,7 +49,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Балансът ви и криптографски хеш на имейл адреса ви, защитен със таен ключ, се запазват, за да се предотврати злоупотреба с безплатните средства, предоставяни при регистрация. При повторно влизане със същия акаунт балансът ви се възстановява.",
+    "message": "Балансът ви и криптографски хеш на имейл адреса ви, защитен със таен ключ, се запазват, за да се предотврати злоупотреба с безплатните средства, предоставяни при регистрация. При повторно регистриране със същия акаунт балансът ви се възстановява.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Увеличете размера на пренаписаните твърдения, обосновката и началните подсказки.",
+    "message": "За текст в прозорци (твърдения, обосновки...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "КАК ДА ПРОВЕРИТЕ ФАКТ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "На произволна уеб страница изберете текста, който искате да проверите.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Щракнете с десен бутон върху избрания текст и изберете Провери (работи и върху неизбран текст).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Щракнете с десен бутон върху избрания текст и изберете {1} Провери (работи и върху неизбран текст).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Проверката започва веднага и сумата се удържа от баланса ви.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Без да премахвате селекцията, докоснете ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " иконата в адресната лента, след което изберете {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Копирано",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Все още не е налично",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

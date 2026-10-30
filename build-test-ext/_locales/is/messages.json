@@ -239,7 +239,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Staða þín, og dulritunarhash af netfangi þínu sem er varið með leynilykli, eru varðveitt til að koma í veg fyrir misnotkun á ókeypis fjármunum sem veittir eru við stofnun reiknings. Ef þú skráir þig aftur inn með sama reikningi verður staða þín endurheimt.",
+    "message": "Staða þín, og dulritunarhash af netfangi þínu sem er varið með leynilykli, eru varðveitt til að koma í veg fyrir misnotkun á ókeypis fjármunum sem veittir eru við stofnun reiknings. Ef þú skráir þig aftur með sama reikningi verður staða þín endurheimt.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -458,7 +458,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Stækkar endurskrifuðu fullyrðingarnar, röksemdafærsluna og kynningarvísbendingarnar.",
+    "message": "Fyrir texta inni í gluggum (fullyrðingar, röksemdir...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -490,5 +490,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "HVERNIG Á AÐ SANNAPRÓFA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Á hvaða vefsíðu sem er skaltu velja textann sem þú vilt sannprófa.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Hægrismelltu á valinn textann og veldu Staðfesta (virkar líka á óvalinn texta).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Hægrismelltu á valinn textann og veldu {1} Staðfesta (virkar líka á óvalinn texta).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Sannprófunin hefst strax og er gjaldfærð á inneignina þína.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Með textann enn valinn skaltu ýta á ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " táknið í heimilisfangastikunni og velja síðan {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Afritað",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Ekki tiltækt ennþá",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

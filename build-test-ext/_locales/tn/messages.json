@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Madi a a setseng a gago, le hash ya sephiri ya aterese ya gago ya imeile e e sireleditsweng ka senotlelo sa sephiri, di bolokiwa go thibela tiriso e e bosula ya madi a mahala a a newang fa o ikwadisa. Fa o tsena gape ka akhaonto e e tshwanang, madi a a setseng a gago a busediwa.",
+    "message": "Madi a a setseng a gago, le hash ya sephiri ya aterese ya gago ya imeile e e sireleditsweng ka senotlelo sa sephiri, di bolokiwa go thibela tiriso e e bosula ya madi a mahala a a newang fa o ikwadisa. Fa o ingwadisisa gape ka akhaonto e e tshwanang, madi a a setseng a gago a boela.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "E oketsa bogolo jwa dipolelo tse di kwadilweng sesha, tlhaloso, le dikgakololo tsa tshimologo.",
+    "message": "Bakeng sa mokwalo o mo dipalameng (dikopo, mabaka...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "TSELA YA GO TLHATLHOBA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Mo tsebeng efe kapa efe ya webu, tlhopha mokwalo o o batlang go o tlhatlhoba.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Tobetsa ka konopo ya moja e e kafa mo le letona mo mokwalong o o tlhophilweng mme o tlhophe Tlhatlhoba (e dira gape mo mokwalong o o sa tlhophiwang).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Tobetsa ka konopo ya moja e e kafa mo le letona mo mokwalong o o tlhophilweng mme o tlhophe {1} Tlhatlhoba (e dira gape mo mokwalong o o sa tlhophiwang).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Tlhatlhobo e simolola ka yone fela mme e lefisiwa mo madi a a setseng a gago.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Fa mongwalo o sa ntse o tlhophilwe, tobetse letshwao ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " mo bareng ya atirese, go tswa foo o tlhophe {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "E kopilwe",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Ga e ise e bonale",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

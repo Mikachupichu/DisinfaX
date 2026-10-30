@@ -270,7 +270,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಮತ್ತು ರಹಸ್ಯ ಕೀಯಿಂದ ರಕ್ಷಿಸಲಾದ ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸದ ಕ್ರಿಪ್ಟೋಗ್ರಾಫಿಕ್ ಹ್ಯಾಶ್ ಅನ್ನು ಇರಿಸಲಾಗುತ್ತದೆ, ಖಾತೆ ರಚಿಸುವಾಗ ನೀಡುವ ಉಚಿತ ಹಣದ ದುರುಪಯೋಗವನ್ನು ತಡೆಯಲು. ಅದೇ ಖಾತೆಯಿಂದ ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಿದರೆ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಮರುಸ್ಥಾಪನೆಯಾಗುತ್ತದೆ.",
+    "message": "ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಮತ್ತು ರಹಸ್ಯ ಕೀಯಿಂದ ರಕ್ಷಿಸಲಾದ ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸದ ಕ್ರಿಪ್ಟೋಗ್ರಾಫಿಕ್ ಹ್ಯಾಶ್ ಅನ್ನು ಇರಿಸಲಾಗುತ್ತದೆ, ಖಾತೆ ರಚಿಸುವಾಗ ನೀಡುವ ಉಚಿತ ಹಣದ ದುರುಪಯೋಗವನ್ನು ತಡೆಯಲು. ಅದೇ ಖಾತೆಯಿಂದ ಮತ್ತೆ ಸೈನ್ ಅಪ್ ಮಾಡಿದರೆ ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್ ಮರುಸ್ಥಾಪನೆಯಾಗುತ್ತದೆ.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -456,7 +456,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "ಮರುಬರೆಯಲಾದ ಕ್ಲೇಮ್‌ಗಳು, ತಾರ್ಕಿಕತೆ ಮತ್ತು ಪರಿಚಯ ಸೂಚನೆಗಳನ್ನು ದೊಡ್ಡದಾಗಿಸುತ್ತದೆ.",
+    "message": "ವಿಂಡೋಗಳ ಒಳಗಿನ ಪಠ್ಯಕ್ಕಾಗಿ (ಹೇಳಿಕೆಗಳು, ತಾರ್ಕಿಕತೆ...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -488,5 +488,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "ಸತ್ಯ ಪರಿಶೀಲನೆ ಮಾಡುವುದು ಹೇಗೆ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "ಯಾವುದೇ ವೆಬ್‌ಪುಟದಲ್ಲಿ, ನೀವು ಪರಿಶೀಲಿಸಲು ಬಯಸುವ ಪಠ್ಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "ಆಯ್ಕೆಮಾಡಿದ ಪಠ್ಯದಲ್ಲಿ ಬಲ-ಕ್ಲಿಕ್ ಮಾಡಿ ಮತ್ತು ಪರಿಶೀಲಿಸಿ ಆಯ್ಕೆಮಾಡಿ (ಆಯ್ಕೆಮಾಡದ ಪಠ್ಯದಲ್ಲಿಯೂ ಕೆಲಸ ಮಾಡುತ್ತದೆ).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "ಆಯ್ಕೆಮಾಡಿದ ಪಠ್ಯದಲ್ಲಿ ಬಲ-ಕ್ಲಿಕ್ ಮಾಡಿ ಮತ್ತು {1} ಪರಿಶೀಲಿಸಿ ಆಯ್ಕೆಮಾಡಿ (ಆಯ್ಕೆಮಾಡದ ಪಠ್ಯದಲ್ಲಿಯೂ ಕೆಲಸ ಮಾಡುತ್ತದೆ).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "ಪರಿಶೀಲನೆ ತಕ್ಷಣ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಲೆನ್ಸ್‌ನಿಂದ ಶುಲ್ಕ ವಿಧಿಸಲಾಗುತ್ತದೆ.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "ಪಠ್ಯವು ಇನ್ನೂ ಆಯ್ಕೆಯಾಗಿರುವಾಗ ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ವಿಳಾಸ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಐಕಾನ್ ಟ್ಯಾಪ್ ಮಾಡಿ, ನಂತರ {1} DisinfaX ಆಯ್ಕೆಮಾಡಿ.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "ನಕಲಿಸಲಾಗಿದೆ",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

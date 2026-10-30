@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Baalaansiin kee, fi hash kiriptogiraafii teessoo imeelii kee kan furtuu icciitiitiin eegamu, maallaqa bilisaa herrega uumuu irratti kennamu miidhaa irraa ittisuuf ni tursiifamu. Yoo herrega sanaanaan ammas seente, baalaansiin kee ni deebi'a.",
+    "message": "Baalaansiin kee, fi hash kiriptogiraafii teessoo imeelii kee kan furtuu icciitiitiin eegamu, maallaqa bilisaa herrega uumuu irratti kennamu miidhaa irraa ittisuuf ni tursiifamu. Yoo herrega sanaanaan ammas galmeessitan, baalaansiin kee ni deebi'a.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Hamma dubbiiwwan irra deebi'anii barreeffamanii, sababa, fi gorsa jalqabaa guddisi.",
+    "message": "Barruu foddaa keessaa (ibsa, sababa...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "AKKAMITTI MIRKANEESSINU",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Fuula weebii kamiyyuu irratti, barruu mirkaneessuu barbaaddu filadhu.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Barruu filatame irratti mirga tuqiitii Mirkaneessa filadhu (barruu hin filatamne irrattis ni hojjeta).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Barruu filatame irratti mirga tuqiitii {1} Mirkaneessa filadhu (barruu hin filatamne irrattis ni hojjeta).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Mirkaneessi battalumatti jalqaba, baankii kee irraas kaffalama.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Yeroo barruun ammas filatamee jiru, mallattoo ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " kan sararaa teessoo keessatti tuqi, ergasii {1} DisinfaX filadhu.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Kaappii ta'e",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Amma amma hin argamu",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

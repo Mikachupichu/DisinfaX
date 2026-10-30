@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Vaš saldo, i kriptografski heš vaše e-mail adrese koji je zaštićen tajnim ključem, čuvaju se kako bi se sprečila zloupotreba besplatnih sredstava koja se daju pri pravljenju naloga. Ponovnom prijavom sa istim nalogom vaš saldo se vraća.",
+    "message": "Vaš saldo, i kriptografski heš vaše e-mail adrese koji je zaštićen tajnim ključem, čuvaju se kako bi se sprečila zloupotreba besplatnih sredstava koja se daju pri pravljenju naloga. Ponovnom registracijom sa istim nalogom vaš saldo se vraća.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Povećava veličinu prepisanih tvrdnji, obrazloženja i uvodnih savjeta.",
+    "message": "Za tekst u prozorima (tvrdnje, obrazloženja...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "KAKO PROVJERITI ČINJENICE",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Na bilo kojoj web stranici odaberite tekst koji želite provjeriti.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Kliknite desnim tasterom na odabrani tekst i odaberite Provera (radi i na tekstu koji nije odabran).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Kliknite desnim tasterom na odabrani tekst i odaberite {1} Provera (radi i na tekstu koji nije odabran).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Provjera počinje odmah i naplaćuje se s vašeg stanja.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Dok je tekst još odabran, dodirnite ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikonu u adresnoj traci, a zatim odaberite {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Kopirano",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Još nije dostupno",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

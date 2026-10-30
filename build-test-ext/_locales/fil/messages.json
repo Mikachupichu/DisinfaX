@@ -238,7 +238,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Ang iyong balanse, at ang isang cryptographic hash ng iyong email address na protektado ng isang lihim na key, ay itinatago upang maiwasan ang pang-aabuso sa libreng pondo na ibinibigay sa paggawa ng account. Kung mag-sign in ka muli gamit ang parehong account, maibabalik ang iyong balanse.",
+    "message": "Ang iyong balanse, at ang isang cryptographic hash ng iyong email address na protektado ng isang lihim na key, ay itinatago upang maiwasan ang pang-aabuso sa libreng pondo na ibinibigay sa paggawa ng account. Kung mag-sign up ka muli gamit ang parehong account, maibabalik ang iyong balanse.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Palakihin ang mga muling isinulat na pahayag, ang pangangatwiran, at ang mga paunang pahiwatig.",
+    "message": "Para sa teksto sa loob ng mga window (mga pahayag, mga pangangatwiran...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "PAANO MAG-FACT-CHECK",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Sa anumang web page, piliin ang tekstong gusto mong suriin.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "i-right-click ang napiling teksto at piliin ang Suriin (gumagana rin ito sa hindi napiling teksto).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "i-right-click ang napiling teksto at piliin ang {1} Suriin (gumagana rin ito sa hindi napiling teksto).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Agarang magsisimula ang pagsusuri at ibabawas ito sa iyong balanse.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Habang nakapili pa rin ang teksto, i-tap ang ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " icon sa address bar, pagkatapos ay piliin ang {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Nakopya",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Hindi pa magagamit",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

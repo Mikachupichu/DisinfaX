@@ -234,7 +234,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "회원님의 잔액, 그리고 비밀 키로 보호되는 이메일 주소의 암호화 해시는 계정을 만들 때 지급되는 무료 자금의 악용을 방지하기 위해 보관됩니다. 같은 계정으로 다시 로그인하면 잔액이 복원됩니다.",
+    "message": "회원님의 잔액, 그리고 비밀 키로 보호되는 이메일 주소의 암호화 해시는 계정을 만들 때 지급되는 무료 자금의 악용을 방지하기 위해 보관됩니다. 같은 계정으로 다시 가입하면 잔액이 복원됩니다.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "다시 작성된 클레임, 근거, 온보딩 힌트를 확대합니다.",
+    "message": "창 내부 텍스트용(주장, 근거...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "팩트체크 방법",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "아무 웹 페이지에서나 팩트체크할 텍스트를 선택하세요.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "선택한 텍스트를 오른쪽 클릭하고 팩트체크를 선택하세요(선택하지 않은 텍스트에서도 작동합니다).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "선택한 텍스트를 오른쪽 클릭하고 {1} 팩트체크를 선택하세요(선택하지 않은 텍스트에서도 작동합니다).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "팩트체크가 즉시 시작되며 잔액에서 요금이 부과됩니다.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "텍스트가 선택된 상태에서 ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " 주소 표시줄의 아이콘을 탭한 다음 {1} DisinfaX를 선택하세요.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "복사됨",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "아직 사용할 수 없음",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "توهان جو بيلنس، ۽ توهان جي اي ميل پتي جو هڪ ڪرپٽوگرافڪ هيش جيڪو هڪ ڳجهي ڪنجي ذريعي محفوظ ڪيل آهي، رکيا ويندا آهن ته جيئن سائن اپ وقت ڏنل مفت رقم جو غلط استعمال روڪيو وڃي. ساڳئي اڪائونٽ سان ٻيهر سائن ان ڪرڻ تي توهان جو بيلنس بحال ٿي ويندو.",
+    "message": "توهان جو بيلنس، ۽ توهان جي اي ميل پتي جو هڪ ڪرپٽوگرافڪ هيش جيڪو هڪ ڳجهي ڪنجي ذريعي محفوظ ڪيل آهي، رکيا ويندا آهن ته جيئن سائن اپ وقت ڏنل مفت رقم جو غلط استعمال روڪيو وڃي. ساڳئي اڪائونٽ سان ٻيهر سائن اپ ڪرڻ تي توهان جو بيلنس بحال ٿي ويندو.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "ٻيهر لکيل دعوائن، دليل ۽ شروعاتي اشارن جي سائيز کي وڌايو.",
+    "message": "ونڊوز جي اندر جي متن لاءِ (دعويٰ، دليل...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "حقيقت جي جاچ ڪيئن ڪجي",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "ڪنهن به ويب صفحي تي، اھو متن چونڊيو جنهن جي تصديق ڪرڻ چاھيو ٿا.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "چونڊيل متن تي رائيٽ ڪلڪ ڪريو ۽ تصديق چونڊيو (نه چونڊيل متن تي پڻ ڪم ڪري ٿو).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "چونڊيل متن تي رائيٽ ڪلڪ ڪريو ۽ {1} تصديق چونڊيو (نه چونڊيل متن تي پڻ ڪم ڪري ٿو).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "تصديق فوراً شروع ٿي ٿي ۽ توهان جي بيلنس مان چارج ڪئي ويندي.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "متن اڃا به چونڊيل هجڻ وقت ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ايڊريس بار ۾ آئڪن تي ٽيپ ڪريو، پوءِ {1} DisinfaX چونڊيو.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "ڪاپي ٿيو",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "اڃا دستياب ناهي",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

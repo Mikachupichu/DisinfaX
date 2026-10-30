@@ -49,7 +49,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "O teu saldo, e un hash criptográfico do teu enderezo de correo protexido por unha clave secreta, consérvanse para evitar o abuso dos fondos gratuítos que se dan ao crear a conta. Se volves iniciar sesión coa mesma conta, o teu saldo restáurase.",
+    "message": "O teu saldo, e un hash criptográfico do teu enderezo de correo protexido por unha clave secreta, consérvanse para evitar o abuso dos fondos gratuítos que se dan ao crear a conta. Se volves rexistrarte coa mesma conta, o teu saldo restáurase.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Amplía as afirmacións reescritas, o razoamento e os consellos de introdución.",
+    "message": "Para o texto dentro das ventás (afirmacións, razoamentos...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "COMO VERIFICAR FEITOS",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "En calquera páxina web, selecciona o texto que queiras verificar.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Fai clic co botón dereito sobre o texto seleccionado e escolle Verificar (tamén funciona con texto non seleccionado).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Fai clic co botón dereito sobre o texto seleccionado e escolle {1} Verificar (tamén funciona con texto non seleccionado).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "A verificación comeza de inmediato e cárcase ao teu saldo.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Co texto aínda seleccionado, toca a ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " icona da barra de enderezos e escolle {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Copiado",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Aínda non dispoñible",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

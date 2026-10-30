@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "သင့်လက်ကျန်ငွေနှင့် လျှို့ဝှက်ကီးဖြင့် အကာအကွယ်ပေးထားသော သင့်အီးမေးလ်လိပ်စာ၏ ကုဒ်ဝှက်ထားသော hash ကို အကောင့်ဖွင့်ချိန်တွင် ပေးသည့် အခမဲ့ရန်ပုံငွေကို အလွဲသုံးစားလုပ်ခြင်းမှ ကာကွယ်ရန် သိမ်းဆည်းထားပါသည်။ တူညီသောအကောင့်ဖြင့် ပြန်ဝင်ရောက်ပါက သင့်လက်ကျန်ငွေကို ပြန်လည်ရရှိမည်ဖြစ်ပါသည်။",
+    "message": "သင့်လက်ကျန်ငွေနှင့် လျှို့ဝှက်ကီးဖြင့် အကာအကွယ်ပေးထားသော သင့်အီးမေးလ်လိပ်စာ၏ ကုဒ်ဝှက်ထားသော hash ကို အကောင့်ဖွင့်ချိန်တွင် ပေးသည့် အခမဲ့ရန်ပုံငွေကို အလွဲသုံးစားလုပ်ခြင်းမှ ကာကွယ်ရန် သိမ်းဆည်းထားပါသည်။တူညီသောအကောင့်ဖြင့် ပြန်လည်စာရင်းသွင်းပါက သင့်လက်ကျန်ငွေကို ပြန်လည်ရရှိမည်ဖြစ်ပါသည်။",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "ပြန်ရေးထားသော ခလိန်းများ၊ အကြောင်းပြချက်နှင့် အစပျိုး အရိပ်အမြွက်များကို ပိုကြီးစေသည်။",
+    "message": "ဝင်းဒိုးအတွင်းရှိ စာသားအတွက် (အခိုင်အမာချက်များ၊ ကျိုးကြောင်းဆင်ခြင်ချက်များ...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "အချက်အလက် စစ်ဆေးနည်း",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "မည်သည့်ဝဘ်စာမျက်နှာတွင်မဆို စစ်ဆေးလိုသော စာသားကို ရွေးပါ။",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "ရွေးထားသော စာသားပေါ်တွင် ညာကလစ်နှိပ်ပြီး စစ်ဆေးခြင်း ကို ရွေးပါ (မရွေးထားသော စာသားတွင်လည်း အလုပ်လုပ်ပါသည်)။",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "ရွေးထားသော စာသားပေါ်တွင် ညာကလစ်နှိပ်ပြီး {1} စစ်ဆေးခြင်း ကို ရွေးပါ (မရွေးထားသော စာသားတွင်လည်း အလုပ်လုပ်ပါသည်)။",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "စစ်ဆေးခြင်းသည် ချက်ချင်းစတင်ပြီး သင့်လက်ကျန်ငွေမှ ဖြတ်တောက်ပါမည်။",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "စာသားကို ရွေးထားသည့်အတိုင်း ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " လိပ်စာဘားရှိ သင်္ကေတကို တို့ပြီး ထို့နောက် {1} DisinfaX ကို ရွေးပါ။",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "ကူးယူပြီးပါပြီ",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "မရရှိသေးပါ",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -239,7 +239,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Saldo sampeyan, lan hash kriptografi saka alamat email sampeyan sing dilindhungi nganggo kunci rahasia, disimpen kanggo nyegah penyalahgunaan dana gratis sing diwenehake nalika ndhaftar. Yen sampeyan mlebu maneh nganggo akun sing padha, saldo sampeyan bakal dibalekake.",
+    "message": "Saldo sampeyan, lan hash kriptografi saka alamat email sampeyan sing dilindhungi nganggo kunci rahasia, disimpen kanggo nyegah penyalahgunaan dana gratis sing diwenehake nalika ndhaftar. Yen sampeyan ndhaptar maneh nganggo akun sing padha, saldo sampeyan bakal dibalekake.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -458,7 +458,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Nggedhekake klaim sing ditulis maneh, alesan, lan petunjuk wiwitan.",
+    "message": "Kanggo teks ing jero jendela (klaim, penalaran...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -490,5 +490,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "CARA MRIKSA FAKTA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Ing kaca web apa wae, pilih teks sing arep dipriksa.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Klik-tengen teks sing dipilih lan pilih Priksa (uga bisa digunakake ing teks sing ora dipilih).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Klik-tengen teks sing dipilih lan pilih {1} Priksa (uga bisa digunakake ing teks sing ora dipilih).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Pameriksaan langsung diwiwiti lan dipotong saka saldomu.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Nalika teks isih dipilih, tutul ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikon ing bar alamat, banjur pilih {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Dikopi",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Durung kasedhiya",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

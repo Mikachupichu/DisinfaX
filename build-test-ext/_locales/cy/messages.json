@@ -273,7 +273,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Cedwir eich balans, a hash cryptograffig o'ch cyfeiriad e-bost a ddiogelir gan allwedd gyfrinachol, i atal camddefnydd o'r cronfeydd am ddim a roddir wrth greu cyfrif. Os byddwch yn mewngofnodi eto gyda'r un cyfrif, bydd eich balans yn cael ei adfer.",
+    "message": "Cedwir eich balans, a hash cryptograffig o'ch cyfeiriad e-bost a ddiogelir gan allwedd gyfrinachol, i atal camddefnydd o'r cronfeydd am ddim a roddir wrth greu cyfrif. Os byddwch yn cofrestru eto gyda'r un cyfrif, bydd eich balans yn cael ei adfer.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Chwyddo maint yr honiadau wedi'u hailysgrifennu, y rhesymu a'r awgrymiadau cychwyn.",
+    "message": "Ar gyfer testun mewn ffenestri (honiadau, rhesymau...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "SUT I WIRIO FFEITHIAU",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Ar unrhyw dudalen we, dewiswch y testun rydych chi am ei wirio.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "De-gliciwch ar y testun a ddewiswyd a dewiswch Ffeithwirio (mae hefyd yn gweithio ar destun heb ei ddewis).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "De-gliciwch ar y testun a ddewiswyd a dewiswch {1} Ffeithwirio (mae hefyd yn gweithio ar destun heb ei ddewis).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Mae'r gwirio'n dechrau ar unwaith ac yn cael ei godi ar eich balans.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Gyda'r testun yn dal i fod wedi'i ddewis, tapiwch ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " yr eicon yn y bar cyfeiriad, yna dewiswch {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Wedi'i gopïo",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Ddim ar gael eto",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -271,7 +271,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "మీ నిల్వ, మరియు రహస్య కీతో రక్షించబడిన మీ ఇమెయిల్ చిరునామా యొక్క క్రిప్టోగ్రాఫిక్ హాష్, ఖాతా సృష్టించేటప్పుడు ఇచ్చే ఉచిత నిధుల దుర్వినియోగాన్ని నివారించడానికి నిల్వ చేయబడతాయి. అదే ఖాతాతో మళ్లీ సైన్ ఇన్ చేస్తే మీ నిల్వ పునరుద్ధరించబడుతుంది.",
+    "message": "మీ నిల్వ, మరియు రహస్య కీతో రక్షించబడిన మీ ఇమెయిల్ చిరునామా యొక్క క్రిప్టోగ్రాఫిక్ హాష్, ఖాతా సృష్టించేటప్పుడు ఇచ్చే ఉచిత నిధుల దుర్వినియోగాన్ని నివారించడానికి నిల్వ చేయబడతాయి. అదే ఖాతాతో మళ్లీ సైన్ అప్ చేస్తే మీ నిల్వ పునరుద్ధరించబడుతుంది.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "తిరిగి రాయబడిన క్లెయిమ్లు, కారణాలు మరియు పరిచయ సూచనల పరిమాణాన్ని పెద్దగా చేస్తుంది.",
+    "message": "విండోల లోపలి టెక్స్ట్ కోసం (ప్రకటనలు, వాదనలు...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "వాస్తవ తనిఖీ ఎలా చేయాలి",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "ఏదైనా వెబ్‌పేజీలో, మీరు తనిఖీ చేయాలనుకునే వచనాన్ని ఎంచుకోండి.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "ఎంచుకున్న వచనంపై కుడి-క్లిక్ చేసి వాస్తవ తనిఖీను ఎంచుకోండి (ఎంచుకోని వచనంపైనా పని చేస్తుంది).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "ఎంచుకున్న వచనంపై కుడి-క్లిక్ చేసి {1} వాస్తవ తనిఖీను ఎంచుకోండి (ఎంచుకోని వచనంపైనా పని చేస్తుంది).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "తనిఖీ వెంటనే ప్రారంభమై, మీ బ్యాలెన్స్ నుండి రుసుము వసూలు చేయబడుతుంది.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "వచనం ఇంకా ఎంచుకోబడి ఉన్నప్పుడు ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " చిరునామా బార్‌లోని చిహ్నాన్ని నొక్కి, ఆపై {1} DisinfaXను ఎంచుకోండి.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "కాపీ చేయబడింది",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ఇంకా అందుబాటులో లేదు",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

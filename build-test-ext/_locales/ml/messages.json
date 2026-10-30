@@ -238,7 +238,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "നിങ്ങളുടെ ബാലൻസും, ഒരു രഹസ്യ കീ ഉപയോഗിച്ച് പരിരക്ഷിച്ചിട്ടുള്ള നിങ്ങളുടെ ഇമെയിൽ വിലാസത്തിന്റെ ക്രിപ്റ്റോഗ്രാഫിക് ഹാഷും സൂക്ഷിക്കുന്നു, അക്കൗണ്ട് സൃഷ്ടിക്കുമ്പോൾ നൽകുന്ന സൗജന്യ ഫണ്ടിന്റെ ദുരുപയോഗം തടയാൻ. അതേ അക്കൗണ്ടിൽ വീണ്ടും സൈൻ ഇൻ ചെയ്താൽ നിങ്ങളുടെ ബാലൻസ് പുനഃസ്ഥാപിക്കും.",
+    "message": "നിങ്ങളുടെ ബാലൻസും, ഒരു രഹസ്യ കീ ഉപയോഗിച്ച് പരിരക്ഷിച്ചിട്ടുള്ള നിങ്ങളുടെ ഇമെയിൽ വിലാസത്തിന്റെ ക്രിപ്റ്റോഗ്രാഫിക് ഹാഷും സൂക്ഷിക്കുന്നു, അക്കൗണ്ട് സൃഷ്ടിക്കുമ്പോൾ നൽകുന്ന സൗജന്യ ഫണ്ടിന്റെ ദുരുപയോഗം തടയാൻ. അതേ അക്കൗണ്ടിൽ വീണ്ടും സൈൻ അപ്പ് ചെയ്താൽ നിങ്ങളുടെ ബാലൻസ് പുനഃസ്ഥാപിക്കും.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "വീണ്ടും എഴുതിയ ക്ലെയിമുകൾ, ന്യായീകരണം, ആരംഭ സൂചനകൾ എന്നിവയുടെ വലിപ്പം കൂട്ടുന്നു.",
+    "message": "ജാലകങ്ങൾക്കുള്ളിലെ വാചകത്തിനായി (അവകാശവാദങ്ങൾ, യുക്തികൾ...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "വസ്തുതാ പരിശോധന എങ്ങനെ ചെയ്യാം",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "ഏതെങ്കിലും വെബ്പേജിൽ, പരിശോധിക്കാൻ ആഗ്രഹിക്കുന്ന ടെക്സ്റ്റ് തിരഞ്ഞെടുക്കുക.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "തിരഞ്ഞെടുത്ത ടെക്സ്റ്റിൽ റൈറ്റ്-ക്ലിക്ക് ചെയ്ത് പരിശോധന തിരഞ്ഞെടുക്കുക (തിരഞ്ഞെടുക്കാത്ത ടെക്സ്റ്റിലും പ്രവർത്തിക്കും).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "തിരഞ്ഞെടുത്ത ടെക്സ്റ്റിൽ റൈറ്റ്-ക്ലിക്ക് ചെയ്ത് {1} പരിശോധന തിരഞ്ഞെടുക്കുക (തിരഞ്ഞെടുക്കാത്ത ടെക്സ്റ്റിലും പ്രവർത്തിക്കും).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "പരിശോധന ഉടൻ ആരംഭിക്കുകയും നിങ്ങളുടെ ബാലൻസിൽ നിന്ന് ഈടാക്കുകയും ചെയ്യും.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "ടെക്സ്റ്റ് ഇപ്പോഴും തിരഞ്ഞെടുത്തിരിക്കെ ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " വിലാസ ബാറിലെ ഐക്കണിൽ ടാപ്പ് ചെയ്ത്, തുടർന്ന് {1} DisinfaX തിരഞ്ഞെടുക്കുക.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "പകർത്തി",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ഇതുവരെ ലഭ്യമല്ല",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

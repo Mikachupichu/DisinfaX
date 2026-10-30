@@ -104,7 +104,7 @@ export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKe
  *
  *  Lives here rather than in the popup because two contexts need the same list and must
  *  not be able to disagree: the popup draws the buttons from it, and the background
- *  validates the provider before recording it for the "last used" badge (the Firefox
+ *  validates the provider before recording it for the "last used" badge (the provider
  *  flow completes while the popup is dead, so the background writes that value). A
  *  second copy of an allowlist is exactly the shape that drifts. */
 export type OAuthProvider = 'x' | 'google' | 'apple' | 'facebook' | 'linkedin' | 'reddit';

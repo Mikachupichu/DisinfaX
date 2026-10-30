@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "باڵانسەکەت، و هاشێکی کرێپتۆگرافیی ناونیشانی ئیمەیڵەکەت کە بە کلیلێکی نهێنی پارێزراوە، هەڵدەگیرێن بۆ ڕێگریکردن لە خراپ بەکارهێنانی ئەو پارە بێبەرامبەرەی لە کاتی دروستکردنی هەژماردا دەدرێت. چوونەژوورەوەی دووبارە بە هەمان هەژمار باڵانسەکەت دەگەڕێنێتەوە.",
+    "message": "باڵانسەکەت، و هاشێکی کرێپتۆگرافیی ناونیشانی ئیمەیڵەکەت کە بە کلیلێکی نهێنی پارێزراوە، هەڵدەگیرێن بۆ ڕێگریکردن لە خراپ بەکارهێنانی ئەو پارە بێبەرامبەرەی لە کاتی دروستکردنی هەژماردا دەدرێت. خۆتۆمارکردنەوەی دووبارە بە هەمان هەژمار باڵانسەکەت دەگەڕێنێتەوە.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "قەبارەی بانگەشە نووسراوەکان، هۆکارەکان و ئاماژەکانی دەستپێک گەورە بکە.",
+    "message": "بۆ دەق لەناو پەنجەرەکان (داواکارییەکان، هۆکارەکان...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "چۆن ڕاستی پشکنین بکەیت",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "لە هەر ماڵپەڕێکدا، ئەو تێکستە هەڵبژێرە کە دەتەوێت ڕاستی پشکنینی بۆ بکەیت.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "کلیکی راست لە تێکستی هەڵبژێردراو بکە و ئاشکراکردن هەڵبژێرە (لەسەر تێکستی هەڵنەبژێردراوش کار دەکات).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "کلیکی راست لە تێکستی هەڵبژێردراو بکە و {1} ئاشکراکردن هەڵبژێرە (لەسەر تێکستی هەڵنەبژێردراوش کار دەکات).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "ڕاستی پشکنین دەست بەجێ دەست پێدەکات و لە باڵانسی تۆ کەم دەکرێت.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "لە کاتێکدا تێکستەکە هەڵبژێردراوە، دەست بنێ بە ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ئایکۆنی ناو شریتی ناونیشان، پاشان {1} DisinfaX هەڵبژێرە.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "کۆپی کرا",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "هێشتا بەردەست نییە",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -10,6 +10,7 @@ import StoreKit
 import SwiftUI
 import Combine
 import Foundation
+import AuthenticationServices
 
 #if os(iOS)
 import UIKit
@@ -161,6 +162,9 @@ struct RootView: View {
     var onMeasuredHeight: ((CGFloat) -> Void)?
 
     @State private var tab: Tab
+
+    /// Which reds the advisory cards are drawn in; see `advisoryFill`.
+    @Environment(\.colorScheme) private var colorScheme
 
     /// The service messages the popup draws above its tabs, drawn here above the picker — and
     /// above both panes when they are side by side — for the same reason the instructions below
@@ -382,6 +386,21 @@ struct RootView: View {
 #endif
     }
 
+    /// Whether the advisories above the panes are drawn over the balance half alone.
+    ///
+    /// The same arrangement as `guideTwoColumns`, and for the same reason: the crease already
+    /// divides the window, so a strip that spanned both halves would sit half over a pane it has
+    /// nothing to do with and take height from it. Narrower than `splitsPanes` on purpose — the
+    /// Duo laid flat and the iPad's split view keep the strip across the window as they always
+    /// have.
+    private var advisoriesOverBalanceOnly: Bool {
+#if os(iOS)
+        duoExpanded && hingePartiallyOpen && windowIsLandscape && !landingSplits
+#else
+        false
+#endif
+    }
+
     /// Whether this device is an iPhone Duo, read from its model identifier — the idiom cannot
     /// say, because the Duo reports `.phone` like every other iPhone and what it has extra is
     /// width once it is unfolded, not a different family.
@@ -443,7 +462,26 @@ struct RootView: View {
                 // widths the pair would be laid out at 392pt apiece and centred, sharing nothing.
                 // Named after itself, not after the app: side by side both panes would otherwise
                 // carry the same "DisinfaX" heading with nothing saying which is which.
-                TopUpView(headerTitle: "Balance", footer: account).frame(maxWidth: .infinity)
+                VStack(spacing: 0) {
+                    // Part-folded, the advisories belong to this half alone, above the heading
+                    // they are about the account of. Inside the column rather than in a row
+                    // across the window: a row above both panes starts the fact-check pane at
+                    // its foot, which is the height this half is meant to give back.
+                    if advisoriesOverBalanceOnly, !messages.isEmpty {
+                        // The pane's own box below it — 392pt of content and the 24pt of gutter
+                        // either side — so the cards line up with the heading instead of
+                        // reaching past it into the half's spare width. Centred, because
+                        // `TopUpView` centres its own column in the half rather than leading it,
+                        // and a strip pinned to the edge would read as belonging to the window.
+                        messagesNotice
+                            .padding(.horizontal, 24)
+                            .padding(.top, 18)
+                            .frame(maxWidth: 392, alignment: .leading)
+                            .frame(maxWidth: .infinity)
+                    }
+                    TopUpView(headerTitle: "Balance", footer: account)
+                }
+                .frame(maxWidth: .infinity)
                 // Part-folded, the crease is already the division: a rule beside it draws a second
                 // one down the middle of a window that has its own.
                 if !hingeSeparatesPanes { Divider() }
@@ -726,12 +764,14 @@ struct RootView: View {
                     .frame(maxWidth: columnWidth)
             }
 
-            if isSignedIn, !messages.isEmpty {
-                // Above the tabs rather than inside one, and outside the block the guide's
-                // overlay darkens for the same reason the notice above is: the overlay is about
-                // the panes, and an advisory it covered would be one the reader is asked not to
-                // read. Side by side that puts it over both halves at once, which is where a
-                // message about the service belongs.
+            // The panes' own advisory strip: drawn with the tabs and not on the landing page,
+            // which is a sign-in form and not a surface for service notices. Above the tabs
+            // rather than inside one, and outside the block the guide's overlay darkens for the
+            // same reason the notice above is: the overlay is about the panes, and an advisory it
+            // covered would be one the reader is asked not to read. Side by side that puts it
+            // over both halves at once, which is where a message about the service belongs — and
+            // part-folded it is the balance half's instead, drawn inside that column: see `panes`.
+            if isSignedIn, !advisoriesOverBalanceOnly, !messages.isEmpty {
                 messagesNotice
                     .padding(.horizontal, 24)
                     .padding(.top, 18)
@@ -954,8 +994,15 @@ struct RootView: View {
         // ticker above, because the whole point of the stamp is not to ask until it has aged out —
         // and a macOS window left open for days is the case that would otherwise never ask again.
         .task {
+            var firstCheck = true
             while !Task.isCancelled {
-                if let fresh = await ServiceMessages.refreshIfStale(), fresh != messages {
+                // The popup asks once every time the browser starts, whatever its cache says —
+                // asking again is how a message published since the last launch arrives at all —
+                // and an app launch is that same moment. Only the hourly checks behind it wait
+                // for the stamp to age out.
+                let fresh = firstCheck ? await ServiceMessages.refreshOnLaunch() : await ServiceMessages.refreshIfStale()
+                firstCheck = false
+                if let fresh, fresh != messages {
                     messages = fresh
                 }
                 try? await Task.sleep(nanoseconds: 60 * 60 * 1_000_000_000)
@@ -1036,7 +1083,6 @@ struct RootView: View {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "info.circle")
                         .font(.callout)
-                        .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
                     Text(ServiceMessages.attributed(message))
                         .font(.callout)
@@ -1044,10 +1090,33 @@ struct RootView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(16)
-                .background(.quaternary.opacity(0.28), in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.quaternary, lineWidth: 1))
+                .background(advisoryFill, in: RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(advisoryBorder, lineWidth: 1))
+                .foregroundStyle(advisoryText)
             }
         }
+    }
+
+    /// The popup's advisory card, in the popup's own reds: `red-950` at half over the page,
+    /// a `red-900` hairline and `red-300` words. The popup has only ever drawn these on its dark
+    /// surface, so the light window takes the same three steps down the same ramp rather than
+    /// red ink on white, which is a different card and not this one.
+    private var advisoryFill: Color {
+        colorScheme == .dark
+            ? Color(red: 0x45 / 255, green: 0x0A / 255, blue: 0x0A / 255).opacity(0.5)
+            : Color(red: 0xFE / 255, green: 0xF2 / 255, blue: 0xF2 / 255)
+    }
+
+    private var advisoryBorder: Color {
+        colorScheme == .dark
+            ? Color(red: 0x7F / 255, green: 0x1D / 255, blue: 0x1D / 255)
+            : Color(red: 0xFE / 255, green: 0xCA / 255, blue: 0xCA / 255)
+    }
+
+    private var advisoryText: Color {
+        colorScheme == .dark
+            ? Color(red: 0xFC / 255, green: 0xA5 / 255, blue: 0xA5 / 255)
+            : Color(red: 0xB9 / 255, green: 0x1C / 255, blue: 0x1C / 255)
     }
 }
 
@@ -1412,12 +1481,33 @@ private struct SignInView: View {
 
     @ObservedObject private var coordinator = SignInCoordinator.shared
 
+    /// Apple's button ships in fixed styles, so the dark page gets the white one rather than the
+    /// black plate vanishing into the background.
+    @Environment(\.colorScheme) private var colorScheme
+
     /// The provider the last sign-in used, read from the record both this app and the popup write.
     /// Taken when the page appears: a successful sign-in replaces this page, and the next one is
     /// built from whatever the store says then.
     @State private var lastOAuthProvider: String?
 
     private static let accent = Color(red: 4 / 255, green: 120 / 255, blue: 87 / 255)
+
+    /// The height both sign-in plates are drawn at, and Apple's own corner radius, which the
+    /// Google plate wears too.
+    private static let plateHeight: CGFloat = 46
+    private static let plateRadius: CGFloat = 6
+
+    /// The weight the Google label is set at. Measured against Apple's own label at this same
+    /// 17-point size and 46-point plate: Apple's ink is ~13.7 pixels per pixel of label width and
+    /// `semibold` is ~13.6 — level on a simulator, a shade heavy on a device, which is what iOS
+    /// showed and macOS did not.
+    private static var plateWeight: Font.Weight {
+        #if os(iOS)
+        .medium
+        #else
+        .semibold
+        #endif
+    }
 
     /// Whether a sheet is up, which is when the buttons stop accepting taps. Not a spinner in
     /// place of the page: the system sheet covers the window on its own, and this only has to
@@ -1467,14 +1557,46 @@ private struct SignInView: View {
                             // artwork's asset name is not something to read out.
                             .accessibilityHidden(true)
                     }
-                    providerButton(.apple, label: "Continue with Apple",
-                                   isLastUsed: lastOAuthProvider == SignInCoordinator.Provider.apple.rawValue) {
-                        Image(systemName: "apple.logo")
-                            .scaledFont(17, weight: .medium)
-                            // Named by the label beside it, and a symbol would otherwise be read
-                            // out as a second, worse name for the same button.
-                            .accessibilityHidden(true)
+                    // Apple's own button, with Apple's own sheet behind it: a native app may not
+                    // ask for an Apple ID through a web page, and the button's design is part of
+                    // what the guidelines fix in place.
+                    Group {
+                        #if os(macOS)
+                        // SwiftUI's macOS wrapper pins the control to its 30-point default and
+                        // centres it in a taller frame, which is what left the label small. The
+                        // control itself draws its label to the frame it is given, so it is
+                        // hosted directly — and given a height rather than a floor, since it
+                        // only grows to a height it is proposed.
+                        AppleIDControl(style: colorScheme == .dark ? .white : .black,
+                                       isEnabled: !isBusy) {
+                            Task { await coordinator.signIn(provider: .apple) }
+                        }
+                        // The style is fixed at construction, so a mode change builds a new one.
+                        .id(colorScheme)
+                        .frame(height: Self.plateHeight)
+                        #else
+                        SignInWithAppleButton(.continue) { request in
+                            coordinator.beginApple()
+                            AppleSignIn.shared.prepare(request)
+                        } onCompletion: { result in
+                            Task { await coordinator.completeApple(result) }
+                        }
+                        .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                        .frame(minHeight: Self.plateHeight)
+                        .disabled(isBusy)
+                        #endif
                     }
+                    .frame(maxWidth: .infinity)
+                    // The popup's own badge, in the same corner Google's wears: a return visit
+                    // offers the provider that worked last, and both surfaces say so the same
+                    // way.
+                    .overlay(alignment: .topTrailing) {
+                        if lastOAuthProvider == SignInCoordinator.Provider.apple.rawValue {
+                            lastUsedBadge.padding(5).allowsHitTesting(false)
+                        }
+                    }
+                    .disabled(isBusy)
+                    .opacity(isBusy && coordinator.inFlight != .apple ? 0.5 : 1)
                 }
                 .frame(maxWidth: 320)
 
@@ -1527,46 +1649,118 @@ private struct SignInView: View {
             Task { await coordinator.signIn(provider: provider) }
         } label: {
             ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.quaternary.opacity(0.5))
+                // Apple's plate through the same two modes, so the pair reads as one stack.
+                RoundedRectangle(cornerRadius: Self.plateRadius, style: .continuous)
+                    .fill(colorScheme == .dark ? Color.white : Color.black)
+                // Set to the size and weight Apple's own label is drawn at, and the mark to the
+                // size its own is drawn at, so the two plates read as one pair.
                 HStack(spacing: 10) {
-                    icon().frame(width: 18, height: 18)
-                    Text(label).scaledFont(15, weight: .medium)
+                    icon().frame(width: 15, height: 15)
+                    Text(label)
+                        // A literal size, not a scaled one. Apple's label is drawn by the system
+                        // control at a fixed size whatever the reader's text-size setting —
+                        // measured at this same 46-point height, its ink is the same 49 pixels at
+                        // every setting — so a label that answered to the setting was the pair
+                        // drifting apart on any device that is not on the default size.
+                        .font(.system(size: 17, weight: Self.plateWeight))
+                        .foregroundStyle(colorScheme == .dark ? Color.black : Color.white)
                 }
             }
-            // A floor rather than a height: the row is drawn at 46, and a name set larger than
-            // the plate was cut for grows it instead of being clipped by it.
-            .frame(minHeight: 46)
+            // A floor rather than a height: the row is drawn at the plate's height, and a name
+            // set larger than the plate was cut for grows it instead of being clipped by it.
+            .frame(maxWidth: .infinity, minHeight: Self.plateHeight)
             // The popup's own badge, in the same corner and the same words: a return visit offers
             // the provider that worked last, and both surfaces say so the same way.
             .overlay(alignment: .topTrailing) {
-                if isLastUsed {
-                    Text("Last Used")
-                        .scaledFont(8, weight: .black, relativeTo: .caption2)
-                        // Set in capitals as the popup sets it, so a translated badge is cased the
-                        // same way on both surfaces rather than one of them title-casing English.
-                        .textCase(.uppercase)
-                        .tracking(0.4)
-                        .foregroundStyle(Self.accent)
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 2)
-                        .background(Self.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                                .stroke(Self.accent.opacity(0.35), lineWidth: 1)
-                        }
-                        .padding(5)
-                        // The button already names its provider; the badge is a hint about which
-                        // one, not a second name to read out ahead of it.
-                        .accessibilityHidden(true)
-                }
+                if isLastUsed { lastUsedBadge.padding(5) }
             }
         }
         .buttonStyle(.plain)
         .disabled(isBusy)
         .opacity(isBusy && coordinator.inFlight != provider ? 0.5 : 1)
     }
+
+    /// The "last used" hint both providers carry, in the same corner of whichever plate was used
+    /// last.
+    private var lastUsedBadge: some View {
+        Text("Last Used")
+            .scaledFont(8, weight: .black, relativeTo: .caption2)
+            // Set in capitals as the popup sets it, so a translated badge is cased the
+            // same way on both surfaces rather than one of them title-casing English.
+            .textCase(.uppercase)
+            .tracking(0.4)
+            .foregroundStyle(Self.accent)
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .background(Self.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .stroke(Self.accent.opacity(0.35), lineWidth: 1)
+            }
+            // The button already names its provider; the badge is a hint about which
+            // one, not a second name to read out ahead of it.
+            .accessibilityHidden(true)
+    }
 }
+
+#if os(macOS)
+/// Apple's own sign-in button, hosted directly so its label is drawn at the height the row gives
+/// it. SwiftUI's macOS wrapper is the one that fixes the label's size; the control does not.
+///
+/// The control is held by a plain host view rather than handed to SwiftUI itself: asked to lay
+/// out the control, SwiftUI sizes it from its 30-point intrinsic height and centres it, and the
+/// host has no intrinsic size to offer.
+@available(macOS 13.0, *)
+private struct AppleIDControl: NSViewRepresentable {
+    let style: ASAuthorizationAppleIDButton.Style
+    let isEnabled: Bool
+    let action: () -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
+
+    func makeNSView(context: Context) -> PlateHost {
+        let host = PlateHost(style: style)
+        host.button.target = context.coordinator
+        host.button.action = #selector(Coordinator.fire)
+        return host
+    }
+
+    func updateNSView(_ host: PlateHost, context: Context) {
+        context.coordinator.action = action
+        host.button.isEnabled = isEnabled
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, nsView: PlateHost, context: Context) -> CGSize? {
+        CGSize(width: proposal.width ?? 0, height: proposal.height ?? 30)
+    }
+
+    final class Coordinator: NSObject {
+        var action: () -> Void
+
+        init(action: @escaping () -> Void) { self.action = action }
+
+        @objc func fire() { action() }
+    }
+
+    final class PlateHost: NSView {
+        let button: ASAuthorizationAppleIDButton
+
+        init(style: ASAuthorizationAppleIDButton.Style) {
+            button = ASAuthorizationAppleIDButton(authorizationButtonType: .continue,
+                                                  authorizationButtonStyle: style)
+            super.init(frame: .zero)
+            addSubview(button)
+        }
+
+        required init?(coder: NSCoder) { fatalError() }
+
+        override func layout() {
+            super.layout()
+            button.frame = bounds
+        }
+    }
+}
+#endif
 
 private extension View {
     /// Hidden but alive. `opacity` rather than an `if`, so the view keeps its state and keeps

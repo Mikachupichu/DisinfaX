@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Ìyọ̀kù ìnáwó rẹ, àti hash cryptographic ti àdírẹ́sì ímeèlì rẹ tí a fi kọ́kọ́rọ́ àṣírí dáàbò bò, ni a ń tọ́jú láti dènà ìlòkulo owó ọ̀fẹ́ tí a ń fún nígbà tí a bá ṣí àkọsílẹ̀. Tí o bá tún wọlé pẹ̀lú àkọsílẹ̀ kan náà, a óò dá ìyọ̀kù ìnáwó rẹ padà.",
+    "message": "Ìyọ̀kù ìnáwó rẹ, àti hash cryptographic ti àdírẹ́sì ímeèlì rẹ tí a fi kọ́kọ́rọ́ àṣírí dáàbò bò, ni a ń tọ́jú láti dènà ìlòkulo owó ọ̀fẹ́ tí a ń fún nígbà tí a bá ṣí àkọsílẹ̀. Bí o bá tún forúkọsílẹ̀ pẹ̀lú àkọsílẹ̀ kan náà, a máa dá ìwọ̀ntúnwọ̀nsì rẹ padà.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Ìmú tóbi ìwọ̀n lẹ́tà àwọn àkọsílẹ̀ tí a tún kọ, àwọn àlàyé àti àwọn ìtọ́sọ́nà ìbẹ̀rẹ̀.",
+    "message": "Fún ọ̀rọ̀ inú àwọn fèrèsé (àwọn ẹ̀sùn, àwọn ìdí...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "BÍ A ṢE Ń ṢÀYẸ̀WÒ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Lórí ojú-ìwé wẹ́ẹ̀bù èyíkéyìí, yan àkọsílẹ̀ tí o fẹ́ ṣàyẹ̀wò.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Tẹ̀ ẹ́ ní ẹ̀gbẹ́ ọ̀tún lórí àkọsílẹ̀ tí a yàn kí o sì yan Ṣàyẹ̀wò (ó tún ṣiṣẹ́ lórí àkọsílẹ̀ tí a kò yàn).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Tẹ̀ ẹ́ ní ẹ̀gbẹ́ ọ̀tún lórí àkọsílẹ̀ tí a yàn kí o sì yan {1} Ṣàyẹ̀wò (ó tún ṣiṣẹ́ lórí àkọsílẹ̀ tí a kò yàn).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Ìṣàyẹ̀wò náà bẹ̀rẹ̀ lẹ́sẹ̀kẹsẹ̀, a sì gba owó rẹ̀ látinú ìyókù owó rẹ.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Bí àkọsílẹ̀ náà ṣì ti yàn, tẹ àmì ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " tí ó wà ní ọ̀pá àdírẹ́sì, lẹ́yìn náà yan {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Ti daakọ",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Ko si sibẹsibẹ",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Mālama ʻia kou koena, a me kekahi hash huna o kou leka uila i hoʻomalu ʻia e kekahi kī huna, i mea e pale ai i ka hoʻohana hewa ʻana i ke kālā manuahi i hāʻawi ʻia i ke kau inoa ʻana. Inā ʻoe e komo hou me ia moʻokāki, e hoʻihoʻi ʻia kou koena.",
+    "message": "Mālama ʻia kou koena, a me kekahi hash huna o kou leka uila i hoʻomalu ʻia e kekahi kī huna, i mea e pale ai i ka hoʻohana hewa ʻana i ke kālā manuahi i hāʻawi ʻia i ke kau inoa ʻana. Inā ʻoe e kākau hou aku me ia moʻokāki, e hoʻihoʻi ʻia kou koena.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Hoʻonui i nā koi i kākau hou ʻia, ka wehewehe ʻana, a me nā ʻōlelo aʻo hoʻomaka.",
+    "message": "No ka huaʻōlelo i loko o nā puka (nā ʻōlelo hoʻokūpaʻa, nā noʻonoʻo...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "PEHEA E HŌʻOIA AI",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Ma kekahi ʻaoʻao pūnaewele, koho i ka kikokikona āu e makemake ai e hōʻoia.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Kaomi ʻākau i ke kikokikona i koho ʻia a koho iā Hōʻoia (hana pū me ke kikokikona i koho ʻole ʻia).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Kaomi ʻākau i ke kikokikona i koho ʻia a koho iā {1} Hōʻoia (hana pū me ke kikokikona i koho ʻole ʻia).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Hoʻomaka koke ka hōʻoia a hoʻopaʻa ʻia mai kou koena.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Ke koho mau ʻia ana ka kikokikona, kaomi i ke kiʻi ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ma ka pahu helu wahi, a laila koho iā {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Ua kope ʻia",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "ʻAʻole i loaʻa",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Bilanci juaj, dhe një hash kriptografik i adresës suaj të emailit i mbrojtur nga një çelës sekret, ruhen për të parandaluar abuzimin me fondet falas që jepen gjatë krijimit të llogarisë. Nëse hyni përsëri me të njëjtën llogari, bilanci juaj rikthehet.",
+    "message": "Bilanci juaj, dhe një hash kriptografik i adresës suaj të emailit i mbrojtur nga një çelës sekret, ruhen për të parandaluar abuzimin me fondet falas që jepen gjatë krijimit të llogarisë. Nëse regjistroheni përsëri me të njëjtën llogari, bilanci juaj rikthehet.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Zmadhoni pretendimet e rishkruara, arsyetimin dhe sugjerimet e fillimit.",
+    "message": "Për tekstin brenda dritareve (pretendime, arsyetime...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "SI TË VERIFIKOSH FAKTET",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Në çdo faqe interneti, zgjidh tekstin që dëshiron të verifikosh.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Kliko me të djathtën mbi tekstin e zgjedhur dhe zgjidh Disinfakto (funksionon edhe për tekst të pazgjedhur).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Kliko me të djathtën mbi tekstin e zgjedhur dhe zgjidh {1} Disinfakto (funksionon edhe për tekst të pazgjedhur).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Verifikimi fillon menjëherë dhe tarifohet në bilancin tënd.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Me tekstin ende të zgjedhur, trokit ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikonën në shiritin e adresave dhe më pas zgjidh {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "U kopjua",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Nuk është i disponueshëm ende",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

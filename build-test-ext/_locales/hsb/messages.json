@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Twój saldo a kryptografiski hash twojeje e-mejloweje adresy, kotryž je přez potajny kluč škitany, so składujetej, zo by so znojebanje darmotnych srědkow, kotrež so při załoženju konta dawaja, zadźěwało. Přizjewiš-li so zaso z samsnym kontom, so twój saldo wobnowi.",
+    "message": "Twój saldo a kryptografiski hash twojeje e-mejloweje adresy, kotryž je přez potajny kluč škitany, so składujetej, zo by so znojebanje darmotnych srědkow, kotrež so při załoženju konta dawaja, zadźěwało. Při znowarozpisanju so samsnym kontom so waš saldo wobnowi.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Powjetš wulkosć přepisanych twjerdźenjow, zdůvodnjenjow a započatnych pokiwow.",
+    "message": "Za tekst we woknach (twjerdźenja, wuzasadnjenja...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "KAKE FAKTY PRUWOWAĆ",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Na kotrymžkuli webboku wubjer tekst, kotryž chceš pruwować.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Klikń z prawym tastom na wubrany tekst a wubjer Pruwowanje (funguje tež na njewubranym teksće).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Klikń z prawym tastom na wubrany tekst a wubjer {1} Pruwowanje (funguje tež na njewubranym teksće).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Pruwowanje započina hnydom a so wot wašeho konta wotpisa.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Hdyž je tekst hišće wubrany, podótkń ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " symbol w adresowej lajsće a wubjer potom {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Kopěrowane",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Hišće nic k dispoziciji",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

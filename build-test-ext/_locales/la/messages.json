@@ -239,7 +239,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Reliquum tuum, et hash cryptographica inscriptionis tuae electronicae clavi secreto defensa, servantur ne gratuitae pecuniae in perscribendo datae abutantur. Si eadem ratione iterum intraveris, reliquum tuum restituetur.",
+    "message": "Reliquum tuum, et hash cryptographica inscriptionis tuae electronicae clavi secreto defensa, servantur ne gratuitae pecuniae in perscribendo datae abutantur. Si eadem ratione iterum te adscripseris, reliquum tuum restituetur.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -458,7 +458,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Magnitudinem adfirmationum rescriptarum, rationis et monitum initiationis auget.",
+    "message": "Pro texto intra fenestras (adseverationes, rationes...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -490,5 +490,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "QUOMODO RES EXPLORARE",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "In qualibet pagina interretiali, elige textum quem explorare vis.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Tange dextro musculo textum electum et elige Recognosce (etiam in textu non electo valet).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Tange dextro musculo textum electum et elige {1} Recognosce (etiam in textu non electo valet).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Recognitio statim incipit et saldum tuum onerabitur.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Textu adhuc electo, tange ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " iconem in ordine inscriptionis, deinde elige {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Exscriptum",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Nondum praesto",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

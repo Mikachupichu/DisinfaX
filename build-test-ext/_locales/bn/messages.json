@@ -49,7 +49,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "আপনার ব্যালেন্স, এবং আপনার ইমেল ঠিকানার একটি ক্রিপ্টোগ্রাফিক হ্যাশ যা একটি গোপন কী দ্বারা সুরক্ষিত, অ্যাকাউন্ট তৈরির সময় দেওয়া বিনামূল্যের তহবিলের অপব্যবহার রোধ করতে সংরক্ষণ করা হয়। একই অ্যাকাউন্টে আবার সাইন ইন করলে আপনার ব্যালেন্স ফিরে আসে।",
+    "message": "আপনার ব্যালেন্স, এবং আপনার ইমেল ঠিকানার একটি ক্রিপ্টোগ্রাফিক হ্যাশ যা একটি গোপন কী দ্বারা সুরক্ষিত, অ্যাকাউন্ট তৈরির সময় দেওয়া বিনামূল্যের তহবিলের অপব্যবহার রোধ করতে সংরক্ষণ করা হয়। একই অ্যাকাউন্টে আবার সাইন আপ করলে আপনার ব্যালেন্স ফিরে আসে।",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "পুনরায় লেখা দাবি, যুক্তি এবং প্রারম্ভিক ইঙ্গিতের আকার বড় করুন।",
+    "message": "জানালার ভেতরের লেখার জন্য (দাবি, যুক্তি...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "কীভাবে তথ্য যাচাই করবেন",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "যেকোনো ওয়েবপেজে, আপনি যে টেক্সটটি যাচাই করতে চান তা নির্বাচন করুন।",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "নির্বাচিত টেক্সটে রাইট-ক্লিক করে যাচাই করুন বেছে নিন (অনির্বাচিত টেক্সটেও কাজ করে)।",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "নির্বাচিত টেক্সটে রাইট-ক্লিক করে {1} যাচাই করুন বেছে নিন (অনির্বাচিত টেক্সটেও কাজ করে)।",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "যাচাইটি সঙ্গে সঙ্গে শুরু হয় এবং আপনার ব্যালেন্স থেকে কাটা হয়।",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "টেক্সটটি এখনও নির্বাচিত রেখে ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ঠিকানা বারের আইকনে ট্যাপ করুন, তারপর {1} DisinfaX বেছে নিন।",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "কপি করা হয়েছে",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "এখনও পাওয়া যায়নি",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Qullqi saqisqayki chaymanta pakisqa kichanawan amachasqa correo electrónicoykipa hash criptográfico nisqan waqaychasqa kachkan, qillyakuspa qusqa qasi qullqita mana allin ruwayta hark'anapaq. Chay kikin cuentawan yapamanta yaykuptiykiqa, qullqi saqisqayki kutichisqa kanqa.",
+    "message": "Qullqi saqisqayki chaymanta pakisqa kichanawan amachasqa correo electrónicoykipa hash criptográfico nisqan waqaychasqa kachkan, qillyakuspa qusqa qasi qullqita mana allin ruwayta hark'anapaq. Chay kikin cuentawan yapamanta qillqakuptiykiqa, qullqi saqisqayki kutichisqa kanqa.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Hukmanta qillqasqa rimaykunap, hamutayninpa hinallataq qallariy yachachiykunap sayayninta hatunchay.",
+    "message": "Ventanakunapi kaq qillqapaq (niykuna, yuyaychakuykuna...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "IMAYNATAQ CHANINCHANA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Mayqin web p'anqapipas, chaninchayta munasqayki qillqata akllay.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Paña butunta qillqa akllasqapi tuqyay hinaspa Chaninchay akllay (mana akllasqa qillqapipas llamk'anmi).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Paña butunta qillqa akllasqapi tuqyay hinaspa {1} Chaninchay akllay (mana akllasqa qillqapipas llamk'anmi).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Chaninchay chaylla qallarin, qullqiykimantataq horqosqa kanqa.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Qillqa akllasqa kachkaptin, unanchata ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " adiris qhawachiypi kaqta tuqyay, chaymantataq {1} DisinfaX-ta akllay.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Qillqasqa",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Manaraq kachkanchu",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

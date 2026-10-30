@@ -238,7 +238,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Jou saldo, en ’n kriptografiese hutswaarde van jou e-posadres wat deur ’n geheime sleutel beskerm word, word gehou om misbruik van die gratis fondse wat by registrasie gegee word, te voorkom. Meld jy weer met dieselfde rekening aan, word jou saldo herstel.",
+    "message": "Jou saldo, en ’n kriptografiese hutswaarde van jou e-posadres wat deur ’n geheime sleutel beskerm word, word gehou om misbruik van die gratis fondse wat by registrasie gegee word, te voorkom. As jy weer met dieselfde rekening registreer, word jou saldo herstel.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Vergroot die herskrewe bewerings, die redenasie en die verwelkomingswenke.",
+    "message": "Vir teks in vensters (aansprake, redes...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "HOE OM FEITE TE KONTROLEER",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Selekteer op enige webblad die teks wat jy wil feitekontroleer.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Regskliek op die gekose teks en kies Verifieer (werk ook op ongeselekteerde teks).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Regskliek op die gekose teks en kies {1} Verifieer (werk ook op ongeselekteerde teks).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Die feitekontrole begin dadelik en word teen jou saldo gehef.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Terwyl die teks steeds gekies is, tik op die ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " ikoon in die adresbalk en kies dan {1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Gekopieer",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Nog nie beskikbaar nie",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

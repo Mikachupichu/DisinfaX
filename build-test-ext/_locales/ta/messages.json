@@ -271,7 +271,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "உங்கள் இருப்பு, மற்றும் இரகசிய விசையால் பாதுகாக்கப்பட்ட உங்கள் மின்னஞ்சல் முகவரியின் கிரிப்டோகிராஃபிக் ஹாஷ் ஆகியவை கணக்கை உருவாக்கும்போது வழங்கப்படும் இலவச நிதியின் தவறான பயன்பாட்டைத் தடுக்க வைக்கப்படுகின்றன. அதே கணக்கில் மீண்டும் உள்நுழைந்தால் உங்கள் இருப்பு மீட்டமைக்கப்படும்.",
+    "message": "உங்கள் இருப்பு, மற்றும் இரகசிய விசையால் பாதுகாக்கப்பட்ட உங்கள் மின்னஞ்சல் முகவரியின் கிரிப்டோகிராஃபிக் ஹாஷ் ஆகியவை கணக்கை உருவாக்கும்போது வழங்கப்படும் இலவச நிதியின் தவறான பயன்பாட்டைத் தடுக்க வைக்கப்படுகின்றன. அதே கணக்கில் மீண்டும் பதிவு செய்தால் உங்கள் இருப்பு மீட்டமைக்கப்படும்.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "மீண்டும் எழுதப்பட்ட கூற்றுகள், விளக்கங்கள் மற்றும் அறிமுகக் குறிப்புகளின் அளவை பெரிதாக்குகிறது.",
+    "message": "சாளரங்களுக்குள் உள்ள உரைக்கு (கூற்றுகள், பகுத்தறிவு...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "உண்மைச் சரிபார்ப்பு செய்வது எப்படி",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "எந்தவொரு இணையப் பக்கத்திலும், சரிபார்க்க விரும்பும் உரையைத் தேர்ந்தெடுக்கவும்.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "தேர்ந்தெடுத்த உரையில் வலது கிளிக் செய்து உண்மை சரிபார்ப்பு தேர்ந்தெடுக்கவும் (தேர்ந்தெடுக்காத உரையிலும் வேலை செய்யும்).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "தேர்ந்தெடுத்த உரையில் வலது கிளிக் செய்து {1} உண்மை சரிபார்ப்பு தேர்ந்தெடுக்கவும் (தேர்ந்தெடுக்காத உரையிலும் வேலை செய்யும்).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "சரிபார்ப்பு உடனே தொடங்கும், மேலும் கட்டணம் உங்கள் இருப்புத்தொகையிலிருந்து வசூலிக்கப்படும்.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "உரை இன்னும் தேர்ந்தெடுக்கப்பட்ட நிலையில் ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " முகவரிப் பட்டியில் உள்ள ஐகானைத் தட்டி, பிறகு {1} DisinfaXஐத் தேர்ந்தெடுக்கவும்.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "நகலெடுக்கப்பட்டது",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "இன்னும் கிடைக்கவில்லை",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

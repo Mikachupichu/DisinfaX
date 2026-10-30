@@ -240,7 +240,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "Ibhalansi yakho, kanye ne-hash ye-cryptographic yekheli lakho le-imeyili evikelwe ngokhiye oyimfihlo, kuyagcinwa ukuze kuvinjelwe ukusetshenziswa kabi kwezimali zamahhala ezinikezwa lapho ubhalisa. Uma ungena futhi nge-akhawunti efanayo, ibhalansi yakho izobuyiselwa.",
+    "message": "Ibhalansi yakho, kanye ne-hash ye-cryptographic yekheli lakho le-imeyili evikelwe ngokhiye oyimfihlo, kuyagcinwa ukuze kuvinjelwe ukusetshenziswa kabi kwezimali zamahhala ezinikezwa lapho ubhalisa. Uma ubhalisa futhi nge-akhawunti efanayo, ibhalansi yakho izobuyiselwa.",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -459,7 +459,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "Khulisa izitatimende ezibhaliwe kabusha, izizathu nezinkomba zokuqala.",
+    "message": "Kubhalwe ngaphakathi kwamawindi (izimangalo, izizathu...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -491,5 +491,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "INDLELA YOKUHLOYA",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "Kunoma yikuphi ikhasi lewebhu, khetha umbhalo ofuna ukuwuhlola.",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "Thepha ngakwesokudla kumbhalo okhethiwe bese ukhetha Hlola (kusebenza nakumbhalo ongakhethiwe).",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "Thepha ngakwesokudla kumbhalo okhethiwe bese ukhetha {1} Hlola (kusebenza nakumbhalo ongakhethiwe).",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "Ukuhlola kuqala ngokushesha futhi kukhokhiswa kubhalansi yakho.",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "Uma umbhalo usakhethiwe, thepha uphawu ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " kubha wekheli, bese ukhetha i-{1} DisinfaX.",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "Kukopishiwe",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "Ayikatholakali",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

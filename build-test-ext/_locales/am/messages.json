@@ -49,7 +49,7 @@
     "description": "Destructive button at the bottom of the popup settings that permanently deletes the user's account, its funds and its subscriptions, and cements the retention of an identity hash and the balance (see the note directly beneath it)."
   },
   "deleteAccountNote": {
-    "message": "የቀሪ ሂሳብዎ መጠን እና በሚስጥር ቁልፍ የተጠበቀው የኢሜይል አድራሻዎ ክሪፕቶግራፊያዊ ሃሽ ይቀመጣሉ፣ ይህም በመመዝገቢያ ጊዜ የሚሰጠውን ነፃ ገንዘብ አላግባብ መጠቀምን ለመከላከል ነው። በዚያው መለያ እንደገና ከገቡ ቀሪ ሂሳብዎ ይመለሳል።",
+    "message": "የቀሪ ሂሳብዎ መጠን እና በሚስጥር ቁልፍ የተጠበቀው የኢሜይል አድራሻዎ ክሪፕቶግራፊያዊ ሃሽ ይቀመጣሉ፣ ይህም በመመዝገቢያ ጊዜ የሚሰጠውን ነፃ ገንዘብ አላግባብ መጠቀምን ለመከላከል ነው። በዚያው መለያ እንደገና ከተመዘገቡ ቀሪ ሂሳብዎ ይመለሳል።",
     "description": "Small print under the Delete Account button stating exactly what is retained after deletion and that the balance comes back on the next sign-in. Not a warning to be brief with: it is the only place the user is told the hash is kept."
   },
   "onboardDisinfactClick": {
@@ -457,7 +457,7 @@
     "description": "Label of the Large font size setting in the extension's settings, which enlarges the rewritten claims, the reasoning, and the onboarding hints shown over posts and pages."
   },
   "largeFontTooltip": {
-    "message": "የተጻፉትን ጥያቄዎች፣ ምክንያቶቹን እና የመግቢያ ፍንጮችን ያሳድጉ።",
+    "message": "በመስኮቶች ውስጥ ላለው ጽሑፍ (የይዞታ መግለጫዎች፣ ምክንያቶች...)",
     "description": "Description under the Large font size setting, and its tooltip, explaining what it enlarges."
   },
   "closeTooltip": {
@@ -489,5 +489,41 @@
         "example": "US$0.001"
       }
     }
+  },
+  "guideHowToFactCheck": {
+    "message": "እንዴት ማጣራት እንደሚቻል",
+    "description": "Title of the panel that tells a signed-in user how to fact-check a page selection."
+  },
+  "guideSelectText": {
+    "message": "በማንኛውም ድህረ ገጽ ላይ ማጣራት የሚፈልጉትን ጽሑፍ ይምረጡ።",
+    "description": "Step 1 of the how-to-fact-check panel."
+  },
+  "guideRightClick": {
+    "message": "በተመረጠው ጽሑፍ ላይ በቀኝ ጠቅ ያድርጉ እና አጣራ ን ይምረጡ (በማይመረጥ ጽሑፍ ላይም ይሠራል)።",
+    "description": "Step 2 of the how-to-fact-check panel, on Safari. Names the menu entry by itself."
+  },
+  "guideRightClickLogo": {
+    "message": "በተመረጠው ጽሑፍ ላይ በቀኝ ጠቅ ያድርጉ እና {1} አጣራ ን ይምረጡ (በማይመረጥ ጽሑፍ ላይም ይሠራል)።",
+    "description": "Step 2 of the how-to-fact-check panel, on Chromium and Firefox. {1} is the app mark drawn before the menu entry’s name."
+  },
+  "guideCharged": {
+    "message": "ማጣራቱ ወዲያውኑ ይጀምራል እና ከቀሪ ሂሳብዎ ላይ ይቀነሳል።",
+    "description": "Step 3 of the how-to-fact-check panel."
+  },
+  "guideTapSelectedPrefix": {
+    "message": "ጽሑፉ አሁንም ተመርጦ ሳለ ",
+    "description": "First half of step 2 on iPhone and iPad, ending just before the extensions button’s icon."
+  },
+  "guideTapSelectedSuffix": {
+    "message": " በአድራሻ አሞሌ ውስጥ ያለውን አዶ ይንኩ፣ ከዚያ {1} DisinfaX ን ይምረጡ።",
+    "description": "Second half of step 2 on iPhone and iPad, starting just after the extensions button’s icon. {1} is the app mark."
+  },
+  "copiedLabel": {
+    "message": "ተቀድቷል",
+    "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceNotAvailable": {
+    "message": "እስካሁን አይገኝም",
+    "description": "Stands in for a balance that has not been reported yet."
   }
 }

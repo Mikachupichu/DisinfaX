@@ -8,7 +8,7 @@ import { dismissFactCheckGuide, factCheckGuideDue } from '../../utils/guideOverl
 import { useT, getUiLocale, isRtl } from './i18n';
 import { useResolvedScheme } from './theme';
 import { browser } from 'wxt/browser';
-import { callNativeHost, NATIVE_CALLBACK_SCHEME } from '../../utils/nativeHost';
+import { callNativeHost } from '../../utils/nativeHost';
 import {
   adoptNativeSession,
   markPopupOpened,
@@ -18,19 +18,6 @@ import {
   requestNativeSignIn,
 } from '../../utils/nativeSession';
 import { SUPABASE_AUTH_STORAGE_KEY } from '../../utils/supabase';
-
-/** Where the provider sends the user back on Safari, on BOTH platforms — and the same value
- *  the macOS ASWebAuthenticationSession is asked to catch, so one entry in Supabase's Redirect
- *  URLs allowlist covers the two.
- *
- *  iOS used to redirect to our own https://disinfax.app/success so a content script could
- *  harvest the callback without host access to a social site. That needs a per-site grant on
- *  disinfax.app, and Safari only offers one through a prompt the user has no reason to expect:
- *  sign-in then completed only if they happened to open the popup while sitting on that exact
- *  page, and otherwise did nothing at all. The app relay replaces it — the redirect opens the
- *  containing app, which parks the callback in the App Group container for the extension to
- *  collect. See TopUpHandoff.swift and pullPendingNativeAuth in entrypoints/background.ts. */
-const NATIVE_AUTH_CALLBACK_URL = 'disinfax://auth-callback';
 
 /** True on iPhone/iPad. One Safari build serves macOS and iOS, so this cannot be decided
  *  at build time via import.meta.env.SAFARI — and the two need different OAuth transports:
@@ -175,10 +162,10 @@ export default function App() {
     try { return localStorage.getItem(LAST_PROVIDER_STORAGE_KEY); } catch { return null; }
   });
 
-  // The Firefox background flow (MF_WEB_AUTH) completes the session while this popup
-  // is dead, so the background records the provider in browser.storage.local — the
-  // only store both contexts share. Prefer it when present; localStorage above covers
-  // the Chrome/Safari paths and older stored values.
+  // The background flow (MF_WEB_AUTH, Chromium and Firefox alike) completes the session
+  // while this popup is dead, so the background records the provider in
+  // browser.storage.local — the only store both contexts share. Prefer it when present;
+  // localStorage above covers the Safari path and older stored values.
   useEffect(() => {
     browser.storage.local.get(LAST_PROVIDER_STORAGE_KEY).then((r: any) => {
       const stored = r?.[LAST_PROVIDER_STORAGE_KEY];
@@ -302,8 +289,8 @@ export default function App() {
     try { localStorage.setItem(LAST_PROVIDER_STORAGE_KEY, provider); } catch { /* badge is best-effort */ }
     try { localStorage.setItem(LAST_PROVIDER_AT_KEY, String(Date.now())); } catch { /* badge is best-effort */ }
     // Mirrored to browser.storage.local so every flow reads the same value: the
-    // Firefox background flow (MF_WEB_AUTH) completes while this popup is dead and
-    // writes there directly — see the mount effect above.
+    // background flow (MF_WEB_AUTH) completes while this popup is dead and writes
+    // there directly — see the mount effect above.
     try { void browser.storage.local.set({ [LAST_PROVIDER_STORAGE_KEY]: provider }); } catch { /* badge is best-effort */ }
     // Safari: the app draws the same badge on its own sign-in buttons, and this is the only way
     // it hears about a sign-in the popup completed.
@@ -319,20 +306,19 @@ export default function App() {
     try {
       if (import.meta.env.SAFARI) {
         // -------------------------------------------------------------
-        // SAFARI FLOW
-        //   iOS   — the whole sign-in happens in the app. An app extension has no window to
-        //           present the provider's sheet, and a Safari tab is worse than useless: the
-        //           redirect leaves for the app, the popup is long gone, and Safari is left
-        //           showing the provider on a loading page with no way back. So the popup only
-        //           asks the app to start, and the app owns the flow from the first tap. There
-        //           is nothing to collect afterwards either — the extension adopts the shared
-        //           session record the next time it starts.
-        //   macOS — the containing app presents ASWebAuthenticationSession and returns
-        //           the callback URL over native messaging, so this popup finishes the
-        //           exchange itself.
+        // SAFARI FLOW — one route for both platforms.
+        //   The containing app owns sign-in. It has a window for the provider's sheet, and for
+        //   Apple it is the only place the system's own sheet can run at all: a native app may
+        //   not ask for an Apple ID through a web page (App Review, Guideline 4). An app
+        //   extension has no window of its own, and a Safari tab is worse than useless — the
+        //   redirect leaves for the app, the popup is long gone, and Safari is left showing the
+        //   provider on a loading page with no way back. So the popup only asks the app to
+        //   start, and the app owns the flow from the first tap. There is nothing to collect
+        //   afterwards either — the extension adopts the shared session record the next time it
+        //   starts.
         // -------------------------------------------------------------
         const nativeProvider = provider === 'google' || provider === 'apple' ? provider : null;
-        if (isIosOrIpadOs() && nativeProvider) {
+        if (nativeProvider) {
           // Remembered now: the app opens over the popup, so this component will not be alive
           // to record a success. It is only a badge — the session itself is not in doubt.
           rememberProvider(provider);
@@ -353,89 +339,7 @@ export default function App() {
           return;
         }
 
-        // 1. Generate OAuth URL & store PKCE verifier in Supabase JS storage. The verifier
-        //    lives in browser.storage.local (see utils/supabase.ts), which is where the
-        //    exchange below reads it from.
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: SUPABASE_PROVIDER[provider],
-          options: {
-            redirectTo: NATIVE_AUTH_CALLBACK_URL,
-            skipBrowserRedirect: true,
-            scopes: OAUTH_SCOPES[provider],
-          },
-        });
-
-        if (error) throw error;
-        if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
-
-        // 2. Pass the generated URL to the Swift host to open via
-        //    ASWebAuthenticationSession. callNativeHost() tries the direct call first
-        //    (proven on macOS) and falls back to relaying through the background — see
-        //    utils/nativeHost.ts for why both transports exist.
-        const nativeRes: any = await callNativeHost(
-          { action: 'SIGN_IN', url: data.url, callbackUrlScheme: NATIVE_CALLBACK_SCHEME },
-          { type: 'MF_NATIVE_SIGN_IN', url: data.url },
-        );
-
-        if (!nativeRes || nativeRes.error) {
-          throw new Error(nativeRes?.error || 'Authentication flow was cancelled or failed.');
-        }
-
-        // 3. Option A: Direct Token Pair (if Swift app exchanges token natively)
-        if (nativeRes.access_token && nativeRes.refresh_token) {
-          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-            access_token: nativeRes.access_token,
-            refresh_token: nativeRes.refresh_token,
-          });
-          if (sessionError) throw sessionError;
-
-          rememberProvider(provider);
-          setUser(sessionData.user);
-          return;
-        }
-
-        // 4. Option B: parse the callback URL the host caught. Which half of it carries
-        //    the credential depends on the client's flowType: PKCE puts `?code=` in the
-        //    query, the implicit grant puts `#access_token=&refresh_token=` in the
-        //    fragment. utils/supabase.ts sets no flowType, so the default applies —
-        //    check both, exactly as the Chromium branch below does.
-        const callbackUrl = nativeRes.callbackUrl || nativeRes.url;
-        const parsedCallback = callbackUrl ? new URL(callbackUrl) : null;
-        const hashParams = parsedCallback ? new URLSearchParams(parsedCallback.hash.replace(/^#/, '')) : null;
-
-        // A provider-side rejection lands in either half too; surface its own message
-        // rather than the generic failure below.
-        const errorDescription = parsedCallback?.searchParams.get('error_description')
-          ?? hashParams?.get('error_description');
-        if (errorDescription) throw new Error(`Provider Error: ${errorDescription}`);
-
-        // Pathway A: PKCE authorization code.
-        const code = nativeRes.code || parsedCallback?.searchParams.get('code') || null;
-        if (code) {
-          const { data: sessionData, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
-          if (sessionError) throw sessionError;
-
-          rememberProvider(provider);
-          setUser(sessionData.user);
-          return;
-        }
-
-        // Pathway B: implicit grant — tokens ride in the fragment.
-        const hashAccessToken = hashParams?.get('access_token');
-        const hashRefreshToken = hashParams?.get('refresh_token');
-        if (hashAccessToken && hashRefreshToken) {
-          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-            access_token: hashAccessToken,
-            refresh_token: hashRefreshToken,
-          });
-          if (sessionError) throw sessionError;
-
-          rememberProvider(provider);
-          setUser(sessionData.user);
-          return;
-        }
-
-        throw new Error('Authentication succeeded, but no usable tokens or codes were returned.');
+        throw new Error('Unsupported sign-in provider.');
       } else {
         const extensionRedirectUrl = browser.identity.getRedirectURL();
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -450,85 +354,28 @@ export default function App() {
         if (error) throw error;
         if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
 
-        // Firefox closes the popup when the auth window opens, which destroys this very
-        // context mid-await — the callback then arrives with nobody to receive it. So the
-        // background runs the flow there and completes the session exchange itself; this
-        // await may simply never resolve, and that is fine, because the session is already
-        // in storage by then and is picked up when the popup is reopened.
-        //
-        // Chrome keeps its existing in-popup path: it works today, and rerouting it would
-        // risk a regression for no gain.
-        if (import.meta.env.FIREFOX) {
-          const relayed: any = await browser.runtime.sendMessage({
-            type: 'MF_WEB_AUTH',
-            url: data.url,
-            provider,
-          });
-          if (relayed?.error) throw new Error(relayed.error);
-          const { data: refreshed } = await supabase.auth.getSession();
-          if (refreshed.session?.user) {
-            rememberProvider(provider);
-            setUser(refreshed.session.user);
-          }
-          return;
-        }
-
-        // Drive the handshake in Chrome's own auth window rather than a tab, so the
-        // provider redirects back to the extension's identity URL.
-        const callbackUrl = await browser.identity.launchWebAuthFlow({
+        // The identity window takes focus, and an action popup dies on blur — on Chromium
+        // as surely as on Firefox. The popup context is therefore gone the moment the
+        // provider's page opens, and the callback arrives with nobody left to receive it.
+        // (Chrome was long exempted here on the belief its in-popup path worked; Apple
+        // sign-ins proved otherwise — the window completed and no session was ever minted.)
+        // So the background runs the flow and completes the exchange itself; this await may
+        // simply never resolve, and that is fine, because the session is already in storage
+        // by then and the reopened popup reads it back.
+        const relayed: any = await browser.runtime.sendMessage({
+          type: 'MF_WEB_AUTH',
           url: data.url,
-          interactive: true,
+          provider,
         });
-
-        if (!callbackUrl) {
-          throw new Error('Authentication flow was cancelled or failed.');
-        }
-
-        const parsedCallback = new URL(callbackUrl);
-
-        // 1. Check if the URL returned an explicit error from the provider.
-        // Providers put this in the query string or the fragment, so check both.
-        const errorDescription =
-          parsedCallback.searchParams.get('error_description') ||
-          new URLSearchParams(parsedCallback.hash.substring(1)).get('error_description');
-
-        if (errorDescription) {
-          throw new Error(`Provider Error: ${errorDescription}`);
-        }
-
-        // 2. Try Pathway A: PKCE Authorization Code Flow
-        const code = parsedCallback.searchParams.get('code');
-
-        if (code) {
-          const { data: sessionData, error: sessionError } =
-            await supabase.auth.exchangeCodeForSession(code);
-          if (sessionError) throw sessionError;
-
-          // SUCCESS! Safe to commit and update state
+        if (relayed?.error) throw new Error(relayed.error);
+        // Only reached if the popup outlived the flow (an already-signed-in provider that
+        // redirects in under a blink). Show the dashboard without a reopen.
+        const { data: refreshed } = await supabase.auth.getSession();
+        if (refreshed.session?.user) {
           rememberProvider(provider);
-          setUser(sessionData.user);
-          return;
+          setUser(refreshed.session.user);
         }
-
-        // 3. Try Pathway B: Implicit Grant Flow Fallback (Tokens in the Hash)
-        const hashParams = new URLSearchParams(parsedCallback.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-
-        if (accessToken && refreshToken) {
-          const { data: sessionData, error: sessionError } =
-            await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-          if (sessionError) throw sessionError;
-          rememberProvider(provider);
-          setUser(sessionData.user);
-          return; // Exit successfully
-        }
-
-        // If neither pathway resolved, throw a clean fallback error
-        throw new Error('Authentication succeeded, but no usable tokens or codes were found in the callback URL.');
+        return;
     }
 
     } catch (err: any) {
