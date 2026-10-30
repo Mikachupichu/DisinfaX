@@ -21,6 +21,7 @@ import type { ClaimPayload, SubscriptionHandle } from '../../utils/realtime';
 import { resolveHighlightRange, selectAnnotationRevision, selectHighlightRevision, sha256HexSync } from '../../utils/textBreakup';
 import { sameLanguage } from '../../data/Classification';
 import type { Classification, Claim, Source } from '../../data/Classification';
+import { UNKNOWN_LANGUAGE } from '../../data/Tweets';
 import type { ClaimInput } from '../../data/Tweets';
 
 interface FactCheckTabProps {
@@ -1236,7 +1237,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
 
       // ── Step 2: If NOT in DB, run preClassify ──
       if (!foundDbClaims) {
-        const stream = preClassify(factCheckInput, byteaHash, locale, locale);
+        const stream = preClassify(factCheckInput, byteaHash, UNKNOWN_LANGUAGE, locale);
 
         // Put the worker request on the wire FIRST, then open the subscription alongside it.
         // An async generator runs nothing until its first next(), so the line above sends no
@@ -1529,7 +1530,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
       const annotLocators = {
         tweetHash: hash,
         tweetText: sourceText,
-        textLocale: locale,
+        textLocale: UNKNOWN_LANGUAGE,
         claimIndex: index,
       };
 
@@ -1673,7 +1674,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
       const result = await backgroundAnnotate(
         tweetHash,
         inputText,
-        locale,
+        UNKNOWN_LANGUAGE,
         claim.dbClaimId,
         index,
         locale,
@@ -1682,7 +1683,7 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
             const next = [...prev];
             next[index] = {
               ...next[index],
-              annotations: { [locale]: partial },
+              annotations: { [UNKNOWN_LANGUAGE]: partial },
             };
             return next;
           });
@@ -1697,8 +1698,9 @@ export const FactCheckTab: React.FC<FactCheckTabProps> = ({ user }) => {
             // Keyed by locale like the DB's own column, so both outcomes keep their
             // meaning: ranges to paint, or an empty dict under a locale key — the
             // worker's "annotated, nothing wrong", which is a reviewed claim and not an
-            // unchecked one.
-            annotations: { [locale]: result },
+            // unchecked one. `und`: this text's locale is not known, and the run files
+            // under the same name it was sent with.
+            annotations: { [UNKNOWN_LANGUAGE]: result },
             missingAnnotations: false,
           };
           return next;

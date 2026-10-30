@@ -45,10 +45,17 @@ enum ServiceMessages {
     /// when there is nothing newer to draw — either because the copy is still fresh or because
     /// the endpoint could not be reached. A failure deliberately leaves the stamp alone, so the
     /// next check tries again rather than sitting on a stale copy for a day.
-    static func refreshIfStale() async -> [String]? {
+    static func refreshIfStale() async -> [String]? { await refresh(maxAge: refreshInterval) }
+
+    /// The popup asks once every time the browser starts, whatever its cache holds — that is how
+    /// a message published after the last fetch reaches a reader who never leaves the surface up
+    /// for a day — and an app launch is the same moment, so it asks then too.
+    static func refreshOnLaunch() async -> [String]? { await refresh(maxAge: 0) }
+
+    private static func refresh(maxAge: TimeInterval) async -> [String]? {
         guard let defaults else { return nil }
         let stamp = defaults.double(forKey: stampKey)
-        if stamp > 0, Date().timeIntervalSince1970 - stamp < refreshInterval { return nil }
+        if maxAge > 0, stamp > 0, Date().timeIntervalSince1970 - stamp < maxAge { return nil }
 
         var request = URLRequest(url: source)
         // A day-old copy is better than a launch that waits on a dead endpoint.

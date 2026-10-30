@@ -1220,7 +1220,7 @@ export default defineBackground({
     // states no post language either — so the field is always present and always saying
     // nothing. The worker files ranges under whatever locale it was handed, which is exactly
     // this field, so it stays the right KEY to read them back with.
-    const textLocale = hasTranslation ? tweet.destinationLanguage! : (tweet.sourceLanguage ?? locale);
+    const textLocale = hasTranslation ? tweet.destinationLanguage! : (tweet.sourceLanguage ?? UNKNOWN_LANGUAGE);
     // ...but it names no BODY. A classification with no body cannot be told apart from the
     // other side: the flip detector only runs when one is named, and the per-side claim record
     // only remembers a side whose body is known. Leaving it unnamed is why a DB hit's own
@@ -3305,7 +3305,7 @@ export default defineBackground({
       } as MainTweet;
     }
     const hasTranslation = !!displayedTranslation && !!destinationLocale && !readingOriginal;
-    const displayedLocale = (hasTranslation ? destinationLocale : tweet.sourceLanguage) ?? locale;
+    const displayedLocale = (hasTranslation ? destinationLocale : tweet.sourceLanguage) ?? UNKNOWN_LANGUAGE;
     const bodySource = shownBody ? 'shown body (side not stated)'
       : !hasTranslation ? 'original'
       : (liveTranslation ? 'translated (named side)' : (tweet.translatedText ? 'translated (payload)' : 'translated (DOM fallback)'));
@@ -6578,13 +6578,14 @@ export default defineBackground({
     // that batch, so without this entry a selection can never be annotated and an
     // annotation broadcast can never find it.
     //
-    // The language is the one the run was sent under (a selection has no sourceLanguage
-    // of its own, and annotLocatorsFor needs one), and this is a CLONE: what preClassify
+    // A selection has no text locale of its own, so it is `und` — never the UI locale the
+    // run was sent under, which would file the same passage under a different key for every
+    // reader. annotLocatorsFor needs the field, and this is a CLONE: what preClassify
     // was handed stays exactly as built, so the extraction input is untouched. Neither
     // field is part of a selection's canonical hash (see canonicalContext — the
     // contextBefore/contextAfter branch hashes only those three parts), so the row this
     // run inserts and looks up is unaffected.
-    tweetCache.set(selectionId, { ...tweet, sourceLanguage: req.locale } as unknown as MainTweet);
+    tweetCache.set(selectionId, { ...tweet, sourceLanguage: UNKNOWN_LANGUAGE } as unknown as MainTweet);
     persistSelectionPipeline();
 
     const keepAlive = setInterval(() => {}, 20000);
@@ -6640,7 +6641,7 @@ export default defineBackground({
         const handedOff = new Set<string>();
         const handOffs: Promise<void>[] = [];
 
-        for await (const cls of preClassify(tweet, hashToBytea(hash), req.locale, req.locale)) {
+        for await (const cls of preClassify(tweet, hashToBytea(hash), UNKNOWN_LANGUAGE, req.locale)) {
           cls.batchId = batchId;
           // The selection is the only thing that may yield claims: the surrounding prose
           // this run ships for anchoring is not. The model sometimes extracts a claim from
@@ -7072,17 +7073,19 @@ export default defineBackground({
     // HERE rather than in the popup, because opening the tab dismisses the popup sheet on
     // iOS and its JS context is gone. This client shares the popup's storage adapter, so
     // the PKCE verifier stored during signInWithOAuth is readable from here.
-    // Firefox only. On Firefox, launchWebAuthFlow opens its auth window in a way that
-    // closes the popup, and closing the popup destroys the JS context that was awaiting
-    // the result — so the callback URL arrives with nobody left to receive it. Google
-    // appeared to work only because an already-signed-in account redirects fast enough
-    // to beat the teardown; Apple and X need real interaction and always lost the race.
+    // Chromium and Firefox alike. In both, the identity window takes focus, and an action
+    // popup dies on blur — so the JS context awaiting launchWebAuthFlow is gone before the
+    // provider's page even paints, and the callback URL arrives with nobody left to receive
+    // it. Google appeared to work only because an already-signed-in account redirects fast
+    // enough to beat the teardown; Apple and X need real interaction and always lost the
+    // race — Apple on Chrome was reported completing the sign-in and minting nothing.
     //
     // The background survives, so it runs the flow AND completes the session exchange.
     // The popup does not need to be alive at the end: the session lands in storage, and
-    // whenever the popup is reopened it reads it back. Chrome is deliberately excluded —
-    // its popup path works today and must not be disturbed.
-    if (import.meta.env.FIREFOX && message?.type === 'MF_WEB_AUTH' && typeof message.url === 'string') {
+    // whenever the popup is reopened it reads it back. Chrome ≥116 keeps the worker alive
+    // for the whole flow (launchWebAuthFlow holds a strong keepalive), so the interactive
+    // wait is not a termination risk.
+    if (!import.meta.env.SAFARI && message?.type === 'MF_WEB_AUTH' && typeof message.url === 'string') {
       (async () => {
         try {
           const callbackUrl = await (browser.identity as any).launchWebAuthFlow({
@@ -7476,7 +7479,7 @@ export default defineBackground({
             time: new Date().toISOString(),
             contextBefore: msgSelection.before,
             contextAfter: msgSelection.after,
-            sourceLanguage: locale,
+            sourceLanguage: UNKNOWN_LANGUAGE,
           } as unknown as MainTweet;
           tweetCache.set(classificationId, tweet);
           persistSelectionPipeline();
@@ -8015,7 +8018,7 @@ export default defineBackground({
         const displayedLocale = altSide
           ? tweet?.sourceLanguage
           : translationSide
-            ? (sideLocale ?? tweet?.destinationLanguage ?? locale)
+            ? (sideLocale ?? tweet?.destinationLanguage ?? UNKNOWN_LANGUAGE)
             : unheld.textLocale ?? tweet?.destinationLanguage ?? tweet?.sourceLanguage;
 
         const clearLocalizingHighlights = () => {

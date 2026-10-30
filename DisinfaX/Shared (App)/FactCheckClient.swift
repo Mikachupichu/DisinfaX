@@ -52,6 +52,14 @@ enum FactCheckClient {
         return Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
     }
 
+    /// The text locale to use when the text's own language is unknown — which here is always:
+    /// the app checks text the user brought in (share sheet, Shortcuts, typed), and nothing in
+    /// that tells us what language it is. This is the KEY highlights and annotations are filed
+    /// under, so it must never be the UI locale: a key chosen by the reader's device would file
+    /// the same words under different locales for different readers. (UNKNOWN_LANGUAGE,
+    /// data/Tweets.ts.)
+    static let textLocale = "und"
+
     // MARK: - Session
 
     /// The token to authenticate with, or a thrown reason the app cannot proceed.
@@ -254,7 +262,7 @@ enum FactCheckClient {
                         input: input,
                         locale: locale,
                         hash: "\\x" + hash(of: input),
-                        displayedLocale: locale
+                        displayedLocale: textLocale
                     ))
 
                     let (bytes, response) = try await URLSession.shared.bytes(for: request)
@@ -740,7 +748,7 @@ enum FactCheckClient {
             claim: claim?.text,
             claimLocale: claim?.locale,
             reasoningLocale: reasoning?.locale,
-            highlight: highlightRange(highlight, body: body, locale: locale),
+            highlight: highlightRange(highlight, body: body, locale: textLocale),
             annotations: displayAnnotations(annotations, body: body),
             reclassify: (raw["reclassify"] as? Bool) ?? false,
             isClassifying: (raw["is_classifying"] as? Bool) ?? false,
@@ -870,6 +878,14 @@ enum FactCheckClient {
         if let exact = ranges[locale] { return exact }
         let base = locale.split(separator: "-").first.map(String.init) ?? locale
         for (key, value) in ranges where key == base || key.hasPrefix(base + "-") { return value }
+        // A placeholder locale names no language, so it can never match a key filed under a real
+        // one — and every range left here has already been proved to address this very body, by
+        // its hash. Before text locales were separated the app filed under the reader's UI
+        // locale, so a row written by an older build holds one such key and this is that range;
+        // refusing it routes a claim the database already answered through a fresh annotate.
+        // Only an unambiguous single key is taken: two locales for one body is a row that has
+        // answered for both, and the exact/base match above would have found the one asked for.
+        if base == textLocale, ranges.count == 1, let only = ranges.first?.value { return only }
         return nil
     }
 
@@ -1279,8 +1295,8 @@ private struct PreclassifyRequest: Encodable {
     let locale: String
     /// The bytea literal (`\x…`) of the tweet hash — the form the worker compares against.
     let hash: String
-    /// The locale of `input.text`, which the highlight ranges index. The same as `locale` here:
-    /// the text being checked is the user's own, so it is already in their language.
+    /// The locale of `input.text`, which the highlight ranges index. Always `textLocale` (`und`):
+    /// the text being checked is the user's own, and nothing about it says what language it is.
     let displayedLocale: String
 }
 

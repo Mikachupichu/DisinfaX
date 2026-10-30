@@ -36,6 +36,7 @@ import {
   isPassageInvisible,
   claimSpanPassageNodes,
 } from '../utils/injecting';
+import { UNKNOWN_LANGUAGE } from '../data/Tweets';
 import { mfBus } from '../utils/mfBus';
 import { THEME_DARK_CLASS, THEME_LIGHT_CLASS } from '../utils/theme';
 import { isInstanceOptedIn } from '../utils/mastodonOptIn';
@@ -1799,9 +1800,9 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
 
     let segments: TextSegment[] | null = null;
     try {
-      // Ranges were computed against the selection text and keyed by the locale it was
-      // sent under, which is the UI locale of this page (see MF_SELECTION_BEGIN).
-      segments = breakupWithHighlights(capture.selected, claims, uiLocale());
+      // Ranges were computed against the selection text and filed under `und`: a passage
+      // has no locale of its own, and the UI locale is never the right name for it.
+      segments = breakupWithHighlights(capture.selected, claims, UNKNOWN_LANGUAGE);
     } catch (err) {
       console.log('[selection] segment build failed:', err);
     }
@@ -1815,9 +1816,9 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
       return;
     }
 
-    // `uiLocale()` is the text locale: the ranges in this classification's `highlight` and
-    // `annotations` were keyed under the locale MF_SELECTION_BEGIN sent, and that is what
-    // both the breakup above and the popover's annotation resolution read them by.
+    // `und` is the text locale: the ranges in this classification's `highlight` and
+    // `annotations` were keyed under it, and that is what both the breakup above and the
+    // popover's annotation resolution read them by.
     //
     // In place, on the wrap the selection already made — not `buildSegmentWrap`, which
     // builds the passage fresh as one flat run. A selection that spans block elements
@@ -1853,7 +1854,7 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
     const tail = passage.slice(at + joined.length);
     if (tail) aligned.push({ text: tail, claimIndex: null });
 
-    if (!wrapClaimSegmentsInPlace(wrap!, aligned, claims, classification.batchId, classification.id, uiLocale())) {
+    if (!wrapClaimSegmentsInPlace(wrap!, aligned, claims, classification.batchId, classification.id, UNKNOWN_LANGUAGE)) {
       console.log('[selection] wrap text drifted mid-run — listing claims instead of bare text');
       renderClaimList(claims, classification.id, capture);
       return;

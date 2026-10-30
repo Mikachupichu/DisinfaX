@@ -2274,7 +2274,7 @@ final class FactCheckModel: ObservableObject {
                 let result = try await FactCheckClient.annotate(
                     claimId: claimId,
                     claimIndex: index,
-                    locators: Self.locators(for: input, claimIndex: index, claimId: claimId, locale: locale),
+                    locators: Self.locators(for: input, claimIndex: index, claimId: claimId),
                     locale: locale,
                     onPartial: { partial in
                         Task { @MainActor in self.paint(partial, on: id, locale: locale) }
@@ -2326,13 +2326,12 @@ final class FactCheckModel: ObservableObject {
     private static func locators(
         for input: FactCheckInput,
         claimIndex: Int,
-        claimId: String?,
-        locale: String
+        claimId: String?
     ) -> FactCheckClient.ClaimLocators {
         FactCheckClient.ClaimLocators(
             tweetHash: FactCheckClient.hash(of: input),
             tweetText: input.fullText,
-            textLocale: locale,
+            textLocale: FactCheckClient.textLocale,
             claimIndex: claimIndex,
             claimId: claimId
         )
@@ -2464,8 +2463,7 @@ final class FactCheckModel: ObservableObject {
                 Self.locators(
                     for: input,
                     claimIndex: current,
-                    claimId: self.claims[current].claimId,
-                    locale: locale
+                    claimId: self.claims[current].claimId
                 )
             }
 

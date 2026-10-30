@@ -233,7 +233,7 @@ private enum FactCheckTextRunner {
             let locators = FactCheckClient.ClaimLocators(
                 tweetHash: hash,
                 tweetText: input.fullText,
-                textLocale: locale,
+                textLocale: FactCheckClient.textLocale,
                 claimIndex: work[index].index,
                 claimId: work[index].claimId
             )
