@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Oraindik ez dago erabilgarri",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ezin izan da DisinfaX aplikazioa ireki saioa hasteko."
+  },
+  "errSignInProvider": {
+    "message": "Saio-haste hornitzailea ez da onartzen."
+  },
+  "errSignInHandshake": {
+    "message": "Ezin izan da OAuth URL-a sortu."
+  },
+  "errSignInGeneric": {
+    "message": "Errore bat gertatu da autentifikazioan."
   }
 }

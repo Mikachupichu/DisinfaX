@@ -149,9 +149,12 @@ export default defineUnlistedScript(() => {
 
   /** Character counts, not words: a word is a meaningless unit on the CJK surfaces we
    *  integrate (a 250-"word" Dcard post is one paragraph), and the window has to bound the
-   *  string we hash and ship, not the whitespace runs in it. 250 words → 1500 characters,
-   *  25 → 150. */
-  const MAX_BEFORE_CHARS = 1500;
+   *  string we hash and ship, not the whitespace runs in it. 800 words → 5000 characters,
+   *  25 → 150.
+   *
+   *  These bound the free window only — a passage read out of an integrated post takes
+   *  `postBoundedContext` above and never reaches these numbers. */
+  const MAX_BEFORE_CHARS = 5000;
   const MAX_AFTER_CHARS = 150;
 
   /** Block-level elements whose text bounds the context window. Deliberately a union of
@@ -319,7 +322,7 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
 
   // ── Capture ────────────────────────────────────────────────────────────────
 
-  /** Context extraction is bounded solely by character limits (e.g. MAX_BEFORE_CHARS = 1500).
+  /** Context extraction is bounded solely by character limits (e.g. MAX_BEFORE_CHARS = 5000).
    *  Block traversal continues through preceding/following prose blocks until the character
    *  limit is reached or the root boundary has no further prose blocks. */
 
@@ -568,10 +571,56 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
     return out.join('');
   }
 
+  /** Markers that state when the page was published or updated. */
+  const DATE_SELECTOR = 'time[datetime], [itemprop="datePublished"], [itemprop="dateModified"]';
+
+  /** Rails and landmarks that date OTHER stories: a stamp inside one belongs to that card,
+   *  not to the passage being read. */
+  const DATE_SCOPE_OUT = 'nav, aside, footer, [role="navigation"], [role="complementary"], [role="contentinfo"]';
+
+  /** The page's own dateline for a passage, or "" — the visible publish/update stamp that
+   *  precedes the selection inside the article root.
+   *
+   *  `<time>` is chrome to the walk below, and has to stay that way: a feed is wall-to-wall
+   *  timestamps, and letting every one of them into `before` would bury the prose under
+   *  "2 h". A dateline is the one timestamp the context cannot do without — "this week",
+   *  "mercredi", "last month" in the passage resolve against nothing else, and the article's
+   *  own stamp is the only one on the page that speaks for it. So it is taken separately,
+   *  once, and placed outside the character budget: a long passage spends the whole window
+   *  on the words around it, and a stamp trimmed off the front of a full window would never
+   *  be there for the reader who filled it. */
+  function datelineBefore(edge: Edge, root: Element | null): string {
+    if (!root) return "";
+    let found: Element | null = null;
+    let iso = "";
+    for (const el of Array.from(root.querySelectorAll(DATE_SELECTOR))) {
+      if (el.closest(DATE_SCOPE_OUT)) continue;
+      if (el.hasAttribute("hidden") || el.getAttribute("aria-hidden") === "true") continue;
+      if (!(edge.container.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING)) continue;
+      const machine = el.getAttribute("datetime") || el.getAttribute("content") || "";
+      const day = /^(\d{4}-\d{2}-\d{2})/.exec(machine)?.[1] ?? "";
+      // A `<time>` with no full date in its attribute is a clock reading ("14:30") or a
+      // duration, not a dateline; a bare year is not a date either.
+      if (el.tagName === "TIME" && !day) continue;
+      const text = squash(el.textContent || "");
+      // `<meta itemprop="datePublished">` states the date for machines only — the reader
+      // never saw it, and the context is the text the reader read.
+      if (!text) continue;
+      found = el;
+      iso = day;
+    }
+    if (!found) return "";
+    const text = squash(found.textContent || "");
+    // "Publié le 23 octobre", "2 hours ago": a stamp with no year cannot anchor the
+    // passage's relative dates, and the element already carries the year that can.
+    return iso && !/\b(?:19|20)\d{2}\b/.test(text) ? `${text} (${iso})` : text;
+  }
+
   /** The `max` characters immediately preceding the selection, reaching back through the
    *  enclosing block and then across preceding prose blocks (paragraphs, posts in a
    *  thread, quotes) within the landmark root. Chrome, buttons, action rows, and
-   *  ads are strictly skipped. */
+   *  ads are strictly skipped. The article's dateline opens the window (see
+   *  `datelineBefore`) when the page has one. */
   function contextBefore(edge: Edge, block: Element, max: number, root: Element | null): string {
     const parts: string[] = [];
     let length = 0;
@@ -589,7 +638,11 @@ html.${THEME_DARK_CLASS} .mf-sel-hud {
       node = findPreviousProseBlock(node, root);
       if (node && visited.has(node)) break;
     }
-    return tailChars(parts.join(' '), max);
+    const body = tailChars(parts.join(' '), max);
+    const dateline = datelineBefore(edge, root);
+    if (!dateline) return body;
+    const lead = /[.!?»"'’)]$/.test(dateline) ? dateline : `${dateline}.`;
+    return body ? `${lead} ${body}` : lead;
   }
 
   /** The `max` characters immediately following the selection, reaching forward through the

@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ddim ar gael eto",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Nid oedd modd agor ap DisinfaX i fewngofnodi."
+  },
+  "errSignInProvider": {
+    "message": "Darparwr mewngofnodi heb ei gefnogi."
+  },
+  "errSignInHandshake": {
+    "message": "Nid oedd modd creu URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Bu gwall wrth ddilysu."
   }
 }

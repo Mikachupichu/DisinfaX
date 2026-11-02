@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Haipatikani bado",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Imeshindwa kufungua programu ya DisinfaX ili uingie."
+  },
+  "errSignInProvider": {
+    "message": "Mtoa huduma wa kuingia hautumiki."
+  },
+  "errSignInHandshake": {
+    "message": "Imeshindwa kuunda URL ya OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Hitilafu imetokea wakati wa uthibitishaji."
   }
 }

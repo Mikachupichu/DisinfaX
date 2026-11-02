@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "இன்னும் கிடைக்கவில்லை",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "உள்நுழைய DisinfaX செயலியைத் திறக்க முடியவில்லை."
+  },
+  "errSignInProvider": {
+    "message": "ஆதரிக்கப்படாத உள்நுழைவு வழங்குநர்."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL ஐ உருவாக்க முடியவில்லை."
+  },
+  "errSignInGeneric": {
+    "message": "அங்கீகாரத்தின்போது பிழை ஏற்பட்டது."
   }
 }

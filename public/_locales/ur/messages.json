@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "ابھی دستیاب نہیں",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "سائن اِن کرنے کے لیے DisinfaX ایپ نہیں کھلی۔"
+  },
+  "errSignInProvider": {
+    "message": "غیر معاون سائن اِن فراہم کنندہ۔"
+  },
+  "errSignInHandshake": {
+    "message": "OAuth یو آر ایل نہیں بن سکا۔"
+  },
+  "errSignInGeneric": {
+    "message": "تصدیق کے دوران ایک خرابی پیش آئی۔"
   }
 }

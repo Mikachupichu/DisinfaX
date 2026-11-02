@@ -60,7 +60,7 @@ export default defineConfig({
     // validation fails the bundle above it, so the one sentence is kept under that rather
     // than allowed to grow.
     description: "Highlights disinformation on social media and across the web using fast and intelligent research.",
-    version: '1.1.1',
+    version: '1.1.3',
     default_locale: 'en',
     // Static icons (chrome://extensions, the extensions menu, the Web Store
     // listing) cannot be themed at runtime, so they use the neutral gray logo

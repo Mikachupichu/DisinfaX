@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ikki tøkt enn",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Kundi ikki opna DisinfaX-appina fyri at rita inn."
+  },
+  "errSignInProvider": {
+    "message": "Óstudlaður innritingarveitari."
+  },
+  "errSignInHandshake": {
+    "message": "Kundi ikki gera OAuth-URL."
+  },
+  "errSignInGeneric": {
+    "message": "Ein feilur hendi í sannvøttunini."
   }
 }

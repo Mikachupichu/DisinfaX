@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ga e ise e bonale",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ga re a ka ra bula porogaramu ya DisinfaX go tsena."
+  },
+  "errSignInProvider": {
+    "message": "Motlamedi wa go tsena ga a tshegediwe."
+  },
+  "errSignInHandshake": {
+    "message": "Ga re a ka ra dira URL ya OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Go nnile le phoso ka nako ya netefatso."
   }
 }

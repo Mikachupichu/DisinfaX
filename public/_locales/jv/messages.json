@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "Durung kasedhiya",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ora bisa mbukak app DisinfaX kanggo mlebu."
+  },
+  "errSignInProvider": {
+    "message": "Panyedhiya mlebu ora didhukung."
+  },
+  "errSignInHandshake": {
+    "message": "Ora bisa nggawe URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Ana kesalahan nalika otentikasi."
   }
 }

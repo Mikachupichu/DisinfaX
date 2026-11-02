@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Wali lama heli karo",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Lama furi karin app-ka DisinfaX si aad u gasho."
+  },
+  "errSignInProvider": {
+    "message": "Bixiyaha gelitaanka lama taageerayo."
+  },
+  "errSignInHandshake": {
+    "message": "Lama samayn karin URL-ka OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Khalad ayaa dhacay inta lagu guda jiray xaqiijinta."
   }
 }

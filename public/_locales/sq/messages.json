@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Nuk është i disponueshëm ende",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Nuk u hap aplikacioni DisinfaX për t'u identifikuar."
+  },
+  "errSignInProvider": {
+    "message": "Ofrues identifikimi i pambështetur."
+  },
+  "errSignInHandshake": {
+    "message": "Nuk u krijua dot URL-ja OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Ndodhi një gabim gjatë vërtetimit."
   }
 }

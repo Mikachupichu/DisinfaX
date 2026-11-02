@@ -373,5 +373,217 @@
   "copiedLabel": {
     "message": "rapmoHlu'pu'",
     "description": "Spoken by a copy button once the text is on the clipboard."
+  },
+  "balanceLabel": {
+    "message": "Huch chuv",
+    "description": "Small caption above the large balance amount on the dashboard."
+  },
+  "gifted": {
+    "message": "noblu'pu'",
+    "description": "Word in the top-up bonus line, e.g. 'Bonus: Extra 24% - US$1.20 Gifted'."
+  },
+  "customTopup": {
+    "message": "lIj",
+    "description": "Label for the custom top-up amount button."
+  },
+  "customAmountLabel": {
+    "message": "lIj Huch nobmeH mIq (US dollar)",
+    "description": "Accessibility label for the custom top-up input field."
+  },
+  "increase": {
+    "message": "yISach",
+    "description": "Accessibility label for the up-arrow that increases the custom amount."
+  },
+  "decrease": {
+    "message": "yIHommoH",
+    "description": "Accessibility label for the down-arrow that decreases the custom amount."
+  },
+  "topUpBalance": {
+    "message": "Huch chuv yInob",
+    "description": "Green button that starts a Stripe checkout to add funds."
+  },
+  "processing": {
+    "message": "vumtaH…",
+    "description": "Shown on the Top Up button while the checkout session is being created."
+  },
+  "checkoutError": {
+    "message": "nobmeH mIw laHbe'. yInIDqa'.",
+    "description": "Generic error shown when starting a top-up checkout fails."
+  },
+  "termsOfService": {
+    "message": "chut",
+    "description": "Link text for the terms of service in the top-up disclaimer."
+  },
+  "privacyPolicy": {
+    "message": "pegh chut",
+    "description": "Link text for the privacy policy in the top-up disclaimer."
+  },
+  "disclaimerAgree": {
+    "message": "Huch DaneHchugh, %TOS% 'ej %PRIVACY% DaQochbe'.",
+    "description": "Top-up disclaimer. Keep the %TOS% and %PRIVACY% markers exactly — they are replaced with the Terms of Service and Privacy Policy links."
+  },
+  "disclaimerFx": {
+    "message": "US dollar latlh DangeHchugh, latlh Huch lajlu'laH.",
+    "description": "Top-up disclaimer about currency conversion costs."
+  },
+  "disclaimerJurisdiction": {
+    "message": "United States DatDaq, neH ghom: Alabama, Arizona, California, Colorado, Connecticut, Delaware, Florida, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Massachusetts, Mississippi, Missouri, Montana, New Hampshire, New Mexico, New York, North Carolina, North Dakota, Oklahoma, Oregon, Pennsylvania, South Carolina, South Dakota, Tennessee, Texas, Utah, Washington, Wisconsin, and Wyoming — DisinfaX lo'laH 'ej Huch noblaH; Washington, D.C., U.S. territories Hoch, 'ej listed states pagh tu'lu'be' — luchavbe'. United States Hur, tu'lu': Canada, Australia, New Zealand, Singapore, South Africa, Japan, Taiwan, Indonesia, Thailand, the Philippines, Malaysia, Vietnam, and Switzerland.",
+    "description": "Top-up disclaimer listing supported jurisdictions."
+  },
+  "signOut": {
+    "message": "yImej",
+    "description": "Button to sign the user out of the extension."
+  },
+  "onboardDisinfactClick": {
+    "message": "%BTN% Da'uychugh, ja'ta'mey cha'lu' 'ej Huch DIl.",
+    "description": "Onboarding popover next to the Disinfact button (pointer devices). %BTN% is replaced with the button's name."
+  },
+  "onboardDisinfactTap": {
+    "message": "%BTN% Da'uychugh, ja'ta'mey cha'lu' 'ej Huch DIl.",
+    "description": "Onboarding popover next to the Disinfact button (touch devices). %BTN% is replaced with the button's name."
+  },
+  "onboardLocalize": {
+    "message": "%BTN% Da'uychugh, Dotlhmey mIvlu'qa' 'ej Huch DIl.",
+    "description": "Onboarding popover next to the Localize button, which repositions fact-check highlights made for another language version. %BTN% is replaced with the button's name."
+  },
+  "onboardAnnotate": {
+    "message": "%BTN% Da'uychugh, ja'ta'meyDaq Qagh nejlu' 'ej Huch DIl.",
+    "description": "Onboarding popover next to a claim's Annotate button, which runs a second AI pass to mark suspected errors in the claim text. %BTN% is replaced with the button's name."
+  },
+  "onboardWillCharge": {
+    "message": "%BTN% Da'uychugh, Huch DIl.",
+    "description": "Onboarding popover for the Fact-Check All button. %BTN% is replaced with the button's name."
+  },
+  "onboardFactcheck": {
+    "message": "%BTN% Da'uychugh, Huch DIl.",
+    "description": "Onboarding popover for a claim's Fact-Check button. %BTN% is replaced with the button's name."
+  },
+  "onboardTranslations": {
+    "message": "%BTN% Da'uychugh, mughlu' 'ej Huch DIl.",
+    "description": "Onboarding popover for the translation button inside the popover. %BTN% is replaced with the button's icon."
+  },
+  "onboardRefreshes": {
+    "message": "%BTN% Da'uychugh, Huch DIl.",
+    "description": "Onboarding popover for the refresh button inside the popover. %BTN% is replaced with the button's icon."
+  },
+  "topUp": {
+    "message": "Huch nob",
+    "description": ""
+  },
+  "showMore": {
+    "message": "latlh yI'ang",
+    "description": ""
+  },
+  "showLess": {
+    "message": "Hom yI'ang",
+    "description": ""
+  },
+  "landingTagline1": {
+    "message": "teH yIcha'. nepmey yInej.",
+    "description": ""
+  },
+  "landingTagline2": {
+    "message": "nep pagh. De' neH.",
+    "description": ""
+  },
+  "continueWithX": {
+    "message": "X yItaH",
+    "description": ""
+  },
+  "continueWithGoogle": {
+    "message": "Google yItaH",
+    "description": ""
+  },
+  "continueWithApple": {
+    "message": "Apple yItaH",
+    "description": ""
+  },
+  "lastUsed": {
+    "message": "lo'pu'bogh",
+    "description": ""
+  },
+  "cleanupTagline": {
+    "message": "lI' yISay'moH.",
+    "description": ""
+  },
+  "factCheckAllButton": {
+    "message": "Hoch nej",
+    "description": "Button that fact-checks every claim in the tweet at once (batch action, distinct from the singular per-claim Fact-Check button)."
+  },
+  "factCheckButton": {
+    "message": "nej",
+    "description": "Button on a single claim highlight that fact-checks just that claim (singular action, distinct from the batch Fact-Check All button)."
+  },
+  "errBalanceTooLow": {
+    "message": "Huch chuv puSqu'. yItaHmeH Huch yInob.",
+    "description": "Shown when a worker rejects an action because the account balance can't cover it (error code 1)."
+  },
+  "balanceEmpty": {
+    "message": "Huch chuv chIm: DisinfaX popup yIlo' 'ej Huch yInob.",
+    "description": "Shown when the user's balance + hold is empty (zero or negative): on opening X.com with empty funds, and when funds cross from positive to empty."
+  },
+  "errAccountSuspended": {
+    "message": "account lIj mevlu'pu'.",
+    "description": "Shown when a worker rejects an action because the account is suspended (error code 2)."
+  },
+  "errNotSignedIn": {
+    "message": "bI'elbe'. yI'el 'ej yInIDqa'.",
+    "description": "Shown when a worker rejects a request because the user isn't authenticated (error code 3)."
+  },
+  "errInvalidRequest": {
+    "message": "De'vam vIyajbe'. extension chu' 'oH 'e' yISov.",
+    "description": "Shown when a worker rejects a malformed or unrecognized request, usually a version mismatch (error code 4)."
+  },
+  "errServiceUnavailable": {
+    "message": "mIwmajDaq Qagh. SIbI' yInIDqa'.",
+    "description": "Generic failure shown when a worker or one of its dependencies (database, AI provider) fails unexpectedly (error code 5)."
+  },
+  "errRegionNotSupported": {
+    "message": "DisinfaX DaqrajDaq wej tu'lu'be' chut pabmeH.",
+    "description": "Shown when a worker rejects an action because the user's region isn't supported (error code 6)."
+  },
+  "errInvalidAmount": {
+    "message": "Huch vam lI'be'. latlh yIwIv.",
+    "description": "Shown when a worker rejects a top-up because the requested amount is invalid (error code 7)."
+  },
+  "errNotFound": {
+    "message": "vInejtaH 'ach tu'lu'be'. yInIDqa'.",
+    "description": "Shown when a worker can't find the data it was asked to look up (error code 8)."
+  },
+  "continueWithFacebook": {
+    "message": "Facebook yItaH",
+    "description": ""
+  },
+  "continueWithLinkedIn": {
+    "message": "LinkedIn yItaH",
+    "description": ""
+  },
+  "continueWithReddit": {
+    "message": "Reddit yItaH",
+    "description": ""
+  },
+  "deleteAccount": {
+    "message": "account lIj 'ej De' Hoch teq.",
+    "description": "Destructive red button at the bottom of the popup settings; deletes the account and its data."
+  },
+  "deleteAccountNote": {
+    "message": "Huch chuvlIj 'ej email lIj pegh De' (pegh chIw qanwI' yI'oghlu'bogh) teqlu'be' — noblu'bogh Huch lI'be'moHmeH De'vam wIpol. account rap yI'elqa'chugh, Huch chuvlIj chegh.",
+    "description": "Small print under the Delete Account button explaining what is retained after deletion."
+  },
+  "balanceNotAvailable": {
+    "message": "wej tu'lu'be'.",
+    "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "'elmeH DisinfaX jan'e' poSlaHbe'."
+  },
+  "errSignInProvider": {
+    "message": "not lo'laH 'elmeH tobwI'."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL chenmoHlaHbe'."
+  },
+  "errSignInGeneric": {
+    "message": "'elmeH Qagh vItu'."
   }
 }

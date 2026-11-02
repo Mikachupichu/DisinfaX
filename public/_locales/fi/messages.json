@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Ei vielä saatavilla",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX-sovellusta ei voitu avata kirjautumista varten."
+  },
+  "errSignInProvider": {
+    "message": "Kirjautumispalvelua ei tueta."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth-verkko-osoitetta ei voitu luoda."
+  },
+  "errSignInGeneric": {
+    "message": "Todennuksessa tapahtui virhe."
   }
 }

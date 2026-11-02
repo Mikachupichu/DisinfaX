@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Sempre micca dispunibile",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ùn hè statu pussibule apre l'app DisinfaX per cunnettà si."
+  },
+  "errSignInProvider": {
+    "message": "Fornidore di cunnissione micca supportatu."
+  },
+  "errSignInHandshake": {
+    "message": "Ùn hè statu pussibule creà l'URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Ci hè statu un errore in l'autenticazione."
   }
 }

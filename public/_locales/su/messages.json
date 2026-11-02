@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Teu acan sayagi",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Teu tiasa muka aplikasi DisinfaX pikeun asup."
+  },
+  "errSignInProvider": {
+    "message": "Panyadia asup teu dirojong."
+  },
+  "errSignInHandshake": {
+    "message": "Teu tiasa nyieun URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Aya kasalahan nalika auténtikasi."
   }
 }

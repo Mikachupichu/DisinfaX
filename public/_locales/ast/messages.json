@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Entá nun ta disponible",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Nun se pudo abrir l'aplicación DisinfaX pa aniciar sesión."
+  },
+  "errSignInProvider": {
+    "message": "Proveedor d'aniciu de sesión non sofitáu."
+  },
+  "errSignInHandshake": {
+    "message": "Nun se pudo crear la URL d'OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Asocedió un error na autenticación."
   }
 }

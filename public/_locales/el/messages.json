@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Δεν είναι ακόμη διαθέσιμο",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Δεν ήταν δυνατό το άνοιγμα της εφαρμογής DisinfaX για σύνδεση."
+  },
+  "errSignInProvider": {
+    "message": "Μη υποστηριζόμενος πάροχος σύνδεσης."
+  },
+  "errSignInHandshake": {
+    "message": "Δεν ήταν δυνατή η δημιουργία διεύθυνσης URL για OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Παρουσιάστηκε σφάλμα κατά την επαλήθευση ταυτότητας."
   }
 }

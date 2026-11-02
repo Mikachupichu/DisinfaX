@@ -121,6 +121,13 @@ export const PLATFORM_HOSTS: Partial<Record<PlatformId, readonly string[]>> = {
   // out (measured). A host rule cannot say "this path only", so the one host is claimed and the
   // path gate lives in the adapter instead — see the header of utils/platforms/telegram.ts.
   telegram: ['web.telegram.org'],
+  // YouTube's desktop reader and its mobile one. Both are watch pages (`/watch?v=<id>`), and
+  // the mobile host is a separate application served in place rather than a redirect target
+  // of the apex — measured 2026-10-31, `m.youtube.com` answers 200 as itself — so the two
+  // names are listed the way Facebook's desktop and mobile readers are. Shorts
+  // (`/shorts/<id>`) live under the same hosts and are deliberately not integrated by the
+  // adapter; no host rule can say "this path only", so the gate is in the adapter.
+  youtube: ['youtube.com', 'm.youtube.com'],
 };
 
 /** Whether `host` is covered by one entry of a platform's host list.

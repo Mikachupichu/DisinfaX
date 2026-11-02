@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "තවම නොමැත",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "පිවිසීමට DisinfaX යෙදුම විවෘත කළ නොහැකි විය."
+  },
+  "errSignInProvider": {
+    "message": "සහාය නොදක්වන පිවිසුම් සැපයුම්කරු."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL සැකසිය නොහැකි විය."
+  },
+  "errSignInGeneric": {
+    "message": "සත්‍යාපනයේදී දෝෂයක් සිදු විය."
   }
 }

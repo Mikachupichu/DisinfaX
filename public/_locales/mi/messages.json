@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Kāore anō kia wātea",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Kāore i taea te whakatuwhera i te taupānga DisinfaX ki te takiuru."
+  },
+  "errSignInProvider": {
+    "message": "Kāore e tautokona te kaiwhakarato takiuru."
+  },
+  "errSignInHandshake": {
+    "message": "Kāore i taea te waihanga i te URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "I puta he hapa i te manatoko."
   }
 }

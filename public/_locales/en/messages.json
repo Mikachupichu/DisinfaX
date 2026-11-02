@@ -558,5 +558,21 @@
   "balanceNotAvailable": {
     "message": "Not available yet",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Could not open the DisinfaX app to sign in.",
+    "description": "Shown in the popup when the DisinfaX app could not be opened to start sign-in (Safari only)."
+  },
+  "errSignInProvider": {
+    "message": "Unsupported sign-in provider.",
+    "description": "Shown in the popup when the sign-in provider cannot be used on this platform."
+  },
+  "errSignInHandshake": {
+    "message": "Could not produce OAuth handshake URL.",
+    "description": "Shown in the popup when the OAuth sign-in URL could not be created."
+  },
+  "errSignInGeneric": {
+    "message": "Authentication encountered an error.",
+    "description": "Fallback shown in the popup when sign-in fails without a more specific error."
   }
 }

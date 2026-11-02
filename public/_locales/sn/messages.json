@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Haisati iwanikwa",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Hatina kukwanisa kuvhura app yeDisinfaX kuti upinde."
+  },
+  "errSignInProvider": {
+    "message": "Mupi wekupinda haatsigirwe."
+  },
+  "errSignInHandshake": {
+    "message": "Hatina kukwanisa kugadzira URL yeOAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Pakava nechikanganiso panguva yekusimbisa."
   }
 }

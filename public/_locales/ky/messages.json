@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "Азырынча жеткиликсиз",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX колдонмосун кирүү үчүн ачуу мүмкүн болбоду."
+  },
+  "errSignInProvider": {
+    "message": "Колдоого алынбаган кирүү провайдери."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL дарегин түзүү мүмкүн болбоду."
+  },
+  "errSignInGeneric": {
+    "message": "Аутентификация учурунда ката кетти."
   }
 }

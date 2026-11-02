@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Пока недоступно",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Не удалось открыть приложение DisinfaX для входа."
+  },
+  "errSignInProvider": {
+    "message": "Неподдерживаемый провайдер входа."
+  },
+  "errSignInHandshake": {
+    "message": "Не удалось создать URL для OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Произошла ошибка при аутентификации."
   }
 }

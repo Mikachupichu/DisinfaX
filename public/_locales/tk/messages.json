@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Häzir elýeterli däl",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX programmasyny girish üçin açyp bolmady."
+  },
+  "errSignInProvider": {
+    "message": "Goldanmaýan giriş üpjün edijisi."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL-ni döredip bolmady."
+  },
+  "errSignInGeneric": {
+    "message": "Autentifikasiýa wagtynda säwlik boldy."
   }
 }

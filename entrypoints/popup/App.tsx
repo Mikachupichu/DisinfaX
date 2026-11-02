@@ -38,6 +38,11 @@ function isIosOrIpadOs(): boolean {
  *  actually established. */
 const LAST_PROVIDER_STORAGE_KEY = 'disinfax_last_oauth_provider';
 
+/** Why the last sign-in failed, written by the background when its flow rejects.
+ *  The popup is already dead by then — it dies on blur when the identity window opens —
+ *  so this is the only way the reason reaches a screen. */
+const AUTH_ERROR_STORAGE_KEY = 'disinfax_auth_error';
+
 /** When that provider was recorded, in epoch milliseconds. The app keeps the same fact for its
  *  own sign-in buttons in the shared container, and neither side can read the other's storage —
  *  so both stamp it, and whichever is newer is the one both surfaces badge. */
@@ -211,6 +216,20 @@ export default function App() {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // A sign-in that failed after this popup died leaves its reason in storage: the
+      // background is the only context still alive at that point, and its console line is
+      // never seen. Shown once — a later success clears it.
+      if (!session?.user) {
+        try {
+          const stored: any = await browser.storage.local.get(AUTH_ERROR_STORAGE_KEY);
+          const failure = stored?.[AUTH_ERROR_STORAGE_KEY];
+          if (failure?.message) {
+            setAuthError(failure.message);
+            void browser.storage.local.remove(AUTH_ERROR_STORAGE_KEY);
+          }
+        } catch { /* best-effort: an unreadable reason is the same as none */ }
+      }
     };
 
     checkSession();
@@ -221,7 +240,23 @@ export default function App() {
       }
     );
 
-    return () => subscription.unsubscribe();
+    // The background completes the flow and writes the session, and nothing here is told
+    // about it: auth-js only announces changes made by THIS client, and the storage
+    // adapter is not one it can watch. A popup opened while the exchange is still in
+    // flight therefore sat on the sign-out screen with a session already on disk.
+    // getSession() reads the slot afresh, so the change is all the push this needs.
+    const onStorageChanged = (changes: Record<string, unknown>, area: string) => {
+      if (area !== 'local' || !(SUPABASE_AUTH_STORAGE_KEY in changes)) return;
+      supabase.auth.getSession().then(({ data }) => {
+        setUser(data.session?.user ?? null);
+      }).catch(() => { /* the auth subscription still covers this context's own changes */ });
+    };
+    browser.storage.onChanged.addListener(onStorageChanged);
+
+    return () => {
+      subscription.unsubscribe();
+      browser.storage.onChanged.removeListener(onStorageChanged);
+    };
   }, []);
 
   // The guide the app draws over its panes, drawn here too while the same conditions hold.
@@ -334,12 +369,12 @@ export default function App() {
             // Unconfirmable by design, like the top-up hand-off: if either route opened the app,
             // it takes focus and this is never seen — so the message only surfaces when nothing
             // actually opened.
-            throw new Error('Could not open the DisinfaX app to sign in.');
+            throw new Error(t('errSignInApp'));
           }
           return;
         }
 
-        throw new Error('Unsupported sign-in provider.');
+        throw new Error(t('errSignInProvider'));
       } else {
         const extensionRedirectUrl = browser.identity.getRedirectURL();
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -352,7 +387,7 @@ export default function App() {
         });
 
         if (error) throw error;
-        if (!data?.url) throw new Error('Could not produce OAuth handshake URL.');
+        if (!data?.url) throw new Error(t('errSignInHandshake'));
 
         // The identity window takes focus, and an action popup dies on blur — on Chromium
         // as surely as on Firefox. The popup context is therefore gone the moment the
@@ -380,7 +415,7 @@ export default function App() {
 
     } catch (err: any) {
       console.error('OAuth Workflow Failed:', err);
-      setAuthError(err.message || 'Authentication encountered an error.');
+      setAuthError(err.message || t('errSignInGeneric'));
     } finally {
       setLoading(false);
     }

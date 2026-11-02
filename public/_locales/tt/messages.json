@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Әлегә юк",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX кушымтасын керү өчен ачып булмады."
+  },
+  "errSignInProvider": {
+    "message": "Кулланылмый торган керү провайдеры."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL-ы төзеп булмады."
+  },
+  "errSignInGeneric": {
+    "message": "Аутентификация вакытында хата килеп чыкты."
   }
 }

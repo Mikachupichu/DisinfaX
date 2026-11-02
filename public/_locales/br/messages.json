@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "N'eo ket hegerz c'hoazh",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "N'haller ket digeriñ arload DisinfaX evit kevreañ."
+  },
+  "errSignInProvider": {
+    "message": "Pourchaser kevreañ nann-skoazelliet."
+  },
+  "errSignInHandshake": {
+    "message": "Dibosupl eo sevel URL an OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Ur gwall a c'hoarvezas e-pad an dilesadur."
   }
 }

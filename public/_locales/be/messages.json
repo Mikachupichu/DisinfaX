@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Пакуль недаступная",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Не ўдалося адкрыць праграму DisinfaX для ўваходу."
+  },
+  "errSignInProvider": {
+    "message": "Пастаўшчык уваходу не падтрымліваецца."
+  },
+  "errSignInHandshake": {
+    "message": "Не ўдалося стварыць URL для OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Падчас аўтэнтыфікацыі адбылася памылка."
   }
 }

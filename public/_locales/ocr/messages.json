@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Enca non disponible",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Se podiá pas dobrir l'aplicacion DisinfaX per se connectar."
+  },
+  "errSignInProvider": {
+    "message": "Provesidor de connexion pas pres en carga."
+  },
+  "errSignInHandshake": {
+    "message": "Se podiá pas crear l'URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Una error es produguèt pendent l'autenticacion."
   }
 }

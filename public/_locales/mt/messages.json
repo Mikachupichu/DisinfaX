@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Għadu mhux disponibbli",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ma setgħetx tinfetaħ l-app DisinfaX biex tidħol."
+  },
+  "errSignInProvider": {
+    "message": "Fornitur tad-dħul mhux appoġġjat."
+  },
+  "errSignInHandshake": {
+    "message": "Ma setax jinħoloq il-URL tal-OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Inqala' żball waqt l-awtentikazzjoni."
   }
 }

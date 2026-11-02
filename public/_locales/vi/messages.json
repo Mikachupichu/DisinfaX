@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Chưa có sẵn",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Không thể mở ứng dụng DisinfaX để đăng nhập."
+  },
+  "errSignInProvider": {
+    "message": "Nhà cung cấp đăng nhập không được hỗ trợ."
+  },
+  "errSignInHandshake": {
+    "message": "Không thể tạo URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Đã xảy ra lỗi trong quá trình xác thực."
   }
 }

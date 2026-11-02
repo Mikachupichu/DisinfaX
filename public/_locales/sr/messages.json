@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Још није доступно",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Није могуће отворити апликацију DisinfaX за пријаву."
+  },
+  "errSignInProvider": {
+    "message": "Неподржани добављач пријаве."
+  },
+  "errSignInHandshake": {
+    "message": "Није могуће креирати OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "Дошло је до грешке при провери идентитета."
   }
 }

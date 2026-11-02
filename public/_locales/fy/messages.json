@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Noch net beskikber",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Koe de DisinfaX-app net iepenje om yn te loggen."
+  },
+  "errSignInProvider": {
+    "message": "Net stipe oanmeldprovider."
+  },
+  "errSignInHandshake": {
+    "message": "Koe de OAuth-URL net meitsje."
+  },
+  "errSignInGeneric": {
+    "message": "Der barde in flater by it ferifiearjen."
   }
 }

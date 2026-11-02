@@ -71,3 +71,87 @@ export function deduplicateSources(sources: Source[] | undefined): Source[] {
     return true;
   });
 }
+
+/** The passages a URL's text fragment (`#:~:text=…`) highlights, decoded.
+ *
+ *  Empty when the URL carries no text directive — the reader then lands on the whole
+ *  page, not on a passage. A directive is `text=<passage>` or
+ *  `text=<before>-,<passage>,-<after>`, where only the middle part is highlighted, and
+ *  several may follow one another after `&`. */
+export function textFragmentPassages(url: string): string[] {
+  const hash = url.indexOf('#');
+  if (hash < 0) return [];
+  const marker = url.slice(hash).indexOf(':~:');
+  if (marker < 0) return [];
+  const passages: string[] = [];
+  for (const directive of url.slice(hash + marker + 3).split('&')) {
+    if (!directive.startsWith('text=')) continue;
+    let value = directive.slice('text='.length);
+    const beforeEnd = value.indexOf('-,');
+    if (beforeEnd >= 0) value = value.slice(beforeEnd + 2);
+    const afterStart = value.lastIndexOf(',-');
+    if (afterStart >= 0) value = value.slice(0, afterStart);
+    const passage = decodeFragmentText(value).trim();
+    if (passage) passages.push(passage);
+  }
+  return passages;
+}
+
+function decodeFragmentText(text: string): string {
+  try { return decodeURIComponent(text); } catch { return text; }
+}
+
+/** The webpage a URL names, ignoring the passage it highlights: protocol, host
+ *  (case-folded), path without a trailing slash, and query. Null when unparsable. */
+export function webpageKey(url: string): string | null {
+  try {
+    const u = new URL(url);
+    return `${u.protocol}//${u.host.toLowerCase()}${u.pathname.replace(/\/+$/, '')}${u.search}`;
+  } catch {
+    return null;
+  }
+}
+
+/** Lowercased word tokens, with punctuation and spacing dropped. */
+function wordsOf(text: string): string[] {
+  return text.toLowerCase().split(/[^\p{L}\p{N}']+/u).filter(Boolean);
+}
+
+/** Whether two word runs share a contiguous stretch long enough to call it the same
+ *  text: four words at minimum, and at least half of the shorter run. */
+function sharesRun(a: string[], b: string[]): boolean {
+  const need = Math.max(4, Math.ceil(Math.min(a.length, b.length) / 2));
+  if (a.length < need || b.length < need) return false;
+  for (let i = 0; i + need <= a.length; i++) {
+    for (let j = 0; j + need <= b.length; j++) {
+      let k = 0;
+      while (k < need && a[i + k] === b[j + k]) k++;
+      if (k === need) return true;
+    }
+  }
+  return false;
+}
+
+/** Drop the sources that only point back at the page the reader is already on.
+ *
+ *  A source is dropped when its URL names the current webpage and the passage its text
+ *  fragment highlights overlaps the text this claim already has highlighted — the link
+ *  leads back to the very words under it. A source with no text fragment stands for the
+ *  whole page, which contains that text, so it is dropped too. With a single linkable
+ *  source left the row keeps it, and a filter that would empty the row returns the
+ *  original list rather than render no sources at all. */
+export function withoutSelfSources(sources: Source[], pageUrl: string, claimTexts: string[]): Source[] {
+  const page = webpageKey(pageUrl);
+  if (!page || sources.filter(s => !!s.url).length <= 1) return sources;
+  const claimRuns = claimTexts.map(wordsOf).filter(run => run.length > 0);
+  const kept = sources.filter(s => {
+    if (!s.url || webpageKey(s.url) !== page) return true;
+    const passages = textFragmentPassages(s.url);
+    if (passages.length === 0) return false;
+    return !passages.some(passage => {
+      const run = wordsOf(passage);
+      return claimRuns.some(claim => sharesRun(run, claim));
+    });
+  });
+  return kept.some(s => !!s.url) ? kept : sources;
+}

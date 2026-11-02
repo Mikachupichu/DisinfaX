@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "まだ利用できません",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "サインインするためにDisinfaXアプリを開けませんでした。"
+  },
+  "errSignInProvider": {
+    "message": "サポートされていないサインインプロバイダです。"
+  },
+  "errSignInHandshake": {
+    "message": "OAuthのURLを作成できませんでした。"
+  },
+  "errSignInGeneric": {
+    "message": "認証中にエラーが発生しました。"
   }
 }

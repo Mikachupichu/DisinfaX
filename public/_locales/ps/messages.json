@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "لا اوس مهيا نه دی",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "د DisinfaX اپلیکیشن د ننوتلو لپاره پرانیستل نشو."
+  },
+  "errSignInProvider": {
+    "message": "د ننوتلو نه ملاتړ شوی برابرونکی."
+  },
+  "errSignInHandshake": {
+    "message": "د OAuth URL جوړول نشول."
+  },
+  "errSignInGeneric": {
+    "message": "د تصدیق په جریان کې یوه تېروتنه رامنځته شوه."
   }
 }

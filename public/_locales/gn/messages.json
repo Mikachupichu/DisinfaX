@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ndaipóri gueteri",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ndoikatúi ojepe'a DisinfaX app oike hag̃ua."
+  },
+  "errSignInProvider": {
+    "message": "Pe proveedor oike hag̃ua ndojepokói."
+  },
+  "errSignInHandshake": {
+    "message": "Ndoikatúi ojejapo OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "Oiko peteĩ jejavy autenticación-pe."
   }
 }

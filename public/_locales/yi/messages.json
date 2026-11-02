@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "נאך נישט פאראן",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "מען האָט נישט געקענט עפענען די DisinfaX אַפּ צו אַרײַנגיין."
+  },
+  "errSignInProvider": {
+    "message": "נישט אונטערשטיצטער אַרײַנגאַנג־פֿאַרזאָרגער."
+  },
+  "errSignInHandshake": {
+    "message": "מען האָט נישט געקענט שאַפֿן דעם OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "אַ פֿעלער איז פֿאָרגעקומען בעת אויטענטיפֿיקאַציע."
   }
 }

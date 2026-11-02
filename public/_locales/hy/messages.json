@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Դեռ հասանելի չէ",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Չհաջողվեց բացել DisinfaX հավելվածը՝ մուտք գործելու համար։"
+  },
+  "errSignInProvider": {
+    "message": "Մուտքի չաջակցվող մատակարար։"
+  },
+  "errSignInHandshake": {
+    "message": "Չհաջողվեց ստեղծել OAuth հղումը։"
+  },
+  "errSignInGeneric": {
+    "message": "Նույնականացման ընթացքում սխալ տեղի ունեցավ։"
   }
 }

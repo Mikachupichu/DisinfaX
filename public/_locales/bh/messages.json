@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "अभी उपलब्ध नइखे",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "साइन इन करे खातिर DisinfaX ऐप नइखीं खुलल।"
+  },
+  "errSignInProvider": {
+    "message": "ई साइन-इन प्रोवाइडर सपोर्ट नइखे करत।"
+  },
+  "errSignInHandshake": {
+    "message": "OAuth हैंडशेक URL नइखीं बनल।"
+  },
+  "errSignInGeneric": {
+    "message": "प्रमाणीकरण में एगो गलती भइल।"
   }
 }

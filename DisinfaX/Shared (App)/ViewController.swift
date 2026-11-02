@@ -2337,12 +2337,16 @@ private struct SafariGuide: View {
     /// position in `images`. One key per sentence, so each language places every image itself; a
     /// sentence split at a fixed word instead pins all of them to English's order.
     private static func sentence(_ key: String.LocalizationValue, _ images: [GuideMark]) -> Text {
-        sentence(String(localized: key), images)
+        sentence(localized: String(localized: key), images)
     }
 
     /// The same sentence, already localized — for the ones this file assembles from more than one
     /// key because an image opens them.
-    private static func sentence(_ localized: String, _ images: [GuideMark]) -> Text {
+    ///
+    /// Its first parameter is labelled because a string literal binds to a bare `String` in
+    /// preference to a `String.LocalizationValue`: written `sentence(_:_,_)` this overload swallowed
+    /// every literal call above and the guide came out in English in every language.
+    private static func sentence(localized: String, _ images: [GuideMark]) -> Text {
         let characters = Array(localized)
         var text = Text(verbatim: "")
         var run = ""
@@ -2391,7 +2395,7 @@ private struct SafariGuide: View {
         // A control names no word, so the space the key opens with is kept: the button stands
         // where a word would, and the one after it opens the phrase that describes it.
         if !mark.spaced, localized.hasPrefix(" ") { localized.removeFirst() }
-        return mark.text + sentence(localized, images)
+        return mark.text + sentence(localized: localized, images)
     }
 
     /// The same sentence without its markers, for VoiceOver: an inline image has no description

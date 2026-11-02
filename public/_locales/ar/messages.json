@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "غير متاح بعد",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "تعذّر فتح تطبيق DisinfaX لتسجيل الدخول."
+  },
+  "errSignInProvider": {
+    "message": "مزوّد تسجيل دخول غير مدعوم."
+  },
+  "errSignInHandshake": {
+    "message": "تعذّر إنشاء عنوان OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "حدث خطأ أثناء المصادقة."
   }
 }

@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "ഇതുവരെ ലഭ്യമല്ല",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "സൈൻ ഇൻ ചെയ്യാൻ DisinfaX ആപ്പ് തുറക്കാനായില്ല."
+  },
+  "errSignInProvider": {
+    "message": "പിന്തുണയ്ക്കാത്ത സൈൻ-ഇൻ ദാതാവ്."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL നിർമ്മിക്കാനായില്ല."
+  },
+  "errSignInGeneric": {
+    "message": "പ്രാമാണീകരണത്തിൽ ഒരു പിശക് സംഭവിച്ചു."
   }
 }

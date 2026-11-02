@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "尚無法取得",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "無法開啟 DisinfaX 應用程式以登入。"
+  },
+  "errSignInProvider": {
+    "message": "不支援此登入服務商。"
+  },
+  "errSignInHandshake": {
+    "message": "無法產生 OAuth 網址。"
+  },
+  "errSignInGeneric": {
+    "message": "驗證時發生錯誤。"
   }
 }

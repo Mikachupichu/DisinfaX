@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Zatím není k dispozici",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Aplikaci DisinfaX se nepodařilo otevřít pro přihlášení."
+  },
+  "errSignInProvider": {
+    "message": "Nepodporovaný poskytovatel přihlášení."
+  },
+  "errSignInHandshake": {
+    "message": "Nepodařilo se vytvořit adresu URL pro OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Při ověřování došlo k chybě."
   }
 }

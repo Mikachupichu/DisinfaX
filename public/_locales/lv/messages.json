@@ -524,5 +524,17 @@
   "balanceNotAvailable": {
     "message": "Vēl nav pieejams",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Nevarēja atvērt DisinfaX lietotni, lai pierakstītos."
+  },
+  "errSignInProvider": {
+    "message": "Neatbalstīts pierakstīšanās pakalpojumu sniedzējs."
+  },
+  "errSignInHandshake": {
+    "message": "Nevarēja izveidot OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "Autentifikācijas laikā radās kļūda."
   }
 }

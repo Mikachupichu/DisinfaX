@@ -524,5 +524,17 @@
   "balanceNotAvailable": {
     "message": "Dar nepasiekiama",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Nepavyko atidaryti „DisinfaX“ programėlės prisijungimui."
+  },
+  "errSignInProvider": {
+    "message": "Nepalaikomas prisijungimo teikėjas."
+  },
+  "errSignInHandshake": {
+    "message": "Nepavyko sukurti OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "Autentifikavimo metu įvyko klaida."
   }
 }

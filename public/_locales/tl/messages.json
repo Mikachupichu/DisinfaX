@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Hindi pa magagamit",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Hindi mabuksan ang DisinfaX app para mag-sign in."
+  },
+  "errSignInProvider": {
+    "message": "Hindi suportadong provider ng sign-in."
+  },
+  "errSignInHandshake": {
+    "message": "Hindi magawa ang OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "Nagkaroon ng error sa pagpapatotoo."
   }
 }

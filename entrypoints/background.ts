@@ -805,6 +805,40 @@ export default defineBackground({
     sideClaims.set(cls.id, list);
   }
 
+  /** Carry one claim's annotation state into the same claim in every side memo, leaving each
+   *  side's own measured ranges alone.
+   *
+   *  A memo records WHERE a side's claims sit; it is a snapshot of the claim list taken when
+   *  that body was last on screen. Annotations are not that — they belong to the
+   *  classification that produced them, and a re-research replaces it and clears every link
+   *  of the claim in the DB. A memo left holding its own copy handed the retired corrections
+   *  back on the next flip, where Annotate was the correct answer (reported 2026-11-01). */
+  function syncSideMemoAnnotations(tweetId: string, claimText: string, claim: Claim): void {
+    const list = sideClaims.get(tweetId);
+    if (!list?.length) return;
+    const shown = displayedSides.get(tweetId)?.text;
+    const refuses = verdictRefusesAnnotation(claim);
+    for (const entry of list) {
+      // The side on screen is re-recorded by `cacheClassification` the moment this lands.
+      if (shown && sameBodyRevision(entry.text, shown)) continue;
+      entry.claims = entry.claims.map(cl => {
+        if (cl.text !== claimText) return cl;
+        // A side this run did not re-annotate holds nothing: its annotation died with the
+        // classification the run replaced (and with the DB's own clear). The one exception is
+        // a verdict that refuses annotation outright — that is about the claim's numbers, not
+        // its language, so every side holding a located range is settled empty rather than
+        // sent back to Annotate for a run that would only skip.
+        if (!refuses) return { ...cl, annotations: undefined };
+        let annotations = claim.annotations;
+        const range = resolveHighlightRange(cl.highlight, entry.locale);
+        if (range && range[0] >= 0 && sideAnnotationKeys(annotations, entry.locale).length === 0) {
+          annotations = { ...(annotations ?? {}), [entry.locale]: {} };
+        }
+        return { ...cl, annotations };
+      });
+    }
+  }
+
   /** Whether two renderings name the same revision of a post's body: equal once whitespace is
    *  normalized, or one holding the other (a host clamp or cut of the same words). A body that
    *  does neither is another side — a translation filed as the source, or its reverse. */
@@ -2041,13 +2075,22 @@ export default defineBackground({
   function predictEmptyAnnotation(claim: Claim, locale: string | undefined): Claim {
     if (!locale) return claim;
     if (!verdictRefusesAnnotation(claim)) return claim;
-    if (sideAnnotationKeys(claim.annotations, locale).length > 0) return claim;
-    if (!Array.isArray(claim.highlight?.[locale])) {
-      console.log(`[background] verdict refuses the annotation for "${claim.text.slice(0, 40)}..." but ${locale} has no located range — leaving the wait to the worker`);
+    // Settled for EVERY side holding a located range, not only the one this run read: the gate
+    // is about the claim's numbers, not its language, so a run on any of these sides passes
+    // `resolveAnnotationSpan` and is refused by the same test. Writing the run's own locale
+    // alone left the other side offering Annotate for a claim no annotate run would ever touch.
+    const located = Object.entries(claim.highlight ?? {})
+      .filter(([, range]) => Array.isArray(range) && range.length === 2 && range[0] >= 0)
+      .map(([loc]) => loc);
+    const pending = located.filter(loc => sideAnnotationKeys(claim.annotations, loc).length === 0);
+    if (pending.length === 0) {
+      if (located.length === 0) {
+        console.log(`[background] verdict refuses the annotation for "${claim.text.slice(0, 40)}..." but no side has a located range — leaving the wait to the worker`);
+      }
       return claim;
     }
-    console.log(`[background] verdict settles the annotation for "${claim.text.slice(0, 40)}..." (veracity ${claim.veracity}, confidence ${claim.confidence}) — ${locale} recorded empty`);
-    return { ...claim, annotations: { ...(claim.annotations ?? {}), [locale]: {} } };
+    console.log(`[background] verdict settles the annotation for "${claim.text.slice(0, 40)}..." (veracity ${claim.veracity}, confidence ${claim.confidence}) — ${pending.join(', ')} recorded empty`);
+    return { ...claim, annotations: { ...(claim.annotations ?? {}), ...Object.fromEntries(pending.map(loc => [loc, {}])) } };
   }
 
   function mergeSingleClaimAndBroadcast(
@@ -2085,6 +2128,11 @@ export default defineBackground({
       return predictEmptyAnnotation({ ...updatedClaim, annotations: kept }, opts?.annotatedLocale);
     });
     const anyOnHold = mergedClaims.some(c => c.reclassifyOnHold);
+    // This run replaced the claim's classifications, and annotations belonged to the one it
+    // replaced: every other side's memo has to follow, or a flip back paints corrections the
+    // reclassification retired instead of offering Annotate.
+    const refreshed = mergedClaims.find(c => c.text === claimText);
+    if (refreshed) syncSideMemoAnnotations(classificationId, claimText, refreshed);
     const merged: Classification = {
       ...existing,
       claims: mergedClaims,
@@ -7134,12 +7182,22 @@ export default defineBackground({
             }
           } catch { /* badge is best-effort */ }
 
+          try { await browser.storage.local.remove('disinfax_auth_error'); } catch { /* best-effort */ }
+
           // Warm the pipeline so the balance is already known when the popup reopens.
           refreshActiveState();
           sendResponse({ ok: true });
         } catch (e: any) {
           console.error('[background] web auth flow failed:', e);
-          sendResponse({ error: e?.message || 'Sign-in could not be completed.' });
+          const failure = e?.message || 'Sign-in could not be completed.';
+          // The popup that asked for this flow is gone, so the reason is written where the
+          // next one reads it — otherwise it exists only in this console, which nobody sees.
+          try {
+            await browser.storage.local.set({
+              disinfax_auth_error: { message: failure, at: Date.now() },
+            });
+          } catch { /* best-effort: the console line is still there */ }
+          sendResponse({ error: failure });
         }
       })();
       return true;
@@ -7803,8 +7861,14 @@ export default defineBackground({
         // this the click researches the streamed claim, which is on hold by construction.
         if (claimObj && !claimObj.dbClaimId) {
           researchRequestedBeforeRow.add(holdKey);
+          // `reclassifyOnHold` STAYS set: the row's broadcast releases this request through
+          // the same loop that reads the flag (broadcastClassification), and that loop only
+          // enqueues a claim still on hold — clearing it here parked the claim as `refreshing`
+          // with no run ever starting, and nothing else clears the flag (the give-up skips a
+          // claim that has its row, and no run of ours exists to settle it). The researching
+          // paint is the mask's job, not the cache's.
           const pendingClaims = classification.claims?.map(cl =>
-            cl.text === claimText ? { ...cl, reclassifyOnHold: false, refreshing: true } : cl
+            cl.text === claimText ? { ...cl, refreshing: true } : cl
           ) ?? null;
           const pending: Classification = { ...classification, claims: pendingClaims };
           pending.batchId = anyBatchId;
@@ -8145,11 +8209,24 @@ export default defineBackground({
             recordDisplayedSide(tweetId, swappedBody, displayedLocale);
           }
           if (dbClaims) {
-            // DB hit path: use cached claims for highlight localization
+            // DB hit path: use cached claims for highlight localization — but the snapshot can
+            // be older than the classification it describes. A re-preclassification replaces a
+            // claim's row while dbHitCache keeps the text it read before that, and the persist
+            // then names rows that no longer say that: it matches 0 rows, nothing is written,
+            // and the press the reader paid for leaves the ranges only in this session's memory
+            // (reported 2026-11-01: a Localize press right after a re-preclassification matched
+            // nothing, and the next classify press — which rebuilds from the DB row — took both
+            // highlights away and put Localize back). The live claims carry the text and the
+            // storage locale the rows hold NOW, and they are the same list in the same order
+            // whenever the counts agree, which is also the list the returned ranges are mapped
+            // back onto by index. A count that disagrees keeps the snapshot: the classification
+            // can hold extra claims the rows never named, and those must not shift the rest.
+            const liveClaims = claimsToDbClaims(stamped);
+            const localizeClaims = liveClaims.length === dbClaims.length ? liveClaims : dbClaims;
             gatedSpend(async () => {
               try {
                 await warmAnnotationSubs();
-                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, dbClaims, stamped, locale, mergeHighlightsFor(stamped));
+                await localizeHighlights(tweetId, tweet, tweetText, displayedLocale, localizeClaims, stamped, locale, mergeHighlightsFor(stamped));
                 // Retry with annotations already persisted: Flow C's
                 // annotations_present gate skips re-writing (no UPDATE → no
                 // broadcast), so pull the stored dicts in directly.
@@ -8408,12 +8485,25 @@ export default defineBackground({
                 && e.claims.some(cl => !!resolveHighlightRange(cl.highlight, e.locale)))
             : undefined;
           if (remembered) {
+            // A memo records WHERE this side's claims sit, not what they say. It was taken the
+            // last time this body was on screen, and the classification has moved on since: a
+            // claim classified on the other side carries its verdict there, and restored as the
+            // memo took it the claim came back here looking unclassified — with the verdict the
+            // reader had already paid for sitting on the side they just left. So every field the
+            // classification owns comes from the held claim (found by its own text, which never
+            // changes across sides) and only the measured ranges stay this side's.
+            const heldByText = new Map((classification.claims ?? []).map(cl => [cl.text, cl]));
             const restored: Classification = {
               ...classification,
               textLocale: remembered.locale,
               translatedLocale: remembered.locale,
               translatedText: remembered.text,
-              claims: remembered.claims.map(cl => ({ ...cl })),
+              claims: remembered.claims.map(cl => {
+                const held = heldByText.get(cl.text);
+                return held
+                  ? { ...held, highlight: cl.highlight, annotations: cl.annotations }
+                  : { ...cl };
+              }),
               translateFactChecksOnHold: undefined,
               // NOT `localizingHighlights: false`: a localization can be running while this
               // side is re-read (the paint itself triggers this pass), and this broadcast used

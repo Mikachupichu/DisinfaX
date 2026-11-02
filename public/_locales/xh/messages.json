@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ayikafumaneki",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Asikwazanga ukuvula usetyenziso lweDisinfaX ukuze ungene."
+  },
+  "errSignInProvider": {
+    "message": "Umboneleli wokungena akaxhaswanga."
+  },
+  "errSignInHandshake": {
+    "message": "Asikwazanga ukwenza i-URL ye-OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Kubekho impazamo ngexesha lokuqinisekisa."
   }
 }

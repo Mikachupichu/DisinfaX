@@ -48,7 +48,10 @@ type Precision = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
 /** One unit a host may state a post's AGE in, with what that unit's own precision makes
  *  meaningless about the instant behind it. */
 interface AgeUnit {
-  /** Every spelling the host may use for the unit. */
+  /** The unit's `Intl.RelativeTimeFormat` name: how a localized spelling is attached to it. */
+  readonly key: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
+  /** Every spelling the host may use for the unit, in every language it writes them in — the
+   *  English ones below, plus whatever the page's own language spells (see `ageWords`). */
   readonly names: readonly string[];
   /** Zero the fields the unit is not precise enough to place. */
   readonly floor: (at: Date) => void;
@@ -116,6 +119,7 @@ const MIDNIGHT = (at: Date): void => {
  *  a month is not a length of time, and 30 days is not a month. */
 const AGE_UNITS: readonly AgeUnit[] = [
   {
+    key: 'year',
     names: ['years', 'year', 'yrs', 'yr', 'y'],
     floor: (at) => {
       at.setUTCMonth(0, 1);
@@ -125,6 +129,7 @@ const AGE_UNITS: readonly AgeUnit[] = [
     precision: 'year',
   },
   {
+    key: 'month',
     names: ['months', 'month', 'mos', 'mo'],
     floor: (at) => {
       at.setUTCDate(1);
@@ -136,30 +141,35 @@ const AGE_UNITS: readonly AgeUnit[] = [
   // A week places the day it lands on and no finer — it is a length, not a calendar unit, so
   // there is no "week of" to name the way there is a month or a year.
   {
+    key: 'week',
     names: ['weeks', 'week', 'wks', 'wk', 'w'],
     floor: MIDNIGHT,
     back: (at, count) => at.setUTCDate(at.getUTCDate() - 7 * count),
     precision: 'day',
   },
   {
+    key: 'day',
     names: ['days', 'day', 'd'],
     floor: MIDNIGHT,
     back: (at, count) => at.setUTCDate(at.getUTCDate() - count),
     precision: 'day',
   },
   {
+    key: 'hour',
     names: ['hours', 'hour', 'hrs', 'hr', 'h'],
     floor: (at) => at.setUTCMinutes(0, 0, 0),
     back: (at, count) => at.setUTCHours(at.getUTCHours() - count),
     precision: 'hour',
   },
   {
+    key: 'minute',
     names: ['minutes', 'minute', 'mins', 'min', 'm'],
     floor: (at) => at.setUTCSeconds(0, 0),
     back: (at, count) => at.setUTCMinutes(at.getUTCMinutes() - count),
     precision: 'minute',
   },
   {
+    key: 'second',
     names: ['seconds', 'second', 'secs', 'sec', 's'],
     floor: (at) => at.setUTCMilliseconds(0),
     back: (at, count) => at.setUTCSeconds(at.getUTCSeconds() - count),
@@ -167,19 +177,170 @@ const AGE_UNITS: readonly AgeUnit[] = [
   },
 ];
 
-/** Every spelling in the table above, longest first so `6mo` is offered as months before it is
- *  offered as minutes. */
-const AGE_NAMES = AGE_UNITS.flatMap((unit) => unit.names)
-  .sort((a, b) => b.length - a.length)
-  .join('|');
+/** The languages whose age spellings can be read: the page's own first, as the host states it,
+ *  then the browser's. A host renders an age in ITS OWN interface language, which is not always
+ *  the browser's — a French YouTube UI in an English browser states `fr-FR` on the document while
+ *  `navigator.language` still says `en-US` (measured 2026-11-01), and reading only the latter
+ *  dated every French comment as of today. Read lazily, because a label is only ever parsed while
+ *  its page is open, and guarded so a context without a document still has the English table. */
+function ageLocales(): string[] {
+  const out: string[] = [];
+  try {
+    const stated = document.documentElement.getAttribute('lang');
+    if (stated) out.push(stated);
+  } catch { /* no document */ }
+  try {
+    for (const value of navigator.languages ?? []) if (value) out.push(value);
+    if (navigator.language) out.push(navigator.language);
+  } catch { /* no navigator */ }
+  return out;
+}
 
-/** The age a label states. The number is held to a whole one (`(?<![\d.])`) so a count that
- *  happens to share a letter with a unit — `35.2M followers` — is not read as an age: an age is
- *  never a fraction, and the letter after a fraction is not a unit a host states an age in. */
-const AGE_LABEL = new RegExp(`(?<![\\d.])(\\d+)\\s*(${AGE_NAMES})(?![a-z])`, 'gi');
+/** The plural counts sampled to learn a language's unit spellings: between them they reach every
+ *  CLDR plural category (`day`, `days`; `день`, `дня`, `дней`; `jour`, `jours`), and the three
+ *  styles cover the abbreviated forms hosts put on timestamps (`5d`, `5 j`, `vor 5 Std.`). */
+const AGE_SAMPLE_COUNTS = [1, 2, 3, 5, 11, 21, 101];
 
-/** The same age, held to the WHOLE string and to nothing but age: `18h`, `· 58m`. */
-const AGE_ALONE = new RegExp(`^[^\\p{L}\\p{N}]*\\d+\\s*(?:${AGE_NAMES})(?![a-z])[^\\p{L}\\p{N}]*$`, 'iu');
+const AGE_NUMBER = /\p{Nd}+/u;
+const AGE_WORD_RUN = /^[\p{L}\p{M}]+/u;
+const AGE_LEADING_SPACE = /^[\s\u00a0\u200e\u200f\u202a-\u202e]*/u;
+
+/** What this reader learned about the current page's languages. */
+interface AgeWords {
+  /** An age anywhere in a label: the count, then the unit's own spelling (group 2). */
+  label: RegExp;
+  /** An age and nothing else: `18h`, `il y a 5 j`, `2 days ago`. */
+  alone: RegExp;
+  /** Every spelling → the unit it states. A spelling two units claim is left out. */
+  byName: Map<string, AgeUnit>;
+}
+
+let ageWordsCache: { key: string; words: AgeWords } | null = null;
+
+/** The spellings that make up an age, in every language this page speaks.
+ *
+ *  A host writes its ages in its own interface language — `il y a 9 mois`, `vor 9 Monaten`,
+ *  `9 か月前`, `قبل ۹ أشهر` — so an English-only table cannot read a non-English reader's
+ *  timestamps at all, and a post with a relative reference then reached the classifier dated as
+ *  of today (reported 2026-11-01 on a French YouTube UI: a comment's `il y a 9 mois` produced no
+ *  datetime, and `534 years ago` was researched against the day it was read rather than the day
+ *  it was written). The spellings are taken from the platform's own CLDR data —
+ *  `Intl.RelativeTimeFormat` formatted for each unit, count and style — rather than transcribed
+ *  by hand, because a hand-written table goes stale silently and this one follows the engine's
+ *  data wherever it changes.
+ *
+ *  Only the WORDS are learned, never the phrase: the count is read by the same digit test
+ *  everywhere, and the host's words around it (`il y a`, `vor`, `ago`) are collected separately so
+ *  the whole-string test can accept `il y a 5 j` without accepting a sentence that merely
+ *  mentions a duration.
+ *
+ *  A spelling claimed by two units is DROPPED rather than assigned to the first: two languages on
+ *  one page can spell different units alike (`j` is a day in French and a year in Dutch), and a
+ *  wrong unit is a misdate, which is worse than the undated post this reader falls back to. A
+ *  spelling claimed by EVERY unit is instead a particle that sits between count and unit in that
+ *  language (`acum 101 de ani`), and is allowed to be skipped.
+ *
+ *  Unit-first phrasings (Swahili's `miezi 101 iliyopita`) are not covered: every spelling read
+ *  here follows its count, which is what every measured host does. Such a label yields an
+ *  undated post rather than a guessed one. */
+function ageWords(): AgeWords {
+  const locales = ageLocales();
+  const key = locales.join('\u0001');
+  if (ageWordsCache?.key === key) return ageWordsCache.words;
+
+  const owners = new Map<string, Set<AgeUnit>>();
+  const prefixes = new Set<string>();
+  const suffixes = new Set<string>();
+  const claim = (word: string, unit: AgeUnit): void => {
+    const name = word.toLowerCase();
+    const set = owners.get(name);
+    if (set) set.add(unit);
+    else owners.set(name, new Set([unit]));
+  };
+  for (const unit of AGE_UNITS) for (const name of unit.names) claim(name, unit);
+
+  if (typeof Intl.RelativeTimeFormat === 'function') {
+    for (const locale of locales) {
+      for (const style of ['long', 'short', 'narrow'] as const) {
+        let format: Intl.RelativeTimeFormat;
+        try {
+          format = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style });
+        } catch {
+          continue; // a locale this engine does not know
+        }
+        for (const unit of AGE_UNITS) {
+          for (const count of AGE_SAMPLE_COUNTS) {
+            let stated: string;
+            try {
+              stated = format.format(-count, unit.key);
+            } catch {
+              continue;
+            }
+            const number = AGE_NUMBER.exec(stated);
+            if (!number) continue;
+            const before = stated.slice(0, number.index).trim();
+            const rest = stated.slice(number.index + number[0].length).replace(AGE_LEADING_SPACE, '');
+            const word = AGE_WORD_RUN.exec(rest)?.[0];
+            if (!word) continue;
+            claim(word, unit);
+            const after = rest.slice(word.length).trim();
+            if (/\p{L}/u.test(before)) prefixes.add(before);
+            if (/\p{L}/u.test(after)) suffixes.add(after);
+          }
+        }
+      }
+    }
+  }
+
+  const byName = new Map<string, AgeUnit>();
+  const particles: string[] = [];
+  for (const [name, set] of owners) {
+    if (set.size === 1) byName.set(name, set.values().next().value!);
+    else if (set.size === AGE_UNITS.length) particles.push(name);
+  }
+
+  const escape = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const longestFirst = (a: string, b: string): number => b.length - a.length;
+  const names = [...byName.keys()].sort(longestFirst).map(escape).join('|');
+  const particle = particles.sort(longestFirst).map(escape).join('|');
+  const prefix = [...prefixes].sort(longestFirst).map(escape).join('|');
+  const suffix = [...suffixes].sort(longestFirst).map(escape).join('|');
+  const gap = '\\s*';
+  // A count is never a fraction or the tail of one (`35.2M`), and its digits may be any script's
+  // own (`قبل ۹ أشهر`); a unit spelling is never the start of a longer word in that language
+  // (`mo` inside `mois`).
+  const boundaryBefore = '(?<![\\p{Nd}.])';
+  const boundaryAfter = '(?![\\p{L}\\p{M}\\p{Nd}])';
+  const between = particle ? `(?:${particle})${gap}` : '';
+  const words: AgeWords = {
+    label: new RegExp(`${boundaryBefore}(\\p{Nd}+)${gap}(?:${between})?(${names})${boundaryAfter}`, 'giu'),
+    alone: new RegExp(
+      '^[^\\p{L}\\p{N}]*'
+      + (prefix ? `(?:(?:${prefix})${gap})?` : '')
+      + `\\p{Nd}+${gap}(?:${between})?(?:${names})`
+      + (suffix ? `(?:${gap}(?:${suffix}))?` : '')
+      + '[^\\p{L}\\p{N}]*$',
+      'iu',
+    ),
+    byName,
+  };
+  ageWordsCache = { key, words };
+  return words;
+}
+
+/** The count a run of digits states, in any script's own digits. Unicode lays every decimal block
+ *  out as ten consecutive code points with zero first, which is what lets `قبل ۹ أشهر` be counted
+ *  without a table of digit sets. */
+function ageCount(digits: string): number {
+  let value = 0;
+  for (const char of digits) {
+    const point = char.codePointAt(0)!;
+    let zero = point;
+    while (zero > 0 && /\p{Nd}/u.test(String.fromCodePoint(zero - 1))) zero--;
+    value = value * 10 + (point - zero);
+  }
+  return value;
+}
 
 /** Whether a string states nothing but an age.
  *
@@ -189,7 +350,7 @@ const AGE_ALONE = new RegExp(`^[^\\p{L}\\p{N}]*\\d+\\s*(?:${AGE_NAMES})(?![a-z])
  *  unmistakable: a sentence that merely mentions one fails on the words around it. */
 export function isAgeLabel(value: string | null | undefined): boolean {
   const text = value?.trim() ?? '';
-  return text !== '' && AGE_ALONE.test(text);
+  return text !== '' && ageWords().alone.test(text);
 }
 
 /** Whether a string OPENS with an age the host then labels: `5d • Edited`, `2yr · Modifié`.
@@ -208,7 +369,7 @@ export function isLabelledAgeLabel(value: string | null | undefined): boolean {
   const at = text.search(/[•·|]/);
   if (at <= 0) return false;
   const marker = text.slice(at + 1).trim();
-  return marker !== '' && !/\d/.test(marker) && AGE_ALONE.test(text.slice(0, at).trim());
+  return marker !== '' && !/\p{Nd}/u.test(marker) && ageWords().alone.test(text.slice(0, at).trim());
 }
 
 /** The instant a post's age label describes, for the hosts that state an age and no instant.
@@ -225,9 +386,9 @@ export function isLabelledAgeLabel(value: string | null | undefined): boolean {
  *  The label's LAST number-and-unit is the one taken, because a host that names an age names it
  *  last — `Updated 6y` carries its age after the verb and the reader's own language may put
  *  words on either side. Anything without a number and a unit this knows — a date spelled out in
- *  full (`Sep 28`), a label in a language these spellings do not cover, a post whose age the host
- *  states some other way — yields `undefined`, which is a post that carries no datetime rather
- *  than one reconstructed from a guess.
+ *  full (`Sep 28`), a label in a language the page does not name (see `ageWords`), a post whose
+ *  age the host states some other way — yields `undefined`, which is a post that carries no
+ *  datetime rather than one reconstructed from a guess.
  *
  *  `now` is the moment the label was read, and is passed in only so a caller can pin it. */
 export function isoDatetimeFromAge(label: string | null | undefined, now: Date = new Date()): string | undefined {
@@ -235,11 +396,12 @@ export function isoDatetimeFromAge(label: string | null | undefined, now: Date =
   if (!text) return undefined;
   let unit: AgeUnit | undefined;
   let count = 0;
-  for (const match of text.matchAll(AGE_LABEL)) {
-    const found = AGE_UNITS.find((candidate) => candidate.names.includes(match[2].toLowerCase()));
+  const words = ageWords();
+  for (const match of text.matchAll(words.label)) {
+    const found = words.byName.get(match[2].toLowerCase());
     if (!found) continue;
     unit = found;
-    count = Number(match[1]);
+    count = ageCount(match[1]);
   }
   if (!unit) return undefined;
   const at = new Date(now.getTime());

@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ankoraŭ ne disponebla",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ne eblis malfermi la aplikaĵon DisinfaX por ensaluti."
+  },
+  "errSignInProvider": {
+    "message": "Nesubtenata saluta provizanto."
+  },
+  "errSignInHandshake": {
+    "message": "Ne eblis krei la OAuth-URL-on."
+  },
+  "errSignInGeneric": {
+    "message": "Eraro okazis dum aŭtentigo."
   }
 }

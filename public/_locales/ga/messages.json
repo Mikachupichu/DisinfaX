@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Níl sé ar fáil fós",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Níorbh fhéidir aip DisinfaX a oscailt chun síniú isteach."
+  },
+  "errSignInProvider": {
+    "message": "Soláthraí síniú isteach nach dtacaítear leis."
+  },
+  "errSignInHandshake": {
+    "message": "Níorbh fhéidir URL OAuth a chruthú."
+  },
+  "errSignInGeneric": {
+    "message": "Tharla earráid le linn fíordheimhnithe."
   }
 }

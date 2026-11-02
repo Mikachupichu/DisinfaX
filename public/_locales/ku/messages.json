@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "Hîn ne berdest e",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Nehatiye ku vekirina sepanê DisinfaX ji bo têketinê."
+  },
+  "errSignInProvider": {
+    "message": "Pêşkêşvanê têketinê nayê piştguhkirin."
+  },
+  "errSignInHandshake": {
+    "message": "Nehatiye ku URL-ya OAuth were çêkirin."
+  },
+  "errSignInGeneric": {
+    "message": "Di dema nasînê de xeletiyek çêbû."
   }
 }

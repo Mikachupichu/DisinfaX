@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ntibiraboneka",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Ntibyakunze gufungura porogaramu DisinfaX kugira ngo winjire."
+  },
+  "errSignInProvider": {
+    "message": "Utanga uburyo bwo kwinjira ntabwo ashyigikiwe."
+  },
+  "errSignInHandshake": {
+    "message": "Ntibyakunze gukora URL ya OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Habaye ikosa mu kwemeza."
   }
 }

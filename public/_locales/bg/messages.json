@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Все още не е налично",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Приложението DisinfaX не можа да се отвори за влизане."
+  },
+  "errSignInProvider": {
+    "message": "Неподдържан доставчик за вход."
+  },
+  "errSignInHandshake": {
+    "message": "URL адресът за OAuth не можа да бъде създаден."
+  },
+  "errSignInGeneric": {
+    "message": "Възникна грешка при удостоверяването."
   }
 }

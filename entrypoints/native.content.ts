@@ -171,6 +171,14 @@ export default defineContentScript({
     // `/k/` is a different app that shares its session — so the path is gated inside the adapter
     // rather than here, where a match can only name a host.
     '*://web.telegram.org/*',
+    // YouTube's watch pages, on the desktop reader and on the mobile one. The mobile host is
+    // a separate application served in place rather than a redirect target, so both names are
+    // listed — the same split Facebook's two readers take. Shorts and the feed are matched
+    // here but claimed by no root in the adapter, which is the deliberate boundary documented
+    // there.
+    '*://youtube.com/*',
+    '*://www.youtube.com/*',
+    '*://m.youtube.com/*',
     // Mastodon is deliberately NOT listed here. It is federated, so there is no host to
     // enumerate; the coordinator reaches its adapter through the runtime opt-in instead
     // (see the opt-in seam in `main` and utils/mastodonOptIn.ts), and this file is

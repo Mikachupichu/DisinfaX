@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "Ọ dịbeghị",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Enweghị ike imepe ngwa DisinfaX iji banye."
+  },
+  "errSignInProvider": {
+    "message": "Onye na-enye nbanye anaghị akwado."
+  },
+  "errSignInHandshake": {
+    "message": "Enweghị ike ịmepụta URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Njehie mere n'oge nyocha."
   }
 }

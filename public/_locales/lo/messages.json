@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "ຍັງບໍ່ມີ",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "ບໍ່ສາມາດເປີດແອັບ DisinfaX ເພື່ອເຂົ້າສູ່ລະບົບໄດ້."
+  },
+  "errSignInProvider": {
+    "message": "ຜູ້ໃຫ້ບໍລິການເຂົ້າສູ່ລະບົບທີ່ບໍ່ຮອງຮັບ."
+  },
+  "errSignInHandshake": {
+    "message": "ບໍ່ສາມາດສ້າງ URL OAuth ໄດ້."
+  },
+  "errSignInGeneric": {
+    "message": "ເກີດຂໍ້ຜິດພາດໃນການກວດສອບ."
   }
 }

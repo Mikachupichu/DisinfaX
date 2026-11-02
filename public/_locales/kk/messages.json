@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "Әзірге қолжетімді емес",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX қолданбасы кіру үшін ашылмады."
+  },
+  "errSignInProvider": {
+    "message": "Қолдау көрсетілмейтін кіру провайдері."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL мекенжайын жасау мүмкін болмады."
+  },
+  "errSignInGeneric": {
+    "message": "Аутентификация кезінде қате орын алды."
   }
 }

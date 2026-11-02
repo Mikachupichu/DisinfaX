@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Non ancora disponibile",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Non poteva aperir le app DisinfaX pro initiar session."
+  },
+  "errSignInProvider": {
+    "message": "Fornitor de session non supportate."
+  },
+  "errSignInHandshake": {
+    "message": "Non poteva crear le URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Un error occurreva durante le authentication."
   }
 }

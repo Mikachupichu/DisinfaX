@@ -21,7 +21,7 @@
  */
 import { Classification, QuotedClassification, Claim, TextSegment, Source, sameLanguage } from "../data/Classification";
 import { UNKNOWN_LANGUAGE } from "../data/Tweets";
-import { normalizeSources } from "./sources";
+import { normalizeSources, withoutSelfSources } from "./sources";
 import { breakupTweetText, breakupWithHighlights, resolveHighlightRange, sha256HexSync } from "./textBreakup";
 import { mfBus } from "./mfBus";
 import { codeToMessageKey, ERROR_CODES } from "./errorCodes";
@@ -1291,6 +1291,22 @@ function afterLayout(el: HTMLElement, fn: () => void) {
     requestAnimationFrame(run);
 }
 
+/** The nearest ancestor whose box reports a size change when the wrap re-flows.
+ *
+ *  Inline elements are skipped, because a re-wrap is exactly the change their box does not
+ *  report (see the multi-word branch of `pinStrikeLayout`); `display: contents` boxes are
+ *  skipped too, for the same reason — measured, observing one yields a single 0×0 entry and
+ *  then silence when the words re-wrap. The body stands in for a passage that has no box
+ *  above it — it is what a viewport resize changes, too. */
+function reflowBoxOf(el: HTMLElement): Element {
+    for (let node = el.parentElement; node; node = node.parentElement) {
+        if (node === document.body || node === document.documentElement) return node;
+        const display = getComputedStyle(node).display;
+        if (display !== "inline" && display !== "contents") return node;
+    }
+    return document.body;
+}
+
 function renderMultiStrikeSvg(wrap: HTMLElement) {
     if (!wrap.isConnected) return;
     const rects = wrap.getClientRects();
@@ -1361,10 +1377,18 @@ function pinStrikeLayout(wrap: HTMLElement, inner?: HTMLElement | null, line?: H
         }
         afterLayout(wrap, () => renderMultiStrikeSvg(wrap));
         if (typeof ResizeObserver !== "undefined") {
+            // The rule is per line fragment, so it has to be redrawn whenever the wrap's
+            // line breaks change. The wrap itself cannot report that: measured, a 600px →
+            // 200px container re-flowed it into four fragments and ResizeObserver fired not
+            // once, so the SVG went on holding the two lines drawn at the old width — a bar
+            // running on over the empty right of the first line while the words below it
+            // went bare. The nearest ancestor that is not itself inline does change size when
+            // the words are pushed onto more lines, so that is what is watched.
             const ro = new ResizeObserver(() => {
-                if (wrap.isConnected) renderMultiStrikeSvg(wrap);
+                if (!wrap.isConnected) { ro.disconnect(); return; }
+                renderMultiStrikeSvg(wrap);
             });
-            ro.observe(wrap);
+            ro.observe(reflowBoxOf(wrap));
         }
         return;
     }
@@ -10862,7 +10886,7 @@ function populatePopoverContent(
         sourcesRow.className = "mf-popover-sources-row";
         sourcesRow.style.cssText = "display: flex; gap: 6px; margin-top: 6px; align-items: center; flex-wrap: wrap;";
 
-        for (const src of sources) {
+        for (const src of sourcesWorthListing(trigger, sources)) {
             if (!src.url) continue;
             const link = createSourceLink(src, srcHoverColor);
             sourcesRow.appendChild(link);
@@ -11960,6 +11984,13 @@ function domainFromUrl(url: string): string {
     try { return new URL(url).hostname; } catch { return url; }
 }
 
+/** The sources worth listing for this popover: one that leads back to this same webpage
+ *  with the claim already highlighted under it is the page the reader is on. */
+function sourcesWorthListing(trigger: HTMLElement, sources: Source[]): Source[] {
+    const claimText = trigger.dataset.claimText || trigger.dataset.claimRewritten;
+    return withoutSelfSources(sources, location.href, claimText ? [claimText] : []);
+}
+
 /** Create a source link — favicon circle that expands to show domain on hover */
 function createSourceLink(src: Source, hoverBg?: string): HTMLAnchorElement {
     const url = src.url ?? "#";
@@ -12268,6 +12299,11 @@ export function settleRebuiltSpanAnnotations(
     return { repaintNeeded: sig !== prev };
 }
 
+/** The workers' annotation refusal gate (classify-tweets `annotRefusalReason`, and the
+ *  same constant in fetch-claim and highlight-claims): a near-certain claim has no wrong
+ *  word to mark, and a verdict we barely trust must not strike anything. Inclusive. */
+const ANNOT_REFUSE_VERACITY = 0.9, ANNOT_REFUSE_CONFIDENCE = 0.2;
+
 /** Whether a claim span wants the Annotate affordance (Flow B): idle button or
  *  pending flight. Read live from the dataset, like everything badge-related:
  *  the span is updated in place as the claim progresses, so render-time
@@ -12279,6 +12315,12 @@ function spanNeedsAnnotateBadge(span: HTMLElement): boolean {
     if (span.dataset.reclassifyOnHold === "true") return false;
     if (span.dataset.refreshing === "true") return false;
     if ((span.dataset.reasoning ?? "").trim() === "") return false;
+    // A verdict the workers' gate refuses is annotated-EMPTY wherever it is read, whether or
+    // not a key says so: no run will ever write one, so a stored row with no key (a reload,
+    // or a run whose own locale was the only one predicted) must not bring the button back.
+    const veracity = parseFloat(span.dataset.veracity ?? "");
+    const confidence = parseFloat(span.dataset.probability ?? "");
+    if (veracity >= ANNOT_REFUSE_VERACITY || confidence <= ANNOT_REFUSE_CONFIDENCE) return false;
     try {
         const parsed = JSON.parse(span.dataset.annotations ?? "{}");
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
@@ -13131,7 +13173,7 @@ function addSourcesToPopover(popover: HTMLElement, trigger: HTMLElement) {
     const sourcesRow = document.createElement("div");
     sourcesRow.className = "mf-popover-sources-row";
     sourcesRow.style.cssText = "display: flex; gap: 6px; margin-top: 6px; align-items: center; flex-wrap: wrap;";
-    for (const src of srcList) {
+    for (const src of sourcesWorthListing(trigger, srcList)) {
         if (!src.url) continue;
         sourcesRow.appendChild(createSourceLink(src, hoverColor));
     }
@@ -16361,7 +16403,11 @@ function injectClassification(
     // no button, no fallback box) rather than decorate a tweet we can't read. The
     // button keeps its own actionRow → Grok-row → after-timestamp fallback chain
     // below, so a missing Grok bar still places the button (just lower), not a no-op.
-    if (!findTweetTextElement(article, isQuoted, classification.id)) {
+    // An adapter may name a root that has no words on this reader by design — filed from the
+    // payload, rendered by a host that shows none of them. That post still owes its buttons;
+    // everything below tolerates a null anchor, which is exactly the "nothing to paint" state.
+    const paintless = !findTweetTextElement(article, isQuoted, classification.id);
+    if (paintless && !platformSeam()?.buttonsWithoutText?.(article, { id: classification.id, isQuoted })) {
         console.log(`[misinfo] injectClassification: tweet text anchor missing for ${classification.id} (isQuoted=${isQuoted}) — skipping all injection`);
         return;
     }

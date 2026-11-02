@@ -526,5 +526,17 @@
   "balanceNotAvailable": {
     "message": "ჯერ მიუწვდომელია",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "ვერ გაიხსნა DisinfaX აპლიკაცია შესასვლელად."
+  },
+  "errSignInProvider": {
+    "message": "შესვლის მიმწოდებელი არ არის მხარდაჭერილი."
+  },
+  "errSignInHandshake": {
+    "message": "ვერ შეიქმნა OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "ავთენტიფიკაციისას მოხდა შეცდომა."
   }
 }

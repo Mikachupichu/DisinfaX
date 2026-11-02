@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Henüz kullanılamıyor",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX uygulaması oturum açmak için açılamadı."
+  },
+  "errSignInProvider": {
+    "message": "Desteklenmeyen oturum açma sağlayıcısı."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL'si oluşturulamadı."
+  },
+  "errSignInGeneric": {
+    "message": "Kimlik doğrulama sırasında bir hata oluştu."
   }
 }

@@ -56,19 +56,19 @@ function BadgeUsd({ value, locale }: { value: number; locale: string }) {
 const CHECKOUT_URL = 'https://create-checkout-session.michael-pouget01.workers.dev/';
 const SAFARI_VERIFY_URL = 'https://verify-apple-topup.michael-pouget01.workers.dev/';
 
-/** Apple sells top-ups as pre-registered in-app purchase products, one per whole-dollar
- *  amount from $1 to $100 — there is no dynamic pricing as with Stripe. So the Safari
- *  amount must be an integer inside this range or no product exists to buy, which is why
- *  the custom field is clamped rather than merely floored. */
-const APPLE_MIN_TOPUP = 1;
-const APPLE_MAX_TOPUP = 100;
+/** Top-ups are whole dollars from $1 to $100 on both backends: Apple sells one IAP
+ *  product per integer in that range, and Stripe checkout is capped at the same
+ *  ceiling so a single chargeback cannot exceed $100. The custom field is clamped
+ *  rather than merely floored. */
+const MIN_TOPUP = 1;
+const MAX_TOPUP = 100;
 
-/** Lower bound for the custom field: Apple's smallest product, or Stripe's $1 floor. */
+/** Lower bound for the custom field (same as MIN_TOPUP). */
 const CUSTOM_MIN = 1;
 
 /** Preset top-up amounts (USD), identical on Safari and Chromium/Firefox: $1 carries no
  *  bonus (fees consume the whole giveaway budget there), $3/$5/$10 gift 20%/24%/27%.
- *  "custom" is a free-entry integer ≥ 1. */
+ *  "custom" is a free-entry integer in $1–$100. */
 const PRESETS = [1, 3, 5, 10] as const;
 type Selection = '1' | '3' | '5' | '10' | 'custom';
 /** First-run defaults: $5 preselected, $6 in the custom field (see STORE_* below — a
@@ -217,8 +217,7 @@ function storageSet(obj: Record<string, any>): void {
 function customToAmount(raw: string): number {
   const n = Math.floor(Number(raw));
   if (!Number.isFinite(n) || n < CUSTOM_MIN) return CUSTOM_MIN;
-  // Stripe prices the session dynamically and has no upper product bound; Apple does.
-  if (import.meta.env.SAFARI && n > APPLE_MAX_TOPUP) return APPLE_MAX_TOPUP;
+  if (n > MAX_TOPUP) return MAX_TOPUP;
   return n;
 }
 
@@ -731,7 +730,7 @@ export default function Dashboard({ user, onSignOut, onDeleteAccount, onSelectio
         // customToAmount(), so this only trips if a preset were ever mis-set — but an
         // out-of-range value would resolve to a product id that does not exist, and the
         // StoreKit sheet would fail with nothing useful to show the user.
-        if (!Number.isInteger(selectedAmount) || selectedAmount < APPLE_MIN_TOPUP || selectedAmount > APPLE_MAX_TOPUP) {
+        if (!Number.isInteger(selectedAmount) || selectedAmount < MIN_TOPUP || selectedAmount > MAX_TOPUP) {
           throw new Error(t('checkoutError'));
         }
 
@@ -796,6 +795,9 @@ export default function Dashboard({ user, onSignOut, onDeleteAccount, onSelectio
         //    from the app. Closing now keeps the popup from sitting on a stale balance.
         window.close();
       } else {
+        if (!Number.isInteger(selectedAmount) || selectedAmount < MIN_TOPUP || selectedAmount > MAX_TOPUP) {
+          throw new Error(t('checkoutError'));
+        }
         const response = await fetch(CHECKOUT_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
@@ -1009,8 +1011,7 @@ export default function Dashboard({ user, onSignOut, onDeleteAccount, onSelectio
                   onClick={() => stepCustom(1)}
                   title={t('increase')}
                   aria-label={t('increase')}
-                  // Only Apple has a ceiling — Stripe prices the session dynamically.
-                  disabled={import.meta.env.SAFARI && customToAmount(customInput) >= APPLE_MAX_TOPUP}
+                  disabled={customToAmount(customInput) >= MAX_TOPUP}
                   className="flex-1 px-2 text-zinc-300 hover:text-white hover:bg-emerald-900/40 disabled:text-zinc-600 disabled:hover:bg-transparent disabled:hover:text-zinc-600 disabled:cursor-not-allowed"
                 ><ChevronUp /></button>
                 <button

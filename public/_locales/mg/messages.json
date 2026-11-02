@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Tsy misy amin'izao",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Tsy afaka nanokatra ny fampiharana DisinfaX hidirana."
+  },
+  "errSignInProvider": {
+    "message": "Mpamatsy fidirana tsy tohana."
+  },
+  "errSignInHandshake": {
+    "message": "Tsy afaka namorona ny URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Nisy fahadisoana nandritra ny fanamarinana."
   }
 }

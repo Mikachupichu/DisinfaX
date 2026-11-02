@@ -25,6 +25,7 @@ import { telegramAdapter } from './telegram';
 import { threadsAdapter } from './threads';
 import { truthSocialAdapter } from './truthsocial';
 import { xAdapter } from './x';
+import { youtubeAdapter } from './youtube';
 import { hostMatchesRule } from './hosts';
 
 const ADAPTERS: readonly PlatformAdapter[] = [
@@ -47,6 +48,9 @@ const ADAPTERS: readonly PlatformAdapter[] = [
   facebookAdapter,
   linkedinAdapter,
   telegramAdapter,
+  // A video's watch page: its description (title and body as one post) and its comments.
+  // Fed from YouTube's own API, with the markup as the fallback — see ./youtube.ts.
+  youtubeAdapter,
   // Federated, and the only entry here that claims no host: its instances are opted in at
   // runtime, one origin at a time. See the header of ./mastodon.ts.
   mastodonAdapter,

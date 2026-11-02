@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Одоогоор боломжгүй",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX аппыг нэвтрэхийн тулд нээж чадсангүй."
+  },
+  "errSignInProvider": {
+    "message": "Дэмжигдээгүй нэвтрэх нийлүүлэгч."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL үүсгэж чадсангүй."
+  },
+  "errSignInGeneric": {
+    "message": "Баталгаажуулах явцад алдаа гарлаа."
   }
 }

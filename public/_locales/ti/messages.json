@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "ክሳብ ሕጂ ኣይርከብን",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX መተግበሪያ ንምእታው ክንከፍት ኣይተኻእለን።"
+  },
+  "errSignInProvider": {
+    "message": "ዘይተደገፈ ናይ መእተዊ ኣቕራቢ።"
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL ክንፈጥር ኣይተኻእለን።"
+  },
+  "errSignInGeneric": {
+    "message": "ኣብ ግዜ መረጋገጺ ጌጋ ተፈጺሙ።"
   }
 }

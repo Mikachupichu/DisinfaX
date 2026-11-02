@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Ko si sibẹsibẹ",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "A ko le ṣii app DisinfaX lati wọle."
+  },
+  "errSignInProvider": {
+    "message": "Olupese iwọle ti ko ni atilẹyin."
+  },
+  "errSignInHandshake": {
+    "message": "A ko le ṣẹda URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Aṣiṣe kan ṣẹlẹ lakoko ijẹrisi."
   }
 }

@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Hozircha mavjud emas",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "DisinfaX ilovasini kirish uchun ochib bo'lmadi."
+  },
+  "errSignInProvider": {
+    "message": "Qo'llab-quvvatlanmaydigan kirish provayderi."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL manzilini yaratib bo'lmadi."
+  },
+  "errSignInGeneric": {
+    "message": "Autentifikatsiya paytida xatolik yuz berdi."
   }
 }

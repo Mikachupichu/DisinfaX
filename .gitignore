@@ -69,3 +69,20 @@ DisinfaX/Shared (Extension)/manifest.json
 DisinfaX/Shared (Extension)/popup.html
 DisinfaX/Shared (Extension)/selection.js
 DisinfaX/Shared (Extension)/*.svg
+
+# Xcode build products.
+#
+# A DerivedData-style `build/` that was committed by accident (~1.3 GB): object
+# files, dSYMs, and embedded.mobileprovision copies. Xcode regenerates it. Not
+# the Safari web-asset tree above (`DisinfaX/Shared (Extension)/`).
+DisinfaX/build/
+
+# Xcode per-user UI state (breakpoints, window layout). Regenerated per machine.
+xcuserdata/
+
+# Built Chromium extension trees used as local test mirrors. Produced by
+# `wxt build`, not authored. Same churn as the Safari copy: Vite hashes the
+# popup, so every popup-touching build would otherwise add two files and orphan
+# two old ones.
+test-dist-ext/
+build-test-ext/

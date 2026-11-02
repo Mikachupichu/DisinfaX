@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Belum tersedia",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Tidak dapat membuka aplikasi DisinfaX untuk log masuk."
+  },
+  "errSignInProvider": {
+    "message": "Penyedia log masuk tidak disokong."
+  },
+  "errSignInHandshake": {
+    "message": "Tidak dapat menghasilkan URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Ralat berlaku semasa pengesahan."
   }
 }

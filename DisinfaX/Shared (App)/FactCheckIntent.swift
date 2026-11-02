@@ -580,9 +580,9 @@ private enum FactCheckTextRunner {
         var errorDescription: String? {
             switch self {
             case .missingText:
-                return "The input JSON has no \"text\" field to fact-check."
+                return String(localized: "The input JSON has no \"text\" field to fact-check.")
             case .unknownUsertype(let value):
-                return "The input JSON's \"usertype\" is \"\(value)\", which is not one of Business, Government, Verified or None."
+                return String(localized: "The input JSON's \"usertype\" is \"\(value)\", which is not one of Business, Government, Verified or None.")
             }
         }
     }

@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "עדיין לא זמין",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "לא ניתן לפתוח את האפליקציה DisinfaX כדי להיכנס."
+  },
+  "errSignInProvider": {
+    "message": "ספק התחברות לא נתמך."
+  },
+  "errSignInHandshake": {
+    "message": "לא ניתן ליצור כתובת OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "אירעה שגיאה באימות."
   }
 }

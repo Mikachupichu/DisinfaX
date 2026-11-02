@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "Nog niet beschikbaar",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Kon de DisinfaX-app niet openen om in te loggen."
+  },
+  "errSignInProvider": {
+    "message": "Niet-ondersteunde inlogprovider."
+  },
+  "errSignInHandshake": {
+    "message": "Kon de OAuth-URL niet aanmaken."
+  },
+  "errSignInGeneric": {
+    "message": "Er is een fout opgetreden bij de authenticatie."
   }
 }

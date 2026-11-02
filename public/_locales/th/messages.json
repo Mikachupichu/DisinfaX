@@ -525,5 +525,17 @@
   "balanceNotAvailable": {
     "message": "ยังไม่พร้อมใช้งาน",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "ไม่สามารถเปิดแอป DisinfaX เพื่อลงชื่อเข้าใช้ได้"
+  },
+  "errSignInProvider": {
+    "message": "ผู้ให้บริการลงชื่อเข้าใช้ที่ไม่รองรับ"
+  },
+  "errSignInHandshake": {
+    "message": "ไม่สามารถสร้าง URL ของ OAuth ได้"
+  },
+  "errSignInGeneric": {
+    "message": "เกิดข้อผิดพลาดระหว่างการยืนยันตัวตน"
   }
 }

@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "اڃا دستياب ناهي",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "سائن اِن ڪرڻ لاءِ DisinfaX ايپ کولي نه سگهي."
+  },
+  "errSignInProvider": {
+    "message": "غير حمايت يافته سائن اِن فراهم ڪندڙ."
+  },
+  "errSignInHandshake": {
+    "message": "OAuth URL ٺاهي نه سگهي."
+  },
+  "errSignInGeneric": {
+    "message": "تصديق دوران هڪ غلطي ٿي."
   }
 }

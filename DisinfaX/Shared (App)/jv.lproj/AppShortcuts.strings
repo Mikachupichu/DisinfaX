@@ -1,0 +1,4 @@
+/* App Shortcut phrases. Keys match the phrases in FactCheckIntent.swift, where the app name is ${applicationName}. */
+
+"Fact-check a text in ${applicationName}" = "Priksa fakta teks ing ${applicationName}";
+"Fact-check claims with ${applicationName}" = "Priksa fakta pratelan nganggo ${applicationName}";

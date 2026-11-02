@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Tseem tsis muaj",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Tsis tau qhib DisinfaX app los nkag."
+  },
+  "errSignInProvider": {
+    "message": "Tus muab kev nkag tsis txhawb."
+  },
+  "errSignInHandshake": {
+    "message": "Tsis tau tsim OAuth URL."
+  },
+  "errSignInGeneric": {
+    "message": "Muaj teeb meem thaum txheeb xyuas."
   }
 }

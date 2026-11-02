@@ -527,5 +527,17 @@
   "balanceNotAvailable": {
     "message": "Nén co disponeuve",
     "description": "Stands in for a balance that has not been reported yet."
+  },
+  "errSignInApp": {
+    "message": "Dji n' a savou drovi l' aplacaedje DisinfaX po s' elodjî."
+  },
+  "errSignInProvider": {
+    "message": "Fornixheu d' elodjaedje nén sopoirté."
+  },
+  "errSignInHandshake": {
+    "message": "Dji n' a savou fé l' URL OAuth."
+  },
+  "errSignInGeneric": {
+    "message": "Å rvinou on aroke durant l' otinticaedje."
   }
 }

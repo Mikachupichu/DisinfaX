@@ -34,7 +34,8 @@ export type PlatformId =
   | 'navercafe'
   | 'facebook'
   | 'linkedin'
-  | 'telegram';
+  | 'telegram'
+  | 'youtube';
 
 /** Which post a DOM element or highlight belongs to.
  *
@@ -143,6 +144,16 @@ export interface PlatformAdapter {
    *  `textElement` must be one of these, so a caller that needs a single anchor keeps
    *  working. Optional: X needs none, a tweet being a single element. */
   textRegions?(root: Element, ref: PostRef): TextRegion[] | null;
+
+  /** Whether this root is a post the reader can act on with nothing to paint into.
+   *
+   *  `textElement` answering null normally means the host's markup moved under us, and
+   *  the injector then decorates nothing rather than guessing. A few roots are null by
+   *  DESIGN: the post is filed and readable from the payload, but the reader's version of
+   *  the page renders none of its words — YouTube's mobile reader states a video's
+   *  description nowhere in its markup. Those roots still owe the reader their buttons, so
+   *  an adapter names them here and the injector keeps going with no anchor to paint. */
+  buttonsWithoutText?(root: Element, ref: PostRef): boolean;
 
   /** Paint highlights over the post's own text nodes instead of replacing the
    *  element's content with the classified text.
